@@ -1,0 +1,36 @@
+INSTALL file for VLMC
+
+For now we don't use autotools to build the project.
+If you have any experiences with autotools and want to help, please contact us
+on <vlmc-devel@moode.org>.
+
+Dependencies
+============
+
+- Latest version of VLC installed (from the git repository)
+- Qt framework >= 4.5.0
+
+Get the sources
+===============
+
+	git clone git://github.com/VLMC/vlmc.git
+
+Building VLMC
+=============
+
+A typical way to build VLMC is:
+
+	qmake
+	make
+
+Running VLMC
+============
+
+	./vlmc
+
+Issues
+======
+
+If you run into problems, you can ask for help on <vlmc-devel@moode.org> and
+IRC channel #vlmc on Freenode.
+
