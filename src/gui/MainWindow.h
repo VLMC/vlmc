@@ -20,13 +20,28 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <QApplication>
-#include "gui/MainWindow.h"
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
-int main( int argc, char **argv )
+#include <QApplication>
+#include "ui_MainWindow.h"
+
+class MainWindow : public QMainWindow
 {
-	QApplication app( argc, argv );
-        MainWindow w;
-        w.show();
-	return app.exec();
-}
+    Q_OBJECT
+    Q_DISABLE_COPY(MainWindow)
+
+public:
+    explicit MainWindow( QWidget *parent = 0 );
+
+protected:
+    virtual void changeEvent( QEvent *e );
+
+private:
+    Ui::MainWindow m_ui;
+
+private slots:
+    void on_actionQuit_triggered();
+};
+
+#endif // MAINWINDOW_H

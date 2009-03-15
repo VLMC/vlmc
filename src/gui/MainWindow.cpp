@@ -20,13 +20,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <QApplication>
-#include "gui/MainWindow.h"
+#include "MainWindow.h"
 
-int main( int argc, char **argv )
+MainWindow::MainWindow( QWidget *parent ) :
+    QMainWindow( parent )
 {
-	QApplication app( argc, argv );
-        MainWindow w;
-        w.show();
-	return app.exec();
+    m_ui.setupUi( this );
+}
+
+void MainWindow::changeEvent( QEvent *e )
+{
+    switch ( e->type() )
+    {
+    case QEvent::LanguageChange:
+        m_ui.retranslateUi( this );
+        break;
+    default:
+        break;
+    }
+}
+
+void MainWindow::on_actionQuit_triggered()
+{
+    QApplication::quit();
 }
