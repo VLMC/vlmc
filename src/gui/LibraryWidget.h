@@ -1,9 +1,9 @@
 /*****************************************************************************
- * main.cpp: VLMC main
+ * LibraryWidget.h: VLMC library widget header
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Ludovic Fauvet <etix@l0cal.com>
+ * Authors: Clement CHAVANCE <chavance.c@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,34 +20,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef LIBRARYWIDGET_H
+#define LIBRARYWIDGET_H
 
-#include <QApplication>
-#include "ui_MainWindow.h"
-#include "LibraryWidget.h"
+#include <QTabWidget>
+#include <QListWIdget>
 
-class MainWindow : public QMainWindow
+class LibraryWidget
 {
-    Q_OBJECT
-    Q_DISABLE_COPY(MainWindow)
+	public:
+		explicit LibraryWidget( QWidget *parent = 0 );
 
-public:
-    explicit MainWindow( QWidget *parent = 0 );
-
-protected:
-    virtual void changeEvent( QEvent *e );
-
-private:
-	void			m_initializeDockWidgets( void );
-
-
-    Ui::MainWindow m_ui;
-	libraryWidget* m_library;
-	
-
-private slots:
-    void on_actionQuit_triggered();
+	private:
+		QTabWidget *m_tabWidget;
 };
 
-#endif // MAINWINDOW_H
+class	TabList : public QListWidget
+{
+	TabList( QWidget *parent = 0 );
+};
+
+#endif /* !LIBRARYWIDGET_H */

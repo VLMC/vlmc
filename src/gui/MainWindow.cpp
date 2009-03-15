@@ -26,6 +26,8 @@ MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent )
 {
     m_ui.setupUi( this );
+	//TODO : init all the dockable widget here
+	m_initializeDockWidgets();
 }
 
 void MainWindow::changeEvent( QEvent *e )
@@ -39,6 +41,14 @@ void MainWindow::changeEvent( QEvent *e )
         break;
     }
 }
+
+void MainWindow::m_initializeDockWidgets( void )
+{
+	QDockWidget* dock = new QDockWidget( tr("library"), this );
+	//Create the library widget
+}
+
+//Private slots definition
 
 void MainWindow::on_actionQuit_triggered()
 {
