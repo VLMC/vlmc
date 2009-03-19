@@ -2,7 +2,7 @@ INSTALL file for VLMC
 
 For now we don't use autotools to build the project.
 If you have any experiences with autotools and want to help, please contact us
-on <vlmc-devel@moode.org>.
+on <vlmc-devel@vlmc.org>.
 
 Dependencies
 ============
