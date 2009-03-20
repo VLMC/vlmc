@@ -24,7 +24,7 @@
 #define LIBRARYWIDGET_H
 
 #include <QTabWidget>
-#include <QListWIdget>
+#include <QListWidget>
 
 class LibraryWidget
 {

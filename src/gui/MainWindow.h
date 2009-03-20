@@ -43,7 +43,7 @@ private:
 
 
     Ui::MainWindow m_ui;
-	libraryWidget* m_library;
+    LibraryWidget* m_library;
 	
 
 private slots:
