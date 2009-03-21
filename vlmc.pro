@@ -8,23 +8,23 @@ QT += gui \
 SOURCES += src/main.cpp \
     src/gui/MainWindow.cpp \
     src/gui/LibraryWidget.cpp \
-    src/gui/Timeline.cpp \
     src/gui/DockWidgetManager.cpp \
     src/LibVLCpp/VLCException.cpp \
     src/LibVLCpp/VlmManager.cpp \
     src/LibVLCpp/VLCInstance.cpp \
-    src/LibVLCpp/VlmMedia.cpp
+    src/LibVLCpp/VlmMedia.cpp \
+    src/gui/Timeline.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
-    src/gui/Timeline.h \
     src/LibVLCpp/VLCpp.hpp \
     src/LibVLCpp/VLCException.h \
     src/LibVLCpp/VlmManager.h \
     src/LibVLCpp/VLCInstance.h \
-    src/LibVLCpp/VlmMedia.h
-
-FORMS += src/gui/ui/MainWindow.ui
+    src/LibVLCpp/VlmMedia.h \
+    src/gui/Timeline.h
+FORMS += src/gui/ui/MainWindow.ui \
+    src/gui/ui/Timeline.ui
 RESOURCES += 
 LIBS = -L/usr/local/lib \
     -lvlc
