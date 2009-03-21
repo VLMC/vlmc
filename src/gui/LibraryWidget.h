@@ -25,19 +25,34 @@
 
 #include <QTabWidget>
 #include <QListWidget>
+#include <QFileInfoList>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QtDebug>
+#include "ui_LibraryWidget.h"
 
-class LibraryWidget
+
+class LibraryWidget : public QWidget
 {
-	public:
-		explicit LibraryWidget( QWidget *parent = 0 );
+    Q_OBJECT
 
-	private:
-		QTabWidget *m_tabWidget;
+    public:
+        explicit LibraryWidget( QWidget *parent = 0 );
+    private:
+        QFileInfoList            videoList;
+        Ui::LibraryWidget        m_ui;
+
+private slots:
+    void on_LibraryTabs_currentChanged( int index );
+    void on_pushButtonAddMedia_clicked();
 };
 
-class	TabList : public QListWidget
+class ListViewMediaItem : public QListWidgetItem
 {
-	TabList( QWidget *parent = 0 );
+    public:
+        ListViewMediaItem( QFileInfo* fileInfo, QListWidget* parent = 0, int type = Type);
+
+        QFileInfo*    fileInfo;
 };
 
 #endif /* !LIBRARYWIDGET_H */

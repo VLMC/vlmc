@@ -28,7 +28,8 @@ HEADERS += src/gui/MainWindow.h \
     src/LibVLCpp/VlmMedia.h \
     src/gui/Timeline.h
 FORMS += src/gui/ui/MainWindow.ui \
-    src/gui/ui/Timeline.ui
+    src/gui/ui/Timeline.ui \
+    src/gui/ui/LibraryWidget.ui
 RESOURCES += 
 LIBS = -L/usr/local/lib \
     -lvlc

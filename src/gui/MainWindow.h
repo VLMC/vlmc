@@ -45,7 +45,6 @@ private:
 
     Ui::MainWindow m_ui;
     LibraryWidget* m_library;
-	
 
 private slots:
     void on_actionQuit_triggered();

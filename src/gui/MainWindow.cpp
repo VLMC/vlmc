@@ -56,16 +56,16 @@ void MainWindow::m_initializeDockWidgets( void )
     DockWidgetManager *dockManager = DockWidgetManager::instance();
 
     //First param is NULL for the moment. It will be replaced by the LibraryWidget
-    dockManager->addDockedWidget( 0,
+    dockManager->addDockedWidget( new LibraryWidget( this ),
                                   "library",
                                   Qt::AllDockWidgetAreas, 
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::RightDockWidgetArea );
-    dockManager->addDockedWidget( 0,
-                                  "library2",
-                                  Qt::AllDockWidgetAreas,
-                                  QDockWidget::AllDockWidgetFeatures,
-                                  Qt::RightDockWidgetArea );
+    //dockManager->addDockedWidget( 0,
+    //                              "library2",
+    //                              Qt::AllDockWidgetAreas,
+    //                              QDockWidget::AllDockWidgetFeatures,
+    //                              Qt::RightDockWidgetArea );
 
     //Create the library widget
 }

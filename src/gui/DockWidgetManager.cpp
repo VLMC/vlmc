@@ -49,6 +49,7 @@ void DockWidgetManager::addDockedWidget( QWidget *widget,
     dock->setAllowedAreas( areas );
     dock->setFeatures( features );
     m_mainWin->addDockWidget( startArea, dock );
+    widget->show();
 }
 
 DockWidgetManager::DockWidgetManager()
