@@ -6,15 +6,9 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>432</width>
-    <height>380</height>
+    <width>390</width>
+    <height>291</height>
    </rect>
-  </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -22,37 +16,24 @@
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QPushButton" name="pushButtonAddMedia">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>80</height>
-      </size>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
      <property name="text">
       <string>Add Media</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1" rowspan="4">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>502</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="2" rowspan="4">
+   <item row="0" column="1" rowspan="3">
     <widget class="QTabWidget" name="LibraryTabs">
      <property name="tabPosition">
       <enum>QTabWidget::East</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideNone</enum>
@@ -64,7 +45,7 @@
       <attribute name="title">
        <string>Audio</string>
       </attribute>
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
         <widget class="QListWidget" name="listWidgetAudio">
          <property name="sizePolicy">
@@ -121,18 +102,11 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>80</height>
-      </size>
-     </property>
      <property name="acceptDrops">
       <bool>false</bool>
      </property>
      <property name="text">
-      <string>Remove
-Selected Media</string>
+      <string>Remove Media</string>
      </property>
     </widget>
    </item>
