@@ -25,6 +25,7 @@
 #include <QPalette>
 #include <QDockWidget>
 #include "MainWindow.h"
+#include "Timeline.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent )
@@ -48,11 +49,11 @@ void MainWindow::changeEvent( QEvent *e )
 
 void MainWindow::m_initializeDockWidgets( void )
 {
-    QWidget *central = new QWidget( this );
-    DockWidgetManager *dockManager = DockWidgetManager::instance();
+    Timeline* timeline = new Timeline( this );
+    timeline->show();
+    setCentralWidget( timeline );
 
-    central->show();
-    setCentralWidget( central );
+    DockWidgetManager *dockManager = DockWidgetManager::instance();
 
     //First param is NULL for the moment. It will be replaced by the LibraryWidget
     dockManager->addDockedWidget( 0,
