@@ -9,11 +9,13 @@ SOURCES += src/main.cpp \
     src/gui/MainWindow.cpp \
     src/gui/LibraryWidget.cpp \
     src/gui/Timeline.cpp \
+    src/gui/DockWidgetManager.cpp \
     src/LibVLCpp/VLCException.cpp \
     src/LibVLCpp/VlmManager.cpp \
     src/LibVLCpp/VLCInstance.cpp \
     src/LibVLCpp/VlmMedia.cpp
 HEADERS += src/gui/MainWindow.h \
+    src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
     src/gui/Timeline.h \
     src/LibVLCpp/VLCpp.hpp \

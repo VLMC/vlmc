@@ -1,9 +1,9 @@
 /*****************************************************************************
- * MainWindow.h: VLMC MainWindow
+ * main.cpp: VLMC main
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Ludovic Fauvet <etix@l0cal.com>
+ * Authors: Clement CHAVANCE <chavance.c@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,36 +20,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef DOCKWIDGETMANAGER_H
+#define DOCKWIDGETMANAGER_H
 
-#include <QApplication>
-#include "ui_MainWindow.h"
-#include "LibraryWidget.h"
-#include "DockWidgetManager.h"
+#include <QObject>
+#include <QMainWindow>
+#include <QWidget>
+#include <QDockWidget>
+#include <QString>
 
-class MainWindow : public QMainWindow
+class DockWidgetManager : public QObject
 {
-    Q_OBJECT
-    Q_DISABLE_COPY(MainWindow)
+	Q_OBJECT
 
-public:
-    explicit MainWindow( QWidget *parent = 0 );
+	public:
+		explicit DockWidgetManager( QMainWindow *mainWin );
+		void addDockedWidget( QWidget *widget,
+							  const QString &qs_name,
+							  Qt::DockWidgetAreas areas,
+							  QDockWidget::DockWidgetFeature features,
+							  Qt::DockWidgetArea startArea );
 
-protected:
-    virtual void changeEvent( QEvent *e );
-
-private:
-	void			m_initializeDockWidgets( void );
-
-
-    Ui::MainWindow m_ui;
-	DockWidgetManager *m_dockManager;
-    LibraryWidget* m_library;
-	
-
-private slots:
-    void on_actionQuit_triggered();
+	private:
+		QMainWindow *m_mainWin;
 };
 
-#endif // MAINWINDOW_H
+#endif

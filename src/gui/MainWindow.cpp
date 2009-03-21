@@ -20,6 +20,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QLabel>
+#include <QSizePolicy>
+#include <QPalette>
 #include <QDockWidget>
 #include "MainWindow.h"
 
@@ -27,8 +30,8 @@ MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent )
 {
     m_ui.setupUi( this );
-	//TODO : init all the dockable widget here
-	m_initializeDockWidgets();
+    m_dockManager = new DockWidgetManager( this );
+    m_initializeDockWidgets();
 }
 
 void MainWindow::changeEvent( QEvent *e )
@@ -45,8 +48,16 @@ void MainWindow::changeEvent( QEvent *e )
 
 void MainWindow::m_initializeDockWidgets( void )
 {
-	QDockWidget* dock = new QDockWidget( tr("library"), this );
-	//Create the library widget
+    QWidget *central = new QWidget( this );
+
+    central->show();
+    setCentralWidget( central );
+
+    //First param is NULL for the moment. It will be replaced by the LibraryWidget
+    m_dockManager->addDockedWidget( 0, "library", Qt::AllDockWidgetAreas, QDockWidget::AllDockWidgetFeatures, Qt::RightDockWidgetArea );
+    m_dockManager->addDockedWidget( 0, "library2", Qt::AllDockWidgetAreas, QDockWidget::AllDockWidgetFeatures, Qt::RightDockWidgetArea );
+
+    //Create the library widget
 }
 
 //Private slots definition
