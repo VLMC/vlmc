@@ -22,9 +22,19 @@
 
 #include "DockWidgetManager.h"
 
-DockWidgetManager::DockWidgetManager( QMainWindow* mainWin )
-    : m_mainWin(mainWin)
+DockWidgetManager *DockWidgetManager::m_instance = 0;
+
+DockWidgetManager *DockWidgetManager::instance()
 {
+    if (m_instance == 0)
+        m_instance = new DockWidgetManager();
+
+    return (m_instance);
+}
+
+void DockWidgetManager::setMainWindow( QMainWindow *mainWin )
+{
+    m_mainWin = mainWin;
 }
 
 void DockWidgetManager::addDockedWidget( QWidget *widget,
@@ -39,4 +49,8 @@ void DockWidgetManager::addDockedWidget( QWidget *widget,
     dock->setAllowedAreas( areas );
     dock->setFeatures( features );
     m_mainWin->addDockWidget( startArea, dock );
+}
+
+DockWidgetManager::DockWidgetManager()
+{
 }

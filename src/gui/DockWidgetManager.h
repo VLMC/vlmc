@@ -34,7 +34,8 @@ class DockWidgetManager : public QObject
 	Q_OBJECT
 
 	public:
-		explicit DockWidgetManager( QMainWindow *mainWin );
+		static DockWidgetManager *instance();
+		void setMainWindow( QMainWindow *mainWin );
 		void addDockedWidget( QWidget *widget,
 							  const QString &qs_name,
 							  Qt::DockWidgetAreas areas,
@@ -42,7 +43,12 @@ class DockWidgetManager : public QObject
 							  Qt::DockWidgetArea startArea );
 
 	private:
+		explicit DockWidgetManager();
+		~DockWidgetManager() {}
+		DockWidgetManager(const DockWidgetManager &);
+		DockWidgetManager & operator = ( const DockWidgetManager & );
 		QMainWindow *m_mainWin;
+		static DockWidgetManager *m_instance;
 };
 
 #endif

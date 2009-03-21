@@ -44,7 +44,6 @@ private:
 
 
     Ui::MainWindow m_ui;
-	DockWidgetManager *m_dockManager;
     LibraryWidget* m_library;
 	
 

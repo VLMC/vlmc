@@ -30,7 +30,7 @@ MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent )
 {
     m_ui.setupUi( this );
-    m_dockManager = new DockWidgetManager( this );
+    DockWidgetManager::instance()->setMainWindow( this );
     m_initializeDockWidgets();
 }
 
@@ -49,13 +49,22 @@ void MainWindow::changeEvent( QEvent *e )
 void MainWindow::m_initializeDockWidgets( void )
 {
     QWidget *central = new QWidget( this );
+    DockWidgetManager *dockManager = DockWidgetManager::instance();
 
     central->show();
     setCentralWidget( central );
 
     //First param is NULL for the moment. It will be replaced by the LibraryWidget
-    m_dockManager->addDockedWidget( 0, "library", Qt::AllDockWidgetAreas, QDockWidget::AllDockWidgetFeatures, Qt::RightDockWidgetArea );
-    m_dockManager->addDockedWidget( 0, "library2", Qt::AllDockWidgetAreas, QDockWidget::AllDockWidgetFeatures, Qt::RightDockWidgetArea );
+    dockManager->addDockedWidget( 0,
+                                  "library",
+                                  Qt::AllDockWidgetAreas, 
+                                  QDockWidget::AllDockWidgetFeatures,
+                                  Qt::RightDockWidgetArea );
+    dockManager->addDockedWidget( 0,
+                                  "library2",
+                                  Qt::AllDockWidgetAreas,
+                                  QDockWidget::AllDockWidgetFeatures,
+                                  Qt::RightDockWidgetArea );
 
     //Create the library widget
 }
