@@ -21,11 +21,15 @@
  *****************************************************************************/
 
 #include "Timeline.h"
+#include "TracksView.h"
+#include "TracksScene.h"
 
 Timeline::Timeline( QWidget *parent ) :
     QWidget( parent )
 {
     m_ui.setupUi( this );
+    m_tracksScene = new TracksScene( this );
+    m_tracksView = new TracksView( m_tracksScene, m_ui.tracksFrame );
 }
 
 void Timeline::changeEvent( QEvent *e )

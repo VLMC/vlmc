@@ -1,5 +1,5 @@
 /*****************************************************************************
- * TracksWidget.cpp: QGraphicsView that contains the TracksScene
+ * TracksView.h: QGraphicsView that contains the TracksScene
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,8 +20,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "TracksWidget.h"
+#ifndef TRACKSVIEW_H
+#define TRACKSVIEW_H
 
-TracksWidget::TracksWidget()
+#include <QGraphicsView>
+
+class TracksView : public QGraphicsView
 {
-}
+public:
+    TracksView( QGraphicsScene* scene, QWidget* parent = 0 );
+};
+
+#endif // TRACKSVIEW_H

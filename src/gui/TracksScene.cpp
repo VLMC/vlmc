@@ -22,6 +22,6 @@
 
 #include "TracksScene.h"
 
-TracksScene::TracksScene()
+TracksScene::TracksScene( QObject* parent ) : QGraphicsScene( parent )
 {
 }
