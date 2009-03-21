@@ -35,6 +35,7 @@ void DockWidgetManager::addDockedWidget( QWidget *widget,
 {
     QDockWidget* dock = new QDockWidget( tr( qs_name.toStdString().c_str() ), m_mainWin );
 
+    dock->setWidget( widget );
     dock->setAllowedAreas( areas );
     dock->setFeatures( features );
     m_mainWin->addDockWidget( startArea, dock );
