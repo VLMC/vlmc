@@ -7,7 +7,7 @@ QT += gui \
     network
 SOURCES += src/main.cpp \
     src/gui/MainWindow.cpp \
-    src/gui/LibraryWidget.cpp
+    src/gui/LibraryWidget.cpp \
     src/LibVLCpp/VLCException.cpp \
     src/LibVLCpp/VlmManager.cpp \
     src/LibVLCpp/VLCInstance.cpp \
