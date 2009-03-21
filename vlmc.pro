@@ -13,7 +13,7 @@ SOURCES += src/main.cpp \
     src/LibVLCpp/VLCInstance.cpp \
     src/LibVLCpp/VlmMedia.cpp
 HEADERS += src/gui/MainWindow.h \
-    src/gui/LibraryWidget.h
+    src/gui/LibraryWidget.h \
     src/LibVLCpp/VLCpp.hpp \
     src/LibVLCpp/VLCException.h \
     src/LibVLCpp/VlmManager.h \
