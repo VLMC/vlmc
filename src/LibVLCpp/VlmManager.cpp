@@ -9,7 +9,7 @@ VlmManager::VlmManager(Instance* instance) : _instance(*instance)
 
 VlmMedia*       VlmManager::addMedia(const QString& filename, const char* const* argv, int argc)
 {  
-    VlmMedia* media = new VlmMedia(filename);
+    VlmMedia* media = new VlmMedia(this->_instance, filename);
 
     libvlc_vlm_add_broadcast(this->_instance, media->getHash().toLocal8Bit(), filename.toLocal8Bit(),
                              "#duplicate{dst=display{vmem}}",

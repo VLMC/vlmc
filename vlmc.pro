@@ -17,7 +17,9 @@ SOURCES += src/main.cpp \
     src/LibVLCpp/VlmManager.cpp \
     src/LibVLCpp/VLCInstance.cpp \
     src/LibVLCpp/VlmMedia.cpp \
-    src/gui/Timeline.cpp
+    src/gui/Timeline.cpp \
+    src/LibVLCpp/VLCMediaPlayer.cpp \
+    src/LibVLCpp/VLCMedia.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -26,10 +28,15 @@ HEADERS += src/gui/MainWindow.h \
     src/LibVLCpp/VlmManager.h \
     src/LibVLCpp/VLCInstance.h \
     src/LibVLCpp/VlmMedia.h \
-    src/gui/Timeline.h
+    src/gui/Timeline.h \
+    src/LibVLCpp/VLCMediaPlayer.h \
+    src/LibVLCpp/VLCMedia.h
+
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/Timeline.ui \
     src/gui/ui/LibraryWidget.ui
+
 RESOURCES += 
+INCLUDEPATH += src/LibVLCpp
 LIBS = -L/usr/local/lib \
     -lvlc
