@@ -30,9 +30,10 @@ Timeline::Timeline( QWidget *parent ) :
 
 void Timeline::changeEvent( QEvent *e )
 {
-    switch ( e->type() ) {
+    switch ( e->type() )
+    {
     case QEvent::LanguageChange:
-        m_ui.retranslateUi(this);
+        m_ui.retranslateUi( this );
         break;
     default:
         break;

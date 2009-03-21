@@ -31,7 +31,7 @@
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    Q_DISABLE_COPY(MainWindow)
+    Q_DISABLE_COPY( MainWindow )
 
 public:
     explicit MainWindow( QWidget *parent = 0 );
@@ -40,7 +40,7 @@ protected:
     virtual void changeEvent( QEvent *e );
 
 private:
-	void			m_initializeDockWidgets( void );
+    void m_initializeDockWidgets( void );
 
 
     Ui::MainWindow m_ui;
