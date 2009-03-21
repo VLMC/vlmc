@@ -3,6 +3,10 @@ DESTDIR = bin
 CONFIG += debug
 TEMPLATE = app
 OBJECTS_DIR = build
+MOC_DIR = build/moc
+UI_DIR = build/ui
+INCLUDEPATH = build/moc \
+    build/ui
 QT += gui \
     network
 SOURCES += src/main.cpp \
