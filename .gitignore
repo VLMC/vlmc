@@ -1,0 +1,8 @@
+/build
+/bin
+/qtc-gdbmacros
+Makefile
+
+*.pro.user
+moc_*.cpp
+ui_*.h

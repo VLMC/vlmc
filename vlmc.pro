@@ -2,6 +2,7 @@ TARGET = vlmc
 DESTDIR = bin
 CONFIG += debug
 TEMPLATE = app
+OBJECTS_DIR = build
 QT += gui \
     network
 SOURCES += src/main.cpp \
