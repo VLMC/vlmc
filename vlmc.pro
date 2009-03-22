@@ -22,7 +22,8 @@ SOURCES += src/main.cpp \
     src/LibVLCpp/VLCMedia.cpp \
     src/gui/TracksView.cpp \
     src/gui/TracksScene.cpp \
-    src/gui/PreviewWidget.cpp
+    src/gui/PreviewWidget.cpp \
+    src/gui/TracksRuler.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -36,7 +37,8 @@ HEADERS += src/gui/MainWindow.h \
     src/LibVLCpp/VLCMedia.h \
     src/gui/TracksView.h \
     src/gui/TracksScene.h \
-    src/gui/PreviewWidget.h
+    src/gui/PreviewWidget.h \
+    src/gui/TracksRuler.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/Timeline.ui \
     src/gui/ui/LibraryWidget.ui \

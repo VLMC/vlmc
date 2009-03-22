@@ -21,6 +21,7 @@
  *****************************************************************************/
 
 #include <QHBoxLayout>
+#include <QScrollBar>
 #include "Timeline.h"
 #include "TracksView.h"
 #include "TracksScene.h"
@@ -36,11 +37,18 @@ Timeline::Timeline( QWidget *parent ) :
     m_tracksView->scale(1, 1);
     m_tracksView->setAlignment( Qt::AlignLeft | Qt::AlignTop );
 
-    QHBoxLayout* tracksLayout = new QHBoxLayout();
-    tracksLayout->setContentsMargins( 0, 0, 0, 0 );
-    m_ui.tracksFrame->setLayout( tracksLayout );
-    tracksLayout->addWidget( m_tracksView );
+    QHBoxLayout* tracksViewLayout = new QHBoxLayout();
+    tracksViewLayout->setContentsMargins( 0, 0, 0, 0 );
+    m_ui.tracksFrame->setLayout( tracksViewLayout );
+    tracksViewLayout->addWidget( m_tracksView );
 
+    m_tracksRuler = new TracksRuler( this );
+    QHBoxLayout* tracksRulerLayout = new QHBoxLayout();
+    tracksRulerLayout->setContentsMargins( 0, 0, 0, 0 );
+    m_ui.rulerFrame->setLayout( tracksRulerLayout );
+    tracksRulerLayout->addWidget( m_tracksRuler );
+
+    connect( m_tracksView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), m_tracksRuler, SLOT( moveRuler( int ) ) );
 }
 
 void Timeline::changeEvent( QEvent *e )

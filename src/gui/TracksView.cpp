@@ -85,7 +85,7 @@ void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
 
 void TracksView::mouseMoveEvent( QMouseEvent* event )
 {
-    int xPos = event->x();
+    //int xPos = event->x();
     int mappedXPos = ( int )( mapToScene( event->pos() ).x() + 0.5 );
     if ( event->buttons() == Qt::LeftButton && event->modifiers() == Qt::NoModifier )
     {
@@ -97,7 +97,7 @@ void TracksView::mouseMoveEvent( QMouseEvent* event )
 
 void TracksView::mousePressEvent( QMouseEvent* event )
 {
-    int xPos = event->x();
+    //int xPos = event->x();
     int mappedXPos = ( int )( mapToScene( event->pos() ).x() + 0.5 );
     if ( event->buttons() == Qt::LeftButton && event->modifiers() == Qt::NoModifier )
     {

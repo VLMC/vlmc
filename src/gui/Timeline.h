@@ -26,6 +26,7 @@
 #include "ui_Timeline.h"
 #include "TracksView.h"
 #include "TracksScene.h"
+#include "TracksRuler.h"
 
 class Timeline : public QWidget
 {
@@ -43,6 +44,7 @@ private:
     Ui::Timeline m_ui;
     TracksView* m_tracksView;
     TracksScene* m_tracksScene;
+    TracksRuler* m_tracksRuler;
 
 };
 
