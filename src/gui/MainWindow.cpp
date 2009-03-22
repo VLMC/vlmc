@@ -61,7 +61,7 @@ void MainWindow::m_initializeDockWidgets( void )
                                   "library",
                                   Qt::AllDockWidgetAreas, 
                                   QDockWidget::AllDockWidgetFeatures,
-                                  Qt::RightDockWidgetArea );
+                                  Qt::TopDockWidgetArea );
     //dockManager->addDockedWidget( 0,
     //                              "library2",
     //                              Qt::AllDockWidgetAreas,
