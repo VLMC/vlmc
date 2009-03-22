@@ -27,6 +27,8 @@
 
 class TracksScene : public QGraphicsScene
 {
+    Q_OBJECT
+
 public:
     TracksScene( QObject* parent = 0 );
 };

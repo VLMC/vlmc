@@ -33,6 +33,8 @@ class Timeline : public QWidget
     Q_DISABLE_COPY( Timeline )
 public:
     explicit Timeline( QWidget *parent = 0 );
+    TracksView* tracksView() { return m_tracksView; }
+    TracksScene* tracksScene() { return m_tracksScene; }
 
 protected:
     virtual void changeEvent( QEvent *e );

@@ -27,8 +27,22 @@
 
 class TracksView : public QGraphicsView
 {
+    Q_OBJECT
+
 public:
     TracksView( QGraphicsScene* scene, QWidget* parent = 0 );
+    void setDuration( int duration );
+    int duration() { return m_projectDuration; }
+
+protected:
+    virtual void resizeEvent( QResizeEvent* event );
+    virtual void drawBackground( QPainter* painter, const QRectF& rect );
+
+private:
+    QGraphicsScene* m_scene;
+    int m_tracksHeight;
+    int m_tracksCount;
+    int m_projectDuration;
 };
 
 #endif // TRACKSVIEW_H

@@ -20,6 +20,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QHBoxLayout>
 #include "Timeline.h"
 #include "TracksView.h"
 #include "TracksScene.h"
@@ -28,8 +29,18 @@ Timeline::Timeline( QWidget *parent ) :
     QWidget( parent )
 {
     m_ui.setupUi( this );
+
     m_tracksScene = new TracksScene( this );
     m_tracksView = new TracksView( m_tracksScene, m_ui.tracksFrame );
+    m_tracksView->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_tracksView->scale(1, 1);
+    m_tracksView->setAlignment( Qt::AlignLeft | Qt::AlignTop );
+
+    QHBoxLayout* tracksLayout = new QHBoxLayout();
+    tracksLayout->setContentsMargins( 0, 0, 0, 0 );
+    m_ui.tracksFrame->setLayout( tracksLayout );
+    tracksLayout->addWidget( m_tracksView );
+
 }
 
 void Timeline::changeEvent( QEvent *e )
