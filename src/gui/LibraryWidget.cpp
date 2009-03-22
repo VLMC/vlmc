@@ -68,7 +68,9 @@ bool                LibraryWidget::removeMedia(ListViewMediaItem* item)
             this->m_ui.listWidgetVideo->removeItemWidget( item );
             break;
         }
-        return m_medias->removeOne( item );
+        bool ret = m_medias->removeOne( item );
+        delete item;
+        return ret;
     }
     return false;
 }
