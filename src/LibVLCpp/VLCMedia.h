@@ -21,8 +21,8 @@ namespace LibVLCpp
         struct          DataCtx
         {
             ~DataCtx();
-            uchar*          pixelBuffer;
             QMutex*         mutex;
+            Media*          media;
         };
         typedef void    (*lockCallback)(Media::DataCtx* dataCtx, void **pp_ret);
         typedef void    (*unlockCallback)(Media::DataCtx* dataCtx);
@@ -35,11 +35,16 @@ namespace LibVLCpp
         void                setDataCtx(Media::DataCtx* dataCtx);
         void                outputInVmem();
         void                outputInWindow();
+        void                setPixelBuffer(uchar* buffer);
+        uchar*              getPixelBuffer();
 
-        static DataCtx*     buildDataCtx();
     private:
+        DataCtx*            buildDataCtx();
+
         Exception           _ex;
         Instance&           _instance;
+        DataCtx*            _dataCtx;
+        uchar*              _pixelBuffer;
     };
 }
 

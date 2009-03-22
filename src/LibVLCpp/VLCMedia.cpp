@@ -3,22 +3,26 @@
 
 using namespace LibVLCpp;
 
-Media::Media(Instance* instance, const QString& filename) : _instance(*instance)
+Media::Media(Instance* instance, const QString& filename) : _instance(*instance), _pixelBuffer(NULL)
 {
     this->_internalPtr = libvlc_media_new(this->_instance, filename.toLocal8Bit(), this->_ex);
     this->_ex.checkThrow();
+//    this->_pixelBuffer = new uchar[VIDEOHEIGHT * VIDEOWIDTH * 4];
+//    this->_dataCtx = this->buildDataCtx();
 }
 
 Media::~Media()
 {
     libvlc_media_release(this->_internalPtr);
+    delete[] this->_pixelBuffer;
+    delete this->_dataCtx;
 }
 
 Media::DataCtx*         Media::buildDataCtx()
 {
     Media::DataCtx* dataCtx = new Media::DataCtx;
     dataCtx->mutex = new QMutex();
-    dataCtx->pixelBuffer = new uchar[VIDEOHEIGHT * VIDEOWIDTH * 4];
+    dataCtx->media = this;
     return dataCtx;
 }
 
@@ -30,7 +34,6 @@ void                    Media::addOption(const char* opt)
 
 Media::DataCtx::~DataCtx()
 {
-    delete[] this->pixelBuffer;
     delete this->mutex;
 }
 
@@ -64,3 +67,14 @@ void                    Media::outputInWindow()
 {
 //    this->addOption();
 }
+
+void                    Media::setPixelBuffer(uchar* buffer)
+{
+    this->_pixelBuffer = buffer;
+}
+
+uchar*                  Media::getPixelBuffer()
+{
+    return this->_pixelBuffer;
+}
+

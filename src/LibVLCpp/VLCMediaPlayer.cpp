@@ -45,3 +45,9 @@ qint64                          MediaPlayer::getLength()
     this->_ex.checkThrow();
     return length;
 }
+
+void                            MediaPlayer::takeSnapshot(uchar* output, unsigned int width, unsigned int heigth)
+{
+    libvlc_video_take_snapshot(*this, reinterpret_cast<char*>(output), width, heigth, this->_ex);
+    this->_ex.checkThrow();
+}

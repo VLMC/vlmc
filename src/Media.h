@@ -1,0 +1,39 @@
+#ifndef MEDIA_H
+#define MEDIA_H
+
+#include <QString>
+#include <QImage>
+
+#include "VLCMedia.h"
+#include "VLCInstance.h"
+#include "VLCMediaPlayer.h"
+
+#include "Image.h"
+
+class       Media
+{
+public:
+    Media(const QString& mrl);
+    ~Media();
+
+    static void             lock(LibVLCpp::Media::DataCtx* dataCtx, void **pp_ret);
+    static void             unlock(LibVLCpp::Media::DataCtx* dataCtx);
+    Image*                  takeSnapshot(unsigned int width, unsigned int heigth);
+
+    QImage&                 getImage();
+
+private:
+    LibVLCpp::Media*            _vlcMedia;
+    LibVLCpp::MediaPlayer*      _vlcMediaPlayer;
+    LibVLCpp::Instance*         _instance;
+    QString                     _mrl;
+
+    Image*                      _snapshot;
+
+    uchar*                      _pixelBuffer;
+    QImage*                     _image;
+
+
+};
+
+#endif // MEDIA_H
