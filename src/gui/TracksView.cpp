@@ -21,6 +21,7 @@
  *****************************************************************************/
 
 #include <QScrollBar>
+#include <QMouseEvent>
 #include "TracksView.h"
 
 TracksView::TracksView( QGraphicsScene* scene, QWidget* parent )
@@ -37,8 +38,13 @@ TracksView::TracksView( QGraphicsScene* scene, QWidget* parent )
     setAcceptDrops( true );
     setContentsMargins( 0, 0, 0, 0 );
 
+    // Adjust the height using the number of tracks
     const int maxHeight = m_tracksHeight * m_tracksCount;
     setSceneRect( 0, 0, sceneRect().width(), maxHeight );
+
+    m_cursorPos = 0;
+    m_cursorLine = m_scene->addLine(0, 0, 0, maxHeight);
+    m_cursorLine->setZValue(100);
 }
 
 void TracksView::setDuration( int duration )
@@ -75,4 +81,34 @@ void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
     int lowerLimit = m_tracksHeight * m_tracksCount + 1;
     if ( height() > lowerLimit )
         painter->fillRect( QRectF ( r.left(), lowerLimit, r.width(), height() - lowerLimit ), QBrush( base ) );
+}
+
+void TracksView::mouseMoveEvent( QMouseEvent* event )
+{
+    int xPos = event->x();
+    int mappedXPos = ( int )( mapToScene( event->pos() ).x() + 0.5 );
+    if ( event->buttons() == Qt::LeftButton && event->modifiers() == Qt::NoModifier )
+    {
+        setCursorPos( mappedXPos );
+    }
+
+    QGraphicsView::mouseMoveEvent( event );
+}
+
+void TracksView::mousePressEvent( QMouseEvent* event )
+{
+    int xPos = event->x();
+    int mappedXPos = ( int )( mapToScene( event->pos() ).x() + 0.5 );
+    if ( event->buttons() == Qt::LeftButton && event->modifiers() == Qt::NoModifier )
+    {
+        setCursorPos( mappedXPos );
+    }
+
+    QGraphicsView::mousePressEvent( event );
+}
+
+void TracksView::setCursorPos(int pos)
+{
+    m_cursorPos = pos;
+    m_cursorLine->setPos(m_cursorPos, 0);
 }

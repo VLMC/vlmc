@@ -24,6 +24,7 @@
 #define TRACKSVIEW_H
 
 #include <QGraphicsView>
+#include <QGraphicsLineItem>
 
 class TracksView : public QGraphicsView
 {
@@ -33,16 +34,22 @@ public:
     TracksView( QGraphicsScene* scene, QWidget* parent = 0 );
     void setDuration( int duration );
     int duration() { return m_projectDuration; }
+    void setCursorPos(int pos);
 
 protected:
     virtual void resizeEvent( QResizeEvent* event );
     virtual void drawBackground( QPainter* painter, const QRectF& rect );
+    virtual void mouseMoveEvent( QMouseEvent* event );
+    virtual void mousePressEvent( QMouseEvent* event );
 
 private:
     QGraphicsScene* m_scene;
     int m_tracksHeight;
     int m_tracksCount;
     int m_projectDuration;
+    int m_cursorPos;
+    QGraphicsLineItem* m_cursorLine;
+
 };
 
 #endif // TRACKSVIEW_H
