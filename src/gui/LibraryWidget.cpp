@@ -80,8 +80,14 @@ ListViewMediaItem*                LibraryWidget::insertNewMediaFromFileDialog( Q
     QString fileName = QFileDialog::getOpenFileName( this, title, QDir::homePath(), filter);
     if ( fileName == "" )
         return NULL;
+    ListViewMediaItem* item = NULL;
+    foreach( item, *m_medias )
+    {
+        if (item->fileInfo->absoluteFilePath() == fileName)
+            return item;
+    }
     QFileInfo* fileInfo = new QFileInfo( fileName );
-    ListViewMediaItem* item = this->addMedia( fileInfo, fileType );
+    item = this->addMedia( fileInfo, fileType );
     return item;
 }
 
@@ -112,6 +118,11 @@ ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, ListViewMediaItem::fType
     fileInfo = fInfo;
     fileType = fType;
     setText( fileInfo->baseName() );
+}
+
+ListViewMediaItem::~ListViewMediaItem()
+{
+    delete this->fileInfo;
 }
 
 void ListViewMediaItem::mousePressEvent( QMouseEvent* event )

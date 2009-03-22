@@ -46,6 +46,7 @@ public:
     };
 
     ListViewMediaItem( QFileInfo* fileInfo, ListViewMediaItem::fType fType, QListWidget* parent = 0, int type = Type );
+    virtual ~ListViewMediaItem();
     QFileInfo* fileInfo;
     ListViewMediaItem::fType fileType;
 protected:
