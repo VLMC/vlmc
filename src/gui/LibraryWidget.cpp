@@ -20,6 +20,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QDir>
 #include "LibraryWidget.h"
 
 LibraryWidget::LibraryWidget( QWidget *parent ) : QWidget( parent )
@@ -35,39 +36,51 @@ void LibraryWidget::on_pushButtonAddMedia_clicked()
     switch( m_ui.LibraryTabs->currentIndex() )
     {
     case 0:
-        fileInfo = new QFileInfo( QFileDialog::getOpenFileName( this, tr( "Open Audios" ), "/home/kri5", tr( "Audio Files (*.mp3 *.oga *.flac *.aac *.wav)" )) );
-        m_ui.listWidgetAudio->addItem(new ListViewMediaItem( fileInfo ));
+        fileInfo = new QFileInfo( QFileDialog::getOpenFileName(
+                this,
+                tr( "Open Audios" ),
+                QDir::homePath(),
+                tr( "Audio Files (*.mp3 *.oga *.flac *.aac *.wav)" ) ) );
+        m_ui.listWidgetAudio->addItem( new ListViewMediaItem( fileInfo ) );
         break;
     case 1:
-        fileInfo = new QFileInfo( QFileDialog::getOpenFileName( this, tr( "Open Videos" ), "/home/kri5", tr( "Video Files (*.mov *.avi *.mkv)" )) );
-        m_ui.listWidgetVideo->addItem(new ListViewMediaItem( fileInfo ));
+        fileInfo = new QFileInfo( QFileDialog::getOpenFileName(
+                this,
+                tr( "Open Videos" ),
+                QDir::homePath(),
+                tr( "Video Files (*.mov *.avi *.mkv)" ) ) );
+        m_ui.listWidgetVideo->addItem( new ListViewMediaItem( fileInfo ) );
         break;
     case 2:
-        fileInfo = new QFileInfo( QFileDialog::getOpenFileName( this, tr( "Open Images" ), "/home/kri5", tr( "Video Files (*.gif *.png *.jpg)" )) );
-        m_ui.listWidgetImage->addItem(new ListViewMediaItem( fileInfo ));
+        fileInfo = new QFileInfo( QFileDialog::getOpenFileName(
+                this,
+                tr( "Open Images" ),
+                QDir::homePath(),
+                tr( "Video Files (*.gif *.png *.jpg)" ) ) );
+        m_ui.listWidgetImage->addItem( new ListViewMediaItem( fileInfo ) );
         break;
     default:
         break;
     }
-    m_ui.listWidgetAll->addItem(new ListViewMediaItem( fileInfo ));
+    m_ui.listWidgetAll->addItem( new ListViewMediaItem( fileInfo ) );
 }
 
-void LibraryWidget::on_LibraryTabs_currentChanged(int index)
+void LibraryWidget::on_LibraryTabs_currentChanged( int index )
 {
-    if (index == 3)
+    if ( index == 3 )
     {
-        m_ui.pushButtonAddMedia->setEnabled(false);
-        m_ui.pushButtonRemoveMedia->setEnabled(false);
+        m_ui.pushButtonAddMedia->setEnabled( false );
+        m_ui.pushButtonRemoveMedia->setEnabled( false );
     }
     else
     {
-        m_ui.pushButtonAddMedia->setEnabled(true);
-        m_ui.pushButtonRemoveMedia->setEnabled(true);
+        m_ui.pushButtonAddMedia->setEnabled( true );
+        m_ui.pushButtonRemoveMedia->setEnabled( true );
     }
 }
 
 ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, QListWidget* parent, int type ) : QListWidgetItem( parent, type )
 {
     fileInfo = fInfo;
-    setText(fileInfo->baseName());
+    setText( fileInfo->baseName() );
 }

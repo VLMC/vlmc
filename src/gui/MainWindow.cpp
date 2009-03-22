@@ -50,6 +50,7 @@ void MainWindow::changeEvent( QEvent *e )
 void MainWindow::m_initializeDockWidgets( void )
 {
     Timeline* timeline = new Timeline( this );
+    timeline->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     timeline->show();
     setCentralWidget( timeline );
 

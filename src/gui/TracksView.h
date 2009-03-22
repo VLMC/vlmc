@@ -1,9 +1,9 @@
 /*****************************************************************************
- * main.cpp: VLMC main
+ * TracksView.h: QGraphicsView that contains the TracksScene
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Clement CHAVANCE <chavance.c@gmail.com>
+ * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,35 +20,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef DOCKWIDGETMANAGER_H
-#define DOCKWIDGETMANAGER_H
+#ifndef TRACKSVIEW_H
+#define TRACKSVIEW_H
 
-#include <QObject>
-#include <QMainWindow>
-#include <QWidget>
-#include <QDockWidget>
-#include <QString>
+#include <QGraphicsView>
 
-class DockWidgetManager : public QObject
+class TracksView : public QGraphicsView
 {
-	Q_OBJECT
+    Q_OBJECT
 
-	public:
-		static DockWidgetManager *instance();
-		void setMainWindow( QMainWindow *mainWin );
-		void addDockedWidget( QWidget *widget,
-							  const QString &qs_name,
-							  Qt::DockWidgetAreas areas,
-							  QDockWidget::DockWidgetFeature features,
-							  Qt::DockWidgetArea startArea );
+public:
+    TracksView( QGraphicsScene* scene, QWidget* parent = 0 );
+    void setDuration( int duration );
+    int duration() { return m_projectDuration; }
 
-	private:
-		explicit DockWidgetManager();
-        virtual ~DockWidgetManager() { delete m_instance; }
-		DockWidgetManager(const DockWidgetManager &);
-		DockWidgetManager & operator = ( const DockWidgetManager & );
-		QMainWindow *m_mainWin;
-		static DockWidgetManager *m_instance;
+protected:
+    virtual void resizeEvent( QResizeEvent* event );
+    virtual void drawBackground( QPainter* painter, const QRectF& rect );
+
+private:
+    QGraphicsScene* m_scene;
+    int m_tracksHeight;
+    int m_tracksCount;
+    int m_projectDuration;
 };
 
-#endif
+#endif // TRACKSVIEW_H

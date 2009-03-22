@@ -36,11 +36,11 @@ class LibraryWidget : public QWidget
 {
     Q_OBJECT
 
-    public:
-        explicit LibraryWidget( QWidget *parent = 0 );
-    private:
-        QFileInfoList            videoList;
-        Ui::LibraryWidget        m_ui;
+public:
+    explicit LibraryWidget( QWidget *parent = 0 );
+private:
+    QFileInfoList            videoList;
+    Ui::LibraryWidget        m_ui;
 
 private slots:
     void on_LibraryTabs_currentChanged( int index );
@@ -49,10 +49,10 @@ private slots:
 
 class ListViewMediaItem : public QListWidgetItem
 {
-    public:
-        ListViewMediaItem( QFileInfo* fileInfo, QListWidget* parent = 0, int type = Type);
+public:
+    ListViewMediaItem( QFileInfo* fileInfo, QListWidget* parent = 0, int type = Type);
 
-        QFileInfo*    fileInfo;
+    QFileInfo* fileInfo;
 };
 
 #endif /* !LIBRARYWIDGET_H */

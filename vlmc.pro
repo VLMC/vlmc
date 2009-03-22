@@ -19,7 +19,9 @@ SOURCES += src/main.cpp \
     src/LibVLCpp/VlmMedia.cpp \
     src/gui/Timeline.cpp \
     src/LibVLCpp/VLCMediaPlayer.cpp \
-    src/LibVLCpp/VLCMedia.cpp
+    src/LibVLCpp/VLCMedia.cpp \
+    src/gui/TracksView.cpp \
+    src/gui/TracksScene.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -30,8 +32,9 @@ HEADERS += src/gui/MainWindow.h \
     src/LibVLCpp/VlmMedia.h \
     src/gui/Timeline.h \
     src/LibVLCpp/VLCMediaPlayer.h \
-    src/LibVLCpp/VLCMedia.h
-
+    src/LibVLCpp/VLCMedia.h \
+    src/gui/TracksView.h \
+    src/gui/TracksScene.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/Timeline.ui \
     src/gui/ui/LibraryWidget.ui
