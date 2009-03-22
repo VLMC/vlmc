@@ -8,7 +8,6 @@
 #include "VLCpp.hpp"
 #include "VLCMedia.h"
 #include "VLCException.h"
-#include "VLCEventManager.h"
 
 namespace   LibVLCpp
 {
@@ -25,11 +24,9 @@ namespace   LibVLCpp
         void                                takeSnapshot(char* outputFile, unsigned int width, unsigned int heigth);
         int                                 isPlaying();
         int                                 isSeekable();
-    //FIXME: private
-        //static void                         eventPlayingCallback(const EventManager::Event*, void* data);
-    private: public:
+
+    private:
         Exception                           _ex;
-//        EventManager*                       _evMgr;
         bool                                _isReady;
     };
 }

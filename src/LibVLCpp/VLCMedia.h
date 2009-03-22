@@ -39,6 +39,8 @@ namespace LibVLCpp
         uchar*              getPixelBuffer();
 
     private:
+        DataCtx*            buildDataCtx();
+
         Exception           _ex;
         Instance&           _instance;
         DataCtx*            _dataCtx;

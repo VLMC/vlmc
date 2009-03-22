@@ -8,7 +8,6 @@ Media::Media(Instance* instance, const QString& filename) : _instance(*instance)
 {
     this->_internalPtr = libvlc_media_new(this->_instance, filename.toLocal8Bit(), this->_ex);
     this->_ex.checkThrow();
-//    this->_pixelBuffer = new uchar[VIDEOHEIGHT * VIDEOWIDTH * 4];
 }
 
 Media::~Media()
@@ -16,6 +15,14 @@ Media::~Media()
     libvlc_media_release(this->_internalPtr);
     delete[] this->_pixelBuffer;
     delete this->_dataCtx;
+}
+
+Media::DataCtx*         Media::buildDataCtx()
+{
+    Media::DataCtx* dataCtx = new Media::DataCtx;
+    dataCtx->mutex = new QMutex();
+    dataCtx->media = this;
+    return dataCtx;
 }
 
 void                    Media::addOption(const char* opt)

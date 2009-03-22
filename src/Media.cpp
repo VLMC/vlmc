@@ -1,4 +1,5 @@
 #include <QtDebug>
+
 #include "Media.h"
 
 Media::Media(const QString& mrl) : _mrl(mrl), _snapshot(NULL)
@@ -60,7 +61,7 @@ void        Media::lock(LibVLCpp::Media::DataCtx* ctx, void **renderPtr)
 
 void        Media::unlock(LibVLCpp::Media::DataCtx* ctx)
 {
-//    qDebug() << "frame just rendered";
+    //    qDebug() << "frame just rendered";
     ctx->mutex->unlock();
 }
 
@@ -96,4 +97,3 @@ qint64      Media::getLength()
 {
     return this->_vlcMediaPlayer->getLength();
 }
-
