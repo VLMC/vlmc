@@ -1,3 +1,4 @@
+#include <QtDebug>
 #include <cassert>
 #include "VLCMedia.h"
 
@@ -8,7 +9,6 @@ Media::Media(Instance* instance, const QString& filename) : _instance(*instance)
     this->_internalPtr = libvlc_media_new(this->_instance, filename.toLocal8Bit(), this->_ex);
     this->_ex.checkThrow();
 //    this->_pixelBuffer = new uchar[VIDEOHEIGHT * VIDEOWIDTH * 4];
-//    this->_dataCtx = this->buildDataCtx();
 }
 
 Media::~Media()
@@ -18,18 +18,11 @@ Media::~Media()
     delete this->_dataCtx;
 }
 
-Media::DataCtx*         Media::buildDataCtx()
-{
-    Media::DataCtx* dataCtx = new Media::DataCtx;
-    dataCtx->mutex = new QMutex();
-    dataCtx->media = this;
-    return dataCtx;
-}
-
 void                    Media::addOption(const char* opt)
 {
     libvlc_media_add_option(this->_internalPtr, opt, this->_ex);
     this->_ex.checkThrow();
+    qDebug() << "Added media option: " << opt;
 }
 
 Media::DataCtx::~DataCtx()
@@ -51,10 +44,15 @@ void                    Media::setUnlockCallback(Media::unlockCallback callback)
     this->addOption(param);
 }
 
-void                    Media::setDataCtx(Media::DataCtx* dataCtx)
+void                    Media::setDataCtx()
 {
     char    param[64];
-    sprintf(param, ":vmem-data=%lld", (long long int)(intptr_t)dataCtx);
+
+    this->_dataCtx = new Media::DataCtx;
+    this->_dataCtx->mutex = new QMutex();
+    this->_dataCtx->media = this;
+
+    sprintf(param, ":vmem-data=%lld", (long long int)(intptr_t)this->_dataCtx);
     this->addOption(param);
 }
 
@@ -77,4 +75,3 @@ uchar*                  Media::getPixelBuffer()
 {
     return this->_pixelBuffer;
 }
-

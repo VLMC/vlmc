@@ -18,17 +18,22 @@ public:
 
     static void             lock(LibVLCpp::Media::DataCtx* dataCtx, void **pp_ret);
     static void             unlock(LibVLCpp::Media::DataCtx* dataCtx);
-    Image*                  takeSnapshot(unsigned int width, unsigned int heigth);
+    QImage*                 takeSnapshot(unsigned int width, unsigned int heigth);
 
     QImage&                 getImage();
+    //FIXME into bool
+    int                     isPlaying();
+    int                     isSeekable();
 
-private:
+
+    //FIXME
+private: public:
     LibVLCpp::Media*            _vlcMedia;
     LibVLCpp::MediaPlayer*      _vlcMediaPlayer;
     LibVLCpp::Instance*         _instance;
     QString                     _mrl;
 
-    Image*                      _snapshot;
+    QImage*                     _snapshot;
 
     uchar*                      _pixelBuffer;
     QImage*                     _image;

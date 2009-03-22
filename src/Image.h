@@ -20,6 +20,10 @@ public:
     {
         return this->_pixelsData;
     }
+    QImage&     getImage()
+    {
+        return *(this->_image);
+    }
 private:
     QImage*     _image;
     uchar*      _pixelsData;

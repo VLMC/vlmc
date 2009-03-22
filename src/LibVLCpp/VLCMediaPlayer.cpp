@@ -1,12 +1,29 @@
+#include <QtDebug>
 #include <cassert>
 #include "VLCMediaPlayer.h"
 
 using namespace LibVLCpp;
 
-MediaPlayer::MediaPlayer(Media* media)
+//void        MediaPlayer::eventPlayingCallback(const EventManager::Event*, void* data)
+//{
+//    //getting the event manager back...
+//    MediaPlayer* mp = static_cast<MediaPlayer*>(data);
+//    //...and removing this dirty callback.
+//    //mp->_evMgr->removeEvent(EventManager::MediaPlayingEvent, &eventPlayingCallback, reinterpret_cast<void*>(data));
+//    mp->_isReady = true;
+//    //stopping the playback must be the last thing we do since it wont continue after this...
+//    //mp->stop();
+//}
+
+MediaPlayer::MediaPlayer(Media* media, bool playStop /* = true*/) : /*_evMgr(NULL),`*/ _isReady(false)
 {
     this->_internalPtr = libvlc_media_player_new_from_media(media->getInternalPtr(), this->_ex);
     this->_ex.checkThrow();
+//    if ( playStop == true )
+//    {
+//        this->_evMgr = new EventManager(this->getInternalPtr());
+//        this->_evMgr->addEvent(EventManager::MediaPlayerPositionChangedEvent, &eventPlayingCallback, static_cast<void*>(this));
+//    }
 }
 
 void                            MediaPlayer::play()
@@ -24,6 +41,7 @@ void                            MediaPlayer::pause()
 void                            MediaPlayer::stop()
 {
     libvlc_media_player_stop(this->_internalPtr, this->_ex);
+    this->_ex.checkThrow();
 }
 
 qint64                          MediaPlayer::getTime()
@@ -50,4 +68,18 @@ void                            MediaPlayer::takeSnapshot(uchar* output, unsigne
 {
     libvlc_video_take_snapshot(*this, reinterpret_cast<char*>(output), width, heigth, this->_ex);
     this->_ex.checkThrow();
+}
+
+int                             MediaPlayer::isPlaying()
+{
+    int res = libvlc_media_player_is_playing(this->_internalPtr, this->_ex);
+    this->_ex.checkThrow();
+    return res;
+}
+
+int                             MediaPlayer::isSeekable()
+{
+    int res = libvlc_media_player_is_seekable(this->_internalPtr, this->_ex);
+    this->_ex.checkThrow();
+    return res;
 }

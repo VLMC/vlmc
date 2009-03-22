@@ -32,15 +32,13 @@ namespace LibVLCpp
         void                addOption(const char* opt);
         void                setLockCallback(Media::lockCallback);
         void                setUnlockCallback(Media::unlockCallback);
-        void                setDataCtx(Media::DataCtx* dataCtx);
+        void                setDataCtx();
         void                outputInVmem();
         void                outputInWindow();
         void                setPixelBuffer(uchar* buffer);
         uchar*              getPixelBuffer();
 
     private:
-        DataCtx*            buildDataCtx();
-
         Exception           _ex;
         Instance&           _instance;
         DataCtx*            _dataCtx;
