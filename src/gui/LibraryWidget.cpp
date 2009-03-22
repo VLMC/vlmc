@@ -3,7 +3,8 @@
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Ludovic Fauvet <etix@l0cal.com>
+ * Authors: Clement CHAVANCE <chavance.c@gmail.com>
+ *          Christophe Courtaut <christophe.courtaut@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,64 +24,101 @@
 #include <QDir>
 #include "LibraryWidget.h"
 
+QList<ListViewMediaItem*>* LibraryWidget::m_medias = NULL;
+
 LibraryWidget::LibraryWidget( QWidget *parent ) : QWidget( parent )
 {
     m_ui.setupUi( this );
+    if ( LibraryWidget::m_medias == NULL )
+        LibraryWidget::m_medias = new QList<ListViewMediaItem*>();
+}
+
+ListViewMediaItem*  LibraryWidget::addMedia( QFileInfo* fileInfo, ListViewMediaItem::fType fileType )
+{
+    ListViewMediaItem* item = new ListViewMediaItem( fileInfo, fileType );
+    m_medias->append( item );
+    switch ( fileType )
+    {
+    case ListViewMediaItem::Audio:
+        m_ui.listWidgetAudio->addItem( item );
+        break;
+    case ListViewMediaItem::Video:
+        m_ui.listWidgetVideo->addItem( item );
+        break;
+    case ListViewMediaItem::Image:
+        m_ui.listWidgetImage->addItem( item );
+        break;
+    }
+    return item;
+}
+
+bool                LibraryWidget::removeMedia(ListViewMediaItem* item)
+{
+    if ( m_medias->contains( item ) )
+    {
+        switch( item->fileType )
+        {
+        case ListViewMediaItem::Audio:
+            this->m_ui.listWidgetAudio->removeItemWidget( item );
+            break;
+        case ListViewMediaItem::Image:
+            this->m_ui.listWidgetImage->removeItemWidget( item );
+            break;
+        case ListViewMediaItem::Video:
+            this->m_ui.listWidgetVideo->removeItemWidget( item );
+            break;
+        }
+        return m_medias->removeOne( item );
+    }
+    return false;
+}
+
+ListViewMediaItem*                LibraryWidget::insertNewMediaFromFileDialog( QString title, QString filter, ListViewMediaItem::fType fileType )
+{
+    QString fileName = QFileDialog::getOpenFileName( this, title, QDir::homePath(), filter);
+    if ( fileName == "" )
+        return NULL;
+    QFileInfo* fileInfo = new QFileInfo( fileName );
+    ListViewMediaItem* item = this->addMedia( fileInfo, fileType );
+    return item;
 }
 
 void LibraryWidget::on_pushButtonAddMedia_clicked()
 {
-    QFileInfo* fileInfo = NULL;
-    QListWidgetItem* item;
-    qDebug() << m_ui.LibraryTabs->currentIndex();
     switch( m_ui.LibraryTabs->currentIndex() )
     {
     case 0:
-        fileInfo = new QFileInfo( QFileDialog::getOpenFileName(
-                this,
-                tr( "Open Audios" ),
-                QDir::homePath(),
-                tr( "Audio Files (*.mp3 *.oga *.flac *.aac *.wav)" ) ) );
-        m_ui.listWidgetAudio->addItem( new ListViewMediaItem( fileInfo ) );
+        insertNewMediaFromFileDialog( tr( "Open Audios" ),
+                                      tr( "Audio Files (*.mp3 *.oga *.flac *.aac *.wav)" ),
+                                      ListViewMediaItem::Audio);
         break;
     case 1:
-        fileInfo = new QFileInfo( QFileDialog::getOpenFileName(
-                this,
-                tr( "Open Videos" ),
-                QDir::homePath(),
-                tr( "Video Files (*.mov *.avi *.mkv)" ) ) );
-        m_ui.listWidgetVideo->addItem( new ListViewMediaItem( fileInfo ) );
+        insertNewMediaFromFileDialog( tr( "Open Videos" ),
+                                      tr( "Video Files (*.mov *.avi *.mkv)" ),
+                                      ListViewMediaItem::Video );
         break;
     case 2:
-        fileInfo = new QFileInfo( QFileDialog::getOpenFileName(
-                this,
-                tr( "Open Images" ),
-                QDir::homePath(),
-                tr( "Video Files (*.gif *.png *.jpg)" ) ) );
-        m_ui.listWidgetImage->addItem( new ListViewMediaItem( fileInfo ) );
+        insertNewMediaFromFileDialog( tr( "Open Images" ),
+                                      tr( "Images Files (*.gif *.png *.jpg)" ),
+                                      ListViewMediaItem::Image);
         break;
-    default:
-        break;
-    }
-    m_ui.listWidgetAll->addItem( new ListViewMediaItem( fileInfo ) );
-}
-
-void LibraryWidget::on_LibraryTabs_currentChanged( int index )
-{
-    if ( index == 3 )
-    {
-        m_ui.pushButtonAddMedia->setEnabled( false );
-        m_ui.pushButtonRemoveMedia->setEnabled( false );
-    }
-    else
-    {
-        m_ui.pushButtonAddMedia->setEnabled( true );
-        m_ui.pushButtonRemoveMedia->setEnabled( true );
     }
 }
 
-ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, QListWidget* parent, int type ) : QListWidgetItem( parent, type )
+ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, ListViewMediaItem::fType fType, QListWidget* parent, int type ) : QListWidgetItem( parent, type )
 {
     fileInfo = fInfo;
+    fileType = fType;
     setText( fileInfo->baseName() );
+}
+
+void ListViewMediaItem::mousePressEvent( QMouseEvent* event )
+{
+}
+
+void LibraryWidget::on_pushButtonRemoveMedia_clicked()
+{
+    QListWidget* mediaList = ( QListWidget* )(this->m_ui.LibraryTabs->currentWidget()->children().back());
+    ListViewMediaItem* item = ( ListViewMediaItem* ) mediaList->currentItem();
+    this->removeMedia( item );
 }
