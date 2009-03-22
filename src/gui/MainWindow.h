@@ -26,6 +26,7 @@
 #include <QApplication>
 #include "ui_MainWindow.h"
 #include "LibraryWidget.h"
+#include "PreviewWidget.h"
 #include "DockWidgetManager.h"
 
 class MainWindow : public QMainWindow
