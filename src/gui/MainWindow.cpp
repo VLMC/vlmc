@@ -58,7 +58,7 @@ void MainWindow::m_initializeDockWidgets( void )
 
     //First param is NULL for the moment. It will be replaced by the LibraryWidget
     dockManager->addDockedWidget( new LibraryWidget( this ),
-                                  "library",
+                                  tr( "Media Library" ),
                                   Qt::AllDockWidgetAreas, 
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
