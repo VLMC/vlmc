@@ -44,7 +44,7 @@ class DockWidgetManager : public QObject
 
 	private:
 		explicit DockWidgetManager();
-		~DockWidgetManager() {}
+        ~DockWidgetManager() { delete m_instance; }
 		DockWidgetManager(const DockWidgetManager &);
 		DockWidgetManager & operator = ( const DockWidgetManager & );
 		QMainWindow *m_mainWin;
