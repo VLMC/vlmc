@@ -24,7 +24,9 @@ SOURCES += src/main.cpp \
     src/gui/TracksScene.cpp \
     src/gui/PreviewWidget.cpp \
     src/gui/TracksRuler.cpp \
-    src/gui/Preferences.cpp 
+    src/gui/Preferences.cpp \
+    src/gui/ListViewMediaItem.cpp \
+    src/gui/MediaListWidget.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -40,16 +42,18 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/TracksScene.h \
     src/gui/PreviewWidget.h \
     src/gui/TracksRuler.h \
-    src/gui/Preferences.h 
+    src/gui/Preferences.h \
+    src/gui/ListViewMediaItem.h \
+    src/gui/MediaListWidget.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/Timeline.ui \
     src/gui/ui/LibraryWidget.ui \
     src/gui/ui/PreviewWidget.ui \
-    src/gui/ui/Preferences.ui 
+    src/gui/ui/Preferences.ui
 RESOURCES += 
 INCLUDEPATH += src/LibVLCpp
 LIBS = -L/usr/local/lib \
     -lvlc
-TRANSLATIONS    = vlmc_es.ts \
-                  vlmc_fr.ts
-CODECFORTR      = UTF-8
+TRANSLATIONS = vlmc_es.ts \
+    vlmc_fr.ts
+CODECFORTR = UTF-8

@@ -20,7 +20,7 @@
       <enum>QTabWidget::East</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideNone</enum>
@@ -34,7 +34,7 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="QListWidget" name="listWidgetAudio">
+        <widget class="MediaListWidget" name="listWidgetAudio">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -48,7 +48,7 @@
           <bool>true</bool>
          </property>
          <property name="dragDropMode">
-          <enum>QAbstractItemView::DropOnly</enum>
+          <enum>QAbstractItemView::DragDrop</enum>
          </property>
         </widget>
        </item>
@@ -60,7 +60,7 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QListWidget" name="listWidgetVideo">
+        <widget class="MediaListWidget" name="listWidgetVideo">
          <property name="acceptDrops">
           <bool>true</bool>
          </property>
@@ -71,7 +71,7 @@
           <bool>false</bool>
          </property>
          <property name="dragDropMode">
-          <enum>QAbstractItemView::DropOnly</enum>
+          <enum>QAbstractItemView::DragDrop</enum>
          </property>
          <property name="uniformItemSizes">
           <bool>true</bool>
@@ -86,7 +86,7 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QListWidget" name="listWidgetImage">
+        <widget class="MediaListWidget" name="listWidgetImage">
          <property name="acceptDrops">
           <bool>true</bool>
          </property>
@@ -94,7 +94,7 @@
           <bool>true</bool>
          </property>
          <property name="dragDropMode">
-          <enum>QAbstractItemView::DropOnly</enum>
+          <enum>QAbstractItemView::DragDrop</enum>
          </property>
         </widget>
        </item>
@@ -146,6 +146,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MediaListWidget</class>
+   <extends>QListWidget</extends>
+   <header>src/gui/MediaListWidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

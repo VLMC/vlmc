@@ -113,21 +113,6 @@ void LibraryWidget::on_pushButtonAddMedia_clicked()
     }
 }
 
-ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, ListViewMediaItem::fType fType, QListWidget* parent, int type ) : QListWidgetItem( parent, type )
-{
-    fileInfo = fInfo;
-    fileType = fType;
-    setText( fileInfo->baseName() );
-}
-
-ListViewMediaItem::~ListViewMediaItem()
-{
-    delete this->fileInfo;
-}
-
-void ListViewMediaItem::mousePressEvent( QMouseEvent* event )
-{
-}
 
 void LibraryWidget::on_pushButtonRemoveMedia_clicked()
 {

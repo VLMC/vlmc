@@ -3,8 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Clement CHAVANCE <chavance.c@gmail.com>
- *          Christophe Courtaut <christophe.courtaut@gmail.com>
+ * Authors: Christophe Courtaut <christophe.courtaut@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,44 +20,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef LIBRARYWIDGET_H
-#define LIBRARYWIDGET_H
+#ifndef MEDIALISTWIDGET_H
+#define MEDIALISTWIDGET_H
 
-#include <QTabWidget>
 #include <QListWidget>
-#include <QFileInfoList>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QtDebug>
+#include <QMouseEvent>
+#include <QPoint>
 #include <QMimeData>
 #include <QDrag>
-#include <QList>
+#include <QApplication>
 #include "ListViewMediaItem.h"
-#include "ui_LibraryWidget.h"
 
-class LibraryWidget : public QWidget
+class MediaListWidget : public QListWidget
 {
     Q_OBJECT
-
 public:
-    explicit LibraryWidget( QWidget *parent = 0 );
-
-    ListViewMediaItem*  addMedia( QFileInfo* fileInfo, ListViewMediaItem::fType fileType );
-    bool                removeMedia( ListViewMediaItem* item );
-    int                 getIndex( ListViewMediaItem* media );
+    MediaListWidget( QWidget* parent = 0 );
+    void        setType( QString fileType );
 protected:
-    virtual void changeEvent( QEvent *e );
+    virtual void mousePressEvent( QMouseEvent* event );
+    virtual void mouseMoveEvent( QMouseEvent* event );
 private:
-    QString             getNewMediaFileName( QString title, QString filter, ListViewMediaItem::fType );
-    ListViewMediaItem*  insertNewMediaFromFileDialog(QString title, QString filter, ListViewMediaItem::fType fileType);
-
-    Ui::LibraryWidget                 m_ui;
-    static QList<ListViewMediaItem*>* m_medias;
-
-private slots:
-    void on_pushButtonAddMedia_clicked();
-    void on_pushButtonRemoveMedia_clicked();
+    QString     m_Type;
+    QPoint      m_dragStartPos;
 };
 
-
-#endif /* !LIBRARYWIDGET_H */
+#endif // MEDIALISTWIDGET_H
