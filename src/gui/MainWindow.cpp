@@ -84,3 +84,9 @@ void MainWindow::on_actionQuit_triggered()
 {
     QApplication::quit();
 }
+
+void MainWindow::on_actionPreferences_triggered()
+{
+    Preferences* pref = new Preferences();\
+    pref->show();
+}

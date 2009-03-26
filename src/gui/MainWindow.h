@@ -28,6 +28,7 @@
 #include "LibraryWidget.h"
 #include "PreviewWidget.h"
 #include "DockWidgetManager.h"
+#include "Preferences.h"
 
 class MainWindow : public QMainWindow
 {
@@ -49,6 +50,8 @@ private:
 
 private slots:
     void on_actionQuit_triggered();
-};
+    void on_actionPreferences_triggered();
+}
+;
 
 #endif // MAINWINDOW_H
