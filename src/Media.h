@@ -24,6 +24,7 @@ public:
     //FIXME into bool
     int                     isPlaying();
     int                     isSeekable();
+    qint64                  getLength();
 
 
     //FIXME

@@ -3,12 +3,18 @@
 
 Media::Media(const QString& mrl) : _mrl(mrl), _snapshot(NULL)
 {
-    this->_instance = new LibVLCpp::Instance(0, NULL);
-//    qDebug() << "Built instance";
-    this->_vlcMedia = new LibVLCpp::Media(this->_instance, this->_mrl);
-//    qDebug() << "Built Media";
+    char const *vlc_argv[] =
+    {
+        "-verbose",
+        "3",
+        //"--snapshot-format", "jpg",
+        //"--plugin-path", VLC_TREE "/modules",
+        //"--ignore-config", /* Don't use VLC's config files */
+    };
+    int vlc_argc = sizeof(vlc_argv) / sizeof(*vlc_argv);
+    this->_instance = new LibVLCpp::Instance(vlc_argc, vlc_argv);
 
-//    qDebug() << "Built mediaPlayer";
+    this->_vlcMedia = new LibVLCpp::Media(this->_instance, this->_mrl);
 
     this->_vlcMedia->outputInVmem();
     this->_vlcMedia->setLockCallback(Media::lock);
@@ -54,19 +60,24 @@ void        Media::lock(LibVLCpp::Media::DataCtx* ctx, void **renderPtr)
 
 void        Media::unlock(LibVLCpp::Media::DataCtx* ctx)
 {
-//    QImage(ctx->media->getPixelBuffer(), VIDEOWIDTH, VIDEOHEIGHT, QImage::Format_RGB32).save("/home/chouquette/Desktop/testRender.png");
-    qDebug() << "frame just rendered";
+//    qDebug() << "frame just rendered";
     ctx->mutex->unlock();
 }
 
 QImage*      Media::takeSnapshot(unsigned int width, unsigned int height)
 {
+    //FIXME
+    //this isn't working, but it seems like a vlc problem, since lastest release of vlc segfault when a screenshot is taken... -_-
+    return NULL;
+
+
     if ( this->_snapshot == NULL )
     {
-        this->_snapshot = new QImage(*this->_image);
-
-        this->_vlcMediaPlayer->setTime(this->_vlcMediaPlayer->getLength() / 2);
-        this->_vlcMediaPlayer->setTime(0);
+        qDebug() << "trying to take a snapshot";
+        this->_vlcMediaPlayer->takeSnapshot("/tmp/vlmcscreenshot.tmp.gif", width, height);
+        qDebug() << "done snapshoting";
+        this->_snapshot = new QImage("/tmp/vlmcscreenshot.tmp.gif");
+        qDebug() << "written to a QImage";
     }
     return this->_snapshot;
 }
@@ -80,3 +91,9 @@ int         Media::isSeekable()
 {
     return this->_vlcMediaPlayer->isSeekable();
 }
+
+qint64      Media::getLength()
+{
+    return this->_vlcMediaPlayer->getLength();
+}
+

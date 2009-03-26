@@ -22,7 +22,7 @@ namespace   LibVLCpp
         qint64                              getTime();
         void                                setTime(qint64 time);
         qint64                              getLength();
-        void                                takeSnapshot(uchar* output, unsigned int width, unsigned int heigth);
+        void                                takeSnapshot(char* outputFile, unsigned int width, unsigned int heigth);
         int                                 isPlaying();
         int                                 isSeekable();
     //FIXME: private
