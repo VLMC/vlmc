@@ -108,7 +108,7 @@ void LibraryWidget::on_pushButtonAddMedia_clicked()
     case 0:
         insertNewMediaFromFileDialog( tr( "Open Audios" ),
                                       tr( "Audio Files" ) + " (*.mp3 *.oga *.flac *.aac *.wav)" ,
-                                      ListViewMediaItem::Audio);
+                                      ListViewMediaItem::Audio );
         break;
     case 1:
         insertNewMediaFromFileDialog( tr( "Open Videos" ),
@@ -118,7 +118,7 @@ void LibraryWidget::on_pushButtonAddMedia_clicked()
     case 2:
         insertNewMediaFromFileDialog( tr( "Open Images" ),
                                       tr( "Images Files" ) + " (*.gif *.png *.jpg)" ,
-                                      ListViewMediaItem::Image);
+                                      ListViewMediaItem::Image );
         break;
     }
 }
