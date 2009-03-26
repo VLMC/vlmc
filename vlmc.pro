@@ -51,10 +51,12 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/MediaListWidget.h
 
 FORMS += src/gui/ui/MainWindow.ui \
-    src/gui/ui/Timeline.ui \
-    src/gui/ui/LibraryWidget.ui \
     src/gui/ui/PreviewWidget.ui \
-    src/gui/ui/Preferences.ui
+    src/gui/ui/Preferences.ui \
+    src/gui/ui/Timeline.ui \
+    src/gui/ui/LibraryWidget.ui
+
+FORMS +=
 
 RESOURCES += 
 INCLUDEPATH += src/LibVLCpp

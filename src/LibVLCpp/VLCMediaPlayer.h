@@ -27,7 +27,6 @@ namespace   LibVLCpp
 
     private:
         Exception                           _ex;
-        bool                                _isReady;
     };
 }
 

@@ -4,7 +4,7 @@
 
 using namespace LibVLCpp;
 
-MediaPlayer::MediaPlayer(Media* media, bool playStop /* = true*/) : /*_evMgr(NULL),`*/ _isReady(false)
+MediaPlayer::MediaPlayer(Media* media, bool playStop /* = true*/)
 {
     this->_internalPtr = libvlc_media_player_new_from_media(media->getInternalPtr(), this->_ex);
     this->_ex.checkThrow();
