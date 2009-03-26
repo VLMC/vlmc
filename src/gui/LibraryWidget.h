@@ -1,5 +1,5 @@
 /*****************************************************************************
- * LibraryWidget.h: VLMC library widget header
+ * LibraryWidget.h: Multimedia library
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -42,6 +42,7 @@ class LibraryWidget : public QWidget
 
 public:
     explicit LibraryWidget( QWidget *parent = 0 );
+    virtual ~LibraryWidget();
 
     ListViewMediaItem*  addMedia( QFileInfo* fileInfo, ListViewMediaItem::fType fileType );
     bool                removeMedia( ListViewMediaItem* item );
@@ -59,6 +60,5 @@ private slots:
     void on_pushButtonAddMedia_clicked();
     void on_pushButtonRemoveMedia_clicked();
 };
-
 
 #endif /* !LIBRARYWIDGET_H */

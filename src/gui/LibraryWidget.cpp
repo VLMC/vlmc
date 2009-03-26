@@ -1,5 +1,5 @@
 /*****************************************************************************
- * LibraryWidget.cpp: VLMC LibraryWidget
+ * LibraryWidget.cpp: Multimedia library
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -31,6 +31,16 @@ LibraryWidget::LibraryWidget( QWidget *parent ) : QWidget( parent )
     m_ui.setupUi( this );
     if ( LibraryWidget::m_medias == NULL )
         LibraryWidget::m_medias = new QList<ListViewMediaItem*>();
+}
+
+LibraryWidget::~LibraryWidget()
+{
+    if ( LibraryWidget::m_medias )
+    {
+        while ( !LibraryWidget::m_medias->isEmpty() )
+            delete LibraryWidget::m_medias->takeLast();
+        delete LibraryWidget::m_medias;
+    }
 }
 
 ListViewMediaItem*  LibraryWidget::addMedia( QFileInfo* fileInfo, ListViewMediaItem::fType fileType )
@@ -78,7 +88,7 @@ bool                LibraryWidget::removeMedia(ListViewMediaItem* item)
 ListViewMediaItem*                LibraryWidget::insertNewMediaFromFileDialog( QString title, QString filter, ListViewMediaItem::fType fileType )
 {
     QString fileName = QFileDialog::getOpenFileName( this, title, QDir::homePath(), filter);
-    if ( fileName == "" )
+    if ( fileName.isEmpty() )
         return NULL;
     ListViewMediaItem* item = NULL;
     foreach( item, *m_medias )
