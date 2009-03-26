@@ -26,17 +26,17 @@
 
 using namespace LibVLCpp;
 
-Media::Media(Instance* instance, const QString& filename) : _instance(*instance), _pixelBuffer(NULL)
+Media::Media( Instance* instance, const QString& filename ) : m_instance( *instance ), m_pixelBuffer( NULL )
 {
-    this->_internalPtr = libvlc_media_new(this->_instance, filename.toLocal8Bit(), this->_ex);
-    this->_ex.checkThrow();
+    m_internalPtr = libvlc_media_new( m_instance, filename.toLocal8Bit(), m_ex );
+    m_ex.checkThrow();
 }
 
 Media::~Media()
 {
-    libvlc_media_release(this->_internalPtr);
-    delete[] this->_pixelBuffer;
-    delete this->_dataCtx;
+    libvlc_media_release( m_internalPtr );
+    delete[] m_pixelBuffer;
+    delete m_dataCtx;
 }
 
 Media::DataCtx*         Media::buildDataCtx()
@@ -47,47 +47,47 @@ Media::DataCtx*         Media::buildDataCtx()
     return dataCtx;
 }
 
-void                    Media::addOption(const char* opt)
+void                    Media::addOption( const char* opt )
 {
-    libvlc_media_add_option(this->_internalPtr, opt, this->_ex);
-    this->_ex.checkThrow();
+    libvlc_media_add_option( m_internalPtr, opt, m_ex);
+    m_ex.checkThrow();
     qDebug() << "Added media option: " << opt;
 }
 
 Media::DataCtx::~DataCtx()
 {
-    delete this->mutex;
+    delete mutex;
 }
 
-void                    Media::setLockCallback(Media::lockCallback callback)
+void                    Media::setLockCallback( Media::lockCallback callback )
 {
     char    param[64];
-    sprintf(param, ":vmem-lock=%lld", (long long int)(intptr_t)callback);
-    this->addOption(param);
+    sprintf( param, ":vmem-lock=%lld", (long long int)(intptr_t)callback );
+    addOption(param);
 }
 
-void                    Media::setUnlockCallback(Media::unlockCallback callback)
+void                    Media::setUnlockCallback( Media::unlockCallback callback )
 {
     char    param[64];
-    sprintf(param, ":vmem-unlock=%lld", (long long int)(intptr_t)callback);
-    this->addOption(param);
+    sprintf( param, ":vmem-unlock=%lld", (long long int)(intptr_t)callback );
+    addOption( param );
 }
 
 void                    Media::setDataCtx()
 {
     char    param[64];
 
-    this->_dataCtx = new Media::DataCtx;
-    this->_dataCtx->mutex = new QMutex();
-    this->_dataCtx->media = this;
+    m_dataCtx = new Media::DataCtx;
+    m_dataCtx->mutex = new QMutex();
+    m_dataCtx->media = this;
 
-    sprintf(param, ":vmem-data=%lld", (long long int)(intptr_t)this->_dataCtx);
-    this->addOption(param);
+    sprintf( param, ":vmem-data=%lld", (long long int)(intptr_t)m_dataCtx );
+    addOption( param );
 }
 
 void                    Media::outputInVmem()
 {
-    this->addOption(":vout=vmem");
+    addOption( ":vout=vmem" );
 }
 
 void                    Media::outputInWindow()
@@ -95,12 +95,12 @@ void                    Media::outputInWindow()
 //    this->addOption();
 }
 
-void                    Media::setPixelBuffer(uchar* buffer)
+void                    Media::setPixelBuffer( uchar* buffer )
 {
-    this->_pixelBuffer = buffer;
+    m_pixelBuffer = buffer;
 }
 
 uchar*                  Media::getPixelBuffer()
 {
-    return this->_pixelBuffer;
+    return m_pixelBuffer;
 }

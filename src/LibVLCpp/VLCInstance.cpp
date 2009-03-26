@@ -26,8 +26,8 @@
 
 using namespace LibVLCpp;
 
-Instance::Instance(int argc, const char** argv)
+Instance::Instance( int argc, const char** argv )
 {
-    this->_internalPtr = libvlc_new(argc, argv, this->_ex);
-    this->_ex.checkThrow();
+    m_internalPtr = libvlc_new( argc, argv, m_ex );
+    m_ex.checkThrow();
 }

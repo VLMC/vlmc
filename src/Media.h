@@ -35,13 +35,13 @@
 class       Media
 {
 public:
-    Media(const QString& mrl);
+    Media( const QString& mrl );
     ~Media();
 
-    static void             lock(LibVLCpp::Media::DataCtx* dataCtx, void **pp_ret);
-    static void             unlock(LibVLCpp::Media::DataCtx* dataCtx);
+    static void             lock( LibVLCpp::Media::DataCtx* dataCtx, void **pp_ret );
+    static void             unlock( LibVLCpp::Media::DataCtx* dataCtx );
 
-    QImage*                 takeSnapshot(unsigned int width, unsigned int heigth);
+    QImage*                 takeSnapshot( unsigned int width, unsigned int heigth );
 
     bool                    isPlaying();
     bool                    isSeekable();
@@ -49,15 +49,13 @@ public:
     QImage&                 getImage();
 
 private:
-    LibVLCpp::Media*            _vlcMedia;
-    LibVLCpp::MediaPlayer*      _vlcMediaPlayer;
-    LibVLCpp::Instance*         _instance;
-    QString                     _mrl;
-    QImage*                     _snapshot;
-    uchar*                      _pixelBuffer;
-    QImage*                     _image;
-
-
+    LibVLCpp::Media*            m_vlcMedia;
+    LibVLCpp::MediaPlayer*      m_vlcMediaPlayer;
+    LibVLCpp::Instance*         m_instance;
+    QString                     m_mrl;
+    QImage*                     m_snapshot;
+    uchar*                      m_pixelBuffer;
+    QImage*                     m_image;
 };
 
 #endif // MEDIA_H

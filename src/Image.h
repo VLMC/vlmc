@@ -20,8 +20,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-
-
 #ifndef IMAGE_HPP
 #define IMAGE_HPP
 
@@ -30,29 +28,29 @@
 class   Image
 {
 public:
-    Image(int width, int height)
+    Image( int width, int height )
     {
-        this->_pixelsData = new uchar[width * height * 4];
-        this->_image = new QImage(this->_pixelsData, width, height, width * 4, QImage::Format_ARGB32);
+        m_pixelsData = new uchar[ width * height * 4 ];
+        m_image = new QImage( m_pixelsData, width, height, width * 4, QImage::Format_ARGB32 );
     }
     ~Image()
     {
-        delete this->_image;
-        delete this->_pixelsData;
+        delete m_image;
+        delete m_pixelsData;
     }
     uchar*      getBuffer()
     {
-        return this->_pixelsData;
+        return m_pixelsData;
     }
 
     QImage&     getImage()
     {
-        return *(this->_image);
+        return *(m_image);
     }
 
 private:
-    QImage*     _image;
-    uchar*      _pixelsData;
+    QImage*     m_image;
+    uchar*      m_pixelsData;
 };
 
 #endif // IMAGE_HPP

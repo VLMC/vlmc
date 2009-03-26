@@ -29,12 +29,12 @@
 
 namespace LibVLCpp
 {
-    class   Instance : public Internal<libvlc_instance_t>
+    class   Instance : public Internal< libvlc_instance_t >
     {
     public:
-        Instance(int argc, const char** argv);
+        Instance( int argc, const char** argv );
     private:
-        Exception       _ex;
+        Exception       m_ex;
     };
 }
 

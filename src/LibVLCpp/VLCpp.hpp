@@ -28,21 +28,21 @@
 
 namespace LibVLCpp
 {
-    template <typename T>
+    template < typename T >
     class   Internal
     {
         public:
             typedef     T*      internalPtr;
             T*                  getInternalPtr()
             {
-                assert(this->_internalPtr != NULL);
-                return this->_internalPtr;
+                assert( m_internalPtr != NULL );
+                return m_internalPtr;
             }
-            operator T*() {return this->_internalPtr;}
+            operator T*() { return m_internalPtr; }
         protected:
-            Internal() : _internalPtr(NULL) {}
+            Internal() : m_internalPtr( NULL ) {}
 
-            T*                  _internalPtr;
+            T*                  m_internalPtr;
     };
 }
 

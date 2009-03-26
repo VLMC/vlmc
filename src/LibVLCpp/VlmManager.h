@@ -13,14 +13,14 @@ namespace       LibVLCpp
     class   VlmManager
     {
     public:
-        VlmManager(Instance* instance);
+        VlmManager( Instance* instance );
 
-        VlmMedia*       addMedia(const QString& filename, const char* const* argv, int argc);
-        VlmMedia*       getMedia(const QString& hash);
+        VlmMedia*       addMedia( const QString& filename, const char* const* argv, int argc );
+        VlmMedia*       getMedia( const QString& hash );
     private:
-        QHash<QString, VlmMedia*>       _hashTable;
-        Instance&                       _instance;
-        Exception                       _ex;
+        QHash< QString, VlmMedia* >     m_hashTable;
+        Instance&                       m_instance;
+        Exception                       m_ex;
     };
 }
 

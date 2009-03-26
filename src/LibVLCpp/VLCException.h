@@ -28,7 +28,7 @@
 
 namespace LibVLCpp
 {
-    class   Exception : public Internal<libvlc_exception_t>
+    class   Exception : public Internal< libvlc_exception_t >
     {
     public:
         Exception();
@@ -44,12 +44,12 @@ namespace LibVLCpp
 
         //error handling part :
         //TODO: have a private error handling in which we could fall back for some specific cases
-        typedef void            (*errorCallback)(const char* msg, void* data);
-        static  void            setErrorCallback(errorCallback, void* data);
+        typedef void            (*errorCallback)( const char* msg, void* data );
+        static  void            setErrorCallback( errorCallback, void* data );
 
     private:
-        static  errorCallback   _errorCallback;
-        static  void*           _datas;
+        static  errorCallback   m_errorCallback;
+        static  void*           m_datas;
     };
 }
 
