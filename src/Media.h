@@ -20,9 +20,9 @@ public:
     static void             unlock(LibVLCpp::Media::DataCtx* dataCtx);
 
     QImage*                 takeSnapshot(unsigned int width, unsigned int heigth);
-    //FIXME into bool
-    int                     isPlaying();
-    int                     isSeekable();
+
+    bool                    isPlaying();
+    bool                    isSeekable();
     qint64                  getLength();
     QImage&                 getImage();
 

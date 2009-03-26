@@ -56,16 +56,16 @@ void                            MediaPlayer::takeSnapshot(char* outputFile, unsi
     this->_ex.checkThrow();
 }
 
-int                             MediaPlayer::isPlaying()
+bool                                MediaPlayer::isPlaying()
 {
     int res = libvlc_media_player_is_playing(this->_internalPtr, this->_ex);
     this->_ex.checkThrow();
-    return res;
+    return (res == 1);
 }
 
-int                             MediaPlayer::isSeekable()
+bool                                MediaPlayer::isSeekable()
 {
     int res = libvlc_media_player_is_seekable(this->_internalPtr, this->_ex);
     this->_ex.checkThrow();
-    return res;
+    return (res == 1);
 }

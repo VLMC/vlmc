@@ -83,12 +83,12 @@ QImage*      Media::takeSnapshot(unsigned int width, unsigned int height)
     return this->_snapshot;
 }
 
-int         Media::isPlaying()
+bool        Media::isPlaying()
 {
     return this->_vlcMediaPlayer->isPlaying();
 }
 
-int         Media::isSeekable()
+bool        Media::isSeekable()
 {
     return this->_vlcMediaPlayer->isSeekable();
 }

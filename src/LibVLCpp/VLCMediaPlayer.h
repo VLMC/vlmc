@@ -22,8 +22,8 @@ namespace   LibVLCpp
         void                                setTime(qint64 time);
         qint64                              getLength();
         void                                takeSnapshot(char* outputFile, unsigned int width, unsigned int heigth);
-        int                                 isPlaying();
-        int                                 isSeekable();
+        bool                                isPlaying();
+        bool                                isSeekable();
 
     private:
         Exception                           _ex;
