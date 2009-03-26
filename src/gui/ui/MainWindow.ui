@@ -13,9 +13,6 @@
   <property name="windowTitle">
    <string>VideoLAN Movie Creator</string>
   </property>
-  <property name="locale">
-   <locale language="French" country="France"/>
-  </property>
   <property name="dockNestingEnabled">
    <bool>true</bool>
   </property>
@@ -26,7 +23,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
