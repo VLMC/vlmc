@@ -28,10 +28,7 @@
 #include <QApplication>
 #include <QSettings>
 #include <QtDebug>
-
-namespace Ui {
-    class Preferences;
-}
+#include "ui_Preferences.h"
 
 class Preferences : public QWidget
 {
@@ -45,7 +42,7 @@ protected:
     virtual void changeEvent( QEvent *e );
 
 private:
-    Ui::Preferences *m_ui;
+    Ui::Preferences m_ui;
     static QTranslator* m_currentLang;
 
 private slots:
