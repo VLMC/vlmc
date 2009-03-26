@@ -131,7 +131,7 @@
     <message>
         <location filename="src/gui/ui/MainWindow.ui" line="95"/>
         <source>Preferences</source>
-        <translation type="unfinished">Préférences</translation>
+        <translation>Préférences</translation>
     </message>
 </context>
 <context>
@@ -164,17 +164,17 @@
     <message>
         <location filename="src/gui/Preferences.cpp" line="9"/>
         <source>English</source>
-        <translation type="unfinished"></translation>
+        <translation>Anglais</translation>
     </message>
     <message>
         <location filename="src/gui/Preferences.cpp" line="10"/>
         <source>French</source>
-        <translation type="unfinished"></translation>
+        <translation>Français</translation>
     </message>
     <message>
         <location filename="src/gui/Preferences.cpp" line="11"/>
         <source>Spanish</source>
-        <translation type="unfinished"></translation>
+        <translation>Espagnol</translation>
     </message>
 </context>
 <context>

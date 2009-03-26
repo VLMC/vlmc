@@ -70,12 +70,12 @@
     <message>
         <location filename="src/gui/MainWindow.cpp" line="61"/>
         <source>Media Library</source>
-        <translation>biblioteca multimedia</translation>
+        <translation type="unfinished">Biblioteca multimedia</translation>
     </message>
     <message>
         <location filename="src/gui/MainWindow.cpp" line="67"/>
         <source>Preview</source>
-        <translation>vista previa</translation>
+        <translation type="unfinished">Vista previa</translation>
     </message>
     <message>
         <location filename="src/gui/ui/MainWindow.ui" line="14"/>
@@ -95,7 +95,7 @@
     <message>
         <location filename="src/gui/ui/MainWindow.ui" line="43"/>
         <source>View</source>
-        <translation>Vista</translation>
+        <translation type="unfinished">Vista</translation>
     </message>
     <message>
         <location filename="src/gui/ui/MainWindow.ui" line="48"/>
@@ -105,12 +105,12 @@
     <message>
         <location filename="src/gui/ui/MainWindow.ui" line="53"/>
         <source>Tools</source>
-        <translation>herramientas</translation>
+        <translation type="unfinished">Herramientas</translation>
     </message>
     <message>
         <location filename="src/gui/ui/MainWindow.ui" line="58"/>
         <source>Window</source>
-        <translation>ventana</translation>
+        <translation type="unfinished">Ventana</translation>
     </message>
     <message>
         <location filename="src/gui/ui/MainWindow.ui" line="63"/>
@@ -131,7 +131,7 @@
     <message>
         <location filename="src/gui/ui/MainWindow.ui" line="95"/>
         <source>Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Preferencias</translation>
     </message>
 </context>
 <context>
@@ -139,42 +139,42 @@
     <message>
         <location filename="src/gui/ui/Preferences.ui" line="17"/>
         <source>Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Preferencias</translation>
     </message>
     <message>
         <location filename="src/gui/ui/Preferences.ui" line="30"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">General</translation>
     </message>
     <message>
         <location filename="src/gui/ui/Preferences.ui" line="42"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Idioma</translation>
     </message>
     <message>
         <location filename="src/gui/ui/Preferences.ui" line="74"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aplicar</translation>
     </message>
     <message>
         <location filename="src/gui/ui/Preferences.ui" line="81"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Cancelar</translation>
     </message>
     <message>
         <location filename="src/gui/Preferences.cpp" line="9"/>
         <source>English</source>
-        <translation type="unfinished"></translation>
+        <translation>Inglés</translation>
     </message>
     <message>
         <location filename="src/gui/Preferences.cpp" line="10"/>
         <source>French</source>
-        <translation type="unfinished"></translation>
+        <translation>Francés</translation>
     </message>
     <message>
         <location filename="src/gui/Preferences.cpp" line="11"/>
         <source>Spanish</source>
-        <translation type="unfinished"></translation>
+        <translation>Español</translation>
     </message>
 </context>
 <context>

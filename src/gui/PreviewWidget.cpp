@@ -1,11 +1,11 @@
 #include "PreviewWidget.h"
 #include "ui_PreviewWidget.h"
 
-PreviewWidget::PreviewWidget(QWidget *parent) :
-    QDialog(parent),
-    m_ui(new Ui::PreviewWidget)
+PreviewWidget::PreviewWidget( QWidget *parent ) :
+    QDialog( parent ),
+    m_ui( new Ui::PreviewWidget )
 {
-    m_ui->setupUi(this);
+    m_ui->setupUi( this );
 }
 
 PreviewWidget::~PreviewWidget()
@@ -13,11 +13,12 @@ PreviewWidget::~PreviewWidget()
     delete m_ui;
 }
 
-void PreviewWidget::changeEvent(QEvent *e)
+void PreviewWidget::changeEvent( QEvent *e )
 {
-    switch (e->type()) {
+    switch ( e->type() )
+    {
     case QEvent::LanguageChange:
-        m_ui->retranslateUi(this);
+        m_ui->retranslateUi( this );
         break;
     default:
         break;

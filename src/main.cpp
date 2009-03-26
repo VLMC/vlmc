@@ -26,7 +26,11 @@
 int main( int argc, char **argv )
 {
 	QApplication app( argc, argv );
-        MainWindow w;
-        w.show();
+    app.setApplicationName( "vlmc" );
+    app.setOrganizationName( "vlmc" );
+    app.setOrganizationDomain( "vlmc.org" );
+    QSettings::setDefaultFormat(QSettings::IniFormat);
+    MainWindow w;
+    w.show();
 	return app.exec();
 }

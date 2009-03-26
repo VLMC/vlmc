@@ -97,17 +97,17 @@ void LibraryWidget::on_pushButtonAddMedia_clicked()
     {
     case 0:
         insertNewMediaFromFileDialog( tr( "Open Audios" ),
-                                      tr( "Audio Files (*.mp3 *.oga *.flac *.aac *.wav)" ),
+                                      tr( "Audio Files" ) + " (*.mp3 *.oga *.flac *.aac *.wav)" ,
                                       ListViewMediaItem::Audio);
         break;
     case 1:
         insertNewMediaFromFileDialog( tr( "Open Videos" ),
-                                      tr( "Video Files (*.mov *.avi *.mkv)" ),
+                                      tr( "Video Files" ) + " (*.mov *.avi *.mkv)" ,
                                       ListViewMediaItem::Video );
         break;
     case 2:
         insertNewMediaFromFileDialog( tr( "Open Images" ),
-                                      tr( "Images Files (*.gif *.png *.jpg)" ),
+                                      tr( "Images Files" ) + " (*.gif *.png *.jpg)" ,
                                       ListViewMediaItem::Image);
         break;
     }
@@ -134,4 +134,16 @@ void LibraryWidget::on_pushButtonRemoveMedia_clicked()
     QListWidget* mediaList = ( QListWidget* )(this->m_ui.LibraryTabs->currentWidget()->children().back());
     ListViewMediaItem* item = ( ListViewMediaItem* ) mediaList->currentItem();
     this->removeMedia( item );
+}
+
+void LibraryWidget::changeEvent( QEvent *e )
+{
+    switch ( e->type() )
+    {
+    case QEvent::LanguageChange:
+        m_ui.retranslateUi( this );
+        break;
+    default:
+        break;
+    }
 }

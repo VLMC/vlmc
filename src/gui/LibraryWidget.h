@@ -63,6 +63,8 @@ public:
     ListViewMediaItem*  addMedia( QFileInfo* fileInfo, ListViewMediaItem::fType fileType );
     bool                removeMedia( ListViewMediaItem* item );
     int                 getIndex( ListViewMediaItem* media );
+protected:
+    virtual void changeEvent( QEvent *e );
 private:
     QString             getNewMediaFileName( QString title, QString filter, ListViewMediaItem::fType );
     ListViewMediaItem*                insertNewMediaFromFileDialog(QString title, QString filter, ListViewMediaItem::fType fileType);
