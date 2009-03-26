@@ -66,7 +66,7 @@ bool                LibraryWidget::removeMedia(ListViewMediaItem* item)
 {
     if ( m_medias->contains( item ) )
     {
-        switch( item->fileType )
+        switch( item->fileType() )
         {
         case ListViewMediaItem::Audio:
             this->m_ui.listWidgetAudio->removeItemWidget( item );
@@ -93,7 +93,7 @@ ListViewMediaItem*                LibraryWidget::insertNewMediaFromFileDialog( Q
     ListViewMediaItem* item = NULL;
     foreach( item, *m_medias )
     {
-        if (item->fileInfo->absoluteFilePath() == fileName)
+        if (item->fileInfo()->absoluteFilePath() == fileName)
             return item;
     }
     QFileInfo* fileInfo = new QFileInfo( fileName );

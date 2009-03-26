@@ -1,5 +1,5 @@
 /*****************************************************************************
- * LibraryWidget.h: VLMC library widget header
+ * MediaListWidget.cpp: Multimedia list widget
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -36,13 +36,13 @@ class MediaListWidget : public QListWidget
     Q_OBJECT
 public:
     MediaListWidget( QWidget* parent = 0 );
-    void        setType( QString fileType );
+    void setType( QString fileType );
 protected:
     virtual void mousePressEvent( QMouseEvent* event );
     virtual void mouseMoveEvent( QMouseEvent* event );
 private:
-    QString     m_Type;
-    QPoint      m_dragStartPos;
+    QString m_Type;
+    QPoint m_dragStartPos;
 };
 
 #endif // MEDIALISTWIDGET_H

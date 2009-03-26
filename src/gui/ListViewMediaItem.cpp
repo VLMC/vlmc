@@ -24,12 +24,12 @@
 
 ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, ListViewMediaItem::fType fType, QListWidget* parent, int type ) : QListWidgetItem( parent, type )
 {
-    fileInfo = fInfo;
-    fileType = fType;
-    setText( fileInfo->baseName() );
+    m_fileInfo = fInfo;
+    m_fileType = fType;
+    setText( m_fileInfo->baseName() );
 }
 
 ListViewMediaItem::~ListViewMediaItem()
 {
-    delete this->fileInfo;
+    delete m_fileInfo;
 }

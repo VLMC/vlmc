@@ -38,8 +38,12 @@ public:
 
     ListViewMediaItem( QFileInfo* fileInfo, ListViewMediaItem::fType fType, QListWidget* parent = 0, int type = Type );
     virtual ~ListViewMediaItem();
-    QFileInfo* fileInfo;
-    ListViewMediaItem::fType fileType;
+    QFileInfo* fileInfo() { return m_fileInfo; }
+    ListViewMediaItem::fType fileType() { return m_fileType; }
+
+private:
+    QFileInfo* m_fileInfo;
+    ListViewMediaItem::fType m_fileType;
 };
 
 #endif /* !LISTVIEWMEDIAITEM_H */
