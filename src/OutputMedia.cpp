@@ -1,3 +1,4 @@
+#include <QtDebug>
 #include "OutputMedia.h"
 
 OutputMedia::OutputMedia() : m_pixelBuffer( NULL )
@@ -24,9 +25,9 @@ OutputMedia::OutputMedia() : m_pixelBuffer( NULL )
     char    width[64], height[64], lock[64], unlock[64], data[64];
     sprintf( width, ":invmem-width=%i", VIDEOWIDTH );
     sprintf( height, ":invmem-height=%i", VIDEOHEIGHT );
-    sprintf( lock, ":invmem-lock: %lld", (long long int)(intptr_t)&OutputMedia::lock );
-    sprintf( unlock, ":invmem-unlock: %lld", (long long int)(intptr_t)&OutputMedia::unlock );
-    sprintf( data, ":invmem-data: %lld", (long long int)(intptr_t)m_dataCtx );
+    sprintf( lock, ":invmem-lock=%lld", (long long int)(intptr_t)&OutputMedia::lock );
+    sprintf( unlock, ":invmem-unlock=%lld", (long long int)(intptr_t)&OutputMedia::unlock );
+    sprintf( data, ":invmem-data=%lld", (long long int)(intptr_t)m_dataCtx );
 
     m_vlcMedia->addOption( width );
     m_vlcMedia->addOption( height );
@@ -39,6 +40,7 @@ OutputMedia::OutputMedia() : m_pixelBuffer( NULL )
 
 uchar*          OutputMedia::lock( OutputMedia::DataCtx* dataCtx )
 {
+    qDebug() << "Copying into invmem";
     dataCtx->mutex->lock();
     return dataCtx->outputMedia->m_pixelBuffer;
 }
@@ -48,6 +50,7 @@ void            OutputMedia::unlock( OutputMedia::DataCtx* dataCtx )
     //FIXME: use class Image to avoid alloc/free...
     delete dataCtx->outputMedia->m_pixelBuffer;
     dataCtx->mutex->unlock();
+    qDebug() << "Unlocked invmem";
 }
 
 void            OutputMedia::setVmem( uchar* pixelBuffer )
@@ -55,4 +58,9 @@ void            OutputMedia::setVmem( uchar* pixelBuffer )
     m_dataCtx->mutex->lock();
     m_pixelBuffer = pixelBuffer;
     m_dataCtx->mutex->unlock();
+}
+
+void            OutputMedia::play()
+{
+    m_vlcMediaPlayer->play();
 }

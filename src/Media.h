@@ -47,6 +47,7 @@ public:
     bool                    isSeekable();
     qint64                  getLength();
     QImage&                 getImage();
+    void                    play();
 
 private:
     LibVLCpp::Media*            m_vlcMedia;

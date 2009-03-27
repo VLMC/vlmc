@@ -119,3 +119,14 @@ qint64      Media::getLength()
 {
     return m_vlcMediaPlayer->getLength();
 }
+
+void        Media::play()
+{
+    m_vlcMediaPlayer->play();
+}
+
+QImage&     Media::getImage()
+{
+    return *m_image;
+}
+

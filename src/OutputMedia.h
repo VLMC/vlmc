@@ -41,6 +41,7 @@ public:
     static void             unlock( OutputMedia::DataCtx* dataCtx );
 
     void                    setVmem( uchar* pixelBuffer );
+    void                    play();
 
 private:
     LibVLCpp::Media*            m_vlcMedia;
