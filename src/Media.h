@@ -33,7 +33,7 @@
 
 #include "Image.h"
 
-class       Media : public QThread
+class       Media : private QThread
 {
     Q_OBJECT
 public:
@@ -51,6 +51,7 @@ public:
     QImage&                 getImage();
     void                    play();
 
+private:
     virtual void            run();
 
 private:
