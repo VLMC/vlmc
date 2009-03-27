@@ -25,6 +25,7 @@
 
 #include <QString>
 #include <QImage>
+#include <QThread>
 
 #include "VLCMedia.h"
 #include "VLCInstance.h"
@@ -32,8 +33,9 @@
 
 #include "Image.h"
 
-class       Media
+class       Media : public QThread
 {
+    Q_OBJECT
 public:
     Media( const QString& mrl );
     ~Media();
@@ -49,6 +51,8 @@ public:
     QImage&                 getImage();
     void                    play();
 
+    virtual void            run();
+
 private:
     LibVLCpp::Media*            m_vlcMedia;
     LibVLCpp::MediaPlayer*      m_vlcMediaPlayer;
@@ -57,6 +61,14 @@ private:
     QImage*                     m_snapshot;
     uchar*                      m_pixelBuffer;
     QImage*                     m_image;
+    bool                        m_isThreadLaunched;
+    bool                        m_isThreadFinished;
+
+private slots:
+    void                        playSlot();
+
+signals:
+    void                    mediaPlayerReady();
 };
 
 #endif // MEDIA_H
