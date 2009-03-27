@@ -27,8 +27,8 @@ SOURCES += src/main.cpp \
     src/gui/Preferences.cpp \
     src/gui/ListViewMediaItem.cpp \
     src/gui/MediaListWidget.cpp \
-    src/Media.cpp
-
+    src/Media.cpp \
+    src/OutputMedia.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -48,16 +48,14 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/ListViewMediaItem.h \
     src/Media.h \
     src/Image.h \
-    src/gui/MediaListWidget.h
-
+    src/gui/MediaListWidget.h \
+    src/OutputMedia.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \
     src/gui/ui/Timeline.ui \
     src/gui/ui/LibraryWidget.ui
-
-FORMS +=
-
+FORMS += 
 RESOURCES += 
 INCLUDEPATH += src/LibVLCpp
 LIBS = -L/usr/local/lib \
