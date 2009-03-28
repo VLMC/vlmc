@@ -60,7 +60,7 @@ RESOURCES +=
 INCLUDEPATH += src/LibVLCpp
 LIBS = -L/usr/local/lib \
     -lvlc
-TRANSLATIONS = vlmc_es.ts \
-    vlmc_fr.ts \
-    vlmc_sv.ts
+TRANSLATIONS = ts/vlmc_es.ts \
+    ts/vlmc_fr.ts \
+    ts/vlmc_sv.ts
 CODECFORTR = UTF-8
