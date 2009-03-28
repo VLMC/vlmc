@@ -28,8 +28,7 @@ Media::Media( const QString& mrl ) : m_mrl( mrl ), m_snapshot( NULL )
 {
     char const *vlc_argv[] =
     {
-        "-verbose",
-        "3",
+        "-verbose", "3",
         //"--snapshot-format", "jpg",
         //"--plugin-path", VLC_TREE "/modules",
         //"--ignore-config", /* Don't use VLC's config files */
@@ -104,7 +103,7 @@ void        Media::lock( LibVLCpp::Media::DataCtx* ctx, void **renderPtr )
 
 void        Media::unlock( LibVLCpp::Media::DataCtx* ctx )
 {
-    //    qDebug() << "frame just rendered";
+    //qDebug() << "frame just rendered";
     ctx->mutex->unlock();
 }
 

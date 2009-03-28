@@ -7,7 +7,7 @@ OutputMedia::OutputMedia() : m_pixelBuffer( NULL )
     {
         "-verbose",
         "3",
-        "--codec", "invmem",        
+        "--codec", "invmem",
         //"--snapshot-format", "jpg",
         //"--plugin-path", VLC_TREE "/modules",
         //"--ignore-config", /* Don't use VLC's config files */
@@ -34,8 +34,9 @@ OutputMedia::OutputMedia() : m_pixelBuffer( NULL )
     m_vlcMedia->addOption( lock );
     m_vlcMedia->addOption( unlock );
     m_vlcMedia->addOption( data );
+    m_vlcMedia->addOption( ":vout=sdl" );
 
-    m_vlcMediaPlayer = new LibVLCpp::MediaPlayer(m_vlcMedia);
+    m_vlcMediaPlayer = new LibVLCpp::MediaPlayer( m_vlcMedia );
 }
 
 uchar*          OutputMedia::lock( OutputMedia::DataCtx* dataCtx )
@@ -48,7 +49,7 @@ uchar*          OutputMedia::lock( OutputMedia::DataCtx* dataCtx )
 void            OutputMedia::unlock( OutputMedia::DataCtx* dataCtx )
 {
     //FIXME: use class Image to avoid alloc/free...
-    delete dataCtx->outputMedia->m_pixelBuffer;
+    //delete dataCtx->outputMedia->m_pixelBuffer;
     dataCtx->mutex->unlock();
     qDebug() << "Unlocked invmem";
 }
