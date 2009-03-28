@@ -79,8 +79,7 @@ void MainWindow::on_actionQuit_triggered()
 
 void MainWindow::on_actionPreferences_triggered()
 {
-    Preferences* pref = new Preferences();
-    pref->show();
+    Preferences::instance()->exec();
 }
 
 void MainWindow::on_actionAbout_triggered()

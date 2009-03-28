@@ -24,19 +24,16 @@
 #include "ui_Preferences.h"
 
 QTranslator* Preferences::m_currentLang = NULL;
+Preferences* Preferences::m_instance = NULL;
 
-Preferences::Preferences( QWidget *parent ) : QWidget( parent )
+Preferences::Preferences( QWidget *parent ) : QDialog( parent )
 {
     m_ui.setupUi( this );
     m_ui.comboBoxLanguage->addItem( tr( "English" ), "" );
     m_ui.comboBoxLanguage->addItem( tr( "French" ), "fr" );
     m_ui.comboBoxLanguage->addItem( tr( "Spanish" ), "es" );
     m_ui.comboBoxLanguage->addItem( tr( "Swedish" ), "sv" );
-}
-
-Preferences::~Preferences()
-{
-
+    connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( deleteLater() ) );
 }
 
 void Preferences::changeEvent( QEvent *e )
@@ -50,6 +47,14 @@ void Preferences::changeEvent( QEvent *e )
     default:
         break;
     }
+}
+
+Preferences* Preferences::instance()
+{
+    if ( m_instance )
+        return m_instance;
+    m_instance = new Preferences();
+    return m_instance;
 }
 
 void Preferences::on_pushButtonCancel_clicked()

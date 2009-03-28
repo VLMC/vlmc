@@ -30,22 +30,22 @@
 #include <QtDebug>
 #include "ui_Preferences.h"
 
-class Preferences : public QWidget
+class Preferences : public QDialog
 {
     Q_OBJECT
     Q_DISABLE_COPY( Preferences )
 public:
-    explicit Preferences( QWidget *parent = 0 );
-    virtual ~Preferences();
-
+    static  Preferences* instance();
     static  void    changeLang(QString lang);
 
 protected:
     virtual void changeEvent( QEvent *e );
 
 private:
+    explicit Preferences( QWidget *parent = 0 );
     Ui::Preferences m_ui;
     static QTranslator* m_currentLang;
+    static Preferences* m_instance;
 
 private slots:
     void on_pushButtonCancel_clicked();
