@@ -56,7 +56,6 @@ void MainWindow::m_initializeDockWidgets( void )
 
     DockWidgetManager *dockManager = DockWidgetManager::instance();
 
-    //First param is NULL for the moment. It will be replaced by the LibraryWidget
     dockManager->addDockedWidget( new LibraryWidget( this ),
                                   tr( "Media Library" ),
                                   Qt::AllDockWidgetAreas, 
@@ -68,14 +67,6 @@ void MainWindow::m_initializeDockWidgets( void )
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
-
-    //dockManager->addDockedWidget( 0,
-    //                              "library2",
-    //                              Qt::AllDockWidgetAreas,
-    //                              QDockWidget::AllDockWidgetFeatures,
-    //                              Qt::RightDockWidgetArea );
-
-    //Create the library widget
 }
 
 //Private slots definition
@@ -87,6 +78,6 @@ void MainWindow::on_actionQuit_triggered()
 
 void MainWindow::on_actionPreferences_triggered()
 {
-    Preferences* pref = new Preferences();\
+    Preferences* pref = new Preferences();
     pref->show();
 }
