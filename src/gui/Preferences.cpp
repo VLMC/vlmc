@@ -31,6 +31,7 @@ Preferences::Preferences( QWidget *parent ) : QWidget( parent )
     m_ui.comboBoxLanguage->addItem( tr( "English" ), "" );
     m_ui.comboBoxLanguage->addItem( tr( "French" ), "fr" );
     m_ui.comboBoxLanguage->addItem( tr( "Spanish" ), "es" );
+    m_ui.comboBoxLanguage->addItem( tr( "Swedish" ), "sv" );
 }
 
 Preferences::~Preferences()
