@@ -38,6 +38,8 @@ public:
     explicit Preferences( QWidget *parent = 0 );
     virtual ~Preferences();
 
+    static  void    changeLang(QString lang);
+
 protected:
     virtual void changeEvent( QEvent *e );
 

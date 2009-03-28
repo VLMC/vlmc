@@ -30,6 +30,7 @@ int main( int argc, char **argv )
     app.setOrganizationName( "vlmc" );
     app.setOrganizationDomain( "vlmc.org" );
     QSettings::setDefaultFormat( QSettings::IniFormat );
+    Preferences::changeLang( QSettings().value( "Lang" ).toString() );
     MainWindow w;
     w.show();
 	return app.exec();

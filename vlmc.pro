@@ -56,11 +56,12 @@ FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/Timeline.ui \
     src/gui/ui/LibraryWidget.ui
 FORMS += 
-RESOURCES += 
-INCLUDEPATH += src/LibVLCpp
-LIBS = -L/usr/local/lib \
-    -lvlc
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts
+RESOURCES += ressources.qrc
+INCLUDEPATH += src/LibVLCpp
+LIBS = -L/usr/local/lib \
+    -lvlc
 CODECFORTR = UTF-8
+include(locale.pri)

@@ -59,9 +59,15 @@ void Preferences::on_pushButtonCancel_clicked()
 
 void Preferences::on_pushButtonApply_clicked()
 {
+    Preferences::changeLang( m_ui.comboBoxLanguage->itemData( m_ui.comboBoxLanguage->currentIndex() ).toString() );
+    close();
+}
+
+void Preferences::changeLang( QString langValue )
+{
     QSettings settings;
     QString lang = settings.value( "Lang" ).toString();
-    QString langValue = m_ui.comboBoxLanguage->itemData( m_ui.comboBoxLanguage->currentIndex() ).toString();
+    settings.setValue( "Lang", langValue);
     if ( m_currentLang != NULL )
     {
         qApp->removeTranslator( m_currentLang );
@@ -71,8 +77,7 @@ void Preferences::on_pushButtonApply_clicked()
     if ( !langValue.isEmpty() )
     {
         m_currentLang = new QTranslator();
-        m_currentLang->load( "vlmc_" + langValue, QApplication::applicationDirPath() + "/../" );
+        m_currentLang->load( langValue, ":/Lang/" );
         qApp->installTranslator( m_currentLang );
     }
-    close();
 }
