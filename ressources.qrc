@@ -4,4 +4,12 @@
         <file alias="fr" >ts/vlmc_fr.qm</file>
         <file alias="sv" >ts/vlmc_sv.qm</file>
     </qresource>
+    <qresource prefix="/images" >
+        <file>images/vlmc.png</file>
+    </qresource>
+    <qresource prefix="/text" >
+        <file>AUTHORS</file>
+        <file>COPYING</file>
+        <file>TRANSLATORS</file>
+    </qresource>
 </RCC>

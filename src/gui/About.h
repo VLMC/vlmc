@@ -1,9 +1,9 @@
 /*****************************************************************************
- * MainWindow.h: VLMC MainWindow
+ * About.h: About dialog
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Ludovic Fauvet <etix@l0cal.com>
+ * Authors: Christophe Courtaut <christophe.courtaut@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,39 +20,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef ABOUT_H
+#define ABOUT_H
 
-#include <QApplication>
-#include "ui_MainWindow.h"
-#include "LibraryWidget.h"
-#include "PreviewWidget.h"
-#include "DockWidgetManager.h"
-#include "Preferences.h"
+#include <QPlainTextEdit>
+#include "ui_About.h"
 
-class MainWindow : public QMainWindow
+class About : public QDialog
 {
     Q_OBJECT
-    Q_DISABLE_COPY( MainWindow )
-
+    Q_DISABLE_COPY( About )
 public:
-    explicit MainWindow( QWidget *parent = 0 );
+    static About* instance();
 
 protected:
     virtual void changeEvent( QEvent *e );
 
 private:
-    void m_initializeDockWidgets( void );
+    explicit About( QWidget *parent = 0 );
+    void setText( const QString& filename, QPlainTextEdit* widget );
+    Ui::About m_ui;
+    static About* m_instance;
+};
 
-
-    Ui::MainWindow m_ui;
-    LibraryWidget* m_library;
-
-private slots:
-    void on_actionQuit_triggered();
-     void on_actionAbout_triggered();
-   void on_actionPreferences_triggered();
-}
-;
-
-#endif // MAINWINDOW_H
+#endif // ABOUT_H

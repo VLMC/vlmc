@@ -26,6 +26,7 @@
 #include <QDockWidget>
 #include "MainWindow.h"
 #include "Timeline.h"
+#include "About.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent )
@@ -80,4 +81,9 @@ void MainWindow::on_actionPreferences_triggered()
 {
     Preferences* pref = new Preferences();
     pref->show();
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    About::instance()->exec();
 }
