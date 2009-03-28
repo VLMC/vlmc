@@ -1,6 +1,7 @@
 /build
 /bin
 /qtc-gdbmacros
+/ts/*.qm
 Makefile*
 
 *.pro.user
