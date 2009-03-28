@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>VideoLAN Movie Creator</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../../../ressources.qrc">
+    <normaloff>:/images/images/vlmc.png</normaloff>:/images/images/vlmc.png</iconset>
+  </property>
   <property name="dockNestingEnabled">
    <bool>true</bool>
   </property>
@@ -96,6 +100,8 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../../ressources.qrc"/>
+ </resources>
  <connections/>
 </ui>
