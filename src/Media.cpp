@@ -29,6 +29,7 @@ Media::Media( const QString& mrl ) : m_mrl( mrl ), m_snapshot( NULL )
     char const *vlc_argv[] =
     {
         "-verbose", "3",
+        "--no-skip-frames",
         //"--snapshot-format", "jpg",
         //"--plugin-path", VLC_TREE "/modules",
         //"--ignore-config", /* Don't use VLC's config files */
