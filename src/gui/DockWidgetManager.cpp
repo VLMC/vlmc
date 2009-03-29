@@ -1,5 +1,5 @@
 /*****************************************************************************
- * main.cpp: VLMC main
+ * DockWidgetManager.cpp: Object managing the application docked widget
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -19,15 +19,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+#include <QtDebug>
+#include <QApplication>
+#include <QMap>
 
 #include "DockWidgetManager.h"
 
 DockWidgetManager *DockWidgetManager::m_instance = 0;
 
-DockWidgetManager *DockWidgetManager::instance()
+DockWidgetManager *DockWidgetManager::instance( QObject *parent )
 {
     if (m_instance == 0)
-        m_instance = new DockWidgetManager();
+        m_instance = new DockWidgetManager( parent );
 
     return (m_instance);
 }
@@ -43,8 +46,12 @@ void DockWidgetManager::addDockedWidget( QWidget *widget,
                                        QDockWidget::DockWidgetFeature features,
                                        Qt::DockWidgetArea startArea)
 {
+    if ( m_dockWidgets.contains( qs_name ) )
+        return ;
+
     QDockWidget* dock = new QDockWidget( tr( qs_name.toStdString().c_str() ), m_mainWin );
 
+    m_dockWidgets.insert(qs_name, dock);
     dock->setWidget( widget );
     dock->setAllowedAreas( areas );
     dock->setFeatures( features );
@@ -52,6 +59,36 @@ void DockWidgetManager::addDockedWidget( QWidget *widget,
     widget->show();
 }
 
-DockWidgetManager::DockWidgetManager()
+
+DockWidgetManager::DockWidgetManager( QObject *parent )
+    : QObject( parent )
 {
+    QObject::connect( qApp,
+                      SIGNAL( aboutToQuit() ),
+                      this,
+                      SLOT( deleteLater() ) );
+}
+
+DockWidgetManager::~DockWidgetManager()
+{
+    QList<QDockWidget*> widgets = m_dockWidgets.values();
+    QDockWidget* widget;
+
+    foreach(widget, widgets)
+    {
+        delete widget;
+    }
+}
+
+void DockWidgetManager::transLateWidgetTitle()
+{
+    QMap<QString, QDockWidget*>::iterator ed = m_dockWidgets.end();
+    QMap<QString, QDockWidget*>::iterator it;
+
+    for ( it = m_dockWidgets.begin() ; it != ed ; ++it )
+    {
+        QDockWidget *widget = it.value();
+        widget->setWindowTitle( QApplication::translate( "MainWindow",
+                                                         it.key().toStdString().c_str() ) );
+    }
 }

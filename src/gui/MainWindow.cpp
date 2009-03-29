@@ -32,8 +32,13 @@ MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent )
 {
     m_ui.setupUi( this );
-    DockWidgetManager::instance()->setMainWindow( this );
+    DockWidgetManager::instance( this )->setMainWindow( this );
     m_initializeDockWidgets();
+
+    QObject::connect( this,
+                      SIGNAL( translateDockWidgetTitle() ),
+                      DockWidgetManager::instance(),
+                      SLOT(transLateWidgetTitle() ) );
 }
 
 void MainWindow::changeEvent( QEvent *e )
@@ -42,6 +47,7 @@ void MainWindow::changeEvent( QEvent *e )
     {
     case QEvent::LanguageChange:
         m_ui.retranslateUi( this );
+        emit translateDockWidgetTitle();
         break;
     default:
         break;

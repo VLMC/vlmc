@@ -50,9 +50,11 @@ private:
 
 private slots:
     void on_actionQuit_triggered();
-     void on_actionAbout_triggered();
-   void on_actionPreferences_triggered();
-}
-;
+    void on_actionAbout_triggered();
+    void on_actionPreferences_triggered();
+
+signals:
+    void translateDockWidgetTitle();
+};
 
 #endif // MAINWINDOW_H

@@ -1,5 +1,5 @@
 /*****************************************************************************
- * main.cpp: VLMC main
+ * DockWidgetManager.h: Object managing the application docked widget
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -28,13 +28,14 @@
 #include <QWidget>
 #include <QDockWidget>
 #include <QString>
+#include <QMap>
 
 class DockWidgetManager : public QObject
 {
 	Q_OBJECT
 
 	public:
-		static DockWidgetManager *instance();
+		static DockWidgetManager *instance( QObject *parent = 0 );
 		void setMainWindow( QMainWindow *mainWin );
 		void addDockedWidget( QWidget *widget,
 							  const QString &qs_name,
@@ -42,13 +43,21 @@ class DockWidgetManager : public QObject
 							  QDockWidget::DockWidgetFeature features,
 							  Qt::DockWidgetArea startArea );
 
+    protected:
+        //virtual void changeEvent( QEvent *e );
+
 	private:
-		explicit DockWidgetManager();
-        virtual ~DockWidgetManager() { delete m_instance; }
+		explicit DockWidgetManager( QObject *parent = 0 );
+        virtual ~DockWidgetManager();
 		DockWidgetManager(const DockWidgetManager &);
 		DockWidgetManager & operator = ( const DockWidgetManager & );
+
 		QMainWindow *m_mainWin;
+        QMap<QString, QDockWidget*> m_dockWidgets;
 		static DockWidgetManager *m_instance;
+
+    public slots:
+        void transLateWidgetTitle();
 };
 
 #endif
