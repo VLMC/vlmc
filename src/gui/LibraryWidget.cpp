@@ -88,11 +88,8 @@ bool                LibraryWidget::removeMedia(ListViewMediaItem* item)
     return false;
 }
 
-ListViewMediaItem*                LibraryWidget::insertNewMediaFromFileDialog( QString title, QString filter, ListViewMediaItem::fType fileType )
+ListViewMediaItem*                LibraryWidget::insertNewMedia( QString fileName, ListViewMediaItem::fType fileType )
 {
-    QString fileName = QFileDialog::getOpenFileName( this, title, QDir::homePath(), filter);
-    if ( fileName.isEmpty() )
-        return NULL;
     ListViewMediaItem* item = NULL;
     foreach( item, *m_medias )
     {
@@ -104,22 +101,33 @@ ListViewMediaItem*                LibraryWidget::insertNewMediaFromFileDialog( Q
     return item;
 }
 
+void    LibraryWidget::insertNewMediasFromFileDialog( QString title, QString filter, ListViewMediaItem::fType filetype )
+{
+    QStringList fileNames = QFileDialog::getOpenFileNames( this, title, QDir::homePath(), filter);
+    if ( fileNames.isEmpty() )
+        return ;
+    QString fileName;
+    foreach ( fileName, fileNames )
+        insertNewMedia( fileName, filetype );
+    return ;
+}
+
 void LibraryWidget::on_pushButtonAddMedia_clicked()
 {
     switch( m_ui.LibraryTabs->currentIndex() )
     {
     case 0:
-        insertNewMediaFromFileDialog( tr( "Open Audios" ),
+        insertNewMediasFromFileDialog( tr( "Open Audios" ),
                                       tr( "Audio Files" ) + " (*.mp3 *.oga *.flac *.aac *.wav)" ,
                                       ListViewMediaItem::Audio );
         break;
     case 1:
-        insertNewMediaFromFileDialog( tr( "Open Videos" ),
+        insertNewMediasFromFileDialog( tr( "Open Videos" ),
                                       tr( "Video Files" ) + " (*.mov *.avi *.mkv)" ,
                                       ListViewMediaItem::Video );
         break;
     case 2:
-        insertNewMediaFromFileDialog( tr( "Open Images" ),
+        insertNewMediasFromFileDialog( tr( "Open Images" ),
                                       tr( "Images Files" ) + " (*.gif *.png *.jpg)" ,
                                       ListViewMediaItem::Image );
         break;

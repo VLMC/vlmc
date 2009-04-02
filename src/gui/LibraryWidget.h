@@ -50,8 +50,8 @@ public:
 protected:
     virtual void changeEvent( QEvent *e );
 private:
-    QString             getNewMediaFileName( QString title, QString filter, ListViewMediaItem::fType );
-    ListViewMediaItem*  insertNewMediaFromFileDialog(QString title, QString filter, ListViewMediaItem::fType fileType);
+    ListViewMediaItem*  insertNewMedia( QString filename, ListViewMediaItem::fType fileType );
+    void                insertNewMediasFromFileDialog( QString title, QString filter, ListViewMediaItem::fType fileType );
 
     Ui::LibraryWidget                 m_ui;
     static QList<ListViewMediaItem*>* m_medias;
