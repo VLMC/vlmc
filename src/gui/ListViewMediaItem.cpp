@@ -22,11 +22,14 @@
 
 #include "ListViewMediaItem.h"
 
-ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, ListViewMediaItem::fType fType, QListWidget* parent, int type ) : QListWidgetItem( parent, type )
+ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, ListViewMediaItem::fType fType, QListWidget* parent, int type ) :
+        QListWidgetItem( parent, type )
 {
     m_fileInfo = fInfo;
     m_fileType = fType;
-    setText( m_fileInfo->baseName() );
+    //TODO : Replace this by snapshot.
+    setIcon( QIcon( ":/images/images/vlmc.png" ) );
+    setText( fInfo->baseName() );
 }
 
 ListViewMediaItem::~ListViewMediaItem()
