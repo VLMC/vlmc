@@ -31,6 +31,7 @@ Media::Media( const QString& mrl ) : m_mrl( mrl ), m_snapshot( NULL )
     {
         "-verbose", "3",
         "--no-skip-frames",
+        "--no-audio",
         //"--plugin-path", VLC_TREE "/modules",
         //"--ignore-config", /* Don't use VLC's config files */
     };
