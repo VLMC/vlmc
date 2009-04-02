@@ -33,6 +33,7 @@
 #include <QMimeData>
 #include <QDrag>
 #include <QList>
+#include <QSettings>
 #include "ListViewMediaItem.h"
 #include "ui_LibraryWidget.h"
 

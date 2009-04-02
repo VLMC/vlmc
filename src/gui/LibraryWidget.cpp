@@ -103,12 +103,17 @@ ListViewMediaItem*                LibraryWidget::insertNewMedia( QString fileNam
 
 void    LibraryWidget::insertNewMediasFromFileDialog( QString title, QString filter, ListViewMediaItem::fType filetype )
 {
-    QStringList fileNames = QFileDialog::getOpenFileNames( this, title, QDir::homePath(), filter);
+    QSettings settings;
+    QString path = settings.value( "mediaLibraryDialogPath", QDir::homePath() ).toString();
+    QStringList fileNames = QFileDialog::getOpenFileNames( this, title, path, filter );
     if ( fileNames.isEmpty() )
         return ;
     QString fileName;
+    ListViewMediaItem* item = NULL;
     foreach ( fileName, fileNames )
-        insertNewMedia( fileName, filetype );
+        item = insertNewMedia( fileName, filetype );
+    if ( item != NULL )
+        settings.setValue( "mediaLibraryDialogPath" , item->fileInfo()->absoluteDir().absolutePath() );
     return ;
 }
 
