@@ -1,23 +1,8 @@
 #include <QtDebug>
 #include "OutputMedia.h"
 
-OutputMedia::OutputMedia() : m_pixelBuffer( NULL )
+OutputMedia::OutputMedia( LibVLCpp::Instance* instance ) : Media( instance,"fake://" ), m_pixelBuffer( NULL )
 {
-    char const *vlc_argv[] =
-    {
-        "-verbose",
-        "3",
-        "--codec", "invmem",
-        //"--snapshot-format", "jpg",
-        //"--plugin-path", VLC_TREE "/modules",
-        //"--ignore-config", /* Don't use VLC's config files */
-    };
-    int     vlc_argc = sizeof( vlc_argv ) / sizeof( *vlc_argv );
-    
-    m_instance = new LibVLCpp::Instance( vlc_argc, vlc_argv );
-
-    m_vlcMedia = new LibVLCpp::Media( m_instance, "fake://" );
-
     m_dataCtx = new OutputMedia::DataCtx;
     m_dataCtx->mutex = new QMutex;
     m_dataCtx->outputMedia = this;
@@ -29,14 +14,12 @@ OutputMedia::OutputMedia() : m_pixelBuffer( NULL )
     sprintf( unlock, ":invmem-unlock=%lld", (long long int)(intptr_t)&OutputMedia::unlock );
     sprintf( data, ":invmem-data=%lld", (long long int)(intptr_t)m_dataCtx );
 
-    m_vlcMedia->addOption( width );
-    m_vlcMedia->addOption( height );
-    m_vlcMedia->addOption( lock );
-    m_vlcMedia->addOption( unlock );
-    m_vlcMedia->addOption( data );
-    m_vlcMedia->addOption( ":vout=sdl" );
-
-    m_vlcMediaPlayer = new LibVLCpp::MediaPlayer( m_vlcMedia );
+    addParam( width );
+    addParam( height );
+    addParam( lock );
+    addParam( unlock );
+    addParam( data );
+    addParam( ":vout=sdl" );
 }
 
 uchar*          OutputMedia::lock( OutputMedia::DataCtx* dataCtx )
@@ -63,5 +46,5 @@ void            OutputMedia::setVmem( uchar* pixelBuffer )
 
 void            OutputMedia::play()
 {
-    m_vlcMediaPlayer->play();
+    Media::play();
 }

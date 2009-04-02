@@ -23,11 +23,9 @@
 #ifndef OUTPUTMEDIA_H
 #define OUTPUTMEDIA_H
 
-#include "VLCMedia.h"
-#include "VLCInstance.h"
-#include "VLCMediaPlayer.h"
+#include "Media.h"
 
-class       OutputMedia
+class       OutputMedia : public Media
 {
 public:
     struct              DataCtx
@@ -36,17 +34,15 @@ public:
         QMutex*         mutex;
         OutputMedia*    outputMedia;
     };
-    OutputMedia();
+    OutputMedia( LibVLCpp::Instance* instance );
+//FIXME: destructor ?
     static uchar*           lock( OutputMedia::DataCtx* dataCtx );
     static void             unlock( OutputMedia::DataCtx* dataCtx );
 
     void                    setVmem( uchar* pixelBuffer );
-    void                    play();
+    virtual void            play();
 
 private:
-    LibVLCpp::Media*            m_vlcMedia;
-    LibVLCpp::MediaPlayer*      m_vlcMediaPlayer;
-    LibVLCpp::Instance*         m_instance;
     OutputMedia::DataCtx*       m_dataCtx;
     uchar*                      m_pixelBuffer;
 

@@ -7,7 +7,9 @@ MOC_DIR = build/moc
 UI_DIR = build/ui
 INCLUDEPATH = build/moc \
     build/ui
-QT += gui network svg
+QT += gui \
+    network \
+    svg
 SOURCES += src/main.cpp \
     src/gui/MainWindow.cpp \
     src/gui/LibraryWidget.cpp \
@@ -27,7 +29,8 @@ SOURCES += src/main.cpp \
     src/Media.cpp \
     src/OutputMedia.cpp \
     src/gui/About.cpp \
-    src/gui/Transcode.cpp
+    src/gui/Transcode.cpp \
+    src/InputMedia.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -48,7 +51,8 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/MediaListWidget.h \
     src/OutputMedia.h \
     src/gui/About.h \
-    src/gui/Transcode.h
+    src/gui/Transcode.h \
+    src/InputMedia.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \
@@ -61,7 +65,8 @@ TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts
 RESOURCES += ressources.qrc
-INCLUDEPATH += src/LibVLCpp
+INCLUDEPATH +=  src/LibVLCpp \
+                src
 LIBS = -L/usr/local/lib \
     -lvlc
 CODECFORTR = UTF-8

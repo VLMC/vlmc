@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Media.h: Class for media handling
+ * Media.cpp: Generic class for media handling
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -23,74 +23,35 @@
 #ifndef MEDIA_H
 #define MEDIA_H
 
+#include <QList>
 #include <QString>
-#include <QImage>
-#include <QThread>
 
 #include "VLCMedia.h"
 #include "VLCInstance.h"
 #include "VLCMediaPlayer.h"
 
-#include "Image.h"
-
-class       Media : private QThread
+/**
+  * Generic class for media handling.
+  */
+class       Media
 {
-    Q_OBJECT
 public:
-    Media( const QString& mrl );
-    ~Media();
+    virtual ~Media();
 
-    static void             lock( LibVLCpp::Media::DataCtx* dataCtx, void **pp_ret );
-    static void             unlock( LibVLCpp::Media::DataCtx* dataCtx );
+    void                loadMedia( const QString& mrl );
+    virtual void        play();
+    void                addParam( const QString& param );
+    void                setupMedia();
 
-    QImage*                 takeSnapshot( unsigned int width, unsigned int heigth );
+protected:
+    //Protected constructor so we can't use a Media without its sub-implementation
+    Media( LibVLCpp::Instance* instance, const QString& mrl );
 
-    /**
-      * Ask libvlc if the media is currently playing
-      */
-    bool                    isPlaying();
-    /**
-      * Ask libvlc if the media can be seeked
-      */
-    bool                    isSeekable();
-    /**
-      * Can be used to know if the Media is fully usable (IE. can be seeked, vmem can be used, etc...)
-      */
-    bool                    isReady();
-    /**
-      * Return the length (duration) of a Media
-      */
-    qint64                  getLength();
-    /**
-      * Returns the last rendered frame
-      */
-    QImage&                 getImage();
-    /**
-      * Start the playback.
-      * This need to be called at least once in order to prepare the media. if not, the media can't be seeked or anything else.
-      * When pre-launching is completed, a "mediaReady" signal will be fired.
-      */
-    void                    play();
-    void                    setDrawable( WId handle );
-
-private:
-    virtual void            run();
-
-private:
+    LibVLCpp::Instance*         m_instance;
     LibVLCpp::Media*            m_vlcMedia;
     LibVLCpp::MediaPlayer*      m_vlcMediaPlayer;
-    LibVLCpp::Instance*         m_instance;
     QString                     m_mrl;
-    QImage*                     m_snapshot;
-    uchar*                      m_pixelBuffer;
-    QImage*                     m_image;
-    bool                        m_isMediaInitialized;
-
-private slots:
-    void                        playSlot();
-
-signals:
-    void                        mediaReady();
+    QList<QString>              m_parameters;
 };
 
 #endif // MEDIA_H
