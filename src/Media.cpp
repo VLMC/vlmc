@@ -65,9 +65,8 @@ Media::Media( const QString& mrl ) : m_mrl( mrl ), m_snapshot( NULL )
     //And now we play the media
     m_vlcMediaPlayer = new LibVLCpp::MediaPlayer( m_vlcMedia );
 
-    m_isThreadLaunched = false;
-    m_isThreadFinished = false;
-    connect(this, SIGNAL(mediaPlayerReady()), this, SLOT(playSlot()));
+    m_isMediaInitialized = false;
+    start();
 }
 
 void    Media::run()
@@ -77,15 +76,13 @@ void    Media::run()
     {
         if( m_vlcMediaPlayer->isSeekable() && m_vlcMediaPlayer->getLength() > 0 )
         {
-            emit mediaPlayerReady();
-            m_isThreadFinished = true;
-            m_vlcMediaPlayer->stop();
+            m_isMediaInitialized = true;
+            m_vlcMediaPlayer->pause();
             return ;
         }
         msleep(100);
     }
 }
-
 
 Media::~Media()
 {
@@ -143,17 +140,21 @@ qint64      Media::getLength()
 
 void        Media::play()
 {
-    if (!m_isThreadLaunched && !m_isThreadFinished)
+    if( m_isMediaInitialized )
     {
-        m_isThreadLaunched = true;
-        start();
+        qDebug() << "play";
+        playSlot();
     }
-    else if (m_isThreadLaunched && m_isThreadFinished)
-        m_vlcMediaPlayer->play();
+    else
+    {
+        msleep(100);
+        play();
+    }
 }
 
 void        Media::playSlot()
 {
+    qDebug() << "playSlot";
     m_vlcMediaPlayer->play();
 }
 

@@ -62,8 +62,7 @@ private:
     QImage*                     m_snapshot;
     uchar*                      m_pixelBuffer;
     QImage*                     m_image;
-    bool                        m_isThreadLaunched;
-    bool                        m_isThreadFinished;
+    bool                        m_isMediaInitialized;
 
 private slots:
     void                        playSlot();
