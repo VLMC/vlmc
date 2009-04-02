@@ -29,6 +29,9 @@ QList<ListViewMediaItem*>* LibraryWidget::m_medias = NULL;
 LibraryWidget::LibraryWidget( QWidget *parent ) : QWidget( parent )
 {
     m_ui.setupUi( this );
+    m_ui.listWidgetAudio->setType( ListViewMediaItem::Audio );
+    m_ui.listWidgetImage->setType( ListViewMediaItem::Image );
+    m_ui.listWidgetVideo->setType( ListViewMediaItem::Video );
     if ( LibraryWidget::m_medias == NULL )
         LibraryWidget::m_medias = new QList<ListViewMediaItem*>();
 }

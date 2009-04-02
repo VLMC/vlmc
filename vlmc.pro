@@ -7,8 +7,7 @@ MOC_DIR = build/moc
 UI_DIR = build/ui
 INCLUDEPATH = build/moc \
     build/ui
-QT += gui \
-    network
+QT += gui network svg
 SOURCES += src/main.cpp \
     src/gui/MainWindow.cpp \
     src/gui/LibraryWidget.cpp \

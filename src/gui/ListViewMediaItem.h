@@ -20,8 +20,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
- #ifndef LISTVIEWMEDIAITEM_H
- #define LISTVIEWMEDIAITEM_H
+#ifndef LISTVIEWMEDIAITEM_H
+#define LISTVIEWMEDIAITEM_H
 
 #include <QFileInfo>
 #include <QListWidgetItem>
