@@ -37,6 +37,19 @@ Transcode *Transcode::instance( QWidget *parent )
     return ( Transcode::m_instance );
 }
 
+void Transcode::changeEvent( QEvent *e )
+{
+    switch ( e->type() )
+    {
+    case QEvent::LanguageChange:
+        m_ui.retranslateUi( this );
+        break;
+    default:
+        QWidget::changeEvent( e );
+        break;
+    }
+}
+
 Transcode::Transcode( QWidget *parent )
     : QDialog( parent )
 {

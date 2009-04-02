@@ -25,6 +25,7 @@
 
 #include <QDialog>
 #include <QString>
+#include <QEvent>
 
 #include "ui_transcode.h"
 
@@ -35,6 +36,9 @@ class Transcode : public QDialog
     public:
         static Transcode *instance( QWidget* parent = 0 );
 
+    protected:
+        virtual void changeEvent( QEvent *e );
+
     private:
         explicit Transcode( QWidget *parent = 0 );
         ~Transcode() {}
@@ -43,7 +47,7 @@ class Transcode : public QDialog
 
         static Transcode *m_instance;
 
-    public slots:
+    private slots:
         void on_browseFileButton_clicked();
 
         void on_dialogButtonBox_accepted();
