@@ -21,16 +21,16 @@
  *****************************************************************************/
 
 #include <QtDebug>
+#include <QTemporaryFile>
 
 #include "Media.h"
 
-Media::Media( const QString& mrl ) : m_mrl( mrl ), m_snapshot( NULL ), m_isThreadLaunched(false), m_isThreadFinished(false)
+Media::Media( const QString& mrl ) : m_mrl( mrl ), m_snapshot( NULL ), m_isThreadLaunched( false ), m_isThreadFinished( false )
 {
     char const *vlc_argv[] =
     {
         "-verbose", "3",
         "--no-skip-frames",
-        //"--snapshot-format", "jpg",
         //"--plugin-path", VLC_TREE "/modules",
         //"--ignore-config", /* Don't use VLC's config files */
     };
@@ -64,6 +64,9 @@ Media::Media( const QString& mrl ) : m_mrl( mrl ), m_snapshot( NULL ), m_isThrea
 
     //And now we play the media
     m_vlcMediaPlayer = new LibVLCpp::MediaPlayer( m_vlcMedia );
+
+    //And launch the checking thread
+    start();
 }
 
 void    Media::run()
@@ -74,6 +77,8 @@ void    Media::run()
         if( m_vlcMediaPlayer->isSeekable() && m_vlcMediaPlayer->getLength() > 0 )
         {
             m_isMediaInitialized = true;
+            emit mediaReady();
+            m_isThreadFinished = true;
             m_vlcMediaPlayer->pause();
             return ;
         }
@@ -104,18 +109,24 @@ void        Media::unlock( LibVLCpp::Media::DataCtx* ctx )
 
 QImage*      Media::takeSnapshot( unsigned int width, unsigned int height )
 {
-    //FIXME
-    //this isn't working, but it seems like a vlc problem, since lastest release of vlc segfault when a screenshot is taken... -_-
-    return NULL;
-
-
     if ( m_snapshot == NULL )
     {
-        qDebug() << "trying to take a snapshot";
-        m_vlcMediaPlayer->takeSnapshot( "/tmp/vlmcscreenshot.tmp.gif", width, height );
-        qDebug() << "done snapshoting";
-        m_snapshot = new QImage( "/tmp/vlmcscreenshot.tmp.gif" );
-        qDebug() << "written to a QImage";
+//        qint64 currentTime = m_vlcMediaPlayer->getTime();
+//        qint64 length = getLength();
+//            qDebug() << currentTime << length;
+//        m_vlcMediaPlayer->setTime(length / 2);
+
+
+//        qDebug() << "trying to take a snapshot";
+        QTemporaryFile tmp;
+        tmp.open();
+        char* tmpStr = const_cast<char*>(tmp.fileName().toStdString().c_str());
+        m_vlcMediaPlayer->takeSnapshot( tmpStr, width, height );
+//        qDebug() << "done snapshoting";
+        m_snapshot = new QImage( tmp.fileName() );
+//        qDebug() << "written to a QImage";
+
+//        m_vlcMediaPlayer->setTime(currentTime);
     }
     return m_snapshot;
 }
@@ -128,6 +139,12 @@ bool        Media::isPlaying()
 bool        Media::isSeekable()
 {
     return m_vlcMediaPlayer->isSeekable();
+}
+
+bool        Media::isReady()
+{
+    //If the thread has finished without any error, then the media is ready o//
+    return m_isMediaInitialized;
 }
 
 qint64      Media::getLength()

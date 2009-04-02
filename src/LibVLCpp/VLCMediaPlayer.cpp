@@ -59,7 +59,6 @@ qint64                          MediaPlayer::getTime()
 
 void                            MediaPlayer::setTime( qint64 time )
 {
-//    qDebug() << "Setting media time to " << time;
     libvlc_media_player_set_time( m_internalPtr, time, m_ex );
     m_ex.checkThrow();
 }
@@ -68,7 +67,6 @@ qint64                          MediaPlayer::getLength()
 {
     qint64 length = libvlc_media_player_get_length( m_internalPtr, m_ex );
     m_ex.checkThrow();
-    //qDebug() << "Media length: " << length;
     return length;
 }
 
