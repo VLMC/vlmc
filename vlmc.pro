@@ -28,7 +28,8 @@ SOURCES += src/main.cpp \
     src/gui/MediaListWidget.cpp \
     src/Media.cpp \
     src/OutputMedia.cpp \
-    src/gui/About.cpp
+    src/gui/About.cpp \
+    src/gui/Transcode.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -50,13 +51,15 @@ HEADERS += src/gui/MainWindow.h \
     src/Image.h \
     src/gui/MediaListWidget.h \
     src/OutputMedia.h \
-    src/gui/About.h
+    src/gui/About.h \
+    src/gui/Transcode.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \
     src/gui/ui/Timeline.ui \
     src/gui/ui/LibraryWidget.ui \
-    src/gui/ui/About.ui
+    src/gui/ui/About.ui \
+    src/gui/ui/Transcode.ui
 FORMS += 
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \

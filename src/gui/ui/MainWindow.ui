@@ -34,6 +34,7 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionTranscode_File"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -121,6 +122,11 @@
    </property>
    <property name="text">
     <string>Preview</string>
+   </property>
+  </action>
+  <action name="actionTranscode_File">
+   <property name="text">
+    <string>Transcode File</string>
    </property>
   </action>
  </widget>

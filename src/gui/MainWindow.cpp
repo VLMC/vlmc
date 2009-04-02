@@ -27,6 +27,7 @@
 #include "MainWindow.h"
 #include "Timeline.h"
 #include "About.h"
+#include "Transcode.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent )
@@ -91,4 +92,9 @@ void MainWindow::on_actionPreferences_triggered()
 void MainWindow::on_actionAbout_triggered()
 {
     About::instance()->exec();
+}
+
+void MainWindow::on_actionTranscode_File_triggered()
+{
+    Transcode::instance( this )->exec();
 }
