@@ -30,6 +30,56 @@ MediaPlayer::MediaPlayer( Media* media, bool playStop /* = true*/ )
 {
     m_internalPtr = libvlc_media_player_new_from_media( media->getInternalPtr(), m_ex );
     m_ex.checkThrow();
+
+    p_em = libvlc_media_player_event_manager( m_internalPtr, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerSnapshotTaken, callbacks, this, m_ex );
+}
+
+void                            MediaPlayer::callbacks( const libvlc_event_t* event, void* ptr )
+{
+    MediaPlayer* self = reinterpret_cast<MediaPlayer*>( ptr );
+    switch ( event->type )
+    {
+//    case libvlc_MediaMetaChanged:
+//    case libvlc_MediaSubItemAdded:
+//    case libvlc_MediaDurationChanged:
+//    case libvlc_MediaPreparsedChanged:
+//    case libvlc_MediaFreed:
+//    case libvlc_MediaStateChanged:
+//    case libvlc_MediaPlayerNothingSpecial:
+//    case libvlc_MediaPlayerOpening:
+//    case libvlc_MediaPlayerBuffering:
+//    case libvlc_MediaPlayerPlaying:
+//    case libvlc_MediaPlayerPaused:
+//    case libvlc_MediaPlayerStopped:
+//    case libvlc_MediaPlayerForward:
+//    case libvlc_MediaPlayerBackward:
+//    case libvlc_MediaPlayerEndReached:
+//    case libvlc_MediaPlayerEncounteredError:
+//    case libvlc_MediaPlayerTimeChanged:
+//    case libvlc_MediaPlayerPositionChanged:
+//    case libvlc_MediaPlayerSeekableChanged:
+//    case libvlc_MediaPlayerPausableChanged:
+//    case libvlc_MediaListItemAdded:
+//    case libvlc_MediaListWillAddItem:
+//    case libvlc_MediaListItemDeleted:
+//    case libvlc_MediaListWillDeleteItem:
+//    case libvlc_MediaListViewItemAdded:
+//    case libvlc_MediaListViewWillAddItem:
+//    case libvlc_MediaListViewItemDeleted:
+//    case libvlc_MediaListViewWillDeleteItem:
+//    case libvlc_MediaListPlayerPlayed:
+//    case libvlc_MediaListPlayerNextItemSet:
+//    case libvlc_MediaListPlayerStopped:
+//    case libvlc_MediaDiscovererStarted:
+//    case libvlc_MediaDiscovererEnded:
+//    case libvlc_MediaPlayerTitleChanged:
+    case libvlc_MediaPlayerSnapshotTaken:
+        self->emit snapshotTaken();
+        break;
+    default:
+        break;
+    }
 }
 
 void                            MediaPlayer::play()
