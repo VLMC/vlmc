@@ -172,7 +172,7 @@ QImage&     Media::getImage()
     return *m_image;
 }
 
-void        Media::setDrawable(int handle)
+void        Media::setDrawable( WId handle )
 {
-    m_vlcMediaPlayer->setDrawable(handle);
+    m_vlcMediaPlayer->setDrawable( handle );
 }

@@ -71,7 +71,7 @@ public:
       * When pre-launching is completed, a "mediaReady" signal will be fired.
       */
     void                    play();
-    void                    setDrawable(int handle);
+    void                    setDrawable( WId handle );
 
 private:
     virtual void            run();

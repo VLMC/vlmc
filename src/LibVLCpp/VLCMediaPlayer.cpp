@@ -90,8 +90,12 @@ bool                                MediaPlayer::isSeekable()
     return (res == 1);
 }
 
-void                                MediaPlayer::setDrawable(int handle)
+void                                MediaPlayer::setDrawable( void* hwnd )
 {
-    libvlc_drawable_t   window = handle;
-    libvlc_media_player_set_drawable( m_internalPtr, window, m_ex );
+    libvlc_media_player_set_hwnd( m_internalPtr, hwnd, m_ex );
+}
+
+void                                MediaPlayer::setDrawable( uint32_t drawable )
+{
+    libvlc_media_player_set_xwindow( m_internalPtr, drawable, m_ex );
 }
