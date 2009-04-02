@@ -52,23 +52,14 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <property name="documentMode">
-      <bool>false</bool>
-     </property>
-     <property name="tabsClosable">
-      <bool>true</bool>
-     </property>
-     <property name="movable">
-      <bool>true</bool>
-     </property>
-     <widget class="QWidget" name="Video1">
+     <widget class="QWidget" name="ProjectTab">
       <attribute name="title">
-       <string>Video1</string>
+       <string>Project</string>
       </attribute>
      </widget>
-     <widget class="QWidget" name="Video2">
+     <widget class="QWidget" name="ClipTab">
       <attribute name="title">
-       <string>Video2</string>
+       <string>Clip</string>
       </attribute>
      </widget>
     </widget>
@@ -244,14 +235,6 @@
          <string/>
         </property>
        </widget>
-       <zorder>pushButton</zorder>
-       <zorder>pushButton_2</zorder>
-       <zorder>pushButton_3</zorder>
-       <zorder>pushButton_4</zorder>
-       <zorder>pushButton_5</zorder>
-       <zorder>pushButton_11</zorder>
-       <zorder>pushButton_12</zorder>
-       <zorder>horizontalSlider</zorder>
       </widget>
      </item>
     </layout>
