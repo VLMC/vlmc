@@ -50,6 +50,7 @@ public:
     qint64                  getLength();
     QImage&                 getImage();
     void                    play();
+    void                    setDrawable(int handle);
 
 private:
     virtual void            run();

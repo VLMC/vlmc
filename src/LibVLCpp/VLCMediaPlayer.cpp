@@ -68,7 +68,7 @@ qint64                          MediaPlayer::getLength()
 {
     qint64 length = libvlc_media_player_get_length( m_internalPtr, m_ex );
     m_ex.checkThrow();
-//    qDebug() << "Media length: " << length;
+    //qDebug() << "Media length: " << length;
     return length;
 }
 
@@ -90,4 +90,10 @@ bool                                MediaPlayer::isSeekable()
     int res = libvlc_media_player_is_seekable( m_internalPtr, m_ex );
     m_ex.checkThrow();
     return (res == 1);
+}
+
+void                                MediaPlayer::setDrawable(int handle)
+{
+    libvlc_drawable_t   window = handle;
+    libvlc_media_player_set_drawable( m_internalPtr, window, m_ex );
 }

@@ -141,10 +141,7 @@ qint64      Media::getLength()
 void        Media::play()
 {
     if( m_isMediaInitialized )
-    {
-        qDebug() << "play";
         playSlot();
-    }
     else
     {
         msleep(100);
@@ -154,7 +151,6 @@ void        Media::play()
 
 void        Media::playSlot()
 {
-    qDebug() << "playSlot";
     m_vlcMediaPlayer->play();
 }
 
@@ -163,3 +159,7 @@ QImage&     Media::getImage()
     return *m_image;
 }
 
+void        Media::setDrawable(int handle)
+{
+    m_vlcMediaPlayer->setDrawable(handle);
+}

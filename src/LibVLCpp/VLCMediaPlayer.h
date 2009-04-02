@@ -46,6 +46,7 @@ namespace   LibVLCpp
         void                                takeSnapshot( char* outputFile, unsigned int width, unsigned int heigth );
         bool                                isPlaying();
         bool                                isSeekable();
+        void                                setDrawable(int handle);
 
     private:
         Exception                           m_ex;
