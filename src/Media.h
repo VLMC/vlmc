@@ -45,12 +45,33 @@ public:
 
     QImage*                 takeSnapshot( unsigned int width, unsigned int heigth );
 
+    /**
+      * Ask libvlc if the media is currently playing
+      */
     bool                    isPlaying();
+    /**
+      * Ask libvlc if the media can be seeked
+      */
     bool                    isSeekable();
+    /**
+      * Can be used to know if the Media is fully usable (IE. can be seeked, vmem can be used, etc...)
+      */
+    bool                    isReady();
+    /**
+      * Return the length (duration) of a Media
+      */
     qint64                  getLength();
+    /**
+      * Returns the last rendered frame
+      */
     QImage&                 getImage();
+    /**
+      * Start the playback.
+      * This need to be called at least once in order to prepare the media. if not, the media can't be seeked or anything else.
+      * When pre-launching is completed, a "mediaReady" signal will be fired.
+      */
     void                    play();
-    void                    setDrawable(int handle);
+    void                    setDrawable( WId handle );
 
 private:
     virtual void            run();
@@ -69,7 +90,7 @@ private slots:
     void                        playSlot();
 
 signals:
-    void                    mediaPlayerReady();
+    void                        mediaReady();
 };
 
 #endif // MEDIA_H

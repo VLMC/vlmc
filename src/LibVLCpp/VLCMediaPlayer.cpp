@@ -59,7 +59,6 @@ qint64                          MediaPlayer::getTime()
 
 void                            MediaPlayer::setTime( qint64 time )
 {
-//    qDebug() << "Setting media time to " << time;
     libvlc_media_player_set_time( m_internalPtr, time, m_ex );
     m_ex.checkThrow();
 }
@@ -68,7 +67,6 @@ qint64                          MediaPlayer::getLength()
 {
     qint64 length = libvlc_media_player_get_length( m_internalPtr, m_ex );
     m_ex.checkThrow();
-    //qDebug() << "Media length: " << length;
     return length;
 }
 
@@ -92,8 +90,12 @@ bool                                MediaPlayer::isSeekable()
     return (res == 1);
 }
 
-void                                MediaPlayer::setDrawable(int handle)
+void                                MediaPlayer::setDrawable( void* hwnd )
 {
-    libvlc_drawable_t   window = handle;
-    libvlc_media_player_set_drawable( m_internalPtr, window, m_ex );
+    libvlc_media_player_set_hwnd( m_internalPtr, hwnd, m_ex );
+}
+
+void                                MediaPlayer::setDrawable( uint32_t drawable )
+{
+    libvlc_media_player_set_xwindow( m_internalPtr, drawable, m_ex );
 }
