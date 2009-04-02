@@ -12,7 +12,7 @@ SOURCES += src/main.cpp \
     src/gui/MainWindow.cpp \
     src/gui/LibraryWidget.cpp \
     src/gui/DockWidgetManager.cpp \
-    src/LibVLCpp/VlmManager.cpp \
+    src/LibVLCpp/VLCException.cpp \
     src/LibVLCpp/VLCInstance.cpp \
     src/gui/Timeline.cpp \
     src/LibVLCpp/VLCMediaPlayer.cpp \
