@@ -25,7 +25,7 @@
 
 #include "Media.h"
 
-Media::Media( const QString& mrl ) : m_mrl( mrl ), m_snapshot( NULL ), m_isThreadLaunched( false ), m_isThreadFinished( false )
+Media::Media( const QString& mrl ) : m_mrl( mrl ), m_snapshot( NULL )
 {
     char const *vlc_argv[] =
     {
@@ -78,7 +78,6 @@ void    Media::run()
         {
             m_isMediaInitialized = true;
             emit mediaReady();
-            m_isThreadFinished = true;
             m_vlcMediaPlayer->pause();
             return ;
         }
