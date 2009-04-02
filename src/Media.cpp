@@ -24,7 +24,7 @@
 
 #include "Media.h"
 
-Media::Media( const QString& mrl ) : m_mrl( mrl ), m_snapshot( NULL )
+Media::Media( const QString& mrl ) : m_mrl( mrl ), m_snapshot( NULL ), m_isThreadLaunched(false), m_isThreadFinished(false)
 {
     char const *vlc_argv[] =
     {
@@ -64,9 +64,6 @@ Media::Media( const QString& mrl ) : m_mrl( mrl ), m_snapshot( NULL )
 
     //And now we play the media
     m_vlcMediaPlayer = new LibVLCpp::MediaPlayer( m_vlcMedia );
-
-    m_isMediaInitialized = false;
-    start();
 }
 
 void    Media::run()
