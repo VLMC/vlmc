@@ -27,6 +27,7 @@
 MediaListWidget::MediaListWidget( QWidget* parent ) : QListWidget( parent )
 {
     m_svgRenderer = new QSvgRenderer( this );
+    setIconSize( QSize( 128, 128 ) );
 }
 
 void    MediaListWidget::setType( ListViewMediaItem::fType fileType )

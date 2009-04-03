@@ -26,6 +26,7 @@
 #include "vlc/vlc.h"
 
 #include <QMutex>
+#include <QObject>
 
 #include "VLCpp.hpp"
 #include "VLCMedia.h"
@@ -33,8 +34,9 @@
 
 namespace   LibVLCpp
 {
-    class   MediaPlayer : public Internal< libvlc_media_player_t >
+    class   MediaPlayer : public QObject, public Internal< libvlc_media_player_t >
     {
+        Q_OBJECT
     public:
         MediaPlayer( Media* media, bool playStop = true );
         void                                play();
@@ -50,7 +52,13 @@ namespace   LibVLCpp
         void                                setDrawable( uint32_t drawable );
 
     private:
+        static void                         callbacks( const libvlc_event_t* event, void* self );
+
         Exception                           m_ex;
+        libvlc_event_manager_t*             p_em;
+
+    signals:
+        void                                snapshotTaken();
     };
 }
 
