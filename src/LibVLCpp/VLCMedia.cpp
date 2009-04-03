@@ -26,7 +26,8 @@
 
 using namespace LibVLCpp;
 
-Media::Media( Instance* instance, const QString& filename ) : m_instance( *instance ), m_pixelBuffer( NULL )
+Media::Media( Instance* instance, const QString& filename )
+    : m_instance( *instance ), m_pixelBuffer( NULL )
 {
     m_internalPtr = libvlc_media_new( m_instance, filename.toLocal8Bit(), m_ex );
     m_ex.checkThrow();
@@ -62,14 +63,14 @@ Media::DataCtx::~DataCtx()
 void                    Media::setLockCallback( Media::lockCallback callback )
 {
     char    param[64];
-    sprintf( param, ":vmem-lock=%lld", (long long int)(intptr_t)callback );
+    sprintf( param, ":vmem-lock=%lld", (qint64)(intptr_t)callback );
     addOption(param);
 }
 
 void                    Media::setUnlockCallback( Media::unlockCallback callback )
 {
     char    param[64];
-    sprintf( param, ":vmem-unlock=%lld", (long long int)(intptr_t)callback );
+    sprintf( param, ":vmem-unlock=%lld", (qint64)(intptr_t)callback );
     addOption( param );
 }
 
@@ -81,7 +82,7 @@ void                    Media::setDataCtx()
     m_dataCtx->mutex = new QMutex();
     m_dataCtx->media = this;
 
-    sprintf( param, ":vmem-data=%lld", (long long int)(intptr_t)m_dataCtx );
+    sprintf( param, ":vmem-data=%lld", (qint64)(intptr_t)m_dataCtx );
     addOption( param );
 }
 

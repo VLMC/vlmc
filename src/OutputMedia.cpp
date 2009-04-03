@@ -10,9 +10,9 @@ OutputMedia::OutputMedia( LibVLCpp::Instance* instance ) : Media( instance,"fake
     char    width[64], height[64], lock[64], unlock[64], data[64];
     sprintf( width, ":invmem-width=%i", VIDEOWIDTH );
     sprintf( height, ":invmem-height=%i", VIDEOHEIGHT );
-    sprintf( lock, ":invmem-lock=%lld", (long long int)(intptr_t)&OutputMedia::lock );
-    sprintf( unlock, ":invmem-unlock=%lld", (long long int)(intptr_t)&OutputMedia::unlock );
-    sprintf( data, ":invmem-data=%lld", (long long int)(intptr_t)m_dataCtx );
+    sprintf( lock, ":invmem-lock=%lld", (qint64)(intptr_t)&OutputMedia::lock );
+    sprintf( unlock, ":invmem-unlock=%lld", (qint64)(intptr_t)&OutputMedia::unlock );
+    sprintf( data, ":invmem-data=%lld", (qint64)(intptr_t)m_dataCtx );
 
     addParam( width );
     addParam( height );
