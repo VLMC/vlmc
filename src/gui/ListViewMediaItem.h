@@ -76,6 +76,12 @@ public:
      */
     ListViewMediaItem::fType fileType() { return m_fileType; }
 
+    /**
+      * \brief Get the current media snapshot
+      * \return the current media snapshot as a QPixmap*, or NULL if there is no current media.
+      */
+    const QPixmap*            getSnapshot() const;
+
 private:
     /**
      * \brief fileInfo member
@@ -93,9 +99,15 @@ private:
     InputMedia*             m_currentMedia;
 
     /**
-     * \Instance of the temporary QWidget use for the snapshot
+     * \brief Instance of the temporary QWidget use for the snapshot
      */
     QWidget*                m_renderWidget;
+
+    /**
+     * \brief The current media snapshot
+     */
+    //FIXME: this should probably be in the media itself
+    QPixmap*                m_currentMediaSnapshot;
 
 private slots:
     void    setSnapshot();

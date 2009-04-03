@@ -63,11 +63,16 @@ void    ListViewMediaItem::setSnapshot()
 void    ListViewMediaItem::takeSnapshot()
 {
     // TODO: Debug of the multiple snapshot
+    // TODO: Check for memory leak in the snapshot
 
-//    qDebug() << "take Snapshot";
-    QPixmap* snapshot = m_currentMedia->takeSnapshot( 32, 32 );
-    setIcon( QIcon( *snapshot ) );
+    m_currentMediaSnapshot = m_currentMedia->takeSnapshot( 32, 32 );
+    setIcon( QIcon( *m_currentMediaSnapshot ) );
     m_currentMedia->stop();
     disconnect( m_currentMedia->mediaPlayer(), SIGNAL( playing() ), this, SLOT( setSnapshot() ) );
     disconnect( m_currentMedia->mediaPlayer(), SIGNAL( timeChanged() ), this, SLOT( takeSnapshot() ) );
+}
+
+const QPixmap*      ListViewMediaItem::getSnapshot() const
+{
+    return m_currentMediaSnapshot;
 }
