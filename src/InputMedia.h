@@ -34,6 +34,8 @@
 
 class       InputMedia : public Media
 {
+    Q_OBJECT
+
 public:
     InputMedia( const QString& mrl, LibVLCpp::Instance* instance = NULL );
     ~InputMedia();
@@ -41,7 +43,7 @@ public:
     static void             lock( LibVLCpp::Media::DataCtx* dataCtx, void **pp_ret );
     static void             unlock( LibVLCpp::Media::DataCtx* dataCtx );
 
-    QImage*                 takeSnapshot( unsigned int width, unsigned int heigth );
+    QPixmap*                 takeSnapshot( unsigned int width, unsigned int heigth );
 
     /**
       * Ask libvlc if the media is currently playing
@@ -66,9 +68,10 @@ public:
     virtual void            stop();
 
 private:
-    QImage*                     m_snapshot;
+    QPixmap*                    m_snapshot;
     uchar*                      m_pixelBuffer;
     QImage*                     m_image;
+
 };
 
 #endif // INPUTMEDIA_H

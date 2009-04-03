@@ -21,18 +21,44 @@
  *****************************************************************************/
 
 #include "ListViewMediaItem.h"
+#include <QPixmap>
+#include <QDebug>
 
 ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, ListViewMediaItem::fType fType, QListWidget* parent, int type ) :
         QListWidgetItem( parent, type )
 {
     m_fileInfo = fInfo;
     m_fileType = fType;
-    //TODO : Replace this by snapshot.
+
     setIcon( QIcon( ":/images/images/vlmc.png" ) );
     setText( fInfo->baseName() );
+
+    QWidget* renderWidget = new QWidget();
+
+    m_currentMedia = new InputMedia( "file://" + fInfo->absoluteFilePath() );
+    m_currentMedia->setupMedia();
+    m_currentMedia->setDrawable( renderWidget->winId() );
+    m_currentMedia->play();
+
+    connect( m_currentMedia->mediaPlayer(), SIGNAL( playing() ), this, SLOT( setSnapshot() ) );
 }
 
 ListViewMediaItem::~ListViewMediaItem()
 {
     delete m_fileInfo;
+}
+
+void    ListViewMediaItem::setSnapshot()
+{
+    m_currentMedia->setTime( 50000 );
+    connect( m_currentMedia->mediaPlayer(), SIGNAL( timeChanged() ), this, SLOT( takeSnapshot() ) );
+}
+
+void    ListViewMediaItem::takeSnapshot()
+{
+    QPixmap* snapshot = m_currentMedia->takeSnapshot( 32, 32 );
+    setIcon( QIcon( *snapshot ) );
+    m_currentMedia->stop();
+    disconnect( m_currentMedia->mediaPlayer(), SIGNAL( playing() ), this, SLOT( setSnapshot() ) );
+    disconnect( m_currentMedia->mediaPlayer(), SIGNAL( playing() ), this, SLOT( takeSnapshot() ) );
 }

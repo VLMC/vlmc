@@ -73,7 +73,7 @@ void        InputMedia::unlock( LibVLCpp::Media::DataCtx* ctx )
     ctx->mutex->unlock();
 }
 
-QImage*      InputMedia::takeSnapshot( unsigned int width, unsigned int height )
+QPixmap*      InputMedia::takeSnapshot( unsigned int width, unsigned int height )
 {
     if ( m_snapshot == NULL )
     {
@@ -89,8 +89,8 @@ QImage*      InputMedia::takeSnapshot( unsigned int width, unsigned int height )
         char* tmpStr = const_cast<char*>(tmp.fileName().toStdString().c_str());
         m_vlcMediaPlayer->takeSnapshot( tmpStr, width, height );
 //        qDebug() << "done snapshoting";
-        m_snapshot = new QImage( tmp.fileName() );
-//        qDebug() << "written to a QImage";
+        m_snapshot = new QPixmap( tmp.fileName() );
+//          qDebug() << "written to a QImage";
 
 //        m_vlcMediaPlayer->setTime(currentTime);
     }

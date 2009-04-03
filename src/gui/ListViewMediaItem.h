@@ -23,16 +23,20 @@
 #ifndef LISTVIEWMEDIAITEM_H
 #define LISTVIEWMEDIAITEM_H
 
+#include <QObject>
 #include <QFileInfo>
 #include <QListWidgetItem>
+#include "InputMedia.h"
 
 /**
  *  \class ListViewMediaItem
  *  \brief Items class to use inside MediaListView widget
  */
 
-class ListViewMediaItem : public QListWidgetItem
+class ListViewMediaItem : public QObject, public QListWidgetItem
 {
+    Q_OBJECT
+
 public:
     /**
      *  \enum fType
@@ -82,6 +86,15 @@ private:
      *  \brief fileType member
      */
     ListViewMediaItem::fType m_fileType;
+
+    /**
+     * \Instance of the InputMedia
+     */
+    InputMedia*             m_currentMedia;
+
+private slots:
+    void    setSnapshot();
+    void    takeSnapshot();
 };
 
 #endif /* !LISTVIEWMEDIAITEM_H */

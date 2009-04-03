@@ -34,7 +34,7 @@
 /**
   * Generic class for media handling.
   */
-class       Media
+class       Media : public QObject
 {
 public:
     virtual ~Media();
