@@ -33,32 +33,38 @@ ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, ListViewMediaItem::fType
     setIcon( QIcon( ":/images/images/vlmc.png" ) );
     setText( fInfo->baseName() );
 
-    QWidget* renderWidget = new QWidget();
+    m_renderWidget = new QWidget();
 
     m_currentMedia = new InputMedia( "file://" + fInfo->absoluteFilePath() );
     m_currentMedia->setupMedia();
-    m_currentMedia->setDrawable( renderWidget->winId() );
-    m_currentMedia->play();
+    m_currentMedia->setDrawable( m_renderWidget->winId() );
 
     connect( m_currentMedia->mediaPlayer(), SIGNAL( playing() ), this, SLOT( setSnapshot() ) );
+
+    m_currentMedia->play();
 }
 
 ListViewMediaItem::~ListViewMediaItem()
 {
     delete m_fileInfo;
+    delete m_renderWidget;
 }
 
 void    ListViewMediaItem::setSnapshot()
 {
-    m_currentMedia->setTime( 50000 );
+//    qDebug() << "setSnapshot";
     connect( m_currentMedia->mediaPlayer(), SIGNAL( timeChanged() ), this, SLOT( takeSnapshot() ) );
+    m_currentMedia->setTime( m_currentMedia->getLength() / 3 );
 }
 
 void    ListViewMediaItem::takeSnapshot()
 {
+    // TODO: Debug of the multiple snapshot
+
+//    qDebug() << "take Snapshot";
     QPixmap* snapshot = m_currentMedia->takeSnapshot( 32, 32 );
     setIcon( QIcon( *snapshot ) );
     m_currentMedia->stop();
     disconnect( m_currentMedia->mediaPlayer(), SIGNAL( playing() ), this, SLOT( setSnapshot() ) );
-    disconnect( m_currentMedia->mediaPlayer(), SIGNAL( playing() ), this, SLOT( takeSnapshot() ) );
+    disconnect( m_currentMedia->mediaPlayer(), SIGNAL( timeChanged() ), this, SLOT( takeSnapshot() ) );
 }

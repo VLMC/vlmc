@@ -92,6 +92,11 @@ private:
      */
     InputMedia*             m_currentMedia;
 
+    /**
+     * \Instance of the temporary QWidget use for the snapshot
+     */
+    QWidget*                m_renderWidget;
+
 private slots:
     void    setSnapshot();
     void    takeSnapshot();
