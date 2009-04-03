@@ -26,9 +26,18 @@
 #include <QFileInfo>
 #include <QListWidgetItem>
 
+/**
+ *  class ListViewMediaItem
+ *  brief Items class to use inside MediaListView widget
+ */
+
 class ListViewMediaItem : public QListWidgetItem
 {
 public:
+    /**
+     *  enum fType
+     *  brief enum to determine file type
+     */
     enum fType
     {
         Audio,
@@ -36,13 +45,42 @@ public:
         Image
     };
 
+    /**
+     * brief Constructor
+     *
+     * param fileInfo the QFileInfo refering to the file
+     * param fType the type of the media
+     * param parent parent widget
+     * param type
+     */
     ListViewMediaItem( QFileInfo* fileInfo, ListViewMediaItem::fType fType, QListWidget* parent = 0, int type = Type );
+
+    /**
+     *  brief Destructor
+     */
     virtual ~ListViewMediaItem();
+
+    /**
+     * brief Getter for fileinfo
+     * return fileInfo of the item
+     */
     QFileInfo* fileInfo() { return m_fileInfo; }
+
+    /**
+     * brief Getter for filetype
+     * return filetype of the item
+     */
     ListViewMediaItem::fType fileType() { return m_fileType; }
 
 private:
+    /**
+     * brief fileInfo member
+     */
     QFileInfo* m_fileInfo;
+
+    /**
+     *  brief fileType member
+     */
     ListViewMediaItem::fType m_fileType;
 };
 

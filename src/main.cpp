@@ -23,9 +23,17 @@
 #include <QApplication>
 #include "gui/MainWindow.h"
 
+/**
+ *  VLMC Entry point
+ *  brief this is the VLMC entry point
+ *  param argc
+ *  param argv
+ *  return Return value of vlmc
+ */
+
 int main( int argc, char **argv )
 {
-	QApplication app( argc, argv );
+    QApplication app( argc, argv );
     app.setApplicationName( "vlmc" );
     app.setOrganizationName( "vlmc" );
     app.setOrganizationDomain( "vlmc.org" );
@@ -33,5 +41,5 @@ int main( int argc, char **argv )
     Preferences::changeLang( QSettings().value( "Lang" ).toString() );
     MainWindow w;
     w.show();
-	return app.exec();
+    return app.exec();
 }
