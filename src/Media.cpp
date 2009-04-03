@@ -31,7 +31,7 @@ Media::Media(LibVLCpp::Instance* instance, const QString& mrl )
     {
         char const *vlc_argv[] =
         {
-            "-verbose", "3",
+            //"-vvvvv",
             "--no-skip-frames",
             "--no-audio",
             //"--plugin-path", VLC_TREE "/modules",
@@ -48,22 +48,17 @@ Media::Media(LibVLCpp::Instance* instance, const QString& mrl )
 
 Media::~Media()
 {
-    qDebug() << "dtor Media";
     if ( m_instance  && m_instanceOwned == true )
     {
         delete m_instance;
-        qDebug() << "deleted m_instance";
     }
     if ( m_vlcMedia )
     {
-        qDebug() << "deleting m_vlcMedia";
         delete m_vlcMedia;
-        qDebug() << "deleted m_vlcMedia";
     }
     if ( m_vlcMediaPlayer )
     {
         delete m_vlcMediaPlayer;
-        qDebug() << "deleted m_vlcMediaPlayer";
     }
 }
 
