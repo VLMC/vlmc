@@ -25,6 +25,7 @@
 
 #include <QList>
 #include <QString>
+#include <QWidget>
 
 #include "VLCMedia.h"
 #include "VLCInstance.h"
@@ -44,6 +45,20 @@ public:
     virtual void        stop();
     void                addParam( const QString& param );
     void                setupMedia();
+    void                setDrawable( WId handle );
+    LibVLCpp::MediaPlayer*  mediaPlayer() { return m_vlcMediaPlayer; }
+    /**
+      * Return the length (duration) of a Media
+      */
+    qint64                  getLength();
+    /**
+      * Return the current time of the media
+      */
+    qint64                  getTime();
+    /**
+      * Change the current time of the media
+      */
+    void                    setTime( qint64 time );
 
 protected:
     //Protected constructor so we can't use a Media without its sub-implementation

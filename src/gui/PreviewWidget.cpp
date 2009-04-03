@@ -75,7 +75,8 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
         m_currentMedia->stop();
         delete m_currentMedia;
     }
-    m_currentMedia = new InputMedia("file://" + item->fileInfo()->absoluteFilePath(), m_currentInstance );
+    m_currentMedia = new OutputMedia( m_currentInstance );
+    m_currentMedia->loadMedia( "file://" + item->fileInfo()->absoluteFilePath() );
     m_currentMedia->setupMedia();
     m_currentMedia->setDrawable( m_ui->clipRenderWidget->winId() );
     m_currentMedia->play();

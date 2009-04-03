@@ -23,11 +23,11 @@
 #include <QtDebug>
 #include "OutputMedia.h"
 
-OutputMedia::OutputMedia( LibVLCpp::Instance* instance ) : Media( instance,"fake://" ), m_pixelBuffer( NULL )
+OutputMedia::OutputMedia( LibVLCpp::Instance* instance ) : Media( instance, "fake://" ), m_dataCtx( NULL ), m_pixelBuffer( NULL )
 {
-    m_dataCtx = new OutputMedia::DataCtx;
-    m_dataCtx->mutex = new QMutex;
-    m_dataCtx->outputMedia = this;
+//    m_dataCtx = new OutputMedia::DataCtx;
+//    m_dataCtx->mutex = new QMutex;
+//    m_dataCtx->outputMedia = this;
 
     char    width[64], height[64], lock[64], unlock[64], data[64];
     sprintf( width, ":invmem-width=%i", VIDEOWIDTH );
@@ -36,12 +36,25 @@ OutputMedia::OutputMedia( LibVLCpp::Instance* instance ) : Media( instance,"fake
     sprintf( unlock, ":invmem-unlock=%lld", (qint64)(intptr_t)&OutputMedia::unlock );
     sprintf( data, ":invmem-data=%lld", (qint64)(intptr_t)m_dataCtx );
 
-    addParam( width );
-    addParam( height );
-    addParam( lock );
-    addParam( unlock );
-    addParam( data );
-    addParam( ":vout=sdl" );
+//    addParam( width );
+//    addParam( height );
+//    addParam( lock );
+//    addParam( unlock );
+//    addParam( data );
+//    addParam( ":vout=sdl" );
+}
+
+OutputMedia::~OutputMedia()
+{
+    if ( m_dataCtx != NULL )
+        delete m_dataCtx;
+    if ( m_pixelBuffer != NULL )
+        delete m_pixelBuffer;
+}
+
+OutputMedia::DataCtx::~DataCtx()
+{
+    delete mutex;
 }
 
 uchar*          OutputMedia::lock( OutputMedia::DataCtx* dataCtx )

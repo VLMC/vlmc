@@ -35,6 +35,7 @@ public:
         OutputMedia*    outputMedia;
     };
     OutputMedia( LibVLCpp::Instance* instance );
+    virtual ~OutputMedia();
 //FIXME: destructor ?
     static uchar*           lock( OutputMedia::DataCtx* dataCtx );
     static void             unlock( OutputMedia::DataCtx* dataCtx );

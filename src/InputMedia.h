@@ -26,7 +26,6 @@
 
 #include <QString>
 #include <QImage>
-#include <QThread>
 
 #include "Media.h"
 #include "VLCMediaPlayer.h"
@@ -56,18 +55,6 @@ public:
       * Can be used to know if the Media is fully usable (IE. can be seeked, vmem can be used, etc...)
       */
     bool                    isReady();
-    /**
-      * Return the length (duration) of a Media
-      */
-    qint64                  getLength();
-    /**
-      * Return the current time of the media
-      */
-    qint64                  getTime();
-    /**
-      * Change the current time of the media
-      */
-    void                    setTime( qint64 time );
 
     /**
       * Returns the last rendered frame
@@ -77,8 +64,6 @@ public:
     virtual void            play();
     virtual void            pause();
     virtual void            stop();
-    void                    setDrawable( WId handle );
-    LibVLCpp::MediaPlayer*  mediaPlayer() { return m_vlcMediaPlayer; }
 
 private:
     QImage*                     m_snapshot;

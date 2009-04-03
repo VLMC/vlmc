@@ -73,7 +73,7 @@ void        Media::loadMedia( const QString& mrl )
         delete m_vlcMedia;
     m_mrl = mrl;
 
-    setupMedia();
+    m_vlcMedia = new LibVLCpp::Media( m_instance, mrl );
 }
 
 void        Media::setupMedia()
@@ -87,7 +87,6 @@ void        Media::setupMedia()
         m_vlcMedia->addOption( param.toStdString().c_str() );
 
     m_vlcMediaPlayer = new LibVLCpp::MediaPlayer( m_vlcMedia );
-    qDebug() << "MediaPlayer is not build on top of" << (void*)m_vlcMedia;
 }
 
 void        Media::play()
@@ -114,4 +113,24 @@ void        Media::stop()
 void        Media::addParam( const QString& param )
 {
     m_parameters.append( param );
+}
+
+void        Media::setDrawable( WId handle )
+{
+    m_vlcMediaPlayer->setDrawable( handle );
+}
+
+qint64      Media::getLength()
+{
+    return m_vlcMediaPlayer->getLength();
+}
+
+qint64      Media::getTime()
+{
+    return m_vlcMediaPlayer->getTime();
+}
+
+void        Media::setTime( qint64 time )
+{
+    m_vlcMediaPlayer->setTime( time );
 }
