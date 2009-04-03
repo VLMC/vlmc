@@ -98,7 +98,7 @@ void    PreviewWidget::videoTimeChanged()
     }
 }
 
-void    PreviewWidget::seekSliderMoved( int value )
+void    PreviewWidget::seekSliderMoved( int )
 {
     if ( m_currentMedia )
     {

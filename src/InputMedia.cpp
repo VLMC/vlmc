@@ -54,7 +54,6 @@ InputMedia::InputMedia( const QString& mrl, LibVLCpp::Instance* instance /*= NUL
 
 InputMedia::~InputMedia()
 {
-    qDebug() << "dtor InputMedia";
     if ( m_image != NULL )
         delete m_image;
     if ( m_pixelBuffer != NULL)
