@@ -126,3 +126,13 @@ void        InputMedia::play()
 {
     Media::play();
 }
+
+void        InputMedia::pause()
+{
+    Media::pause();
+}
+
+void        InputMedia::stop()
+{
+    Media::stop();
+}

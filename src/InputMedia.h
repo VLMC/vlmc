@@ -65,6 +65,8 @@ public:
     QImage&                 getImage();
 
     virtual void            play();
+    virtual void            pause();
+    virtual void            stop();
     void                    setDrawable( WId handle );
 
 private:

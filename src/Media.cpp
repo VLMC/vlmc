@@ -27,7 +27,7 @@ Media::Media(LibVLCpp::Instance* instance, const QString& mrl )
     : m_instance( NULL ), m_vlcMedia( NULL ), m_vlcMediaPlayer( NULL ),
     m_mrl( mrl ), m_instanceOwned( false )
 {
-    if ( instance == NULL )
+    if ( !instance )
     {
         char const *vlc_argv[] =
         {
@@ -92,7 +92,7 @@ void        Media::setupMedia()
 
 void        Media::play()
 {
-    if ( m_vlcMediaPlayer == NULL )
+    if ( !m_vlcMediaPlayer )
         setupMedia();
     m_vlcMediaPlayer->play();
 }
