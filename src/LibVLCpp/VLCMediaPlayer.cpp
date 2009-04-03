@@ -31,10 +31,16 @@ MediaPlayer::MediaPlayer( Media* media, bool playStop /* = true*/ )
     m_internalPtr = libvlc_media_player_new_from_media( media->getInternalPtr(), m_ex );
     m_ex.checkThrow();
 
+    // Initialize the event manager
     p_em = libvlc_media_player_event_manager( m_internalPtr, m_ex );
+
+    // Register the callback
     libvlc_event_attach( p_em, libvlc_MediaPlayerSnapshotTaken, callbacks, this, m_ex );
 }
 
+/**
+ * Event dispatcher.
+ */
 void                            MediaPlayer::callbacks( const libvlc_event_t* event, void* ptr )
 {
     MediaPlayer* self = reinterpret_cast<MediaPlayer*>( ptr );

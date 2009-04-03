@@ -29,9 +29,14 @@ QList<ListViewMediaItem*>* LibraryWidget::m_medias = NULL;
 LibraryWidget::LibraryWidget( QWidget *parent ) : QWidget( parent )
 {
     m_ui.setupUi( this );
+
     m_ui.listWidgetAudio->setType( ListViewMediaItem::Audio );
     m_ui.listWidgetImage->setType( ListViewMediaItem::Image );
     m_ui.listWidgetVideo->setType( ListViewMediaItem::Video );
+
+    // *Always* force the selection of the first tab
+    m_ui.LibraryTabs->setCurrentIndex( 0 );
+
     if ( LibraryWidget::m_medias == NULL )
         LibraryWidget::m_medias = new QList<ListViewMediaItem*>();
 }
@@ -93,7 +98,7 @@ ListViewMediaItem*                LibraryWidget::insertNewMedia( QString fileNam
     ListViewMediaItem* item = NULL;
     foreach( item, *m_medias )
     {
-        if (item->fileInfo()->absoluteFilePath() == fileName)
+        if ( item->fileInfo()->absoluteFilePath() == fileName )
             return item;
     }
     QFileInfo* fileInfo = new QFileInfo( fileName );
@@ -142,7 +147,7 @@ void LibraryWidget::on_pushButtonAddMedia_clicked()
 
 void LibraryWidget::on_pushButtonRemoveMedia_clicked()
 {
-    QListWidget* mediaList = ( QListWidget* )(this->m_ui.LibraryTabs->currentWidget()->children().back());
+    QListWidget* mediaList = ( QListWidget* )( this->m_ui.LibraryTabs->currentWidget()->children().back() );
     ListViewMediaItem* item = ( ListViewMediaItem* ) mediaList->currentItem();
     this->removeMedia( item );
 }

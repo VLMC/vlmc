@@ -1,8 +1,9 @@
 #include <QtDebug>
 #include "Media.h"
 
-Media::Media(LibVLCpp::Instance* instance, const QString& mrl ) : m_instance( NULL ), m_vlcMedia( NULL ), m_vlcMediaPlayer( NULL ),
-                                                                    m_mrl( mrl )
+Media::Media(LibVLCpp::Instance* instance, const QString& mrl )
+    : m_instance( NULL ), m_vlcMedia( NULL ), m_vlcMediaPlayer( NULL ),
+    m_mrl( mrl )
 {
     if ( instance == NULL )
     {
