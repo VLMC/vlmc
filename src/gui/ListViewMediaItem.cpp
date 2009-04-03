@@ -47,7 +47,10 @@ ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, ListViewMediaItem::fType
 ListViewMediaItem::~ListViewMediaItem()
 {
     delete m_fileInfo;
+    if (m_currentMedia->isPlaying())
+        m_currentMedia->stop();
     delete m_renderWidget;
+    delete m_currentMedia;
 }
 
 void    ListViewMediaItem::setSnapshot()
