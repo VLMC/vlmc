@@ -10,6 +10,7 @@ Media::Media(LibVLCpp::Instance* instance, const QString& mrl ) : m_instance( NU
         {
             "-verbose", "3",
             "--no-skip-frames",
+            "--no-audio",
             //"--plugin-path", VLC_TREE "/modules",
             //"--ignore-config", //Don't use VLC's config files
         };
