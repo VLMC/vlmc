@@ -28,6 +28,17 @@
 #include <QDir>
 #include "Transcode.h"
 
+static bool catchVLCException(libvlc_exception_t *ex)
+{
+    if (libvlc_exception_raised(ex))
+    {
+        qDebug() << libvlc_exception_get_message(ex);
+        libvlc_exception_clear(ex);
+        return (true);
+    }
+    return (false);
+}
+
 Transcode *Transcode::m_instance = NULL;
 
 Transcode *Transcode::instance( QWidget *parent )
@@ -66,15 +77,40 @@ void Transcode::on_browseFileButton_clicked()
                                                  tr( "Choose File to open" ),
                                                  QDir::currentPath(),
                                                  tr( "Video files (*.avi *.mkv *.ogg)" ) );
-    if (path == "")
+    if ( path == "" )
         return ;
     m_origVidPath = path;
     m_ui.inputFileBox->setText( path );
 }
 
+void Transcode::m_doTranscode( const QString &outPath, const QString &transStr )
+{
+    char const *vlc_argv[] = 
+    {
+        "-verbose", "3",
+    };
+    int vlc_argc = sizeof( vlc_argv ) / sizeof( *vlc_argv );
+
+    libvlc_exception_init( &m_vlcEx );
+    m_libvlc = libvlc_new( vlc_argc, vlc_argv, &m_vlcEx );
+    if ( catchVLCException( &m_vlcEx ) )
+        return ;
+    m_vlcMedia = libvlc_media_new( m_libvlc, m_origVidPath.toLocal8Bit(), &m_vlcEx );
+    if ( catchVLCException( &m_vlcEx ) ) 
+        return ;
+    m_vlcMp = libvlc_media_player_new_from_media( m_vlcMedia, &m_vlcEx );
+    if ( catchVLCException( &m_vlcEx ) )
+        return ;
+    libvlc_media_release( m_vlcMedia );
+    libvlc_media_player_play( m_vlcMp, &m_vlcEx );
+    if ( catchVLCException( &m_vlcEx ) ) 
+        return ;
+    sleep( 10 );
+}
+
 void Transcode::on_dialogButtonBox_accepted()
 {
-    if (m_origVidPath == "")
+    if ( m_origVidPath == "" )
     {
         QMessageBox::warning( this,
                               tr( "Warning" ),
@@ -85,9 +121,8 @@ void Transcode::on_dialogButtonBox_accepted()
                                                  tr( "Choose File to save" ),
                                                  m_origVidPath,
                                                  tr( "Video files (*.avi *.mkv *.ogg)" ) );
-    if (path == "")
+    if ( path == "" )
         return ;
-    //int idxOfExt = path.lastIndexof();
     QString type;
     QString transCodeString = "";
 
@@ -108,11 +143,13 @@ void Transcode::on_dialogButtonBox_accepted()
     {
         transCodeString = "transcode{vcodec=WMV2,vb=800,scale=1,"
                           "fps=0,width=0,height=0,acodec=wma,ab=128,"
-                          "channels=2,samplerate=44100}:std{access=file,mux=asf,dst=\"";
+                          "channels=2,samplerate=44100}:duplicate{dts=std{access=file,mux=asf,dst=\"";
     }
     transCodeString += path;
     transCodeString += "\"}";
+
     //TODO : instanciate VLC instance and launch transcode
+    m_doTranscode(path, transCodeString);
     close();
 }
 
@@ -123,16 +160,17 @@ void Transcode::on_dialogButtonBox_rejected()
 
 void Transcode::on_addProfile_clicked()
 {
-    //show the profiles management widget;
+    //TODO : show the profiles management widget;
 }
 
 void Transcode::on_editProfile_clicked()
 {
-    //show the profile management widget and load the selected profile
+    //TODO : show the profile management widget and load the selected profile
 }
 
 void Transcode::on_deleteProfile_clicked()
 {
+    //TODO : delete the selected profile
 }
 
 

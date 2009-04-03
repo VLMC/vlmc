@@ -26,6 +26,7 @@
 #include <QDialog>
 #include <QString>
 #include <QEvent>
+#include "vlc/vlc.h"
 
 #include "ui_transcode.h"
 
@@ -42,8 +43,14 @@ class Transcode : public QDialog
     private:
         explicit Transcode( QWidget *parent = 0 );
         ~Transcode() {}
+        void m_doTranscode( QString const &outPath, QString const &transStr );
         Ui::Transcode m_ui;
         QString m_origVidPath;
+
+        libvlc_exception_t m_vlcEx;
+        libvlc_instance_t *m_libvlc;
+        libvlc_media_t *m_vlcMedia;
+        libvlc_media_player_t *m_vlcMp;
 
         static Transcode *m_instance;
 
