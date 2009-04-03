@@ -25,7 +25,8 @@
 
 #include "InputMedia.h"
 
-InputMedia::InputMedia( const QString& mrl, LibVLCpp::Instance* instance /*= NULL*/ ) : Media( instance, mrl ), m_snapshot( NULL )
+InputMedia::InputMedia( const QString& mrl, LibVLCpp::Instance* instance /*= NULL*/ ) :
+        Media( instance, mrl ), m_snapshot( NULL ), m_pixelBuffer( NULL ), m_image ( NULL )
 {
 //    m_vlcMedia->outputInVmem();
 //    m_vlcMedia->setLockCallback( InputMedia::lock );
@@ -53,8 +54,11 @@ InputMedia::InputMedia( const QString& mrl, LibVLCpp::Instance* instance /*= NUL
 
 InputMedia::~InputMedia()
 {
-    delete m_image;
-    delete m_pixelBuffer;
+    qDebug() << "dtor InputMedia";
+    if ( m_image != NULL )
+        delete m_image;
+    if ( m_pixelBuffer != NULL)
+        delete m_pixelBuffer;
 }
 
 void        InputMedia::lock( LibVLCpp::Media::DataCtx* ctx, void **renderPtr )

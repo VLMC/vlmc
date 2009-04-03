@@ -70,6 +70,11 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
     ListViewMediaItem* item = dynamic_cast<ListViewMediaItem*>( listWidget->currentItem() );
     if ( item == NULL )
         return ;
+    if ( m_currentMedia != NULL )
+    {
+        m_currentMedia->stop();
+        delete m_currentMedia;
+    }
     m_currentMedia = new InputMedia("file://" + item->fileInfo()->absoluteFilePath(), m_currentInstance );
     m_currentMedia->setupMedia();
     m_currentMedia->setDrawable( m_ui->clipRenderWidget->winId() );

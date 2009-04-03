@@ -25,7 +25,7 @@
 
 Media::Media(LibVLCpp::Instance* instance, const QString& mrl )
     : m_instance( NULL ), m_vlcMedia( NULL ), m_vlcMediaPlayer( NULL ),
-    m_mrl( mrl )
+    m_mrl( mrl ), m_instanceOwned( false )
 {
     if ( instance == NULL )
     {
@@ -39,6 +39,7 @@ Media::Media(LibVLCpp::Instance* instance, const QString& mrl )
         };
         int vlc_argc = sizeof( vlc_argv ) / sizeof( *vlc_argv );
         instance = new LibVLCpp::Instance( vlc_argc, vlc_argv );
+        m_instanceOwned = true;
     }
     m_instance = instance;
 
@@ -47,12 +48,23 @@ Media::Media(LibVLCpp::Instance* instance, const QString& mrl )
 
 Media::~Media()
 {
-    if ( m_instance )
+    qDebug() << "dtor Media";
+    if ( m_instance  && m_instanceOwned == true )
+    {
         delete m_instance;
+        qDebug() << "deleted m_instance";
+    }
     if ( m_vlcMedia )
+    {
+        qDebug() << "deleting m_vlcMedia";
         delete m_vlcMedia;
+        qDebug() << "deleted m_vlcMedia";
+    }
     if ( m_vlcMediaPlayer )
+    {
         delete m_vlcMediaPlayer;
+        qDebug() << "deleted m_vlcMediaPlayer";
+    }
 }
 
 void        Media::loadMedia( const QString& mrl )
@@ -83,6 +95,20 @@ void        Media::play()
     if ( m_vlcMediaPlayer == NULL )
         setupMedia();
     m_vlcMediaPlayer->play();
+}
+
+void        Media::pause()
+{
+    if ( m_vlcMediaPlayer == NULL )
+        return;
+    m_vlcMediaPlayer->pause();
+}
+
+void        Media::stop()
+{
+    if ( m_vlcMediaPlayer == NULL )
+        return;
+    m_vlcMediaPlayer->stop();
 }
 
 void        Media::addParam( const QString& param )

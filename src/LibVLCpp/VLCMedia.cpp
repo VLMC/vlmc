@@ -27,7 +27,7 @@
 using namespace LibVLCpp;
 
 Media::Media( Instance* instance, const QString& filename )
-    : m_instance( *instance ), m_pixelBuffer( NULL )
+    : m_instance( *instance ), m_dataCtx( NULL ), m_pixelBuffer( NULL )
 {
     m_internalPtr = libvlc_media_new( m_instance, filename.toLocal8Bit(), m_ex );
     m_ex.checkThrow();
@@ -36,8 +36,10 @@ Media::Media( Instance* instance, const QString& filename )
 Media::~Media()
 {
     libvlc_media_release( m_internalPtr );
-    delete[] m_pixelBuffer;
-    delete m_dataCtx;
+    if ( m_pixelBuffer != NULL )
+        delete[] m_pixelBuffer;
+    if ( m_dataCtx != NULL )
+        delete m_dataCtx;
 }
 
 Media::DataCtx*         Media::buildDataCtx()

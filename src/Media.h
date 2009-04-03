@@ -40,6 +40,8 @@ public:
 
     void                loadMedia( const QString& mrl );
     virtual void        play();
+    virtual void        pause();
+    virtual void        stop();
     void                addParam( const QString& param );
     void                setupMedia();
 
@@ -52,6 +54,8 @@ protected:
     LibVLCpp::MediaPlayer*      m_vlcMediaPlayer;
     QString                     m_mrl;
     QList<QString>              m_parameters;
+private:
+    bool                        m_instanceOwned;
 };
 
 #endif // MEDIA_H
