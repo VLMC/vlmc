@@ -25,10 +25,10 @@
 
 /**
  *  VLMC Entry point
- *  brief this is the VLMC entry point
- *  param argc
- *  param argv
- *  return Return value of vlmc
+ *  \brief this is the VLMC entry point
+ *  \param argc
+ *  \param argv
+ *  \return Return value of vlmc
  */
 
 int main( int argc, char **argv )
