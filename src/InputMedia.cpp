@@ -112,6 +112,16 @@ qint64      InputMedia::getLength()
     return m_vlcMediaPlayer->getLength();
 }
 
+qint64      InputMedia::getTime()
+{
+    return m_vlcMediaPlayer->getTime();
+}
+
+void        InputMedia::setTime( qint64 time )
+{
+    m_vlcMediaPlayer->setTime( time );
+}
+
 QImage&     InputMedia::getImage()
 {
     return *m_image;

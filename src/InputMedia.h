@@ -59,6 +59,10 @@ public:
       * Return the length (duration) of a Media
       */
     qint64                  getLength();
+
+    qint64                  getTime();
+    void                    setTime( qint64 time );
+
     /**
       * Returns the last rendered frame
       */
