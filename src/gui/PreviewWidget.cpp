@@ -40,6 +40,9 @@ PreviewWidget::PreviewWidget( QWidget *parent ) :
     int vlc_argc = sizeof( vlc_argv ) / sizeof( *vlc_argv );
     setAcceptDrops(true);
     m_currentInstance = new LibVLCpp::Instance( vlc_argc, vlc_argv );
+
+    connect( m_ui->seekSlider, SIGNAL( sliderMoved(int) ),
+             this, SLOT( seekSliderMoved(int) ) );
 }
 
 PreviewWidget::~PreviewWidget()
@@ -90,7 +93,15 @@ void    PreviewWidget::videoTimeChanged()
 {
     if ( m_currentMedia )
     {
-        m_ui->seekSlider->setMaximum( m_currentMedia->getLength() / 1000 );
-        m_ui->seekSlider->setSliderPosition( m_currentMedia->getTime() / 1000 );
+        m_ui->seekSlider->setMaximum( m_currentMedia->getLength() / 100 );
+        m_ui->seekSlider->setSliderPosition( m_currentMedia->getTime() / 100 );
+    }
+}
+
+void    PreviewWidget::seekSliderMoved( int value )
+{
+    if ( m_currentMedia )
+    {
+        m_currentMedia->setTime( m_ui->seekSlider->value() * 100 );
     }
 }

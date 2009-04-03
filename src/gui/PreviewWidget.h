@@ -47,6 +47,7 @@ protected:
 
 private slots:
     void            videoTimeChanged();
+    void            seekSliderMoved( int value );
 
 private:
     Ui::PreviewWidget*      m_ui;
