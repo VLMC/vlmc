@@ -1,5 +1,5 @@
 /*****************************************************************************
- * LibraryWidget.cpp: VLMC LibraryWidget
+ * ListViewMediaItem.cpp: VLMC LibraryWidget
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *

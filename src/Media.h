@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Media.cpp: Generic class for media handling
+ * Media.h: Generic class for media handling
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *

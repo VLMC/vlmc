@@ -1,5 +1,5 @@
 /*****************************************************************************
- * MediaListWidget.cpp: Multimedia list widget
+ * MediaListWidget.h: Multimedia list widget
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
