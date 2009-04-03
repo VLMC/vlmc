@@ -59,6 +59,7 @@ namespace   LibVLCpp
 
     signals:
         void                                snapshotTaken();
+        void                                timeChanged();
     };
 }
 

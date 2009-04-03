@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Geoffroy Lacarrière <geoffroylaca@gmail.com>
+ * Authors: Geoffroy LacarriÃ¨re <geoffroylaca@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -44,6 +44,9 @@ protected:
     virtual void    changeEvent( QEvent *e );
     virtual void    dragEnterEvent( QDragEnterEvent* event );
     virtual void    dropEvent( QDropEvent* event );
+
+private slots:
+    void            videoTimeChanged();
 
 private:
     Ui::PreviewWidget*      m_ui;

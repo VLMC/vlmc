@@ -29,6 +29,7 @@
 #include <QThread>
 
 #include "Media.h"
+#include "VLCMediaPlayer.h"
 
 #include "Image.h"
 
@@ -59,8 +60,13 @@ public:
       * Return the length (duration) of a Media
       */
     qint64                  getLength();
-
+    /**
+      * Return the current time of the media
+      */
     qint64                  getTime();
+    /**
+      * Change the current time of the media
+      */
     void                    setTime( qint64 time );
 
     /**
@@ -72,6 +78,7 @@ public:
     virtual void            pause();
     virtual void            stop();
     void                    setDrawable( WId handle );
+    LibVLCpp::MediaPlayer*  mediaPlayer() { return m_vlcMediaPlayer; }
 
 private:
     QImage*                     m_snapshot;

@@ -36,6 +36,7 @@ MediaPlayer::MediaPlayer( Media* media, bool playStop /* = true*/ )
 
     // Register the callback
     libvlc_event_attach( p_em, libvlc_MediaPlayerSnapshotTaken, callbacks, this, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerTimeChanged, callbacks, this, m_ex );
 }
 
 /**
@@ -62,7 +63,9 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
 //    case libvlc_MediaPlayerBackward:
 //    case libvlc_MediaPlayerEndReached:
 //    case libvlc_MediaPlayerEncounteredError:
-//    case libvlc_MediaPlayerTimeChanged:
+    case libvlc_MediaPlayerTimeChanged:
+        self->emit timeChanged();
+        break;
 //    case libvlc_MediaPlayerPositionChanged:
 //    case libvlc_MediaPlayerSeekableChanged:
 //    case libvlc_MediaPlayerPausableChanged:

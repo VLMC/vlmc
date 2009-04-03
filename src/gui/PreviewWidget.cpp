@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Geoffroy Lacarrière <geoffroylaca@gmail.com>
+ * Authors: Geoffroy LacarriÃ¨re <geoffroylaca@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -79,4 +79,17 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
     m_currentMedia->setupMedia();
     m_currentMedia->setDrawable( m_ui->clipRenderWidget->winId() );
     m_currentMedia->play();
+    connect( m_currentMedia->mediaPlayer(),
+             SIGNAL( timeChanged() ),
+             this,
+             SLOT( videoTimeChanged() ) );
+}
+
+void    PreviewWidget::videoTimeChanged()
+{
+    if ( m_currentMedia )
+    {
+        m_ui->seekSlider->setMaximum( m_currentMedia->getLength() / 1000 );
+        m_ui->seekSlider->setSliderPosition( m_currentMedia->getTime() / 1000 );
+    }
 }
