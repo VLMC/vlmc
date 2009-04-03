@@ -87,7 +87,32 @@ void Transcode::on_dialogButtonBox_accepted()
                                                  tr( "Video files (*.avi *.mkv *.ogg)" ) );
     if (path == "")
         return ;
-    //TODO : launch transcode
+    //int idxOfExt = path.lastIndexof();
+    QString type;
+    QString transCodeString = "";
+
+    type = m_ui.profileSelector->itemData( m_ui.profileSelector->currentIndex() ).toString();
+    if ( type ==  "high" )
+    {
+        transCodeString = "transcode{vcodec=h264,vb=800,scale=1,"
+                          "fps=0,width=0,height=0,acodec=mp4a,ab=128,"
+                          "channels=2,samplerate=44100}:std{access=file,mux=ts,dst=\"";
+    }
+    else if ( type ==  "medium" )
+    {
+        transCodeString = "transcode{vcodec=mp4v,vb=800,scale=1,"
+                          "fps=0,width=0,height=0,acodec=mp4a,ab=128,"
+                          "channels=2,samplerate=44100}:std{access=file,mux=mp4,dst=\"";
+    }
+    else if  ( type == "low" ) 
+    {
+        transCodeString = "transcode{vcodec=WMV2,vb=800,scale=1,"
+                          "fps=0,width=0,height=0,acodec=wma,ab=128,"
+                          "channels=2,samplerate=44100}:std{access=file,mux=asf,dst=\"";
+    }
+    transCodeString += path;
+    transCodeString += "\"}";
+    //TODO : instanciate VLC instance and launch transcode
     close();
 }
 
