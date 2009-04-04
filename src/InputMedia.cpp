@@ -91,11 +91,6 @@ QPixmap*      InputMedia::takeSnapshot( unsigned int width, unsigned int height 
 //        m_vlcMediaPlayer->setTime(currentTime);
 }
 
-bool        InputMedia::isPlaying()
-{
-    return m_vlcMediaPlayer->isPlaying();
-}
-
 bool        InputMedia::isSeekable()
 {
     return m_vlcMediaPlayer->isSeekable();

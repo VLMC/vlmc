@@ -46,6 +46,7 @@ protected:
     virtual void    dropEvent( QDropEvent* event );
 
 private slots:
+    void on_pushButtonPlay_clicked();
     void            videoTimeChanged();
     void            seekSliderMoved( int value );
 

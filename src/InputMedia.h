@@ -46,10 +46,6 @@ public:
     QPixmap*                 takeSnapshot( unsigned int width, unsigned int heigth );
 
     /**
-      * Ask libvlc if the media is currently playing
-      */
-    bool                    isPlaying();
-    /**
       * Ask libvlc if the media can be seeked
       */
     bool                    isSeekable();

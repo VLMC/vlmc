@@ -6,6 +6,8 @@
     </qresource>
     <qresource prefix="/images" >
         <file>images/vlmc.png</file>
+        <file alias="play" >images/play.png</file>
+        <file alias="pause" >images/pause.png</file>
     </qresource>
     <qresource prefix="/text" >
         <file>AUTHORS</file>

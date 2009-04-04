@@ -129,3 +129,8 @@ void        Media::setTime( qint64 time )
 {
     m_vlcMediaPlayer->setTime( time );
 }
+
+bool        Media::isPlaying()
+{
+    return m_vlcMediaPlayer->isPlaying();
+}

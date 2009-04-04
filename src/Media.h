@@ -59,6 +59,10 @@ public:
       * Change the current time of the media
       */
     void                    setTime( qint64 time );
+    /**
+      * Ask libvlc if the media is currently playing
+      */
+    virtual bool            isPlaying();
 
 protected:
     //Protected constructor so we can't use a Media without its sub-implementation

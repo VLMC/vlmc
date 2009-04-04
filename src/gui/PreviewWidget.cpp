@@ -29,6 +29,7 @@ PreviewWidget::PreviewWidget( QWidget *parent ) :
     m_ui( new Ui::PreviewWidget ), m_currentMedia( NULL )
 {
     m_ui->setupUi( this );
+    m_ui->groupBoxButton->hide();
 
     char const *vlc_argv[] =
         {
@@ -83,6 +84,7 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
     m_currentMedia->setupMedia();
     m_currentMedia->setDrawable( m_ui->clipRenderWidget->winId() );
     m_currentMedia->play();
+    m_ui->pushButtonPlay->setIcon( QIcon( ":/images/pause" ) );
     connect( m_currentMedia->mediaPlayer(),
              SIGNAL( timeChanged() ),
              this,
@@ -103,5 +105,21 @@ void    PreviewWidget::seekSliderMoved( int )
     if ( m_currentMedia )
     {
         m_currentMedia->setTime( m_ui->seekSlider->value() * 100 );
+    }
+}
+
+void PreviewWidget::on_pushButtonPlay_clicked()
+{
+    if ( m_currentMedia == NULL )
+        return;
+    if ( m_currentMedia->isPlaying() )
+    {
+        m_currentMedia->pause();
+        m_ui->pushButtonPlay->setIcon( QIcon( ":/images/play" ) );
+    }
+    else
+    {
+        m_currentMedia->play();
+        m_ui->pushButtonPlay->setIcon( QIcon( ":/images/pause" ) );
     }
 }
