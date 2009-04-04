@@ -68,7 +68,6 @@ public:
     virtual void            stop();
 
 private:
-    QPixmap*                    m_snapshot;
     uchar*                      m_pixelBuffer;
     QImage*                     m_image;
 

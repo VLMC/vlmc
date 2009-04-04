@@ -25,7 +25,7 @@
 #include <QDebug>
 
 ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, ListViewMediaItem::fType fType, QListWidget* parent, int type ) :
-        QListWidgetItem( parent, type )
+        QListWidgetItem( parent, type ), m_fileInfo( NULL ), m_currentMedia( NULL ), m_currentMediaSnapshot( NULL )
 {
     m_fileInfo = fInfo;
     m_fileType = fType;
@@ -46,11 +46,16 @@ ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, ListViewMediaItem::fType
 
 ListViewMediaItem::~ListViewMediaItem()
 {
-    delete m_fileInfo;
-    if (m_currentMedia->isPlaying())
+    if ( m_fileInfo != NULL )
+        delete m_fileInfo;
+    if ( m_currentMedia->isPlaying() )
         m_currentMedia->stop();
-    delete m_renderWidget;
-    delete m_currentMedia;
+    if ( m_renderWidget != NULL )
+        delete m_renderWidget;
+    if ( m_currentMedia != NULL )
+        delete m_currentMedia;
+    if ( m_currentMediaSnapshot != NULL )
+        delete m_currentMediaSnapshot;
 }
 
 void    ListViewMediaItem::setSnapshot()

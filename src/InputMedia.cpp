@@ -26,7 +26,7 @@
 #include "InputMedia.h"
 
 InputMedia::InputMedia( const QString& mrl, LibVLCpp::Instance* instance /*= NULL*/ ) :
-        Media( instance, mrl ), m_snapshot( NULL ), m_pixelBuffer( NULL ), m_image ( NULL )
+        Media( instance, mrl ), m_pixelBuffer( NULL ), m_image ( NULL )
 {
 //    m_vlcMedia->outputInVmem();
 //    m_vlcMedia->setLockCallback( InputMedia::lock );
@@ -74,8 +74,6 @@ void        InputMedia::unlock( LibVLCpp::Media::DataCtx* ctx )
 
 QPixmap*      InputMedia::takeSnapshot( unsigned int width, unsigned int height )
 {
-    if ( m_snapshot == NULL )
-    {
 //        qint64 currentTime = m_vlcMediaPlayer->getTime();
 //        qint64 length = getLength();
 //            qDebug() << currentTime << length;
@@ -83,17 +81,14 @@ QPixmap*      InputMedia::takeSnapshot( unsigned int width, unsigned int height 
 
 
 //        qDebug() << "trying to take a snapshot";
-        QTemporaryFile tmp;
-        tmp.open();
-        char* tmpStr = const_cast<char*>(tmp.fileName().toStdString().c_str());
-        m_vlcMediaPlayer->takeSnapshot( tmpStr, width, height );
+    QTemporaryFile tmp;
+    tmp.open();
+    char* tmpStr = const_cast<char*>(tmp.fileName().toStdString().c_str());
+    m_vlcMediaPlayer->takeSnapshot( tmpStr, width, height );
 //        qDebug() << "done snapshoting";
-        m_snapshot = new QPixmap( tmp.fileName() );
+    return new QPixmap( tmp.fileName() );
 //          qDebug() << "written to a QImage";
-
 //        m_vlcMediaPlayer->setTime(currentTime);
-    }
-    return m_snapshot;
 }
 
 bool        InputMedia::isPlaying()
