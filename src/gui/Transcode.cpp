@@ -66,9 +66,12 @@ Transcode::Transcode( QWidget *parent )
 {
     m_ui.setupUi( this );
     //TODO : load every known profiles
-    m_ui.profileSelector->addItem( tr( "High Quality" ), "high" );
-    m_ui.profileSelector->addItem( tr( "Medium Quality" ), "medium" );
-    m_ui.profileSelector->addItem( tr( "Low Quality" ), "low" );
+    m_ui.profileSelector->addItem( tr( "H264 + AAC" ), "h264" );
+    m_ui.profileSelector->addItem( tr( "Dirac + AAC" ), "dirac" );
+    m_ui.profileSelector->addItem( tr( "Theora + Vorbis" ), "thVorbis" );
+    m_ui.profileSelector->addItem( tr( "Theora + Flac" ), "thFlac" );
+    m_ui.profileSelector->addItem( tr( "Mpeg4 + AAC" ), "mp4" );
+    m_ui.profileSelector->addItem( tr( "WMV + WMA" ), "wmv" );
 }
 
 void Transcode::on_browseFileButton_clicked()
@@ -83,29 +86,91 @@ void Transcode::on_browseFileButton_clicked()
     m_ui.inputFileBox->setText( path );
 }
 
-void Transcode::m_doTranscode( const QString &outPath, const QString &transStr )
+bool Transcode::m_doTranscode( const QString &transStr )
 {
+    QString sout(":sout=");
+    sout += transStr;
+    qDebug() << m_origVidPath;
+    qDebug() << transStr;
+
+
     char const *vlc_argv[] = 
     {
-        "-verbose", "3",
+        "-I", "dummy", 
+        "--no-skip-frame",
     };
     int vlc_argc = sizeof( vlc_argv ) / sizeof( *vlc_argv );
 
     libvlc_exception_init( &m_vlcEx );
+    
     m_libvlc = libvlc_new( vlc_argc, vlc_argv, &m_vlcEx );
     if ( catchVLCException( &m_vlcEx ) )
-        return ;
+        return false;
+    
     m_vlcMedia = libvlc_media_new( m_libvlc, m_origVidPath.toLocal8Bit(), &m_vlcEx );
     if ( catchVLCException( &m_vlcEx ) ) 
-        return ;
+        return false;
+
+    libvlc_media_add_option(m_vlcMedia, sout.toStdString().c_str(), &m_vlcEx);
+    if ( catchVLCException( &m_vlcEx ) ) 
+        return false;
+
     m_vlcMp = libvlc_media_player_new_from_media( m_vlcMedia, &m_vlcEx );
     if ( catchVLCException( &m_vlcEx ) )
-        return ;
-    libvlc_media_release( m_vlcMedia );
+        return false;
+
+    m_vlcEM = libvlc_media_player_event_manager( m_vlcMp, &m_vlcEx );
+    if ( catchVLCException( &m_vlcEx ) ) 
+        return false;
+
+    libvlc_event_attach( m_vlcEM, libvlc_MediaPlayerPlaying, m_callback, this, &m_vlcEx );
+    if ( catchVLCException( &m_vlcEx ) ) 
+        return false;
+    libvlc_event_attach( m_vlcEM, libvlc_MediaPlayerEndReached, m_callback, this,  &m_vlcEx );
+    if ( catchVLCException( &m_vlcEx ) ) 
+        return false;
+
     libvlc_media_player_play( m_vlcMp, &m_vlcEx );
     if ( catchVLCException( &m_vlcEx ) ) 
-        return ;
-    sleep( 10 );
+        return false;
+    m_running = true;
+    m_initProgressDialog();
+
+    return true;
+}
+
+void Transcode::m_initProgressDialog()
+{
+    m_progress = new QProgressDialog( tr( "Transcode in progress" ), "Cancel", 0, 0);
+    QObject::connect( m_progress, SIGNAL( canceled() ),
+                      this, SLOT( cancelTranscode() ) );
+    m_timer = new QTimer( this );
+    QObject::connect( m_timer, SIGNAL( timeout() ),
+                      this, SLOT( calcTranscodePercentage() ) );
+    m_timer->start( 500 );
+}
+
+void Transcode::m_releaseVLCRessources()
+{
+    libvlc_media_release( m_vlcMedia );
+    libvlc_media_player_release( m_vlcMp );
+    libvlc_release( m_libvlc ); 
+}
+
+void Transcode::m_callback(const libvlc_event_t *event, void *ptr)
+{
+    Transcode* self = reinterpret_cast<Transcode*>(ptr);
+    switch (event->type)
+    {
+    case libvlc_MediaPlayerPlaying:
+        break;
+    case libvlc_MediaPlayerEndReached:
+        qDebug() << "End Reached";
+        self->m_running = false;
+        break;
+    default:
+        break;
+    }
 }
 
 void Transcode::on_dialogButtonBox_accepted()
@@ -117,7 +182,7 @@ void Transcode::on_dialogButtonBox_accepted()
                               tr( "Choose a video to transcode" ) );
         return ;
     }
-    QString path = QFileDialog::getOpenFileName( this,
+    QString path = QFileDialog::getSaveFileName( this,
                                                  tr( "Choose File to save" ),
                                                  m_origVidPath,
                                                  tr( "Video files (*.avi *.mkv *.ogg)" ) );
@@ -126,30 +191,50 @@ void Transcode::on_dialogButtonBox_accepted()
     QString type;
     QString transCodeString = "";
 
+    //TODO : Use a file or a qsettings, coz this is fugly
     type = m_ui.profileSelector->itemData( m_ui.profileSelector->currentIndex() ).toString();
-    if ( type ==  "high" )
+    if ( type ==  "h264" )
     {
-        transCodeString = "transcode{vcodec=h264,vb=800,scale=1,"
-                          "fps=0,width=0,height=0,acodec=mp4a,ab=128,"
-                          "channels=2,samplerate=44100}:std{access=file,mux=ts,dst=\"";
+        transCodeString = "#transcode{vcodec=h264,vb=800,scale=1,"
+                          "fps=0,width=0,height=0,acodec=mp3,ab=128,"
+                          "channels=2,samplerate=44100}:duplicate{dst=std{access=file,mux=ts,dst=\"";
     }
-    else if ( type ==  "medium" )
+    else if ( type ==  "mp4" )
     {
-        transCodeString = "transcode{vcodec=mp4v,vb=800,scale=1,"
+        transCodeString = "#transcode{vcodec=mp4v,vb=800,scale=1,"
                           "fps=0,width=0,height=0,acodec=mp4a,ab=128,"
-                          "channels=2,samplerate=44100}:std{access=file,mux=mp4,dst=\"";
+                          "channels=2,samplerate=44100}:duplicate{dst={std{access=file,mux=mp4,dst=\"";
     }
-    else if  ( type == "low" ) 
+    else if ( type == "dirac" )
     {
-        transCodeString = "transcode{vcodec=WMV2,vb=800,scale=1,"
+        transCodeString = "#transcode{vcodec=drac,vb=800,scale=1,"
+                          "fps=0,width=0,height=0,acodec=mp4a,ab=128,"
+                          "channels=2,samplerate=44100}:duplicate{dst=std{access=file,mux=ts,dst=\"";
+    }
+    else if ( type == "thVorbis" )
+    {
+        transCodeString = "#transcode{vcodec=theo,vb=800,scale=1,"
+                          "fps=0,width=0,height=0,acodec=vorb,ab=128,"
+                          "channels=2,samplerate=44100}:duplicate{dst=std{access=file,mux=ogg,dst=\"";
+    }
+    else if ( type == "thFlac" )
+    {
+        transCodeString = "transcode{vcodec=theo,vb=800,scale=1,"
+                          "fps=0,width=0,height=0,acodec=flac,ab=128,"
+                          "channels=2,samplerate=44100}:duplicate{dst=std{access=file,mux=ogg,dst=\"";
+    }   
+    else if ( type == "wmv" ) 
+    {
+        transCodeString = "#transcode{vcodec=WMV2,vb=800,scale=1,"
                           "fps=0,width=0,height=0,acodec=wma,ab=128,"
-                          "channels=2,samplerate=44100}:duplicate{dts=std{access=file,mux=asf,dst=\"";
+                          "channels=2,samplerate=44100}:duplicate{dst=std{access=file,mux=asf,dst=\"";
     }
     transCodeString += path;
-    transCodeString += "\"}";
+    transCodeString += "\"}}";
 
     //TODO : instanciate VLC instance and launch transcode
-    m_doTranscode(path, transCodeString);
+    if ( !m_doTranscode( transCodeString ) )
+        return ;
     close();
 }
 
@@ -173,4 +258,23 @@ void Transcode::on_deleteProfile_clicked()
     //TODO : delete the selected profile
 }
 
+void Transcode::calcTranscodePercentage()
+{
+    m_progress->setValue(10);
+    if ( !m_running )
+    {
+        m_timer->stop();
+        m_releaseVLCRessources();
+        delete m_progress;
+        delete m_timer;
+    }
+}
 
+void Transcode::cancelTranscode()
+{
+    m_timer->stop();
+    libvlc_media_player_stop( m_vlcMp, &m_vlcEx );
+    m_releaseVLCRessources();
+    delete m_progress;
+    delete m_timer;
+}

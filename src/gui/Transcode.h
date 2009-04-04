@@ -26,6 +26,8 @@
 #include <QDialog>
 #include <QString>
 #include <QEvent>
+#include <QProgressDialog>
+#include <QTimer>
 #include "vlc/vlc.h"
 
 #include "ui_transcode.h"
@@ -43,7 +45,10 @@ class Transcode : public QDialog
     private:
         explicit Transcode( QWidget *parent = 0 );
         ~Transcode() {}
-        void m_doTranscode( QString const &outPath, QString const &transStr );
+        bool m_doTranscode( const QString &transStr );
+        void m_initProgressDialog();
+        void m_releaseVLCRessources();
+
         Ui::Transcode m_ui;
         QString m_origVidPath;
 
@@ -51,8 +56,17 @@ class Transcode : public QDialog
         libvlc_instance_t *m_libvlc;
         libvlc_media_t *m_vlcMedia;
         libvlc_media_player_t *m_vlcMp;
+        libvlc_event_manager_t *m_vlcEM;
+
+        qint64 m_origMediaLength;
+
+        QProgressDialog *m_progress;
+        QTimer          *m_timer;
+
+        bool m_running;
 
         static Transcode *m_instance;
+        static void m_callback(const libvlc_event_t *event, void *ptr);
 
     private slots:
         void on_browseFileButton_clicked();
@@ -63,6 +77,9 @@ class Transcode : public QDialog
         void on_addProfile_clicked();
         void on_editProfile_clicked();
         void on_deleteProfile_clicked();
+
+        void calcTranscodePercentage();
+        void cancelTranscode();
 };
 
 #endif
