@@ -23,6 +23,7 @@
 //DEBUG
 #include <QtDebug>
 //DEBUG
+#include <QApplication>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QDir>
@@ -62,7 +63,7 @@ void Transcode::changeEvent( QEvent *e )
 }
 
 Transcode::Transcode( QWidget *parent )
-    : QDialog( parent )
+    : QDialog( parent ), m_running( false )
 {
     m_ui.setupUi( this );
     //TODO : load every known profiles
@@ -72,6 +73,16 @@ Transcode::Transcode( QWidget *parent )
     m_ui.profileSelector->addItem( tr( "Theora + Flac" ), "thFlac" );
     m_ui.profileSelector->addItem( tr( "Mpeg4 + AAC" ), "mp4" );
     m_ui.profileSelector->addItem( tr( "WMV + WMA" ), "wmv" );
+    QObject::connect( qApp,
+                      SIGNAL( aboutToQuit() ),
+                      this,
+                      SLOT( deleteLater() ) );
+}
+
+Transcode::~Transcode()
+{
+    if ( m_instance )
+        delete m_instance; 
 }
 
 void Transcode::on_browseFileButton_clicked()
@@ -90,15 +101,13 @@ bool Transcode::m_doTranscode( const QString &transStr )
 {
     QString sout(":sout=");
     sout += transStr;
-    qDebug() << m_origVidPath;
-    qDebug() << transStr;
-
 
     char const *vlc_argv[] = 
     {
         "-I", "dummy", 
         "--no-skip-frame",
     };
+
     int vlc_argc = sizeof( vlc_argv ) / sizeof( *vlc_argv );
 
     libvlc_exception_init( &m_vlcEx );
@@ -162,10 +171,7 @@ void Transcode::m_callback(const libvlc_event_t *event, void *ptr)
     Transcode* self = reinterpret_cast<Transcode*>(ptr);
     switch (event->type)
     {
-    case libvlc_MediaPlayerPlaying:
-        break;
     case libvlc_MediaPlayerEndReached:
-        qDebug() << "End Reached";
         self->m_running = false;
         break;
     default:
@@ -232,7 +238,6 @@ void Transcode::on_dialogButtonBox_accepted()
     transCodeString += path;
     transCodeString += "\"}}";
 
-    //TODO : instanciate VLC instance and launch transcode
     if ( !m_doTranscode( transCodeString ) )
         return ;
     close();
@@ -267,14 +272,17 @@ void Transcode::calcTranscodePercentage()
         m_releaseVLCRessources();
         delete m_progress;
         delete m_timer;
+        m_running = false;
     }
 }
 
 void Transcode::cancelTranscode()
 {
     m_timer->stop();
-    libvlc_media_player_stop( m_vlcMp, &m_vlcEx );
+    libvlc_media_player_pause( m_vlcMp, &m_vlcEx );
+    catchVLCException( &m_vlcEx );
     m_releaseVLCRessources();
     delete m_progress;
     delete m_timer;
+    m_running = false;
 }
