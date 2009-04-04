@@ -83,8 +83,21 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
     m_currentMedia->loadMedia( "file://" + item->fileInfo()->absoluteFilePath() );
     m_currentMedia->setupMedia();
     m_currentMedia->setDrawable( m_ui->clipRenderWidget->winId() );
+    //FIXME Connecting endReached to pause to change icon of playpause button
+    // this might not work as it works now later!
+    connect( m_currentMedia->mediaPlayer(),
+             SIGNAL( endReached() ),
+             this,
+             SLOT ( videoPaused() ) );
+    connect( m_currentMedia->mediaPlayer(),
+             SIGNAL( stopped() ),
+             this,
+             SLOT ( videoPaused() ) );
+    connect( m_currentMedia->mediaPlayer(),
+             SIGNAL( playing() ),
+             this,
+             SLOT ( videoPlaying() ) );
     m_currentMedia->play();
-    m_ui->pushButtonPlay->setIcon( QIcon( ":/images/pause" ) );
     connect( m_currentMedia->mediaPlayer(),
              SIGNAL( timeChanged() ),
              this,
@@ -115,11 +128,19 @@ void PreviewWidget::on_pushButtonPlay_clicked()
     if ( m_currentMedia->isPlaying() )
     {
         m_currentMedia->pause();
-        m_ui->pushButtonPlay->setIcon( QIcon( ":/images/play" ) );
     }
     else
     {
         m_currentMedia->play();
-        m_ui->pushButtonPlay->setIcon( QIcon( ":/images/pause" ) );
     }
+}
+
+void PreviewWidget::videoPaused()
+{
+    m_ui->pushButtonPlay->setIcon( QIcon( ":/images/play" ) );
+}
+
+void PreviewWidget::videoPlaying()
+{
+    m_ui->pushButtonPlay->setIcon( QIcon( ":/images/pause" ) );
 }

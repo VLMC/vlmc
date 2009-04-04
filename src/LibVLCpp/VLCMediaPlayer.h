@@ -62,6 +62,9 @@ namespace   LibVLCpp
         void                                snapshotTaken();
         void                                timeChanged();
         void                                playing();
+        void                                paused();
+        void                                stopped();
+        void                                endReached();
     };
 }
 

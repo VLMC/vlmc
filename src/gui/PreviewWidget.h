@@ -46,9 +46,11 @@ protected:
     virtual void    dropEvent( QDropEvent* event );
 
 private slots:
-    void on_pushButtonPlay_clicked();
+    void            on_pushButtonPlay_clicked();
     void            videoTimeChanged();
     void            seekSliderMoved( int value );
+    void            videoPaused();
+    void            videoPlaying();
 
 private:
     Ui::PreviewWidget*      m_ui;
