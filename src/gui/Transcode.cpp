@@ -29,12 +29,12 @@
 #include <QDir>
 #include "Transcode.h"
 
-static bool catchVLCException(libvlc_exception_t *ex)
+static bool catchVLCException( libvlc_exception_t *ex )
 {
-    if (libvlc_exception_raised(ex))
+    if ( libvlc_exception_raised( ex ) )
     {
-        qDebug() << libvlc_exception_get_message(ex);
-        libvlc_exception_clear(ex);
+        qDebug() << libvlc_exception_get_message( ex );
+        libvlc_exception_clear( ex );
         return (true);
     }
     return (false);
@@ -44,7 +44,7 @@ Transcode *Transcode::m_instance = NULL;
 
 Transcode *Transcode::instance( QWidget *parent )
 {
-    if (Transcode::m_instance == NULL)
+    if ( !Transcode::m_instance )
         Transcode::m_instance = new Transcode( parent );
     return ( Transcode::m_instance );
 }
@@ -79,12 +79,6 @@ Transcode::Transcode( QWidget *parent )
                       SLOT( deleteLater() ) );
 }
 
-Transcode::~Transcode()
-{
-    if ( m_instance )
-        delete m_instance; 
-}
-
 void Transcode::on_browseFileButton_clicked()
 {
     QString path = QFileDialog::getOpenFileName( this,
@@ -99,7 +93,7 @@ void Transcode::on_browseFileButton_clicked()
 
 bool Transcode::m_doTranscode( const QString &transStr )
 {
-    QString sout(":sout=");
+    QString sout( ":sout=" );
     sout += transStr;
 
     char const *vlc_argv[] = 
@@ -168,8 +162,8 @@ void Transcode::m_releaseVLCRessources()
 
 void Transcode::m_callback(const libvlc_event_t *event, void *ptr)
 {
-    Transcode* self = reinterpret_cast<Transcode*>(ptr);
-    switch (event->type)
+    Transcode* self = reinterpret_cast<Transcode*>( ptr );
+    switch ( event->type )
     {
     case libvlc_MediaPlayerEndReached:
         self->m_running = false;
@@ -265,7 +259,7 @@ void Transcode::on_deleteProfile_clicked()
 
 void Transcode::calcTranscodePercentage()
 {
-    m_progress->setValue(10);
+    m_progress->setValue( 10 );
     if ( !m_running )
     {
         m_timer->stop();

@@ -44,7 +44,6 @@ class Transcode : public QDialog
 
     private:
         explicit Transcode( QWidget *parent = 0 );
-        ~Transcode();
         bool m_doTranscode( const QString &transStr );
         void m_initProgressDialog();
         void m_releaseVLCRessources();
