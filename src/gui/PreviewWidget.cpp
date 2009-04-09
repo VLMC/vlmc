@@ -46,8 +46,9 @@ PreviewWidget::PreviewWidget( QWidget *parent ) :
     setAcceptDrops(true);
     m_currentInstance = new LibVLCpp::Instance( vlc_argc, vlc_argv );
 
-    connect( m_ui->seekSlider, SIGNAL( sliderMoved(int) ),
+    connect( m_ui->seekSlider, SIGNAL( sliderPosChanged(int) ),
              this, SLOT( seekSliderMoved(int) ) );
+
 }
 
 PreviewWidget::~PreviewWidget()

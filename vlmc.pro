@@ -30,7 +30,8 @@ SOURCES += src/main.cpp \
     src/OutputMedia.cpp \
     src/gui/About.cpp \
     src/gui/Transcode.cpp \
-    src/InputMedia.cpp
+    src/InputMedia.cpp \
+    src/gui/Slider.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -52,7 +53,8 @@ HEADERS += src/gui/MainWindow.h \
     src/OutputMedia.h \
     src/gui/About.h \
     src/gui/Transcode.h \
-    src/InputMedia.h
+    src/InputMedia.h \
+    src/gui/Slider.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \
@@ -60,13 +62,14 @@ FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/LibraryWidget.ui \
     src/gui/ui/About.ui \
     src/gui/ui/Transcode.ui
-FORMS += 
+FORMS +=
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts
 RESOURCES += ressources.qrc
-INCLUDEPATH +=  src/LibVLCpp \
-                src
+INCLUDEPATH += src/LibVLCpp \
+    src/gui \
+    src
 LIBS = -L/usr/local/lib \
     -lvlc
 CODECFORTR = UTF-8

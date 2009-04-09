@@ -70,7 +70,7 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QSlider" name="seekSlider">
+    <widget class="Slider" name="seekSlider">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -282,6 +282,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Slider</class>
+   <extends>QSlider</extends>
+   <header>Slider.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../../ressources.qrc"/>
  </resources>
