@@ -112,7 +112,7 @@ void    PreviewWidget::positionChanged()
 {
     if ( m_currentMedia )
     {
-        m_ui->seekSlider->setValue( (float)m_currentMedia->getPosition() * 1000  );
+        m_ui->seekSlider->setValue( (int)( m_currentMedia->getPosition() * 1000.0 ) );
     }
 }
 
@@ -120,7 +120,7 @@ void    PreviewWidget::seekSliderMoved( int )
 {
     if ( m_currentMedia )
     {
-        m_currentMedia->setPosition( (float)m_ui->seekSlider->value() / 1000 );
+        m_currentMedia->setPosition( (float)m_ui->seekSlider->value() / 1000.0 );
     }
 }
 
