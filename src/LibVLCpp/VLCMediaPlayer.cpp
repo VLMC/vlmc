@@ -41,6 +41,7 @@ MediaPlayer::MediaPlayer( Media* media, bool playStop /* = true*/ )
     libvlc_event_attach( p_em, libvlc_MediaPlayerPaused, callbacks, this, m_ex );
     libvlc_event_attach( p_em, libvlc_MediaPlayerStopped, callbacks, this, m_ex );
     libvlc_event_attach( p_em, libvlc_MediaPlayerEndReached, callbacks, this, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerPositionChanged, callbacks, this, m_ex );
 }
 
 /**
@@ -75,7 +76,9 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
     case libvlc_MediaPlayerTimeChanged:
         self->timeChangedFilter();
         break;
-//    case libvlc_MediaPlayerPositionChanged:
+    case libvlc_MediaPlayerPositionChanged:
+        self->emit positionChanged();
+        break;
 //    case libvlc_MediaPlayerSeekableChanged:
 //    case libvlc_MediaPlayerPausableChanged:
 //    case libvlc_MediaListItemAdded:
@@ -128,6 +131,19 @@ qint64                          MediaPlayer::getTime()
 void                            MediaPlayer::setTime( qint64 time )
 {
     libvlc_media_player_set_time( m_internalPtr, time, m_ex );
+    m_ex.checkThrow();
+}
+
+float                           MediaPlayer::getPosition()
+{
+    float p = libvlc_media_player_get_position( m_internalPtr, m_ex );
+    m_ex.checkThrow();
+    return p;
+}
+
+void                            MediaPlayer::setPosition( float pos )
+{
+    libvlc_media_player_set_position( m_internalPtr, pos, m_ex );
     m_ex.checkThrow();
 }
 

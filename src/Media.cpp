@@ -134,3 +134,13 @@ bool        Media::isPlaying()
 {
     return m_vlcMediaPlayer->isPlaying();
 }
+
+float       Media::getPosition()
+{
+    return m_vlcMediaPlayer->getPosition();
+}
+
+void        Media::setPosition( float pos )
+{
+    m_vlcMediaPlayer->setPosition( pos );
+}

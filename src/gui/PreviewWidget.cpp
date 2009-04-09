@@ -30,6 +30,10 @@ PreviewWidget::PreviewWidget( QWidget *parent ) :
 {
     m_ui->setupUi( this );
     m_ui->groupBoxButton->hide();
+    m_ui->seekSlider->setMinimum( 0 );
+    m_ui->seekSlider->setMaximum( 1000 );
+    m_ui->seekSlider->setSingleStep( 2 );
+    m_ui->seekSlider->setFocusPolicy( Qt::NoFocus );
 
     char const *vlc_argv[] =
         {
@@ -99,17 +103,16 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
              SLOT ( videoPlaying() ) );
     m_currentMedia->play();
     connect( m_currentMedia->mediaPlayer(),
-             SIGNAL( timeChanged() ),
+             SIGNAL( positionChanged() ),
              this,
-             SLOT( videoTimeChanged() ) );
+             SLOT( positionChanged() ) );
 }
 
-void    PreviewWidget::videoTimeChanged()
+void    PreviewWidget::positionChanged()
 {
     if ( m_currentMedia )
     {
-        m_ui->seekSlider->setMaximum( m_currentMedia->getLength() / 100 );
-        m_ui->seekSlider->setSliderPosition( m_currentMedia->getTime() / 100 );
+        m_ui->seekSlider->setValue( (float)m_currentMedia->getPosition() * 1000  );
     }
 }
 
@@ -117,7 +120,7 @@ void    PreviewWidget::seekSliderMoved( int )
 {
     if ( m_currentMedia )
     {
-        m_currentMedia->setTime( m_ui->seekSlider->value() * 100 );
+        m_currentMedia->setPosition( (float)m_ui->seekSlider->value() / 1000 );
     }
 }
 
@@ -126,13 +129,9 @@ void PreviewWidget::on_pushButtonPlay_clicked()
     if ( m_currentMedia == NULL )
         return;
     if ( m_currentMedia->isPlaying() )
-    {
         m_currentMedia->pause();
-    }
     else
-    {
         m_currentMedia->play();
-    }
 }
 
 void PreviewWidget::videoPaused()

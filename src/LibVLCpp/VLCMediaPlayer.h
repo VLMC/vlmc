@@ -44,6 +44,8 @@ namespace   LibVLCpp
         void                                stop();
         qint64                              getTime();
         void                                setTime( qint64 time );
+        float                               getPosition();
+        void                                setPosition( float pos );
         qint64                              getLength();
         void                                takeSnapshot( char* outputFile, unsigned int width, unsigned int heigth );
         bool                                isPlaying();
@@ -65,6 +67,7 @@ namespace   LibVLCpp
         void                                paused();
         void                                stopped();
         void                                endReached();
+        void                                positionChanged();
     };
 }
 

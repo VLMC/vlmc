@@ -63,6 +63,14 @@ public:
       * Ask libvlc if the media is currently playing
       */
     virtual bool            isPlaying();
+    /**
+      * Return the current position in the media as a float.
+      */
+    float                   getPosition();
+    /**
+      * Set the current position in the media as a float.
+      */
+    void                    setPosition( float pos );
 
 protected:
     //Protected constructor so we can't use a Media without its sub-implementation
