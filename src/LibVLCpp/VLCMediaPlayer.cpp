@@ -23,8 +23,27 @@
 #include <QtDebug>
 #include <cassert>
 #include "VLCMediaPlayer.h"
+#include "VLCInstance.h"
 
 using namespace LibVLCpp;
+
+MediaPlayer::MediaPlayer()
+{
+    m_internalPtr = libvlc_media_player_new( LibVLCpp::Instance::getInstance()->getInternalPtr(), m_ex );
+    m_ex.checkThrow();
+
+    // Initialize the event manager
+    p_em = libvlc_media_player_event_manager( m_internalPtr, m_ex );
+
+    // Register the callback
+    libvlc_event_attach( p_em, libvlc_MediaPlayerSnapshotTaken, callbacks, this, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerTimeChanged, callbacks, this, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerPlaying, callbacks, this, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerPaused, callbacks, this, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerStopped, callbacks, this, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerEndReached, callbacks, this, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerPositionChanged, callbacks, this, m_ex );
+}
 
 MediaPlayer::MediaPlayer( Media* media, bool playStop /* = true*/ )
 {
@@ -193,4 +212,9 @@ void                                MediaPlayer::timeChangedFilter()
     if ( currentTime != lastTime )
         emit timeChanged();
     lastTime = currentTime;
+}
+
+void                                MediaPlayer::setMedia( Media* media )
+{
+    libvlc_media_player_set_media( m_internalPtr, media->getInternalPtr(), m_ex);
 }

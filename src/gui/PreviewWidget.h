@@ -56,6 +56,7 @@ private:
     Ui::PreviewWidget*      m_ui;
     OutputMedia*            m_currentMedia;
     LibVLCpp::Instance*     m_currentInstance;
+    LibVLCpp::MediaPlayer*  m_mediaPlayer;
 };
 
 #endif // PREVIEWWIDGET_H

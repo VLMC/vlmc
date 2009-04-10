@@ -31,10 +31,45 @@ namespace LibVLCpp
 {
     class   Instance : public Internal< libvlc_instance_t >
     {
-    public:
-        Instance( int argc, const char** argv );
     private:
-        Exception       m_ex;
+        Instance();
+        Instance( int argc, const char** argv );
+
+    private:
+        Exception           m_ex;
+        static Instance*    m_singleton;
+        static Instance*    m_instance;
+
+    public:
+
+        static Instance*    getNewInstance( int argc, const char** argv )
+        {
+            m_instance = new Instance( argc, argv );
+            return m_instance;
+        }
+
+        static Instance*    getInstance()
+        {
+            if (NULL == m_singleton)
+                m_singleton =  new Instance();
+
+            return m_singleton;
+        }
+
+        static void kill()
+        {
+            if ( m_singleton != NULL )
+            {
+                delete m_singleton;
+                m_singleton = NULL;
+            }
+            if ( m_instance != NULL )
+            {
+                delete m_instance;
+                m_instance = NULL;
+            }
+
+        }
     };
 }
 

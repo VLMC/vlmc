@@ -38,6 +38,7 @@ namespace   LibVLCpp
     {
         Q_OBJECT
     public:
+        MediaPlayer();
         MediaPlayer( Media* media, bool playStop = true );
         void                                play();
         void                                pause();
@@ -52,6 +53,7 @@ namespace   LibVLCpp
         bool                                isSeekable();
         void                                setDrawable( void* hwnd );
         void                                setDrawable( uint32_t drawable );
+        void                                setMedia(Media* media);
 
     private:
         static void                         callbacks( const libvlc_event_t* event, void* self );

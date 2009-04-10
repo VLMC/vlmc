@@ -80,7 +80,12 @@ public:
       * \brief Get the current media snapshot
       * \return the current media snapshot as a QPixmap*, or NULL if there is no current media.
       */
-    const QPixmap*            getSnapshot() const;
+    //const QPixmap*            getSnapshot() const;
+
+
+    InputMedia*               getInputMedia() { return m_inputMedia; }
+
+    //void                      setInputMedia( InputMedia* inputMedia ) { m_inputMedia = inputMedia; }
 
 private:
     /**
@@ -96,7 +101,7 @@ private:
     /**
      * \Instance of the InputMedia
      */
-    InputMedia*             m_currentMedia;
+    InputMedia*             m_inputMedia;
 
     /**
      * \brief Instance of the temporary QWidget use for the snapshot
@@ -107,11 +112,12 @@ private:
      * \brief The current media snapshot
      */
     //FIXME: this should probably be in the media itself
-    QPixmap*                m_currentMediaSnapshot;
+    //QPixmap*                m_currentMediaSnapshot;
 
-private slots:
-    void    setSnapshot();
-    void    takeSnapshot();
+public slots:
+//    void    setSnapshot();
+//    void    takeSnapshot();
+//    void    seek();
 };
 
 #endif /* !LISTVIEWMEDIAITEM_H */

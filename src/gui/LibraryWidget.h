@@ -60,6 +60,9 @@ private:
 private slots:
     void on_pushButtonAddMedia_clicked();
     void on_pushButtonRemoveMedia_clicked();
+
+signals:
+    void    listViewMediaAdded(ListViewMediaItem* item);
 };
 
 #endif /* !LIBRARYWIDGET_H */

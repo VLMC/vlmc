@@ -25,7 +25,7 @@
 
 Media::Media(LibVLCpp::Instance* instance, const QString& mrl )
     : m_instance( NULL ), m_vlcMedia( NULL ), m_vlcMediaPlayer( NULL ),
-    m_mrl( mrl ), m_instanceOwned( false )
+    m_mrl( mrl ), m_snapshot( NULL ), m_instanceOwned( false )
 {
     if ( !instance )
     {
@@ -38,7 +38,7 @@ Media::Media(LibVLCpp::Instance* instance, const QString& mrl )
             //"--ignore-config", //Don't use VLC's config files
         };
         int vlc_argc = sizeof( vlc_argv ) / sizeof( *vlc_argv );
-        instance = new LibVLCpp::Instance( vlc_argc, vlc_argv );
+        instance = LibVLCpp::Instance::getNewInstance( vlc_argc, vlc_argv );
         m_instanceOwned = true;
     }
     m_instance = instance;
@@ -73,15 +73,15 @@ void        Media::loadMedia( const QString& mrl )
 
 void        Media::setupMedia()
 {
-    if ( m_vlcMediaPlayer )
-        delete m_vlcMediaPlayer;
+//    if ( m_vlcMediaPlayer )
+//        delete m_vlcMediaPlayer;
 
     //Flushing the args into the media :
     QString     param;
     foreach ( param, m_parameters )
         m_vlcMedia->addOption( param.toStdString().c_str() );
 
-    m_vlcMediaPlayer = new LibVLCpp::MediaPlayer( m_vlcMedia );
+   // m_vlcMediaPlayer = new LibVLCpp::MediaPlayer( m_vlcMedia );
 }
 
 void        Media::play()
@@ -143,4 +143,18 @@ float       Media::getPosition()
 void        Media::setPosition( float pos )
 {
     m_vlcMediaPlayer->setPosition( pos );
+}
+
+void        Media::setSnapshot( QPixmap* snapshot )
+{
+    //TODO: check for mem leaks.
+    m_snapshot = snapshot;
+}
+
+const QPixmap&    Media::getSnapshot() const
+{
+    if ( m_snapshot )
+        return *m_snapshot;
+    //TODO: instanciate this as a static pixmap
+    return QPixmap( ":/images/images/vlmc.png" );
 }

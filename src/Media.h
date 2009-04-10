@@ -47,6 +47,8 @@ public:
     void                setupMedia();
     void                setDrawable( WId handle );
     LibVLCpp::MediaPlayer*  mediaPlayer() { return m_vlcMediaPlayer; }
+    LibVLCpp::Media*    getVLCMedia() { return m_vlcMedia; }
+    void                setMediaPlayer( LibVLCpp::MediaPlayer* mediaPlayer ) { m_vlcMediaPlayer = mediaPlayer; }
     /**
       * Return the length (duration) of a Media
       */
@@ -72,6 +74,9 @@ public:
       */
     void                    setPosition( float pos );
 
+    void                    setSnapshot( QPixmap* snapshot );
+    const QPixmap&          getSnapshot() const;
+
 protected:
     //Protected constructor so we can't use a Media without its sub-implementation
     Media( LibVLCpp::Instance* instance, const QString& mrl );
@@ -81,6 +86,8 @@ protected:
     LibVLCpp::MediaPlayer*      m_vlcMediaPlayer;
     QString                     m_mrl;
     QList<QString>              m_parameters;
+    QPixmap*                    m_snapshot;
+
 private:
     bool                        m_instanceOwned;
 };

@@ -42,6 +42,12 @@ MainWindow::MainWindow( QWidget *parent ) :
                       SLOT(transLateWidgetTitle() ) );
 }
 
+MainWindow::~MainWindow()
+{
+    if (m_metaDataManager)
+        delete m_metaDataManager;
+}
+
 void MainWindow::changeEvent( QEvent *e )
 {
     switch ( e->type() )
@@ -64,7 +70,8 @@ void MainWindow::m_initializeDockWidgets( void )
 
     DockWidgetManager *dockManager = DockWidgetManager::instance();
 
-    dockManager->addDockedWidget( new LibraryWidget( this ),
+    LibraryWidget* libraryWidget = new LibraryWidget( this );
+    dockManager->addDockedWidget( libraryWidget,
                                   tr( "Media Library" ),
                                   Qt::AllDockWidgetAreas, 
                                   QDockWidget::AllDockWidgetFeatures,
@@ -75,6 +82,8 @@ void MainWindow::m_initializeDockWidgets( void )
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
+
+    m_metaDataManager = new MetaDataManager( libraryWidget );
 }
 
 //Private slots definition

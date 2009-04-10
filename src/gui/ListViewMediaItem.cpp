@@ -25,59 +25,24 @@
 #include <QDebug>
 
 ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, ListViewMediaItem::fType fType, QListWidget* parent, int type ) :
-        QListWidgetItem( parent, type ), m_fileInfo( NULL ), m_currentMedia( NULL ), m_currentMediaSnapshot( NULL )
+        QListWidgetItem( parent, type ), m_fileInfo( NULL ), m_inputMedia( NULL )
 {
     m_fileInfo = fInfo;
     m_fileType = fType;
 
-    setIcon( QIcon( ":/images/images/vlmc.png" ) );
+    setIcon( QIcon( ":/images/images/vlmc.png") );
     setText( fInfo->baseName() );
 
     m_renderWidget = new QWidget();
 
-    m_currentMedia = new InputMedia( "file://" + fInfo->absoluteFilePath() );
-    m_currentMedia->setupMedia();
-    m_currentMedia->setDrawable( m_renderWidget->winId() );
-
-    connect( m_currentMedia->mediaPlayer(), SIGNAL( playing() ), this, SLOT( setSnapshot() ) );
-
-    m_currentMedia->play();
+    m_inputMedia = new InputMedia( "file://" + fInfo->absoluteFilePath(), LibVLCpp::Instance::getInstance() );
+    m_inputMedia->setupMedia();
 }
 
 ListViewMediaItem::~ListViewMediaItem()
 {
     if ( m_fileInfo != NULL )
         delete m_fileInfo;
-    if ( m_currentMedia->isPlaying() )
-        m_currentMedia->stop();
-    if ( m_renderWidget != NULL )
-        delete m_renderWidget;
-    if ( m_currentMedia != NULL )
-        delete m_currentMedia;
-    if ( m_currentMediaSnapshot != NULL )
-        delete m_currentMediaSnapshot;
-}
-
-void    ListViewMediaItem::setSnapshot()
-{
-//    qDebug() << "setSnapshot";
-    connect( m_currentMedia->mediaPlayer(), SIGNAL( timeChanged() ), this, SLOT( takeSnapshot() ) );
-    m_currentMedia->setTime( m_currentMedia->getLength() / 3 );
-}
-
-void    ListViewMediaItem::takeSnapshot()
-{
-    // TODO: Debug of the multiple snapshot
-    // TODO: Check for memory leak in the snapshot
-
-    m_currentMediaSnapshot = m_currentMedia->takeSnapshot( 32, 32 );
-    setIcon( QIcon( *m_currentMediaSnapshot ) );
-    m_currentMedia->stop();
-    disconnect( m_currentMedia->mediaPlayer(), SIGNAL( playing() ), this, SLOT( setSnapshot() ) );
-    disconnect( m_currentMedia->mediaPlayer(), SIGNAL( timeChanged() ), this, SLOT( takeSnapshot() ) );
-}
-
-const QPixmap*      ListViewMediaItem::getSnapshot() const
-{
-    return m_currentMediaSnapshot;
+    if ( m_inputMedia != NULL )
+        delete m_inputMedia;
 }

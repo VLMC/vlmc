@@ -43,7 +43,7 @@ public:
     static void             lock( LibVLCpp::Media::DataCtx* dataCtx, void **pp_ret );
     static void             unlock( LibVLCpp::Media::DataCtx* dataCtx );
 
-    QPixmap*                 takeSnapshot( unsigned int width, unsigned int heigth );
+    //QPixmap*                 takeSnapshot( unsigned int width, unsigned int heigth );
 
     /**
       * Ask libvlc if the media can be seeked

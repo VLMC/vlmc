@@ -26,6 +26,25 @@
 
 using namespace LibVLCpp;
 
+Instance*   Instance::m_singleton = NULL;
+Instance*   Instance::m_instance = NULL;
+
+Instance::Instance()
+{
+    char const *argv[] =
+    {
+        //"-vvvvv",
+        "--no-skip-frames",
+        "--no-audio",
+        //"--plugin-path", VLC_TREE "/modules",
+        //"--ignore-config", //Don't use VLC's config files
+    };
+    int argc = sizeof( argv ) / sizeof( *argv );
+
+    m_internalPtr = libvlc_new( argc, argv, m_ex );
+    m_ex.checkThrow();
+}
+
 Instance::Instance( int argc, const char** argv )
 {
     m_internalPtr = libvlc_new( argc, argv, m_ex );

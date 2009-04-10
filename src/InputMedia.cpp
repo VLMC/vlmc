@@ -72,24 +72,24 @@ void        InputMedia::unlock( LibVLCpp::Media::DataCtx* ctx )
     ctx->mutex->unlock();
 }
 
-QPixmap*      InputMedia::takeSnapshot( unsigned int width, unsigned int height )
-{
-//        qint64 currentTime = m_vlcMediaPlayer->getTime();
-//        qint64 length = getLength();
-//            qDebug() << currentTime << length;
-//        m_vlcMediaPlayer->setTime(length / 2);
-
-
-//        qDebug() << "trying to take a snapshot";
-    QTemporaryFile tmp;
-    tmp.open();
-    char* tmpStr = const_cast<char*>(tmp.fileName().toStdString().c_str());
-    m_vlcMediaPlayer->takeSnapshot( tmpStr, width, height );
-//        qDebug() << "done snapshoting";
-    return new QPixmap( tmp.fileName() );
-//          qDebug() << "written to a QImage";
-//        m_vlcMediaPlayer->setTime(currentTime);
-}
+//QPixmap*      InputMedia::takeSnapshot( unsigned int width, unsigned int height )
+//{
+////        qint64 currentTime = m_vlcMediaPlayer->getTime();
+////        qint64 length = getLength();
+////            qDebug() << currentTime << length;
+////        m_vlcMediaPlayer->setTime(length / 2);
+//
+//
+////        qDebug() << "trying to take a snapshot";
+//    QTemporaryFile tmp;
+//    tmp.open();
+//    char* tmpStr = const_cast<char*>(tmp.fileName().toStdString().c_str());
+//    m_vlcMediaPlayer->takeSnapshot( tmpStr, width, height );
+////        qDebug() << "done snapshoting";
+//    return new QPixmap( tmp.fileName() );
+////          qDebug() << "written to a QImage";
+////        m_vlcMediaPlayer->setTime(currentTime);
+//}
 
 bool        InputMedia::isSeekable()
 {
@@ -114,4 +114,11 @@ void        InputMedia::pause()
 void        InputMedia::stop()
 {
     Media::stop();
+}
+
+bool       InputMedia::isReady()
+{
+    if (m_vlcMediaPlayer->isPlaying() && m_vlcMediaPlayer->isSeekable())
+        return true;
+    return false;
 }

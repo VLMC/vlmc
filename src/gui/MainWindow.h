@@ -29,6 +29,7 @@
 #include "PreviewWidget.h"
 #include "DockWidgetManager.h"
 #include "Preferences.h"
+#include "MetaDataManager.h"
 
 class MainWindow : public QMainWindow
 {
@@ -37,6 +38,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow( QWidget *parent = 0 );
+    ~MainWindow();
 
 protected:
     virtual void changeEvent( QEvent *e );
@@ -45,8 +47,9 @@ private:
     void m_initializeDockWidgets( void );
 
 
-    Ui::MainWindow m_ui;
-    LibraryWidget* m_library;
+    Ui::MainWindow      m_ui;
+    LibraryWidget*      m_library;
+    MetaDataManager*    m_metaDataManager;
 
 private slots:
     void on_actionQuit_triggered();

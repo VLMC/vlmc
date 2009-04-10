@@ -54,6 +54,7 @@ LibraryWidget::~LibraryWidget()
 ListViewMediaItem*  LibraryWidget::addMedia( QFileInfo* fileInfo, ListViewMediaItem::fType fileType )
 {
     ListViewMediaItem* item = new ListViewMediaItem( fileInfo, fileType );
+    emit listViewMediaAdded( item );
     m_medias->append( item );
     switch ( fileType )
     {

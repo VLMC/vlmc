@@ -31,7 +31,8 @@ SOURCES += src/main.cpp \
     src/gui/About.cpp \
     src/gui/Transcode.cpp \
     src/InputMedia.cpp \
-    src/gui/Slider.cpp
+    src/gui/Slider.cpp \
+    src/MetaDataManager.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -54,7 +55,8 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/About.h \
     src/gui/Transcode.h \
     src/InputMedia.h \
-    src/gui/Slider.h
+    src/gui/Slider.h \
+    src/MetaDataManager.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \
