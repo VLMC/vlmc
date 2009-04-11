@@ -1,5 +1,5 @@
 /*****************************************************************************
- * OutputMedia.h: Class for outpouting a media from a VMEM
+ * Clip.h : Represents a basic container for media informations.
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,33 +20,39 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef OUTPUTMEDIA_H
-#define OUTPUTMEDIA_H
+#ifndef CLIP_H__
+#define CLIP_H__
 
-#include "Media.h"
+#include <QList>
+#include <QString>
+#include <QPixmap>
 
-class       OutputMedia : public Media
+#include "VLCMedia.h"
+
+/**
+  * Represents a basic container for media informations.
+  */
+class       Clip
 {
 public:
-    struct              DataCtx
-    {
-        ~DataCtx();
-        QMutex*         mutex;
-        OutputMedia*    outputMedia;
-    };
-    OutputMedia( LibVLCpp::Instance* instance );
-    virtual ~OutputMedia();
+    Clip( const QString& mrl );
+    virtual ~Clip();
 
-    static uchar*           lock( OutputMedia::DataCtx* dataCtx );
-    static void             unlock( OutputMedia::DataCtx* dataCtx );
+    void                loadMedia( const QString& mrl );
+    void                addParam( const QString& param );
+    void                setupMedia();
+    LibVLCpp::Media*    getVLCMedia() { return m_vlcMedia; }
 
-    void                    setVmem( uchar* pixelBuffer );
-    virtual void            play();
+    void                setSnapshot( QPixmap* snapshot );
+    const QPixmap&      getSnapshot() const;
 
-private:
-    OutputMedia::DataCtx*       m_dataCtx;
-    uchar*                      m_pixelBuffer;
-
+protected:
+    //TODO: is this really usefull now ?!
+    LibVLCpp::Instance*         m_instance;
+    LibVLCpp::Media*            m_vlcMedia;
+    QString                     m_mrl;
+    QList<QString>              m_parameters;
+    QPixmap*                    m_snapshot;
 };
 
-#endif // OUTPUTMEDIA_H
+#endif // MEDIA_H

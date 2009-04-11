@@ -26,7 +26,7 @@
 #include <QtGui/QDialog>
 #include <QDragEnterEvent>
 
-#include "OutputMedia.h"
+#include "VLCMediaPlayer.h"
 
 namespace Ui {
     class PreviewWidget;
@@ -54,7 +54,7 @@ private slots:
 
 private:
     Ui::PreviewWidget*      m_ui;
-    OutputMedia*            m_currentMedia;
+    //TODO: Is this really useful now ?!
     LibVLCpp::Instance*     m_currentInstance;
     LibVLCpp::MediaPlayer*  m_mediaPlayer;
 };

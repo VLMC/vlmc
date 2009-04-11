@@ -25,7 +25,7 @@
 #include <QDebug>
 
 ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, ListViewMediaItem::fType fType, QListWidget* parent, int type ) :
-        QListWidgetItem( parent, type ), m_fileInfo( NULL ), m_inputMedia( NULL )
+        QListWidgetItem( parent, type ), m_fileInfo( NULL ), m_clip( NULL )
 {
     m_fileInfo = fInfo;
     m_fileType = fType;
@@ -35,14 +35,13 @@ ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, ListViewMediaItem::fType
 
     m_renderWidget = new QWidget();
 
-    m_inputMedia = new InputMedia( "file://" + fInfo->absoluteFilePath(), LibVLCpp::Instance::getInstance() );
-    m_inputMedia->setupMedia();
+    //TODO: create the actual clip.
 }
 
 ListViewMediaItem::~ListViewMediaItem()
 {
     if ( m_fileInfo != NULL )
         delete m_fileInfo;
-    if ( m_inputMedia != NULL )
-        delete m_inputMedia;
+    if ( m_clip != NULL )
+        delete m_clip;
 }

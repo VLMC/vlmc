@@ -45,7 +45,7 @@ MediaPlayer::MediaPlayer()
     libvlc_event_attach( p_em, libvlc_MediaPlayerPositionChanged, callbacks, this, m_ex );
 }
 
-MediaPlayer::MediaPlayer( Media* media, bool playStop /* = true*/ )
+MediaPlayer::MediaPlayer( Media* media )
 {
     m_internalPtr = libvlc_media_player_new_from_media( media->getInternalPtr(), m_ex );
     m_ex.checkThrow();

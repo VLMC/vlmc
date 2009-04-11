@@ -26,7 +26,7 @@
 
 PreviewWidget::PreviewWidget( QWidget *parent ) :
     QDialog( parent ),
-    m_ui( new Ui::PreviewWidget ), m_currentMedia( NULL )
+    m_ui( new Ui::PreviewWidget )
 {
     m_ui->setupUi( this );
     m_ui->groupBoxButton->hide();
@@ -35,18 +35,8 @@ PreviewWidget::PreviewWidget( QWidget *parent ) :
     m_ui->seekSlider->setSingleStep( 2 );
     m_ui->seekSlider->setFocusPolicy( Qt::NoFocus );
 
-//    char const *vlc_argv[] =
-//        {
-//            "-verbose", "3",
-//            "--no-skip-frames",
-//            //"--plugin-path", VLC_TREE "/modules",
-//            //"--ignore-config", //Don't use VLC's config files
-//        };
-//    int vlc_argc = sizeof( vlc_argv ) / sizeof( *vlc_argv );
-    setAcceptDrops(true);
+    //    setAcceptDrops(true);
 
-    //m_currentInstance = new LibVLCpp::Instance( vlc_argc, vlc_argv );
-    //m_currentInstance = LibVLCpp::Instance::getNewInstance( vlc_argc, vlc_argv );
     m_currentInstance = LibVLCpp::Instance::getInstance();
 
     connect( m_ui->seekSlider, SIGNAL( sliderPosChanged(int) ),
@@ -83,64 +73,41 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
     ListViewMediaItem* item = dynamic_cast<ListViewMediaItem*>( listWidget->currentItem() );
     if ( item == NULL )
         return ;
-    if ( m_currentMedia != NULL )
-    {
-        m_currentMedia->stop();
-        delete m_currentMedia;
-    }
-    m_currentMedia = new OutputMedia( m_currentInstance );
-    m_currentMedia->loadMedia( "file://" + item->fileInfo()->absoluteFilePath() );
-    m_currentMedia->setupMedia();
 
-    m_mediaPlayer->setMedia( m_currentMedia->getVLCMedia() );
-
-    m_currentMedia->setMediaPlayer( m_mediaPlayer );
-    m_currentMedia->setDrawable( m_ui->clipRenderWidget->winId() );
     //FIXME Connecting endReached to pause to change icon of playpause button
     // this might not work as it works now later!
-    connect( m_currentMedia->mediaPlayer(),
-             SIGNAL( endReached() ),
-             this,
-             SLOT ( videoPaused() ) );
-    connect( m_currentMedia->mediaPlayer(),
-             SIGNAL( stopped() ),
-             this,
-             SLOT ( videoPaused() ) );
-    connect( m_currentMedia->mediaPlayer(),
-             SIGNAL( playing() ),
-             this,
-             SLOT ( videoPlaying() ) );
-    m_currentMedia->play();
-    connect( m_currentMedia->mediaPlayer(),
-             SIGNAL( positionChanged() ),
-             this,
-             SLOT( positionChanged() ) );
+//    connect( m_currentMedia->mediaPlayer(),
+//             SIGNAL( endReached() ),
+//             this,
+//             SLOT ( videoPaused() ) );
+//    connect( m_currentMedia->mediaPlayer(),
+//             SIGNAL( stopped() ),
+//             this,
+//             SLOT ( videoPaused() ) );
+//    connect( m_currentMedia->mediaPlayer(),
+//             SIGNAL( playing() ),
+//             this,
+//             SLOT ( videoPlaying() ) );
+//    m_currentMedia->play();
+//    connect( m_currentMedia->mediaPlayer(),
+//             SIGNAL( positionChanged() ),
+//             this,
+//             SLOT( positionChanged() ) );
 }
 
 void    PreviewWidget::positionChanged()
 {
-    if ( m_currentMedia )
-    {
-        m_ui->seekSlider->setValue( (int)( m_currentMedia->getPosition() * 1000.0 ) );
-    }
+   //TODO
 }
 
 void    PreviewWidget::seekSliderMoved( int )
 {
-    if ( m_currentMedia )
-    {
-        m_currentMedia->setPosition( (float)m_ui->seekSlider->value() / 1000.0 );
-    }
+    //TODO
 }
 
 void PreviewWidget::on_pushButtonPlay_clicked()
 {
-    if ( m_currentMedia == NULL )
-        return;
-    if ( m_currentMedia->isPlaying() )
-        m_currentMedia->pause();
-    else
-        m_currentMedia->play();
+    //TODO
 }
 
 void PreviewWidget::videoPaused()

@@ -68,12 +68,7 @@ void    MediaListWidget::mouseMoveEvent( QMouseEvent* event )
     mimeData->setText( ( ( ListViewMediaItem* )( currentItem() ) )->fileInfo()->absoluteFilePath() );
     QDrag* drag = new QDrag( this );
     drag->setMimeData( mimeData );
-    const QPixmap& dragPixmap = static_cast<ListViewMediaItem*>( currentItem() )->getInputMedia()->getSnapshot();
-    if ( !dragPixmap.isNull() /*!= NULL */)
-    {
-        //TODO: creating a new pixmap maybe a little too much for this...
-        drag->setPixmap( dragPixmap.scaled( 100, 100, Qt::KeepAspectRatio ) );
-    }
+    //TODO: get the snapshot.
     drag->exec( Qt::CopyAction | Qt::MoveAction, Qt::CopyAction );
 }
 

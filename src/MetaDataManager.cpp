@@ -21,8 +21,9 @@ void    MetaDataManager::listViewMediaAdded( ListViewMediaItem* item )
 {
     m_mediaList.append( item );
 
-    if ( !isRunning() )
-        start();
+    //TODO: relaunch the thread after refactoring
+//    if ( !isRunning() )
+//        start();
 }
 
 void    MetaDataManager::run()
@@ -41,13 +42,8 @@ void    MetaDataManager::run()
 
             m_currentMediaItem = m_mediaList.front();
             m_mediaList.pop_front();
-            m_currentMediaItem->getInputMedia()->setMediaPlayer( m_mediaPlayer );
 
-            m_mediaPlayer->setMedia( m_currentMediaItem->getInputMedia()->getVLCMedia() );
-
-            connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( renderSnapshot() ) );
-
-            m_mediaPlayer->play();
+            //TODO: launch (play) the media and connect the MediaPlayer "playing" signal to the renderSnapshot slot.
         }
         usleep( 100 );
     }
@@ -56,7 +52,7 @@ void    MetaDataManager::run()
 
 void    MetaDataManager::renderSnapshot()
 {
-    m_currentMediaItem->getInputMedia()->setTime( m_currentMediaItem->getInputMedia()->getLength() / 3 );
+    //TODO: set the position to 1/3 of the video length
 
     QTemporaryFile tmp;
     tmp.setAutoRemove( false );
@@ -74,8 +70,7 @@ void    MetaDataManager::renderSnapshot()
 
 void    MetaDataManager::setSnapshotInIcon()
 {
-    m_currentMediaItem->getInputMedia()->setSnapshot( new QPixmap( m_tmpSnapshotFilename ) );
-    m_currentMediaItem->setIcon( QIcon( m_currentMediaItem->getInputMedia()->getSnapshot() ) );
+    //TODO: Set the media icon from the snapshot.
     m_nextMedia = true;
     disconnect( this, SLOT( setSnapshotInIcon() ) );
     m_mediaPlayer->stop();

@@ -39,7 +39,7 @@ namespace   LibVLCpp
         Q_OBJECT
     public:
         MediaPlayer();
-        MediaPlayer( Media* media, bool playStop = true );
+        MediaPlayer( Media* media );
         void                                play();
         void                                pause();
         void                                stop();

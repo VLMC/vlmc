@@ -26,11 +26,9 @@ SOURCES += src/main.cpp \
     src/gui/Preferences.cpp \
     src/gui/ListViewMediaItem.cpp \
     src/gui/MediaListWidget.cpp \
-    src/Media.cpp \
-    src/OutputMedia.cpp \
+    src/Clip.cpp \
     src/gui/About.cpp \
     src/gui/Transcode.cpp \
-    src/InputMedia.cpp \
     src/gui/Slider.cpp \
     src/MetaDataManager.cpp \
     src/LibVLCpp/VLCMediaList.cpp
@@ -49,13 +47,11 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/TracksRuler.h \
     src/gui/Preferences.h \
     src/gui/ListViewMediaItem.h \
-    src/Media.h \
+    src/Clip.h \
     src/Image.h \
     src/gui/MediaListWidget.h \
-    src/OutputMedia.h \
     src/gui/About.h \
     src/gui/Transcode.h \
-    src/InputMedia.h \
     src/gui/Slider.h \
     src/MetaDataManager.h \
     src/LibVLCpp/VLCMediaList.h

@@ -26,7 +26,7 @@
 #include <QObject>
 #include <QFileInfo>
 #include <QListWidgetItem>
-#include "InputMedia.h"
+#include "Clip.h"
 
 /**
  *  \class ListViewMediaItem
@@ -83,7 +83,7 @@ public:
     //const QPixmap*            getSnapshot() const;
 
 
-    InputMedia*               getInputMedia() { return m_inputMedia; }
+    Clip*                       getClip() { return m_clip; }
 
     //void                      setInputMedia( InputMedia* inputMedia ) { m_inputMedia = inputMedia; }
 
@@ -101,7 +101,7 @@ private:
     /**
      * \Instance of the InputMedia
      */
-    InputMedia*             m_inputMedia;
+    Clip*             m_clip;
 
     /**
      * \brief Instance of the temporary QWidget use for the snapshot
