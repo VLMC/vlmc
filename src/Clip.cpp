@@ -26,10 +26,21 @@
 QPixmap*    Clip::defaultSnapshot = NULL;
 
 Clip::Clip( const QString& mrl )
-    : m_vlcMedia( NULL ), m_mrl( mrl ), m_snapshot( NULL )
+    : m_vlcMedia( NULL ), m_mrl( mrl ), m_snapshot( NULL ), m_begin( 0 ), m_end( -1 )
 {
     m_vlcMedia = new LibVLCpp::Media( mrl );
     m_uuid = QUuid::createUuid();
+    //We avoid creating a fileInfo from the mrl since it can be "fake://" for invmem.
+    m_fileInfo = NULL;
+}
+
+Clip::Clip( const QFileInfo* fileInfo)
+    : m_vlcMedia( NULL ), m_snapshot( NULL ), m_begin( 0 ), m_end( -1 )
+{
+    m_mrl = "file://" + fileInfo->absoluteFilePath();
+    m_vlcMedia = new LibVLCpp::Media( m_mrl );
+    m_uuid = QUuid::createUuid();
+    m_fileInfo = new QFileInfo( *fileInfo );
 }
 
 Clip::~Clip()
@@ -83,3 +94,39 @@ const QUuid&        Clip::getUuid() const
 {
     return m_uuid;
 }
+
+const QFileInfo*    Clip::getFileInfo() const
+{
+    return m_fileInfo;
+}
+
+void                Clip::setLength( qint64 length )
+{
+    m_length = length;
+}
+
+qint64              Clip::getLength() const
+{
+    return m_length;
+}
+
+int                 Clip::getWidth() const
+{
+    return m_width;
+}
+
+void                Clip::setWidth( int width )
+{
+    m_width = width;
+}
+
+int                 Clip::getHeight() const
+{
+    return m_height;
+}
+
+void                Clip::setHeight( int height )
+{
+    m_height = height;
+}
+

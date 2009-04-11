@@ -219,3 +219,17 @@ void                                MediaPlayer::setMedia( Media* media )
 {
     libvlc_media_player_set_media( m_internalPtr, media->getInternalPtr(), m_ex);
 }
+
+int                                 MediaPlayer::getWidth()
+{
+    int width = libvlc_video_get_width( m_internalPtr, m_ex );
+    m_ex.checkThrow();
+    return width;
+}
+
+int                                 MediaPlayer::getHeight()
+{
+    int height = libvlc_video_get_height( m_internalPtr, m_ex );
+    m_ex.checkThrow();
+    return height;
+}

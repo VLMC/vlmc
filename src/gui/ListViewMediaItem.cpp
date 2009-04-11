@@ -25,9 +25,8 @@
 #include <QDebug>
 
 ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, ListViewMediaItem::fType fType, QListWidget* parent, int type ) :
-        QListWidgetItem( parent, type ), m_fileInfo( NULL ), m_clip( NULL )
+        QListWidgetItem( parent, type ), m_clip( NULL )
 {
-    m_fileInfo = fInfo;
     m_fileType = fType;
 
     setIcon( QIcon( ":/images/images/vlmc.png") );
@@ -35,14 +34,12 @@ ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, ListViewMediaItem::fType
 
     m_renderWidget = new QWidget();
 
-    m_clip = new Clip( "file://" + fInfo->absoluteFilePath() );
+    m_clip = new Clip( fInfo );
     connect( m_clip, SIGNAL( snapshotChanged() ), this, SLOT( snapshotChanged() ) );
 }
 
 ListViewMediaItem::~ListViewMediaItem()
 {
-    if ( m_fileInfo != NULL )
-        delete m_fileInfo;
     if ( m_clip != NULL )
         delete m_clip;
 }

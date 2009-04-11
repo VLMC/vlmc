@@ -54,6 +54,8 @@ namespace   LibVLCpp
         void                                setDrawable( void* hwnd );
         void                                setDrawable( uint32_t drawable );
         void                                setMedia(Media* media);
+        int                                 getWidth();
+        int                                 getHeight();
 
     private:
         static void                         callbacks( const libvlc_event_t* event, void* self );

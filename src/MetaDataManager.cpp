@@ -46,7 +46,6 @@ void    MetaDataManager::run()
         }
         usleep( 10000 );
     }
-    qDebug() << "Exiting thread";
     return;
 }
 
@@ -54,7 +53,9 @@ void    MetaDataManager::getMetaData()
 {
     disconnect( this, SLOT( getMetaData() ) );
     m_nextMedia = true;
-    qDebug() << "Length:" << m_mediaPlayer->getLength();
+    m_currentClip->setLength( m_mediaPlayer->getLength() );
+    m_currentClip->setWidth( m_mediaPlayer->getWidth() );
+    m_currentClip->setHeight( m_mediaPlayer->getHeight() );
 
     //Setting time for snapshot :
     connect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( renderSnapshot() ) );

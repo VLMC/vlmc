@@ -65,12 +65,6 @@ public:
     virtual ~ListViewMediaItem();
 
     /**
-     * \brief Getter for fileinfo
-     * \return fileInfo of the item
-     */
-    QFileInfo* fileInfo() { return m_fileInfo; }
-
-    /**
      * \brief Getter for filetype
      * \return filetype of the item
      */
@@ -89,26 +83,19 @@ public:
 
 private:
     /**
-     * \brief fileInfo member
-     */
-    QFileInfo* m_fileInfo;
-
-    /**
      *  \brief fileType member
      */
-    ListViewMediaItem::fType m_fileType;
+    ListViewMediaItem::fType    m_fileType;
 
     /**
      * \Instance of the InputMedia
      */
-    Clip*             m_clip;
+    Clip*                       m_clip;
 
     /**
      * \brief Instance of the temporary QWidget use for the snapshot
      */
-    QWidget*                m_renderWidget;
-
-public slots:
+    QWidget*                    m_renderWidget;
 
 private slots:
     void                    snapshotChanged();

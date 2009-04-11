@@ -28,6 +28,7 @@
 #include <QPixmap>
 #include <QUuid>
 #include <QObject>
+#include <QFileInfo>
 
 #include "VLCMedia.h"
 
@@ -39,6 +40,7 @@ class       Clip : public QObject
     Q_OBJECT
 
 public:
+    Clip( const QFileInfo* fileInfo );
     Clip( const QString& mrl );
     virtual ~Clip();
 
@@ -50,6 +52,17 @@ public:
     void                setSnapshot( QPixmap* snapshot );
     const QPixmap&      getSnapshot() const;
 
+    const QFileInfo*    getFileInfo() const;
+
+    qint64              getLength() const;
+    void                setLength( qint64 length );
+
+    int                 getWidth() const;
+    void                setWidth( int width );
+
+    int                 getHeight() const;
+    void                setHeight( int height );
+
     const QUuid&        getUuid() const;
 
 protected:
@@ -59,6 +72,12 @@ protected:
     QPixmap*                    m_snapshot;
     QUuid                       m_uuid;
     static QPixmap*             defaultSnapshot;
+    QFileInfo*                  m_fileInfo;
+    qint64                      m_length;
+    qint64                      m_begin;
+    qint64                      m_end;
+    unsigned int                m_width;
+    unsigned int                m_height;
 
 signals:
     void                        snapshotChanged();
