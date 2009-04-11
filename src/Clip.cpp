@@ -28,6 +28,7 @@ Clip::Clip( const QString& mrl )
 {
     m_instance = LibVLCpp::Instance::getInstance();
     m_vlcMedia = new LibVLCpp::Media( m_instance, mrl );
+    m_uuid = QUuid::createUuid();
 }
 
 Clip::~Clip()
@@ -72,4 +73,9 @@ const QPixmap&    Clip::getSnapshot() const
         return *m_snapshot;
     //TODO: instanciate this as a static pixmap
     return QPixmap( ":/images/images/vlmc.png" );
+}
+
+const QUuid&        Clip::getUuid() const
+{
+    return m_uuid;
 }

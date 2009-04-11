@@ -56,6 +56,7 @@ ListViewMediaItem*  LibraryWidget::addMedia( QFileInfo* fileInfo, ListViewMediaI
     ListViewMediaItem* item = new ListViewMediaItem( fileInfo, fileType );
     emit listViewMediaAdded( item );
     m_medias->append( item );
+    m_mediaHash[item->getClip()->getUuid()] = item->getClip();
     switch ( fileType )
     {
     case ListViewMediaItem::Audio:
@@ -163,4 +164,12 @@ void LibraryWidget::changeEvent( QEvent *e )
     default:
         break;
     }
+}
+
+Clip*       LibraryWidget::getClip( const QUuid& uuid )
+{
+    QHash<QUuid, Clip*>::iterator   it = m_mediaHash.find( uuid );
+    if ( it == m_mediaHash.end() )
+        return NULL;
+    return *it;
 }

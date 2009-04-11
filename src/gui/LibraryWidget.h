@@ -33,11 +33,15 @@
 #include <QMimeData>
 #include <QDrag>
 #include <QList>
+#include <QHash>
+#include <QUuid>
 #include <QSettings>
 #include "ListViewMediaItem.h"
 #include "ui_LibraryWidget.h"
+#include "Clip.h"
+#include "Singleton.hpp"
 
-class LibraryWidget : public QWidget
+class LibraryWidget : public QWidget, public Singleton<LibraryWidget>
 {
     Q_OBJECT
 
@@ -48,14 +52,16 @@ public:
     ListViewMediaItem*  addMedia( QFileInfo* fileInfo, ListViewMediaItem::fType fileType );
     bool                removeMedia( ListViewMediaItem* item );
     int                 getIndex( ListViewMediaItem* media );
+    Clip*               getClip( const QUuid& uuid );
 protected:
     virtual void changeEvent( QEvent *e );
 private:
     ListViewMediaItem*  insertNewMedia( QString filename, ListViewMediaItem::fType fileType );
     void                insertNewMediasFromFileDialog( QString title, QString filter, ListViewMediaItem::fType fileType );
 
-    Ui::LibraryWidget                 m_ui;
-    static QList<ListViewMediaItem*>* m_medias;
+    Ui::LibraryWidget                   m_ui;
+    static QList<ListViewMediaItem*>*   m_medias;
+    QHash<QUuid, Clip*>                 m_mediaHash;
 
 private slots:
     void on_pushButtonAddMedia_clicked();
@@ -63,6 +69,8 @@ private slots:
 
 signals:
     void    listViewMediaAdded(ListViewMediaItem* item);
+
+    friend class    Singleton<LibraryWidget>;
 };
 
 #endif /* !LIBRARYWIDGET_H */

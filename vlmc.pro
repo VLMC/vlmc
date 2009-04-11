@@ -54,7 +54,8 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/Transcode.h \
     src/gui/Slider.h \
     src/MetaDataManager.h \
-    src/LibVLCpp/VLCMediaList.h
+    src/LibVLCpp/VLCMediaList.h \
+    src/Singleton.hpp
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \

@@ -26,6 +26,7 @@
 #include <QList>
 #include <QString>
 #include <QPixmap>
+#include <QUuid>
 
 #include "VLCMedia.h"
 
@@ -46,6 +47,8 @@ public:
     void                setSnapshot( QPixmap* snapshot );
     const QPixmap&      getSnapshot() const;
 
+    const QUuid&        getUuid() const;
+
 protected:
     //TODO: is this really usefull now ?!
     LibVLCpp::Instance*         m_instance;
@@ -53,6 +56,7 @@ protected:
     QString                     m_mrl;
     QList<QString>              m_parameters;
     QPixmap*                    m_snapshot;
+    QUuid                       m_uuid;
 };
 
 #endif // MEDIA_H
