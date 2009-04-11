@@ -41,20 +41,29 @@
 #include "Clip.h"
 #include "Singleton.hpp"
 
-class LibraryWidget : public QWidget, public Singleton<LibraryWidget>
+class LibraryWidget : public QWidget//, public Singleton<LibraryWidget>
 {
     Q_OBJECT
 
 public:
-    explicit LibraryWidget( QWidget *parent = 0 );
-    virtual ~LibraryWidget();
-
     ListViewMediaItem*  addMedia( QFileInfo* fileInfo, ListViewMediaItem::fType fileType );
     bool                removeMedia( ListViewMediaItem* item );
     int                 getIndex( ListViewMediaItem* media );
     Clip*               getClip( const QUuid& uuid );
+
+    //Temporary !!!
+    static LibraryWidget*      getInstance( QWidget* parent = NULL )
+    {
+        if ( m_instance == NULL )
+            m_instance = new LibraryWidget( parent );
+        return m_instance;
+    }
+
 protected:
+    explicit LibraryWidget( QWidget *parent = 0 );
+    virtual ~LibraryWidget();
     virtual void changeEvent( QEvent *e );
+
 private:
     ListViewMediaItem*  insertNewMedia( QString filename, ListViewMediaItem::fType fileType );
     void                insertNewMediasFromFileDialog( QString title, QString filter, ListViewMediaItem::fType fileType );
@@ -63,14 +72,16 @@ private:
     static QList<ListViewMediaItem*>*   m_medias;
     QHash<QUuid, Clip*>                 m_mediaHash;
 
+    //TODO: remove the singleton from this class...
+    static  LibraryWidget*  m_instance;
+    //friend class    Singleton<LibraryWidget>;
+
 private slots:
     void on_pushButtonAddMedia_clicked();
     void on_pushButtonRemoveMedia_clicked();
 
 signals:
     void    listViewMediaAdded(ListViewMediaItem* item);
-
-    friend class    Singleton<LibraryWidget>;
 };
 
 #endif /* !LIBRARYWIDGET_H */

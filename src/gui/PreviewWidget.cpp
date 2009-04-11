@@ -20,9 +20,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QtDebug>
+
 #include "PreviewWidget.h"
 #include "ui_PreviewWidget.h"
 #include "MediaListWidget.h"
+#include "LibraryWidget.h"
 
 PreviewWidget::PreviewWidget( QWidget *parent ) :
     QDialog( parent ),
@@ -35,7 +38,7 @@ PreviewWidget::PreviewWidget( QWidget *parent ) :
     m_ui->seekSlider->setSingleStep( 2 );
     m_ui->seekSlider->setFocusPolicy( Qt::NoFocus );
 
-    //    setAcceptDrops(true);
+    setAcceptDrops(true);
 
     m_currentInstance = LibVLCpp::Instance::getInstance();
 
@@ -69,30 +72,32 @@ void    PreviewWidget::dragEnterEvent( QDragEnterEvent* event )
 
 void    PreviewWidget::dropEvent( QDropEvent* event )
 {
-    QListWidget*    listWidget = reinterpret_cast<QListWidget*>( event->source() );
-    ListViewMediaItem* item = dynamic_cast<ListViewMediaItem*>( listWidget->currentItem() );
-    if ( item == NULL )
-        return ;
+    Clip*   clip = LibraryWidget::getInstance()->getClip( event->mimeData()->text() );
+
+    m_mediaPlayer->setMedia( clip->getVLCMedia() );
+    clip->setupMedia();
+    m_mediaPlayer->setDrawable( m_ui->clipRenderWidget->winId() );
 
     //FIXME Connecting endReached to pause to change icon of playpause button
     // this might not work as it works now later!
-//    connect( m_currentMedia->mediaPlayer(),
-//             SIGNAL( endReached() ),
-//             this,
-//             SLOT ( videoPaused() ) );
-//    connect( m_currentMedia->mediaPlayer(),
-//             SIGNAL( stopped() ),
-//             this,
-//             SLOT ( videoPaused() ) );
-//    connect( m_currentMedia->mediaPlayer(),
-//             SIGNAL( playing() ),
-//             this,
-//             SLOT ( videoPlaying() ) );
-//    m_currentMedia->play();
-//    connect( m_currentMedia->mediaPlayer(),
-//             SIGNAL( positionChanged() ),
-//             this,
-//             SLOT( positionChanged() ) );
+    connect( m_mediaPlayer,
+             SIGNAL( endReached() ),
+             this,
+             SLOT ( videoPaused() ) );
+    connect( m_mediaPlayer,
+             SIGNAL( stopped() ),
+             this,
+             SLOT ( videoPaused() ) );
+    connect( m_mediaPlayer,
+             SIGNAL( playing() ),
+             this,
+             SLOT ( videoPlaying() ) );
+    connect( m_mediaPlayer,
+             SIGNAL( positionChanged() ),
+             this,
+             SLOT( positionChanged() ) );
+
+    m_mediaPlayer->play();
 }
 
 void    PreviewWidget::positionChanged()

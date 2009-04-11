@@ -70,7 +70,7 @@ void MainWindow::m_initializeDockWidgets( void )
 
     DockWidgetManager *dockManager = DockWidgetManager::instance();
 
-    LibraryWidget* libraryWidget = new LibraryWidget( this );
+    LibraryWidget* libraryWidget = LibraryWidget::getInstance( this );
     dockManager->addDockedWidget( libraryWidget,
                                   tr( "Media Library" ),
                                   Qt::AllDockWidgetAreas, 

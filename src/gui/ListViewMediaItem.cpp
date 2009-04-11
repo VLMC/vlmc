@@ -35,7 +35,7 @@ ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, ListViewMediaItem::fType
 
     m_renderWidget = new QWidget();
 
-    //TODO: create the actual clip.
+    m_clip = new Clip( "file://" + fInfo->absoluteFilePath() );
 }
 
 ListViewMediaItem::~ListViewMediaItem()

@@ -25,6 +25,8 @@
 #include "LibraryWidget.h"
 
 QList<ListViewMediaItem*>* LibraryWidget::m_medias = NULL;
+//TODO: please remove me :'(
+LibraryWidget* LibraryWidget::m_instance = NULL;
 
 LibraryWidget::LibraryWidget( QWidget *parent ) : QWidget( parent )
 {

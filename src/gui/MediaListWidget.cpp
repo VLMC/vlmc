@@ -65,7 +65,7 @@ void    MediaListWidget::mouseMoveEvent( QMouseEvent* event )
         return;
 
     QMimeData* mimeData = new QMimeData;
-    mimeData->setText( ( ( ListViewMediaItem* )( currentItem() ) )->fileInfo()->absoluteFilePath() );
+    mimeData->setText( static_cast<ListViewMediaItem*>( currentItem() )->getClip()->getUuid() );
     QDrag* drag = new QDrag( this );
     drag->setMimeData( mimeData );
     //TODO: get the snapshot.

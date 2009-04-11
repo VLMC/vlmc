@@ -59,6 +59,7 @@ private slots:
 
 signals:
     void translateDockWidgetTitle();
+
 };
 
 #endif // MAINWINDOW_H
