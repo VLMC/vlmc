@@ -57,6 +57,7 @@ private:
     //TODO: Is this really useful now ?!
     LibVLCpp::Instance*     m_currentInstance;
     LibVLCpp::MediaPlayer*  m_mediaPlayer;
+    bool                    m_clipLoaded;
 };
 
 #endif // PREVIEWWIDGET_H

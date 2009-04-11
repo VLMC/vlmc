@@ -29,7 +29,7 @@
 
 PreviewWidget::PreviewWidget( QWidget *parent ) :
     QDialog( parent ),
-    m_ui( new Ui::PreviewWidget )
+    m_ui( new Ui::PreviewWidget ), m_clipLoaded( false )
 {
     m_ui->setupUi( this );
     m_ui->groupBoxButton->hide();
@@ -97,22 +97,34 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
              this,
              SLOT( positionChanged() ) );
 
+    //TODO: add EndReached event.
+
     m_mediaPlayer->play();
+    m_clipLoaded = true;
 }
 
 void    PreviewWidget::positionChanged()
 {
-   //TODO
+    if ( m_clipLoaded == false)
+        return ;
+    m_ui->seekSlider->setValue( (int)( m_mediaPlayer->getPosition() * 1000.0 ) );
 }
 
 void    PreviewWidget::seekSliderMoved( int )
 {
-    //TODO
+    if ( m_clipLoaded == false)
+        return ;
+     m_mediaPlayer->setPosition( (float)m_ui->seekSlider->value() / 1000.0 );
 }
 
 void PreviewWidget::on_pushButtonPlay_clicked()
 {
-    //TODO
+    if ( m_clipLoaded == false)
+        return ;
+    if ( m_mediaPlayer->isPlaying() )
+        m_mediaPlayer->pause();
+    else
+        m_mediaPlayer->play();
 }
 
 void PreviewWidget::videoPaused()
