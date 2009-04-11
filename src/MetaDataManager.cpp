@@ -51,8 +51,7 @@ void    MetaDataManager::run()
 
 void    MetaDataManager::renderSnapshot()
 {
-    //TODO: set the position to 1/3 of the video length
-    m_mediaPlayer->setTime( m_mediaPlayer->getTime() / 3 );
+    m_mediaPlayer->setTime( m_mediaPlayer->getLength() / 3 );
 
     //FIXME: add a signal / slot for time changed.
     sleep(1);

@@ -26,10 +26,10 @@
 
 using namespace LibVLCpp;
 
-Media::Media( Instance* instance, const QString& filename )
-    : m_instance( *instance ), m_dataCtx( NULL ), m_pixelBuffer( NULL )
+Media::Media( const QString& filename )
+    : m_dataCtx( NULL ), m_pixelBuffer( NULL )
 {
-    m_internalPtr = libvlc_media_new( m_instance, filename.toLocal8Bit(), m_ex );
+    m_internalPtr = libvlc_media_new( *(LibVLCpp::Instance::getInstance()), filename.toLocal8Bit(), m_ex );
     m_ex.checkThrow();
 }
 

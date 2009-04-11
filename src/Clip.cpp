@@ -26,8 +26,7 @@
 Clip::Clip( const QString& mrl )
     : m_vlcMedia( NULL ), m_mrl( mrl ), m_snapshot( NULL )
 {
-    m_instance = LibVLCpp::Instance::getInstance();
-    m_vlcMedia = new LibVLCpp::Media( m_instance, mrl );
+    m_vlcMedia = new LibVLCpp::Media( mrl );
     m_uuid = QUuid::createUuid();
 }
 
@@ -45,7 +44,7 @@ void        Clip::loadMedia( const QString& mrl )
         delete m_vlcMedia;
     m_mrl = mrl;
 
-    m_vlcMedia = new LibVLCpp::Media( m_instance, mrl );
+    m_vlcMedia = new LibVLCpp::Media( mrl );
 }
 
 void        Clip::flushParameters()

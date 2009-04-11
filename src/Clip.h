@@ -53,8 +53,6 @@ public:
     const QUuid&        getUuid() const;
 
 protected:
-    //TODO: is this really usefull now ?!
-    LibVLCpp::Instance*         m_instance;
     LibVLCpp::Media*            m_vlcMedia;
     QString                     m_mrl;
     QList<QString>              m_parameters;

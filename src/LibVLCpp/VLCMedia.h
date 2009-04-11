@@ -49,7 +49,7 @@ namespace LibVLCpp
         typedef void    (*lockCallback)( Media::DataCtx* dataCtx, void **pp_ret );
         typedef void    (*unlockCallback)( Media::DataCtx* dataCtx );
 
-        Media( Instance* instance, const QString& filename );
+        Media( const QString& filename );
         ~Media();
         void                addOption( const char* opt );
         void                setLockCallback( Media::lockCallback );
@@ -64,7 +64,6 @@ namespace LibVLCpp
         DataCtx*            buildDataCtx();
 
         Exception           m_ex;
-        Instance&           m_instance;
         DataCtx*            m_dataCtx;
         uchar*              m_pixelBuffer;
     };

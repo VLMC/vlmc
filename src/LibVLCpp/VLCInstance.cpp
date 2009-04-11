@@ -27,7 +27,6 @@
 using namespace LibVLCpp;
 
 Instance*   Instance::m_singleton = NULL;
-Instance*   Instance::m_instance = NULL;
 
 Instance::Instance()
 {
