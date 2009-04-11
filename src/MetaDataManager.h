@@ -18,7 +18,7 @@ class MetaDataManager : public QThread
         ~MetaDataManager();
 
     private:
-        virtual void    run();
+        virtual void                run();
 
     private:
         LibVLCpp::MediaPlayer*      m_mediaPlayer;
@@ -34,9 +34,10 @@ class MetaDataManager : public QThread
         char*                       m_tmpSnapshotFilename;
 
     private slots:
-        void    listViewMediaAdded( Clip* );
         void    renderSnapshot();
-        void    setSnapshotInIcon();
+        void    getMetaData();
+        void    listViewMediaAdded( Clip* );
+        void    setSnapshot();
 };
 
 #endif // METADATAMANAGER_H

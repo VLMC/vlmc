@@ -93,7 +93,8 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
         self->emit endReached();
 //    case libvlc_MediaPlayerEncounteredError:
     case libvlc_MediaPlayerTimeChanged:
-        self->timeChangedFilter();
+        //self->timeChangedFilter();
+        self->emit timeChanged();
         break;
     case libvlc_MediaPlayerPositionChanged:
         self->emit positionChanged();

@@ -23,6 +23,8 @@
 #include <QtDebug>
 #include "Clip.h"
 
+QPixmap*    Clip::defaultSnapshot = NULL;
+
 Clip::Clip( const QString& mrl )
     : m_vlcMedia( NULL ), m_mrl( mrl ), m_snapshot( NULL )
 {
@@ -62,17 +64,19 @@ void        Clip::addParam( const QString& param )
 
 void        Clip::setSnapshot( QPixmap* snapshot )
 {
-    //TODO: check for mem leaks.
+    if ( m_snapshot != NULL )
+        delete m_snapshot;
     m_snapshot = snapshot;
     emit snapshotChanged();
 }
 
 const QPixmap&    Clip::getSnapshot() const
 {
-    if ( m_snapshot )
+    if ( m_snapshot != NULL )
         return *m_snapshot;
-    //TODO: instanciate this as a static pixmap
-    return QPixmap( ":/images/images/vlmc.png" );
+    if ( Clip::defaultSnapshot == NULL )
+        Clip::defaultSnapshot = new QPixmap( ":/images/images/vlmc.png" );
+    return *Clip::defaultSnapshot;
 }
 
 const QUuid&        Clip::getUuid() const

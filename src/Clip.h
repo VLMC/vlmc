@@ -58,6 +58,7 @@ protected:
     QList<QString>              m_parameters;
     QPixmap*                    m_snapshot;
     QUuid                       m_uuid;
+    static QPixmap*             defaultSnapshot;
 
 signals:
     void                        snapshotChanged();

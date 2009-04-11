@@ -68,7 +68,8 @@ void    MediaListWidget::mouseMoveEvent( QMouseEvent* event )
     mimeData->setText( static_cast<ListViewMediaItem*>( currentItem() )->getClip()->getUuid() );
     QDrag* drag = new QDrag( this );
     drag->setMimeData( mimeData );
-    //TODO: get the snapshot.
+    const QPixmap& dragPixmap = static_cast<ListViewMediaItem*>( currentItem() )->getClip()->getSnapshot();
+    drag->setPixmap( dragPixmap.scaled( 100, 100, Qt::KeepAspectRatio ) );
     drag->exec( Qt::CopyAction | Qt::MoveAction, Qt::CopyAction );
 }
 
