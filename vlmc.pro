@@ -32,7 +32,8 @@ SOURCES += src/main.cpp \
     src/gui/Transcode.cpp \
     src/InputMedia.cpp \
     src/gui/Slider.cpp \
-    src/MetaDataManager.cpp
+    src/MetaDataManager.cpp \
+    src/LibVLCpp/VLCMediaList.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -56,7 +57,8 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/Transcode.h \
     src/InputMedia.h \
     src/gui/Slider.h \
-    src/MetaDataManager.h
+    src/MetaDataManager.h \
+    src/LibVLCpp/VLCMediaList.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \
@@ -64,7 +66,7 @@ FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/LibraryWidget.ui \
     src/gui/ui/About.ui \
     src/gui/ui/Transcode.ui
-FORMS +=
+FORMS += 
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts
