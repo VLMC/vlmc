@@ -27,21 +27,24 @@
 #include <QString>
 #include <QPixmap>
 #include <QUuid>
+#include <QObject>
 
 #include "VLCMedia.h"
 
 /**
   * Represents a basic container for media informations.
   */
-class       Clip
+class       Clip : public QObject
 {
+    Q_OBJECT
+
 public:
     Clip( const QString& mrl );
     virtual ~Clip();
 
     void                loadMedia( const QString& mrl );
     void                addParam( const QString& param );
-    void                setupMedia();
+    void                flushParameters();
     LibVLCpp::Media*    getVLCMedia() { return m_vlcMedia; }
 
     void                setSnapshot( QPixmap* snapshot );
@@ -57,6 +60,9 @@ protected:
     QList<QString>              m_parameters;
     QPixmap*                    m_snapshot;
     QUuid                       m_uuid;
+
+signals:
+    void                        snapshotChanged();
 };
 
 #endif // MEDIA_H

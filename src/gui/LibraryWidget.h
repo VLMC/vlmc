@@ -81,7 +81,7 @@ private slots:
     void on_pushButtonRemoveMedia_clicked();
 
 signals:
-    void    listViewMediaAdded(ListViewMediaItem* item);
+    void    listViewMediaAdded(Clip* clip);
 };
 
 #endif /* !LIBRARYWIDGET_H */

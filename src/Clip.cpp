@@ -48,7 +48,7 @@ void        Clip::loadMedia( const QString& mrl )
     m_vlcMedia = new LibVLCpp::Media( m_instance, mrl );
 }
 
-void        Clip::setupMedia()
+void        Clip::flushParameters()
 {
     //Flushing the args into the media :
     QString     param;
@@ -65,6 +65,7 @@ void        Clip::setSnapshot( QPixmap* snapshot )
 {
     //TODO: check for mem leaks.
     m_snapshot = snapshot;
+    emit snapshotChanged();
 }
 
 const QPixmap&    Clip::getSnapshot() const

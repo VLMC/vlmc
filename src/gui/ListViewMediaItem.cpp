@@ -36,6 +36,7 @@ ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, ListViewMediaItem::fType
     m_renderWidget = new QWidget();
 
     m_clip = new Clip( "file://" + fInfo->absoluteFilePath() );
+    connect( m_clip, SIGNAL( snapshotChanged() ), this, SLOT( snapshotChanged() ) );
 }
 
 ListViewMediaItem::~ListViewMediaItem()
@@ -44,4 +45,9 @@ ListViewMediaItem::~ListViewMediaItem()
         delete m_fileInfo;
     if ( m_clip != NULL )
         delete m_clip;
+}
+
+void        ListViewMediaItem::snapshotChanged()
+{
+    setIcon( QIcon( m_clip->getSnapshot() ) );
 }

@@ -83,7 +83,7 @@ void MainWindow::m_initializeDockWidgets( void )
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
 
-    m_metaDataManager = new MetaDataManager( libraryWidget );
+    m_metaDataManager = new MetaDataManager();
 }
 
 //Private slots definition

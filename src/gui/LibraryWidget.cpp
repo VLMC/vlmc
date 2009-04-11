@@ -56,7 +56,7 @@ LibraryWidget::~LibraryWidget()
 ListViewMediaItem*  LibraryWidget::addMedia( QFileInfo* fileInfo, ListViewMediaItem::fType fileType )
 {
     ListViewMediaItem* item = new ListViewMediaItem( fileInfo, fileType );
-    emit listViewMediaAdded( item );
+    emit listViewMediaAdded( item->getClip() );
     m_medias->append( item );
     m_mediaHash[item->getClip()->getUuid()] = item->getClip();
     switch ( fileType )

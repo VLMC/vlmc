@@ -75,7 +75,7 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
     Clip*   clip = LibraryWidget::getInstance()->getClip( event->mimeData()->text() );
 
     m_mediaPlayer->setMedia( clip->getVLCMedia() );
-    clip->setupMedia();
+    clip->flushParameters();
     m_mediaPlayer->setDrawable( m_ui->clipRenderWidget->winId() );
 
     //FIXME Connecting endReached to pause to change icon of playpause button

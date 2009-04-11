@@ -1,11 +1,12 @@
 #include "MetaDataManager.h"
 
-MetaDataManager::MetaDataManager( LibraryWidget* libraryWidget ) : m_libraryWidget( libraryWidget ), m_renderWidget( NULL )
+MetaDataManager::MetaDataManager() : m_renderWidget( NULL )
 {
     m_mediaPlayer = new LibVLCpp::MediaPlayer();
-    connect( m_libraryWidget, SIGNAL( listViewMediaAdded( ListViewMediaItem* ) ), this, SLOT( listViewMediaAdded( ListViewMediaItem* ) ) );
+    connect( LibraryWidget::getInstance(), SIGNAL( listViewMediaAdded( Clip* ) ), this, SLOT( listViewMediaAdded( Clip* ) ) );
     m_tmpSnapshotFilename = new char[512];
     m_renderWidget = new QWidget();
+    m_mediaPlayer->setDrawable( m_renderWidget->winId() );
 }
 
 MetaDataManager::~MetaDataManager()
@@ -17,33 +18,31 @@ MetaDataManager::~MetaDataManager()
     delete[] m_tmpSnapshotFilename;
 }
 
-void    MetaDataManager::listViewMediaAdded( ListViewMediaItem* item )
+void    MetaDataManager::listViewMediaAdded( Clip* item )
 {
     m_mediaList.append( item );
 
-    //TODO: relaunch the thread after refactoring
-//    if ( !isRunning() )
-//        start();
+    if ( !isRunning() )
+        start();
 }
 
 void    MetaDataManager::run()
 {
     m_nextMedia = true;
-
-//    if ( !m_renderWidget )
-
-        m_mediaPlayer->setDrawable( m_renderWidget->winId() );
-
     while ( !m_mediaList.isEmpty() )
     {
         if ( m_nextMedia )
         {
             m_nextMedia = false;
 
-            m_currentMediaItem = m_mediaList.front();
+            m_currentClip = m_mediaList.front();
             m_mediaList.pop_front();
 
-            //TODO: launch (play) the media and connect the MediaPlayer "playing" signal to the renderSnapshot slot.
+            m_currentClip->flushParameters();
+            m_mediaPlayer->setMedia( m_currentClip->getVLCMedia() );
+            m_mediaPlayer->play();
+
+            connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( renderSnapshot() ) );
         }
         usleep( 100 );
     }
@@ -53,6 +52,10 @@ void    MetaDataManager::run()
 void    MetaDataManager::renderSnapshot()
 {
     //TODO: set the position to 1/3 of the video length
+    m_mediaPlayer->setTime( m_mediaPlayer->getTime() / 3 );
+
+    //FIXME: add a signal / slot for time changed.
+    sleep(1);
 
     QTemporaryFile tmp;
     tmp.setAutoRemove( false );
@@ -62,7 +65,6 @@ void    MetaDataManager::renderSnapshot()
 
     connect( m_mediaPlayer, SIGNAL( snapshotTaken() ), this, SLOT( setSnapshotInIcon() ) );
 
-    sleep(1);
     //The slot should be triggered in this methode
     m_mediaPlayer->takeSnapshot( m_tmpSnapshotFilename, 32, 32 );
     //Snapshot slot should has been called (but maybe not in next version...)
@@ -70,7 +72,7 @@ void    MetaDataManager::renderSnapshot()
 
 void    MetaDataManager::setSnapshotInIcon()
 {
-    //TODO: Set the media icon from the snapshot.
+    m_currentClip->setSnapshot( new QPixmap( m_tmpSnapshotFilename ) );
     m_nextMedia = true;
     disconnect( this, SLOT( setSnapshotInIcon() ) );
     m_mediaPlayer->stop();

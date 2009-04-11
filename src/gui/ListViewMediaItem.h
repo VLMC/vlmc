@@ -108,16 +108,10 @@ private:
      */
     QWidget*                m_renderWidget;
 
-    /**
-     * \brief The current media snapshot
-     */
-    //FIXME: this should probably be in the media itself
-    //QPixmap*                m_currentMediaSnapshot;
-
 public slots:
-//    void    setSnapshot();
-//    void    takeSnapshot();
-//    void    seek();
+
+private slots:
+    void                    snapshotChanged();
 };
 
 #endif /* !LISTVIEWMEDIAITEM_H */
