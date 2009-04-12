@@ -40,8 +40,8 @@ PreviewWidget::PreviewWidget( QWidget *parent ) :
 
     setAcceptDrops(true);
 
-    connect( m_ui->seekSlider, SIGNAL( sliderPosChanged(int) ),
-             this, SLOT( seekSliderMoved(int) ) );
+    connect( m_ui->seekSlider, SIGNAL( sliderPosChanged(int) ), this, SLOT( seekSliderMoved(int) ) );
+    connect( m_ui->seekSlider, SIGNAL( sliderReleased() ), this, SLOT( seekSliderReleased() ) );
 
     m_mediaPlayer = new LibVLCpp::MediaPlayer();
     m_mediaPlayer->setDrawable( m_ui->clipRenderWidget->winId() );
@@ -82,26 +82,11 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
 
     //FIXME Connecting endReached to pause to change icon of playpause button
     // this might not work as it works now later!
-    connect( m_mediaPlayer,
-             SIGNAL( endReached() ),
-             this,
-             SLOT ( videoPaused() ) );
-    connect( m_mediaPlayer,
-             SIGNAL( stopped() ),
-             this,
-             SLOT ( videoPaused() ) );
-    connect( m_mediaPlayer,
-             SIGNAL( playing() ),
-             this,
-             SLOT ( videoPlaying() ) );
-    connect( m_mediaPlayer,
-             SIGNAL( positionChanged() ),
-             this,
-             SLOT( positionChanged() ) );
-    connect( m_mediaPlayer,
-             SIGNAL( endReached() ),
-             this,
-             SLOT( endReached() ) );
+    connect( m_mediaPlayer,     SIGNAL( endReached() ),         this,       SLOT ( videoPaused() ) );
+    connect( m_mediaPlayer,     SIGNAL( stopped() ),            this,       SLOT ( videoPaused() ) );
+    connect( m_mediaPlayer,     SIGNAL( playing() ),            this,       SLOT ( videoPlaying() ) );
+    connect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,       SLOT( positionChanged() ) );
+    connect( m_mediaPlayer,     SIGNAL( endReached() ),         this,       SLOT( endReached() ) );
 
     //TODO: add EndReached event.
 
@@ -120,7 +105,22 @@ void    PreviewWidget::seekSliderMoved( int )
 {
     if ( m_clipLoaded == false)
         return ;
+    if ( m_ui->seekSlider->value() == m_ui->seekSlider->maximum() )
+    {
+        m_endReached = true;
+        return;
+    }
+    m_endReached = false;
      m_mediaPlayer->setPosition( (float)m_ui->seekSlider->value() / 1000.0 );
+}
+
+void    PreviewWidget::seekSliderReleased()
+{
+    if ( m_endReached == true )
+    {
+        m_mediaPlayer->setPosition( (float)m_ui->seekSlider->maximum() / 1000.0 );
+        m_endReached = false;
+    }
 }
 
 void PreviewWidget::on_pushButtonPlay_clicked()

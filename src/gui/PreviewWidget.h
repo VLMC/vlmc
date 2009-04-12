@@ -50,6 +50,7 @@ private slots:
     void            on_pushButtonPlay_clicked();
     void            positionChanged();
     void            seekSliderMoved( int value );
+    void            seekSliderReleased();
     void            videoPaused();
     void            videoPlaying();
     void            endReached();
@@ -59,6 +60,7 @@ private:
     LibVLCpp::MediaPlayer*  m_mediaPlayer;
 //    LibVLCpp::MediaList*    m_mediaList;
     bool                    m_clipLoaded;
+    bool                    m_endReached;
 };
 
 #endif // PREVIEWWIDGET_H
