@@ -31,7 +31,8 @@ SOURCES += src/main.cpp \
     src/gui/Transcode.cpp \
     src/gui/Slider.cpp \
     src/MetaDataManager.cpp \
-    src/LibVLCpp/VLCMediaList.cpp
+    src/LibVLCpp/VLCMediaList.cpp \
+    src/Library.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -55,7 +56,8 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/Slider.h \
     src/MetaDataManager.h \
     src/LibVLCpp/VLCMediaList.h \
-    src/Singleton.hpp
+    src/Singleton.hpp \
+    src/Library.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \

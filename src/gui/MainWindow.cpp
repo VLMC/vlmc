@@ -24,7 +24,10 @@
 #include <QSizePolicy>
 #include <QPalette>
 #include <QDockWidget>
+
 #include "MainWindow.h"
+#include "LibraryWidget.h"
+#include "Library.h"
 #include "Timeline.h"
 #include "About.h"
 #include "Transcode.h"
@@ -61,6 +64,27 @@ void MainWindow::changeEvent( QEvent *e )
     }
 }
 
+void        MainWindow::setupLibrary()
+{
+    //Library part :
+    Library*    library = Library::getInstance();
+
+    //GUI part :
+    LibraryWidget* libraryWidget = new LibraryWidget( this );
+
+    DockWidgetManager::instance()->addDockedWidget( libraryWidget,
+                                  tr( "Media Library" ),
+                                  Qt::AllDockWidgetAreas,
+                                  QDockWidget::AllDockWidgetFeatures,
+                                  Qt::TopDockWidgetArea );
+
+    //Connecting GUI and Frontend :
+    connect( libraryWidget, SIGNAL( newClipLoadingAsked(const QString& ) ), library, SLOT( newClipLoadingAsked( const QString& ) ) );
+    connect( library, SIGNAL( newClipLoaded( Clip* ) ), libraryWidget, SLOT( newClipLoaded( Clip* ) ) );
+    connect( libraryWidget, SIGNAL( removingClipAsked( const QUuid& ) ), library, SLOT( removingClipAsked( const QUuid& ) ) );
+    connect( library, SIGNAL( clipRemoved( const QUuid& ) ), libraryWidget, SLOT( clipRemoved( const QUuid& ) ) );
+}
+
 void MainWindow::m_initializeDockWidgets( void )
 {
     Timeline* timeline = new Timeline( this );
@@ -68,15 +92,9 @@ void MainWindow::m_initializeDockWidgets( void )
     timeline->show();
     setCentralWidget( timeline );
 
+    setupLibrary();
+
     DockWidgetManager *dockManager = DockWidgetManager::instance();
-
-    LibraryWidget* libraryWidget = LibraryWidget::getInstance( this );
-    dockManager->addDockedWidget( libraryWidget,
-                                  tr( "Media Library" ),
-                                  Qt::AllDockWidgetAreas, 
-                                  QDockWidget::AllDockWidgetFeatures,
-                                  Qt::TopDockWidgetArea );
-
     dockManager->addDockedWidget( new PreviewWidget( this ),
                                   tr( "Preview" ),
                                   Qt::AllDockWidgetAreas,

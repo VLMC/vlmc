@@ -30,7 +30,7 @@ Media::Media( const QString& filename )
     : m_dataCtx( NULL ), m_pixelBuffer( NULL )
 {
     m_internalPtr = libvlc_media_new( *(LibVLCpp::Instance::getInstance()), filename.toLocal8Bit(), m_ex );
-    m_ex.checkThrow();
+    CheckVlcppException(m_ex);
 }
 
 Media::~Media()
@@ -53,7 +53,7 @@ Media::DataCtx*         Media::buildDataCtx()
 void                    Media::addOption( const char* opt )
 {
     libvlc_media_add_option( m_internalPtr, opt, m_ex);
-    m_ex.checkThrow();
+    CheckVlcppException(m_ex);
     qDebug() << "Added media option: " << opt;
 }
 

@@ -1,9 +1,9 @@
 /*****************************************************************************
- * MainWindow.h: VLMC MainWindow
+ * Library.h: Multimedia library
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Ludovic Fauvet <etix@l0cal.com>
+ * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,45 +20,37 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef LIBRARY_H
+#define LIBRARY_H
 
-#include <QApplication>
-#include "ui_MainWindow.h"
-#include "PreviewWidget.h"
-#include "DockWidgetManager.h"
-#include "Preferences.h"
-#include "MetaDataManager.h"
+#include <QObject>
+#include <QHash>
+#include <QUuid>
+#include <QFileInfo>
 
-class MainWindow : public QMainWindow
+#include "Clip.h"
+#include "Singleton.hpp"
+
+class   Library : public QObject, public Singleton<Library>
 {
     Q_OBJECT
-    Q_DISABLE_COPY( MainWindow )
-
+    Q_DISABLE_COPY( Library );
 public:
-    explicit MainWindow( QWidget *parent = 0 );
-    ~MainWindow();
-
-protected:
-    virtual void changeEvent( QEvent *e );
+    Clip*                   getClip( const QUuid& uuid );
 
 private:
-    void        m_initializeDockWidgets( void );
-    void        setupLibrary();
+    Library();
+    QHash<QUuid, Clip*>     m_clips;
 
-
-    Ui::MainWindow      m_ui;
-    MetaDataManager*    m_metaDataManager;
-
-private slots:
-    void on_actionQuit_triggered();
-    void on_actionAbout_triggered();
-    void on_actionPreferences_triggered();
-    void on_actionTranscode_File_triggered();
+public slots:
+    void                    newClipLoadingAsked( const QString& filePath );
+    void                    removingClipAsked( const QUuid& uuid );
 
 signals:
-    void translateDockWidgetTitle();
+    void                    newClipLoaded( Clip* );
+    void                    clipRemoved( const QUuid& );
 
+    friend class    Singleton<Library>;
 };
 
-#endif // MAINWINDOW_H
+#endif // LIBRARY_H

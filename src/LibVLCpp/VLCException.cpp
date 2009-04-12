@@ -61,14 +61,14 @@ int         Exception::raised() const
     return libvlc_exception_raised( m_internalPtr );
 }
 
-void        Exception::checkThrow()
+void        Exception::checkThrow( const char* file, int line )
 {
     if ( raised() == Exception::Raised )
     {
         if ( Exception::m_errorCallback != NULL )
             Exception::m_errorCallback( getErrorText(), Exception::m_datas );
         else
-            qWarning() << "An exception was raised, but no error handler is set.\nError message is: " << getErrorText();
+            qWarning() << "A VLC exception was raised in" << file << " at line " << line << ": \"" << getErrorText() << "\"";
         clear();
     }
 }

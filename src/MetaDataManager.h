@@ -4,8 +4,8 @@
 #include <QList>
 #include <QTemporaryFile>
 #include <QThread>
+#include <QWidget>
 #include "Clip.h"
-#include "LibraryWidget.h"
 #include "VLCMediaPlayer.h"
 
 class MetaDataManager : public QThread
@@ -36,7 +36,7 @@ class MetaDataManager : public QThread
     private slots:
         void    renderSnapshot();
         void    getMetaData();
-        void    listViewMediaAdded( Clip* );
+        void    newClipLoaded( Clip* );
         void    setSnapshot();
 };
 

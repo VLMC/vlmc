@@ -26,6 +26,8 @@
 #include "vlc/vlc.h"
 #include "VLCpp.hpp"
 
+#define CheckVlcppException(ex)     (ex.checkThrow(__FILE__, __LINE__))
+
 namespace LibVLCpp
 {
     class   Exception : public Internal< libvlc_exception_t >
@@ -37,7 +39,7 @@ namespace LibVLCpp
         const char*             getErrorText() const;
         void                    clear();
         int                     raised() const;
-        void                    checkThrow();
+        void                    checkThrow( const char* file, int line );
 
         static const int        Raised = 1;
         static const int        NotRaised = 0;

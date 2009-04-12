@@ -25,8 +25,6 @@
 #include "LibraryWidget.h"
 
 QList<ListViewMediaItem*>* LibraryWidget::m_medias = NULL;
-//TODO: please remove me :'(
-LibraryWidget* LibraryWidget::m_instance = NULL;
 
 LibraryWidget::LibraryWidget( QWidget *parent ) : QWidget( parent )
 {
@@ -53,12 +51,12 @@ LibraryWidget::~LibraryWidget()
     }
 }
 
-ListViewMediaItem*  LibraryWidget::addMedia( QFileInfo* fileInfo, ListViewMediaItem::fType fileType )
+ListViewMediaItem*  LibraryWidget::addMedia( const Clip* clip, ListViewMediaItem::fType fileType )
 {
-    ListViewMediaItem* item = new ListViewMediaItem( fileInfo, fileType );
-    emit listViewMediaAdded( item->getClip() );
+    ListViewMediaItem* item = new ListViewMediaItem( clip, fileType );
+    //TODO: replace this :
+    //emit listViewMediaAdded( item->getClip() );
     m_medias->append( item );
-    m_mediaHash[item->getClip()->getUuid()] = item->getClip();
     switch ( fileType )
     {
     case ListViewMediaItem::Audio:
@@ -74,41 +72,54 @@ ListViewMediaItem*  LibraryWidget::addMedia( QFileInfo* fileInfo, ListViewMediaI
     return item;
 }
 
-bool                LibraryWidget::removeMedia(ListViewMediaItem* item)
+void                LibraryWidget::clipRemoved( const QUuid& uuid )
 {
-    if ( m_medias->contains( item ) )
-    {
-        switch( item->fileType() )
-        {
-        case ListViewMediaItem::Audio:
-            this->m_ui.listWidgetAudio->removeItemWidget( item );
-            break;
-        case ListViewMediaItem::Image:
-            this->m_ui.listWidgetImage->removeItemWidget( item );
-            break;
-        case ListViewMediaItem::Video:
-            this->m_ui.listWidgetVideo->removeItemWidget( item );
-            break;
-        }
-        bool ret = m_medias->removeOne( item );
-        delete item;
-        return ret;
-    }
-    return false;
+    removeMedia( uuid );
 }
 
-ListViewMediaItem*                LibraryWidget::insertNewMedia( QString fileName, ListViewMediaItem::fType fileType )
+void                LibraryWidget::removeMedia( const QUuid& uuid )
 {
-    ListViewMediaItem* item = NULL;
-    foreach( item, *m_medias )
+    ListViewMediaItem* item;
+    foreach (item, *m_medias)
     {
-        if ( item->getClip()->getFileInfo()->absoluteFilePath() == fileName )
-            return item;
+        if ( item->getClip()->getUuid() == uuid )
+        {
+            switch( item->fileType() )
+            {
+            case ListViewMediaItem::Audio:
+                this->m_ui.listWidgetAudio->removeItemWidget( item );
+                break;
+            case ListViewMediaItem::Image:
+                this->m_ui.listWidgetImage->removeItemWidget( item );
+                break;
+            case ListViewMediaItem::Video:
+                this->m_ui.listWidgetVideo->removeItemWidget( item );
+                break;
+            }
+            m_medias->removeOne( item );
+            delete item;
+        }
     }
-    QFileInfo* fileInfo = new QFileInfo( fileName );
-    item = addMedia( fileInfo, fileType );
-    delete fileInfo;
-    return item;
+}
+//
+//ListViewMediaItem*                LibraryWidget::insertNewMedia( QString fileName, ListViewMediaItem::fType fileType )
+//{
+//    ListViewMediaItem* item = NULL;
+//    foreach( item, *m_medias )
+//    {
+//        if ( item->getClip()->getFileInfo()->absoluteFilePath() == fileName )
+//            return item;
+//    }
+//    QFileInfo* fileInfo = new QFileInfo( fileName );
+//    item = addMedia( fileInfo, fileType );
+//    delete fileInfo;
+//    return item;
+//}
+
+void    LibraryWidget::newClipLoaded( Clip* clip )
+{
+    //From here, the clip is const.
+    addMedia( clip, ListViewMediaItem::Video );
 }
 
 void    LibraryWidget::insertNewMediasFromFileDialog( QString title, QString filter, ListViewMediaItem::fType filetype )
@@ -118,13 +129,14 @@ void    LibraryWidget::insertNewMediasFromFileDialog( QString title, QString fil
     QStringList fileNames = QFileDialog::getOpenFileNames( this, title, path, filter );
     if ( fileNames.isEmpty() )
         return ;
-    QString fileName;
-    ListViewMediaItem* item = NULL;
-    foreach ( fileName, fileNames )
-        item = insertNewMedia( fileName, filetype );
-    if ( item != NULL )
-        settings.setValue( "mediaLibraryDialogPath" , item->getClip()->getFileInfo()->absoluteDir().absolutePath() );
-    return ;
+    QString filePath;
+//    ListViewMediaItem* item = NULL;
+    foreach ( filePath, fileNames )
+//        item = insertNewMedia( fileName, filetype );
+        emit newClipLoadingAsked( filePath );
+//    if ( item != NULL )
+//        settings.setValue( "mediaLibraryDialogPath" , item->getClip()->getFileInfo()->absoluteDir().absolutePath() );
+//    return ;
 }
 
 void LibraryWidget::on_pushButtonAddMedia_clicked()
@@ -154,7 +166,8 @@ void LibraryWidget::on_pushButtonRemoveMedia_clicked()
 {
     QListWidget* mediaList = ( QListWidget* )( this->m_ui.LibraryTabs->currentWidget()->children().back() );
     ListViewMediaItem* item = ( ListViewMediaItem* ) mediaList->currentItem();
-    this->removeMedia( item );
+//    this->removeMedia( item );
+    emit removingClipAsked( item->getClip()->getUuid() );
 }
 
 void LibraryWidget::changeEvent( QEvent *e )
@@ -167,12 +180,4 @@ void LibraryWidget::changeEvent( QEvent *e )
     default:
         break;
     }
-}
-
-Clip*       LibraryWidget::getClip( const QUuid& uuid )
-{
-    QHash<QUuid, Clip*>::iterator   it = m_mediaHash.find( uuid );
-    if ( it == m_mediaHash.end() )
-        return NULL;
-    return *it;
 }

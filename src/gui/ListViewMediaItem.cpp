@@ -24,27 +24,28 @@
 #include <QPixmap>
 #include <QDebug>
 
-ListViewMediaItem::ListViewMediaItem( QFileInfo* fInfo, ListViewMediaItem::fType fType, QListWidget* parent, int type ) :
-        QListWidgetItem( parent, type ), m_clip( NULL )
+ListViewMediaItem::ListViewMediaItem( const Clip* clip, ListViewMediaItem::fType fType, QListWidget* parent, int type ) :
+        QListWidgetItem( parent, type ), m_clip( clip )
 {
     m_fileType = fType;
 
     setIcon( QIcon( ":/images/images/vlmc.png") );
-    setText( fInfo->baseName() );
+    setText( clip->getFileInfo()->baseName() );
 
-    m_renderWidget = new QWidget();
-
-    m_clip = new Clip( fInfo );
     connect( m_clip, SIGNAL( snapshotChanged() ), this, SLOT( snapshotChanged() ) );
 }
 
 ListViewMediaItem::~ListViewMediaItem()
 {
-    if ( m_clip != NULL )
-        delete m_clip;
+
 }
 
 void        ListViewMediaItem::snapshotChanged()
 {
     setIcon( QIcon( m_clip->getSnapshot() ) );
+}
+
+const Clip*     ListViewMediaItem::getClip() const
+{
+    return m_clip;
 }

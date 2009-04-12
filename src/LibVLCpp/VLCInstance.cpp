@@ -41,11 +41,11 @@ Instance::Instance()
     int argc = sizeof( argv ) / sizeof( *argv );
 
     m_internalPtr = libvlc_new( argc, argv, m_ex );
-    m_ex.checkThrow();
+    CheckVlcppException(m_ex);
 }
 
 Instance::Instance( int argc, const char** argv )
 {
     m_internalPtr = libvlc_new( argc, argv, m_ex );
-    m_ex.checkThrow();
+    CheckVlcppException(m_ex);
 }

@@ -25,7 +25,7 @@
 #include "PreviewWidget.h"
 #include "ui_PreviewWidget.h"
 #include "MediaListWidget.h"
-#include "LibraryWidget.h"
+#include "Library.h"
 
 PreviewWidget::PreviewWidget( QWidget *parent ) :
     QDialog( parent ),
@@ -70,7 +70,7 @@ void    PreviewWidget::dragEnterEvent( QDragEnterEvent* event )
 
 void    PreviewWidget::dropEvent( QDropEvent* event )
 {
-    Clip*   clip = LibraryWidget::getInstance()->getClip( event->mimeData()->text() );
+    Clip*   clip = Library::getInstance()->getClip( event->mimeData()->text() );
 
     m_mediaPlayer->setMedia( clip->getVLCMedia() );
     clip->flushParameters();

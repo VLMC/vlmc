@@ -57,7 +57,7 @@ public:
      * \param parent parent widget
      * \param type
      */
-    ListViewMediaItem( QFileInfo* fileInfo, ListViewMediaItem::fType fType, QListWidget* parent = 0, int type = Type );
+    ListViewMediaItem( const Clip* clip, ListViewMediaItem::fType fType, QListWidget* parent = 0, int type = Type );
 
     /**
      *  \brief Destructor
@@ -70,14 +70,7 @@ public:
      */
     ListViewMediaItem::fType fileType() { return m_fileType; }
 
-    /**
-      * \brief Get the current media snapshot
-      * \return the current media snapshot as a QPixmap*, or NULL if there is no current media.
-      */
-    //const QPixmap*            getSnapshot() const;
-
-
-    Clip*                       getClip() { return m_clip; }
+    const Clip*     getClip() const;
 
     //void                      setInputMedia( InputMedia* inputMedia ) { m_inputMedia = inputMedia; }
 
@@ -90,12 +83,7 @@ private:
     /**
      * \Instance of the InputMedia
      */
-    Clip*                       m_clip;
-
-    /**
-     * \brief Instance of the temporary QWidget use for the snapshot
-     */
-    QWidget*                    m_renderWidget;
+    const Clip*                 m_clip;
 
 private slots:
     void                    snapshotChanged();

@@ -1,9 +1,12 @@
+#include <QtDebug>
 #include "MetaDataManager.h"
+#include "Library.h"
+
 
 MetaDataManager::MetaDataManager() : m_renderWidget( NULL )
 {
     m_mediaPlayer = new LibVLCpp::MediaPlayer();
-    connect( LibraryWidget::getInstance(), SIGNAL( listViewMediaAdded( Clip* ) ), this, SLOT( listViewMediaAdded( Clip* ) ) );
+    connect( Library::getInstance(), SIGNAL( newClipLoaded( Clip* ) ),this, SLOT( newClipLoaded( Clip* ) ) );
     m_tmpSnapshotFilename = new char[512];
     m_renderWidget = new QWidget();
     m_mediaPlayer->setDrawable( m_renderWidget->winId() );
@@ -18,7 +21,7 @@ MetaDataManager::~MetaDataManager()
     delete[] m_tmpSnapshotFilename;
 }
 
-void    MetaDataManager::listViewMediaAdded( Clip* item )
+void    MetaDataManager::newClipLoaded( Clip* item )
 {
     m_mediaList.append( item );
 

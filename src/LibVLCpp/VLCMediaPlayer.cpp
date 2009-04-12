@@ -30,7 +30,7 @@ using namespace LibVLCpp;
 MediaPlayer::MediaPlayer()
 {
     m_internalPtr = libvlc_media_player_new( LibVLCpp::Instance::getInstance()->getInternalPtr(), m_ex );
-    m_ex.checkThrow();
+    CheckVlcppException(m_ex);
 
     // Initialize the event manager
     p_em = libvlc_media_player_event_manager( m_internalPtr, m_ex );
@@ -48,7 +48,7 @@ MediaPlayer::MediaPlayer()
 MediaPlayer::MediaPlayer( Media* media )
 {
     m_internalPtr = libvlc_media_player_new_from_media( media->getInternalPtr(), m_ex );
-    m_ex.checkThrow();
+    CheckVlcppException(m_ex);
 
     // Initialize the event manager
     p_em = libvlc_media_player_event_manager( m_internalPtr, m_ex );
@@ -126,82 +126,84 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
 void                            MediaPlayer::play()
 {
     libvlc_media_player_play( m_internalPtr, m_ex );
-    m_ex.checkThrow();
+    CheckVlcppException(m_ex);
 }
 
 void                            MediaPlayer::pause()
 {
     libvlc_media_player_pause( m_internalPtr, m_ex );
-    m_ex.checkThrow();
+    CheckVlcppException(m_ex);
 }
 
 void                            MediaPlayer::stop()
 {
     libvlc_media_player_stop( m_internalPtr, m_ex );
-    m_ex.checkThrow();
+    CheckVlcppException(m_ex);
 }
 
 qint64                          MediaPlayer::getTime()
 {
     qint64 t = libvlc_media_player_get_time( m_internalPtr, m_ex );
-    m_ex.checkThrow();
+    CheckVlcppException(m_ex);
     return t;
 }
 
 void                            MediaPlayer::setTime( qint64 time )
 {
     libvlc_media_player_set_time( m_internalPtr, time, m_ex );
-    m_ex.checkThrow();
+    CheckVlcppException(m_ex);
 }
 
 float                           MediaPlayer::getPosition()
 {
     float p = libvlc_media_player_get_position( m_internalPtr, m_ex );
-    m_ex.checkThrow();
+    CheckVlcppException(m_ex);
     return p;
 }
 
 void                            MediaPlayer::setPosition( float pos )
 {
     libvlc_media_player_set_position( m_internalPtr, pos, m_ex );
-    m_ex.checkThrow();
+    CheckVlcppException(m_ex);
 }
 
 qint64                          MediaPlayer::getLength()
 {
     qint64 length = libvlc_media_player_get_length( m_internalPtr, m_ex );
-    m_ex.checkThrow();
+    CheckVlcppException(m_ex);
     return length;
 }
 
 void                            MediaPlayer::takeSnapshot( char* outputFile, unsigned int width, unsigned int heigth )
 {
     libvlc_video_take_snapshot( *this, outputFile, width, heigth, m_ex);
-    m_ex.checkThrow();
+    CheckVlcppException(m_ex);
 }
 
 bool                                MediaPlayer::isPlaying()
 {
     int res = libvlc_media_player_is_playing( m_internalPtr, m_ex );
-    m_ex.checkThrow();
+    CheckVlcppException(m_ex);
     return (res == 1);
 }
 
 bool                                MediaPlayer::isSeekable()
 {
     int res = libvlc_media_player_is_seekable( m_internalPtr, m_ex );
-    m_ex.checkThrow();
+    CheckVlcppException(m_ex);
     return (res == 1);
 }
 
 void                                MediaPlayer::setDrawable( void* hwnd )
 {
     libvlc_media_player_set_hwnd( m_internalPtr, hwnd, m_ex );
+    CheckVlcppException(m_ex);
 }
 
 void                                MediaPlayer::setDrawable( uint32_t drawable )
 {
     libvlc_media_player_set_xwindow( m_internalPtr, drawable, m_ex );
+    CheckVlcppException(m_ex);
 }
 
 void                                MediaPlayer::timeChangedFilter()
@@ -218,18 +220,19 @@ void                                MediaPlayer::timeChangedFilter()
 void                                MediaPlayer::setMedia( Media* media )
 {
     libvlc_media_player_set_media( m_internalPtr, media->getInternalPtr(), m_ex);
+    CheckVlcppException(m_ex);
 }
 
 int                                 MediaPlayer::getWidth()
 {
     int width = libvlc_video_get_width( m_internalPtr, m_ex );
-    m_ex.checkThrow();
+    CheckVlcppException(m_ex);
     return width;
 }
 
 int                                 MediaPlayer::getHeight()
 {
     int height = libvlc_video_get_height( m_internalPtr, m_ex );
-    m_ex.checkThrow();
+    CheckVlcppException(m_ex);
     return height;
 }

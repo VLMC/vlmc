@@ -1,5 +1,5 @@
 /*****************************************************************************
- * LibraryWidget.h: Multimedia library
+ * LibraryWidget.h: Multimedia library GUI
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -33,35 +33,23 @@
 #include <QMimeData>
 #include <QDrag>
 #include <QList>
-#include <QHash>
-#include <QUuid>
 #include <QSettings>
 #include "ListViewMediaItem.h"
 #include "ui_LibraryWidget.h"
-#include "Clip.h"
-#include "Singleton.hpp"
 
-class LibraryWidget : public QWidget//, public Singleton<LibraryWidget>
+class LibraryWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    ListViewMediaItem*  addMedia( QFileInfo* fileInfo, ListViewMediaItem::fType fileType );
-    bool                removeMedia( ListViewMediaItem* item );
-    int                 getIndex( ListViewMediaItem* media );
-    Clip*               getClip( const QUuid& uuid );
-
-    //Temporary !!!
-    static LibraryWidget*      getInstance( QWidget* parent = NULL )
-    {
-        if ( m_instance == NULL )
-            m_instance = new LibraryWidget( parent );
-        return m_instance;
-    }
-
-protected:
     explicit LibraryWidget( QWidget *parent = 0 );
     virtual ~LibraryWidget();
+
+    ListViewMediaItem*  addMedia( const Clip* clip, ListViewMediaItem::fType fileType );
+    void                removeMedia( const QUuid& uuid );
+    int                 getIndex( ListViewMediaItem* media );
+
+protected:
     virtual void changeEvent( QEvent *e );
 
 private:
@@ -70,18 +58,20 @@ private:
 
     Ui::LibraryWidget                   m_ui;
     static QList<ListViewMediaItem*>*   m_medias;
-    QHash<QUuid, Clip*>                 m_mediaHash;
 
-    //TODO: remove the singleton from this class...
-    static  LibraryWidget*  m_instance;
-    //friend class    Singleton<LibraryWidget>;
+
+public slots:
+    void                newClipLoaded( Clip* );
+    void                clipRemoved( const QUuid& );
 
 private slots:
     void on_pushButtonAddMedia_clicked();
     void on_pushButtonRemoveMedia_clicked();
 
 signals:
-    void    listViewMediaAdded(Clip* clip);
+//    void    listViewMediaAdded(Clip* clip);
+    void                newClipLoadingAsked( const QString& );
+    void                removingClipAsked( const QUuid& );
 };
 
 #endif /* !LIBRARYWIDGET_H */

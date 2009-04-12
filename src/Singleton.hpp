@@ -5,14 +5,14 @@ template <typename T>
 class       Singleton
 {
 public:
-    T*      getInstance()
+    static T*      getInstance()
     {
         if ( m_instance == NULL )
             m_instance = new T;
         return m_instance;
     }
 
-    void    destroyInstance()
+    static void    destroyInstance()
     {
         if ( m_instance != NULL )
         {
