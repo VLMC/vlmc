@@ -24,7 +24,7 @@
 #include <QPixmap>
 #include <QDebug>
 
-ListViewMediaItem::ListViewMediaItem( const Clip* clip, ListViewMediaItem::fType fType, QListWidget* parent, int type ) :
+ListViewMediaItem::ListViewMediaItem( const Clip* clip, Library::FileType fType, QListWidget* parent, int type ) :
         QListWidgetItem( parent, type ), m_clip( clip )
 {
     m_fileType = fType;

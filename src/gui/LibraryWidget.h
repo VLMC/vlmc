@@ -34,6 +34,7 @@
 #include <QDrag>
 #include <QList>
 #include <QSettings>
+#include "Library.h"
 #include "ListViewMediaItem.h"
 #include "ui_LibraryWidget.h"
 
@@ -45,7 +46,7 @@ public:
     explicit LibraryWidget( QWidget *parent = 0 );
     virtual ~LibraryWidget();
 
-    ListViewMediaItem*  addMedia( const Clip* clip, ListViewMediaItem::fType fileType );
+    ListViewMediaItem*  addMedia( const Clip* clip, Library::FileType fileType );
     void                removeMedia( const QUuid& uuid );
     int                 getIndex( ListViewMediaItem* media );
 
@@ -53,8 +54,8 @@ protected:
     virtual void changeEvent( QEvent *e );
 
 private:
-    ListViewMediaItem*  insertNewMedia( QString filename, ListViewMediaItem::fType fileType );
-    void                insertNewMediasFromFileDialog( QString title, QString filter, ListViewMediaItem::fType fileType );
+    ListViewMediaItem*  insertNewMedia( QString filename, Library::FileType fileType );
+    void                insertNewMediasFromFileDialog( QString title, QString filter, Library::FileType fileType );
 
     Ui::LibraryWidget                   m_ui;
     static QList<ListViewMediaItem*>*   m_medias;

@@ -31,21 +31,22 @@
 #include <QApplication>
 #include <QSvgRenderer>
 #include "ListViewMediaItem.h"
+#include "Library.h"
 
 class MediaListWidget : public QListWidget
 {
     Q_OBJECT
 public:
     MediaListWidget( QWidget* parent = 0 );
-    void setType( ListViewMediaItem::fType fileType );
+    void setType( Library::FileType fileType );
 protected:
-    virtual void mousePressEvent( QMouseEvent* event );
-    virtual void mouseMoveEvent( QMouseEvent* event );
-    virtual void paintEvent( QPaintEvent* event );
+    virtual void        mousePressEvent( QMouseEvent* event );
+    virtual void        mouseMoveEvent( QMouseEvent* event );
+    virtual void        paintEvent( QPaintEvent* event );
 private:
-    ListViewMediaItem::fType m_Type;
-    QPoint m_dragStartPos;
-    QSvgRenderer* m_svgRenderer;
+    Library::FileType   m_Type;
+    QPoint              m_dragStartPos;
+    QSvgRenderer*       m_svgRenderer;
 };
 
 #endif // MEDIALISTWIDGET_H

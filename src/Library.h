@@ -36,6 +36,16 @@ class   Library : public QObject, public Singleton<Library>
     Q_OBJECT
     Q_DISABLE_COPY( Library );
 public:
+    /**
+     *  \enum fType
+     *  \brief enum to determine file type
+     */
+    enum FileType
+    {
+        Audio,
+        Video,
+        Image
+    };
     Clip*                   getClip( const QUuid& uuid );
 
 private:

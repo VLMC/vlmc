@@ -27,6 +27,7 @@
 #include <QFileInfo>
 #include <QListWidgetItem>
 #include "Clip.h"
+#include "Library.h"
 
 /**
  *  \class ListViewMediaItem
@@ -39,17 +40,6 @@ class ListViewMediaItem : public QObject, public QListWidgetItem
 
 public:
     /**
-     *  \enum fType
-     *  \brief enum to determine file type
-     */
-    enum fType
-    {
-        Audio,
-        Video,
-        Image
-    };
-
-    /**
      * \brief Constructor
      *
      * \param fileInfo the QFileInfo refering to the file
@@ -57,7 +47,7 @@ public:
      * \param parent parent widget
      * \param type
      */
-    ListViewMediaItem( const Clip* clip, ListViewMediaItem::fType fType, QListWidget* parent = 0, int type = Type );
+    ListViewMediaItem( const Clip* clip, Library::FileType fType, QListWidget* parent = 0, int type = Type );
 
     /**
      *  \brief Destructor
@@ -68,9 +58,9 @@ public:
      * \brief Getter for filetype
      * \return filetype of the item
      */
-    ListViewMediaItem::fType fileType() { return m_fileType; }
+    Library::FileType   getFileType() const { return m_fileType; }
 
-    const Clip*     getClip() const;
+    const Clip*         getClip() const;
 
     //void                      setInputMedia( InputMedia* inputMedia ) { m_inputMedia = inputMedia; }
 
@@ -78,7 +68,7 @@ private:
     /**
      *  \brief fileType member
      */
-    ListViewMediaItem::fType    m_fileType;
+    Library::FileType           m_fileType;
 
     /**
      * \Instance of the InputMedia

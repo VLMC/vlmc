@@ -30,18 +30,18 @@ MediaListWidget::MediaListWidget( QWidget* parent ) : QListWidget( parent )
     setIconSize( QSize( 128, 128 ) );
 }
 
-void    MediaListWidget::setType( ListViewMediaItem::fType fileType )
+void    MediaListWidget::setType( Library::FileType fileType )
 {
     this->m_Type = fileType;
     switch ( fileType )
     {
-    case ListViewMediaItem::Audio:
+    case Library::Audio:
         m_svgRenderer->load( QString( ":/images/scalable/audio-scalable" ) );
         break;
-    case ListViewMediaItem::Image:
+    case Library::Image:
         m_svgRenderer->load( QString( ":/images/scalable/image-scalable" ) );
         break;
-    case ListViewMediaItem::Video:
+    case Library::Video:
         m_svgRenderer->load( QString( ":/images/scalable/video-scalable" ) );
         break;
     }

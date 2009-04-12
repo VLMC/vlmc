@@ -30,9 +30,9 @@ LibraryWidget::LibraryWidget( QWidget *parent ) : QWidget( parent )
 {
     m_ui.setupUi( this );
 
-    m_ui.listWidgetAudio->setType( ListViewMediaItem::Audio );
-    m_ui.listWidgetImage->setType( ListViewMediaItem::Image );
-    m_ui.listWidgetVideo->setType( ListViewMediaItem::Video );
+    m_ui.listWidgetAudio->setType( Library::Audio );
+    m_ui.listWidgetImage->setType( Library::Image );
+    m_ui.listWidgetVideo->setType( Library::Video );
 
     // *Always* force the selection of the first tab
     m_ui.LibraryTabs->setCurrentIndex( 0 );
@@ -51,7 +51,7 @@ LibraryWidget::~LibraryWidget()
     }
 }
 
-ListViewMediaItem*  LibraryWidget::addMedia( const Clip* clip, ListViewMediaItem::fType fileType )
+ListViewMediaItem*  LibraryWidget::addMedia( const Clip* clip, Library::FileType fileType )
 {
     ListViewMediaItem* item = new ListViewMediaItem( clip, fileType );
     //TODO: replace this :
@@ -59,13 +59,13 @@ ListViewMediaItem*  LibraryWidget::addMedia( const Clip* clip, ListViewMediaItem
     m_medias->append( item );
     switch ( fileType )
     {
-    case ListViewMediaItem::Audio:
+    case Library::Audio:
         m_ui.listWidgetAudio->addItem( item );
         break;
-    case ListViewMediaItem::Video:
+    case Library::Video:
         m_ui.listWidgetVideo->addItem( item );
         break;
-    case ListViewMediaItem::Image:
+    case Library::Image:
         m_ui.listWidgetImage->addItem( item );
         break;
     }
@@ -84,15 +84,15 @@ void                LibraryWidget::removeMedia( const QUuid& uuid )
     {
         if ( item->getClip()->getUuid() == uuid )
         {
-            switch( item->fileType() )
+            switch( item->getFileType() )
             {
-            case ListViewMediaItem::Audio:
+            case Library::Audio:
                 this->m_ui.listWidgetAudio->removeItemWidget( item );
                 break;
-            case ListViewMediaItem::Image:
+            case Library::Image:
                 this->m_ui.listWidgetImage->removeItemWidget( item );
                 break;
-            case ListViewMediaItem::Video:
+            case Library::Video:
                 this->m_ui.listWidgetVideo->removeItemWidget( item );
                 break;
             }
@@ -119,10 +119,10 @@ void                LibraryWidget::removeMedia( const QUuid& uuid )
 void    LibraryWidget::newClipLoaded( Clip* clip )
 {
     //From here, the clip is const.
-    addMedia( clip, ListViewMediaItem::Video );
+    addMedia( clip, Library::Video );
 }
 
-void    LibraryWidget::insertNewMediasFromFileDialog( QString title, QString filter, ListViewMediaItem::fType filetype )
+void    LibraryWidget::insertNewMediasFromFileDialog( QString title, QString filter, Library::FileType fileType )
 {
     QSettings settings;
     QString path = settings.value( "mediaLibraryDialogPath", QDir::homePath() ).toString();
@@ -132,8 +132,11 @@ void    LibraryWidget::insertNewMediasFromFileDialog( QString title, QString fil
     QString filePath;
 //    ListViewMediaItem* item = NULL;
     foreach ( filePath, fileNames )
+    {
 //        item = insertNewMedia( fileName, filetype );
-        emit newClipLoadingAsked( filePath );
+        if( fileType == Library::Video )
+            emit newClipLoadingAsked( filePath );
+    }
 //    if ( item != NULL )
 //        settings.setValue( "mediaLibraryDialogPath" , item->getClip()->getFileInfo()->absoluteDir().absolutePath() );
 //    return ;
@@ -146,17 +149,17 @@ void LibraryWidget::on_pushButtonAddMedia_clicked()
     case 0:
         insertNewMediasFromFileDialog( tr( "Open Audios" ),
                                       tr( "Audio Files" ) + " (*.mp3 *.oga *.flac *.aac *.wav)" ,
-                                      ListViewMediaItem::Audio );
+                                      Library::Audio );
         break;
     case 1:
         insertNewMediasFromFileDialog( tr( "Open Videos" ),
                                       tr( "Video Files" ) + " (*.mov *.avi *.mkv *.mpg *.mpeg *.wmv)" ,
-                                      ListViewMediaItem::Video );
+                                      Library::Video );
         break;
     case 2:
         insertNewMediasFromFileDialog( tr( "Open Images" ),
                                       tr( "Images Files" ) + " (*.gif *.png *.jpg)" ,
-                                      ListViewMediaItem::Image );
+                                      Library::Image );
         break;
     }
 }
