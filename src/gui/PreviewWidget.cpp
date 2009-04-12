@@ -44,10 +44,15 @@ PreviewWidget::PreviewWidget( QWidget *parent ) :
              this, SLOT( seekSliderMoved(int) ) );
 
     m_mediaPlayer = new LibVLCpp::MediaPlayer();
+    m_mediaPlayer->setDrawable( m_ui->clipRenderWidget->winId() );
+
+//    m_mediaList = new LibVLCpp::MediaList();
+//    m_mediaList->setMediaPlayer( m_mediaPlayer );
 }
 
 PreviewWidget::~PreviewWidget()
 {
+    delete m_mediaPlayer;
     delete m_ui;
 }
 
@@ -72,9 +77,8 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
 {
     Clip*   clip = Library::getInstance()->getClip( event->mimeData()->text() );
 
-    m_mediaPlayer->setMedia( clip->getVLCMedia() );
     clip->flushParameters();
-    m_mediaPlayer->setDrawable( m_ui->clipRenderWidget->winId() );
+    m_mediaPlayer->setMedia( clip->getVLCMedia() );
 
     //FIXME Connecting endReached to pause to change icon of playpause button
     // this might not work as it works now later!
@@ -94,6 +98,10 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
              SIGNAL( positionChanged() ),
              this,
              SLOT( positionChanged() ) );
+    connect( m_mediaPlayer,
+             SIGNAL( endReached() ),
+             this,
+             SLOT( endReached() ) );
 
     //TODO: add EndReached event.
 
@@ -133,4 +141,10 @@ void PreviewWidget::videoPaused()
 void PreviewWidget::videoPlaying()
 {
     m_ui->pushButtonPlay->setIcon( QIcon( ":/images/pause" ) );
+}
+
+void    PreviewWidget::endReached()
+{
+    m_mediaPlayer->stop();
+    m_ui->seekSlider->setValue( 0 );
 }

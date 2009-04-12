@@ -27,6 +27,7 @@
 #include <QDragEnterEvent>
 
 #include "VLCMediaPlayer.h"
+#include "VLCMediaList.h"
 
 namespace Ui {
     class PreviewWidget;
@@ -51,10 +52,12 @@ private slots:
     void            seekSliderMoved( int value );
     void            videoPaused();
     void            videoPlaying();
+    void            endReached();
 
 private:
     Ui::PreviewWidget*      m_ui;
     LibVLCpp::MediaPlayer*  m_mediaPlayer;
+//    LibVLCpp::MediaList*    m_mediaList;
     bool                    m_clipLoaded;
 };
 

@@ -22,8 +22,13 @@ namespace   LibVLCpp
         MediaList();
         ~MediaList();
 
-        void                            addMedia( Media* media );
+        void                            addMedia( LibVLCpp::Media* media );
         void                            setMediaPlayer( MediaPlayer* mp );
+        int                             count();
+        void                            clear();
+        void                            play();
+        void                            pause();
+        void                            stop();
         static void                     callbacks( const libvlc_event_t* event, void* self );
     private:
         void                            initWatchedEvents();

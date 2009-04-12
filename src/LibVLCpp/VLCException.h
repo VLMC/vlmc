@@ -26,6 +26,7 @@
 #include "vlc/vlc.h"
 #include "VLCpp.hpp"
 
+//TODO: this would be better as an inline function...
 #define CheckVlcppException(ex)     (ex.checkThrow(__FILE__, __LINE__))
 
 namespace LibVLCpp
