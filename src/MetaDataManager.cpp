@@ -83,7 +83,11 @@ void    MetaDataManager::renderSnapshot()
 
 void    MetaDataManager::setSnapshot()
 {
-    m_currentClip->setSnapshot( new QPixmap( m_tmpSnapshotFilename ) );
+    QPixmap* pixmap = new QPixmap( m_tmpSnapshotFilename );
+    if ( pixmap->isNull() )
+        delete pixmap;
+    else
+        m_currentClip->setSnapshot( pixmap );
     disconnect( this, SLOT( setSnapshot() ) );
     m_mediaPlayer->stop();
 }
