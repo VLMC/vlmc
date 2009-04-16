@@ -26,8 +26,8 @@
 QPixmap*    Clip::defaultSnapshot = NULL;
 
 Clip::Clip( const QString& mrl )
-    : m_vlcMedia( NULL ), m_mrl( mrl ), m_snapshot( NULL ), m_begin( 0 ), m_end( -1 ),
-    m_length( 0 ), m_width( 0 ), m_height( 0 )
+    : m_vlcMedia( NULL ), m_mrl( mrl ), m_snapshot( NULL ), m_length( 0 ),
+    m_begin( 0 ), m_end( -1 ), m_width( 0 ), m_height( 0 )
 {
     m_vlcMedia = new LibVLCpp::Media( mrl );
     m_uuid = QUuid::createUuid();
@@ -36,8 +36,8 @@ Clip::Clip( const QString& mrl )
 }
 
 Clip::Clip( const QFileInfo* fileInfo)
-    : m_vlcMedia( NULL ), m_snapshot( NULL ), m_begin( 0 ), m_end( -1 ),
-    m_length( 0 ), m_width( 0 ), m_height( 0 )
+    : m_vlcMedia( NULL ), m_snapshot( NULL ), m_length( 0 ),
+    m_begin( 0 ), m_end( -1 ), m_width( 0 ), m_height( 0 )
 {
     m_mrl = "file://" + fileInfo->absoluteFilePath();
     m_vlcMedia = new LibVLCpp::Media( m_mrl );
