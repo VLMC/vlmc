@@ -38,7 +38,7 @@ PreviewWidget::PreviewWidget( QWidget *parent ) :
     m_ui->seekSlider->setSingleStep( 2 );
     m_ui->seekSlider->setFocusPolicy( Qt::NoFocus );
 
-    setAcceptDrops(true);
+    setAcceptDrops( true );
 
     connect( m_ui->seekSlider, SIGNAL( sliderPosChanged(int) ), this, SLOT( seekSliderMoved(int) ) );
     connect( m_ui->seekSlider, SIGNAL( sliderReleased() ), this, SLOT( seekSliderReleased() ) );
@@ -93,6 +93,7 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
 
     m_mediaPlayer->play();
     m_clipLoaded = true;
+    event->acceptProposedAction();
 }
 
 void    PreviewWidget::positionChanged()
