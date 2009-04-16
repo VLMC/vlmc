@@ -38,7 +38,8 @@ public:
     TracksView( QGraphicsScene* scene, QWidget* parent = 0 );
     void setDuration( int duration );
     int duration() { return m_projectDuration; }
-    void setCursorPos(int pos);
+    int tracksHeight() { return m_tracksHeight; }
+    void setCursorPos( int pos );
 
 protected:
     virtual void resizeEvent( QResizeEvent* event );
