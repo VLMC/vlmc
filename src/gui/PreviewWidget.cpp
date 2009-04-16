@@ -70,12 +70,13 @@ void PreviewWidget::changeEvent( QEvent *e )
 
 void    PreviewWidget::dragEnterEvent( QDragEnterEvent* event )
 {
-    event->accept();
+    if ( event->mimeData()->hasFormat( "vlmc/uuid" ) )
+        event->acceptProposedAction();
 }
 
 void    PreviewWidget::dropEvent( QDropEvent* event )
 {
-    Clip*   clip = Library::getInstance()->getClip( event->mimeData()->text() );
+    Clip*   clip = Library::getInstance()->getClip( QUuid( (const QString& )event->mimeData()->data( "vlmc/uuid" ) ) );
 
     clip->flushParameters();
     m_mediaPlayer->setMedia( clip->getVLCMedia() );

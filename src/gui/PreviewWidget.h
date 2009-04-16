@@ -25,6 +25,7 @@
 
 #include <QtGui/QDialog>
 #include <QDragEnterEvent>
+#include <QUuid>
 
 #include "VLCMediaPlayer.h"
 #include "VLCMediaList.h"
