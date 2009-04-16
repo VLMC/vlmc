@@ -36,6 +36,7 @@ TracksView::TracksView( QGraphicsScene* scene, QWidget* parent )
 
     setMouseTracking( true );
     setAcceptDrops( true );
+    setDragMode( QGraphicsView::ScrollHandDrag );
     setContentsMargins( 0, 0, 0, 0 );
 
     // Adjust the height using the number of tracks
@@ -45,6 +46,23 @@ TracksView::TracksView( QGraphicsScene* scene, QWidget* parent )
     m_cursorPos = 0;
     m_cursorLine = m_scene->addLine(0, 0, 0, maxHeight);
     m_cursorLine->setZValue(100);
+}
+
+void TracksView::dragEnterEvent( QDragEnterEvent* event )
+{
+    if ( event->mimeData()->hasFormat( "vlmc/uuid" ) )
+        event->acceptProposedAction();
+}
+
+void TracksView::dropEvent( QDropEvent* event )
+{
+
+    event->acceptProposedAction();
+}
+
+void TracksView::dragMoveEvent( QDragMoveEvent* event )
+{
+
 }
 
 void TracksView::setDuration( int duration )

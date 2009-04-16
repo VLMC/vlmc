@@ -23,8 +23,12 @@
 #ifndef TRACKSVIEW_H
 #define TRACKSVIEW_H
 
+#include <QWidget>
 #include <QGraphicsView>
 #include <QGraphicsLineItem>
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QDragMoveEvent>
 
 class TracksView : public QGraphicsView
 {
@@ -41,6 +45,9 @@ protected:
     virtual void drawBackground( QPainter* painter, const QRectF& rect );
     virtual void mouseMoveEvent( QMouseEvent* event );
     virtual void mousePressEvent( QMouseEvent* event );
+    virtual void dragEnterEvent( QDragEnterEvent* event );
+    virtual void dropEvent( QDropEvent* event );
+    virtual void dragMoveEvent( QDragMoveEvent* event );
 
 private:
     QGraphicsScene* m_scene;
