@@ -167,9 +167,10 @@ void LibraryWidget::on_pushButtonAddMedia_clicked()
 
 void LibraryWidget::on_pushButtonRemoveMedia_clicked()
 {
-    QListWidget* mediaList = ( QListWidget* )( this->m_ui.LibraryTabs->currentWidget()->children().back() );
+    QListWidget* mediaList = ( QListWidget* )( m_ui.LibraryTabs->currentWidget()->children().back() );
     ListViewMediaItem* item = ( ListViewMediaItem* ) mediaList->currentItem();
-//    this->removeMedia( item );
+    if ( !item ) return;
+//    removeMedia( item );
     emit removingClipAsked( item->getClip()->getUuid() );
 }
 
