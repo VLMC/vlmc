@@ -30,6 +30,7 @@ Library::Library()
 
 Clip*       Library::getClip( const QUuid& uuid )
 {
+    QMutexLocker locker( &m_mutex );
     QHash<QUuid, Clip*>::iterator   it = m_clips.find( uuid );
     if ( it == m_clips.end() )
         return NULL;
@@ -38,6 +39,7 @@ Clip*       Library::getClip( const QUuid& uuid )
 
 void        Library::removingClipAsked( const QUuid& uuid )
 {
+    QMutexLocker locker( &m_mutex );
     QHash<QUuid, Clip*>::iterator   it = m_clips.find( uuid );
     if ( it == m_clips.end() )
         return ;
@@ -50,6 +52,7 @@ void        Library::removingClipAsked( const QUuid& uuid )
 
 void        Library::newClipLoadingAsked( const QString& filePath )
 {
+    QMutexLocker locker( &m_mutex );
     Clip*   clip;
     foreach ( clip, m_clips )
     {

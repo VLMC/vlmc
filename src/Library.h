@@ -27,6 +27,8 @@
 #include <QHash>
 #include <QUuid>
 #include <QFileInfo>
+#include <QMutex>
+#include <QMutexLocker>
 
 #include "Clip.h"
 #include "Singleton.hpp"
@@ -51,6 +53,7 @@ public:
 private:
     Library();
     QHash<QUuid, Clip*>     m_clips;
+    QMutex                  m_mutex;
 
 public slots:
     void                    newClipLoadingAsked( const QString& filePath );
