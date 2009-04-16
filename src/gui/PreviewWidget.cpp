@@ -40,8 +40,9 @@ PreviewWidget::PreviewWidget( QWidget *parent ) :
 
     setAcceptDrops( true );
 
-    connect( m_ui->seekSlider, SIGNAL( sliderPosChanged(int) ), this, SLOT( seekSliderMoved(int) ) );
-    connect( m_ui->seekSlider, SIGNAL( sliderReleased() ), this, SLOT( seekSliderReleased() ) );
+    connect( m_ui->seekSlider, SIGNAL( sliderPressed() ),       this,   SLOT( seekSliderPressed() ) );
+    connect( m_ui->seekSlider, SIGNAL( sliderPosChanged(int) ), this,   SLOT( seekSliderMoved(int) ) );
+    connect( m_ui->seekSlider, SIGNAL( sliderReleased() ),      this,   SLOT( seekSliderReleased() ) );
 
     m_mediaPlayer = new LibVLCpp::MediaPlayer();
     m_mediaPlayer->setDrawable( m_ui->clipRenderWidget->winId() );
@@ -103,6 +104,12 @@ void    PreviewWidget::positionChanged()
     m_ui->seekSlider->setValue( (int)( m_mediaPlayer->getPosition() * 1000.0 ) );
 }
 
+
+void    PreviewWidget::seekSliderPressed()
+{
+    disconnect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,       SLOT( positionChanged() ) );
+}
+
 void    PreviewWidget::seekSliderMoved( int )
 {
     if ( m_clipLoaded == false)
@@ -123,6 +130,7 @@ void    PreviewWidget::seekSliderReleased()
         m_mediaPlayer->setPosition( (float)m_ui->seekSlider->maximum() / 1000.0 );
         m_endReached = false;
     }
+    connect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,       SLOT( positionChanged() ) );
 }
 
 void PreviewWidget::on_pushButtonPlay_clicked()
@@ -150,3 +158,4 @@ void    PreviewWidget::endReached()
     m_mediaPlayer->stop();
     m_ui->seekSlider->setValue( 0 );
 }
+

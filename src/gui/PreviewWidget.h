@@ -50,6 +50,7 @@ protected:
 private slots:
     void            on_pushButtonPlay_clicked();
     void            positionChanged();
+    void            seekSliderPressed();
     void            seekSliderMoved( int value );
     void            seekSliderReleased();
     void            videoPaused();
