@@ -23,7 +23,7 @@
 #include "GraphicsMovieItem.h"
 #include "TracksView.h"
 
-GraphicsMovieItem::GraphicsMovieItem( Clip* clip ) : m_clip( clip ), m_tracksView( NULL )
+GraphicsMovieItem::GraphicsMovieItem( Clip* clip ) : m_clip( clip )
 {
 
 }
@@ -32,8 +32,3 @@ GraphicsMovieItem::~GraphicsMovieItem()
 {
 }
 
-int GraphicsMovieItem::tracksHeight()
-{
-    if ( !m_tracksView ) return 0;
-    return m_tracksView->tracksHeight();
-}

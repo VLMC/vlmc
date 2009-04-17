@@ -38,12 +38,8 @@ public:
     virtual bool moveable() const { return true; }
     virtual const QUuid& uuid() const { return m_clip->getUuid(); }
 
-protected:
-    int tracksHeight();
-
 private:
     Clip* m_clip;
-    TracksView* m_tracksView;
 };
 
 #endif // GRAPHICSMOVIEITEM_H
