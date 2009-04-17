@@ -25,6 +25,7 @@
 
 #include "AbstractGraphicsMediaItem.h"
 #include "Clip.h"
+#include "TracksView.h"
 
 class GraphicsMovieItem : public AbstractGraphicsMediaItem
 {
@@ -42,6 +43,7 @@ protected:
 
 private:
     Clip* m_clip;
+    TracksView* m_tracksView;
 };
 
 #endif // GRAPHICSMOVIEITEM_H

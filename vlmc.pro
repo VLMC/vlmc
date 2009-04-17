@@ -33,7 +33,8 @@ SOURCES += src/main.cpp \
     src/MetaDataManager.cpp \
     src/LibVLCpp/VLCMediaList.cpp \
     src/Library.cpp \
-    src/gui/GraphicsMovieItem.cpp
+    src/gui/GraphicsMovieItem.cpp \
+    src/gui/AbstractGraphicsMediaItem.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \

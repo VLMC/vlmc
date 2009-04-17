@@ -20,41 +20,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef ABSTRACTGRAPHICSMEDIAITEM_H
-#define ABSTRACTGRAPHICSMEDIAITEM_H
+#include "AbstractGraphicsMediaItem.h"
 
-#include <QGraphicsItem>
-#include <QUuid>
-#include "TracksView.h"
-
-class AbstractGraphicsMediaItem : public QObject, public QGraphicsItem
+AbstractGraphicsMediaItem::AbstractGraphicsMediaItem() : m_tracksView( NULL )
 {
-    Q_OBJECT
-    friend class TracksView;
-public:
-    AbstractGraphicsMediaItem();
-    virtual ~AbstractGraphicsMediaItem() { }
+}
 
-    /// The item length can be expanded or shrinked by the user.
-    virtual bool expandable() const = 0;
-
-    /// The item can be moved by the user.
-    virtual bool moveable() const = 0;
-
-    /// Should return the unique uid of the contained media.
-    virtual const QUuid& uuid() const = 0;
-
-protected:
-    /**
-     * Returns the current tracksView for the item,
-     * or 0 if the item is not stored in a tracksView.
-     */
-    TracksView* tracksView();
-
-private:
-    /// This pointer will be set when inserted in the tracksView.
-    TracksView* m_tracksView;
-
-};
-
-#endif // ABSTRACTGRAPHICSMEDIAITEM_H
+TracksView* AbstractGraphicsMediaItem::tracksView()
+{
+    return m_tracksView;
+}
