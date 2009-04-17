@@ -1,5 +1,6 @@
 /build
 /bin
+/debug
 /qtc-gdbmacros
 /ts/*.qm
 Makefile*
@@ -9,3 +10,5 @@ moc_*.cpp
 ui_*.h
 .*.swp
 *~
+qrc_ressources.cpp
+
