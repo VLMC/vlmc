@@ -39,6 +39,7 @@ public:
     void setDuration( int duration );
     int duration() { return m_projectDuration; }
     int tracksHeight() { return m_tracksHeight; }
+    int tracksCount() { return m_tracksCount; }
     void setCursorPos( int pos );
 
 protected:
