@@ -63,6 +63,7 @@ private:
 //    LibVLCpp::MediaList*    m_mediaList;
     bool                    m_clipLoaded;
     bool                    m_endReached;
+    bool                    m_videoStopped;
 };
 
 #endif // PREVIEWWIDGET_H

@@ -29,7 +29,7 @@
 
 PreviewWidget::PreviewWidget( QWidget *parent ) :
     QDialog( parent ),
-    m_ui( new Ui::PreviewWidget ), m_clipLoaded( false )
+    m_ui( new Ui::PreviewWidget ), m_clipLoaded( false ), m_videoStopped( true )
 {
     m_ui->setupUi( this );
     m_ui->groupBoxButton->hide();
@@ -82,18 +82,15 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
     clip->flushParameters();
     m_mediaPlayer->setMedia( clip->getVLCMedia() );
 
-    //FIXME Connecting endReached to pause to change icon of playpause button
-    // this might not work as it works now later!
-    connect( m_mediaPlayer,     SIGNAL( endReached() ),         this,       SLOT ( videoPaused() ) );
-    connect( m_mediaPlayer,     SIGNAL( stopped() ),            this,       SLOT ( videoPaused() ) );
-    connect( m_mediaPlayer,     SIGNAL( playing() ),            this,       SLOT ( videoPlaying() ) );
+    connect( m_mediaPlayer,     SIGNAL( stopped() ),            this,       SLOT( videoPaused() ) );
+    connect( m_mediaPlayer,     SIGNAL( paused() ),             this,       SLOT( videoPaused() ) );
+    connect( m_mediaPlayer,     SIGNAL( playing() ),            this,       SLOT( videoPlaying() ) );
     connect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,       SLOT( positionChanged() ) );
     connect( m_mediaPlayer,     SIGNAL( endReached() ),         this,       SLOT( endReached() ) );
 
-    //TODO: add EndReached event.
-
     m_mediaPlayer->play();
     m_clipLoaded = true;
+    m_videoStopped = false;
     event->acceptProposedAction();
 }
 
@@ -112,7 +109,7 @@ void    PreviewWidget::seekSliderPressed()
 
 void    PreviewWidget::seekSliderMoved( int )
 {
-    if ( m_clipLoaded == false)
+    if ( m_clipLoaded == false || m_videoStopped == true )
         return ;
     if ( m_ui->seekSlider->value() == m_ui->seekSlider->maximum() )
     {
@@ -120,13 +117,17 @@ void    PreviewWidget::seekSliderMoved( int )
         return;
     }
     m_endReached = false;
-     m_mediaPlayer->setPosition( (float)m_ui->seekSlider->value() / 1000.0 );
+    m_mediaPlayer->setPosition( (float)m_ui->seekSlider->value() / 1000.0 );
 }
 
 void    PreviewWidget::seekSliderReleased()
 {
-    if ( m_endReached == true )
+    if ( m_endReached == true && m_videoStopped == false )
     {
+        //When cursor reaches the maximum right, end reached becomes true.
+        //When we will release our slider, if endReached is true, we actually set the position.
+        //Otherwise, we do nothing.
+        //This prevents the video to stop if we put the slider to the maximum right by mistake
         m_mediaPlayer->setPosition( (float)m_ui->seekSlider->maximum() / 1000.0 );
         m_endReached = false;
     }
@@ -137,6 +138,9 @@ void PreviewWidget::on_pushButtonPlay_clicked()
 {
     if ( m_clipLoaded == false)
         return ;
+    if ( m_videoStopped == true )
+        m_videoStopped = false;
+
     if ( m_mediaPlayer->isPlaying() )
         m_mediaPlayer->pause();
     else
@@ -155,7 +159,12 @@ void PreviewWidget::videoPlaying()
 
 void    PreviewWidget::endReached()
 {
+    //Media player part :
     m_mediaPlayer->stop();
+    m_videoStopped = true;
+
+    //GUI part :
+    m_ui->pushButtonPlay->setIcon( QIcon( ":/images/play" ) );
     m_ui->seekSlider->setValue( 0 );
 }
 

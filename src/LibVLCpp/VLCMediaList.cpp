@@ -46,9 +46,9 @@ void        MediaList::initWatchedEvents()
     CheckVlcppException( m_exception );
 }
 
-void        MediaList::callbacks( const libvlc_event_t* event, void* ptr)
+void        MediaList::callbacks( const libvlc_event_t* event, void* )
 {
-    MediaList* self = reinterpret_cast< MediaList* >( ptr );
+    //MediaList* self = reinterpret_cast< MediaList* >( ptr );
     switch ( event->type )
     {
         case libvlc_MediaListPlayerStopped:

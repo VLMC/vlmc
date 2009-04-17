@@ -84,14 +84,19 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
         self->emit playing();
         break;
     case libvlc_MediaPlayerPaused:
+//        qDebug() << "Paused event";
         self->emit paused();
+        break;
     case libvlc_MediaPlayerStopped:
+//        qDebug() << "Stopped event";
         self->emit stopped();
 //    case libvlc_MediaPlayerForward:
 //    case libvlc_MediaPlayerBackward:
+        break;
     case libvlc_MediaPlayerEndReached:
         self->emit endReached();
 //    case libvlc_MediaPlayerEncounteredError:
+        break;
     case libvlc_MediaPlayerTimeChanged:
         //self->timeChangedFilter();
         self->emit timeChanged();
@@ -131,6 +136,7 @@ void                            MediaPlayer::play()
 
 void                            MediaPlayer::pause()
 {
+    qDebug() << "Pausing media";
     libvlc_media_player_pause( m_internalPtr, m_ex );
     CheckVlcppException(m_ex);
 }
