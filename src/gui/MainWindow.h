@@ -24,11 +24,13 @@
 #define MAINWINDOW_H
 
 #include <QApplication>
+#include <QSlider>
 #include "ui_MainWindow.h"
 #include "PreviewWidget.h"
 #include "DockWidgetManager.h"
 #include "Preferences.h"
 #include "MetaDataManager.h"
+#include "Timeline.h"
 
 class MainWindow : public QMainWindow
 {
@@ -45,10 +47,13 @@ protected:
 private:
     void        m_initializeDockWidgets( void );
     void        setupLibrary();
+    void        createStatusBar();
 
 
     Ui::MainWindow      m_ui;
     MetaDataManager*    m_metaDataManager;
+    QSlider*            m_zoomSlider;
+    Timeline*           m_timeline;
 
 private slots:
     void on_actionQuit_triggered();

@@ -25,6 +25,7 @@
 #include <QPalette>
 #include <QDockWidget>
 #include <QFileDialog>
+#include <QSlider>
 
 #include "MainWindow.h"
 #include "LibraryWidget.h"
@@ -39,11 +40,12 @@ MainWindow::MainWindow( QWidget *parent ) :
     m_ui.setupUi( this );
     DockWidgetManager::instance( this )->setMainWindow( this );
     m_initializeDockWidgets();
+    createStatusBar();
 
-    QObject::connect( this,
-                      SIGNAL( translateDockWidgetTitle() ),
-                      DockWidgetManager::instance(),
-                      SLOT(transLateWidgetTitle() ) );
+    connect( this, SIGNAL( translateDockWidgetTitle() ),
+             DockWidgetManager::instance(), SLOT( transLateWidgetTitle() ) );
+    connect( m_zoomSlider, SIGNAL( valueChanged( int ) ),
+             m_timeline, SLOT( changeZoom( int ) ) );
 }
 
 MainWindow::~MainWindow()
@@ -101,12 +103,26 @@ void        MainWindow::setupLibrary()
              SLOT( clipRemoved( const QUuid& ) ) );
 }
 
+void MainWindow::createStatusBar()
+{
+    m_zoomSlider = new QSlider( this );
+    m_zoomSlider->setOrientation( Qt::Horizontal );
+    m_zoomSlider->setTickInterval( 1 );
+    m_zoomSlider->setSingleStep( 1 );
+    m_zoomSlider->setPageStep( 1 );
+    m_zoomSlider->setMinimum( 0 );
+    m_zoomSlider->setMaximum( 13 );
+    m_zoomSlider->setValue( 10 );
+    m_zoomSlider->setFixedWidth( 80 );
+    m_ui.statusbar->addPermanentWidget( m_zoomSlider );
+}
+
 void MainWindow::m_initializeDockWidgets( void )
 {
-    Timeline* timeline = new Timeline( this );
-    timeline->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    timeline->show();
-    setCentralWidget( timeline );
+    m_timeline = new Timeline( this );
+    m_timeline->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_timeline->show();
+    setCentralWidget( m_timeline );
 
     setupLibrary();
 
