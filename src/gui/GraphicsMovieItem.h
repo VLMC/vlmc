@@ -37,9 +37,16 @@ public:
     virtual bool expandable() const { return false; }
     virtual bool moveable() const { return true; }
     virtual const QUuid& uuid() const { return m_clip->getUuid(); }
+    virtual QRectF boundingRect() const;
+    virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
+
+    void setWidth( int width );
+    void setHeight( int height );
 
 private:
     Clip* m_clip;
+    int m_width;
+    int m_height;
 };
 
 #endif // GRAPHICSMOVIEITEM_H

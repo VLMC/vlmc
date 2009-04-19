@@ -23,7 +23,7 @@
 #include "GraphicsMovieItem.h"
 #include "TracksView.h"
 
-GraphicsMovieItem::GraphicsMovieItem( Clip* clip ) : m_clip( clip )
+GraphicsMovieItem::GraphicsMovieItem( Clip* clip ) : m_clip( clip ), m_width( 0 ), m_height( 0 )
 {
 
 }
@@ -32,3 +32,24 @@ GraphicsMovieItem::~GraphicsMovieItem()
 {
 }
 
+QRectF GraphicsMovieItem::boundingRect() const
+{
+    return QRectF( 0, 0, m_width, m_height );
+}
+
+void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
+{
+    painter->setBrush( Qt::red );
+    painter->drawRoundedRect( boundingRect(), 5, 5 );
+}
+
+
+void GraphicsMovieItem::setWidth( int width )
+{
+    m_width = width;
+}
+
+void GraphicsMovieItem::setHeight( int height )
+{
+    m_height = height;
+}

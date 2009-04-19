@@ -29,6 +29,7 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QDragMoveEvent>
+#include "Clip.h"
 
 class TracksView : public QGraphicsView
 {
@@ -37,10 +38,12 @@ class TracksView : public QGraphicsView
 public:
     TracksView( QGraphicsScene* scene, QWidget* parent = 0 );
     void setDuration( int duration );
-    int duration() { return m_projectDuration; }
-    int tracksHeight() { return m_tracksHeight; }
-    int tracksCount() { return m_tracksCount; }
+    int duration() const { return m_projectDuration; }
+    int tracksHeight() const { return m_tracksHeight; }
+    int tracksCount() const { return m_tracksCount; }
     void setCursorPos( int pos );
+    void addClip( Clip* clip, const QPoint& point );
+    void setScale( double scaleFactor );
 
 protected:
     virtual void resizeEvent( QResizeEvent* event );
@@ -57,6 +60,7 @@ private:
     int m_tracksCount;
     int m_projectDuration;
     int m_cursorPos;
+    int m_fps;
     QGraphicsLineItem* m_cursorLine;
 
 };

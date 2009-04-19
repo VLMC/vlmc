@@ -37,6 +37,9 @@ public:
     TracksView* tracksView() { return m_tracksView; }
     TracksScene* tracksScene() { return m_tracksScene; }
 
+public slots:
+    void changeZoom( int factor );
+
 protected:
     virtual void changeEvent( QEvent *e );
 
@@ -45,7 +48,7 @@ private:
     TracksView* m_tracksView;
     TracksScene* m_tracksScene;
     TracksRuler* m_tracksRuler;
-
+    double m_scale;
 };
 
 #endif // TIMELINE_H

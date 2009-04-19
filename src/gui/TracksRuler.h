@@ -25,6 +25,7 @@
 
 #include <QWidget>
 #include <QPaintEvent>
+#include <QString>
 
 const int FRAME_SIZE = 90;
 static const int FIX_WIDTH = 24; /* widget width in pixel */
@@ -59,6 +60,7 @@ protected:
     virtual void paintEvent( QPaintEvent* e );
 
 private:
+    QString getTimeCode( int frames ) const;
     int m_duration;
     int m_fps;
     int m_offset;

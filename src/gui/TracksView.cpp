@@ -22,7 +22,12 @@
 
 #include <QScrollBar>
 #include <QMouseEvent>
+#include <QtDebug>
+#include <cmath>
 #include "TracksView.h"
+#include "Clip.h"
+#include "Library.h"
+#include "GraphicsMovieItem.h"
 
 TracksView::TracksView( QGraphicsScene* scene, QWidget* parent )
         : QGraphicsView( scene, parent ), m_scene( scene )
@@ -32,7 +37,7 @@ TracksView::TracksView( QGraphicsScene* scene, QWidget* parent )
 
     //TODO should be dynamic
     m_tracksCount = 5;
-    setDuration( 800 );
+    m_fps = 30;
 
     setMouseTracking( true );
     setAcceptDrops( true );
@@ -56,6 +61,11 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
 
 void TracksView::dropEvent( QDropEvent* event )
 {
+    QUuid uuid = QUuid( (const QString& )event->mimeData()->data( "vlmc/uuid" ) );
+    Clip* clip = Library::getInstance()->getClip( uuid );
+    if ( !clip ) return;
+
+    addClip( clip, event->pos() );
 
     event->acceptProposedAction();
 }
@@ -129,4 +139,37 @@ void TracksView::setCursorPos(int pos)
 {
     m_cursorPos = pos;
     m_cursorLine->setPos(m_cursorPos, 0);
+}
+
+void TracksView::addClip( Clip* clip, const QPoint& point )
+{
+    int track = (int)( mapToScene( point ).y() / m_tracksHeight );
+    if ( track + 1 > m_tracksCount ) return;
+
+    //mappedXPos: 1 pixel = 1 frame
+    int mappedXPos = ( int )( mapToScene( point ).x() + 0.5 );
+
+    GraphicsMovieItem* item = new GraphicsMovieItem( clip );
+    item->setPos( mappedXPos, track * tracksHeight() );
+    item->setWidth( clip->getLength() / m_fps );
+    item->setHeight( tracksHeight() );
+    m_scene->addItem( item );
+    item->show();
+}
+
+void TracksView::setScale( double scaleFactor )
+{
+    QMatrix matrix;
+    matrix.scale( scaleFactor, 1 );
+    //TODO update the scene scale ?
+    setMatrix( matrix );
+
+    int diff = sceneRect().width() - m_projectDuration;
+    if ( diff * matrix.m11() < 50 )
+    {
+        if ( matrix.m11() < 0.4 )
+            setSceneRect( 0, 0, ( m_projectDuration + 100 / matrix.m11() ), sceneRect().height() );
+        else
+            setSceneRect( 0, 0, ( m_projectDuration + 300 ), sceneRect().height() );
+    }
 }

@@ -27,7 +27,7 @@
 #include "TracksScene.h"
 
 Timeline::Timeline( QWidget *parent ) :
-    QWidget( parent )
+    QWidget( parent ), m_scale( 1.0 )
 {
     m_ui.setupUi( this );
 
@@ -48,6 +48,10 @@ Timeline::Timeline( QWidget *parent ) :
     m_ui.rulerFrame->setLayout( tracksRulerLayout );
     tracksRulerLayout->addWidget( m_tracksRuler );
 
+    changeZoom( 5 );
+    m_tracksView->setDuration( 800 );
+    m_tracksRuler->setDuration( 800 );
+
     connect( m_tracksView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), m_tracksRuler, SLOT( moveRuler( int ) ) );
 }
 
@@ -61,4 +65,11 @@ void Timeline::changeEvent( QEvent *e )
     default:
         break;
     }
+}
+
+void Timeline::changeZoom( int factor )
+{
+    m_tracksRuler->setPixelPerMark( factor );
+    m_scale = (double) FRAME_SIZE / m_tracksRuler->comboScale[factor];
+    m_tracksView->setScale( m_scale );
 }

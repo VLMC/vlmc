@@ -114,7 +114,7 @@ void TracksRuler::paintEvent( QPaintEvent* e )
     offsetMin = offsetMin * m_textSpacing;
     for ( f = offsetMin; f < offsetMax; f += m_textSpacing )
     {
-        QString time = QString("00:00:00");
+        QString time = getTimeCode( (int)( f / m_factor + 0.5 ) );
         painter.drawText( ( int )f - m_offset + 2, LABEL_SIZE, time );
     }
 
@@ -148,4 +148,26 @@ void TracksRuler::moveRuler( int pos )
 {
     m_offset = pos;
     update();
+}
+
+QString TracksRuler::getTimeCode( int frames ) const
+{
+    int seconds = frames / m_fps;
+    frames = frames % m_fps;
+
+    int minutes = seconds / 60;
+    seconds = seconds % 60;
+    int hours = minutes / 60;
+    minutes = minutes % 60;
+
+    QString text;
+
+    text.append( QString::number( hours ).rightJustified( 2, '0', false ) );
+    text.append( ':' );
+    text.append( QString::number( minutes ).rightJustified( 2, '0', false ) );
+    text.append( ':' );
+    text.append( QString::number( seconds ).rightJustified( 2, '0', false ) );
+    text.append( ':' );
+    text.append( QString::number( frames ).rightJustified( 2, '0', false ) );
+    return text;
 }
