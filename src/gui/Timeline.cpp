@@ -48,7 +48,7 @@ Timeline::Timeline( QWidget *parent ) :
     m_ui.rulerFrame->setLayout( tracksRulerLayout );
     tracksRulerLayout->addWidget( m_tracksRuler );
 
-    changeZoom( 5 );
+    changeZoom( 10 );
     setDuration( 1500 );
     connect( m_tracksView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), m_tracksRuler, SLOT( moveRuler( int ) ) );
 }
