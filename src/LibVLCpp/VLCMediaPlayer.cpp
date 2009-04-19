@@ -81,6 +81,7 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
 //    case libvlc_MediaPlayerOpening:
 //    case libvlc_MediaPlayerBuffering:
     case libvlc_MediaPlayerPlaying:
+        qDebug() << "Playing event";
         self->emit playing();
         break;
     case libvlc_MediaPlayerPaused:

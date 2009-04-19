@@ -68,6 +68,7 @@ void        Clip::flushParameters()
     QString     param;
     foreach ( param, m_parameters )
         m_vlcMedia->addOption( param.toStdString().c_str() );
+    m_parameters.clear();
 }
 
 void        Clip::addParam( const QString& param )

@@ -153,7 +153,7 @@ void LibraryWidget::on_pushButtonAddMedia_clicked()
         break;
     case 1:
         insertNewMediasFromFileDialog( tr( "Open Videos" ),
-                                      tr( "Video Files" ) + " (*.mov *.avi *.mkv *.mpg *.mpeg *.wmv)" ,
+                                      tr( "Video Files" ) + " (*.mov *.avi *.mkv *.mpg *.mpeg *.wmv *.mp4)" ,
                                       Library::Video );
         break;
     case 2:

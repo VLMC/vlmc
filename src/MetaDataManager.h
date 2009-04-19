@@ -19,6 +19,14 @@ class MetaDataManager : public QThread
 
     private:
         virtual void                run();
+        //AMEM part :
+        static  void                openSoundBuffer( void* datas, unsigned int* freq,
+                                                        unsigned int* nbChannels, unsigned int* fourCCFormat,
+                                                        unsigned int* frameSize );
+        static  void                playSoundBuffer( void* datas, unsigned char* buffer,
+                                                     size_t buffSize, unsigned int nbSample );
+        static  void                closeSoundBuffer( void* datas );
+        static  void                instanceParameterHandler( void*, char*, char* );
 
     private:
         LibVLCpp::MediaPlayer*      m_mediaPlayer;
@@ -39,7 +47,6 @@ class MetaDataManager : public QThread
         void    newClipLoaded( Clip* );
         void    setSnapshot();
         void    startAudioDataParsing();
-        void    audioDataParsingStarted();
 };
 
 #endif // METADATAMANAGER_H
