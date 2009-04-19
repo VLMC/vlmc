@@ -150,7 +150,7 @@ void TracksView::addClip( Clip* clip, const QPoint& point )
 
     GraphicsMovieItem* item = new GraphicsMovieItem( clip );
     item->setPos( mappedXPos, track * tracksHeight() );
-    item->setWidth( clip->getLength() / m_fps );
+    item->setWidth( ( (double)clip->getLength() / 1000 ) * m_fps );
     item->setHeight( tracksHeight() );
     m_scene->addItem( item );
     item->show();
