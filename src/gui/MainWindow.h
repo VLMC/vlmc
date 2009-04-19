@@ -55,6 +55,8 @@ private slots:
     void on_actionAbout_triggered();
     void on_actionPreferences_triggered();
     void on_actionTranscode_File_triggered();
+    void on_actionNew_Project_triggered();
+    void on_actionOpen_Project_triggered();
 
 signals:
     void translateDockWidgetTitle();

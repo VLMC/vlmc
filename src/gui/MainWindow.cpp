@@ -24,6 +24,7 @@
 #include <QSizePolicy>
 #include <QPalette>
 #include <QDockWidget>
+#include <QFileDialog>
 
 #include "MainWindow.h"
 #include "LibraryWidget.h"
@@ -79,10 +80,25 @@ void        MainWindow::setupLibrary()
                                   Qt::TopDockWidgetArea );
 
     //Connecting GUI and Frontend :
-    connect( libraryWidget, SIGNAL( newClipLoadingAsked(const QString& ) ), library, SLOT( newClipLoadingAsked( const QString& ) ) );
-    connect( library, SIGNAL( newClipLoaded( Clip* ) ), libraryWidget, SLOT( newClipLoaded( Clip* ) ) );
-    connect( libraryWidget, SIGNAL( removingClipAsked( const QUuid& ) ), library, SLOT( removingClipAsked( const QUuid& ) ) );
-    connect( library, SIGNAL( clipRemoved( const QUuid& ) ), libraryWidget, SLOT( clipRemoved( const QUuid& ) ) );
+    connect( libraryWidget,
+             SIGNAL( newClipLoadingAsked(const QString& ) ),
+             library,
+             SLOT( newClipLoadingAsked( const QString& ) ) );
+
+    connect( library,
+             SIGNAL( newClipLoaded( Clip* ) ),
+             libraryWidget,
+             SLOT( newClipLoaded( Clip* ) ) );
+
+    connect( libraryWidget,
+             SIGNAL( removingClipAsked( const QUuid& ) ),
+             library,
+             SLOT( removingClipAsked( const QUuid& ) ) );
+
+    connect( library,
+             SIGNAL( clipRemoved( const QUuid& ) ),
+             libraryWidget,
+             SLOT( clipRemoved( const QUuid& ) ) );
 }
 
 void MainWindow::m_initializeDockWidgets( void )
@@ -124,4 +140,17 @@ void MainWindow::on_actionAbout_triggered()
 void MainWindow::on_actionTranscode_File_triggered()
 {
     Transcode::instance( this )->exec();
+}
+
+void MainWindow::on_actionNew_Project_triggered()
+{
+    //TODO : clear the library, the timeline, and show the configuration box
+    //of the newly created project
+}
+
+void MainWindow::on_actionOpen_Project_triggered()
+{
+    QString path = QFileDialog::getOpenFileName( this, tr( "Choose a project to open" ),
+                                                 QDir::currentPath(),
+                                                 tr( "VideoLAN Movie Creator file (*.vlmc)" ) );
 }
