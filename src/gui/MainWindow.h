@@ -41,6 +41,10 @@ public:
     explicit MainWindow( QWidget *parent = 0 );
     ~MainWindow();
 
+public slots:
+    void        zoomIn();
+    void        zoomOut();
+
 protected:
     virtual void changeEvent( QEvent *e );
 

@@ -22,6 +22,7 @@
 
 #include <QHBoxLayout>
 #include <QScrollBar>
+#include <QtDebug>
 #include "Timeline.h"
 #include "TracksView.h"
 #include "TracksScene.h"

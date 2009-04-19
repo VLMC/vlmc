@@ -42,10 +42,17 @@ MainWindow::MainWindow( QWidget *parent ) :
     m_initializeDockWidgets();
     createStatusBar();
 
+    // Translation
     connect( this, SIGNAL( translateDockWidgetTitle() ),
              DockWidgetManager::instance(), SLOT( transLateWidgetTitle() ) );
+
+    // Zoom
     connect( m_zoomSlider, SIGNAL( valueChanged( int ) ),
              m_timeline, SLOT( changeZoom( int ) ) );
+    connect( m_timeline->tracksView(), SIGNAL( zoomIn() ),
+             this, SLOT( zoomIn() ) );
+    connect( m_timeline->tracksView(), SIGNAL( zoomOut() ),
+             this, SLOT( zoomOut() ) );
 }
 
 MainWindow::~MainWindow()
@@ -169,4 +176,14 @@ void MainWindow::on_actionOpen_Project_triggered()
     QString path = QFileDialog::getOpenFileName( this, tr( "Choose a project to open" ),
                                                  QDir::currentPath(),
                                                  tr( "VideoLAN Movie Creator file (*.vlmc)" ) );
+}
+
+void MainWindow::zoomIn()
+{
+    m_zoomSlider->setValue( m_zoomSlider->value() - 1 );
+}
+
+void MainWindow::zoomOut()
+{
+    m_zoomSlider->setValue( m_zoomSlider->value() + 1 );
 }

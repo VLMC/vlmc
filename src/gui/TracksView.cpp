@@ -22,6 +22,7 @@
 
 #include <QScrollBar>
 #include <QMouseEvent>
+#include <QWheelEvent>
 #include <QtDebug>
 #include <cmath>
 #include "TracksView.h"
@@ -132,6 +133,25 @@ void TracksView::mousePressEvent( QMouseEvent* event )
     }
 
     QGraphicsView::mousePressEvent( event );
+}
+
+void TracksView::wheelEvent( QWheelEvent* event )
+{
+    if ( event->modifiers() == Qt::ControlModifier )
+    {
+        // CTRL + WHEEL = Zoom
+        if ( event->delta() > 0 )
+            emit zoomIn();
+        else
+            emit zoomOut();
+        event->accept();
+    }
+    else
+    {
+        //TODO should scroll the timeline
+        event->ignore();
+        QGraphicsView::wheelEvent( event );
+    }
 }
 
 void TracksView::setCursorPos(int pos)
