@@ -41,7 +41,6 @@ TracksView::TracksView( QGraphicsScene* scene, QWidget* parent )
 
     setMouseTracking( true );
     setAcceptDrops( true );
-    setDragMode( QGraphicsView::ScrollHandDrag );
     setContentsMargins( 0, 0, 0, 0 );
 
     // Adjust the height using the number of tracks
