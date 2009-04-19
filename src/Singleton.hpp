@@ -1,3 +1,11 @@
+/** \file
+  * This file contain the templated singleton.
+  * Class/struct to be singletonized just have to
+  * iherit from this classe with the class/struct type in template
+  * parameter.You have to do few other things, but you know your job,
+  * isnt'it :) ?
+  */
+
 #ifndef SINGLETON_HPP
 #define SINGLETON_HPP
 

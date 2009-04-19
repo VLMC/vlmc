@@ -1,3 +1,9 @@
+/** \file
+  * This file contains the MetaDataManager class declaration/definition.
+  * It used by the library in Library.[hc]pp.
+  * It parse a Clip (see in Clip.[hc]pp) to get meta-data like length, first image, etc.
+  */
+
 #ifndef METADATAMANAGER_H
 #define METADATAMANAGER_H
 

@@ -1,4 +1,4 @@
-/*****************************************************************************
+/*****************``************************************************************
  * Clip.cpp: Represents a basic container for media informations.
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
@@ -19,6 +19,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+/** \file
+  * This file contains the Clip class implementation.
+  * It contains a VLCMedia and the meta-datas.
+  * It's used by the Library
+  */
 
 #include <QtDebug>
 #include "Clip.h"

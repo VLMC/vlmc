@@ -20,6 +20,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+/** \file
+ *  This file contain the main function.
+ *  It will initialize the QT application,
+ *  and start it.
+ */
+
 #include <QApplication>
 #include "gui/MainWindow.h"
 

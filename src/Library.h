@@ -20,6 +20,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+/** \file
+  * This file the library contains class declaration/definition.
+  * It's the the backend part of the Library widget of vlmc.
+  * It can load and unload Clips (Clip.h/Clip.cpp)
+  */
+
 #ifndef LIBRARY_H
 #define LIBRARY_H
 

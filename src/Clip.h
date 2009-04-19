@@ -20,6 +20,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+/** \file
+  * This file contains the Clip class declaration/definition.
+  * It contains a VLCMedia and the meta-datas.
+  * It's used by the Library
+  */
+
 #ifndef CLIP_H__
 #define CLIP_H__
 
