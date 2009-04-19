@@ -106,7 +106,7 @@ void    MetaDataManager::setSnapshot()
     //connect( m_mediaPlayer, SIGNAL( stopped() ), this, SLOT( startAudioDataParsing() ) );
     qDebug() << "Stopping playback";
     m_mediaPlayer->stop();
-    startAudioDataParsing();
+    //startAudioDataParsing();
 }
 
 void    MetaDataManager::startAudioDataParsing()
