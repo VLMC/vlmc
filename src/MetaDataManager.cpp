@@ -41,7 +41,12 @@ void    MetaDataManager::run()
             m_currentClip = m_mediaList.front();
             m_mediaList.pop_front();
 
+            //Disabling audio for this specific use of the media
+            m_currentClip->addParam( ":no-audio" );
             m_currentClip->flushParameters();
+            //And re-enable it to prevent the audio to be disabled anywhere else.
+            m_currentClip->addParam( ":audio" );
+
             m_mediaPlayer->setMedia( m_currentClip->getVLCMedia() );
             m_mediaPlayer->play();
 

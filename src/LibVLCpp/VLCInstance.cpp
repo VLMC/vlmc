@@ -34,9 +34,9 @@ Instance::Instance()
     {
         //"-vvvvv",
         "--no-skip-frames",
-        "--no-audio",
+        //"--no-audio",
         //"--plugin-path", VLC_TREE "/modules",
-        //"--ignore-config", //Don't use VLC's config files
+        "--ignore-config", //Don't use VLC's config files
     };
     int argc = sizeof( argv ) / sizeof( *argv );
 
