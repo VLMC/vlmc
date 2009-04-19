@@ -38,6 +38,8 @@ class MetaDataManager : public QThread
         void    getMetaData();
         void    newClipLoaded( Clip* );
         void    setSnapshot();
+        void    startAudioDataParsing();
+        void    audioDataParsingStarted();
 };
 
 #endif // METADATAMANAGER_H

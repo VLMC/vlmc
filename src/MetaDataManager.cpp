@@ -60,6 +60,7 @@ void    MetaDataManager::run()
 void    MetaDataManager::getMetaData()
 {
     disconnect( this, SLOT( getMetaData() ) );
+
     m_nextMedia = true;
     m_currentClip->setLength( m_mediaPlayer->getLength() );
     m_currentClip->setWidth( m_mediaPlayer->getWidth() );
@@ -94,5 +95,28 @@ void    MetaDataManager::setSnapshot()
     else
         m_currentClip->setSnapshot( pixmap );
     disconnect( this, SLOT( setSnapshot() ) );
+    connect( m_mediaPlayer, SIGNAL( stopped() ), this, SLOT( startAudioDataParsing() ) );
     m_mediaPlayer->stop();
+}
+
+void    MetaDataManager::startAudioDataParsing()
+{
+    disconnect( m_mediaPlayer, SIGNAL( stopped() ), this, SLOT( startAudioDataParsing() ) );
+
+    //Deactivating video, so that real time doesn't matter
+    m_currentClip->addParam( ":no-video" );
+    m_currentClip->flushParameters();
+
+    m_mediaPlayer->setMedia( m_currentClip->getVLCMedia() );
+
+    connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( audioDataParsingStarted() ) );
+    m_mediaPlayer->play();
+
+    //Restoring the clip at a correct value.
+    m_currentClip->addParam( ":video" );
+}
+
+void    MetaDataManager::audioDataParsingStarted()
+{
+    qDebug() << "Started";
 }

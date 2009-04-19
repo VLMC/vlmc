@@ -61,14 +61,14 @@ int         Exception::raised() const
     return libvlc_exception_raised( m_internalPtr );
 }
 
-void        Exception::checkThrow( const char* file, int line )
+void        Exception::checkThrow( const char* file, int line, const char* funcName )
 {
     if ( raised() == Exception::Raised )
     {
         if ( Exception::m_errorCallback != NULL )
             Exception::m_errorCallback( getErrorText(), Exception::m_datas );
         else
-            qWarning() << "A VLC exception was raised in" << file << " at line " << line << ": \"" << getErrorText() << "\"";
+            qWarning() << "A VLC exception was raised in" << file << ":" << line << '(' << funcName << "):" << getErrorText() << "\"";
         clear();
     }
 }
