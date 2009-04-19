@@ -39,6 +39,7 @@ public:
 
 public slots:
     void changeZoom( int factor );
+    void setDuration( int duration );
 
 protected:
     virtual void changeEvent( QEvent *e );

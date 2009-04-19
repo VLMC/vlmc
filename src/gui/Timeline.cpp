@@ -49,9 +49,7 @@ Timeline::Timeline( QWidget *parent ) :
     tracksRulerLayout->addWidget( m_tracksRuler );
 
     changeZoom( 5 );
-    m_tracksView->setDuration( 800 );
-    m_tracksRuler->setDuration( 800 );
-
+    setDuration( 1500 );
     connect( m_tracksView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), m_tracksRuler, SLOT( moveRuler( int ) ) );
 }
 
@@ -72,4 +70,10 @@ void Timeline::changeZoom( int factor )
     m_tracksRuler->setPixelPerMark( factor );
     m_scale = (double) FRAME_SIZE / m_tracksRuler->comboScale[factor];
     m_tracksView->setScale( m_scale );
+}
+
+void Timeline::setDuration( int duration )
+{
+    m_tracksView->setDuration( duration );
+    m_tracksRuler->setDuration( duration );
 }
