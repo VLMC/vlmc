@@ -65,7 +65,7 @@ private:
 
 public slots:
     void                                newMediaLoaded( Media* );
-    void                                clipRemoved( const QUuid& );
+    void                                mediaRemoved( const QUuid& );
 
 private slots:
     void                                on_pushButtonAddMedia_clicked();
@@ -73,8 +73,8 @@ private slots:
 
 signals:
 //    void    listViewMediaAdded(Clip* clip);
-    void                                newClipLoadingAsked( const QString& );
-    void                                removingClipAsked( const QUuid& );
+    void                                newMediaLoadingAsked( const QString& );
+    void                                removingMediaAsked( const QUuid& );
 };
 
 #endif /* !LIBRARYWIDGET_H */

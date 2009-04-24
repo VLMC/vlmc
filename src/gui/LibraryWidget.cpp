@@ -72,7 +72,7 @@ ListViewMediaItem*  LibraryWidget::addMedia( const Media* media, Library::FileTy
     return item;
 }
 
-void                LibraryWidget::clipRemoved( const QUuid& uuid )
+void                LibraryWidget::mediaRemoved( const QUuid& uuid )
 {
     removeMedia( uuid );
 }
@@ -135,7 +135,7 @@ void    LibraryWidget::insertNewMediasFromFileDialog( QString title, QString fil
     {
 //        item = insertNewMedia( fileName, filetype );
 //        if( fileType == Library::Video )
-            emit newClipLoadingAsked( filePath );
+            emit newMediaLoadingAsked( filePath );
     }
 //    if ( item != NULL )
 //        settings.setValue( "mediaLibraryDialogPath" , item->getClip()->getFileInfo()->absoluteDir().absolutePath() );
@@ -171,7 +171,7 @@ void LibraryWidget::on_pushButtonRemoveMedia_clicked()
     ListViewMediaItem* item = ( ListViewMediaItem* ) mediaList->currentItem();
     if ( !item ) return;
 //    removeMedia( item );
-    emit removingClipAsked( item->getMedia()->getUuid() );
+    emit removingMediaAsked( item->getMedia()->getUuid() );
 }
 
 void LibraryWidget::changeEvent( QEvent *e )

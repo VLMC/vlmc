@@ -90,24 +90,24 @@ void        MainWindow::setupLibrary()
 
     //Connecting GUI and Frontend :
     connect( libraryWidget,
-             SIGNAL( newClipLoadingAsked(const QString& ) ),
+             SIGNAL( newMediaLoadingAsked(const QString& ) ),
              library,
-             SLOT( newClipLoadingAsked( const QString& ) ) );
+             SLOT( newMediaLoadingAsked( const QString& ) ) );
 
     connect( library,
-             SIGNAL( newClipLoaded( Clip* ) ),
+             SIGNAL( newMediaLoaded( Media* ) ),
              libraryWidget,
-             SLOT( newClipLoaded( Clip* ) ) );
+             SLOT( newMediaLoaded( Media* ) ) );
 
     connect( libraryWidget,
-             SIGNAL( removingClipAsked( const QUuid& ) ),
+             SIGNAL( removingMediaAsked( const QUuid& ) ),
              library,
-             SLOT( removingClipAsked( const QUuid& ) ) );
+             SLOT( removingMediaAsked( const QUuid& ) ) );
 
     connect( library,
-             SIGNAL( clipRemoved( const QUuid& ) ),
+             SIGNAL( mediaRemoved( const QUuid& ) ),
              libraryWidget,
-             SLOT( clipRemoved( const QUuid& ) ) );
+             SLOT( mediaRemoved( const QUuid& ) ) );
 }
 
 void MainWindow::createStatusBar()

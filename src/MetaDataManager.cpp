@@ -12,7 +12,7 @@
 MetaDataManager::MetaDataManager() : m_renderWidget( NULL )
 {
     m_mediaPlayer = new LibVLCpp::MediaPlayer();
-    connect( Library::getInstance(), SIGNAL( newClipLoaded( Clip* ) ),this, SLOT( newClipLoaded( Clip* ) ) );
+    connect( Library::getInstance(), SIGNAL( newMediaLoaded( Media* ) ),this, SLOT( newMediaLoaded( Media* ) ) );
     m_tmpSnapshotFilename = new char[512];
     m_renderWidget = new QWidget();
     m_mediaPlayer->setDrawable( m_renderWidget->winId() );
