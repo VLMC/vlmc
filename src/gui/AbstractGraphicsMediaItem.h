@@ -35,6 +35,9 @@ public:
     AbstractGraphicsMediaItem();
     virtual ~AbstractGraphicsMediaItem() { }
 
+    /// Return the Type of the MediaItem (see http://doc.trolltech.com/4.5/qgraphicsitem.html#type)
+    virtual int type() const = 0;
+
     /// The item length can be expanded or shrinked by the user.
     virtual bool expandable() const = 0;
 

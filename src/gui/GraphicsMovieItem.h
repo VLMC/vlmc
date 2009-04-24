@@ -31,9 +31,11 @@ class GraphicsMovieItem : public AbstractGraphicsMediaItem
 {
     Q_OBJECT
 public:
+    enum { Type = UserType + 1 };
     GraphicsMovieItem( Media* media );
     virtual ~GraphicsMovieItem();
 
+    virtual int type() const { return Type; }
     virtual bool expandable() const { return false; }
     virtual bool moveable() const { return true; }
     virtual const QUuid& uuid() const { return m_media->getUuid(); }
