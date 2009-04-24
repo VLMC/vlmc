@@ -114,7 +114,6 @@ void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
 
 void TracksView::mouseMoveEvent( QMouseEvent* event )
 {
-    //int xPos = event->x();
     int mappedXPos = ( int )( mapToScene( event->pos() ).x() + 0.5 );
     if ( event->buttons() == Qt::LeftButton && event->modifiers() == Qt::NoModifier )
     {
@@ -126,7 +125,25 @@ void TracksView::mouseMoveEvent( QMouseEvent* event )
 
 void TracksView::mousePressEvent( QMouseEvent* event )
 {
-    //int xPos = event->x();
+
+    QList<QGraphicsItem*> collisionList = items( event->pos() );
+
+    if ( event->modifiers() == Qt::ControlModifier && collisionList.count() == 0 )
+    {
+        setDragMode( QGraphicsView::ScrollHandDrag );
+        QGraphicsView::mousePressEvent( event );
+        return;
+    }
+
+    if ( event->modifiers() & Qt::ShiftModifier && collisionList.count() == 0 )
+    {
+        setDragMode( QGraphicsView::RubberBandDrag );
+        if ( !event->modifiers() & Qt::ControlModifier )
+            scene()->clearSelection();
+        QGraphicsView::mousePressEvent( event );
+        return;
+    }
+
     int mappedXPos = ( int )( mapToScene( event->pos() ).x() + 0.5 );
     if ( event->buttons() == Qt::LeftButton && event->modifiers() == Qt::NoModifier )
     {
@@ -134,6 +151,11 @@ void TracksView::mousePressEvent( QMouseEvent* event )
     }
 
     QGraphicsView::mousePressEvent( event );
+}
+
+void TracksView::mouseReleaseEvent( QMouseEvent* event )
+{
+    setDragMode( QGraphicsView::NoDrag );
 }
 
 void TracksView::wheelEvent( QWheelEvent* event )
