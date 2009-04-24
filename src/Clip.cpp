@@ -25,3 +25,29 @@
   */
 
 #include "Clip.h"
+
+Clip::Clip( Media* parent, qint64 begin, qint64 end ) : m_parent( parent ), m_begin( begin ), m_end( end )
+{
+}
+
+qint64      Clip::getBegin() const
+{
+    return m_begin;
+}
+
+qint64      Clip::getEnd() const
+{
+    return m_end;
+}
+
+Media*      Clip::getParent() const
+{
+    return m_parent;
+}
+
+qint64      Clip::getLength() const
+{
+    if ( m_begin == Clip::UntilEndOfMedia )
+        return m_parent->getLength() - m_begin;
+    return m_end - m_begin;
+}

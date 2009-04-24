@@ -37,9 +37,19 @@ class   Clip : public QObject
     Q_OBJECT
 
     public:
-        Clip( Media* parent );
-    private:
+        static const qint64     UntilEndOfMedia = -1;
 
+        Clip( Clip* parent, qint64 begin = 0, qint64 end = UntilEndOfMedia );
+
+        qint64      getBegin() const;
+        qint64      getEnd() const;
+        qint64      getLength() const;
+        Media*      getParent();
+
+    private:
+        Media*      m_parent;
+        qint64      m_begin;
+        qint64      m_end;
 };
 
 #endif //CLIP_H__
