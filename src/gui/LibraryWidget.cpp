@@ -134,7 +134,7 @@ void    LibraryWidget::insertNewMediasFromFileDialog( QString title, QString fil
     foreach ( filePath, fileNames )
     {
 //        item = insertNewMedia( fileName, filetype );
-        if( fileType == Library::Video )
+//        if( fileType == Library::Video )
             emit newClipLoadingAsked( filePath );
     }
 //    if ( item != NULL )

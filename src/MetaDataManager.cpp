@@ -55,9 +55,9 @@ void    MetaDataManager::run()
             m_currentClip->addParam( ":audio" );
 
             m_mediaPlayer->setMedia( m_currentClip->getVLCMedia() );
-            m_mediaPlayer->play();
-
             connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( getMetaData() ) );
+            m_mediaPlayer->play();
+            qDebug() << "play asked";
         }
         usleep( 10000 );
     }
@@ -109,10 +109,9 @@ void    MetaDataManager::setSnapshot()
     //CHECKME:
     //This is synchrone, but it may become asynchrone in the future...
 
-    //connect( m_mediaPlayer, SIGNAL( stopped() ), this, SLOT( startAudioDataParsing() ) );
     qDebug() << "Stopping playback";
     m_mediaPlayer->stop();
-    //startAudioDataParsing();
+//    startAudioDataParsing();
 }
 
 void    MetaDataManager::startAudioDataParsing()
@@ -148,12 +147,13 @@ void    MetaDataManager::startAudioDataParsing()
 
 void    MetaDataManager::openSoundBuffer( void* datas, unsigned int* freq, unsigned int* nbChannels, unsigned int* fourCCFormat, unsigned int* frameSize )
 {
-    qDebug() << "Opening sound buffer with freq =" << freq;
+    qDebug() << "Opening sound buffer with freq =" << *freq << "nbChannels =" << *nbChannels << "frameSize =" << *frameSize;
 }
 
 void    MetaDataManager::playSoundBuffer( void* datas, unsigned char* buffer, size_t buffSize, unsigned int nbSample )
 {
-//    qDebug() << "Playing sound buffer with nbSample =" << nbSample;
+//    qDebug() << "Playing sound buffer with nbSample =" << nbSample << "buffSize =" << buffSize;
+//    qDebug() << "Buff[0] = " << (unsigned int)buffer[0];
 }
 
 void    MetaDataManager::closeSoundBuffer( void* datas )

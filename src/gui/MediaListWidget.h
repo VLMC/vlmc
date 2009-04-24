@@ -38,7 +38,8 @@ class MediaListWidget : public QListWidget
     Q_OBJECT
 public:
     MediaListWidget( QWidget* parent = 0 );
-    void setType( Library::FileType fileType );
+    void                setType( Library::FileType fileType );
+
 protected:
     virtual void        mousePressEvent( QMouseEvent* event );
     virtual void        mouseMoveEvent( QMouseEvent* event );

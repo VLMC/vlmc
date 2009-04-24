@@ -46,33 +46,33 @@ public:
     explicit LibraryWidget( QWidget *parent = 0 );
     virtual ~LibraryWidget();
 
-    ListViewMediaItem*  addMedia( const Clip* clip, Library::FileType fileType );
-    void                removeMedia( const QUuid& uuid );
-    int                 getIndex( ListViewMediaItem* media );
+    ListViewMediaItem*                  addMedia( const Clip* clip, Library::FileType fileType );
+    void                                removeMedia( const QUuid& uuid );
+    int                                 getIndex( ListViewMediaItem* media );
 
 protected:
-    virtual void changeEvent( QEvent *e );
+    virtual void                        changeEvent( QEvent *e );
 
 private:
-    ListViewMediaItem*  insertNewMedia( QString filename, Library::FileType fileType );
-    void                insertNewMediasFromFileDialog( QString title, QString filter, Library::FileType fileType );
+    ListViewMediaItem*                  insertNewMedia( QString filename, Library::FileType fileType );
+    void                                insertNewMediasFromFileDialog( QString title, QString filter, Library::FileType fileType );
 
     Ui::LibraryWidget                   m_ui;
     static QList<ListViewMediaItem*>*   m_medias;
 
 
 public slots:
-    void                newClipLoaded( Clip* );
-    void                clipRemoved( const QUuid& );
+    void                                newClipLoaded( Clip* );
+    void                                clipRemoved( const QUuid& );
 
 private slots:
-    void on_pushButtonAddMedia_clicked();
-    void on_pushButtonRemoveMedia_clicked();
+    void                                on_pushButtonAddMedia_clicked();
+    void                                on_pushButtonRemoveMedia_clicked();
 
 signals:
 //    void    listViewMediaAdded(Clip* clip);
-    void                newClipLoadingAsked( const QString& );
-    void                removingClipAsked( const QUuid& );
+    void                                newClipLoadingAsked( const QString& );
+    void                                removingClipAsked( const QUuid& );
 };
 
 #endif /* !LIBRARYWIDGET_H */

@@ -22,6 +22,7 @@
 
 #include <QSvgRenderer>
 #include <QPainter>
+
 #include "MediaListWidget.h"
 
 MediaListWidget::MediaListWidget( QWidget* parent ) : QListWidget( parent )

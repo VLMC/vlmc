@@ -23,6 +23,7 @@
 #include "ListViewMediaItem.h"
 #include <QPixmap>
 #include <QDebug>
+#include <QTime>
 
 ListViewMediaItem::ListViewMediaItem( const Clip* clip, Library::FileType fType, QListWidget* parent, int type ) :
         QListWidgetItem( parent, type ), m_clip( clip )
@@ -43,9 +44,22 @@ ListViewMediaItem::~ListViewMediaItem()
 void        ListViewMediaItem::snapshotChanged()
 {
     setIcon( QIcon( m_clip->getSnapshot() ) );
+    //this is a nasty patch for the moment :
+    //TODO: fix this !!!!
+    QTime   length;
+    length = length.addSecs( m_clip->getLength() / 1000 );
+
+    qDebug() << m_clip->getLength();
+    qDebug() << length;
+    setToolTip( "Filename: " + m_clip->getFileInfo()->fileName() + "\n" +
+                "Length: " + length.toString() );
+    //"Length: " + length.toString("h 'h' m 'm' s 's'") );
 }
 
 const Clip*     ListViewMediaItem::getClip() const
 {
     return m_clip;
 }
+
+
+
