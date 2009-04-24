@@ -26,7 +26,7 @@
 #include <QObject>
 #include <QFileInfo>
 #include <QListWidgetItem>
-#include "Clip.h"
+#include "Media.h"
 #include "Library.h"
 
 /**
@@ -47,7 +47,7 @@ public:
      * \param parent parent widget
      * \param type
      */
-    ListViewMediaItem( const Clip* clip, Library::FileType fType, QListWidget* parent = 0, int type = Type );
+    ListViewMediaItem( const Media* media, Library::FileType fType, QListWidget* parent = 0, int type = Type );
 
     /**
      *  \brief Destructor
@@ -58,9 +58,9 @@ public:
      * \brief Getter for filetype
      * \return filetype of the item
      */
-    Library::FileType   getFileType() const { return m_fileType; }
+    Library::FileType           getFileType() const { return m_fileType; }
 
-    const Clip*         getClip() const;
+    const Media*                getMedia() const;
 
     //void                      setInputMedia( InputMedia* inputMedia ) { m_inputMedia = inputMedia; }
 
@@ -73,7 +73,7 @@ private:
     /**
      * \Instance of the InputMedia
      */
-    const Clip*                 m_clip;
+    const Media*            m_media;
 
 private slots:
     void                    snapshotChanged();

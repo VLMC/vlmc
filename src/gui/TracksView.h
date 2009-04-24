@@ -30,7 +30,7 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QDragMoveEvent>
-#include "Clip.h"
+#include "Media.h"
 
 class TracksView : public QGraphicsView
 {
@@ -43,7 +43,7 @@ public:
     int tracksHeight() const { return m_tracksHeight; }
     int tracksCount() const { return m_tracksCount; }
     void setCursorPos( int pos );
-    void addClip( Clip* clip, const QPoint& point );
+    void addClip( Media* clip, const QPoint& point );
     void setScale( double scaleFactor );
 
 protected:

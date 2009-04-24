@@ -11,7 +11,7 @@
 #include <QTemporaryFile>
 #include <QThread>
 #include <QWidget>
-#include "Clip.h"
+#include "Media.h"
 #include "VLCMediaPlayer.h"
 
 class MetaDataManager : public QThread
@@ -39,18 +39,18 @@ class MetaDataManager : public QThread
         QWidget*                    m_renderWidget;
 
         // TODO: THREAD SAFING
-        QList<Clip*>   m_mediaList;
+        QList<Media*>               m_mediaList;
 
         // Thread component
         bool                        m_nextMedia;
-        Clip*                       m_currentClip;
+        Media*                      m_currentClip;
         //FIXME: Won't work in asynchrone mode
         char*                       m_tmpSnapshotFilename;
 
     private slots:
         void    renderSnapshot();
         void    getMetaData();
-        void    newClipLoaded( Clip* );
+        void    newMediaLoaded( Media* );
         void    setSnapshot();
         void    startAudioDataParsing();
 };

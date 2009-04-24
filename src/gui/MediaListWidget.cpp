@@ -68,10 +68,10 @@ void    MediaListWidget::mouseMoveEvent( QMouseEvent* event )
     ListViewMediaItem* item = static_cast<ListViewMediaItem*>( currentItem() );
 
     QMimeData* mimeData = new QMimeData;
-    mimeData->setData( "vlmc/uuid", item->getClip()->getUuid().toString().toAscii() );
+    mimeData->setData( "vlmc/uuid", item->getMedia()->getUuid().toString().toAscii() );
     QDrag* drag = new QDrag( this );
     drag->setMimeData( mimeData );
-    const QPixmap& dragPixmap = static_cast<ListViewMediaItem*>( currentItem() )->getClip()->getSnapshot();
+    const QPixmap& dragPixmap = static_cast<ListViewMediaItem*>( currentItem() )->getMedia()->getSnapshot();
     drag->setPixmap( dragPixmap.scaled( 100, 100, Qt::KeepAspectRatio ) );
     drag->exec( Qt::CopyAction | Qt::MoveAction, Qt::CopyAction );
 }

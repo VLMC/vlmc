@@ -27,7 +27,7 @@ MetaDataManager::~MetaDataManager()
     delete[] m_tmpSnapshotFilename;
 }
 
-void    MetaDataManager::newClipLoaded( Clip* item )
+void    MetaDataManager::newMediaLoaded( Media* item )
 {
     m_mediaList.append( item );
 

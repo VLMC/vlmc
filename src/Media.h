@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Clip.h : Represents a basic container for media informations.
+ * Media.h : Represents a basic container for media informations.
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -21,13 +21,13 @@
  *****************************************************************************/
 
 /** \file
-  * This file contains the Clip class declaration/definition.
+  * This file contains the Media class declaration/definition.
   * It contains a VLCMedia and the meta-datas.
   * It's used by the Library
   */
 
-#ifndef CLIP_H__
-#define CLIP_H__
+#ifndef MEDIA_H__
+#define MEDIA_H__
 
 #include <QList>
 #include <QString>
@@ -41,47 +41,46 @@
 /**
   * Represents a basic container for media informations.
   */
-class       Clip : public QObject
+class       Media : public QObject
 {
     Q_OBJECT
 
 public:
-    Clip( const QFileInfo* fileInfo );
-    Clip( const QString& mrl );
-    virtual ~Clip();
+    Media( const QFileInfo* fileInfo );
+    Media( const QString& mrl );
+    virtual ~Media();
 
-    void                loadMedia( const QString& mrl );
-    void                addParam( const QString& param );
-    void                flushParameters();
-    LibVLCpp::Media*    getVLCMedia() { return m_vlcMedia; }
+    void                        loadMedia( const QString& mrl );
+    void                        addParam( const QString& param );
+    void                        flushParameters();
+    LibVLCpp::Media*            getVLCMedia() { return m_vlcMedia; }
 
-    void                setSnapshot( QPixmap* snapshot );
-    const QPixmap&      getSnapshot() const;
+    void                        setSnapshot( QPixmap* snapshot );
+    const QPixmap&              getSnapshot() const;
 
-    const QFileInfo*    getFileInfo() const;
+    const QFileInfo*            getFileInfo() const;
 
-    qint64              getLength() const;
-    void                setLength( qint64 length );
+    qint64                      getLength() const;
+    void                        setLength( qint64 length );
 
-    int                 getWidth() const;
-    void                setWidth( int width );
+    int                         getWidth() const;
+    void                        setWidth( int width );
 
-    int                 getHeight() const;
-    void                setHeight( int height );
+    int                         getHeight() const;
+    void                        setHeight( int height );
 
-    const QUuid&        getUuid() const;
+    const QUuid&                getUuid() const;
 
 protected:
+    static QPixmap*             defaultSnapshot;
+
     LibVLCpp::Media*            m_vlcMedia;
     QString                     m_mrl;
     QList<QString>              m_parameters;
     QPixmap*                    m_snapshot;
     QUuid                       m_uuid;
-    static QPixmap*             defaultSnapshot;
     QFileInfo*                  m_fileInfo;
     qint64                      m_length;
-    qint64                      m_begin;
-    qint64                      m_end;
     unsigned int                m_width;
     unsigned int                m_height;
 
@@ -89,4 +88,4 @@ signals:
     void                        snapshotChanged();
 };
 
-#endif // MEDIA_H
+#endif // CLIP_H__

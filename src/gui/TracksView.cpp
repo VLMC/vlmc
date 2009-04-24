@@ -26,7 +26,7 @@
 #include <QtDebug>
 #include <cmath>
 #include "TracksView.h"
-#include "Clip.h"
+#include "Media.h"
 #include "Library.h"
 #include "GraphicsMovieItem.h"
 
@@ -62,10 +62,11 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
 void TracksView::dropEvent( QDropEvent* event )
 {
     QUuid uuid = QUuid( (const QString& )event->mimeData()->data( "vlmc/uuid" ) );
-    Clip* clip = Library::getInstance()->getClip( uuid );
-    if ( !clip ) return;
+    Media* media = Library::getInstance()->getClip( uuid );
+    if ( !media )
+        return;
 
-    addClip( clip, event->pos() );
+    addClip( media, event->pos() );
 
     event->acceptProposedAction();
 }
@@ -160,7 +161,7 @@ void TracksView::setCursorPos(int pos)
     m_cursorLine->setPos(m_cursorPos, 0);
 }
 
-void TracksView::addClip( Clip* clip, const QPoint& point )
+void TracksView::addClip( Media* clip, const QPoint& point )
 {
     int track = (int)( mapToScene( point ).y() / m_tracksHeight );
     if ( track + 1 > m_tracksCount ) return;

@@ -24,19 +24,19 @@
 #define GRAPHICSMOVIEITEM_H
 
 #include "AbstractGraphicsMediaItem.h"
-#include "Clip.h"
+#include "Media.h"
 #include "TracksView.h"
 
 class GraphicsMovieItem : public AbstractGraphicsMediaItem
 {
     Q_OBJECT
 public:
-    GraphicsMovieItem( Clip* clip );
+    GraphicsMovieItem( Media* media );
     virtual ~GraphicsMovieItem();
 
     virtual bool expandable() const { return false; }
     virtual bool moveable() const { return true; }
-    virtual const QUuid& uuid() const { return m_clip->getUuid(); }
+    virtual const QUuid& uuid() const { return m_media->getUuid(); }
     virtual QRectF boundingRect() const;
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
 
@@ -44,9 +44,9 @@ public:
     void setHeight( int height );
 
 private:
-    Clip* m_clip;
-    int m_width;
-    int m_height;
+    Media*  m_media;
+    int     m_width;
+    int     m_height;
 };
 
 #endif // GRAPHICSMOVIEITEM_H

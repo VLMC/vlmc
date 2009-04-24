@@ -23,52 +23,51 @@
 /** \file
   * This file the library contains class implementation.
   * It's the the backend part of the Library widget of vlmc.
-  * It can load and unload Clips (Clip.h/Clip.cpp)
+  * It can load and unload Medias (Medias.h/Media.cpp)
   */
 
 #include <QtDebug>
 #include "Library.h"
-#include "Clip.h"
 
 Library::Library()
 {
 }
 
-Clip*       Library::getClip( const QUuid& uuid )
+Media*       Library::getClip( const QUuid& uuid )
 {
     QMutexLocker locker( &m_mutex );
-    QHash<QUuid, Clip*>::iterator   it = m_clips.find( uuid );
-    if ( it == m_clips.end() )
+    QHash<QUuid, Media*>::iterator   it = m_medias.find( uuid );
+    if ( it == m_medias.end() )
         return NULL;
     return *it;
 }
 
-void        Library::removingClipAsked( const QUuid& uuid )
+void        Library::removingMediaAsked( const QUuid& uuid )
 {
     QMutexLocker locker( &m_mutex );
-    QHash<QUuid, Clip*>::iterator   it = m_clips.find( uuid );
-    if ( it == m_clips.end() )
+    QHash<QUuid, Media*>::iterator   it = m_medias.find( uuid );
+    if ( it == m_medias.end() )
         return ;
-    emit clipRemoved( uuid );
+    emit mediaRemoved( uuid );
     //TODO: this is obviously a memleak, but at the moment, the library depends on the clip to work,
     //and won't be abble to remove the ListViewMediaItem without it.
     //delete *it;
-    m_clips.erase( it );
+    m_medias.erase( it );
 }
 
-void        Library::newClipLoadingAsked( const QString& filePath )
+void        Library::newMediaLoadingAsked( const QString& filePath )
 {
     QMutexLocker locker( &m_mutex );
-    Clip*   clip;
-    foreach ( clip, m_clips )
+    Media*   media;
+    foreach ( media, m_medias )
     {
-        if ( clip->getFileInfo()->absoluteFilePath() == filePath )
+        if ( media->getFileInfo()->absoluteFilePath() == filePath )
             return ;
     }
     //TODO: maybe we should think about taking a reference to a QFileInfo on Clip::Clip() to avoid multiple new...
     QFileInfo* fInfo = new QFileInfo( filePath );
-    clip = new Clip( fInfo );
-    m_clips[clip->getUuid()] = clip;
-    emit newClipLoaded( clip );
+    media = new Media( fInfo );
+    m_medias[media->getUuid()] = media;
+    emit newMediaLoaded( media );
     delete fInfo;
 }

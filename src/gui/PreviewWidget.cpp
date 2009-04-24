@@ -77,10 +77,10 @@ void    PreviewWidget::dragEnterEvent( QDragEnterEvent* event )
 
 void    PreviewWidget::dropEvent( QDropEvent* event )
 {
-    Clip*   clip = Library::getInstance()->getClip( QUuid( (const QString& )event->mimeData()->data( "vlmc/uuid" ) ) );
+    Media*   media = Library::getInstance()->getClip( QUuid( (const QString& )event->mimeData()->data( "vlmc/uuid" ) ) );
 
-    clip->flushParameters();
-    m_mediaPlayer->setMedia( clip->getVLCMedia() );
+    media->flushParameters();
+    m_mediaPlayer->setMedia( media->getVLCMedia() );
 
     connect( m_mediaPlayer,     SIGNAL( stopped() ),            this,       SLOT( videoPaused() ) );
     connect( m_mediaPlayer,     SIGNAL( paused() ),             this,       SLOT( videoPaused() ) );

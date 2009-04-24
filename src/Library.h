@@ -36,7 +36,7 @@
 #include <QMutex>
 #include <QMutexLocker>
 
-#include "Clip.h"
+#include "Media.h"
 #include "Singleton.hpp"
 
 class   Library : public QObject, public Singleton<Library>
@@ -54,22 +54,22 @@ public:
         Video,
         Image
     };
-    Clip*                   getClip( const QUuid& uuid );
+    Media*                  getClip( const QUuid& uuid );
 
 private:
     Library();
-    QHash<QUuid, Clip*>     m_clips;
+    QHash<QUuid, Media*>    m_medias;
     QMutex                  m_mutex;
 
 public slots:
-    void                    newClipLoadingAsked( const QString& filePath );
-    void                    removingClipAsked( const QUuid& uuid );
+    void                    newMediaLoadingAsked( const QString& filePath );
+    void                    removingMediaAsked( const QUuid& uuid );
 
 signals:
-    void                    newClipLoaded( Clip* );
-    void                    clipRemoved( const QUuid& );
+    void                    newMediaLoaded( Media* );
+    void                    mediaRemoved( const QUuid& );
 
-    friend class    Singleton<Library>;
+    friend class            Singleton<Library>;
 };
 
 #endif // LIBRARY_H

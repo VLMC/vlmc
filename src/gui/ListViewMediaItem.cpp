@@ -25,15 +25,15 @@
 #include <QDebug>
 #include <QTime>
 
-ListViewMediaItem::ListViewMediaItem( const Clip* clip, Library::FileType fType, QListWidget* parent, int type ) :
-        QListWidgetItem( parent, type ), m_clip( clip )
+ListViewMediaItem::ListViewMediaItem( const Media* media, Library::FileType fType, QListWidget* parent, int type ) :
+        QListWidgetItem( parent, type ), m_media ( media )
 {
     m_fileType = fType;
 
     setIcon( QIcon( ":/images/images/vlmc.png") );
-    setText( clip->getFileInfo()->baseName() );
+    setText( media->getFileInfo()->baseName() );
 
-    connect( m_clip, SIGNAL( snapshotChanged() ), this, SLOT( snapshotChanged() ) );
+    connect( media, SIGNAL( snapshotChanged() ), this, SLOT( snapshotChanged() ) );
 }
 
 ListViewMediaItem::~ListViewMediaItem()
@@ -43,22 +43,22 @@ ListViewMediaItem::~ListViewMediaItem()
 
 void        ListViewMediaItem::snapshotChanged()
 {
-    setIcon( QIcon( m_clip->getSnapshot() ) );
+    setIcon( QIcon( m_media->getSnapshot() ) );
     //this is a nasty patch for the moment :
     //TODO: fix this !!!!
     QTime   length;
-    length = length.addSecs( m_clip->getLength() / 1000 );
+    length = length.addSecs( m_media->getLength() / 1000 );
 
-    qDebug() << m_clip->getLength();
+    qDebug() << m_media->getLength();
     qDebug() << length;
-    setToolTip( "Filename: " + m_clip->getFileInfo()->fileName() + "\n" +
+    setToolTip( "Filename: " + m_media->getFileInfo()->fileName() + "\n" +
                 "Length: " + length.toString() );
     //"Length: " + length.toString("h 'h' m 'm' s 's'") );
 }
 
-const Clip*     ListViewMediaItem::getClip() const
+const Media*     ListViewMediaItem::getMedia() const
 {
-    return m_clip;
+    return m_media;
 }
 
 

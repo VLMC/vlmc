@@ -23,7 +23,7 @@
 #include "GraphicsMovieItem.h"
 #include "TracksView.h"
 
-GraphicsMovieItem::GraphicsMovieItem( Clip* clip ) : m_clip( clip ), m_width( 0 ), m_height( 0 )
+GraphicsMovieItem::GraphicsMovieItem( Media* media ) : m_media ( media ), m_width( 0 ), m_height( 0 )
 {
 
 }

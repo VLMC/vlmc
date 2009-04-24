@@ -1,5 +1,5 @@
 /*****************``************************************************************
- * Clip.cpp: Represents a basic container for media informations.
+ * Media.cpp: Represents a basic container for media informations.
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -21,19 +21,19 @@
  *****************************************************************************/
 
 /** \file
-  * This file contains the Clip class implementation.
+  * This file contains the Media class implementation.
   * It contains a VLCMedia and the meta-datas.
   * It's used by the Library
   */
 
 #include <QtDebug>
-#include "Clip.h"
+#include "Media.h"
 
-QPixmap*    Clip::defaultSnapshot = NULL;
+QPixmap*    Media::defaultSnapshot = NULL;
 
-Clip::Clip( const QString& mrl )
+Media::Media( const QString& mrl )
     : m_vlcMedia( NULL ), m_mrl( mrl ), m_snapshot( NULL ), m_length( 0 ),
-    m_begin( 0 ), m_end( -1 ), m_width( 0 ), m_height( 0 )
+    m_width( 0 ), m_height( 0 )
 {
     m_vlcMedia = new LibVLCpp::Media( mrl );
     m_uuid = QUuid::createUuid();
@@ -41,9 +41,9 @@ Clip::Clip( const QString& mrl )
     m_fileInfo = NULL;
 }
 
-Clip::Clip( const QFileInfo* fileInfo)
+Media::Media( const QFileInfo* fileInfo)
     : m_vlcMedia( NULL ), m_snapshot( NULL ), m_length( 0 ),
-    m_begin( 0 ), m_end( -1 ), m_width( 0 ), m_height( 0 )
+    m_width( 0 ), m_height( 0 )
 {
     m_mrl = "file://" + fileInfo->absoluteFilePath();
     m_vlcMedia = new LibVLCpp::Media( m_mrl );
@@ -51,7 +51,7 @@ Clip::Clip( const QFileInfo* fileInfo)
     m_fileInfo = new QFileInfo( *fileInfo );
 }
 
-Clip::~Clip()
+Media::~Media()
 {
     if ( m_vlcMedia )
     {
@@ -59,7 +59,7 @@ Clip::~Clip()
     }
 }
 
-void        Clip::loadMedia( const QString& mrl )
+void        Media::loadMedia( const QString& mrl )
 {
     if ( m_vlcMedia )
         delete m_vlcMedia;
@@ -68,7 +68,7 @@ void        Clip::loadMedia( const QString& mrl )
     m_vlcMedia = new LibVLCpp::Media( mrl );
 }
 
-void        Clip::flushParameters()
+void        Media::flushParameters()
 {
     //Flushing the args into the media :
     QString     param;
@@ -77,12 +77,12 @@ void        Clip::flushParameters()
     m_parameters.clear();
 }
 
-void        Clip::addParam( const QString& param )
+void        Media::addParam( const QString& param )
 {
     m_parameters.append( param );
 }
 
-void        Clip::setSnapshot( QPixmap* snapshot )
+void        Media::setSnapshot( QPixmap* snapshot )
 {
     if ( m_snapshot != NULL )
         delete m_snapshot;
@@ -90,51 +90,51 @@ void        Clip::setSnapshot( QPixmap* snapshot )
     emit snapshotChanged();
 }
 
-const QPixmap&    Clip::getSnapshot() const
+const QPixmap&    Media::getSnapshot() const
 {
     if ( m_snapshot != NULL )
         return *m_snapshot;
-    if ( Clip::defaultSnapshot == NULL )
-        Clip::defaultSnapshot = new QPixmap( ":/images/images/vlmc.png" );
-    return *Clip::defaultSnapshot;
+    if ( Media::defaultSnapshot == NULL )
+        Media::defaultSnapshot = new QPixmap( ":/images/images/vlmc.png" );
+    return *Media::defaultSnapshot;
 }
 
-const QUuid&        Clip::getUuid() const
+const QUuid&        Media::getUuid() const
 {
     return m_uuid;
 }
 
-const QFileInfo*    Clip::getFileInfo() const
+const QFileInfo*    Media::getFileInfo() const
 {
     return m_fileInfo;
 }
 
-void                Clip::setLength( qint64 length )
+void                Media::setLength( qint64 length )
 {
     m_length = length;
 }
 
-qint64              Clip::getLength() const
+qint64              Media::getLength() const
 {
     return m_length;
 }
 
-int                 Clip::getWidth() const
+int                 Media::getWidth() const
 {
     return m_width;
 }
 
-void                Clip::setWidth( int width )
+void                Media::setWidth( int width )
 {
     m_width = width;
 }
 
-int                 Clip::getHeight() const
+int                 Media::getHeight() const
 {
     return m_height;
 }
 
-void                Clip::setHeight( int height )
+void                Media::setHeight( int height )
 {
     m_height = height;
 }
