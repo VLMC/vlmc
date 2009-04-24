@@ -28,16 +28,22 @@
 
 Clip::Clip( Media* parent ) : m_parent( parent ), m_begin( 0 ), m_end( Clip::UntilEndOfMedia )
 {
-    computeLength();
+    init();
 }
 
 Clip::Clip( Clip* creator, qint64 begin, qint64 end ) : m_parent( creator->getParent() ), m_begin( begin ), m_end( end )
 {
-    computeLength();
+    init();
 }
 
 Clip::~Clip()
 {
+}
+
+void        Clip::init()
+{
+    m_uuid = QUuid::createUuid();
+    computeLength();
 }
 
 qint64      Clip::getBegin() const
@@ -66,4 +72,9 @@ void        Clip::computeLength()
         m_length = m_parent->getLength() - m_begin;
     else
         m_length = m_end - m_begin;
+}
+
+const QUuid&    Clip::getUuid() const
+{
+    return m_uuid;
 }

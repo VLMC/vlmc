@@ -29,6 +29,7 @@
 # define CLIP_H__
 
 #include <QObject>
+#include <QUuid>
 
 #include "Media.h"
 
@@ -43,18 +44,21 @@ class   Clip : public QObject
         Clip( Clip* creator, qint64 begin, qint64 end );
         virtual ~Clip();
 
-        qint64      getBegin() const;
-        qint64      getEnd() const;
-        qint64      getLength() const;
-        Media*      getParent();
+        qint64          getBegin() const;
+        qint64          getEnd() const;
+        qint64          getLength() const;
+        Media*          getParent();
+        const QUuid&    getUuid() const;
 
     private:
         void        computeLength();
+        void        init();
 
         Media*      m_parent;
         qint64      m_begin;
         qint64      m_end;
         qint64      m_length;
+        QUuid       m_uuid;
 };
 
 #endif //CLIP_H__
