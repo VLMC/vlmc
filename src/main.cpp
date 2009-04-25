@@ -36,7 +36,6 @@
  *  \param argv
  *  \return Return value of vlmc
  */
-
 int main( int argc, char **argv )
 {
     QApplication app( argc, argv );
@@ -45,6 +44,30 @@ int main( int argc, char **argv )
     app.setOrganizationDomain( "vlmc.org" );
     QSettings::setDefaultFormat( QSettings::IniFormat );
     Preferences::changeLang( QSettings().value( "Lang" ).toString() );
+
+    // Creating the color palette
+    QPalette p;
+    p.setColor( QPalette::WindowText,       QColor( 255, 255, 255, 255 ) );
+    p.setColor( QPalette::Button,           QColor( 104, 103, 103, 255 ) );
+    p.setColor( QPalette::Light,            QColor( 156, 155, 155, 255 ) );
+    p.setColor( QPalette::Midlight,         QColor( 130, 129, 129, 255 ) );
+    p.setColor( QPalette::Dark,             QColor( 52,  51,  51,  255 ) );
+    p.setColor( QPalette::Mid,              QColor( 69,  68,  68,  255 ) );
+    p.setColor( QPalette::Text,             QColor( 255, 255, 255, 255 ) );
+    p.setColor( QPalette::BrightText,       QColor( 255, 255, 255, 255 ) );
+    p.setColor( QPalette::ButtonText,       QColor( 255, 255, 255, 255 ) );
+    p.setColor( QPalette::Base,             QColor( 104, 103, 103, 255 ) );
+    p.setColor( QPalette::Window,           QColor( 73,  72,  72,  255 ) );
+    p.setColor( QPalette::Shadow,           QColor( 0,   0,   0,   255 ) );
+    p.setColor( QPalette::AlternateBase,    QColor( 52,  51,  51,  255 ) );
+    p.setColor( QPalette::ToolTipBase,      QColor( 255, 255, 220, 255 ) );
+    p.setColor( QPalette::ToolTipText,      QColor( 0,   0,   0,   255 ) );
+    p.setColor( QPalette::WindowText,       QColor( 255, 255, 255, 255 ) );
+    p.setColor( QPalette::WindowText,       QColor( 255, 255, 255, 255 ) );
+    p.setColor( QPalette::WindowText,       QColor( 255, 255, 255, 255 ) );
+    p.setColor( QPalette::WindowText,       QColor( 255, 255, 255, 255 ) );
+    app.setPalette( p );
+
     MainWindow w;
     w.show();
     return app.exec();
