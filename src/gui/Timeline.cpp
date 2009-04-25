@@ -50,8 +50,9 @@ Timeline::Timeline( QWidget *parent ) :
     tracksRulerLayout->addWidget( m_tracksRuler );
 
     changeZoom( 10 );
-    setDuration( 1500 );
+    setDuration( 1 );
     connect( m_tracksView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), m_tracksRuler, SLOT( moveRuler( int ) ) );
+    connect( m_tracksView, SIGNAL( durationChanged(int) ), this, SLOT( setDuration(int) ) );
 }
 
 void Timeline::changeEvent( QEvent *e )

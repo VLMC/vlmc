@@ -49,8 +49,8 @@ TracksView::TracksView( QGraphicsScene* scene, QWidget* parent )
     setSceneRect( 0, 0, sceneRect().width(), maxHeight );
 
     m_cursorPos = 0;
-    m_cursorLine = m_scene->addLine(0, 0, 0, maxHeight);
-    m_cursorLine->setZValue(100);
+    m_cursorLine = m_scene->addLine( 0, 0, 0, maxHeight );
+    m_cursorLine->setZValue( 100 );
 }
 
 void TracksView::dragEnterEvent( QDragEnterEvent* event )
@@ -180,7 +180,7 @@ void TracksView::wheelEvent( QWheelEvent* event )
 void TracksView::setCursorPos(int pos)
 {
     m_cursorPos = pos;
-    m_cursorLine->setPos(m_cursorPos, 0);
+    m_cursorLine->setPos( m_cursorPos, 0 );
 }
 
 void TracksView::addClip( Media* clip, const QPoint& point )
@@ -196,6 +196,12 @@ void TracksView::addClip( Media* clip, const QPoint& point )
     item->setWidth( ( (double)clip->getLength() / 1000 ) * m_fps );
     item->setHeight( tracksHeight() );
     m_scene->addItem( item );
+    int duration = mappedXPos + ( (double)clip->getLength() / 1000 ) * m_fps;
+    if ( duration > m_projectDuration )
+    {
+        m_projectDuration = duration;
+        emit durationChanged( duration );
+    }
     item->show();
 }
 
