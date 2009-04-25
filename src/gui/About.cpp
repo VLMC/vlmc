@@ -23,6 +23,7 @@
 #include <QFile>
 #include <QString>
 #include <QCoreApplication>
+#include <QtDebug>
 #include "About.h"
 
 About* About::m_instance = NULL;

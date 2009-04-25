@@ -66,6 +66,8 @@ int main( int argc, char **argv )
     p.setColor( QPalette::WindowText,       QColor( 255, 255, 255, 255 ) );
     p.setColor( QPalette::WindowText,       QColor( 255, 255, 255, 255 ) );
     p.setColor( QPalette::WindowText,       QColor( 255, 255, 255, 255 ) );
+    p.setColor( QPalette::Link,             QColor( 177, 202, 0,   255 ) );
+    p.setColor( QPalette::LinkVisited,      QColor( 177, 202, 0,   255 ) );
     app.setPalette( p );
 
     MainWindow w;
