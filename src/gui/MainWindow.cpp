@@ -187,3 +187,11 @@ void MainWindow::zoomOut()
 {
     m_zoomSlider->setValue( m_zoomSlider->value() + 1 );
 }
+
+void MainWindow::on_actionFullscreen_triggered( bool checked )
+{
+    if ( checked )
+        showFullScreen();
+    else
+        showNormal();
+}

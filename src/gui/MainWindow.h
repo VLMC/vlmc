@@ -60,6 +60,7 @@ private:
     Timeline*           m_timeline;
 
 private slots:
+    void on_actionFullscreen_triggered( bool checked );
     void on_actionQuit_triggered();
     void on_actionAbout_triggered();
     void on_actionPreferences_triggered();
