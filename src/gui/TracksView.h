@@ -43,6 +43,7 @@ public:
     int tracksHeight() const { return m_tracksHeight; }
     int tracksCount() const { return m_tracksCount; }
     void setCursorPos( int pos );
+    int cursorPos();
     void addClip( Media* clip, const QPoint& point );
     void setScale( double scaleFactor );
 
@@ -70,6 +71,7 @@ signals:
     void zoomIn();
     void zoomOut();
     void durationChanged( int duration );
+    void cursorPositionChanged( int pos );
 };
 
 #endif // TRACKSVIEW_H

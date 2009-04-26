@@ -43,13 +43,14 @@ TracksView::TracksView( QGraphicsScene* scene, QWidget* parent )
     setMouseTracking( true );
     setAcceptDrops( true );
     setContentsMargins( 0, 0, 0, 0 );
+    setFrameStyle( QFrame::NoFrame );
 
     // Adjust the height using the number of tracks
     const int maxHeight = m_tracksHeight * m_tracksCount;
     setSceneRect( 0, 0, sceneRect().width(), maxHeight );
 
     m_cursorPos = 0;
-    m_cursorLine = m_scene->addLine( 0, 0, 0, maxHeight );
+    m_cursorLine = m_scene->addLine( 0, 0, 0, maxHeight, QPen( QColor( 220, 30, 30 ) ) );
     m_cursorLine->setZValue( 100 );
 }
 
@@ -177,10 +178,16 @@ void TracksView::wheelEvent( QWheelEvent* event )
     }
 }
 
-void TracksView::setCursorPos(int pos)
+void TracksView::setCursorPos( int pos )
 {
     m_cursorPos = pos;
     m_cursorLine->setPos( m_cursorPos, 0 );
+    emit cursorPositionChanged( pos );
+}
+
+int TracksView::cursorPos()
+{
+    return m_cursorPos;
 }
 
 void TracksView::addClip( Media* clip, const QPoint& point )

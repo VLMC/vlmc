@@ -24,12 +24,14 @@
 #include <QBrush>
 #include <QColor>
 #include <QPalette>
+#include <QPolygon>
 #include "TracksRuler.h"
+#include "TracksView.h"
 
 const int TracksRuler::comboScale[] = { 1, 2, 5, 10, 25, 50, 125, 250, 500, 725, 1500, 3000, 6000, 12000};
 
-TracksRuler::TracksRuler( QWidget* parent )
-    : QWidget( parent ), m_duration ( 0 ), m_offset( 0 )
+TracksRuler::TracksRuler( TracksView* tracksView, QWidget* parent )
+    : QWidget( parent ), m_duration ( 0 ), m_offset( 0 ), m_tracksView( tracksView )
 {
     m_fps = 30;
     m_factor = 1;
@@ -37,7 +39,7 @@ TracksRuler::TracksRuler( QWidget* parent )
     m_littleMarkDistance = FRAME_SIZE;
     m_mediumMarkDistance = FRAME_SIZE * m_fps;
     m_bigMarkDistance = FRAME_SIZE * m_fps * 60;
-    setMinimumHeight( 20 );
+    setMinimumHeight( 30 );
     setPixelPerMark( 5 );
 }
 
@@ -99,7 +101,8 @@ void TracksRuler::paintEvent( QPaintEvent* e )
 
     // Draw the background
     const int projectEnd = ( int )( m_duration * m_factor );
-    painter.fillRect( 0, 0, projectEnd - m_offset, height(), QBrush( QColor( 245, 245, 245 ) ) );
+    if ( projectEnd - m_offset > 1 )
+        painter.fillRect( 0, 0, projectEnd - m_offset, height(), QBrush( QColor( 245, 245, 245 ) ) );
 
 
     double f, step;
@@ -115,7 +118,7 @@ void TracksRuler::paintEvent( QPaintEvent* e )
     for ( f = offsetMin; f < offsetMax; f += m_textSpacing )
     {
         QString time = getTimeCode( (int)( f / m_factor + 0.5 ) );
-        painter.drawText( ( int )f - m_offset + 2, LABEL_SIZE, time );
+        painter.drawText( ( int )f - m_offset + 2, LABEL_SIZE + 1, time );
     }
 
 
@@ -141,7 +144,12 @@ void TracksRuler::paintEvent( QPaintEvent* e )
         for ( f = offsetMin - m_offset; f < offsetMax - m_offset; f += step )
             painter.drawLine( ( int )f, BIG_MARK_X1, ( int )f, BIG_MARK_X2 );
 
-
+    // Draw the pointer
+    int cursorPos = m_tracksView->cursorPos() * m_factor - offset();
+    QPolygon cursor( 3 );
+    cursor.setPoints( 3, cursorPos - 9, 11, cursorPos + 9, 11, cursorPos, 30 );
+    painter.setBrush( QBrush( QColor( 82, 97, 122, 150 ) ) );
+    painter.drawPolygon( cursor );
 }
 
 void TracksRuler::moveRuler( int pos )

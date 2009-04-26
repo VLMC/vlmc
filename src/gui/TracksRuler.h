@@ -26,9 +26,10 @@
 #include <QWidget>
 #include <QPaintEvent>
 #include <QString>
+#include "TracksView.h"
 
 const int FRAME_SIZE = 90;
-static const int FIX_WIDTH = 24; /* widget width in pixel */
+static const int FIX_WIDTH = 30; /* widget width in pixel */
 static const int LINE_END = (FIX_WIDTH - 3);
 static const int END_MARK_LENGTH = (FIX_WIDTH - 8);
 static const int BIG_MARK_LENGTH = (END_MARK_LENGTH * 3 / 4);
@@ -48,10 +49,11 @@ class TracksRuler : public QWidget
     Q_OBJECT
 
 public:
-    TracksRuler( QWidget* parent = 0 );
+    TracksRuler( TracksView* tracksView, QWidget* parent = 0 );
     void setDuration( int duration );
     void setPixelPerMark( double rate );
     static const int comboScale[];
+    int offset() const { return m_offset; }
 
 public slots:
     void moveRuler( int pos );
@@ -61,6 +63,7 @@ protected:
 
 private:
     QString getTimeCode( int frames ) const;
+    TracksView* m_tracksView;
     int m_duration;
     int m_fps;
     int m_offset;

@@ -43,16 +43,17 @@ Timeline::Timeline( QWidget *parent ) :
     m_ui.tracksFrame->setLayout( tracksViewLayout );
     tracksViewLayout->addWidget( m_tracksView );
 
-    m_tracksRuler = new TracksRuler( this );
+    m_tracksRuler = new TracksRuler( tracksView(), this );
     QHBoxLayout* tracksRulerLayout = new QHBoxLayout();
     tracksRulerLayout->setContentsMargins( 0, 0, 0, 0 );
     m_ui.rulerFrame->setLayout( tracksRulerLayout );
     tracksRulerLayout->addWidget( m_tracksRuler );
 
     changeZoom( 10 );
-    setDuration( 1 );
+    setDuration( 0 );
     connect( m_tracksView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), m_tracksRuler, SLOT( moveRuler( int ) ) );
     connect( m_tracksView, SIGNAL( durationChanged(int) ), this, SLOT( setDuration(int) ) );
+    connect( m_tracksView, SIGNAL( cursorPositionChanged(int) ), m_tracksRuler, SLOT( update() ) );
 }
 
 void Timeline::changeEvent( QEvent *e )
