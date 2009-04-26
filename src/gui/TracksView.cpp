@@ -181,6 +181,7 @@ void TracksView::wheelEvent( QWheelEvent* event )
 void TracksView::setCursorPos( int pos )
 {
     m_cursorPos = pos;
+    if ( m_cursorPos < 0 ) m_cursorPos = 0;
     m_cursorLine->setPos( m_cursorPos, 0 );
     emit cursorPositionChanged( pos );
 }
