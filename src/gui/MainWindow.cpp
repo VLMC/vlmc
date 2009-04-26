@@ -33,6 +33,7 @@
 #include "Timeline.h"
 #include "About.h"
 #include "Transcode.h"
+#include "FileBrowser.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent )
@@ -131,9 +132,16 @@ void MainWindow::m_initializeDockWidgets( void )
     m_timeline->show();
     setCentralWidget( m_timeline );
 
+    DockWidgetManager *dockManager = DockWidgetManager::instance();
+//    dockManager->addDockedWidget( new FileBrowser( this ),
+//                                  tr( "FileBrowser" ),
+//                                  Qt::AllDockWidgetAreas,
+//                                  QDockWidget::AllDockWidgetFeatures,
+//                                  Qt::TopDockWidgetArea);
+
+
     setupLibrary();
 
-    DockWidgetManager *dockManager = DockWidgetManager::instance();
     dockManager->addDockedWidget( new PreviewWidget( this ),
                                   tr( "Preview" ),
                                   Qt::AllDockWidgetAreas,
