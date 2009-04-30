@@ -29,12 +29,15 @@ FileBrowser::FileBrowser( QWidget* parent ) : QWidget( parent )
     m_ui.setupUi( this );
     m_DirsModel = new QDirModel();
     m_FilesModel = new QDirModel();
+    m_previousEntries = new QStack<QModelIndex>();
+    m_forwadEntries = new QStack<QModelIndex>();
+
     QStringList filters;
     filters << "*.mp3" << "*.oga" << "*.flac" << "*.aac" << "*.wav";
     filters << "*.mov" << "*.avi" << "*.mkv" << "*.mpg" << "*.mpeg" << "*.wmv" << "*.mp4";
     filters << "*.gif" << "*.png" << "*.jpg";
 
-    m_FilesModel->setFilter( QDir::Dirs | QDir::Files | QDir::Readable | QDir::NoDotAndDotDot );
+    m_FilesModel->setFilter( QDir::AllDirs | QDir::Files | QDir::Readable | QDir::NoDotAndDotDot );
     m_FilesModel->sort( 2, Qt::AscendingOrder );
     m_FilesModel->sort( 0, Qt::AscendingOrder );
     m_FilesModel->setNameFilters( filters );
@@ -49,23 +52,93 @@ FileBrowser::FileBrowser( QWidget* parent ) : QWidget( parent )
     m_ui.treeViewBrowser->setColumnHidden( 1, true );
     m_ui.treeViewBrowser->setColumnHidden( 2, true );
     m_ui.treeViewBrowser->setColumnHidden( 3, true );
-
-    //m_ui.listViewBrowser->setSelectionModel( m_ui.treeViewBrowser->selectionModel() );
+    m_ui.pushButtonBackward->setEnabled( false );
+    m_ui.pushButtonForward->setEnabled( false );
 }
 
-void FileBrowser::on_treeViewBrowser_clicked( QModelIndex index )
+FileBrowser::~FileBrowser()
+{
+    delete m_DirsModel;
+    delete m_FilesModel;
+    delete m_forwadEntries;
+    delete m_previousEntries;
+}
+
+void FileBrowser::addElementToHistory()
+{
+    m_previousEntries->push( m_DirsModel->index( m_FilesModel->filePath( m_ui.listViewBrowser->rootIndex() ) ) );
+    if ( m_previousEntries->count() > 10 )
+        m_previousEntries->pop_back();
+    m_ui.pushButtonBackward->setEnabled( true );
+}
+
+void FileBrowser::ListViewBrowserDirectoryChanged( QModelIndex& index, bool history )
+{
+    if ( m_FilesModel->isDir( index ) )
+    {
+        if ( history == true )
+            addElementToHistory();
+        m_ui.listViewBrowser->setRootIndex( index );
+        m_ui.treeViewBrowser->setCurrentIndex( m_DirsModel->index( m_FilesModel->filePath( index ) ) );
+    }
+}
+
+void FileBrowser::TreeViewBrowserDirectoryChanged( QModelIndex& index, bool history )
 {
     if ( m_DirsModel->isDir( index ) )
     {
+        if ( history == true )
+            addElementToHistory();
         m_ui.listViewBrowser->setRootIndex( m_FilesModel->index( m_DirsModel->filePath( index ) ) );
     }
 }
 
-void FileBrowser::on_listViewBrowser_doubleClicked(QModelIndex index)
+void FileBrowser::on_treeViewBrowser_clicked( QModelIndex index )
 {
-    if ( m_FilesModel->isDir( index ) )
+    TreeViewBrowserDirectoryChanged( index );
+    m_forwadEntries->clear();
+    m_ui.pushButtonForward->setEnabled( false );
+}
+
+void FileBrowser::on_listViewBrowser_doubleClicked( QModelIndex index )
+{
+    ListViewBrowserDirectoryChanged( index );
+    m_forwadEntries->clear();
+    m_ui.pushButtonForward->setEnabled( false );
+}
+
+void FileBrowser::on_pushButtonBackward_clicked()
+{
+    if ( !m_previousEntries->isEmpty() )
     {
-        m_ui.listViewBrowser->setRootIndex( index );
-        m_ui.treeViewBrowser->setCurrentIndex( m_DirsModel->index( m_FilesModel->filePath( index ) ) );
+        m_forwadEntries->push( m_ui.treeViewBrowser->currentIndex() );
+        TreeViewBrowserDirectoryChanged( m_previousEntries->first() , false );
+        m_ui.treeViewBrowser->setCurrentIndex( m_previousEntries->pop() );
+        m_ui.pushButtonForward->setEnabled( true );
+        if ( m_previousEntries->isEmpty() )
+            m_ui.pushButtonBackward->setEnabled( false );
+    }
+}
+
+void FileBrowser::on_pushButtonForward_clicked()
+{
+    if ( !m_forwadEntries->isEmpty() )
+    {
+        m_previousEntries->push( m_ui.treeViewBrowser->currentIndex() );
+        TreeViewBrowserDirectoryChanged( m_forwadEntries->first() , false );
+        m_ui.treeViewBrowser->setCurrentIndex( m_forwadEntries->pop() );
+        m_ui.pushButtonBackward->setEnabled( true );
+        if ( m_forwadEntries->isEmpty() )
+            m_ui.pushButtonForward->setEnabled( false );
+    }
+}
+
+void FileBrowser::on_pushButtonParent_clicked()
+{
+    if ( !QDir(m_DirsModel->filePath( m_ui.treeViewBrowser->currentIndex() )).isRoot() )
+    {
+        addElementToHistory();
+        m_ui.listViewBrowser->setRootIndex( m_FilesModel->index( m_DirsModel->filePath( m_ui.treeViewBrowser->currentIndex().parent() ) ) );
+        m_ui.treeViewBrowser->setCurrentIndex( m_DirsModel->index( m_FilesModel->filePath( m_ui.listViewBrowser->rootIndex() ) ) );
     }
 }

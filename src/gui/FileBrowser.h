@@ -25,6 +25,7 @@
 
 #include <QWidget>
 #include <QDirModel>
+#include <QStack>
 #include "ui_FileBrowser.h"
 
 class FileBrowser : public QWidget
@@ -32,13 +33,22 @@ class FileBrowser : public QWidget
     Q_OBJECT
 public:
     FileBrowser( QWidget* parent = NULL );
+    virtual ~FileBrowser();
 private:
-    Ui::FileBrowser m_ui;
-    QDirModel*      m_DirsModel;
-    QDirModel*      m_FilesModel;
+    void                    addElementToHistory();
+    void                    ListViewBrowserDirectoryChanged( QModelIndex& index, bool history = true );
+    void                    TreeViewBrowserDirectoryChanged( QModelIndex& index, bool history = true );
+    Ui::FileBrowser         m_ui;
+    QDirModel*              m_DirsModel;
+    QDirModel*              m_FilesModel;
+    QStack<QModelIndex>*    m_previousEntries;
+    QStack<QModelIndex>*    m_forwadEntries;
 
 private slots:
-    void on_listViewBrowser_doubleClicked(QModelIndex index);
+    void on_pushButtonParent_clicked();
+    void on_pushButtonForward_clicked();
+    void on_pushButtonBackward_clicked();
+    void on_listViewBrowser_doubleClicked( QModelIndex index);
     void on_treeViewBrowser_clicked( QModelIndex index );
 };
 
