@@ -228,4 +228,5 @@ void TracksView::setScale( double scaleFactor )
         else
             setSceneRect( 0, 0, ( m_projectDuration + 300 ), sceneRect().height() );
     }
+    centerOn( m_cursorLine );
 }
