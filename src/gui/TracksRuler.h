@@ -60,6 +60,8 @@ public slots:
 
 protected:
     virtual void paintEvent( QPaintEvent* e );
+    virtual void mousePressEvent( QMouseEvent* event );
+    virtual void mouseMoveEvent( QMouseEvent* event );
 
 private:
     QString getTimeCode( int frames ) const;

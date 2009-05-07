@@ -152,6 +152,24 @@ void TracksRuler::paintEvent( QPaintEvent* e )
     painter.drawPolygon( cursor );
 }
 
+void TracksRuler::mousePressEvent( QMouseEvent* event )
+{
+    if ( event->buttons() == Qt::LeftButton &&
+         event->modifiers() == Qt::NoModifier )
+    {
+        m_tracksView->setCursorPos( ( event->x() + offset() ) / m_factor );
+    }
+}
+
+void TracksRuler::mouseMoveEvent( QMouseEvent* event )
+{
+    if ( event->buttons() == Qt::LeftButton &&
+         event->modifiers() == Qt::NoModifier )
+    {
+        m_tracksView->setCursorPos( ( event->x() + offset() ) / m_factor );
+    }
+}
+
 void TracksRuler::moveRuler( int pos )
 {
     m_offset = pos;
