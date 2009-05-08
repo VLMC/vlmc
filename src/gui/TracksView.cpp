@@ -224,5 +224,10 @@ void TracksView::setScale( double scaleFactor )
 void TracksView::ensureCursorVisible()
 {
     if ( horizontalScrollBar()->isVisible() )
-        m_cursorLine->ensureVisible( QRectF(), 150, 50 );
+    {
+        QRectF r( m_cursorLine->boundingRect().width() / 2,
+                  m_cursorLine->boundingRect().height() / 2,
+                  1, 1 );
+        m_cursorLine->ensureVisible( r, 150, 50 );
+    }
 }
