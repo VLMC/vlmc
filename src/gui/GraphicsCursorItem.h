@@ -16,9 +16,9 @@ public:
     GraphicsCursorItem( int height, const QPen& pen );
     int cursorPos() const { return pos().x(); }
     void setCursorPos( int position );
+    virtual QRectF boundingRect() const;
 
 protected:
-    virtual QRectF boundingRect() const;
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
     virtual QVariant itemChange( GraphicsItemChange change, const QVariant& value );
 
