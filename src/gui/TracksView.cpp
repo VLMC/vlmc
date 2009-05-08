@@ -29,6 +29,7 @@
 #include "Media.h"
 #include "Library.h"
 #include "GraphicsMovieItem.h"
+#include "GraphicsCursorItem.h"
 
 TracksView::TracksView( QGraphicsScene* scene, QWidget* parent )
         : QGraphicsView( scene, parent ), m_scene( scene )
@@ -50,8 +51,9 @@ TracksView::TracksView( QGraphicsScene* scene, QWidget* parent )
     setSceneRect( 0, 0, sceneRect().width(), maxHeight );
 
     m_cursorPos = 0;
-    m_cursorLine = m_scene->addLine( 0, 0, 0, maxHeight, QPen( QColor( 220, 30, 30 ) ) );
-    m_cursorLine->setZValue( 100 );
+
+    m_cursorLine = new GraphicsCursorItem( maxHeight, QPen( QColor( 220, 30, 30 ) ) );
+    m_scene->addItem( m_cursorLine );
 }
 
 void TracksView::dragEnterEvent( QDragEnterEvent* event )

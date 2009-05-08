@@ -31,6 +31,7 @@
 #include <QDropEvent>
 #include <QDragMoveEvent>
 #include "Media.h"
+#include "GraphicsCursorItem.h"
 
 class TracksView : public QGraphicsView
 {
@@ -65,7 +66,7 @@ private:
     int m_projectDuration;
     int m_cursorPos;
     int m_fps;
-    QGraphicsLineItem* m_cursorLine;
+    GraphicsCursorItem* m_cursorLine;
 
 signals:
     void zoomIn();
