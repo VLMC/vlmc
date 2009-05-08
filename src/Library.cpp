@@ -48,7 +48,7 @@ Media*      Library::getClip( const QString& path )
     QHash<QUuid, Media*>::iterator it;
     QHash<QUuid, Media*>::iterator ite = m_medias.end();
     for ( it = m_medias.begin(); it != ite; ++it )
-        if ( ((Media*)it.value())->getFileInfo()->absoluteFilePath() == path)
+        if ( ((Media*)it.value())->getFileInfo()->absoluteFilePath() == path )
             return it.value();
     return NULL;
 }

@@ -87,7 +87,7 @@ void        MainWindow::setupLibrary()
                                   tr( "Media Library" ),
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
-                                  Qt::TopDockWidgetArea );
+                                  Qt::LeftDockWidgetArea );
 
     //Connecting GUI and Frontend :
     connect( libraryWidget,

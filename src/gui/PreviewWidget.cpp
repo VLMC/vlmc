@@ -89,7 +89,7 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
         media = lib->getClip( event->mimeData()->urls()[0].path() );
     }
     else
-        media = Library::getInstance()->getClip( QUuid( (const QString& )event->mimeData()->data( "vlmc/uuid" ) ) );
+        media = Library::getInstance()->getClip( QUuid( ( const QString& )event->mimeData()->data( "vlmc/uuid" ) ) );
 
     media->flushParameters();
     m_mediaPlayer->setMedia( media->getVLCMedia() );
