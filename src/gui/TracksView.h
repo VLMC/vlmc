@@ -60,6 +60,9 @@ protected:
     virtual void dropEvent( QDropEvent* event );
     virtual void dragMoveEvent( QDragMoveEvent* event );
 
+private slots:
+    void ensureCursorVisible();
+
 private:
     QGraphicsScene* m_scene;
     int m_tracksHeight;

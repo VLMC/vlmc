@@ -52,6 +52,9 @@ TracksView::TracksView( QGraphicsScene* scene, QWidget* parent )
 
     m_cursorLine = new GraphicsCursorItem( maxHeight, QPen( QColor( 220, 30, 30 ) ) );
     m_scene->addItem( m_cursorLine );
+
+    connect( m_cursorLine, SIGNAL( cursorPositionChanged(int) ),
+             this, SLOT( ensureCursorVisible() ) );
 }
 
 void TracksView::dragEnterEvent( QDragEnterEvent* event )
@@ -216,4 +219,10 @@ void TracksView::setScale( double scaleFactor )
             setSceneRect( 0, 0, ( m_projectDuration + 300 ), sceneRect().height() );
     }
     centerOn( m_cursorLine );
+}
+
+void TracksView::ensureCursorVisible()
+{
+    if ( horizontalScrollBar()->isVisible() )
+        m_cursorLine->ensureVisible( QRectF(), 150, 50 );
 }
