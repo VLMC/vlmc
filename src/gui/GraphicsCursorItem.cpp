@@ -27,9 +27,11 @@ QVariant GraphicsCursorItem::itemChange( GraphicsItemChange change, const QVaria
     {
         qreal posX = value.toPointF().x();
         if ( posX < 0 ) posX = 0;
-        if ( posX != pos().x() )
-            emit cursorPositionChanged( posX );
         return QPoint( posX, pos().y() );
+    }
+    if ( change == ItemPositionHasChanged )
+    {
+        emit cursorPositionChanged( pos().x() );
     }
     return QGraphicsItem::itemChange( change, value );
 }
