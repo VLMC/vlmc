@@ -48,7 +48,14 @@
     </widget>
    </item>
    <item row="2" column="7">
-    <widget class="QListView" name="listViewBrowser"/>
+    <widget class="QListView" name="listViewBrowser">
+     <property name="dragEnabled">
+      <bool>true</bool>
+     </property>
+     <property name="dragDropMode">
+      <enum>QAbstractItemView::DragOnly</enum>
+     </property>
+    </widget>
    </item>
    <item row="1" column="4">
     <widget class="QPushButton" name="pushButtonParent">

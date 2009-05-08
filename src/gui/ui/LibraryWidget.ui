@@ -16,11 +16,14 @@
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0" colspan="4">
     <widget class="QTabWidget" name="LibraryTabs">
+     <property name="acceptDrops">
+      <bool>true</bool>
+     </property>
      <property name="tabPosition">
       <enum>QTabWidget::East</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideNone</enum>
@@ -45,6 +48,9 @@
           <bool>true</bool>
          </property>
          <property name="dragEnabled">
+          <bool>true</bool>
+         </property>
+         <property name="dragDropOverwriteMode">
           <bool>true</bool>
          </property>
          <property name="dragDropMode">
@@ -77,10 +83,13 @@
           <bool>true</bool>
          </property>
          <property name="dragDropOverwriteMode">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="dragDropMode">
           <enum>QAbstractItemView::DragDrop</enum>
+         </property>
+         <property name="resizeMode">
+          <enum>QListView::Adjust</enum>
          </property>
          <property name="viewMode">
           <enum>QListView::IconMode</enum>
@@ -106,6 +115,9 @@
           <bool>true</bool>
          </property>
          <property name="dragEnabled">
+          <bool>true</bool>
+         </property>
+         <property name="dragDropOverwriteMode">
           <bool>true</bool>
          </property>
          <property name="dragDropMode">

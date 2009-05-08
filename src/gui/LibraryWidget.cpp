@@ -22,6 +22,7 @@
  *****************************************************************************/
 
 #include <QDir>
+#include <QUrl>
 #include "LibraryWidget.h"
 
 QList<ListViewMediaItem*>* LibraryWidget::m_medias = NULL;
@@ -33,6 +34,8 @@ LibraryWidget::LibraryWidget( QWidget *parent ) : QWidget( parent )
     m_ui.listWidgetAudio->setType( Library::Audio );
     m_ui.listWidgetImage->setType( Library::Image );
     m_ui.listWidgetVideo->setType( Library::Video );
+
+    setAcceptDrops( true );
 
     // *Always* force the selection of the first tab
     m_ui.LibraryTabs->setCurrentIndex( 0 );
@@ -120,6 +123,7 @@ void    LibraryWidget::newMediaLoaded( Media* media )
 {
     //From here, the clip is const.
     addMedia( media, Library::Video );
+    m_ui.LibraryTabs->setCurrentIndex( 1 );
 }
 
 void    LibraryWidget::insertNewMediasFromFileDialog( QString title, QString filter, Library::FileType fileType )
@@ -183,5 +187,21 @@ void LibraryWidget::changeEvent( QEvent *e )
         break;
     default:
         break;
+    }
+}
+
+void    LibraryWidget::dragEnterEvent( QDragEnterEvent* event )
+{
+    if ( event->mimeData()->urls().count() >= 1 )
+        event->acceptProposedAction();
+}
+
+void    LibraryWidget::dropEvent( QDropEvent* event )
+{
+    QUrl url;
+    Library* lib = Library::getInstance();
+    foreach ( url, event->mimeData()->urls() )
+    {
+        lib->newMediaLoadingAsked( url.path() );
     }
 }

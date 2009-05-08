@@ -54,6 +54,8 @@ public:
 
 protected:
     virtual void                        changeEvent( QEvent *e );
+    virtual void                        dragEnterEvent( QDragEnterEvent* event );
+    virtual void                        dropEvent( QDropEvent* event );
 
 private:
     ListViewMediaItem*                  insertNewMedia( QString filename, Library::FileType fileType );

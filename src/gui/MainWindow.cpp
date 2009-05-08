@@ -133,11 +133,11 @@ void MainWindow::m_initializeDockWidgets( void )
     setCentralWidget( m_timeline );
 
     DockWidgetManager *dockManager = DockWidgetManager::instance();
-//    dockManager->addDockedWidget( new FileBrowser( this ),
-//                                  tr( "FileBrowser" ),
-//                                  Qt::AllDockWidgetAreas,
-//                                  QDockWidget::AllDockWidgetFeatures,
-//                                  Qt::TopDockWidgetArea);
+    dockManager->addDockedWidget( new FileBrowser( this ),
+                                  tr( "FileBrowser" ),
+                                  Qt::AllDockWidgetAreas,
+                                  QDockWidget::AllDockWidgetFeatures,
+                                  Qt::TopDockWidgetArea);
 
 
     setupLibrary();

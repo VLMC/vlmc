@@ -22,6 +22,8 @@
 
 #include <QSvgRenderer>
 #include <QPainter>
+#include <QUrl>
+#include <QtDebug>
 
 #include "MediaListWidget.h"
 
@@ -29,6 +31,8 @@ MediaListWidget::MediaListWidget( QWidget* parent ) : QListWidget( parent )
 {
     m_svgRenderer = new QSvgRenderer( this );
     setIconSize( QSize( 128, 128 ) );
+    setContentsMargins( 2, 2,2, 2 );
+    setAcceptDrops( true );
 }
 
 void    MediaListWidget::setType( Library::FileType fileType )

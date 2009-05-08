@@ -55,6 +55,7 @@ public:
         Image
     };
     Media*                  getClip( const QUuid& uuid );
+    Media*                  getClip( const QString& path );
 
 private:
     Library();

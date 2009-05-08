@@ -21,11 +21,13 @@
  *****************************************************************************/
 
 #include <QtDebug>
+#include <QUrl>
 
 #include "PreviewWidget.h"
 #include "ui_PreviewWidget.h"
 #include "MediaListWidget.h"
 #include "Library.h"
+
 
 PreviewWidget::PreviewWidget( QWidget *parent ) :
     QDialog( parent ),
@@ -73,11 +75,21 @@ void    PreviewWidget::dragEnterEvent( QDragEnterEvent* event )
 {
     if ( event->mimeData()->hasFormat( "vlmc/uuid" ) )
         event->acceptProposedAction();
+    else if ( event->mimeData()->urls().count() == 1 )
+        event->acceptProposedAction();
 }
 
 void    PreviewWidget::dropEvent( QDropEvent* event )
 {
-    Media*   media = Library::getInstance()->getClip( QUuid( (const QString& )event->mimeData()->data( "vlmc/uuid" ) ) );
+    Media* media;
+    if ( event->mimeData()->urls().count() == 1 )
+    {
+        Library* lib = Library::getInstance();
+        lib->newMediaLoadingAsked( event->mimeData()->urls()[0].path() );
+        media = lib->getClip( event->mimeData()->urls()[0].path() );
+    }
+    else
+        media = Library::getInstance()->getClip( QUuid( (const QString& )event->mimeData()->data( "vlmc/uuid" ) ) );
 
     media->flushParameters();
     m_mediaPlayer->setMedia( media->getVLCMedia() );
