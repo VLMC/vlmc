@@ -37,7 +37,7 @@ QRectF GraphicsMovieItem::boundingRect() const
     return QRectF( 0, 0, m_width, m_height );
 }
 
-void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
+void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* )
 {
     painter->setBrush( Qt::red );
     painter->drawRect( boundingRect() );

@@ -15,7 +15,7 @@ QRectF GraphicsCursorItem::boundingRect() const
     return m_boundingRect;
 }
 
-void GraphicsCursorItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
+void GraphicsCursorItem::paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* )
 {
     painter->setPen( m_pen );
     painter->drawLine( 0, 0, 0, m_height );

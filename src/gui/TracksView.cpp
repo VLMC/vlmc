@@ -74,7 +74,7 @@ void TracksView::dropEvent( QDropEvent* event )
     event->acceptProposedAction();
 }
 
-void TracksView::dragMoveEvent( QDragMoveEvent* event )
+void TracksView::dragMoveEvent( QDragMoveEvent* )
 {
 
 }
@@ -156,7 +156,7 @@ void TracksView::mousePressEvent( QMouseEvent* event )
     QGraphicsView::mousePressEvent( event );
 }
 
-void TracksView::mouseReleaseEvent( QMouseEvent* event )
+void TracksView::mouseReleaseEvent( QMouseEvent* )
 {
     setDragMode( QGraphicsView::NoDrag );
 }

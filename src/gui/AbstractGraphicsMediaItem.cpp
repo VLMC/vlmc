@@ -32,12 +32,12 @@ TracksView* AbstractGraphicsMediaItem::tracksView()
     return m_tracksView;
 }
 
-void AbstractGraphicsMediaItem::mousePressEvent( QGraphicsSceneMouseEvent* event )
+void AbstractGraphicsMediaItem::mousePressEvent( QGraphicsSceneMouseEvent* )
 {
     setCursor( Qt::ClosedHandCursor );
 }
 
-void AbstractGraphicsMediaItem::mouseReleaseEvent( QGraphicsSceneMouseEvent* event )
+void AbstractGraphicsMediaItem::mouseReleaseEvent( QGraphicsSceneMouseEvent* )
 {
     setCursor( Qt::OpenHandCursor );
 }

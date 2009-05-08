@@ -31,7 +31,7 @@
 const int TracksRuler::comboScale[] = { 1, 2, 5, 10, 25, 50, 125, 250, 500, 725, 1500, 3000, 6000, 12000};
 
 TracksRuler::TracksRuler( TracksView* tracksView, QWidget* parent )
-    : QWidget( parent ), m_duration ( 0 ), m_offset( 0 ), m_tracksView( tracksView )
+    : QWidget( parent ), m_tracksView( tracksView ), m_duration ( 0 ), m_offset( 0 )
 {
     m_fps = 30;
     m_factor = 1;
