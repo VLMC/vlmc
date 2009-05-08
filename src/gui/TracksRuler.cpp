@@ -41,6 +41,10 @@ TracksRuler::TracksRuler( TracksView* tracksView, QWidget* parent )
     m_bigMarkDistance = FRAME_SIZE * m_fps * 60;
     setMinimumHeight( 30 );
     setPixelPerMark( 5 );
+
+    // Redraw the ruler when the cursor position change
+    connect( tracksView->tracksCursor(), SIGNAL( cursorPositionChanged(int) ),
+             this, SLOT( update() ) );
 }
 
 void TracksRuler::setPixelPerMark( double rate )

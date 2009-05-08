@@ -45,6 +45,7 @@ public:
     int tracksCount() const { return m_tracksCount; }
     void setCursorPos( int pos );
     int cursorPos();
+    GraphicsCursorItem* tracksCursor() const { return m_cursorLine; }
     void addClip( Media* clip, const QPoint& point );
     void setScale( double scaleFactor );
 
@@ -64,7 +65,6 @@ private:
     int m_tracksHeight;
     int m_tracksCount;
     int m_projectDuration;
-    int m_cursorPos;
     int m_fps;
     GraphicsCursorItem* m_cursorLine;
 
@@ -72,7 +72,6 @@ signals:
     void zoomIn();
     void zoomOut();
     void durationChanged( int duration );
-    void cursorPositionChanged( int pos );
 };
 
 #endif // TRACKSVIEW_H

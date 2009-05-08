@@ -50,8 +50,6 @@ TracksView::TracksView( QGraphicsScene* scene, QWidget* parent )
     const int maxHeight = m_tracksHeight * m_tracksCount;
     setSceneRect( 0, 0, sceneRect().width(), maxHeight );
 
-    m_cursorPos = 0;
-
     m_cursorLine = new GraphicsCursorItem( maxHeight, QPen( QColor( 220, 30, 30 ) ) );
     m_scene->addItem( m_cursorLine );
 }
@@ -117,12 +115,6 @@ void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
 
 void TracksView::mouseMoveEvent( QMouseEvent* event )
 {
-    int mappedXPos = ( int )( mapToScene( event->pos() ).x() + 0.5 );
-    if ( event->buttons() == Qt::LeftButton && event->modifiers() == Qt::NoModifier )
-    {
-        setCursorPos( mappedXPos );
-    }
-
     QGraphicsView::mouseMoveEvent( event );
 }
 
@@ -147,18 +139,13 @@ void TracksView::mousePressEvent( QMouseEvent* event )
         return;
     }
 
-    int mappedXPos = ( int )( mapToScene( event->pos() ).x() + 0.5 );
-    if ( event->buttons() == Qt::LeftButton && event->modifiers() == Qt::NoModifier )
-    {
-        setCursorPos( mappedXPos );
-    }
-
     QGraphicsView::mousePressEvent( event );
 }
 
-void TracksView::mouseReleaseEvent( QMouseEvent* )
+void TracksView::mouseReleaseEvent( QMouseEvent* event )
 {
     setDragMode( QGraphicsView::NoDrag );
+    QGraphicsView::mouseReleaseEvent( event );
 }
 
 void TracksView::wheelEvent( QWheelEvent* event )
@@ -182,15 +169,13 @@ void TracksView::wheelEvent( QWheelEvent* event )
 
 void TracksView::setCursorPos( int pos )
 {
-    m_cursorPos = pos;
-    if ( m_cursorPos < 0 ) m_cursorPos = 0;
-    m_cursorLine->setPos( m_cursorPos, 0 );
-    emit cursorPositionChanged( pos );
+    if ( pos < 0 ) pos = 0;
+    m_cursorLine->setCursorPos( pos );
 }
 
 int TracksView::cursorPos()
 {
-    return m_cursorPos;
+    return m_cursorLine->cursorPos();
 }
 
 void TracksView::addClip( Media* clip, const QPoint& point )

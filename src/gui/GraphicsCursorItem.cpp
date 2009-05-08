@@ -3,9 +3,9 @@
 GraphicsCursorItem::GraphicsCursorItem( int height, const QPen& pen )
         : m_height( height ), m_pen( pen )
 {
-    setFlags( QGraphicsItem::ItemIgnoresTransformations );
-    setZValue( 100 );
+    setFlags( QGraphicsItem::ItemIgnoresTransformations | QGraphicsItem::ItemIsMovable );
     setCursor( QCursor( Qt::SizeHorCursor ) );
+    setZValue( 100 );
 
     m_boundingRect = QRectF( -2, 0, 3, m_height );
 }
@@ -19,4 +19,22 @@ void GraphicsCursorItem::paint( QPainter* painter, const QStyleOptionGraphicsIte
 {
     painter->setPen( m_pen );
     painter->drawLine( 0, 0, 0, m_height );
+}
+
+QVariant GraphicsCursorItem::itemChange( GraphicsItemChange change, const QVariant& value )
+{
+    if ( change == ItemPositionChange )
+    {
+        qreal posX = value.toPointF().x();
+        if ( posX < 0 ) posX = 0;
+        if ( posX != pos().x() )
+            emit cursorPositionChanged( posX );
+        return QPoint( posX, pos().y() );
+    }
+    return QGraphicsItem::itemChange( change, value );
+}
+
+void GraphicsCursorItem::setCursorPos( int position )
+{
+    setPos( position, pos().y() );
 }
