@@ -37,7 +37,9 @@ SOURCES += src/main.cpp \
     src/gui/AbstractGraphicsMediaItem.cpp \
     src/Media.cpp \
     src/gui/FileBrowser.cpp \
-    src/gui/GraphicsCursorItem.cpp
+    src/gui/GraphicsCursorItem.cpp \
+    src/TimelineBackend.cpp \
+    src/Track.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -67,7 +69,9 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/GraphicsMovieItem.h \
     src/Media.h \
     src/gui/FileBrowser.h \
-    src/gui/GraphicsCursorItem.h
+    src/gui/GraphicsCursorItem.h \
+    src/TimelineBackend.h \
+    src/Track.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \
@@ -76,7 +80,7 @@ FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/About.ui \
     src/gui/ui/Transcode.ui \
     src/gui/ui/FileBrowser.ui
-FORMS += 
+FORMS +=
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts
