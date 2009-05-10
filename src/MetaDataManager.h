@@ -64,6 +64,8 @@ class MetaDataManager : public QThread, public Singleton<MetaDataManager>
         static  void                instanceParameterHandler( void*, char*, char* );
 
     private:
+        void                        getMetaData();
+
         LibVLCpp::MediaPlayer*      m_mediaPlayer;
         QWidget*                    m_renderWidget;
 
@@ -76,13 +78,17 @@ class MetaDataManager : public QThread, public Singleton<MetaDataManager>
         //FIXME: Won't work in asynchrone mode
         char*                       m_tmpSnapshotFilename;
 
+        bool                        m_mediaIsPlaying;
+        bool                        m_lengthHasChanged;
+
     private slots:
         void    renderSnapshot();
-        void    getMetaData();
         void    newMediaLoaded( Media* );
         void    setSnapshot();
         void    startAudioDataParsing();
         void    stopAudioDataParsing();
+        void    entrypointPlaying();
+        void    entrypointLengthChanged();
 };
 
 #endif // METADATAMANAGER_H

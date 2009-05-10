@@ -29,7 +29,8 @@
 #include "MetaDataManager.h"
 #include "Library.h"
 
-MetaDataManager::MetaDataManager() : m_renderWidget( NULL )
+MetaDataManager::MetaDataManager() : m_renderWidget( NULL ),
+    m_mediaIsPlaying( false), m_lengthHasChanged( false )
 {
     m_mediaPlayer = new LibVLCpp::MediaPlayer();
     connect( Library::getInstance(), SIGNAL( newMediaLoaded( Media* ) ),this, SLOT( newMediaLoaded( Media* ) ) );
@@ -62,7 +63,6 @@ void    MetaDataManager::run()
     {
         if ( m_nextMedia )
         {
-            qDebug() << "Laucnhing thread for a new video";
             m_nextMedia = false;
 
             m_currentClip = m_mediaList.front();
@@ -75,9 +75,9 @@ void    MetaDataManager::run()
             m_currentClip->addParam( ":audio" );
 
             m_mediaPlayer->setMedia( m_currentClip->getVLCMedia() );
-            connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( getMetaData() ) );
+            connect( m_mediaPlayer, SIGNAL( lengthChanged() ), this, SLOT( entrypointLengthChanged() ) );
+            connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( entrypointPlaying() ) );
             m_mediaPlayer->play();
-            qDebug() << "play asked";
         }
         usleep( 10000 );
     }
@@ -86,8 +86,9 @@ void    MetaDataManager::run()
 
 void    MetaDataManager::getMetaData()
 {
-    qDebug() << "getMetaData";
-    disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( getMetaData() ) );
+    qDebug() << "Entering getMetaData()";
+    m_mediaIsPlaying = false;
+    m_lengthHasChanged = false;
 
     m_nextMedia = true;
     m_currentClip->setLength( m_mediaPlayer->getLength() );
@@ -101,7 +102,6 @@ void    MetaDataManager::getMetaData()
 
 void    MetaDataManager::renderSnapshot()
 {
-    qDebug() << "Rendering snapshot";
     disconnect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( renderSnapshot() ) );
     QTemporaryFile tmp;
     tmp.setAutoRemove( false );
@@ -118,7 +118,6 @@ void    MetaDataManager::renderSnapshot()
 
 void    MetaDataManager::setSnapshot()
 {
-    qDebug() << "Setting snapshot";
     QPixmap* pixmap = new QPixmap( m_tmpSnapshotFilename );
     if ( pixmap->isNull() )
         delete pixmap;
@@ -129,7 +128,6 @@ void    MetaDataManager::setSnapshot()
     //CHECKME:
     //This is synchrone, but it may become asynchrone in the future...
 
-    qDebug() << "Stopping playback";
     m_mediaPlayer->stop();
     //startAudioDataParsing();
 }
@@ -197,3 +195,20 @@ void    MetaDataManager::closeSoundBuffer( void* datas )
 void    MetaDataManager::instanceParameterHandler( void*, char*, char* )
 {
 }
+
+void    MetaDataManager::entrypointLengthChanged()
+{
+    disconnect( m_mediaPlayer, SIGNAL( lengthChanged() ), this, SLOT( entrypointLengthChanged() ) );
+    m_lengthHasChanged = true;
+    if ( m_mediaIsPlaying == true )
+        getMetaData();
+}
+
+void    MetaDataManager::entrypointPlaying()
+{
+    disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( entrypointPlaying() ) );
+    m_mediaIsPlaying = true;
+    if ( m_lengthHasChanged == true )
+        getMetaData();
+}
+
