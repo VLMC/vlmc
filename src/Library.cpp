@@ -33,7 +33,7 @@ Library::Library()
 {
 }
 
-Media*       Library::getClip( const QUuid& uuid )
+Media*       Library::getMedia( const QUuid& uuid )
 {
     QMutexLocker locker( &m_mutex );
     QHash<QUuid, Media*>::iterator   it = m_medias.find( uuid );
@@ -42,7 +42,7 @@ Media*       Library::getClip( const QUuid& uuid )
     return *it;
 }
 
-Media*      Library::getClip( const QString& path )
+Media*      Library::getMedia( const QString& path )
 {
     QMutexLocker locker( &m_mutex );
     QHash<QUuid, Media*>::iterator it;

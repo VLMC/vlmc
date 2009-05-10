@@ -66,7 +66,7 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
 void TracksView::dropEvent( QDropEvent* event )
 {
     QUuid uuid = QUuid( (const QString& )event->mimeData()->data( "vlmc/uuid" ) );
-    Media* media = Library::getInstance()->getClip( uuid );
+    Media* media = Library::getInstance()->getMedia( uuid );
     if ( !media )
         return;
 

@@ -86,10 +86,10 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
     {
         Library* lib = Library::getInstance();
         lib->newMediaLoadingAsked( event->mimeData()->urls()[0].path() );
-        media = lib->getClip( event->mimeData()->urls()[0].path() );
+        media = lib->getMedia( event->mimeData()->urls()[0].path() );
     }
     else
-        media = Library::getInstance()->getClip( QUuid( ( const QString& )event->mimeData()->data( "vlmc/uuid" ) ) );
+        media = Library::getInstance()->getMedia( QUuid( ( const QString& )event->mimeData()->data( "vlmc/uuid" ) ) );
 
     media->flushParameters();
     m_mediaPlayer->setMedia( media->getVLCMedia() );
