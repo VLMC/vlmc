@@ -72,32 +72,17 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
     MediaPlayer* self = reinterpret_cast<MediaPlayer*>( ptr );
     switch ( event->type )
     {
-//    case libvlc_MediaMetaChanged:
-//    case libvlc_MediaSubItemAdded:
-//    case libvlc_MediaDurationChanged:
-//    case libvlc_MediaPreparsedChanged:
-//    case libvlc_MediaFreed:
-//    case libvlc_MediaStateChanged:
-//    case libvlc_MediaPlayerNothingSpecial:
-//    case libvlc_MediaPlayerOpening:
-//    case libvlc_MediaPlayerBuffering:
     case libvlc_MediaPlayerPlaying:
-        qDebug() << "Playing event";
         self->emit playing();
         break;
     case libvlc_MediaPlayerPaused:
-//        qDebug() << "Paused event";
         self->emit paused();
         break;
     case libvlc_MediaPlayerStopped:
-//        qDebug() << "Stopped event";
         self->emit stopped();
-//    case libvlc_MediaPlayerForward:
-//    case libvlc_MediaPlayerBackward:
         break;
     case libvlc_MediaPlayerEndReached:
         self->emit endReached();
-//    case libvlc_MediaPlayerEncounteredError:
         break;
     case libvlc_MediaPlayerTimeChanged:
         //self->timeChangedFilter();
@@ -109,26 +94,20 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
     case libvlc_MediaPlayerLengthChanged:
         self->emit lengthChanged();
         break;
-//    case libvlc_MediaPlayerSeekableChanged:
-//    case libvlc_MediaPlayerPausableChanged:
-//    case libvlc_MediaListItemAdded:
-//    case libvlc_MediaListWillAddItem:
-//    case libvlc_MediaListItemDeleted:
-//    case libvlc_MediaListWillDeleteItem:
-//    case libvlc_MediaListViewItemAdded:
-//    case libvlc_MediaListViewWillAddItem:
-//    case libvlc_MediaListViewItemDeleted:
-//    case libvlc_MediaListViewWillDeleteItem:
-//    case libvlc_MediaListPlayerPlayed:
-//    case libvlc_MediaListPlayerNextItemSet:
-//    case libvlc_MediaListPlayerStopped:
-//    case libvlc_MediaDiscovererStarted:
-//    case libvlc_MediaDiscovererEnded:
-//    case libvlc_MediaPlayerTitleChanged:
     case libvlc_MediaPlayerSnapshotTaken:
         self->emit snapshotTaken();
         break;
+    case libvlc_MediaPlayerSeekableChanged:
+    case libvlc_MediaPlayerPausableChanged:
+    case libvlc_MediaPlayerTitleChanged:
+    case libvlc_MediaPlayerNothingSpecial:
+    case libvlc_MediaPlayerOpening:
+    case libvlc_MediaPlayerBuffering:
+    case libvlc_MediaPlayerForward:
+    case libvlc_MediaPlayerBackward:
+    case libvlc_MediaPlayerEncounteredError:
     default:
+        qDebug() << "Unknown mediaPlayerEvent: " << event->type;
         break;
     }
 }
@@ -185,7 +164,7 @@ qint64                          MediaPlayer::getLength()
     return length;
 }
 
-void                            MediaPlayer::takeSnapshot( char* outputFile, unsigned int width, unsigned int heigth )
+void                            MediaPlayer::takeSnapshot( const char* outputFile, unsigned int width, unsigned int heigth )
 {
     libvlc_video_take_snapshot( *this, outputFile, width, heigth, m_ex );
     CheckVlcppException( m_ex );

@@ -48,7 +48,7 @@ namespace   LibVLCpp
         float                               getPosition();
         void                                setPosition( float pos );
         qint64                              getLength();
-        void                                takeSnapshot( char* outputFile, unsigned int width, unsigned int heigth );
+        void                                takeSnapshot( const char* outputFile, unsigned int width, unsigned int heigth );
         bool                                isPlaying();
         bool                                isSeekable();
         void                                setDrawable( void* hwnd );

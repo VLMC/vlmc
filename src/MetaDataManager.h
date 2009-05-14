@@ -76,7 +76,7 @@ class MetaDataManager : public QThread, public Singleton<MetaDataManager>
         bool                        m_nextMedia;
         Media*                      m_currentClip;
         //FIXME: Won't work in asynchrone mode
-        char*                       m_tmpSnapshotFilename;
+        QString                     m_tmpSnapshotFilename;
 
         bool                        m_mediaIsPlaying;
         bool                        m_lengthHasChanged;

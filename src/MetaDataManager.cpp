@@ -34,7 +34,6 @@ MetaDataManager::MetaDataManager() : m_renderWidget( NULL ),
 {
     m_mediaPlayer = new LibVLCpp::MediaPlayer();
     connect( Library::getInstance(), SIGNAL( newMediaLoaded( Media* ) ),this, SLOT( newMediaLoaded( Media* ) ) );
-    m_tmpSnapshotFilename = new char[512];
     m_renderWidget = new QWidget();
     m_mediaPlayer->setDrawable( m_renderWidget->winId() );
 }
@@ -45,7 +44,6 @@ MetaDataManager::~MetaDataManager()
         delete m_mediaPlayer;
     if (m_renderWidget)
         delete m_renderWidget;
-    delete[] m_tmpSnapshotFilename;
 }
 
 void    MetaDataManager::newMediaLoaded( Media* item )
@@ -86,7 +84,6 @@ void    MetaDataManager::run()
 
 void    MetaDataManager::getMetaData()
 {
-    qDebug() << "Entering getMetaData()";
     m_mediaIsPlaying = false;
     m_lengthHasChanged = false;
 
@@ -106,13 +103,13 @@ void    MetaDataManager::renderSnapshot()
     QTemporaryFile tmp;
     tmp.setAutoRemove( false );
     tmp.open();
-
-    strncpy(m_tmpSnapshotFilename, tmp.fileName().toStdString().c_str(), tmp.fileName().length());
+    m_tmpSnapshotFilename = tmp.fileName();
 
     connect( m_mediaPlayer, SIGNAL( snapshotTaken() ), this, SLOT( setSnapshot() ) );
 
     //The slot should be triggered in this methode
-    m_mediaPlayer->takeSnapshot( m_tmpSnapshotFilename, 32, 32 );
+    m_mediaPlayer->takeSnapshot( m_tmpSnapshotFilename.toStdString().c_str()
+                                 , 32, 32 );
     //Snapshot slot should has been called (but maybe not in next version...)
 }
 
@@ -123,6 +120,10 @@ void    MetaDataManager::setSnapshot()
         delete pixmap;
     else
         m_currentClip->setSnapshot( pixmap );
+    //TODO : we shouldn't have to do this... patch vlc to get a memory snapshot.
+    QFile   tmp( m_tmpSnapshotFilename );
+    tmp.remove();
+
     disconnect( m_mediaPlayer, SIGNAL( snapshotTaken() ), this, SLOT( setSnapshot() ) );
 
     //CHECKME:
