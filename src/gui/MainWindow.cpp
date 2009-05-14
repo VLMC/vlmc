@@ -58,8 +58,6 @@ MainWindow::MainWindow( QWidget *parent ) :
 
 MainWindow::~MainWindow()
 {
-    if (m_metaDataManager)
-        delete m_metaDataManager;
 }
 
 void MainWindow::changeEvent( QEvent *e )
@@ -148,7 +146,7 @@ void MainWindow::m_initializeDockWidgets( void )
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
 
-    m_metaDataManager = new MetaDataManager();
+    m_metaDataManager = MetaDataManager::getInstance();
 }
 
 //Private slots definition

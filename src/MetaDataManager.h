@@ -4,6 +4,7 @@
  * Copyright (C) 2008-2009 the VLMC team
  *
  * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
+ * Authors: Geoffroy Lacarriere <geoffroylaca@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,6 +20,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
 /** \file
   * This file contains the MetaDataManager class declaration/definition.
   * It used by the library in Library.[hc]pp.
@@ -34,17 +36,23 @@
 #include <QWidget>
 #include "Media.h"
 #include "VLCMediaPlayer.h"
+#include "Singleton.hpp"
 
-class MetaDataManager : public QThread
+class MetaDataManager : public QThread, public Singleton<MetaDataManager>
 {
     Q_OBJECT
     Q_DISABLE_COPY( MetaDataManager )
 
+    friend class Singleton<MetaDataManager>;
+
     public:
+        Media*                  getCurrentMedia() { return m_currentClip; }
+        LibVLCpp::MediaPlayer*  getMediaPlayer() { return m_mediaPlayer; }
+
+    private:
         MetaDataManager();
         ~MetaDataManager();
 
-    private:
         virtual void                run();
         //AMEM part :
         static  void                openSoundBuffer( void* datas, unsigned int* freq,
@@ -74,6 +82,7 @@ class MetaDataManager : public QThread
         void    newMediaLoaded( Media* );
         void    setSnapshot();
         void    startAudioDataParsing();
+        void    stopAudioDataParsing();
 };
 
 #endif // METADATAMANAGER_H

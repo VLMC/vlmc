@@ -44,11 +44,14 @@ public:
 
     void setWidth( int width );
     void setHeight( int height );
+    //void setAudioSpectrum( QVector<float*> spectrum );
+    void paintAudioSpectrum( QPainter* painter );
 
 private:
-    Media*  m_media;
-    int     m_width;
-    int     m_height;
+    Media*          m_media;
+    int             m_width;
+    int             m_height;
+    QVector<float*> m_audioSpectrum;
 };
 
 #endif // GRAPHICSMOVIEITEM_H

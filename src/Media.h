@@ -38,6 +38,19 @@
 
 #include "VLCMedia.h"
 
+struct          audioData
+{
+    void*               datas;
+    unsigned int*       freq;
+    unsigned int*       nbChannels;
+    unsigned int*       fourCCFormat;
+    unsigned int*       frameSize;
+    unsigned int        nbSample;
+    unsigned char*      buffer;
+    size_t              buffSize;
+    QVector<int*>       frameList;
+};
+
 /**
   * Represents a basic container for media informations.
   */
@@ -71,6 +84,13 @@ public:
 
     const QUuid&                getUuid() const;
 
+    void                        initAudioData( void* datas, unsigned int* freq, unsigned int* nbChannels, unsigned int* fourCCFormat, unsigned int* frameSize );
+    void                        addAudioFrame( void* datas, unsigned char* buffer, size_t buffSize, unsigned int nbSample );
+
+    audioData*                  getAudioData() { return &m_audioData; }
+    QVector<int*>               getAudioFrameList() { return m_audioData.frameList; }
+    unsigned int                getAudioNbSample() { return m_audioData.nbSample; }
+
 protected:
     static QPixmap*             defaultSnapshot;
 
@@ -83,6 +103,8 @@ protected:
     qint64                      m_length;
     unsigned int                m_width;
     unsigned int                m_height;
+    int*                        m_audioSpectrum;
+    audioData                   m_audioData;
 
 signals:
     void                        snapshotChanged();

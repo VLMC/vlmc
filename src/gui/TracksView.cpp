@@ -193,6 +193,7 @@ void TracksView::addClip( Media* clip, const QPoint& point )
     item->setPos( mappedXPos, track * tracksHeight() );
     item->setWidth( ( (double)clip->getLength() / 1000 ) * m_fps );
     item->setHeight( tracksHeight() );
+    //item->setAudioSpectrum( clip->getAudioSpectrum() );
     m_scene->addItem( item );
     int duration = mappedXPos + ( (double)clip->getLength() / 1000 ) * m_fps;
     if ( duration > m_projectDuration )

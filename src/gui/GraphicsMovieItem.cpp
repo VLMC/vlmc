@@ -22,6 +22,8 @@
 
 #include "GraphicsMovieItem.h"
 #include "TracksView.h"
+#include <QPainter>
+#include <QDebug>
 
 GraphicsMovieItem::GraphicsMovieItem( Media* media ) : m_media ( media ), m_width( 0 ), m_height( 0 )
 {
@@ -41,6 +43,8 @@ void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 {
     painter->setBrush( Qt::red );
     painter->drawRect( boundingRect() );
+
+    paintAudioSpectrum( painter );
 }
 
 
@@ -52,4 +56,48 @@ void GraphicsMovieItem::setWidth( int width )
 void GraphicsMovieItem::setHeight( int height )
 {
     m_height = height;
+}
+
+void GraphicsMovieItem::paintAudioSpectrum( QPainter* painter )
+{
+    qreal x1, x2, y1, y2;
+    QRectF tmp = boundingRect();
+    tmp.getCoords( &x1, &y1, &x2, &y2 );
+
+    painter->setPen( Qt::black );
+    painter->setBrush( Qt::black );
+
+    QLineF line;
+
+    for (int i = 0; i < m_media->getAudioFrameList().size(); i++)
+    {
+        //qDebug() << "Frame: " << i << "/" << m_media->getAudioFrameList().size();
+        for (int u = 0; u < m_media->getAudioNbSample(); u += 400)
+        {
+
+
+            int value = m_media->getAudioFrameList()[i][u];
+            value /= 30;
+            if( value > 48 ) value = 48;
+            if( value < 0 ) value = 0;
+
+            //qDebug() << "frame nb:" << i << " buff value: " << value;
+
+            static QPointF point = QPointF( x1, ( y2 - y1 ) / 2 );
+
+            qreal y = ( ( y2 - y1 ) / 2 ) - value / 2;
+            x1 += 2;
+            QPointF point2( x1, y );
+
+            line.setPoints( point, point2);
+            //line.setLine( x1 , y, x1 + 2, y);
+
+
+            painter->drawLine(line);
+            //painter->drawRect(tmp);
+
+            point.setX( point2.x() );
+            point.setY( point2.y() );
+        }
+    }
 }
