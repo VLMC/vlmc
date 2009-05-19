@@ -40,7 +40,8 @@ SOURCES += src/main.cpp \
     src/gui/GraphicsCursorItem.cpp \
     src/TimelineBackend.cpp \
     src/Track.cpp \
-    src/Workflow/ClipWorkflow.cpp
+    src/Workflow/ClipWorkflow.cpp \
+    src/Workflow/TrackWorkflow.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -73,7 +74,8 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/GraphicsCursorItem.h \
     src/TimelineBackend.h \
     src/Track.h \
-    src/Workflow/ClipWorkflow.h
+    src/Workflow/ClipWorkflow.h \
+    src/Workflow/TrackWorkflow.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \

@@ -20,22 +20,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QtDebug>
 
 #include "ClipWorkflow.h"
 
 ClipWorkflow::ClipWorkflow( Clip::Clip* clip, QMutex* condMutex, QWaitCondition* waitCond ) :
                 m_clip( clip ),
-                m_renderComplete( true ),
+                m_renderComplete( false ),
                 m_buffer( NULL ),
                 m_condMutex( condMutex ),
                 m_waitCond( waitCond ),
                 m_mediaPlayer(NULL)
 {
     m_mutex = new QReadWriteLock();
+    m_buffer = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
 }
 
 ClipWorkflow::~ClipWorkflow()
 {
+    delete[] m_buffer;
     delete m_mutex;
 }
 
@@ -65,6 +68,7 @@ void    ClipWorkflow::unlock( ClipWorkflow* clipWorkflow )
         QWriteLocker    lock2( clipWorkflow->m_mutex );
         clipWorkflow->m_renderComplete = true;
     }
+    //qDebug() << "Frame rendered, sleeping mode";
     clipWorkflow->m_waitCond->wait( clipWorkflow->m_condMutex );
 }
 
