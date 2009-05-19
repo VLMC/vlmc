@@ -130,7 +130,7 @@ void    MetaDataManager::setSnapshot()
     //This is synchrone, but it may become asynchrone in the future...
 
     m_mediaPlayer->stop();
-    //startAudioDataParsing();
+    startAudioDataParsing();
 }
 
 void    MetaDataManager::startAudioDataParsing()

@@ -32,39 +32,28 @@
 #include "VLCException.h"
 #include "VLCInstance.h"
 
-#define VIDEOWIDTH 854
-#define VIDEOHEIGHT 480
-
 namespace LibVLCpp
 {
     class   Media : public Internal< libvlc_media_t >
     {
     public:
-        struct          DataCtx
-        {
-            ~DataCtx();
-            QMutex*         mutex;
-            Media*          media;
-        };
-        typedef void    (*lockCallback)( Media::DataCtx* dataCtx, void **pp_ret );
-        typedef void    (*unlockCallback)( Media::DataCtx* dataCtx );
+        typedef void    (*lockCallback)( void* dataCtx, void **pp_ret );
+        typedef void    (*unlockCallback)( void* dataCtx );
 
         Media( const QString& filename );
         ~Media();
         void                addOption( const char* opt );
         void                setLockCallback( Media::lockCallback );
         void                setUnlockCallback( Media::unlockCallback );
-        void                setDataCtx();
+        void                setDataCtx( void* dataCtx );
         void                outputInVmem();
         void                outputInWindow();
         void                setPixelBuffer( uchar* buffer );
         uchar*              getPixelBuffer();
 
     private:
-        DataCtx*            buildDataCtx();
 
         Exception           m_ex;
-        DataCtx*            m_dataCtx;
         uchar*              m_pixelBuffer;
     };
 }

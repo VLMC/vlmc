@@ -27,7 +27,7 @@
 using namespace LibVLCpp;
 
 Media::Media( const QString& filename )
-    : m_dataCtx( NULL ), m_pixelBuffer( NULL )
+    : m_pixelBuffer( NULL )
 {
     m_internalPtr = libvlc_media_new( *(LibVLCpp::Instance::getInstance()), filename.toLocal8Bit(), m_ex );
     CheckVlcppException(m_ex);
@@ -36,18 +36,6 @@ Media::Media( const QString& filename )
 Media::~Media()
 {
     libvlc_media_release( m_internalPtr );
-    if ( m_pixelBuffer != NULL )
-        delete[] m_pixelBuffer;
-    if ( m_dataCtx != NULL )
-        delete m_dataCtx;
-}
-
-Media::DataCtx*         Media::buildDataCtx()
-{
-    Media::DataCtx* dataCtx = new Media::DataCtx;
-    dataCtx->mutex = new QMutex();
-    dataCtx->media = this;
-    return dataCtx;
 }
 
 void                    Media::addOption( const char* opt )
@@ -55,11 +43,6 @@ void                    Media::addOption( const char* opt )
     libvlc_media_add_option( m_internalPtr, opt, m_ex);
     CheckVlcppException(m_ex);
     qDebug() << "Added media option: " << opt;
-}
-
-Media::DataCtx::~DataCtx()
-{
-    delete mutex;
 }
 
 void                    Media::setLockCallback( Media::lockCallback callback )
@@ -76,15 +59,15 @@ void                    Media::setUnlockCallback( Media::unlockCallback callback
     addOption( param );
 }
 
-void                    Media::setDataCtx()
+void                    Media::setDataCtx( void* dataCtx )
 {
     char    param[64];
 
-    m_dataCtx = new Media::DataCtx;
-    m_dataCtx->mutex = new QMutex();
-    m_dataCtx->media = this;
+//    m_dataCtx = new Media::DataCtx;
+//    m_dataCtx->mutex = new QMutex();
+//    m_dataCtx->media = this;
 
-    sprintf( param, ":vmem-data=%lld", (qint64)(intptr_t)m_dataCtx );
+    sprintf( param, ":vmem-data=%lld", (qint64)(intptr_t)dataCtx );
     addOption( param );
 }
 
