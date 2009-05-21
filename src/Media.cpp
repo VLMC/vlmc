@@ -157,11 +157,11 @@ void                Media::addAudioFrame( void* datas, unsigned char* buffer, si
     for (int i = 0, u = 0; u < m_audioData.nbSample; i += 4, u++)
     {
         int value = buffer[i];
-        value << 8;
+        value <<= 8;
         value += buffer[i + 1];
-        value << 8;
+        value <<= 8;
         value += buffer[i + 2];
-        value << 8;
+        value <<= 8;
         value += buffer[i + 3];
         frame[u] = value;
     }
