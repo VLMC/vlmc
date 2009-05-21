@@ -31,7 +31,6 @@ SOURCES += src/main.cpp \
     src/gui/Transcode.cpp \
     src/gui/Slider.cpp \
     src/MetaDataManager.cpp \
-    src/LibVLCpp/VLCMediaList.cpp \
     src/Library.cpp \
     src/gui/GraphicsMovieItem.cpp \
     src/gui/AbstractGraphicsMediaItem.cpp \
@@ -43,7 +42,8 @@ SOURCES += src/main.cpp \
     src/Workflow/ClipWorkflow.cpp \
     src/Workflow/TrackWorkflow.cpp \
     src/Workflow/MainWorkflow.cpp \
-    src/gui/PreviewWidget.cpp
+    src/gui/PreviewWidget.cpp \
+    src/gui/RenderPreviewWidget.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -66,7 +66,6 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/Transcode.h \
     src/gui/Slider.h \
     src/MetaDataManager.h \
-    src/LibVLCpp/VLCMediaList.h \
     src/Singleton.hpp \
     src/Library.h \
     src/gui/AbstractGraphicsMediaItem.h \
@@ -79,7 +78,8 @@ HEADERS += src/gui/MainWindow.h \
     src/Workflow/ClipWorkflow.h \
     src/Workflow/TrackWorkflow.h \
     src/Workflow/MainWorkflow.h \
-    src/gui/PreviewWidget.h
+    src/gui/PreviewWidget.h \
+    src/gui/RenderPreviewWidget.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \

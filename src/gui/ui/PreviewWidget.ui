@@ -47,12 +47,17 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="ProjectTab">
       <attribute name="title">
        <string>Project</string>
       </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QWidget" name="renderPreviewRenderWidget" native="true"/>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="ClipTab">
       <attribute name="title">
@@ -60,7 +65,7 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
-        <widget class="QWidget" name="clipRenderWidget" native="true"/>
+        <widget class="QWidget" name="clipPreviewRenderWidget" native="true"/>
        </item>
       </layout>
      </widget>

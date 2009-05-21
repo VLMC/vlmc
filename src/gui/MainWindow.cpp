@@ -141,7 +141,7 @@ void MainWindow::m_initializeDockWidgets( void )
 
     setupLibrary();
 
-    dockManager->addDockedWidget( new PreviewWidget( this ),
+    dockManager->addDockedWidget( new PreviewWidget( m_timeline->getMainWorkflow(), this ),
                                   tr( "Preview" ),
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,

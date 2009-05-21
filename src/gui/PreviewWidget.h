@@ -25,7 +25,9 @@
 #define PREVIEWWIDGET_H
 
 #include <QWidget>
+#include "Workflow/MainWorkflow.h"
 #include "ClipPreviewWidget.h"
+#include "RenderPreviewWidget.h"
 
 namespace Ui {
     class PreviewWidget;
@@ -37,14 +39,19 @@ class   PreviewWidget : public QWidget
     Q_DISABLE_COPY( PreviewWidget )
 
 public:
-    explicit PreviewWidget( QWidget* parent = NULL );
+    explicit PreviewWidget( MainWorkflow* mainWorkflow, QWidget* parent = NULL );
     virtual ~PreviewWidget();
 
 private:
     Ui::PreviewWidget*      m_ui;
     ClipPreviewWidget*      m_clipPreview;
+    RenderPreviewWidget*    m_renderPreview;
     bool                    m_endReached;
     bool                    m_previewStopped;
+    int                     m_currentMode;
+
+    static const int        clipPreviewMode = 0;
+    static const int        renderPreviewMode = 1;
 
 protected:
     virtual void    changeEvent( QEvent *e );
@@ -59,6 +66,8 @@ private slots:
     void            videoPaused();
     void            videoPlaying();
     void            endReached();
+
+    void            changedTab( int );
 };
 
 #endif // PREVIEWWIDGET_H

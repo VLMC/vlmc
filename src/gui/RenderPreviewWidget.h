@@ -1,5 +1,5 @@
 /*****************************************************************************
- * ClipPreviewWidget.cpp: Preview widget
+ * RenderPreviewWidget.h: Allow a current workflow preview
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,32 +20,33 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef CLIPPREVIEWWIDGET_H
-#define CLIPPREVIEWWIDGET_H
+#ifndef RENDERPREVIEWWIDGET_H
+#define RENDERPREVIEWWIDGET_H
 
-#include <QWidget>
 #include <QObject>
+#include <QWidget>
+#include <QtDebug>
 
 #include "VLCMediaPlayer.h"
-#include "Media.h"
+#include "Workflow/MainWorkflow.h"
 
-//TODO: This should really share a common interface with RenderPreviewWorkflow
-class ClipPreviewWidget : public QObject
+//TODO: This should really share a common interface with ClipPreviewWorkflow
+class   RenderPreviewWidget : public QObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY( ClipPreviewWidget )
-public:
-    explicit ClipPreviewWidget( QWidget* renderWidget );
-    virtual ~ClipPreviewWidget();
+    Q_DISABLE_COPY( RenderPreviewWidget )
 
-    void                    startPreview( Media* media );
-    void                    setPosition( float newPos );
-    void                    togglePlayPause();
+    public:
+        RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* renderWidget );
+        ~RenderPreviewWidget();
 
-private:
-    LibVLCpp::MediaPlayer*  m_mediaPlayer;
-    bool                    m_clipLoaded;
-    bool                    m_videoStopped;
+        void                        startPreview();
+        void                        setPosition( float newPos );
+        void                        togglePlayPause();
+
+    private:
+        MainWorkflow*               m_mainWorkflow;
+        LibVLCpp::MediaPlayer*      m_mediaPlayer;
 
 public slots:
     void                    __positionChanged();
@@ -61,4 +62,4 @@ signals:
     void                    endReached();
 };
 
-#endif // CLIPPREVIEWWIDGET_H
+#endif // RENDERPREVIEWWIDGET_H

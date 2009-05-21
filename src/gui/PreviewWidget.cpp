@@ -28,7 +28,7 @@
 #include "MediaListWidget.h"
 #include "Library.h"
 
-PreviewWidget::PreviewWidget( QWidget *parent ) :
+PreviewWidget::PreviewWidget( MainWorkflow* mainWorkflow, QWidget *parent ) :
     QWidget( parent ),
     m_ui( new Ui::PreviewWidget ), m_previewStopped( true )
 {
@@ -45,7 +45,12 @@ PreviewWidget::PreviewWidget( QWidget *parent ) :
     connect( m_ui->seekSlider, SIGNAL( sliderPosChanged(int) ), this,   SLOT( seekSliderMoved(int) ) );
     connect( m_ui->seekSlider, SIGNAL( sliderReleased() ),      this,   SLOT( seekSliderReleased() ) );
 
-    m_clipPreview = new ClipPreviewWidget( m_ui->clipRenderWidget );
+    m_clipPreview = new ClipPreviewWidget( m_ui->clipPreviewRenderWidget );
+    m_renderPreview = new RenderPreviewWidget( mainWorkflow, m_ui->renderPreviewRenderWidget );
+
+    m_currentMode = m_ui->tabWidget->currentIndex();
+    qDebug() << "m_currentMode = " << m_currentMode;
+    connect( m_ui->tabWidget, SIGNAL( currentChanged(int) ), this, SLOT( changedTab(int) ) );
 }
 
 PreviewWidget::~PreviewWidget()
@@ -75,25 +80,28 @@ void    PreviewWidget::dragEnterEvent( QDragEnterEvent* event )
 
 void    PreviewWidget::dropEvent( QDropEvent* event )
 {
-    Media* media;
-    if ( event->mimeData()->urls().count() == 1 )
+    if ( m_currentMode == PreviewWidget::clipPreviewMode )
     {
-        Library* lib = Library::getInstance();
-        lib->newMediaLoadingAsked( event->mimeData()->urls()[0].path() );
-        media = lib->getMedia( event->mimeData()->urls()[0].path() );
+        Media* media;
+        if ( event->mimeData()->urls().count() == 1 )
+        {
+            Library* lib = Library::getInstance();
+            lib->newMediaLoadingAsked( event->mimeData()->urls()[0].path() );
+            media = lib->getMedia( event->mimeData()->urls()[0].path() );
+        }
+        else
+            media = Library::getInstance()->getMedia( QUuid( ( const QString& )event->mimeData()->data( "vlmc/uuid" ) ) );
+
+        connect( m_clipPreview,     SIGNAL( stopped() ),                this,       SLOT( videoPaused() ) );
+        connect( m_clipPreview,     SIGNAL( paused() ),                 this,       SLOT( videoPaused() ) );
+        connect( m_clipPreview,     SIGNAL( playing() ),                this,       SLOT( videoPlaying() ) );
+        connect( m_clipPreview,     SIGNAL( positionChanged(float) ),   this,       SLOT( positionChanged(float) ) );
+        connect( m_clipPreview,     SIGNAL( endReached() ),             this,       SLOT( endReached() ) );
+
+        m_clipPreview->startPreview( media );
+        event->acceptProposedAction();
+        m_previewStopped = false;
     }
-    else
-        media = Library::getInstance()->getMedia( QUuid( ( const QString& )event->mimeData()->data( "vlmc/uuid" ) ) );
-
-    connect( m_clipPreview,     SIGNAL( stopped() ),                this,       SLOT( videoPaused() ) );
-    connect( m_clipPreview,     SIGNAL( paused() ),                 this,       SLOT( videoPaused() ) );
-    connect( m_clipPreview,     SIGNAL( playing() ),                this,       SLOT( videoPlaying() ) );
-    connect( m_clipPreview,     SIGNAL( positionChanged(float) ),   this,       SLOT( positionChanged(float) ) );
-    connect( m_clipPreview,     SIGNAL( endReached() ),             this,       SLOT( endReached() ) );
-
-    m_clipPreview->startPreview( media );
-    event->acceptProposedAction();
-    m_previewStopped = false;
 }
 
 void    PreviewWidget::positionChanged( float newPos )
@@ -156,4 +164,9 @@ void    PreviewWidget::endReached()
 
     m_ui->pushButtonPlay->setIcon( QIcon( ":/images/play" ) );
     m_ui->seekSlider->setValue( 0 );
+}
+
+void    PreviewWidget::changedTab( int tabId )
+{
+    qDebug() << "CHanged mode : " << tabId;
 }
