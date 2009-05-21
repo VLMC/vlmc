@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>PreviewWidget</class>
- <widget class="QDialog" name="PreviewWidget">
+ <widget class="QWidget" name="PreviewWidget">
   <property name="windowModality">
    <enum>Qt::ApplicationModal</enum>
   </property>
@@ -26,10 +26,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
-  </property>
-  <property name="sizeGripEnabled">
-   <bool>false</bool>
+   <string>Preview</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -50,7 +47,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="ProjectTab">
       <attribute name="title">

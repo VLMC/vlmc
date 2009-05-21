@@ -30,7 +30,7 @@
 
 
 ClipPreviewWidget::ClipPreviewWidget( QWidget *parent ) :
-    QDialog( parent ),
+    QWidget( parent ),
     m_ui( new Ui::PreviewWidget ), m_clipLoaded( false ), m_videoStopped( true )
 {
     m_ui->setupUi( this );

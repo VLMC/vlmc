@@ -34,7 +34,7 @@ namespace Ui {
     class PreviewWidget;
 }
 
-class ClipPreviewWidget : public QDialog
+class ClipPreviewWidget : public QWidget
 {
     Q_OBJECT
     Q_DISABLE_COPY( ClipPreviewWidget )
