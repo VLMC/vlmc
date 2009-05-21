@@ -1,5 +1,5 @@
 /*****************************************************************************
- * PreviewWidget: Preview widget
+ * ClipPreviewWidget: Preview widget
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -23,15 +23,15 @@
 #include <QtDebug>
 #include <QUrl>
 
-#include "PreviewWidget.h"
-#include "ui_PreviewWidget.h"
+#include "ClipPreviewWidget.h"
+#include "ui_ClipPreviewWidget.h"
 #include "MediaListWidget.h"
 #include "Library.h"
 
 
-PreviewWidget::PreviewWidget( QWidget *parent ) :
+ClipPreviewWidget::ClipPreviewWidget( QWidget *parent ) :
     QDialog( parent ),
-    m_ui( new Ui::PreviewWidget ), m_clipLoaded( false ), m_videoStopped( true )
+    m_ui( new Ui::ClipPreviewWidget ), m_clipLoaded( false ), m_videoStopped( true )
 {
     m_ui->setupUi( this );
     m_ui->groupBoxButton->hide();
@@ -53,13 +53,13 @@ PreviewWidget::PreviewWidget( QWidget *parent ) :
 //    m_mediaList->setMediaPlayer( m_mediaPlayer );
 }
 
-PreviewWidget::~PreviewWidget()
+ClipPreviewWidget::~ClipPreviewWidget()
 {
     delete m_mediaPlayer;
     delete m_ui;
 }
 
-void PreviewWidget::changeEvent( QEvent *e )
+void ClipPreviewWidget::changeEvent( QEvent *e )
 {
     switch ( e->type() )
     {
@@ -71,7 +71,7 @@ void PreviewWidget::changeEvent( QEvent *e )
     }
 }
 
-void    PreviewWidget::dragEnterEvent( QDragEnterEvent* event )
+void    ClipPreviewWidget::dragEnterEvent( QDragEnterEvent* event )
 {
     if ( event->mimeData()->hasFormat( "vlmc/uuid" ) )
         event->acceptProposedAction();
@@ -79,7 +79,7 @@ void    PreviewWidget::dragEnterEvent( QDragEnterEvent* event )
         event->acceptProposedAction();
 }
 
-void    PreviewWidget::dropEvent( QDropEvent* event )
+void    ClipPreviewWidget::dropEvent( QDropEvent* event )
 {
     Media* media;
     if ( event->mimeData()->urls().count() == 1 )
@@ -106,7 +106,7 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
     event->acceptProposedAction();
 }
 
-void    PreviewWidget::positionChanged()
+void    ClipPreviewWidget::positionChanged()
 {
     if ( m_clipLoaded == false)
         return ;
@@ -114,12 +114,12 @@ void    PreviewWidget::positionChanged()
 }
 
 
-void    PreviewWidget::seekSliderPressed()
+void    ClipPreviewWidget::seekSliderPressed()
 {
     disconnect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,       SLOT( positionChanged() ) );
 }
 
-void    PreviewWidget::seekSliderMoved( int )
+void    ClipPreviewWidget::seekSliderMoved( int )
 {
     if ( m_clipLoaded == false || m_videoStopped == true )
         return ;
@@ -132,7 +132,7 @@ void    PreviewWidget::seekSliderMoved( int )
     m_mediaPlayer->setPosition( (float)m_ui->seekSlider->value() / 1000.0 );
 }
 
-void    PreviewWidget::seekSliderReleased()
+void    ClipPreviewWidget::seekSliderReleased()
 {
     if ( m_endReached == true && m_videoStopped == false )
     {
@@ -146,7 +146,7 @@ void    PreviewWidget::seekSliderReleased()
     connect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,       SLOT( positionChanged() ) );
 }
 
-void PreviewWidget::on_pushButtonPlay_clicked()
+void ClipPreviewWidget::on_pushButtonPlay_clicked()
 {
     if ( m_clipLoaded == false)
         return ;
@@ -159,17 +159,17 @@ void PreviewWidget::on_pushButtonPlay_clicked()
         m_mediaPlayer->play();
 }
 
-void PreviewWidget::videoPaused()
+void ClipPreviewWidget::videoPaused()
 {
     m_ui->pushButtonPlay->setIcon( QIcon( ":/images/play" ) );
 }
 
-void PreviewWidget::videoPlaying()
+void ClipPreviewWidget::videoPlaying()
 {
     m_ui->pushButtonPlay->setIcon( QIcon( ":/images/pause" ) );
 }
 
-void    PreviewWidget::endReached()
+void    ClipPreviewWidget::endReached()
 {
     //Media player part :
     m_mediaPlayer->stop();

@@ -31,16 +31,16 @@
 #include "VLCMediaList.h"
 
 namespace Ui {
-    class PreviewWidget;
+    class ClipPreviewWidget;
 }
 
-class PreviewWidget : public QDialog
+class ClipPreviewWidget : public QDialog
 {
     Q_OBJECT
-    Q_DISABLE_COPY( PreviewWidget )
+    Q_DISABLE_COPY( ClipPreviewWidget )
 public:
-    explicit PreviewWidget( QWidget *parent = 0 );
-    virtual ~PreviewWidget();
+    explicit ClipPreviewWidget( QWidget *parent = 0 );
+    virtual ~ClipPreviewWidget();
 
 protected:
     virtual void    changeEvent( QEvent *e );
@@ -58,7 +58,7 @@ private slots:
     void            endReached();
 
 private:
-    Ui::PreviewWidget*      m_ui;
+    Ui::ClipPreviewWidget*      m_ui;
     LibVLCpp::MediaPlayer*  m_mediaPlayer;
 //    LibVLCpp::MediaList*    m_mediaList;
     bool                    m_clipLoaded;

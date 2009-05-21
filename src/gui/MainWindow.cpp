@@ -140,7 +140,7 @@ void MainWindow::m_initializeDockWidgets( void )
 
     setupLibrary();
 
-    dockManager->addDockedWidget( new PreviewWidget( this ),
+    dockManager->addDockedWidget( new ClipPreviewWidget( this ),
                                   tr( "Preview" ),
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,

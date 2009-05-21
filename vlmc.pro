@@ -21,7 +21,7 @@ SOURCES += src/main.cpp \
     src/LibVLCpp/VLCMedia.cpp \
     src/gui/TracksView.cpp \
     src/gui/TracksScene.cpp \
-    src/gui/PreviewWidget.cpp \
+    src/gui/ClipPreviewWidget.cpp \
     src/gui/TracksRuler.cpp \
     src/gui/Preferences.cpp \
     src/gui/ListViewMediaItem.cpp \
@@ -54,7 +54,7 @@ HEADERS += src/gui/MainWindow.h \
     src/LibVLCpp/VLCMedia.h \
     src/gui/TracksView.h \
     src/gui/TracksScene.h \
-    src/gui/PreviewWidget.h \
+    src/gui/ClipPreviewWidget.h \
     src/gui/TracksRuler.h \
     src/gui/Preferences.h \
     src/gui/ListViewMediaItem.h \
@@ -79,7 +79,7 @@ HEADERS += src/gui/MainWindow.h \
     src/Workflow/TrackWorkflow.h \
     src/Workflow/MainWorkflow.h
 FORMS += src/gui/ui/MainWindow.ui \
-    src/gui/ui/PreviewWidget.ui \
+    src/gui/ui/ClipPreviewWidget.ui \
     src/gui/ui/Preferences.ui \
     src/gui/ui/Timeline.ui \
     src/gui/ui/LibraryWidget.ui \
