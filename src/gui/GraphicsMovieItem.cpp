@@ -72,7 +72,7 @@ void GraphicsMovieItem::paintAudioSpectrum( QPainter* painter )
     for (int i = 0; i < m_media->getAudioFrameList().size(); i++)
     {
         //qDebug() << "Frame: " << i << "/" << m_media->getAudioFrameList().size();
-        for (int u = 0; u < m_media->getAudioNbSample(); u += 400)
+        for (unsigned int u = 0; u < m_media->getAudioNbSample(); u += 400)
         {
 
 

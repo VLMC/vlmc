@@ -1,5 +1,6 @@
 /*****************************************************************************
- * TrackWorkflow.h : Will query the Clip workflow for each successive clip in the track
+ * MainWorkflow.cpp : Will query all of the track workflows to render the final
+ *                    image
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,35 +21,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef TRACKWORKFLOW_H
-#define TRACKWORKFLOW_H
+#include <QtDebug>
 
-#include <QObject>
-#include <QMutex>
-#include <QWaitCondition>
+#include "MainWorkflow.h"
 
-#include "ClipWorkflow.h"
-#include "VLCMediaPlayer.h"
-
-//THIS IS A JUNK FOR TESTING CLIP WORKFLOW
-
-class   TrackWorkflow : public QObject
+MainWorkflow::MainWorkflow()
 {
-    Q_OBJECT
+    m_tracks = new TrackWorkflow*[NB_TRACKS];
+    for (unsigned int i = 0; i < NB_TRACKS; ++i)
+        m_tracks[i] = new TrackWorkflow;
+}
 
-    public:
-        TrackWorkflow();
+void    MainWorkflow::addClip( Clip* clip, unsigned int trackId )
+{
+    Q_ASSERT_X( trackId < NB_TRACKS, "MainWorkflow::addClip",
+                "The specified trackId isn't valid, for it's higher than the number of tracks");
 
-        void                    startRender();
-        const unsigned char*    getOutput() const;
-    private:
-        ClipWorkflow*           m_currentClipWorkflow;
-        QMutex*                 m_condMutex;
-        QWaitCondition*         m_waitCondition;
-        LibVLCpp::MediaPlayer*  m_mediaPlayer;
-
-    public slots:
-        void            addClip( Clip* );
-};
-
-#endif // TRACKWORKFLOW_H
+    qDebug() << "MainWorkflow: Adding clip" << clip->getUuid() << "to track" << trackId;
+    m_tracks[trackId]->addClip( clip );
+}

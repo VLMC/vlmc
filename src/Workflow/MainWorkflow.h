@@ -1,5 +1,6 @@
 /*****************************************************************************
- * TrackWorkflow.h : Will query the Clip workflow for each successive clip in the track
+ * MainWorkflow.h : Will query all of the track workflows to render the final
+ *                  image
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,35 +21,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef TRACKWORKFLOW_H
-#define TRACKWORKFLOW_H
+#ifndef MAINWORKFLOW_H
+#define MAINWORKFLOW_H
 
 #include <QObject>
-#include <QMutex>
-#include <QWaitCondition>
 
-#include "ClipWorkflow.h"
-#include "VLCMediaPlayer.h"
+#include "TrackWorkflow.h"
 
-//THIS IS A JUNK FOR TESTING CLIP WORKFLOW
+//TODO: THIS HAS TO GO ASAP !!!!!
+#define NB_TRACKS   1
 
-class   TrackWorkflow : public QObject
+class   MainWorkflow : public QObject
 {
     Q_OBJECT
 
     public:
-        TrackWorkflow();
+        MainWorkflow();
 
-        void                    startRender();
-        const unsigned char*    getOutput() const;
+        void                addClip( Clip* clip, unsigned int trackId );
     private:
-        ClipWorkflow*           m_currentClipWorkflow;
-        QMutex*                 m_condMutex;
-        QWaitCondition*         m_waitCondition;
-        LibVLCpp::MediaPlayer*  m_mediaPlayer;
-
-    public slots:
-        void            addClip( Clip* );
+        TrackWorkflow**      m_tracks;
 };
 
-#endif // TRACKWORKFLOW_H
+#endif // MAINWORKFLOW_H

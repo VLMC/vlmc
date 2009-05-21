@@ -31,8 +31,8 @@
 #include "GraphicsMovieItem.h"
 #include "GraphicsCursorItem.h"
 
-TracksView::TracksView( QGraphicsScene* scene, QWidget* parent )
-        : QGraphicsView( scene, parent ), m_scene( scene )
+TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidget* parent )
+        : QGraphicsView( scene, parent ), m_scene( scene ), m_mainWorkflow( mainWorkflow )
 {
     //TODO should be defined by the settings
     m_tracksHeight = 50;
@@ -183,7 +183,7 @@ int TracksView::cursorPos()
 
 void TracksView::addClip( Media* clip, const QPoint& point )
 {
-    int track = (int)( mapToScene( point ).y() / m_tracksHeight );
+    unsigned int track = (unsigned int)( mapToScene( point ).y() / m_tracksHeight );
     if ( track + 1 > m_tracksCount ) return;
 
     //mappedXPos: 1 pixel = 1 frame
@@ -202,6 +202,10 @@ void TracksView::addClip( Media* clip, const QPoint& point )
         emit durationChanged( duration );
     }
     item->show();
+    qDebug() << "TracksView::addClip: Adding a new clip to track" << track;
+    //FIXME: this leaks, but it will be corrected once we really use Clip instead
+    //          of Media
+    m_mainWorkflow->addClip( new Clip( clip ), track );
 }
 
 void TracksView::setScale( double scaleFactor )

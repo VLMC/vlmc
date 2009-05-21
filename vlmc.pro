@@ -41,7 +41,8 @@ SOURCES += src/main.cpp \
     src/TimelineBackend.cpp \
     src/Track.cpp \
     src/Workflow/ClipWorkflow.cpp \
-    src/Workflow/TrackWorkflow.cpp
+    src/Workflow/TrackWorkflow.cpp \
+    src/Workflow/MainWorkflow.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -75,7 +76,8 @@ HEADERS += src/gui/MainWindow.h \
     src/TimelineBackend.h \
     src/Track.h \
     src/Workflow/ClipWorkflow.h \
-    src/Workflow/TrackWorkflow.h
+    src/Workflow/TrackWorkflow.h \
+    src/Workflow/MainWorkflow.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \

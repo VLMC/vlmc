@@ -32,13 +32,14 @@
 #include <QDragMoveEvent>
 #include "Media.h"
 #include "GraphicsCursorItem.h"
+#include "Workflow/MainWorkflow.h"
 
 class TracksView : public QGraphicsView
 {
     Q_OBJECT
 
 public:
-    TracksView( QGraphicsScene* scene, QWidget* parent = 0 );
+    TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidget* parent = 0 );
     void setDuration( int duration );
     int duration() const { return m_projectDuration; }
     int tracksHeight() const { return m_tracksHeight; }
@@ -65,12 +66,13 @@ private slots:
     void ensureCursorVisible();
 
 private:
-    QGraphicsScene* m_scene;
-    int m_tracksHeight;
-    int m_tracksCount;
-    int m_projectDuration;
-    int m_fps;
-    GraphicsCursorItem* m_cursorLine;
+    QGraphicsScene*         m_scene;
+    int                     m_tracksHeight;
+    unsigned int            m_tracksCount;
+    int                     m_projectDuration;
+    int                     m_fps;
+    GraphicsCursorItem*     m_cursorLine;
+    MainWorkflow*           m_mainWorkflow;
 
 signals:
     void zoomIn();

@@ -27,6 +27,7 @@
 #include "TracksView.h"
 #include "TracksScene.h"
 #include "TracksRuler.h"
+#include "Workflow/MainWorkflow.h"
 
 class Timeline : public QWidget
 {
@@ -45,11 +46,12 @@ protected:
     virtual void changeEvent( QEvent *e );
 
 private:
-    Ui::Timeline m_ui;
-    TracksView* m_tracksView;
-    TracksScene* m_tracksScene;
-    TracksRuler* m_tracksRuler;
-    double m_scale;
+    Ui::Timeline        m_ui;
+    TracksView*         m_tracksView;
+    TracksScene*        m_tracksScene;
+    TracksRuler*        m_tracksRuler;
+    double              m_scale;
+    MainWorkflow*       m_mainWorkflow;
 };
 
 #endif // TIMELINE_H

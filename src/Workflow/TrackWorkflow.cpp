@@ -34,6 +34,10 @@ TrackWorkflow::TrackWorkflow()
 void    TrackWorkflow::addClip( Clip* clip )
 {
     m_currentClipWorkflow = new ClipWorkflow( clip, m_condMutex, m_waitCondition );
+}
+
+void    TrackWorkflow::startRender()
+{
     m_currentClipWorkflow->startRender( m_mediaPlayer );
 }
 
