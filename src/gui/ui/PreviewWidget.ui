@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ClipPreviewWidget</class>
- <widget class="QDialog" name="ClipPreviewWidget">
+ <class>PreviewWidget</class>
+ <widget class="QDialog" name="PreviewWidget">
   <property name="windowModality">
    <enum>Qt::ApplicationModal</enum>
   </property>
@@ -50,7 +50,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="ProjectTab">
       <attribute name="title">

@@ -24,14 +24,14 @@
 #include <QUrl>
 
 #include "ClipPreviewWidget.h"
-#include "ui_ClipPreviewWidget.h"
+#include "ui_PreviewWidget.h"
 #include "MediaListWidget.h"
 #include "Library.h"
 
 
 ClipPreviewWidget::ClipPreviewWidget( QWidget *parent ) :
     QDialog( parent ),
-    m_ui( new Ui::ClipPreviewWidget ), m_clipLoaded( false ), m_videoStopped( true )
+    m_ui( new Ui::PreviewWidget ), m_clipLoaded( false ), m_videoStopped( true )
 {
     m_ui->setupUi( this );
     m_ui->groupBoxButton->hide();

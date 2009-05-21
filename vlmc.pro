@@ -77,9 +77,10 @@ HEADERS += src/gui/MainWindow.h \
     src/Track.h \
     src/Workflow/ClipWorkflow.h \
     src/Workflow/TrackWorkflow.h \
-    src/Workflow/MainWorkflow.h
+    src/Workflow/MainWorkflow.h \
+    src/gui/PreviewWidget.h
 FORMS += src/gui/ui/MainWindow.ui \
-    src/gui/ui/ClipPreviewWidget.ui \
+    src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \
     src/gui/ui/Timeline.ui \
     src/gui/ui/LibraryWidget.ui \
