@@ -20,50 +20,45 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef PREVIEWWIDGET_H
-#define PREVIEWWIDGET_H
+#ifndef CLIPPREVIEWWIDGET_H
+#define CLIPPREVIEWWIDGET_H
 
-#include <QtGui/QDialog>
-#include <QDragEnterEvent>
-#include <QUuid>
+#include <QWidget>
+#include <QObject>
 
 #include "VLCMediaPlayer.h"
 #include "VLCMediaList.h"
+#include "Media.h"
 
-namespace Ui {
-    class PreviewWidget;
-}
-
-class ClipPreviewWidget : public QWidget
+class ClipPreviewWidget : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY( ClipPreviewWidget )
 public:
-    explicit ClipPreviewWidget( QWidget *parent = 0 );
+    explicit ClipPreviewWidget( QWidget* renderWidget );
     virtual ~ClipPreviewWidget();
 
-protected:
-    virtual void    changeEvent( QEvent *e );
-    virtual void    dragEnterEvent( QDragEnterEvent* event );
-    virtual void    dropEvent( QDropEvent* event );
-
-private slots:
-    void            on_pushButtonPlay_clicked();
-    void            positionChanged();
-    void            seekSliderPressed();
-    void            seekSliderMoved( int value );
-    void            seekSliderReleased();
-    void            videoPaused();
-    void            videoPlaying();
-    void            endReached();
+    void                    startPreview( Media* media );
+    void                    setPosition( float newPos );
+    void                    togglePlayPause();
 
 private:
-    Ui::PreviewWidget*      m_ui;
     LibVLCpp::MediaPlayer*  m_mediaPlayer;
-//    LibVLCpp::MediaList*    m_mediaList;
     bool                    m_clipLoaded;
-    bool                    m_endReached;
     bool                    m_videoStopped;
+
+public slots:
+    void                    __positionChanged();
+    void                    __videoPaused();
+    void                    __videoPlaying();
+    void                    __endReached();
+
+signals:
+    void                    stopped();
+    void                    paused();
+    void                    playing();
+    void                    positionChanged( float );
+    void                    endReached();
 };
 
-#endif // PREVIEWWIDGET_H
+#endif // CLIPPREVIEWWIDGET_H

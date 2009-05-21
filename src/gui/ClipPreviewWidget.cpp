@@ -21,132 +21,45 @@
  *****************************************************************************/
 
 #include <QtDebug>
-#include <QUrl>
 
 #include "ClipPreviewWidget.h"
-#include "ui_PreviewWidget.h"
-#include "MediaListWidget.h"
-#include "Library.h"
 
-
-ClipPreviewWidget::ClipPreviewWidget( QWidget *parent ) :
-    QWidget( parent ),
-    m_ui( new Ui::PreviewWidget ), m_clipLoaded( false ), m_videoStopped( true )
+ClipPreviewWidget::ClipPreviewWidget( QWidget* renderWidget ) :
+    m_clipLoaded( false ), m_videoStopped( true )
 {
-    m_ui->setupUi( this );
-    m_ui->groupBoxButton->hide();
-    m_ui->seekSlider->setMinimum( 0 );
-    m_ui->seekSlider->setMaximum( 1000 );
-    m_ui->seekSlider->setSingleStep( 2 );
-    m_ui->seekSlider->setFocusPolicy( Qt::NoFocus );
-
-    setAcceptDrops( true );
-
-    connect( m_ui->seekSlider, SIGNAL( sliderPressed() ),       this,   SLOT( seekSliderPressed() ) );
-    connect( m_ui->seekSlider, SIGNAL( sliderPosChanged(int) ), this,   SLOT( seekSliderMoved(int) ) );
-    connect( m_ui->seekSlider, SIGNAL( sliderReleased() ),      this,   SLOT( seekSliderReleased() ) );
-
     m_mediaPlayer = new LibVLCpp::MediaPlayer();
-    m_mediaPlayer->setDrawable( m_ui->clipRenderWidget->winId() );
-
-//    m_mediaList = new LibVLCpp::MediaList();
-//    m_mediaList->setMediaPlayer( m_mediaPlayer );
+    m_mediaPlayer->setDrawable( renderWidget->winId() );
 }
 
 ClipPreviewWidget::~ClipPreviewWidget()
 {
     delete m_mediaPlayer;
-    delete m_ui;
 }
 
-void ClipPreviewWidget::changeEvent( QEvent *e )
+void        ClipPreviewWidget::startPreview( Media* media )
 {
-    switch ( e->type() )
-    {
-    case QEvent::LanguageChange:
-        m_ui->retranslateUi( this );
-        break;
-    default:
-        break;
-    }
-}
-
-void    ClipPreviewWidget::dragEnterEvent( QDragEnterEvent* event )
-{
-    if ( event->mimeData()->hasFormat( "vlmc/uuid" ) )
-        event->acceptProposedAction();
-    else if ( event->mimeData()->urls().count() == 1 )
-        event->acceptProposedAction();
-}
-
-void    ClipPreviewWidget::dropEvent( QDropEvent* event )
-{
-    Media* media;
-    if ( event->mimeData()->urls().count() == 1 )
-    {
-        Library* lib = Library::getInstance();
-        lib->newMediaLoadingAsked( event->mimeData()->urls()[0].path() );
-        media = lib->getMedia( event->mimeData()->urls()[0].path() );
-    }
-    else
-        media = Library::getInstance()->getMedia( QUuid( ( const QString& )event->mimeData()->data( "vlmc/uuid" ) ) );
-
     media->flushParameters();
     m_mediaPlayer->setMedia( media->getVLCMedia() );
 
-    connect( m_mediaPlayer,     SIGNAL( stopped() ),            this,       SLOT( videoPaused() ) );
-    connect( m_mediaPlayer,     SIGNAL( paused() ),             this,       SLOT( videoPaused() ) );
-    connect( m_mediaPlayer,     SIGNAL( playing() ),            this,       SLOT( videoPlaying() ) );
-    connect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,       SLOT( positionChanged() ) );
-    connect( m_mediaPlayer,     SIGNAL( endReached() ),         this,       SLOT( endReached() ) );
+    connect( m_mediaPlayer,     SIGNAL( stopped() ),            this,   SLOT( __videoPaused() ) );
+    connect( m_mediaPlayer,     SIGNAL( paused() ),             this,   SLOT( __videoPaused() ) );
+    connect( m_mediaPlayer,     SIGNAL( playing() ),            this,   SLOT( __videoPlaying() ) );
+    connect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,   SLOT( __positionChanged() ) );
+    connect( m_mediaPlayer,     SIGNAL( endReached() ),         this,   SLOT( __endReached() ) );
 
     m_mediaPlayer->play();
     m_clipLoaded = true;
     m_videoStopped = false;
-    event->acceptProposedAction();
 }
 
-void    ClipPreviewWidget::positionChanged()
-{
-    if ( m_clipLoaded == false)
-        return ;
-    m_ui->seekSlider->setValue( (int)( m_mediaPlayer->getPosition() * 1000.0 ) );
-}
-
-
-void    ClipPreviewWidget::seekSliderPressed()
-{
-    disconnect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,       SLOT( positionChanged() ) );
-}
-
-void    ClipPreviewWidget::seekSliderMoved( int )
+void        ClipPreviewWidget::setPosition( float newPos )
 {
     if ( m_clipLoaded == false || m_videoStopped == true )
         return ;
-    if ( m_ui->seekSlider->value() == m_ui->seekSlider->maximum() )
-    {
-        m_endReached = true;
-        return;
-    }
-    m_endReached = false;
-    m_mediaPlayer->setPosition( (float)m_ui->seekSlider->value() / 1000.0 );
+    m_mediaPlayer->setPosition( newPos / 1000.0 );
 }
 
-void    ClipPreviewWidget::seekSliderReleased()
-{
-    if ( m_endReached == true && m_videoStopped == false )
-    {
-        //When cursor reaches the maximum right, end reached becomes true.
-        //When we will release our slider, if endReached is true, we actually set the position.
-        //Otherwise, we do nothing.
-        //This prevents the video to stop if we put the slider to the maximum right by mistake
-        m_mediaPlayer->setPosition( (float)m_ui->seekSlider->maximum() / 1000.0 );
-        m_endReached = false;
-    }
-    connect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,       SLOT( positionChanged() ) );
-}
-
-void ClipPreviewWidget::on_pushButtonPlay_clicked()
+void        ClipPreviewWidget::togglePlayPause()
 {
     if ( m_clipLoaded == false)
         return ;
@@ -159,24 +72,29 @@ void ClipPreviewWidget::on_pushButtonPlay_clicked()
         m_mediaPlayer->play();
 }
 
-void ClipPreviewWidget::videoPaused()
+/////////////////////////////////////////////////////////////////////
+/////SLOTS :
+/////////////////////////////////////////////////////////////////////
+void        ClipPreviewWidget::__videoPaused()
 {
-    m_ui->pushButtonPlay->setIcon( QIcon( ":/images/play" ) );
+    emit paused();
 }
 
-void ClipPreviewWidget::videoPlaying()
+void        ClipPreviewWidget::__videoPlaying()
 {
-    m_ui->pushButtonPlay->setIcon( QIcon( ":/images/pause" ) );
+    emit playing();
 }
 
-void    ClipPreviewWidget::endReached()
+void        ClipPreviewWidget::__positionChanged()
 {
-    //Media player part :
+    if ( m_clipLoaded == false)
+        return ;
+    emit positionChanged( m_mediaPlayer->getPosition() );
+}
+
+void        ClipPreviewWidget::__endReached()
+{
     m_mediaPlayer->stop();
     m_videoStopped = true;
-
-    //GUI part :
-    m_ui->pushButtonPlay->setIcon( QIcon( ":/images/play" ) );
-    m_ui->seekSlider->setValue( 0 );
+    emit endReached();
 }
-

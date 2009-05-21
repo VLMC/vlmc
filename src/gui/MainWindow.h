@@ -26,7 +26,6 @@
 #include <QApplication>
 #include <QSlider>
 #include "ui_MainWindow.h"
-#include "ClipPreviewWidget.h"
 #include "DockWidgetManager.h"
 #include "Preferences.h"
 #include "MetaDataManager.h"

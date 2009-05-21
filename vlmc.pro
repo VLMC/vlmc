@@ -42,7 +42,8 @@ SOURCES += src/main.cpp \
     src/Track.cpp \
     src/Workflow/ClipWorkflow.cpp \
     src/Workflow/TrackWorkflow.cpp \
-    src/Workflow/MainWorkflow.cpp
+    src/Workflow/MainWorkflow.cpp \
+    src/gui/PreviewWidget.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \

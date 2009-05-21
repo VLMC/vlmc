@@ -34,6 +34,7 @@
 #include "About.h"
 #include "Transcode.h"
 #include "FileBrowser.h"
+#include "PreviewWidget.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent )
@@ -140,7 +141,7 @@ void MainWindow::m_initializeDockWidgets( void )
 
     setupLibrary();
 
-    dockManager->addDockedWidget( new ClipPreviewWidget( this ),
+    dockManager->addDockedWidget( new PreviewWidget( this ),
                                   tr( "Preview" ),
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
