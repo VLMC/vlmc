@@ -64,16 +64,13 @@ void    ClipWorkflow::lock( ClipWorkflow* clipWorkflow, void** pp_ret )
 
 void    ClipWorkflow::unlock( ClipWorkflow* clipWorkflow )
 {
-    qDebug() << "Outputing debug image";
-    QImage dbgImg( clipWorkflow->m_buffer, VIDEOWIDTH, VIDEOHEIGHT, QImage::Format_RGB32);
-    qDebug() << dbgImg.isNull() << "<<<<<<<<<<";
-    dbgImg.save( "/home/chouquette/Desktop/test.png" );
+//    qDebug() << "Outputing debug image";
     QMutexLocker    lock( clipWorkflow->m_condMutex );
     {
         QWriteLocker    lock2( clipWorkflow->m_mutex );
         clipWorkflow->m_renderComplete = true;
     }
-    qDebug() << "Frame rendered, sleeping mode";
+//    qDebug() << "Frame rendered, sleeping mode";
     clipWorkflow->m_waitCond->wait( clipWorkflow->m_condMutex );
 }
 
@@ -86,13 +83,15 @@ void    ClipWorkflow::initialize()
     m_clip->getParent()->getVLCMedia()->setDataCtx( this );
     m_clip->getParent()->getVLCMedia()->setLockCallback( reinterpret_cast<LibVLCpp::Media::lockCallback>( &ClipWorkflow::lock ) );
     m_clip->getParent()->getVLCMedia()->setUnlockCallback( reinterpret_cast<LibVLCpp::Media::unlockCallback>( &ClipWorkflow::unlock ) );
-    m_clip->getParent()->getVLCMedia()->addOption( ":vmem-chroma=RV32" );
-    m_clip->getParent()->getVLCMedia()->addOption( ":vmem-pitch=4" );
+    m_clip->getParent()->getVLCMedia()->addOption( ":vmem-chroma=RV24" );
 
-    sprintf(buffer, ":vmem-width=%i", VIDEOWIDTH);
+    sprintf( buffer, ":vmem-width=%i", VIDEOWIDTH );
     m_clip->getParent()->getVLCMedia()->addOption( buffer );
 
-    sprintf(buffer, ":vmem-height=%i", VIDEOHEIGHT);
+    sprintf( buffer, ":vmem-height=%i", VIDEOHEIGHT );
+    m_clip->getParent()->getVLCMedia()->addOption( buffer );
+
+    sprintf( buffer, "vmem-pitch=%i", VIDEOWIDTH * 3 );
     m_clip->getParent()->getVLCMedia()->addOption( buffer );
 }
 

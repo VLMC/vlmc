@@ -57,14 +57,14 @@ RenderPreviewWidget::~RenderPreviewWidget()
 
 void*   RenderPreviewWidget::lock( void* datas )
 {
-    qDebug() << "Locking invmem";
+//    qDebug() << "Locking invmem";
     RenderPreviewWidget* self = reinterpret_cast<RenderPreviewWidget*>( datas);
     return self->m_mainWorkflow->getOutput();
 }
 
 void    RenderPreviewWidget::unlock( void*  )
 {
-    qDebug() << "Unlocking invmem";
+//    qDebug() << "Unlocking invmem";
 }
 
 void        RenderPreviewWidget::startPreview( Media* )
