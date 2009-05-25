@@ -33,7 +33,8 @@ PreviewWidget::PreviewWidget( MainWorkflow* mainWorkflow, QWidget *parent ) :
     QWidget( parent ),
     m_ui( new Ui::PreviewWidget ),
     m_currentPreviewRenderer( NULL ),
-    m_previewStopped( true )
+    m_previewStopped( true ),
+    m_sliderPosBackup( 0 )
 {
     m_ui->setupUi( this );
     m_ui->groupBoxButton->hide();
@@ -135,6 +136,7 @@ void    PreviewWidget::seekSliderPressed()
 
 void    PreviewWidget::seekSliderMoved( int )
 {
+    qDebug() << "Moved";
     if ( m_ui->seekSlider->value() == m_ui->seekSlider->maximum() )
     {
         m_endReached = true;
@@ -186,6 +188,7 @@ void    PreviewWidget::endReached()
 
 void    PreviewWidget::changedTab( int tabId )
 {
+    int   tmp = m_ui->seekSlider->value();
     if ( tabId == PreviewWidget::clipPreviewMode )
     {
         m_currentPreviewRenderer = m_clipPreview;
@@ -198,4 +201,6 @@ void    PreviewWidget::changedTab( int tabId )
     else
         qDebug() << "Unknown and uncoherent tabId for PreviewWidget : " << tabId;
     m_currentMode = !m_currentMode;
+    m_ui->seekSlider->setValue( m_sliderPosBackup );
+    m_sliderPosBackup = tmp;
 }

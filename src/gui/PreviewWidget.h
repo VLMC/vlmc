@@ -55,7 +55,7 @@ private:
     static const int        clipPreviewMode = 1;
 
 private:
-
+    int                     m_sliderPosBackup;
 
 protected:
     virtual void    changeEvent( QEvent *e );
