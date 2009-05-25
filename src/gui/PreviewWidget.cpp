@@ -136,7 +136,6 @@ void    PreviewWidget::seekSliderPressed()
 
 void    PreviewWidget::seekSliderMoved( int )
 {
-    qDebug() << "Moved";
     if ( m_ui->seekSlider->value() == m_ui->seekSlider->maximum() )
     {
         m_endReached = true;
