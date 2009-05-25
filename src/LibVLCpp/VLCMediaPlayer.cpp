@@ -120,7 +120,6 @@ void                            MediaPlayer::play()
 
 void                            MediaPlayer::pause()
 {
-    qDebug() << "Pausing media";
     libvlc_media_player_pause( m_internalPtr, m_ex );
     CheckVlcppException( m_ex );
 }

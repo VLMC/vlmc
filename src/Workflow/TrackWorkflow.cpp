@@ -53,5 +53,7 @@ unsigned char*    TrackWorkflow::getOutput()
 //        usleep( 1000 );
     }
 //    qDebug() << "Frame rendered";
+    if ( m_currentClipWorkflow->isEndReached() == true )
+        return NULL;
     return m_currentClipWorkflow->getOutput();
 }

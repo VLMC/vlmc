@@ -59,7 +59,10 @@ void*   RenderPreviewWidget::lock( void* datas )
 {
 //    qDebug() << "Locking invmem";
     RenderPreviewWidget* self = reinterpret_cast<RenderPreviewWidget*>( datas);
-    return self->m_mainWorkflow->getOutput();
+    void* ret = self->m_mainWorkflow->getOutput();
+    if ( ret == NULL )
+        self->m_mediaPlayer->stop();
+    return ret;
 }
 
 void    RenderPreviewWidget::unlock( void*  )

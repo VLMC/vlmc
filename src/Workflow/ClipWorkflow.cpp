@@ -31,11 +31,13 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip, QMutex* condMutex, QWaitCondition*
                 m_condMutex( condMutex ),
                 m_waitCond( waitCond ),
                 m_mediaPlayer(NULL),
-                m_isReady( false )
+                m_isReady( false ),
+                m_endReached( false )
 {
     m_mutex = new QReadWriteLock();
     m_buffer = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
     m_initMutex = new QReadWriteLock();
+    m_endReachedLock = new QReadWriteLock();
 }
 
 ClipWorkflow::~ClipWorkflow()
@@ -43,6 +45,7 @@ ClipWorkflow::~ClipWorkflow()
     delete[] m_buffer;
     delete m_mutex;
     delete m_initMutex;
+    delete m_endReachedLock;
 }
 
 bool    ClipWorkflow::renderComplete() const
@@ -72,15 +75,26 @@ void    ClipWorkflow::unlock( ClipWorkflow* clipWorkflow )
 {
     if ( clipWorkflow->m_isReady == true )
     {
-    //    qDebug() << "Outputing debug image";
         QMutexLocker    lock( clipWorkflow->m_condMutex );
+
         {
             QWriteLocker    lock2( clipWorkflow->m_mutex );
             clipWorkflow->m_renderComplete = true;
         }
-    //    qDebug() << "Frame rendered, sleeping mode";
+
+        if ( clipWorkflow->m_clip->getEnd() != Clip::UntilEndOfMedia
+                && clipWorkflow->m_mediaPlayer->getPosition() > clipWorkflow->m_clip->getEnd() )
+        {
+            QWriteLocker    lock2( clipWorkflow->m_endReachedLock );
+            clipWorkflow->m_endReached = true;
+        }
         clipWorkflow->m_waitCond->wait( clipWorkflow->m_condMutex );
     }
+}
+
+void    ClipWorkflow::setRenderComplete()
+{
+
 }
 
 void    ClipWorkflow::initialize()
@@ -138,8 +152,14 @@ void    ClipWorkflow::positionChanged()
     m_isReady = true;
 }
 
-bool    ClipWorkflow::isReady()
+bool    ClipWorkflow::isReady() const
 {
     QReadLocker lock( m_initMutex );
     return m_isReady;
+}
+
+bool    ClipWorkflow::isEndReached() const
+{
+    QReadLocker lock( m_endReachedLock );
+    return m_endReached;
 }
