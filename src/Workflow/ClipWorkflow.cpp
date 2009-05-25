@@ -30,16 +30,19 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip, QMutex* condMutex, QWaitCondition*
                 m_buffer( NULL ),
                 m_condMutex( condMutex ),
                 m_waitCond( waitCond ),
-                m_mediaPlayer(NULL)
+                m_mediaPlayer(NULL),
+                m_isReady( false )
 {
     m_mutex = new QReadWriteLock();
     m_buffer = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
+    m_initMutex = new QReadWriteLock();
 }
 
 ClipWorkflow::~ClipWorkflow()
 {
     delete[] m_buffer;
     delete m_mutex;
+    delete m_initMutex;
 }
 
 bool    ClipWorkflow::renderComplete() const
@@ -58,20 +61,26 @@ void    ClipWorkflow::lock( ClipWorkflow* clipWorkflow, void** pp_ret )
     //It doesn't seems necessary to lock anything here, since the scheduler
     //will wait until the frame is ready to use it, and doesn't use it after
     //it has asked for a new one.
-    qDebug() << "Locking in ClipWorkflow::lock";
+
+    //In any case, we give vlc a buffer to render in...
+    //If we don't, segmentation fault will catch us and eat our brain !! ahem...
+//    qDebug() << "Locking in ClipWorkflow::lock";
     *pp_ret = clipWorkflow->m_buffer;
 }
 
 void    ClipWorkflow::unlock( ClipWorkflow* clipWorkflow )
 {
-//    qDebug() << "Outputing debug image";
-    QMutexLocker    lock( clipWorkflow->m_condMutex );
+    if ( clipWorkflow->m_isReady == true )
     {
-        QWriteLocker    lock2( clipWorkflow->m_mutex );
-        clipWorkflow->m_renderComplete = true;
+    //    qDebug() << "Outputing debug image";
+        QMutexLocker    lock( clipWorkflow->m_condMutex );
+        {
+            QWriteLocker    lock2( clipWorkflow->m_mutex );
+            clipWorkflow->m_renderComplete = true;
+        }
+    //    qDebug() << "Frame rendered, sleeping mode";
+        clipWorkflow->m_waitCond->wait( clipWorkflow->m_condMutex );
     }
-//    qDebug() << "Frame rendered, sleeping mode";
-    clipWorkflow->m_waitCond->wait( clipWorkflow->m_condMutex );
 }
 
 void    ClipWorkflow::initialize()
@@ -101,9 +110,36 @@ void    ClipWorkflow::startRender( LibVLCpp::MediaPlayer* mediaPlayer )
     m_mediaPlayer = mediaPlayer;
     m_mediaPlayer->setMedia( m_clip->getParent()->getVLCMedia() );
 
-    //If Clip starts at 0, we can play it directly.
+    if ( m_clip->getBegin() == 0.0f )
+    {
+        QWriteLocker lock( m_initMutex );
+        m_isReady = true;
+    }
+    else
+    {
+        //The last parameter is NOT here for decoration ;)
+        connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( playbackStarted() ), Qt::DirectConnection );
+    }
     m_mediaPlayer->play();
-    //else, we should set it position before.
-    //TODO...
 }
 
+void    ClipWorkflow::playbackStarted()
+{
+    disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( playbackStarted() ) );
+    connect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( positionChanged() ), Qt::DirectConnection );
+    m_mediaPlayer->setPosition( m_clip->getBegin() );
+}
+
+void    ClipWorkflow::positionChanged()
+{
+    disconnect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( positionChanged() ) );
+
+    QWriteLocker        lock( m_initMutex);
+    m_isReady = true;
+}
+
+bool    ClipWorkflow::isReady()
+{
+    QReadLocker lock( m_initMutex );
+    return m_isReady;
+}

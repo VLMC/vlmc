@@ -39,6 +39,8 @@ void    TrackWorkflow::addClip( Clip* clip )
 void    TrackWorkflow::startRender()
 {
     m_currentClipWorkflow->startRender( m_mediaPlayer );
+    while ( m_currentClipWorkflow->isReady() == false )
+        usleep( 150 );
 }
 
 unsigned char*    TrackWorkflow::getOutput()

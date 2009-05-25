@@ -38,7 +38,7 @@ class   Clip : public QObject
     Q_OBJECT
 
     public:
-        static const float      UntilEndOfMedia = -1.0;
+        static const float     UntilEndOfMedia = -1;
 
         Clip( Media* parent );
         Clip( Clip* creator, qint64 begin, qint64 end );
