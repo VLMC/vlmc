@@ -40,7 +40,7 @@ class   TrackWorkflow : public QObject
         TrackWorkflow();
 
         void                    startRender();
-        const unsigned char*    getOutput() const;
+        unsigned char*          getOutput();
     private:
         ClipWorkflow*           m_currentClipWorkflow;
         QMutex*                 m_condMutex;

@@ -39,6 +39,8 @@ class   MainWorkflow : public QObject
         MainWorkflow();
 
         void                addClip( Clip* clip, unsigned int trackId );
+        void                startRender();
+        unsigned char*      getOutput();
     private:
         TrackWorkflow**      m_tracks;
 };

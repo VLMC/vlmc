@@ -27,15 +27,51 @@
 RenderPreviewWidget::RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* renderWidget ) :
             GenericPreviewWidget( renderWidget ), m_mainWorkflow( mainWorkflow )
 {
+    m_media = new LibVLCpp::Media( "fake://" );
+//      --invmem-width <integer>   Width
+//      --invmem-height <integer>  Height
+//      --invmem-lock <string>     Lock function
+//      --invmem-unlock <string>   Unlock function
+//      --invmem-data <string>     Callback data
+    char        buffer[64];
+
+    sprintf( buffer, ":invmem-width=%i", VIDEOWIDTH );
+    m_media->addOption( ":codec=invmem" );
+    m_media->addOption( buffer );
+    sprintf( buffer, ":invmem-height=%i", VIDEOHEIGHT );
+    m_media->addOption( buffer );
+    sprintf( buffer, ":invmem-lock=%lld", (qint64)RenderPreviewWidget::lock );
+    m_media->addOption( buffer );
+    sprintf( buffer, ":invmem-unlock=%lld", (qint64)RenderPreviewWidget::unlock );
+    m_media->addOption( buffer );
+    sprintf( buffer, ":invmem-data=%lld", (qint64)this );
+    m_media->addOption( buffer );
+    m_mediaPlayer->setMedia( m_media );
 }
+
 
 RenderPreviewWidget::~RenderPreviewWidget()
 {
+    delete m_media;
+}
+
+void*   RenderPreviewWidget::lock( void* datas )
+{
+    qDebug() << "Locking invmem";
+    RenderPreviewWidget* self = reinterpret_cast<RenderPreviewWidget*>( datas);
+    return self->m_mainWorkflow->getOutput();
+}
+
+void    RenderPreviewWidget::unlock( void*  )
+{
+    qDebug() << "Unlocking invmem";
 }
 
 void        RenderPreviewWidget::startPreview( Media* )
 {
     qDebug() << "Starting render preview";
+    m_mainWorkflow->startRender();
+    m_mediaPlayer->play();
 }
 
 void        RenderPreviewWidget::setPosition( float /*newPos*/ )
@@ -44,7 +80,7 @@ void        RenderPreviewWidget::setPosition( float /*newPos*/ )
 
 void        RenderPreviewWidget::togglePlayPause( bool /*forcePause*/ )
 {
-
+    startPreview( NULL );
 }
 
 /////////////////////////////////////////////////////////////////////

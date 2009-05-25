@@ -46,7 +46,7 @@ class   ClipWorkflow : public QObject
         virtual ~ClipWorkflow();
 
         bool                    renderComplete() const;
-        const unsigned char*    getOutput() const;
+        unsigned char*          getOutput();
         void                    startRender( LibVLCpp::MediaPlayer* mediaPlayer );
     private:
         static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret );

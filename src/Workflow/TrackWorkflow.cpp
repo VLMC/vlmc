@@ -41,7 +41,7 @@ void    TrackWorkflow::startRender()
     m_currentClipWorkflow->startRender( m_mediaPlayer );
 }
 
-const unsigned char*    TrackWorkflow::getOutput() const
+unsigned char*    TrackWorkflow::getOutput()
 {
 //    qDebug() << "Awaking all renderers";
     m_waitCondition->wakeAll();

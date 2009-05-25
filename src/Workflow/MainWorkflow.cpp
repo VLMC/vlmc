@@ -40,3 +40,13 @@ void    MainWorkflow::addClip( Clip* clip, unsigned int trackId )
     qDebug() << "MainWorkflow: Adding clip" << clip->getUuid() << "to track" << trackId;
     m_tracks[trackId]->addClip( clip );
 }
+
+void    MainWorkflow::startRender()
+{
+    m_tracks[0]->startRender();
+}
+
+unsigned char*    MainWorkflow::getOutput()
+{
+    return m_tracks[0]->getOutput();
+}

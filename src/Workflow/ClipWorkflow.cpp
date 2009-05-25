@@ -48,7 +48,7 @@ bool    ClipWorkflow::renderComplete() const
     return m_renderComplete;
 }
 
-const unsigned char*    ClipWorkflow::getOutput() const
+unsigned char*    ClipWorkflow::getOutput()
 {
     return m_buffer;
 }
@@ -58,17 +58,22 @@ void    ClipWorkflow::lock( ClipWorkflow* clipWorkflow, void** pp_ret )
     //It doesn't seems necessary to lock anything here, since the scheduler
     //will wait until the frame is ready to use it, and doesn't use it after
     //it has asked for a new one.
+    qDebug() << "Locking in ClipWorkflow::lock";
     *pp_ret = clipWorkflow->m_buffer;
 }
 
 void    ClipWorkflow::unlock( ClipWorkflow* clipWorkflow )
 {
+    qDebug() << "Outputing debug image";
+    QImage dbgImg( clipWorkflow->m_buffer, VIDEOWIDTH, VIDEOHEIGHT, QImage::Format_RGB32);
+    qDebug() << dbgImg.isNull() << "<<<<<<<<<<";
+    dbgImg.save( "/home/chouquette/Desktop/test.png" );
     QMutexLocker    lock( clipWorkflow->m_condMutex );
     {
         QWriteLocker    lock2( clipWorkflow->m_mutex );
         clipWorkflow->m_renderComplete = true;
     }
-    //qDebug() << "Frame rendered, sleeping mode";
+    qDebug() << "Frame rendered, sleeping mode";
     clipWorkflow->m_waitCond->wait( clipWorkflow->m_condMutex );
 }
 
@@ -82,6 +87,7 @@ void    ClipWorkflow::initialize()
     m_clip->getParent()->getVLCMedia()->setLockCallback( reinterpret_cast<LibVLCpp::Media::lockCallback>( &ClipWorkflow::lock ) );
     m_clip->getParent()->getVLCMedia()->setUnlockCallback( reinterpret_cast<LibVLCpp::Media::unlockCallback>( &ClipWorkflow::unlock ) );
     m_clip->getParent()->getVLCMedia()->addOption( ":vmem-chroma=RV32" );
+    m_clip->getParent()->getVLCMedia()->addOption( ":vmem-pitch=4" );
 
     sprintf(buffer, ":vmem-width=%i", VIDEOWIDTH);
     m_clip->getParent()->getVLCMedia()->addOption( buffer );

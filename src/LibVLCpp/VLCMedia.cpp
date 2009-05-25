@@ -63,10 +63,6 @@ void                    Media::setDataCtx( void* dataCtx )
 {
     char    param[64];
 
-//    m_dataCtx = new Media::DataCtx;
-//    m_dataCtx->mutex = new QMutex();
-//    m_dataCtx->media = this;
-
     sprintf( param, ":vmem-data=%lld", (qint64)(intptr_t)dataCtx );
     addOption( param );
 }
