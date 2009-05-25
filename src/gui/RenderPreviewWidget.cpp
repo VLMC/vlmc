@@ -37,11 +37,11 @@ void        RenderPreviewWidget::startPreview( Media* )
 {
 }
 
-void        RenderPreviewWidget::setPosition( float newPos )
+void        RenderPreviewWidget::setPosition( float /*newPos*/ )
 {
 }
 
-void        RenderPreviewWidget::togglePlayPause()
+void        RenderPreviewWidget::togglePlayPause( bool /*forcePause*/ )
 {
 
 }

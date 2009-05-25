@@ -40,9 +40,9 @@ public:
     explicit ClipPreviewWidget( QWidget* renderWidget );
     virtual ~ClipPreviewWidget();
 
-    void                    startPreview( Media* media );
-    void                    setPosition( float newPos );
-    void                    togglePlayPause();
+    virtual void            startPreview( Media* media );
+    virtual void            setPosition( float newPos );
+    virtual void            togglePlayPause( bool forcePause );
 
 private:
     bool                    m_clipLoaded;

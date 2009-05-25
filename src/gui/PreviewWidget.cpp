@@ -187,9 +187,14 @@ void    PreviewWidget::endReached()
 void    PreviewWidget::changedTab( int tabId )
 {
     if ( tabId == PreviewWidget::clipPreviewMode )
+    {
         m_currentPreviewRenderer = m_clipPreview;
+    }
     else if ( tabId == PreviewWidget::renderPreviewMode )
+    {
+        m_clipPreview->togglePlayPause( true );
         m_currentPreviewRenderer = m_renderPreview;
+    }
     else
         qDebug() << "Unknown and uncoherent tabId for PreviewWidget : " << tabId;
     m_currentMode = !m_currentMode;

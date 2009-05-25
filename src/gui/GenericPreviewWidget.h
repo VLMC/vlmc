@@ -47,10 +47,14 @@ public:
 
     virtual void                    startPreview( Media* media ) = 0;
     virtual void                    setPosition( float newPos ) = 0;
-    virtual void                    togglePlayPause() = 0;
+    virtual void                    togglePlayPause( bool forcePause = false ) = 0;
 
+/*    float                           getPosition() const { return m_position; }
+    void                            setPosition( float pos ) { m_position = pos; }
+*/
 protected:
     LibVLCpp::MediaPlayer*          m_mediaPlayer;
+//    float                           m_position;
 
 public slots:
     virtual void                    __positionChanged() = 0;

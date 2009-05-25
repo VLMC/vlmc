@@ -42,7 +42,7 @@ class   RenderPreviewWidget : public GenericPreviewWidget
 
         virtual void        startPreview( Media* );
         virtual void        setPosition( float newPos );
-        virtual void        togglePlayPause();
+        virtual void        togglePlayPause( bool forcePause );
 
     private:
         MainWorkflow*       m_mainWorkflow;
