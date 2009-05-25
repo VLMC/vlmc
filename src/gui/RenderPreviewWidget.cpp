@@ -35,6 +35,7 @@ RenderPreviewWidget::~RenderPreviewWidget()
 
 void        RenderPreviewWidget::startPreview( Media* )
 {
+    qDebug() << "Starting render preview";
 }
 
 void        RenderPreviewWidget::setPosition( float /*newPos*/ )

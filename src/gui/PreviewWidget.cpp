@@ -114,12 +114,7 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
         event->acceptProposedAction();
         m_previewStopped = false;
     }
-    else
-    {
-        if ( m_currentMode != PreviewWidget::renderPreviewMode )
-            m_ui->tabWidget->setCurrentIndex( PreviewWidget::renderPreviewMode );
-        //launche render preview somehow
-    }
+    //else: I don't see how we could drag and drop a workflow :o (at the moment)
 }
 
 void    PreviewWidget::positionChanged( float newPos )

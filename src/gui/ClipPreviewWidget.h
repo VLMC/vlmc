@@ -53,13 +53,6 @@ public slots:
     void                    __videoPaused();
     void                    __videoPlaying();
     void                    __endReached();
-
-signals:
-    void                    stopped();
-    void                    paused();
-    void                    playing();
-    void                    positionChanged( float );
-    void                    endReached();
 };
 
 #endif // CLIPPREVIEWWIDGET_H
