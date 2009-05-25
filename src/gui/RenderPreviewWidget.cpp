@@ -20,21 +20,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QtDebug>
 
 #include "RenderPreviewWidget.h"
 
 RenderPreviewWidget::RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* renderWidget ) :
-            m_mainWorkflow( mainWorkflow )
+            GenericPreviewWidget( renderWidget ), m_mainWorkflow( mainWorkflow )
 {
-    m_mediaPlayer = new LibVLCpp::MediaPlayer();
-    m_mediaPlayer->setDrawable( renderWidget->winId() );
 }
 
 RenderPreviewWidget::~RenderPreviewWidget()
 {
-    delete m_mediaPlayer;
 }
 
+void        RenderPreviewWidget::startPreview( Media* )
+{
+}
+
+void        RenderPreviewWidget::setPosition( float newPos )
+{
+}
+
+void        RenderPreviewWidget::togglePlayPause()
+{
+
+}
 
 /////////////////////////////////////////////////////////////////////
 /////SLOTS :

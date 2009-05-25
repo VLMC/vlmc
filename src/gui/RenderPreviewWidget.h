@@ -23,15 +23,15 @@
 #ifndef RENDERPREVIEWWIDGET_H
 #define RENDERPREVIEWWIDGET_H
 
+
 #include <QObject>
 #include <QWidget>
-#include <QtDebug>
 
-#include "VLCMediaPlayer.h"
 #include "Workflow/MainWorkflow.h"
+#include "GenericPreviewWidget.h"
 
 //TODO: This should really share a common interface with ClipPreviewWorkflow
-class   RenderPreviewWidget : public QObject
+class   RenderPreviewWidget : public GenericPreviewWidget
 {
     Q_OBJECT
     Q_DISABLE_COPY( RenderPreviewWidget )
@@ -40,13 +40,12 @@ class   RenderPreviewWidget : public QObject
         RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* renderWidget );
         ~RenderPreviewWidget();
 
-        void                        startPreview();
-        void                        setPosition( float newPos );
-        void                        togglePlayPause();
+        virtual void        startPreview( Media* );
+        virtual void        setPosition( float newPos );
+        virtual void        togglePlayPause();
 
     private:
-        MainWorkflow*               m_mainWorkflow;
-        LibVLCpp::MediaPlayer*      m_mediaPlayer;
+        MainWorkflow*       m_mainWorkflow;
 
 public slots:
     void                    __positionChanged();

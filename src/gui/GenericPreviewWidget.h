@@ -1,5 +1,5 @@
 /*****************************************************************************
- * ClipPreviewWidget.cpp: Preview widget
+ * GenericPreviewWidget.h: Describe a common behavior for every preview widget
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,39 +20,43 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef CLIPPREVIEWWIDGET_H
-#define CLIPPREVIEWWIDGET_H
+#ifndef GENERICPREVIEWWIDGET_H
+#define GENERICPREVIEWWIDGET_H
 
-#include <QWidget>
 #include <QObject>
+#include <QWidget>
 
-#include "VLCMediaPlayer.h"
 #include "Media.h"
-#include "GenericPreviewWidget.h"
+#include "VLCMediaPlayer.h"
 
-//TODO: This should really share a common interface with RenderPreviewWorkflow
-class ClipPreviewWidget : public GenericPreviewWidget
+class   GenericPreviewWidget : public QObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY( ClipPreviewWidget )
+    Q_DISABLE_COPY( GenericPreviewWidget );
 
 public:
-    explicit ClipPreviewWidget( QWidget* renderWidget );
-    virtual ~ClipPreviewWidget();
+    explicit GenericPreviewWidget( QWidget* renderWidget )
+    {
+        m_mediaPlayer = new LibVLCpp::MediaPlayer();
+        m_mediaPlayer->setDrawable( renderWidget->winId() );
+    }
+    virtual ~GenericPreviewWidget()
+    {
+        delete m_mediaPlayer;
+    }
 
-    void                    startPreview( Media* media );
-    void                    setPosition( float newPos );
-    void                    togglePlayPause();
+    virtual void                    startPreview( Media* media ) = 0;
+    virtual void                    setPosition( float newPos ) = 0;
+    virtual void                    togglePlayPause() = 0;
 
-private:
-    bool                    m_clipLoaded;
-    bool                    m_videoStopped;
+protected:
+    LibVLCpp::MediaPlayer*          m_mediaPlayer;
 
 public slots:
-    void                    __positionChanged();
-    void                    __videoPaused();
-    void                    __videoPlaying();
-    void                    __endReached();
+    virtual void                    __positionChanged() = 0;
+    virtual void                    __videoPaused() = 0;
+    virtual void                    __videoPlaying() = 0;
+    virtual void                    __endReached() = 0;
 
 signals:
     void                    stopped();
@@ -62,4 +66,4 @@ signals:
     void                    endReached();
 };
 
-#endif // CLIPPREVIEWWIDGET_H
+#endif // GENERICPREVIEWWIDGET_H

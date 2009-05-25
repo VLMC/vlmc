@@ -25,15 +25,13 @@
 #include "ClipPreviewWidget.h"
 
 ClipPreviewWidget::ClipPreviewWidget( QWidget* renderWidget ) :
+    GenericPreviewWidget( renderWidget ),
     m_clipLoaded( false ), m_videoStopped( true )
 {
-    m_mediaPlayer = new LibVLCpp::MediaPlayer();
-    m_mediaPlayer->setDrawable( renderWidget->winId() );
 }
 
 ClipPreviewWidget::~ClipPreviewWidget()
 {
-    delete m_mediaPlayer;
 }
 
 void        ClipPreviewWidget::startPreview( Media* media )

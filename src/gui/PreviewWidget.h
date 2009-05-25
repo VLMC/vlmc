@@ -44,14 +44,18 @@ public:
 
 private:
     Ui::PreviewWidget*      m_ui;
-    ClipPreviewWidget*      m_clipPreview;
-    RenderPreviewWidget*    m_renderPreview;
+    GenericPreviewWidget*   m_clipPreview;
+    GenericPreviewWidget*   m_renderPreview;
+    GenericPreviewWidget*   m_currentPreviewRenderer;
     bool                    m_endReached;
     bool                    m_previewStopped;
     int                     m_currentMode;
 
-    static const int        clipPreviewMode = 0;
-    static const int        renderPreviewMode = 1;
+    static const int        renderPreviewMode = 0;
+    static const int        clipPreviewMode = 1;
+
+private:
+
 
 protected:
     virtual void    changeEvent( QEvent *e );

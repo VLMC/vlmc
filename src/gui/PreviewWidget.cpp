@@ -22,6 +22,7 @@
  *****************************************************************************/
 
 #include <QUrl>
+#include <QtDebug>
 
 #include "ui_PreviewWidget.h"
 #include "gui/PreviewWidget.h"
@@ -30,7 +31,9 @@
 
 PreviewWidget::PreviewWidget( MainWorkflow* mainWorkflow, QWidget *parent ) :
     QWidget( parent ),
-    m_ui( new Ui::PreviewWidget ), m_previewStopped( true )
+    m_ui( new Ui::PreviewWidget ),
+    m_currentPreviewRenderer( NULL ),
+    m_previewStopped( true )
 {
     m_ui->setupUi( this );
     m_ui->groupBoxButton->hide();
@@ -49,13 +52,15 @@ PreviewWidget::PreviewWidget( MainWorkflow* mainWorkflow, QWidget *parent ) :
     m_renderPreview = new RenderPreviewWidget( mainWorkflow, m_ui->renderPreviewRenderWidget );
 
     m_currentMode = m_ui->tabWidget->currentIndex();
-    qDebug() << "m_currentMode = " << m_currentMode;
+    m_currentPreviewRenderer = m_renderPreview;
     connect( m_ui->tabWidget, SIGNAL( currentChanged(int) ), this, SLOT( changedTab(int) ) );
 }
 
 PreviewWidget::~PreviewWidget()
 {
     delete m_ui;
+    delete m_clipPreview;
+    delete m_renderPreview;
 }
 
 void PreviewWidget::changeEvent( QEvent *e )
@@ -72,15 +77,18 @@ void PreviewWidget::changeEvent( QEvent *e )
 
 void    PreviewWidget::dragEnterEvent( QDragEnterEvent* event )
 {
-    if ( event->mimeData()->hasFormat( "vlmc/uuid" ) )
+    if ( event->mimeData()->hasFormat( "vlmc/uuid" ) || 
+         event->mimeData()->urls().count() == 1 )
+    {
         event->acceptProposedAction();
-    else if ( event->mimeData()->urls().count() == 1 )
-        event->acceptProposedAction();
+    }
 }
 
 void    PreviewWidget::dropEvent( QDropEvent* event )
 {
-    if ( m_currentMode == PreviewWidget::clipPreviewMode )
+    //If the dropped event is a clip to preview :
+    if ( event->mimeData()->hasFormat( "vlmc/uuid" ) ||
+         event->mimeData()->urls().count() == 1 )
     {
         Media* media;
         if ( event->mimeData()->urls().count() == 1 )
@@ -89,8 +97,11 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
             lib->newMediaLoadingAsked( event->mimeData()->urls()[0].path() );
             media = lib->getMedia( event->mimeData()->urls()[0].path() );
         }
-        else
+        else //TODO: Could this rely on an implicit QString CTOR ?
             media = Library::getInstance()->getMedia( QUuid( ( const QString& )event->mimeData()->data( "vlmc/uuid" ) ) );
+
+        if ( m_currentMode != PreviewWidget::clipPreviewMode )
+            m_ui->tabWidget->setCurrentIndex( PreviewWidget::clipPreviewMode );
 
         connect( m_clipPreview,     SIGNAL( stopped() ),                this,       SLOT( videoPaused() ) );
         connect( m_clipPreview,     SIGNAL( paused() ),                 this,       SLOT( videoPaused() ) );
@@ -102,6 +113,12 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
         event->acceptProposedAction();
         m_previewStopped = false;
     }
+    else
+    {
+        if ( m_currentMode != PreviewWidget::renderPreviewMode )
+            m_ui->tabWidget->setCurrentIndex( PreviewWidget::renderPreviewMode );
+        //launche render preview somehow
+    }
 }
 
 void    PreviewWidget::positionChanged( float newPos )
@@ -112,7 +129,7 @@ void    PreviewWidget::positionChanged( float newPos )
 
 void    PreviewWidget::seekSliderPressed()
 {
-    disconnect( m_clipPreview, SIGNAL( positionChanged( float ) ),
+    disconnect( m_currentPreviewRenderer, SIGNAL( positionChanged( float ) ),
                 this, SLOT( positionChanged( float ) ) );
 }
 
@@ -124,7 +141,7 @@ void    PreviewWidget::seekSliderMoved( int )
         return;
     }
     m_endReached = false;
-    m_clipPreview->setPosition( (float)m_ui->seekSlider->value() );
+    m_currentPreviewRenderer->setPosition( (float)m_ui->seekSlider->value() );
 }
 
 void    PreviewWidget::seekSliderReleased()
@@ -135,17 +152,18 @@ void    PreviewWidget::seekSliderReleased()
         //When we will release our slider, if endReached is true, we actually set the position.
         //Otherwise, we do nothing.
         //This prevents the video to stop if we put the slider to the maximum right by mistake
-        m_clipPreview->setPosition( (float)m_ui->seekSlider->maximum() );
+        m_currentPreviewRenderer->setPosition( (float)m_ui->seekSlider->maximum() );
         m_previewStopped = false;
     }
-    connect( m_clipPreview,     SIGNAL( positionChanged( float ) ),    this,       SLOT( positionChanged( float ) ) );
+    connect( m_currentPreviewRenderer, SIGNAL( positionChanged( float ) ),
+             this, SLOT( positionChanged( float ) ) );
 }
 
 void PreviewWidget::on_pushButtonPlay_clicked()
 {
     if ( m_previewStopped == true )
         m_previewStopped = false;
-    m_clipPreview->togglePlayPause();
+    m_currentPreviewRenderer->togglePlayPause();
 }
 
 void PreviewWidget::videoPaused()
@@ -168,5 +186,11 @@ void    PreviewWidget::endReached()
 
 void    PreviewWidget::changedTab( int tabId )
 {
-    qDebug() << "CHanged mode : " << tabId;
+    if ( tabId == PreviewWidget::clipPreviewMode )
+        m_currentPreviewRenderer = m_clipPreview;
+    else if ( tabId == PreviewWidget::renderPreviewMode )
+        m_currentPreviewRenderer = m_renderPreview;
+    else
+        qDebug() << "Unknown and uncoherent tabId for PreviewWidget : " << tabId;
+    m_currentMode = !m_currentMode;
 }
