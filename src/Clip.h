@@ -38,14 +38,14 @@ class   Clip : public QObject
     Q_OBJECT
 
     public:
-        static const qint64     UntilEndOfMedia = -1;
+        static const float      UntilEndOfMedia = -1.0;
 
         Clip( Media* parent );
         Clip( Clip* creator, qint64 begin, qint64 end );
         virtual ~Clip();
 
-        qint64          getBegin() const;
-        qint64          getEnd() const;
+        float           getBegin() const;
+        float           getEnd() const;
         qint64          getLength() const;
         Media*          getParent();
         const QUuid&    getUuid() const;
@@ -55,8 +55,8 @@ class   Clip : public QObject
         void        init();
 
         Media*      m_parent;
-        qint64      m_begin;
-        qint64      m_end;
+        float       m_begin;
+        float       m_end;
         qint64      m_length;
         QUuid       m_uuid;
 };

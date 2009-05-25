@@ -26,7 +26,7 @@
 
 #include "Clip.h"
 
-Clip::Clip( Media* parent ) : m_parent( parent ), m_begin( 0 ), m_end( Clip::UntilEndOfMedia )
+Clip::Clip( Media* parent ) : m_parent( parent ), m_begin( 0.0f ), m_end( Clip::UntilEndOfMedia )
 {
     init();
 }
@@ -46,12 +46,12 @@ void        Clip::init()
     computeLength();
 }
 
-qint64      Clip::getBegin() const
+float       Clip::getBegin() const
 {
     return m_begin;
 }
 
-qint64      Clip::getEnd() const
+float       Clip::getEnd() const
 {
     return m_end;
 }
