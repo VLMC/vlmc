@@ -40,8 +40,15 @@ class   TrackWorkflow : public QObject
     public:
         TrackWorkflow();
 
-        void                    startRender();
-        unsigned char*          getOutput();
+        void                                    startRender();
+        unsigned char*                          getOutput();
+        //FIXME: this won't be reliable as soon as we change the fps from the configuration
+        static const unsigned int               nbFrameBeforePreload = 60; //We load aproximatively 2s before the frame has to render.        
+        static unsigned char*                   blackOutput;
+
+    private:
+        void                                    checkNextClip();
+
     private:
         QMap<qint64, ClipWorkflow*>             m_clips;
         QMap<qint64, ClipWorkflow*>::iterator   m_current;
@@ -49,8 +56,7 @@ class   TrackWorkflow : public QObject
         QMutex*                                 m_condMutex;
         QWaitCondition*                         m_waitCondition;
         LibVLCpp::MediaPlayer*                  m_mediaPlayer;
-        //When a video is about to be used, we pre-load it with this second media player.
-        LibVLCpp::MediaPlayer*                  m_nextMediaPlayer;
+        bool                                    m_isRendering;
 
     public:
         void            addClip( Clip*, qint64 start );

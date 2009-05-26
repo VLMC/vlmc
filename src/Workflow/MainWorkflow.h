@@ -38,11 +38,12 @@ class   MainWorkflow : public QObject
     public:
         MainWorkflow();
 
-        void                addClip( Clip* clip, unsigned int trackId, qint64 start );
-        void                startRender();
-        unsigned char*      getOutput();
+        void                    addClip( Clip* clip, unsigned int trackId, qint64 start );
+        void                    startRender();
+        unsigned char*          getOutput();
+
     private:
-        TrackWorkflow**      m_tracks;
+        TrackWorkflow**         m_tracks;
 };
 
 #endif // MAINWORKFLOW_H
