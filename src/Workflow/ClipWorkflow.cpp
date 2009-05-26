@@ -97,7 +97,7 @@ void    ClipWorkflow::setRenderComplete()
 
 }
 
-void    ClipWorkflow::initialize()
+void    ClipWorkflow::setVmem()
 {
     char        buffer[32];
 
@@ -118,36 +118,44 @@ void    ClipWorkflow::initialize()
     m_clip->getParent()->getVLCMedia()->addOption( buffer );
 }
 
-void    ClipWorkflow::startRender( LibVLCpp::MediaPlayer* mediaPlayer )
+void    ClipWorkflow::initialize( LibVLCpp::MediaPlayer* mediaPlayer )
 {
-    initialize();
+    setVmem();
     m_mediaPlayer = mediaPlayer;
     m_mediaPlayer->setMedia( m_clip->getParent()->getVLCMedia() );
 
     if ( m_clip->getBegin() == 0.0f )
     {
-        QWriteLocker lock( m_initMutex );
-        m_isReady = true;
+        connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( pauseAfterPlaybackStarted() ), Qt::DirectConnection );
     }
     else
     {
         //The last parameter is NOT here for decoration ;)
-        connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( playbackStarted() ), Qt::DirectConnection );
+        connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPosition() ), Qt::DirectConnection );
     }
     m_mediaPlayer->play();
 }
 
-void    ClipWorkflow::playbackStarted()
+void    ClipWorkflow::setPosition()
 {
-    disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( playbackStarted() ) );
-    connect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( positionChanged() ), Qt::DirectConnection );
+    disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPosition() ) );
+    connect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( pauseAfterPlaybackStarted() ), Qt::DirectConnection );
     m_mediaPlayer->setPosition( m_clip->getBegin() );
 }
 
-void    ClipWorkflow::positionChanged()
+void    ClipWorkflow::pauseAfterPlaybackStarted()
 {
-    disconnect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( positionChanged() ) );
+    disconnect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( pauseAfterPlaybackStarted() ) );
+    disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( pauseAfterPlaybackStarted() ) );
 
+    connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( pausedMediaPlayer() ), Qt::DirectConnection );
+    m_mediaPlayer->pause();
+
+}
+
+void    ClipWorkflow::pausedMediaPlayer()
+{
+    disconnect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( pausedMediaPlayer() ) );
     QWriteLocker        lock( m_initMutex);
     m_isReady = true;
 }

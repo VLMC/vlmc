@@ -47,14 +47,14 @@ class   ClipWorkflow : public QObject
 
         bool                    renderComplete() const;
         unsigned char*          getOutput();
-        void                    startRender( LibVLCpp::MediaPlayer* mediaPlayer );
+        void                    initialize( LibVLCpp::MediaPlayer* mediaPlayer );
         bool                    isReady() const;
         bool                    isEndReached() const;
 
     private:
         static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret );
         static void             unlock( ClipWorkflow* clipWorkflow );
-        void                    initialize();
+        void                    setVmem();
         void                    setRenderComplete();
 
     private:
@@ -71,8 +71,9 @@ class   ClipWorkflow : public QObject
         QReadWriteLock*         m_endReachedLock;
 
     public slots:
-        void                    playbackStarted();
-        void                    positionChanged();
+        void                    pauseAfterPlaybackStarted();
+        void                    pausedMediaPlayer();
+        void                    setPosition();
 };
 
 #endif // CLIPWORKFLOW_H
