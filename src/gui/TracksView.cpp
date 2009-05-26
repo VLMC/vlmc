@@ -187,7 +187,7 @@ void TracksView::addClip( Media* clip, const QPoint& point )
     if ( track + 1 > m_tracksCount ) return;
 
     //mappedXPos: 1 pixel = 1 frame
-    int mappedXPos = ( int )( mapToScene( point ).x() + 0.5 );
+    qreal mappedXPos = ( mapToScene( point ).x() + 0.5 );
 
     GraphicsMovieItem* item = new GraphicsMovieItem( clip );
     item->setPos( mappedXPos, track * tracksHeight() );
@@ -205,7 +205,7 @@ void TracksView::addClip( Media* clip, const QPoint& point )
     qDebug() << "TracksView::addClip: Adding a new clip to track" << track;
     //FIXME: this leaks, but it will be corrected once we really use Clip instead
     //          of Media
-    m_mainWorkflow->addClip( new Clip( clip ), track );
+    m_mainWorkflow->addClip( new Clip( clip ), track, (qint64)mappedXPos );
 }
 
 void TracksView::setScale( double scaleFactor )

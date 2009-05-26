@@ -24,16 +24,17 @@
 
 #include "TrackWorkflow.h"
 
-TrackWorkflow::TrackWorkflow()
+TrackWorkflow::TrackWorkflow() : m_currentFrame( 0 )
 {
     m_condMutex = new QMutex;
     m_waitCondition = new QWaitCondition;
     m_mediaPlayer = new LibVLCpp::MediaPlayer();
 }
 
-void    TrackWorkflow::addClip( Clip* clip )
+void    TrackWorkflow::addClip( Clip* clip, qint64 start )
 {
-    m_currentClipWorkflow = new ClipWorkflow( clip, m_condMutex, m_waitCondition );
+    ClipWorkflow* cw = new ClipWorkflow( clip, m_condMutex, m_waitCondition );
+    m_clips.insert( start, cw );
 }
 
 void    TrackWorkflow::startRender()
@@ -46,14 +47,13 @@ void    TrackWorkflow::startRender()
 
 unsigned char*    TrackWorkflow::getOutput()
 {
-//    qDebug() << "Awaking all renderers";
     m_waitCondition->wakeAll();
     while ( m_currentClipWorkflow->renderComplete() == false )
     {
-        //qDebug() << "Frame is not ready yet... waiting";
-//        usleep( 1000 );
+        //usleep( 1000 );
     }
-//    qDebug() << "Frame rendered";
+    ++m_currentFrame;
+    
     if ( m_currentClipWorkflow->isEndReached() == true )
         return NULL;
     return m_currentClipWorkflow->getOutput();

@@ -32,13 +32,13 @@ MainWorkflow::MainWorkflow()
         m_tracks[i] = new TrackWorkflow;
 }
 
-void    MainWorkflow::addClip( Clip* clip, unsigned int trackId )
+void    MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
 {
     Q_ASSERT_X( trackId < NB_TRACKS, "MainWorkflow::addClip",
                 "The specified trackId isn't valid, for it's higher than the number of tracks");
 
     qDebug() << "MainWorkflow: Adding clip" << clip->getUuid() << "to track" << trackId;
-    m_tracks[trackId]->addClip( clip );
+    m_tracks[trackId]->addClip( clip, start );
 }
 
 void    MainWorkflow::startRender()

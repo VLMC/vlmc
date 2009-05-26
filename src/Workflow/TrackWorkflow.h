@@ -26,11 +26,12 @@
 #include <QObject>
 #include <QMutex>
 #include <QWaitCondition>
+#include <QMap>
 
 #include "ClipWorkflow.h"
 #include "VLCMediaPlayer.h"
 
-//THIS IS A JUNK FOR TESTING CLIP WORKFLOW
+#define FPS     30
 
 class   TrackWorkflow : public QObject
 {
@@ -42,13 +43,17 @@ class   TrackWorkflow : public QObject
         void                    startRender();
         unsigned char*          getOutput();
     private:
-        ClipWorkflow*           m_currentClipWorkflow;
-        QMutex*                 m_condMutex;
-        QWaitCondition*         m_waitCondition;
-        LibVLCpp::MediaPlayer*  m_mediaPlayer;
+        QMap<qint64, ClipWorkflow*>             m_clips;
+        QMap<qint64, ClipWorkflow*>::iterator   m_current;
+        qint64                                  m_currentFrame;
+        QMutex*                                 m_condMutex;
+        QWaitCondition*                         m_waitCondition;
+        LibVLCpp::MediaPlayer*                  m_mediaPlayer;
+        //When a video is about to be used, we pre-load it with this second media player.
+        LibVLCpp::MediaPlayer*                  m_nextMediaPlayer;
 
-    public slots:
-        void            addClip( Clip* );
+    public:
+        void            addClip( Clip*, qint64 start );
 };
 
 #endif // TRACKWORKFLOW_H
