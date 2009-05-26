@@ -41,7 +41,7 @@ class   TrackWorkflow : public QObject
         TrackWorkflow();
 
         void                                    startRender();
-        unsigned char*                          getOutput();
+        unsigned char*                          getOutput( qint64 currentFrame );
         //FIXME: this won't be reliable as soon as we change the fps from the configuration
         static const unsigned int               nbFrameBeforePreload = 60; //We load aproximatively 2s before the frame has to render.        
         static unsigned char*                   blackOutput;
@@ -50,13 +50,11 @@ class   TrackWorkflow : public QObject
         /**
           * \return true if at least one video remains, false otherwise (IE end of this track)
           */
-        bool                                    checkNextClip();
+        bool                                    checkNextClip( qint64 currentFrame );
 
     private:
         QMap<qint64, ClipWorkflow*>             m_clips;
         QMap<qint64, ClipWorkflow*>::iterator   m_current;
-        //TODO: this MUST be in the MainWorkflow, and passed as a parameter to the getOutput method.
-        qint64                                  m_currentFrame;
         QMutex*                                 m_condMutex;
         QWaitCondition*                         m_waitCondition;
         LibVLCpp::MediaPlayer*                  m_mediaPlayer;

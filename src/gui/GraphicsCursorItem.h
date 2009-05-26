@@ -29,6 +29,9 @@ private:
 
 signals:
     void cursorPositionChanged( int pos );
+
+public slots:
+    void    updateCursorPos( qint64 pos );
 };
 
 #endif // GRAPHICSCURSORITEM_H

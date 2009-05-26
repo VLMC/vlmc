@@ -44,6 +44,10 @@ class   MainWorkflow : public QObject
 
     private:
         TrackWorkflow**         m_tracks;
+        qint64                  m_currentFrame;
+
+    signals:
+        void                    frameChanged( qint64 currentFrame );
 };
 
 #endif // MAINWORKFLOW_H

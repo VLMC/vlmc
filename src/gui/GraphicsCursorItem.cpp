@@ -40,3 +40,8 @@ void GraphicsCursorItem::setCursorPos( int position )
 {
     setPos( position, pos().y() );
 }
+
+void    GraphicsCursorItem::updateCursorPos( qint64 position )
+{
+    setCursorPos( (qint64) position );
+}

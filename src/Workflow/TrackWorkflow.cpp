@@ -26,7 +26,7 @@
 
 unsigned char*  TrackWorkflow::blackOutput = NULL;
 
-TrackWorkflow::TrackWorkflow() : m_currentFrame( 0 ), m_isRendering( false )
+TrackWorkflow::TrackWorkflow() : m_isRendering( false )
 {
     m_condMutex = new QMutex;
     m_waitCondition = new QWaitCondition;
@@ -47,7 +47,6 @@ void    TrackWorkflow::addClip( Clip* clip, qint64 start )
 
 void    TrackWorkflow::startRender()
 {
-    m_currentFrame = 0;
     m_current = m_clips.end();
     //If the first frame is to be render soon, we should play it now.
     if ( m_clips.begin().key() < TrackWorkflow::nbFrameBeforePreload )
@@ -67,7 +66,7 @@ void    TrackWorkflow::startRender()
     }
 }
 
-bool                TrackWorkflow::checkNextClip()
+bool                TrackWorkflow::checkNextClip( qint64 currentFrame )
 {
     QMap<qint64, ClipWorkflow*>::iterator       next;
 
@@ -84,12 +83,12 @@ bool                TrackWorkflow::checkNextClip()
     }
 
     //If it's about to be used, initialize it
-    if ( next.key() == m_currentFrame + TrackWorkflow::nbFrameBeforePreload )
+    if ( next.key() == currentFrame + TrackWorkflow::nbFrameBeforePreload )
     {
 //        qDebug() << "Initializing next clipWorkflow";
         next.value()->initialize( m_mediaPlayer );
     }
-    else if ( next.key() == m_currentFrame )
+    else if ( next.key() == currentFrame )
     {
         //It should have been initialized now, however, this ain't very safe :/
         Q_ASSERT( next.value()->isReady() );
@@ -101,17 +100,16 @@ bool                TrackWorkflow::checkNextClip()
     return true;
 }
 
-unsigned char*      TrackWorkflow::getOutput()
+unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
 {
     unsigned char*  ret = TrackWorkflow::blackOutput;
     bool            clipsRemaining;
 
 //    qDebug() << "Frame nb" << m_currentFrame;
-    clipsRemaining = checkNextClip();
+    clipsRemaining = checkNextClip( currentFrame );
     if ( m_current == m_clips.end() )
     {
 //        qDebug() << "Stil no clip at this time, going to the next frame";
-        ++m_currentFrame;
         return ret;
     }
     m_waitCondition->wakeAll();
@@ -128,6 +126,5 @@ unsigned char*      TrackWorkflow::getOutput()
             return NULL;
         }
     }
-    ++m_currentFrame;
     return ret;
 }

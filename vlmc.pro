@@ -38,7 +38,6 @@ SOURCES += src/main.cpp \
     src/gui/FileBrowser.cpp \
     src/gui/GraphicsCursorItem.cpp \
     src/TimelineBackend.cpp \
-    src/Track.cpp \
     src/Workflow/ClipWorkflow.cpp \
     src/Workflow/TrackWorkflow.cpp \
     src/Workflow/MainWorkflow.cpp \
@@ -74,7 +73,6 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/FileBrowser.h \
     src/gui/GraphicsCursorItem.h \
     src/TimelineBackend.h \
-    src/Track.h \
     src/Workflow/ClipWorkflow.h \
     src/Workflow/TrackWorkflow.h \
     src/Workflow/MainWorkflow.h \

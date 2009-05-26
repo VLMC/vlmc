@@ -43,10 +43,15 @@ void    MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
 
 void    MainWorkflow::startRender()
 {
+    m_currentFrame = 0;
+    emit frameChanged( 0 );
     m_tracks[0]->startRender();
 }
 
 unsigned char*    MainWorkflow::getOutput()
 {
-    return m_tracks[0]->getOutput();
+    unsigned char* ret = m_tracks[0]->getOutput( m_currentFrame );
+    ++m_currentFrame;
+    emit frameChanged( m_currentFrame );
+    return ret;
 }
