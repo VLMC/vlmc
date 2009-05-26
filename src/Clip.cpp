@@ -68,7 +68,7 @@ qint64      Clip::getLength() const
 
 void        Clip::computeLength()
 {
-    if ( m_begin == Clip::UntilEndOfMedia )
+    if ( m_end == Clip::UntilEndOfMedia )
         m_length = m_parent->getLength() - m_begin;
     else
         m_length = m_end - m_begin;
