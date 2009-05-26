@@ -75,6 +75,7 @@ class   ClipWorkflow : public QObject
         void                    pauseAfterPlaybackStarted();
         void                    pausedMediaPlayer();
         void                    setPosition();
+        void                    endReached();
 };
 
 #endif // CLIPWORKFLOW_H

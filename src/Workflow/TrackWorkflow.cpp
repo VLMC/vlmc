@@ -67,7 +67,7 @@ void    TrackWorkflow::startRender()
     }
 }
 
-void                TrackWorkflow::checkNextClip()
+bool                TrackWorkflow::checkNextClip()
 {
     QMap<qint64, ClipWorkflow*>::iterator       next;
 
@@ -81,6 +81,8 @@ void                TrackWorkflow::checkNextClip()
     {
 //        qDebug() << "Using next clip";
         next = m_clips.begin() + 1;
+        if ( next == m_clips.end() )
+            return false;
     }
 
     //If it's about to be used, initialize it
@@ -98,15 +100,16 @@ void                TrackWorkflow::checkNextClip()
         m_current = next;
         m_current.value()->startRender();
     }
-
+    return true;
 }
 
 unsigned char*      TrackWorkflow::getOutput()
 {
     unsigned char*  ret = TrackWorkflow::blackOutput;
+    bool            lastClip;
 
-    qDebug() << "Frame nb" << m_currentFrame;
-    checkNextClip();
+//    qDebug() << "Frame nb" << m_currentFrame;
+    lastClip = checkNextClip();
     if ( m_current == m_clips.end() )
     {
 //        qDebug() << "Stil no clip at this time, going to the next frame";
@@ -114,11 +117,19 @@ unsigned char*      TrackWorkflow::getOutput()
         return ret;
     }
     m_waitCondition->wakeAll();
-    qDebug() << "All waked";
+//    qDebug() << "All waked";
     while ( m_current.value()->renderComplete() == false )
         usleep( 20 );
     if ( m_current.value()->isEndReached() == false )
         ret = m_current.value()->getOutput();
+    else
+    {
+        if ( lastClip == true)
+        {
+            qDebug() << "End of track";
+            return NULL;
+        }
+    }
     ++m_currentFrame;
     return ret;
 }

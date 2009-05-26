@@ -125,6 +125,7 @@ void    ClipWorkflow::initialize( LibVLCpp::MediaPlayer* mediaPlayer )
     m_mediaPlayer->setMedia( m_clip->getParent()->getVLCMedia() );
 
     connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPosition() ), Qt::DirectConnection );
+    connect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( endReached() ), Qt::DirectConnection );
     qDebug() << "Launching playback";
     m_mediaPlayer->play();
 }
@@ -172,4 +173,10 @@ void    ClipWorkflow::startRender()
     Q_ASSERT( m_isReady == true);
 
     m_mediaPlayer->play();
+}
+
+void    ClipWorkflow::endReached()
+{
+    QWriteLocker    lock2( m_endReachedLock );
+    m_endReached = true;
 }

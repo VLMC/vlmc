@@ -47,7 +47,10 @@ class   TrackWorkflow : public QObject
         static unsigned char*                   blackOutput;
 
     private:
-        void                                    checkNextClip();
+        /**
+          * \return true if at least one video remains, false otherwise (IE end of this track)
+          */
+        bool                                    checkNextClip();
 
     private:
         QMap<qint64, ClipWorkflow*>             m_clips;
