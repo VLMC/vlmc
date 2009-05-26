@@ -61,7 +61,11 @@ void*   RenderPreviewWidget::lock( void* datas )
     RenderPreviewWidget* self = reinterpret_cast<RenderPreviewWidget*>( datas);
     void* ret = self->m_mainWorkflow->getOutput();
     if ( ret == NULL )
+    {
+        //maybe we should display a black screen here to really emphasize
+        //the end of the render
         self->m_mediaPlayer->stop();
+    }
     return ret;
 }
 

@@ -55,6 +55,7 @@ class   TrackWorkflow : public QObject
     private:
         QMap<qint64, ClipWorkflow*>             m_clips;
         QMap<qint64, ClipWorkflow*>::iterator   m_current;
+        //TODO: this MUST be in the MainWorkflow, and passed as a parameter to the getOutput method.
         qint64                                  m_currentFrame;
         QMutex*                                 m_condMutex;
         QWaitCondition*                         m_waitCondition;

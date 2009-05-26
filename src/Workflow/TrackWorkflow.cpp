@@ -52,15 +52,15 @@ void    TrackWorkflow::startRender()
     //If the first frame is to be render soon, we should play it now.
     if ( m_clips.begin().key() < TrackWorkflow::nbFrameBeforePreload )
     {
-        qDebug() << "Next clip is less than" << nbFrameBeforePreload<< "frame ahead";
+//        qDebug() << "Next clip is less than" << nbFrameBeforePreload<< "frame ahead";
         m_clips.begin().value()->initialize( m_mediaPlayer );
-        qDebug() << "Waiting for the first clip to be ready";
+//        qDebug() << "Waiting for the first clip to be ready";
         while ( m_clips.begin().value()->isReady() == false )
             usleep( 150 );
         if ( m_current.key() == 0 )
         {
             m_current = m_clips.begin();
-            qDebug() << "Clip workflow is at first frame";
+//            qDebug() << "Clip workflow is at first frame";
             m_current.value()->startRender();
             m_isRendering = true;
         }
@@ -74,12 +74,10 @@ bool                TrackWorkflow::checkNextClip()
     //Picking next clip :
     if ( m_current == m_clips.end() )
     {
-//        qDebug() << "Using first clip";
         next = m_clips.begin();
     }
     else
     {
-//        qDebug() << "Using next clip";
         next = m_clips.begin() + 1;
         if ( next == m_clips.end() )
             return false;
@@ -88,14 +86,14 @@ bool                TrackWorkflow::checkNextClip()
     //If it's about to be used, initialize it
     if ( next.key() == m_currentFrame + TrackWorkflow::nbFrameBeforePreload )
     {
-        qDebug() << "Initializing next clipWorkflow";
+//        qDebug() << "Initializing next clipWorkflow";
         next.value()->initialize( m_mediaPlayer );
     }
     else if ( next.key() == m_currentFrame )
     {
         //It should have been initialized now, however, this ain't very safe :/
         Q_ASSERT( next.value()->isReady() );
-        qDebug() << "Switching current clip workflow";
+//        qDebug() << "Switching current clip workflow";
         //Using it as the current clip from now on.
         m_current = next;
         m_current.value()->startRender();
@@ -106,10 +104,10 @@ bool                TrackWorkflow::checkNextClip()
 unsigned char*      TrackWorkflow::getOutput()
 {
     unsigned char*  ret = TrackWorkflow::blackOutput;
-    bool            lastClip;
+    bool            clipsRemaining;
 
 //    qDebug() << "Frame nb" << m_currentFrame;
-    lastClip = checkNextClip();
+    clipsRemaining = checkNextClip();
     if ( m_current == m_clips.end() )
     {
 //        qDebug() << "Stil no clip at this time, going to the next frame";
@@ -124,9 +122,9 @@ unsigned char*      TrackWorkflow::getOutput()
         ret = m_current.value()->getOutput();
     else
     {
-        if ( lastClip == true)
+        if ( clipsRemaining == false )
         {
-            qDebug() << "End of track";
+//            qDebug() << "End of track";
             return NULL;
         }
     }
