@@ -39,22 +39,16 @@ void    TrackWorkflow::addClip( Clip* clip, qint64 start )
 
 void    TrackWorkflow::startRender()
 {
-    m_currentClipWorkflow->initialize( m_mediaPlayer );
-    while ( m_currentClipWorkflow->isReady() == false )
-        usleep( 150 );
-    m_currentClipWorkflow->startRender();
+
 }
 
 unsigned char*    TrackWorkflow::getOutput()
 {
     m_waitCondition->wakeAll();
-    while ( m_currentClipWorkflow->renderComplete() == false )
-    {
-        //usleep( 1000 );
-    }
+    //Getting all the current frame output.
     ++m_currentFrame;
     
-    if ( m_currentClipWorkflow->isEndReached() == true )
-        return NULL;
-    return m_currentClipWorkflow->getOutput();
+    //Check if end of clip workflow is reached => return NULL
+    //else return the current track output
+    return NULL;
 }
