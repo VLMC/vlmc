@@ -42,7 +42,6 @@ void    TrackWorkflow::startRender()
     while ( m_currentClipWorkflow->isReady() == false )
         usleep( 150 );
     m_currentClipWorkflow->startRender();
-    qDebug() << "Renderer ready";
 }
 
 unsigned char*    TrackWorkflow::getOutput()
