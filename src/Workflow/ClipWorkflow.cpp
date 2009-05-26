@@ -67,7 +67,7 @@ void    ClipWorkflow::lock( ClipWorkflow* clipWorkflow, void** pp_ret )
 
     //In any case, we give vlc a buffer to render in...
     //If we don't, segmentation fault will catch us and eat our brain !! ahem...
-//    qDebug() << "Locking in ClipWorkflow::lock";
+    qDebug() << "Locking in ClipWorkflow::lock";
     *pp_ret = clipWorkflow->m_buffer;
 }
 
@@ -124,20 +124,14 @@ void    ClipWorkflow::initialize( LibVLCpp::MediaPlayer* mediaPlayer )
     m_mediaPlayer = mediaPlayer;
     m_mediaPlayer->setMedia( m_clip->getParent()->getVLCMedia() );
 
-    if ( m_clip->getBegin() == 0.0f )
-    {
-        connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( pauseAfterPlaybackStarted() ), Qt::DirectConnection );
-    }
-    else
-    {
-        //The last parameter is NOT here for decoration ;)
-        connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPosition() ), Qt::DirectConnection );
-    }
+    connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPosition() ), Qt::DirectConnection );
+    qDebug() << "Launching playback";
     m_mediaPlayer->play();
 }
 
 void    ClipWorkflow::setPosition()
 {
+    qDebug() << "Setting position";
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPosition() ) );
     connect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( pauseAfterPlaybackStarted() ), Qt::DirectConnection );
     m_mediaPlayer->setPosition( m_clip->getBegin() );
@@ -149,6 +143,7 @@ void    ClipWorkflow::pauseAfterPlaybackStarted()
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( pauseAfterPlaybackStarted() ) );
 
     connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( pausedMediaPlayer() ), Qt::DirectConnection );
+    qDebug() << "pausing media";
     m_mediaPlayer->pause();
 
 }
@@ -170,4 +165,11 @@ bool    ClipWorkflow::isEndReached() const
 {
     QReadLocker lock( m_endReachedLock );
     return m_endReached;
+}
+
+void    ClipWorkflow::startRender()
+{
+    Q_ASSERT( m_isReady == true);
+
+    m_mediaPlayer->play();
 }

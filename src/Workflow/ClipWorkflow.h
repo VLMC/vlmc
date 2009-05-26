@@ -50,6 +50,7 @@ class   ClipWorkflow : public QObject
         void                    initialize( LibVLCpp::MediaPlayer* mediaPlayer );
         bool                    isReady() const;
         bool                    isEndReached() const;
+        void                    startRender();
 
     private:
         static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret );

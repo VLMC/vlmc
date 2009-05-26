@@ -78,7 +78,9 @@ void    MetaDataManager::run()
             m_mediaPlayer->play();
         }
         usleep( 10000 );
+        qDebug() << "New metadata threaad mainloop iteration";
     }
+    qDebug() << "End of metamanager thread";
     return;
 }
 
