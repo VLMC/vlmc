@@ -126,13 +126,13 @@ void    ClipWorkflow::initialize( LibVLCpp::MediaPlayer* mediaPlayer )
 
     connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPosition() ), Qt::DirectConnection );
     connect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( endReached() ), Qt::DirectConnection );
-    qDebug() << "Launching playback";
+//    qDebug() << "Launching playback";
     m_mediaPlayer->play();
 }
 
 void    ClipWorkflow::setPosition()
 {
-    qDebug() << "Setting position";
+//    qDebug() << "Setting position";
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPosition() ) );
     connect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( pauseAfterPlaybackStarted() ), Qt::DirectConnection );
     m_mediaPlayer->setPosition( m_clip->getBegin() );
@@ -144,7 +144,7 @@ void    ClipWorkflow::pauseAfterPlaybackStarted()
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( pauseAfterPlaybackStarted() ) );
 
     connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( pausedMediaPlayer() ), Qt::DirectConnection );
-    qDebug() << "pausing media";
+//    qDebug() << "pausing media";
     m_mediaPlayer->pause();
 
 }
