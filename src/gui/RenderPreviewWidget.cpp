@@ -47,6 +47,9 @@ RenderPreviewWidget::RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* r
     sprintf( buffer, ":invmem-data=%lld", (qint64)this );
     m_media->addOption( buffer );
     m_mediaPlayer->setMedia( m_media );
+
+    connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( __videoPlaying() ) );
+    connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( __videoPaused() ) );
 }
 
 
@@ -79,6 +82,7 @@ void        RenderPreviewWidget::startPreview( Media* )
     qDebug() << "Starting render preview";
     m_mainWorkflow->startRender();
     m_mediaPlayer->play();
+    m_isRendering = true;
 }
 
 void        RenderPreviewWidget::setPosition( float /*newPos*/ )
@@ -87,7 +91,16 @@ void        RenderPreviewWidget::setPosition( float /*newPos*/ )
 
 void        RenderPreviewWidget::togglePlayPause( bool /*forcePause*/ )
 {
-    startPreview( NULL );
+    if ( m_isRendering == false )
+        startPreview( NULL );
+    else
+    {
+        qDebug() << m_mediaPlayer->isPlaying();
+        if ( m_mediaPlayer->isPlaying() == false )
+            m_mediaPlayer->play();
+        else
+            m_mediaPlayer->pause();
+    }
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -106,10 +119,10 @@ void        RenderPreviewWidget::__positionChanged()
 
 void        RenderPreviewWidget::__videoPaused()
 {
-    qDebug() << "RenderPreviewWidget::__videoPaused: Unimplemented";
+    emit paused();
 }
 
 void        RenderPreviewWidget::__videoPlaying()
 {
-    qDebug() << "RenderPreviewWidget::__videoPlaying: Unimplemented";
+    emit playing();
 }

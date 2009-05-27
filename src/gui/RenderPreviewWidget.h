@@ -50,6 +50,7 @@ class   RenderPreviewWidget : public GenericPreviewWidget
     private:
         MainWorkflow*       m_mainWorkflow;
         LibVLCpp::Media*    m_media;
+        bool                m_isRendering;
 
 public slots:
     void                    __positionChanged();

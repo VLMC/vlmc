@@ -49,8 +49,8 @@ PreviewWidget::PreviewWidget( MainWorkflow* mainWorkflow, QWidget *parent ) :
     connect( m_ui->seekSlider, SIGNAL( sliderPosChanged(int) ), this,   SLOT( seekSliderMoved(int) ) );
     connect( m_ui->seekSlider, SIGNAL( sliderReleased() ),      this,   SLOT( seekSliderReleased() ) );
 
-    m_clipPreview = new ClipPreviewWidget( m_ui->clipPreviewRenderWidget );
-    m_renderPreview = new RenderPreviewWidget( mainWorkflow, m_ui->renderPreviewRenderWidget );
+    initClipPreview();
+    initRenderPreview( mainWorkflow );
 
     m_currentMode = m_ui->tabWidget->currentIndex();
     m_currentPreviewRenderer = m_renderPreview;
@@ -64,7 +64,30 @@ PreviewWidget::~PreviewWidget()
     delete m_renderPreview;
 }
 
-void PreviewWidget::changeEvent( QEvent *e )
+void    PreviewWidget::initClipPreview()
+{
+    m_clipPreview = new ClipPreviewWidget( m_ui->clipPreviewRenderWidget );
+    connectPreview( m_clipPreview );
+}
+
+void    PreviewWidget::initRenderPreview( MainWorkflow* mainWorkflow )
+{
+    m_renderPreview = new RenderPreviewWidget( mainWorkflow, m_ui->renderPreviewRenderWidget );
+    connectPreview( m_renderPreview );
+}
+
+void    PreviewWidget::connectPreview( GenericPreviewWidget* target )
+{
+    //WARNING:  the slots must NOT be virtual, since this is called from the constructor
+    //          which would be unsafe... if not fatal...
+    connect( target,     SIGNAL( stopped() ),                this,       SLOT( videoPaused() ) );
+    connect( target,     SIGNAL( paused() ),                 this,       SLOT( videoPaused() ) );
+    connect( target,     SIGNAL( playing() ),                this,       SLOT( videoPlaying() ) );
+    connect( target,     SIGNAL( positionChanged(float) ),   this,       SLOT( positionChanged(float) ) );
+    connect( target,     SIGNAL( endReached() ),             this,       SLOT( endReached() ) );
+}
+
+void    PreviewWidget::changeEvent( QEvent *e )
 {
     switch ( e->type() )
     {
@@ -103,12 +126,6 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
 
         if ( m_currentMode != PreviewWidget::clipPreviewMode )
             m_ui->tabWidget->setCurrentIndex( PreviewWidget::clipPreviewMode );
-
-        connect( m_clipPreview,     SIGNAL( stopped() ),                this,       SLOT( videoPaused() ) );
-        connect( m_clipPreview,     SIGNAL( paused() ),                 this,       SLOT( videoPaused() ) );
-        connect( m_clipPreview,     SIGNAL( playing() ),                this,       SLOT( videoPlaying() ) );
-        connect( m_clipPreview,     SIGNAL( positionChanged(float) ),   this,       SLOT( positionChanged(float) ) );
-        connect( m_clipPreview,     SIGNAL( endReached() ),             this,       SLOT( endReached() ) );
 
         m_clipPreview->startPreview( media );
         event->acceptProposedAction();

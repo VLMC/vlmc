@@ -43,6 +43,11 @@ public:
     virtual ~PreviewWidget();
 
 private:
+    void                    initRenderPreview( MainWorkflow* );
+    void                    initClipPreview();
+    void                    connectPreview( GenericPreviewWidget* target );
+
+private:
     Ui::PreviewWidget*      m_ui;
     GenericPreviewWidget*   m_clipPreview;
     GenericPreviewWidget*   m_renderPreview;
@@ -53,8 +58,6 @@ private:
 
     static const int        renderPreviewMode = 0;
     static const int        clipPreviewMode = 1;
-
-private:
     int                     m_sliderPosBackup;
 
 protected:
