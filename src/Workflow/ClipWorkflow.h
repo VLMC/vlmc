@@ -62,6 +62,10 @@ class   ClipWorkflow : public QObject
         */
         void                    stop();
         void                    setPosition( float pos );
+        /**
+         *  \return true if the workflow has already been stopped.
+         */
+        bool                    isStopped() const;
 
     private:
         static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret );

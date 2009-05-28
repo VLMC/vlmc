@@ -67,7 +67,7 @@ void    ClipWorkflow::lock( ClipWorkflow* clipWorkflow, void** pp_ret )
 
     //In any case, we give vlc a buffer to render in...
     //If we don't, segmentation fault will catch us and eat our brain !! ahem...
-//    qDebug() << "Locking in ClipWorkflow::lock";
+    qDebug() << "Locking in ClipWorkflow::lock";
     *pp_ret = clipWorkflow->m_buffer;
 }
 
@@ -75,8 +75,14 @@ void    ClipWorkflow::unlock( ClipWorkflow* clipWorkflow )
 {
     if ( clipWorkflow->m_isReady == true )
     {
-        QMutexLocker    lock( clipWorkflow->m_condMutex );
-
+        {
+            QReadLocker     lock( clipWorkflow->m_endReachedLock );
+            if ( clipWorkflow->m_endReached == true )
+            {
+                qDebug() << "UnLocking in ClipWorkflow::unlock";
+                return ;
+            }
+        }
         {
             QWriteLocker    lock2( clipWorkflow->m_mutex );
             clipWorkflow->m_renderComplete = true;
@@ -87,9 +93,11 @@ void    ClipWorkflow::unlock( ClipWorkflow* clipWorkflow )
             QWriteLocker    lock2( clipWorkflow->m_endReachedLock );
             clipWorkflow->m_endReached = true;
         }
+
+        QMutexLocker    lock( clipWorkflow->m_condMutex );
         clipWorkflow->m_waitCond->wait( clipWorkflow->m_condMutex );
     }
-//    qDebug() << "UnLocking in ClipWorkflow::unlock";
+    qDebug() << "UnLocking in ClipWorkflow::unlock";
 }
 
 void    ClipWorkflow::setRenderComplete()
@@ -199,13 +207,14 @@ const Clip*     ClipWorkflow::getClip() const
 
 void            ClipWorkflow::stop()
 {
+    Q_ASSERT( m_mediaPlayer != NULL );
     {
         QWriteLocker    lock2( m_mutex );
         m_renderComplete = false;
     }
     {
         QWriteLocker    lock2( m_endReachedLock );
-        m_endReached = false;
+        m_endReached = true;
     }
     {
         QWriteLocker        lock( m_initMutex);
@@ -213,10 +222,15 @@ void            ClipWorkflow::stop()
     }
     m_mediaPlayer->stop();
     m_mediaPlayer = NULL;
-//    qDebug() << "Stoped ClipWorkflow";
+    qDebug() << "Stoped ClipWorkflow";
 }
 
 void            ClipWorkflow::setPosition( float pos )
 {
     m_mediaPlayer->setPosition( pos );
+}
+
+bool            ClipWorkflow::isStopped() const
+{
+    return ( m_mediaPlayer == NULL );
 }

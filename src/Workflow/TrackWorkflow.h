@@ -43,6 +43,7 @@ class   TrackWorkflow : public QObject
 
     public:
         TrackWorkflow();
+        ~TrackWorkflow();
 
         void                                    startRender();
         unsigned char*                          getOutput( qint64 currentFrame );
@@ -67,6 +68,7 @@ class   TrackWorkflow : public QObject
           */
         bool                                    checkNextClip( qint64 currentFrame );
         void                                    computeLength();
+        void                                    stopCurrentClipWorkflow();
 
     private:
         QMap<qint64, ClipWorkflow*>             m_clips;
