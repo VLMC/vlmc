@@ -81,4 +81,7 @@ qint64      MainWorkflow::getLength() const
 void        MainWorkflow::__endReached()
 {
     emit endReached();
+    m_renderStarted = false;
+    m_currentFrame = 0;
+    emit frameChanged( 0 );
 }

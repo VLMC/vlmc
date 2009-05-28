@@ -213,14 +213,15 @@ void        TrackWorkflow::setPosition( float pos )
     if ( it == m_clips.end() )
     {
         if ( m_current != end )
+        {
             m_current.value()->stop();
+        }
         m_current = next;
     }
     else if ( it == m_current )
     {
 //        qDebug() << "Changing the position of the current clip";
         //We're changing the position of the current clip
-//        qDebug() << "frame =" << frame << " key = "<< it.key() <<
         it.value()->setPosition( (float)( frame - it.key() ) / (float)(it.value()->getClip()->getLength()) );
         //Awaking renderers to avoid them to be stuck inside of the lock...
 //        qDebug() << "Waking all renderer threads";

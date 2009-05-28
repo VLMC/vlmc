@@ -67,7 +67,7 @@ void    ClipWorkflow::lock( ClipWorkflow* clipWorkflow, void** pp_ret )
 
     //In any case, we give vlc a buffer to render in...
     //If we don't, segmentation fault will catch us and eat our brain !! ahem...
-    qDebug() << "Locking in ClipWorkflow::lock";
+//    qDebug() << "Locking in ClipWorkflow::lock";
     *pp_ret = clipWorkflow->m_buffer;
 }
 
