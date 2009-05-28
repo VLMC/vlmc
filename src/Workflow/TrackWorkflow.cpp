@@ -70,7 +70,7 @@ void    TrackWorkflow::startRender()
 //        qDebug() << "Waiting for the first clip to be ready";
         //We wait to be sure the ClipWorkflow will be ready when we really start to render.
         while ( m_clips.begin().value()->isReady() == false )
-            usleep( 150 );
+            usleep( 20 );
         if ( m_current.key() == 0 )
         {
             m_current = m_clips.begin();
@@ -102,15 +102,14 @@ bool                TrackWorkflow::checkNextClip( qint64 currentFrame )
     //If it's about to be used, initialize it
     if ( next.key() == currentFrame + TrackWorkflow::nbFrameBeforePreload )
     {
-//        qDebug() << "Initializing next clipWorkflow";
+        qDebug() << "Initializing next clipWorkflow";
         next.value()->initialize( m_mediaPlayer );
     }
     else if ( next.key() == currentFrame )
     {
-        //It should have been initialized now, however, this ain't very safe :/
-        //TODO: remove this.
-        Q_ASSERT( next.value()->isReady() );
-//        qDebug() << "Switching current clip workflow";
+        while ( next.value()->isReady() == false )
+            usleep( 20 );
+        qDebug() << "Switching current clip workflow";
         //Using it as the current clip from now on.
         m_current = next;
         m_current.value()->startRender();
@@ -258,7 +257,7 @@ void        TrackWorkflow::setPosition( float pos )
 
         it.value()->initialize( m_mediaPlayer );
         while ( it.value()->isReady() == false )
-            usleep( 150 );
+            usleep( 20 );
         it.value()->startRender();
         m_current = it;
 //        qDebug() << "Switched current clip workflow";
