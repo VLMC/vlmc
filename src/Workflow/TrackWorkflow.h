@@ -83,6 +83,11 @@ class   TrackWorkflow : public QObject
         QMutex*                                 m_condMutex;
         QReadWriteLock*                         m_currentLock;
         QWaitCondition*                         m_waitCondition;
+        /**
+         *  This is the MediaPlayer that the clipworkflow
+         *  will be using to process its render.
+         *  It is never used internally.
+         */
         LibVLCpp::MediaPlayer*                  m_mediaPlayer;
         /**
          *  \brief      The track length in frames.

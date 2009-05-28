@@ -93,6 +93,7 @@ bool                TrackWorkflow::checkNextClip( qint64 currentFrame )
     else if ( next.key() == currentFrame )
     {
         //It should have been initialized now, however, this ain't very safe :/
+        //TODO: remove this.
         Q_ASSERT( next.value()->isReady() );
 //        qDebug() << "Switching current clip workflow";
         //Using it as the current clip from now on.
@@ -138,10 +139,7 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
     else
     {
         if ( clipsRemaining == false )
-        {
-//            qDebug() << "End of track";
             return NULL;
-        }
     }
     return ret;
 }
@@ -153,8 +151,6 @@ void        TrackWorkflow::setPosition( float pos )
     const QMap<qint64, ClipWorkflow*>::iterator end = m_clips.end();
     QMap<qint64, ClipWorkflow*>::iterator       next = end;
 
-    if ( m_mediaPlayer->isPlaying() == false )
-        return ;
     QWriteLocker        lock( m_currentLock );
     if ( frame > m_length )
     {
@@ -185,13 +181,13 @@ void        TrackWorkflow::setPosition( float pos )
             next = it;
             if ( next != m_clips.begin() )
             {
-                qDebug() << "Next clip isn't the first one";
+//                qDebug() << "Next clip isn't the first one";
                 next = next - 1; //Since the iterator must point to the previous video
             }
             else
             {
                 next = end;
-                qDebug() << "Next clip is the first of the track";
+//                qDebug() << "Next clip is the first of the track";
             }
             // in order to checkNextClip() to work.
             it = end;
