@@ -45,6 +45,7 @@ void    MainWorkflow::startRender()
 {
     m_currentFrame = 0;
     emit frameChanged( 0 );
+    m_length = m_tracks[0]->getLength();
     m_tracks[0]->startRender();
 }
 
@@ -54,4 +55,18 @@ unsigned char*    MainWorkflow::getOutput()
     ++m_currentFrame;
     emit frameChanged( m_currentFrame );
     return ret;
+}
+
+void        MainWorkflow::setPosition( float pos )
+{
+    qint64  frame = (float)m_length * pos;
+    qDebug() << "Setting current frame to " << frame << '(' << m_length << '*' << pos << ')';
+    m_tracks[0]->setPosition( pos );
+    m_currentFrame = frame;
+    emit frameChanged( frame );
+}
+
+qint64      MainWorkflow::getLength() const
+{
+    return m_length;
 }

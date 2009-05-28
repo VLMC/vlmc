@@ -154,7 +154,8 @@ void    PreviewWidget::seekSliderMoved( int )
         return;
     }
     m_endReached = false;
-    m_currentPreviewRenderer->setPosition( (float)m_ui->seekSlider->value() );
+    //Putting back the slider value into vlc position
+    m_currentPreviewRenderer->setPosition( (float)m_ui->seekSlider->value() / 1000.0f );
 }
 
 void    PreviewWidget::seekSliderReleased()

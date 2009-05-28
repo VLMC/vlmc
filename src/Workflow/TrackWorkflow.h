@@ -27,6 +27,7 @@
 #include <QMutex>
 #include <QWaitCondition>
 #include <QMap>
+#include <QReadWriteLock>
 
 #include "ClipWorkflow.h"
 #include "VLCMediaPlayer.h"
@@ -47,23 +48,46 @@ class   TrackWorkflow : public QObject
         unsigned char*                          getOutput( qint64 currentFrame );
         qint64                                  getLength() const;
 
+        /**
+            \brief  Set the track workflow position
+            \param  pos: The new pos in VLC position
+        */
+        void                                    setPosition( float pos );
+
         //FIXME: this won't be reliable as soon as we change the fps from the configuration
         static const unsigned int               nbFrameBeforePreload = 60;
         static unsigned char*                   blackOutput;
 
     private:
         /**
-          * \return true if at least one video remains, false otherwise (IE end of this track)
+          * \brief      Check if there's a ClipWorkflow that's comming soon. If so, it preload it to avoid
+                        freeze when switching video.
+                        This does NOT search for the next current clip !
+          * \return     true if at least one video remains, false otherwise (IE end of this track)
           */
         bool                                    checkNextClip( qint64 currentFrame );
+        void                                    computeLength();
 
     private:
         QMap<qint64, ClipWorkflow*>             m_clips;
+        /**
+         *  \brief      An iterator that "point" the current ClipWorkflow used.
+         *
+         * This holds the current ClipWorkflow, and the current starting frame
+         * of this ClipWorkflow.
+         * If the track is empty at a T time, this iterator still points to the last
+         * ClipWorkflow used. However, if the next video occurs to be the first one
+         * in the Track, this iterators is equal to m_clips.end();
+        */
         QMap<qint64, ClipWorkflow*>::iterator   m_current;
         QMutex*                                 m_condMutex;
+        QReadWriteLock*                         m_currentLock;
         QWaitCondition*                         m_waitCondition;
         LibVLCpp::MediaPlayer*                  m_mediaPlayer;
-        bool                                    m_isRendering;
+        /**
+            \brief      The track length in frames.
+        */
+        qint64                                  m_length;
 
     public:
         void            addClip( Clip*, qint64 start );

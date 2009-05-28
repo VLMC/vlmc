@@ -57,6 +57,11 @@ class   ClipWorkflow : public QObject
             \return             A pointer to a constant clip instance.
         */
         const Clip*             getClip() const;
+        /**
+            \brief  Stop this workflow.
+        */
+        void                    stop();
+        void                    setPosition( float pos );
 
     private:
         static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret );
@@ -80,7 +85,7 @@ class   ClipWorkflow : public QObject
     public slots:
         void                    pauseAfterPlaybackStarted();
         void                    pausedMediaPlayer();
-        void                    setPosition();
+        void                    setPositionAfterPlayback();
         void                    endReached();
 };
 

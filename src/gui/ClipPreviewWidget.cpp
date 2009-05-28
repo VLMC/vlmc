@@ -54,7 +54,7 @@ void        ClipPreviewWidget::setPosition( float newPos )
 {
     if ( m_clipLoaded == false || m_videoStopped == true )
         return ;
-    m_mediaPlayer->setPosition( newPos / 1000.0 );
+    m_mediaPlayer->setPosition( newPos );
 }
 
 void        ClipPreviewWidget::togglePlayPause( bool forcePause )

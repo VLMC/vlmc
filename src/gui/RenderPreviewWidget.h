@@ -30,7 +30,6 @@
 #include "Workflow/MainWorkflow.h"
 #include "GenericPreviewWidget.h"
 
-//TODO: This should really share a common interface with ClipPreviewWorkflow
 class   RenderPreviewWidget : public GenericPreviewWidget
 {
     Q_OBJECT
@@ -41,6 +40,13 @@ class   RenderPreviewWidget : public GenericPreviewWidget
         ~RenderPreviewWidget();
 
         virtual void        startPreview( Media* );
+
+        /**
+            \brief          Set the preview position
+
+            \param          newPos : The new position in vlc position (between
+                                        0 and 1)
+        */
         virtual void        setPosition( float newPos );
         virtual void        togglePlayPause( bool forcePause );
 

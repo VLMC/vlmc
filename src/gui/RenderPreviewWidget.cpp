@@ -84,8 +84,9 @@ void        RenderPreviewWidget::startPreview( Media* )
     m_isRendering = true;
 }
 
-void        RenderPreviewWidget::setPosition( float /*newPos*/ )
+void        RenderPreviewWidget::setPosition( float newPos )
 {
+    m_mainWorkflow->setPosition( newPos );
 }
 
 void        RenderPreviewWidget::togglePlayPause( bool /*forcePause*/ )

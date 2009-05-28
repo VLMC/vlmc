@@ -42,9 +42,23 @@ class   MainWorkflow : public QObject
         void                    startRender();
         unsigned char*          getOutput();
 
+        /**
+            \brief              Set the workflow position
+
+            \param              pos: The position in vlc position
+        */
+        void                    setPosition( float pos );
+
+        /**
+            \return             Returns the global length of the workflow
+                                in frames.
+        */
+        qint64                  getLength() const;
+
     private:
         TrackWorkflow**         m_tracks;
         qint64                  m_currentFrame;
+        qint64                  m_length;
 
     signals:
         void                    frameChanged( qint64 currentFrame );

@@ -123,16 +123,16 @@ void    ClipWorkflow::initialize( LibVLCpp::MediaPlayer* mediaPlayer )
     m_mediaPlayer = mediaPlayer;
     m_mediaPlayer->setMedia( m_clip->getParent()->getVLCMedia() );
 
-    connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPosition() ), Qt::DirectConnection );
+    connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPositionAfterPlayback() ), Qt::DirectConnection );
     connect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( endReached() ), Qt::DirectConnection );
 //    qDebug() << "Launching playback";
     m_mediaPlayer->play();
 }
 
-void    ClipWorkflow::setPosition()
+void    ClipWorkflow::setPositionAfterPlayback()
 {
 //    qDebug() << "Setting position";
-    disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPosition() ) );
+    disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPositionAfterPlayback() ) );
     connect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( pauseAfterPlaybackStarted() ), Qt::DirectConnection );
     m_mediaPlayer->setPosition( m_clip->getBegin() );
 }
@@ -169,8 +169,19 @@ bool    ClipWorkflow::isEndReached() const
 
 void    ClipWorkflow::startRender()
 {
-    Q_ASSERT( m_isReady == true);
-
+    bool        isReady;
+    {
+        QReadLocker lock( m_initMutex );
+        isReady = m_isReady;
+    }
+    while ( isReady == false )
+    {
+        usleep( 150 );
+        {
+            QReadLocker lock( m_initMutex );
+            isReady = m_isReady;
+        }
+    }
     m_mediaPlayer->play();
 }
 
@@ -180,7 +191,32 @@ void    ClipWorkflow::endReached()
     m_endReached = true;
 }
 
-const Clip*   ClipWorkflow::getClip() const
+const Clip*     ClipWorkflow::getClip() const
 {
     return m_clip;
+}
+
+void            ClipWorkflow::stop()
+{
+    {
+        QWriteLocker    lock2( m_mutex );
+        m_renderComplete = false;
+    }
+    {
+        QWriteLocker    lock2( m_endReachedLock );
+        m_endReached = false;
+    }
+    {
+        QWriteLocker        lock( m_initMutex);
+        m_isReady = false;
+    }
+    m_mediaPlayer->stop();
+    m_mediaPlayer = NULL;
+    qDebug() << "Stoped ClipWorkflow";
+}
+
+void            ClipWorkflow::setPosition( float pos )
+{
+    qDebug() << "Setting position :" << pos;
+    m_mediaPlayer->setPosition( pos );
 }
