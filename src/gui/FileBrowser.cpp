@@ -21,6 +21,7 @@
  *****************************************************************************/
 
 #include "FileBrowser.h"
+#include "Library.h"
 #include <QStringList>
 #include <QtDebug>
 
@@ -74,13 +75,10 @@ void FileBrowser::addElementToHistory()
 
 void FileBrowser::ListViewBrowserDirectoryChanged( QModelIndex& index, bool history )
 {
-    if ( m_FilesModel->isDir( index ) )
-    {
-        if ( history == true )
-            addElementToHistory();
-        m_ui.listViewBrowser->setRootIndex( index );
-        m_ui.treeViewBrowser->setCurrentIndex( m_DirsModel->index( m_FilesModel->filePath( index ) ) );
-    }
+    if ( history == true )
+        addElementToHistory();
+    m_ui.listViewBrowser->setRootIndex( index );
+    m_ui.treeViewBrowser->setCurrentIndex( m_DirsModel->index( m_FilesModel->filePath( index ) ) );
 }
 
 void FileBrowser::TreeViewBrowserDirectoryChanged( QModelIndex& index, bool history )
@@ -102,9 +100,14 @@ void FileBrowser::on_treeViewBrowser_clicked( QModelIndex index )
 
 void FileBrowser::on_listViewBrowser_doubleClicked( QModelIndex index )
 {
-    ListViewBrowserDirectoryChanged( index );
-    m_forwadEntries->clear();
-    m_ui.pushButtonForward->setEnabled( false );
+    if ( m_FilesModel->isDir( index ) )
+    {
+        ListViewBrowserDirectoryChanged( index );
+        m_forwadEntries->clear();
+        m_ui.pushButtonForward->setEnabled( false );
+    }
+    else
+        Library::getInstance()->newMediaLoadingAsked( m_FilesModel->filePath( index ) );
 }
 
 void FileBrowser::on_pushButtonBackward_clicked()
