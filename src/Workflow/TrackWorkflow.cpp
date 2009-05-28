@@ -107,7 +107,6 @@ void                TrackWorkflow::computeLength()
     if ( m_clips.count() == 0 )
         m_length = 0;
     QMap<qint64, ClipWorkflow*>::const_iterator it = m_clips.end() - 1;
-    qDebug() << "Last clip Uuid : " << it.value()->getClip()->getUuid();
     m_length = (it.key() + it.value()->getClip()->getLength() );
 }
 
@@ -155,10 +154,9 @@ void        TrackWorkflow::setPosition( float pos )
     QMap<qint64, ClipWorkflow*>::iterator   next = m_clips.end();
 
     QWriteLocker        lock( m_currentLock );
-    qDebug() << m_length;
     if ( frame > m_length )
     {
-        qDebug() << "setting position after the end of this track";
+//        qDebug() << "setting position after the end of this track";
         if ( m_current != end )
         {
             m_current.value()->stop();
@@ -173,7 +171,7 @@ void        TrackWorkflow::setPosition( float pos )
         if ( it.key() <= frame &&
              ( it.key() + it.value()->getClip()->getLength() ) > frame )
         {
-            qDebug() << "Found new current clip workflow";
+//            qDebug() << "Found new current clip workflow";
             break;
         }
         else if ( next == m_clips.end() && it.key() > frame )
@@ -202,24 +200,23 @@ void        TrackWorkflow::setPosition( float pos )
 
     if ( it == m_clips.end() )
     {
-        qDebug() << "No clip matched. Utilisation du Clip precedent le clip suivant la frame selectionnee";
         if ( m_current != end )
             m_current.value()->stop();
         m_current = next;
     }
     else if ( it == m_current )
     {
-        qDebug() << "Changing the position of the current clip";
+//        qDebug() << "Changing the position of the current clip";
         //We're changing the position of the current clip
 //        qDebug() << "frame =" << frame << " key = "<< it.key() <<
         it.value()->setPosition( (float)( frame - it.key() ) / (float)(it.value()->getClip()->getLength()) );
         //Awaking renderers to avoid them to be stuck inside of the lock...
-        qDebug() << "Waking all renderer threads";
+//        qDebug() << "Waking all renderer threads";
         m_waitCondition->wakeAll();
     }
     else
-    {
-        qDebug() << "Switching to other Clip";
+        {
+//        qDebug() << "Switching to other Clip";
         if ( m_current != end )
         {
             m_current.value()->stop();
@@ -231,8 +228,6 @@ void        TrackWorkflow::setPosition( float pos )
             usleep( 150 );
         it.value()->startRender();
         m_current = it;
-        qDebug() << "Switched current clip workflow";
+//        qDebug() << "Switched current clip workflow";
     }
-
-    //Don't forget to wake the renderer so they can process the events
 }

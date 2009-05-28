@@ -212,11 +212,10 @@ void            ClipWorkflow::stop()
     }
     m_mediaPlayer->stop();
     m_mediaPlayer = NULL;
-    qDebug() << "Stoped ClipWorkflow";
+//    qDebug() << "Stoped ClipWorkflow";
 }
 
 void            ClipWorkflow::setPosition( float pos )
 {
-    qDebug() << "Setting position :" << pos;
     m_mediaPlayer->setPosition( pos );
 }
