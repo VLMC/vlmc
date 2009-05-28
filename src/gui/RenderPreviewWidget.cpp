@@ -114,6 +114,7 @@ void        RenderPreviewWidget::__endReached()
 {
 //    qDebug() << "Stopping preview";
     stopPreview();
+    emit endReached();
 }
 
 void        RenderPreviewWidget::__positionChanged()
