@@ -33,21 +33,53 @@
 
 #include "Media.h"
 
+//TODO: REMOVE THIS
+#ifndef FPS
+#define FPS     30
+#endif
+
 class   Clip : public QObject
 {
     Q_OBJECT
 
     public:
-        static const float     UntilEndOfMedia = -1;
-
         Clip( Media* parent );
         Clip( Clip* creator, qint64 begin, qint64 end );
         virtual ~Clip();
 
+        /**
+          \brief    Returns the clip starting point. This value will be in
+                    vlc positition units (0 to 1)
+          \return   A value between 0 and 1, where 0 is the real Media begin,
+                    and 1 the real Media end.
+        */
         float           getBegin() const;
+
+        /**
+          \brief    Returns the clip ending point. This value will be in
+                    vlc positition units (0 to 1)
+          \return   A value between 0 and 1, where 0 is the real Media end,
+                    and 1 the real Media end.
+        */
         float           getEnd() const;
+
+        /**
+            \return     Returns the clip length in frame.
+        */
         qint64          getLength() const;
+
+        /**
+            \return     Returns the Media that the clip was basep uppon.
+
+        */
         Media*          getParent();
+
+        /**
+            \brief      Returns an unique Uuid for this clip (which is NOT the
+                        parent's Uuid).
+
+            \return     The Clip's Uuid as a QUuid
+        */
         const QUuid&    getUuid() const;
 
     private:

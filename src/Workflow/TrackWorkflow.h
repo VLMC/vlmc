@@ -31,7 +31,10 @@
 #include "ClipWorkflow.h"
 #include "VLCMediaPlayer.h"
 
+//TODO: REMOVE THIS
+#ifndef FPS
 #define FPS     30
+#endif
 
 class   TrackWorkflow : public QObject
 {
@@ -42,8 +45,10 @@ class   TrackWorkflow : public QObject
 
         void                                    startRender();
         unsigned char*                          getOutput( qint64 currentFrame );
+        qint64                                  getLength() const;
+
         //FIXME: this won't be reliable as soon as we change the fps from the configuration
-        static const unsigned int               nbFrameBeforePreload = 60; //We load aproximatively 2s before the frame has to render.        
+        static const unsigned int               nbFrameBeforePreload = 60;
         static unsigned char*                   blackOutput;
 
     private:

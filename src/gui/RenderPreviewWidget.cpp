@@ -79,7 +79,6 @@ void    RenderPreviewWidget::unlock( void*  )
 
 void        RenderPreviewWidget::startPreview( Media* )
 {
-    qDebug() << "Starting render preview";
     m_mainWorkflow->startRender();
     m_mediaPlayer->play();
     m_isRendering = true;

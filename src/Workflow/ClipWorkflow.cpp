@@ -82,8 +82,7 @@ void    ClipWorkflow::unlock( ClipWorkflow* clipWorkflow )
             clipWorkflow->m_renderComplete = true;
         }
 
-        if ( clipWorkflow->m_clip->getEnd() != Clip::UntilEndOfMedia
-                && clipWorkflow->m_mediaPlayer->getPosition() > clipWorkflow->m_clip->getEnd() )
+        if ( clipWorkflow->m_mediaPlayer->getPosition() > clipWorkflow->m_clip->getEnd() )
         {
             QWriteLocker    lock2( clipWorkflow->m_endReachedLock );
             clipWorkflow->m_endReached = true;
@@ -179,4 +178,9 @@ void    ClipWorkflow::endReached()
 {
     QWriteLocker    lock2( m_endReachedLock );
     m_endReached = true;
+}
+
+const Clip*   ClipWorkflow::getClip() const
+{
+    return m_clip;
 }

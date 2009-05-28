@@ -26,7 +26,7 @@
 
 #include "Clip.h"
 
-Clip::Clip( Media* parent ) : m_parent( parent ), m_begin( 0.0f ), m_end( Clip::UntilEndOfMedia )
+Clip::Clip( Media* parent ) : m_parent( parent ), m_begin( 0.0f ), m_end( 1.0f )
 {
     init();
 }
@@ -68,10 +68,8 @@ qint64      Clip::getLength() const
 
 void        Clip::computeLength()
 {
-    if ( m_end == Clip::UntilEndOfMedia )
-        m_length = m_parent->getLength() - m_begin;
-    else
-        m_length = m_end - m_begin;
+    qint64 nbMs = (qint64)( ( m_end - m_begin ) * (float)m_parent->getLength() );
+    m_length = (nbMs / 1000) * FPS;
 }
 
 const QUuid&    Clip::getUuid() const

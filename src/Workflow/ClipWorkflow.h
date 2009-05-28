@@ -51,6 +51,12 @@ class   ClipWorkflow : public QObject
         bool                    isReady() const;
         bool                    isEndReached() const;
         void                    startRender();
+        /**
+            \brief              Returns the Clip this workflow instance is based
+                                uppon, so that you can query information on it.
+            \return             A pointer to a constant clip instance.
+        */
+        const Clip*             getClip() const;
 
     private:
         static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret );

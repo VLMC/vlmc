@@ -100,6 +100,15 @@ bool                TrackWorkflow::checkNextClip( qint64 currentFrame )
     return true;
 }
 
+qint64              TrackWorkflow::getLength() const
+{
+    if ( m_clips.count() == 0 )
+        return 0;
+    QMap<qint64, ClipWorkflow*>::const_iterator it = m_clips.end() - 1;
+    qDebug() << "Last clip Uuid : " << it.value()->getClip()->getUuid();
+    return ( it.key() + it.value()->getClip()->getLength() );
+}
+
 unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
 {
     unsigned char*  ret = TrackWorkflow::blackOutput;

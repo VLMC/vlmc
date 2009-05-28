@@ -73,7 +73,17 @@ public:
 
     const QFileInfo*            getFileInfo() const;
 
+    /**
+        \return                 Returns the length of this media (ie the
+                                video duration) in milliseconds.
+    */
     qint64                      getLength() const;
+    /**
+        \brief                  This methods is most of an entry point for the
+                                MetadataManager than enything else.
+                                If you use it to set a inconsistant media length
+                                you'll just have to blame yourself !
+    */
     void                        setLength( qint64 length );
 
     int                         getWidth() const;
