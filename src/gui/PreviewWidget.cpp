@@ -23,6 +23,7 @@
 
 #include <QUrl>
 #include <QtDebug>
+#include <QMetaMethod>
 
 #include "ui_PreviewWidget.h"
 #include "gui/PreviewWidget.h"
@@ -177,6 +178,10 @@ void PreviewWidget::on_pushButtonPlay_clicked()
 {
     if ( m_previewStopped == true )
         m_previewStopped = false;
+//    int     methodIndex = m_currentPreviewRenderer->metaObject()->indexOfMethod("togglePlayPause(bool)");
+//    qDebug() << methodIndex;
+//    QMetaMethod method = m_currentPreviewRenderer->metaObject()->method( methodIndex );
+//    qDebug() << method.invoke( m_currentPreviewRenderer, Qt::QueuedConnection, Q_ARG(bool, false) );
     m_currentPreviewRenderer->togglePlayPause();
 }
 

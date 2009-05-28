@@ -40,6 +40,7 @@ class   RenderPreviewWidget : public GenericPreviewWidget
         ~RenderPreviewWidget();
 
         virtual void        startPreview( Media* );
+        void                stopPreview();
 
         /**
             \brief          Set the preview position
@@ -58,12 +59,12 @@ class   RenderPreviewWidget : public GenericPreviewWidget
         LibVLCpp::Media*    m_media;
         bool                m_isRendering;
 
-public slots:
-    void                    __positionChanged();
-    void                    __positionChanged( float pos );
-    void                    __videoPaused();
-    void                    __videoPlaying();
-    void                    __endReached();
+    public slots:
+        void                    __positionChanged();
+        void                    __positionChanged( float pos );
+        void                    __videoPaused();
+        void                    __videoPlaying();
+        void                    __endReached();
 };
 
 #endif // RENDERPREVIEWWIDGET_H

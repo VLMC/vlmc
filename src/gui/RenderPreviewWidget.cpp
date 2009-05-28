@@ -21,6 +21,7 @@
  *****************************************************************************/
 
 #include <QtDebug>
+#include <QThread>
 
 #include "RenderPreviewWidget.h"
 
@@ -50,6 +51,7 @@ RenderPreviewWidget::RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* r
 
     connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( __videoPlaying() ) );
     connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( __videoPaused() ) );
+    connect( m_mainWorkflow, SIGNAL( endReached() ), this, SLOT( __endReached() ) );
     connect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
 }
 
@@ -64,18 +66,19 @@ void*   RenderPreviewWidget::lock( void* datas )
 //    qDebug() << "Locking invmem";
     RenderPreviewWidget* self = reinterpret_cast<RenderPreviewWidget*>( datas);
     void* ret = self->m_mainWorkflow->getOutput();
-    if ( ret == NULL )
-    {
-        //maybe we should display a black screen here to really emphasize
-        //the end of the render
-        self->m_mediaPlayer->stop();
-    }
     return ret;
 }
 
 void    RenderPreviewWidget::unlock( void*  )
 {
 //    qDebug() << "Unlocking invmem";
+}
+
+void        RenderPreviewWidget::stopPreview()
+{
+    m_mediaPlayer->stop();
+    m_isRendering = false;
+    qDebug() << "Stopped";
 }
 
 void        RenderPreviewWidget::startPreview( Media* )
@@ -109,7 +112,8 @@ void        RenderPreviewWidget::togglePlayPause( bool /*forcePause*/ )
 
 void        RenderPreviewWidget::__endReached()
 {
-    qDebug() << "RenderPreviewWidget::__endReached : unimplemented";
+//    qDebug() << "Stopping preview";
+    stopPreview();
 }
 
 void        RenderPreviewWidget::__positionChanged()

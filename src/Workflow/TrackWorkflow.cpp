@@ -50,6 +50,9 @@ void    TrackWorkflow::addClip( Clip* clip, qint64 start )
 void    TrackWorkflow::startRender()
 {
     m_current = m_clips.end();
+
+    if ( m_clips.size() <= 0)
+        return ;
     //If the first frame is to be render soon, we should play it now.
     if ( m_clips.begin().key() < TrackWorkflow::nbFrameBeforePreload )
     {
@@ -75,6 +78,9 @@ bool                TrackWorkflow::checkNextClip( qint64 currentFrame )
     //Picking next clip :
     if ( m_current == m_clips.end() )
     {
+        //Checking if there is a clip in the first place...
+        if ( m_clips.count() == 0 )
+            return false;
         next = m_clips.begin();
     }
     else
@@ -123,10 +129,15 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
 
     QReadLocker     lock( m_currentLock );
 
-//    qDebug() << "Frame nb" << m_currentFrame;
+//    qDebug() << "Frame nb" << currentFrame;
     clipsRemaining = checkNextClip( currentFrame );
     if ( m_current == m_clips.end() )
     {
+        if ( clipsRemaining == false )
+        {
+//            qDebug() << "End Reached";
+            emit endReached();
+        }
 //        qDebug() << "Stil no clip at this time, going to the next frame";
         return ret;
     }
@@ -139,7 +150,10 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
     else
     {
         if ( clipsRemaining == false )
-            return NULL;
+        {
+//            qDebug() <<"End reached";
+            emit endReached();
+        }
     }
     return ret;
 }

@@ -63,6 +63,9 @@ class   MainWorkflow : public QObject
         qint64                  m_currentFrame;
         qint64                  m_length;
 
+    private slots:
+        void                    __endReached();
+
     signals:
         /**
          *  \brief Used to notify a change to the timeline cursor
@@ -72,6 +75,8 @@ class   MainWorkflow : public QObject
           * \brief Used to nofify a change to the PreviewWidget
           */
         void                    positionChanged( float pos );
+
+        void                    endReached();
 };
 
 #endif // MAINWORKFLOW_H

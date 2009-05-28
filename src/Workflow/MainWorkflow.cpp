@@ -29,7 +29,10 @@ MainWorkflow::MainWorkflow() : m_renderStarted( false )
 {
     m_tracks = new TrackWorkflow*[NB_TRACKS];
     for (unsigned int i = 0; i < NB_TRACKS; ++i)
+    {
         m_tracks[i] = new TrackWorkflow;
+        connect( m_tracks[i], SIGNAL( endReached() ), this, SLOT( __endReached() ) );
+    }
 }
 
 void    MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
@@ -73,4 +76,9 @@ void        MainWorkflow::setPosition( float pos )
 qint64      MainWorkflow::getLength() const
 {
     return m_length;
+}
+
+void        MainWorkflow::__endReached()
+{
+    emit endReached();
 }

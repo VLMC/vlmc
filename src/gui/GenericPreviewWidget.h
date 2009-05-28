@@ -47,7 +47,6 @@ public:
 
     virtual void                    startPreview( Media* media ) = 0;
     virtual void                    setPosition( float newPos ) = 0;
-    virtual void                    togglePlayPause( bool forcePause = false ) = 0;
 
 protected:
     LibVLCpp::MediaPlayer*          m_mediaPlayer;
@@ -57,6 +56,9 @@ public slots:
     virtual void                    __videoPaused() = 0;
     virtual void                    __videoPlaying() = 0;
     virtual void                    __endReached() = 0;
+
+    //For meta invoking
+    virtual void                    togglePlayPause( bool forcePause = false ) = 0;
 
 signals:
     void                    stopped();
