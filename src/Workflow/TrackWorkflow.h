@@ -85,7 +85,7 @@ class   TrackWorkflow : public QObject
         QWaitCondition*                         m_waitCondition;
         LibVLCpp::MediaPlayer*                  m_mediaPlayer;
         /**
-            \brief      The track length in frames.
+         *  \brief      The track length in frames.
         */
         qint64                                  m_length;
 

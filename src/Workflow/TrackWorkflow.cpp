@@ -148,11 +148,13 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
 
 void        TrackWorkflow::setPosition( float pos )
 {
-    qint64                                  frame = (float)m_length * pos;
-    QMap<qint64, ClipWorkflow*>::iterator   it = m_clips.begin();
-    const QMap<qint64, ClipWorkflow*>::iterator   end = m_clips.end();
-    QMap<qint64, ClipWorkflow*>::iterator   next = m_clips.end();
+    qint64                                      frame = (float)m_length * pos;
+    QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
+    const QMap<qint64, ClipWorkflow*>::iterator end = m_clips.end();
+    QMap<qint64, ClipWorkflow*>::iterator       next = end;
 
+    if ( m_mediaPlayer->isPlaying() == false )
+        return ;
     QWriteLocker        lock( m_currentLock );
     if ( frame > m_length )
     {

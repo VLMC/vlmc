@@ -43,17 +43,20 @@ class   MainWorkflow : public QObject
         unsigned char*          getOutput();
 
         /**
-            \brief              Set the workflow position
-
-            \param              pos: The position in vlc position
+         *  \brief              Set the workflow position
+         *  \param              pos: The position in vlc position
         */
         void                    setPosition( float pos );
 
         /**
-            \return             Returns the global length of the workflow
-                                in frames.
+         *  \return             Returns the global length of the workflow
+         *                      in frames.
         */
         qint64                  getLength() const;
+        /**
+         *  This boolean describe is a render has been started
+        */
+        bool                    m_renderStarted;
 
     private:
         TrackWorkflow**         m_tracks;

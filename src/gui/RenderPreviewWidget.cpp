@@ -96,7 +96,6 @@ void        RenderPreviewWidget::togglePlayPause( bool /*forcePause*/ )
         startPreview( NULL );
     else
     {
-        qDebug() << m_mediaPlayer->isPlaying();
         if ( m_mediaPlayer->isPlaying() == false )
             m_mediaPlayer->play();
         else

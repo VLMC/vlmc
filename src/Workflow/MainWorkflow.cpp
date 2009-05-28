@@ -25,7 +25,7 @@
 
 #include "MainWorkflow.h"
 
-MainWorkflow::MainWorkflow()
+MainWorkflow::MainWorkflow() : m_renderStarted( false )
 {
     m_tracks = new TrackWorkflow*[NB_TRACKS];
     for (unsigned int i = 0; i < NB_TRACKS; ++i)
@@ -43,6 +43,7 @@ void    MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
 
 void    MainWorkflow::startRender()
 {
+    m_renderStarted = true;
     m_currentFrame = 0;
     emit frameChanged( 0 );
     m_length = m_tracks[0]->getLength();
@@ -60,8 +61,9 @@ unsigned char*    MainWorkflow::getOutput()
 
 void        MainWorkflow::setPosition( float pos )
 {
+    if ( m_renderStarted == false )
+        return ;
     qint64  frame = (float)m_length * pos;
-    qDebug() << "Setting current frame to " << frame << '(' << m_length << '*' << pos << ')';
     m_tracks[0]->setPosition( pos );
     m_currentFrame = frame;
     emit frameChanged( frame );
