@@ -61,7 +61,14 @@ class   MainWorkflow : public QObject
         qint64                  m_length;
 
     signals:
+        /**
+         *  \brief Used to notify a change to the timeline cursor
+         */
         void                    frameChanged( qint64 currentFrame );
+        /**
+          * \brief Used to nofify a change to the PreviewWidget
+          */
+        void                    positionChanged( float pos );
 };
 
 #endif // MAINWORKFLOW_H

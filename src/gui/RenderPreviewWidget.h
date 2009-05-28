@@ -60,6 +60,7 @@ class   RenderPreviewWidget : public GenericPreviewWidget
 
 public slots:
     void                    __positionChanged();
+    void                    __positionChanged( float pos );
     void                    __videoPaused();
     void                    __videoPlaying();
     void                    __endReached();

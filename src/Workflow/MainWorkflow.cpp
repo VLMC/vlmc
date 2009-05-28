@@ -54,6 +54,7 @@ unsigned char*    MainWorkflow::getOutput()
     unsigned char* ret = m_tracks[0]->getOutput( m_currentFrame );
     ++m_currentFrame;
     emit frameChanged( m_currentFrame );
+    emit positionChanged( (float)m_currentFrame / (float)m_length );
     return ret;
 }
 
@@ -64,6 +65,7 @@ void        MainWorkflow::setPosition( float pos )
     m_tracks[0]->setPosition( pos );
     m_currentFrame = frame;
     emit frameChanged( frame );
+    //Do not emit a signal for the RenderWidget, since it's the one that triggered that call...
 }
 
 qint64      MainWorkflow::getLength() const

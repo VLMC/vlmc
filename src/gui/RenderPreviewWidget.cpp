@@ -50,6 +50,7 @@ RenderPreviewWidget::RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* r
 
     connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( __videoPlaying() ) );
     connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( __videoPaused() ) );
+    connect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
 }
 
 
@@ -114,7 +115,12 @@ void        RenderPreviewWidget::__endReached()
 
 void        RenderPreviewWidget::__positionChanged()
 {
-    qDebug() << "RenderPreviewWidget::__positionChanged: Unimplemented";
+    qFatal("This should never be used ! Get out of here !");
+}
+
+void        RenderPreviewWidget::__positionChanged( float pos )
+{
+    emit positionChanged( pos );
 }
 
 void        RenderPreviewWidget::__videoPaused()
