@@ -43,7 +43,8 @@ MediaPlayer::MediaPlayer()
     libvlc_event_attach( p_em, libvlc_MediaPlayerStopped, callbacks, this, m_ex );
     libvlc_event_attach( p_em, libvlc_MediaPlayerEndReached, callbacks, this, m_ex );
     libvlc_event_attach( p_em, libvlc_MediaPlayerPositionChanged, callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerLengthChanged, callbacks,this,m_ex );
+    //TODO: activate this when switching to vlc 1.1
+//    libvlc_event_attach( p_em, libvlc_MediaPlayerLengthChanged, callbacks,this,m_ex );
 }
 
 MediaPlayer::MediaPlayer( Media* media )
@@ -91,9 +92,10 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
     case libvlc_MediaPlayerPositionChanged:
         self->emit positionChanged();
         break;
-    case libvlc_MediaPlayerLengthChanged:
-        self->emit lengthChanged();
-        break;
+//TODO: activate this when switching to VLC 1.1
+//    case libvlc_MediaPlayerLengthChanged:
+//        self->emit lengthChanged();
+//        break;
     case libvlc_MediaPlayerSnapshotTaken:
         self->emit snapshotTaken();
         break;

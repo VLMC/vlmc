@@ -72,7 +72,8 @@ namespace   LibVLCpp
         void                                stopped();
         void                                endReached();
         void                                positionChanged();
-        void                                lengthChanged();
+        //TODO: activate this when switching to VLC 1.1
+        //        void                                lengthChanged();
     };
 }
 

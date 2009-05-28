@@ -29,8 +29,9 @@
 #include "MetaDataManager.h"
 #include "Library.h"
 
+//TODO: change m_lengthHasChanged default value to false when switching to VLC 1.1
 MetaDataManager::MetaDataManager() : m_renderWidget( NULL ),
-    m_mediaIsPlaying( false), m_lengthHasChanged( false )
+    m_mediaIsPlaying( false), m_lengthHasChanged( true )
 {
     m_mediaPlayer = new LibVLCpp::MediaPlayer();
     connect( Library::getInstance(), SIGNAL( newMediaLoaded( Media* ) ),this, SLOT( newMediaLoaded( Media* ) ) );
@@ -73,7 +74,8 @@ void    MetaDataManager::run()
             m_currentClip->addParam( ":audio" );
 
             m_mediaPlayer->setMedia( m_currentClip->getVLCMedia() );
-            connect( m_mediaPlayer, SIGNAL( lengthChanged() ), this, SLOT( entrypointLengthChanged() ) );
+            //TODO: activate this when switching to VLC 1.1
+//            connect( m_mediaPlayer, SIGNAL( lengthChanged() ), this, SLOT( entrypointLengthChanged() ) );
             connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( entrypointPlaying() ) );
             m_mediaPlayer->play();
         }
