@@ -67,7 +67,7 @@ void        MainWorkflow::setPosition( float pos )
     if ( m_renderStarted == false )
         return ;
     qint64  frame = (float)m_length * pos;
-    m_tracks[0]->setPosition( pos );
+    m_tracks[0]->requirePositionChanged( pos );
     m_currentFrame = frame;
     emit frameChanged( frame );
     //Do not emit a signal for the RenderWidget, since it's the one that triggered that call...

@@ -54,6 +54,7 @@ class   TrackWorkflow : public QObject
             \param  pos: The new pos in VLC position
         */
         void                                    setPosition( float pos );
+        void                                    requirePositionChanged( float pos );
 
         //FIXME: this won't be reliable as soon as we change the fps from the configuration
         static const unsigned int               nbFrameBeforePreload = 60;
@@ -68,7 +69,6 @@ class   TrackWorkflow : public QObject
           */
         bool                                    checkNextClip( qint64 currentFrame );
         void                                    computeLength();
-        void                                    stopCurrentClipWorkflow();
         void                                    initializeClipWorkflow( ClipWorkflow* cw );
 
     private:
@@ -83,11 +83,6 @@ class   TrackWorkflow : public QObject
          * in the Track, this iterators is equal to m_clips.end();
         */
         QMap<qint64, ClipWorkflow*>::iterator   m_current;
-
-//        /**
-//         *  This mutex is used to lock the current ClipWorkflow iterator.
-//         */
-//        QReadWriteLock*                         m_currentLock;
 
         /**
          *  This mutex is used for ClipWorkflow synchronisation.
@@ -111,6 +106,12 @@ class   TrackWorkflow : public QObject
          *  \brief      The track length in frames.
         */
         qint64                                  m_length;
+
+        /**
+         *  This is used to dispatch a setPosition event to the renderer thread
+         */
+        float                                   m_requiredPosition;
+        QMutex*                                 m_requiredPositionLock;
 
     public:
         void            addClip( Clip*, qint64 start );

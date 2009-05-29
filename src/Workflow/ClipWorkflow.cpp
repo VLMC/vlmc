@@ -44,11 +44,11 @@ ClipWorkflow::~ClipWorkflow()
     delete m_stateLock;
 }
 
-//void    ClipWorkflow::scheduleStop()
-//{
-//    QWriteLocker        lock( m_state );
-//    m_state = Stopping;
-//}
+void    ClipWorkflow::scheduleStop()
+{
+    QWriteLocker        lock( m_stateLock );
+    m_state = StopScheduled;
+}
 
 unsigned char*    ClipWorkflow::getOutput()
 {
@@ -183,12 +183,13 @@ const Clip*     ClipWorkflow::getClip() const
 
 void            ClipWorkflow::stop()
 {
+    QWriteLocker        lock( m_stateLock );
     qDebug() << "ClipWorkflow::stop()";
-    m_mediaPlayer->stop();
     Q_ASSERT( m_mediaPlayer != NULL );
+    m_mediaPlayer->stop();
     m_mediaPlayer = NULL;
-
-    setState( Stopped );
+    //Don't use setState here since m_stateLock is already locked;
+    m_state = Stopped;
 }
 
 void            ClipWorkflow::setPosition( float pos )

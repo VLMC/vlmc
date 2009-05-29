@@ -48,7 +48,8 @@ class   ClipWorkflow : public QObject
             Initializing,
             Ready,
             Rendering,
-            EndReached
+            EndReached,
+            StopScheduled,
         };
 
         ClipWorkflow( Clip* clip, QMutex* renderMutex, QMutex* condMutex, QWaitCondition* waitCond );
@@ -109,7 +110,7 @@ class   ClipWorkflow : public QObject
         void                    stop();
         void                    setPosition( float pos );
 
-//        void                    scheduleStop();
+        void                    scheduleStop();
 
     private:
         static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret );
