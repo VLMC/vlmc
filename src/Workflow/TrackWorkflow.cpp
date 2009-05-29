@@ -268,6 +268,6 @@ void        TrackWorkflow::setPosition( float pos )
 
 void    TrackWorkflow::requirePositionChanged( float pos )
 {
-    QMutexLocker    lock( m_requiredPositionLock );
-    m_requiredPosition = pos;
+//    QMutexLocker    lock( m_requiredPositionLock );
+//    m_requiredPosition = pos;
 }
