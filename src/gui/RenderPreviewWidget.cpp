@@ -76,6 +76,7 @@ void    RenderPreviewWidget::unlock( void*  )
 
 void        RenderPreviewWidget::stopPreview()
 {
+    //This might be called multiple times, but this is due to Qt message loop
     m_mediaPlayer->stop();
     m_isRendering = false;
     qDebug() << "Stopped";

@@ -45,6 +45,11 @@ class   ClipWorkflow : public QObject
         ClipWorkflow( Clip* clip, QMutex* condMutex, QWaitCondition* waitCond );
         virtual ~ClipWorkflow();
 
+        /**
+         *  Will return true if the render is completed or the end of the clip has been
+         *  reached.
+         *  If the workflow is still rendering, this will return false.
+         */
         bool                    renderComplete() const;
         unsigned char*          getOutput();
         void                    initialize( LibVLCpp::MediaPlayer* mediaPlayer );
@@ -67,24 +72,31 @@ class   ClipWorkflow : public QObject
          */
         bool                    isStopped() const;
 
+        void                    scheduleStop();
+
     private:
         static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret );
         static void             unlock( ClipWorkflow* clipWorkflow );
         void                    setVmem();
-        void                    setRenderComplete();
+        void                    reinitFlags();
 
     private:
         Clip*                   m_clip;
-        QReadWriteLock*         m_mutex;
+        QReadWriteLock*         m_renderCompleteMutex;
         bool                    m_renderComplete;
         unsigned char*          m_buffer;
+
         QMutex*                 m_condMutex;
         QWaitCondition*         m_waitCond;
+
         LibVLCpp::MediaPlayer*  m_mediaPlayer;
+
         QReadWriteLock*         m_initMutex;
         bool                    m_isReady;
-        bool                    m_endReached;
         QReadWriteLock*         m_endReachedLock;
+        bool                    m_endReached;
+        QReadWriteLock*         m_stopScheduledMutex;
+        bool                    m_stopScheduled;
 
     public slots:
         void                    pauseAfterPlaybackStarted();

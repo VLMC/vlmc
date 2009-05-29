@@ -69,6 +69,7 @@ class   TrackWorkflow : public QObject
         bool                                    checkNextClip( qint64 currentFrame );
         void                                    computeLength();
         void                                    stopCurrentClipWorkflow();
+        void                                    initializeClipWorkflow( ClipWorkflow* cw );
 
     private:
         QMap<qint64, ClipWorkflow*>             m_clips;

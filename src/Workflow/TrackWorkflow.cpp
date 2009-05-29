@@ -137,13 +137,13 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
 
     QReadLocker     lock( m_currentLock );
 
-//    qDebug() << "Frame nb" << currentFrame;
+    qDebug() << "Frame nb" << currentFrame;
     clipsRemaining = checkNextClip( currentFrame );
     if ( m_current == m_clips.end() )
     {
         if ( clipsRemaining == false )
         {
-//            qDebug() << "End Reached";
+            qDebug() << "End Reached";
             emit endReached();
         }
 //        qDebug() << "Stil no clip at this time, going to the next frame";
@@ -154,6 +154,8 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
     {
         m_waitCondition->wakeAll();
 
+        // We wait until the end of the render. If the clip reach end, this
+        // will also return true.
         while ( m_current.value()->renderComplete() == false )
             usleep( 20 );
         if ( m_current.value()->isEndReached() == false )
@@ -172,9 +174,26 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
 
 void        TrackWorkflow::stopCurrentClipWorkflow()
 {
+    qDebug() << "About to stopCurrentClipWorkflow()";
     //Awaking renderer thread to avoid dead lock
+    m_current.value()->scheduleStop();
+    m_waitCondition->wakeAll();
     if ( m_current.value()->isStopped() == false )
         m_current.value()->stop();
+    qDebug() << "Stopped stopCurrentClipWorkflow();";
+}
+
+void        TrackWorkflow::initializeClipWorkflow( ClipWorkflow* cw )
+{
+    //>Launching the initialization
+    qDebug()<< "Initializing clip workflow (initializeClipWorkflow())";
+    cw->initialize( m_mediaPlayer );
+    //And then wait for it to be ready
+    while ( cw->isReady() == false )
+        usleep( 20 );
+    //Once it is, we actually start the render
+    cw->startRender();
+    qDebug() << "End of clip workflow reinitialization";
 }
 
 void        TrackWorkflow::setPosition( float pos )
@@ -202,7 +221,7 @@ void        TrackWorkflow::setPosition( float pos )
         if ( it.key() <= frame &&
              ( it.key() + it.value()->getClip()->getLength() ) > frame )
         {
-            qDebug() << "Found new current clip workflow";
+//            qDebug() << "Found new current clip workflow";
             break;
         }
         else if ( next == m_clips.end() && it.key() > frame )
@@ -214,13 +233,13 @@ void        TrackWorkflow::setPosition( float pos )
             next = it;
             if ( next != m_clips.begin() )
             {
-                qDebug() << "Next clip isn't the first one";
+//                qDebug() << "Next clip isn't the first one";
                 next = next - 1; //Since the iterator must point to the previous video
             }
             else
             {
                 next = end;
-                qDebug() << "Next clip is the first of the track";
+//                qDebug() << "Next clip is the first of the track";
             }
             // in order to checkNextClip() to work.
             it = end;
@@ -229,36 +248,45 @@ void        TrackWorkflow::setPosition( float pos )
         ++it;
     }
 
-    if ( it == m_clips.end() )
+    //No clip was found :
+    if ( it == end )
     {
+        //We should use the next clip, however, we use the clip just before
+        //the next.
+        //We also stop the current clip if it was started.
         if ( m_current != end )
         {
             stopCurrentClipWorkflow();
         }
         m_current = next;
     }
+    // If the clip found is the current, we just change the position of the
+    // media player
     else if ( it == m_current )
     {
+        //The clip may have been stoped (if we reached end but came back at it)
+        if ( it.value()->isStopped() )
+        {
+            initializeClipWorkflow( it.value() );
+        }
         qDebug() << "Changing the position of the current clip";
-        //We're changing the position of the current clip
         it.value()->setPosition( (float)( frame - it.key() ) / (float)(it.value()->getClip()->getLength()) );
         //Awaking renderers to avoid them to be stuck inside of the lock...
 //        qDebug() << "Waking all renderer threads";
         m_waitCondition->wakeAll();
     }
+    // Else, we found a clip that is not the current one.
     else
-        {
-        qDebug() << "Switching to other Clip";
+    {
+//        qDebug() << "Switching to other Clip";
+        //First, we stop the current workflow.
         if ( m_current != end )
         {
             stopCurrentClipWorkflow();
-//            m_waitCondition->wakeAll();
         }
-
-        it.value()->initialize( m_mediaPlayer );
-        while ( it.value()->isReady() == false )
-            usleep( 20 );
-        it.value()->startRender();
+        //We initialize the new workflow
+        initializeClipWorkflow( it.value() );
+        //And this is now our current clip
         m_current = it;
 //        qDebug() << "Switched current clip workflow";
     }
