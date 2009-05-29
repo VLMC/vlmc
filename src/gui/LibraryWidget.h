@@ -63,6 +63,8 @@ private:
 
     Ui::LibraryWidget                   m_ui;
     static QList<ListViewMediaItem*>*   m_medias;
+    QString                             m_lastDirectoryBrowsed;
+    bool                                m_firstDirectoryBrowsing;
 
 
 public slots:

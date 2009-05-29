@@ -27,7 +27,7 @@
 
 QList<ListViewMediaItem*>* LibraryWidget::m_medias = NULL;
 
-LibraryWidget::LibraryWidget( QWidget *parent ) : QWidget( parent )
+LibraryWidget::LibraryWidget( QWidget *parent ) : QWidget( parent ), m_firstDirectoryBrowsing(true)
 {
     m_ui.setupUi( this );
 
@@ -129,14 +129,24 @@ void    LibraryWidget::newMediaLoaded( Media* media )
 void    LibraryWidget::insertNewMediasFromFileDialog( QString title, QString filter, Library::FileType fileType )
 {
     QSettings settings;
-    QString path = settings.value( "mediaLibraryDialogPath", QDir::homePath() ).toString();
+    QString path;
+
+    if ( m_firstDirectoryBrowsing == true )
+         path = settings.value( "mediaLibraryDialogPath", QDir::homePath() ).toString();
+    else
+         path = m_lastDirectoryBrowsed;
+
+    qDebug() << "PATH = " << path;
     QStringList fileNames = QFileDialog::getOpenFileNames( this, title, path, filter );
     if ( fileNames.isEmpty() )
         return ;
+    m_lastDirectoryBrowsed = QFileInfo( fileNames.front() ).absolutePath();
+    m_firstDirectoryBrowsing = false;
     QString filePath;
 //    ListViewMediaItem* item = NULL;
     foreach ( filePath, fileNames )
     {
+        qDebug() << filePath;
 //        item = insertNewMedia( fileName, filetype );
 //        if( fileType == Library::Video )
             emit newMediaLoadingAsked( filePath );
