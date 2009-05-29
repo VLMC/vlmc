@@ -83,9 +83,24 @@ class   TrackWorkflow : public QObject
          * in the Track, this iterators is equal to m_clips.end();
         */
         QMap<qint64, ClipWorkflow*>::iterator   m_current;
+
+//        /**
+//         *  This mutex is used to lock the current ClipWorkflow iterator.
+//         */
+//        QReadWriteLock*                         m_currentLock;
+
+        /**
+         *  This mutex is used for ClipWorkflow synchronisation.
+         *  Using it otherwise might be a (really) bad idea.
+         */
         QMutex*                                 m_condMutex;
-        QReadWriteLock*                         m_currentLock;
         QWaitCondition*                         m_waitCondition;
+
+        /**
+         *  This mutex is used to wait for the ClipWorkflow render to end
+         */
+        QMutex*                                 m_renderMutex;
+
         /**
          *  This is the MediaPlayer that the clipworkflow
          *  will be using to process its render.

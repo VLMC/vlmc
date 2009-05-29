@@ -42,20 +42,61 @@ class   ClipWorkflow : public QObject
     Q_OBJECT
 
     public:
-        ClipWorkflow( Clip* clip, QMutex* condMutex, QWaitCondition* waitCond );
+        enum        State
+        {
+            Stopped,
+            Initializing,
+            Ready,
+            Rendering,
+            EndReached
+        };
+
+        ClipWorkflow( Clip* clip, QMutex* renderMutex, QMutex* condMutex, QWaitCondition* waitCond );
         virtual ~ClipWorkflow();
 
         /**
-         *  Will return true if the render is completed or the end of the clip has been
-         *  reached.
-         *  If the workflow is still rendering, this will return false.
+         *  This method returns the current frame. It locks the renderMutex,
+         *  therefore, you can call this method blindly, without taking care
+         *  of the rendering process advancement.
          */
-        bool                    renderComplete() const;
         unsigned char*          getOutput();
         void                    initialize( LibVLCpp::MediaPlayer* mediaPlayer );
+        /**
+         *  Return true ONLY if the state is equal to Ready.
+         *  If the state is Rendering, EndReached or anything else, this will
+         *  return false.
+         */
         bool                    isReady() const;
+        /**
+         *  Return true ONLY if the state is equal to EndReached.
+         *  In any other cases, this will return false.
+         */
         bool                    isEndReached() const;
+
+        /**
+         *  Return true ONLY if the state is equal to Stopped.
+         *  In any other cases, this will return false.
+         */
+        bool                    isStopped() const;
+
+        /**
+         *  Return true ONLY if the state is equal to Stopped.
+         *  In any other cases, this will return false.
+         */
+        bool                    isRendering() const;
+
+        /**
+         *  Returns the current workflow state.
+         */
+        State                   getState() const;
+
+        /**
+         *  This method start the effective render, ie calling the play() method
+         *  on the media player.
+         *  If the media player isn't ready, this method waits.
+         */
         void                    startRender();
+
         /**
             \brief              Returns the Clip this workflow instance is based
                                 uppon, so that you can query information on it.
@@ -67,36 +108,28 @@ class   ClipWorkflow : public QObject
         */
         void                    stop();
         void                    setPosition( float pos );
-        /**
-         *  \return true if the workflow has already been stopped.
-         */
-        bool                    isStopped() const;
 
-        void                    scheduleStop();
+//        void                    scheduleStop();
 
     private:
         static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret );
         static void             unlock( ClipWorkflow* clipWorkflow );
         void                    setVmem();
-        void                    reinitFlags();
+        void                    setState( State state );
 
     private:
         Clip*                   m_clip;
-        QReadWriteLock*         m_renderCompleteMutex;
-        bool                    m_renderComplete;
         unsigned char*          m_buffer;
 
+        QMutex*                 m_renderMutex;
         QMutex*                 m_condMutex;
         QWaitCondition*         m_waitCond;
 
         LibVLCpp::MediaPlayer*  m_mediaPlayer;
 
-        QReadWriteLock*         m_initMutex;
-        bool                    m_isReady;
-        QReadWriteLock*         m_endReachedLock;
-        bool                    m_endReached;
-        QReadWriteLock*         m_stopScheduledMutex;
-        bool                    m_stopScheduled;
+        State                   m_state;
+        QReadWriteLock*         m_stateLock;
+
 
     public slots:
         void                    pauseAfterPlaybackStarted();
