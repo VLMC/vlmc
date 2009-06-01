@@ -49,11 +49,13 @@ class   ClipWorkflow : public QObject
             Initializing,
             Ready,
             Rendering,
+            Sleeping,
+            Stopping,
             EndReached,
-            StopRequired,
         };
+       int                     debugId;
 
-        ClipWorkflow( Clip* clip, QMutex* renderMutex, QMutex* condMutex, QWaitCondition* waitCond );
+        ClipWorkflow( Clip* clip );
         virtual ~ClipWorkflow();
 
         /**
@@ -89,6 +91,9 @@ class   ClipWorkflow : public QObject
 
         /**
          *  Returns the current workflow state.
+         *  Be carrefull, as this function is NOT thread safe, and return the
+         *  state without locking the state.
+         *  It's your job to do it, by calling the getStateLock() method.
          */
         State                   getState() const;
 
@@ -120,22 +125,52 @@ class   ClipWorkflow : public QObject
          */
         void                    queryStateChange( State newState );
 
+        /**
+         *  This method will wake the renderer thread for one iteration.
+         */
+        void                    wake();
+
+        /**
+         *  This returns the QReadWriteLock that protects the ClipWorkflow's state.
+         *  It should be use to lock the value when checking states from outside this
+         *  class.
+         */
+        QReadWriteLock*         getStateLock();
+
+        /**
+         *  Put back the ClipWorkflow in its initial state.
+         */
+        void                    reinitialize();
+
     private:
         static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret );
         static void             unlock( ClipWorkflow* clipWorkflow );
         void                    setVmem();
         void                    setState( State state );
+        /**
+         *  Don't ever call this method from anywhere else than the unlock() method
+         */
         void                    checkStateChange();
 
     private:
         Clip*                   m_clip;
         unsigned char*          m_buffer;
-
-        QMutex*                 m_renderMutex;
-        QMutex*                 m_condMutex;
-        QWaitCondition*         m_waitCond;
+        unsigned char*          m_backBuffer;
+        /**
+         *  This allow the render procedure to know in which buffer it should render.
+         *  If true, then the render occurs in the back buffer, which means the
+         *  returned buffer much be the "front" buffer.
+         *  In other term :
+         *  - When m_usingBackBuffer == false, lock() will return m_buffer, and getOutput() m_backBuffer
+         *  - When m_usingBackBuffer == true, lock() will return m_backBuffer, and getOutput() m_buffer
+         */
+        bool                    m_usingBackBuffer;
+        QReadWriteLock*         m_backBufferLock;
 
         LibVLCpp::MediaPlayer*  m_mediaPlayer;
+
+        QMutex*                 m_condMutex;
+        QWaitCondition*         m_waitCond;
 
         State                   m_state;
         QReadWriteLock*         m_stateLock;

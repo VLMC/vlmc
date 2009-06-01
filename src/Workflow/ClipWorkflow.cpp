@@ -24,41 +24,51 @@
 
 #include "ClipWorkflow.h"
 
-ClipWorkflow::ClipWorkflow( Clip::Clip* clip, QMutex* renderMutex,
-                            QMutex* condMutex, QWaitCondition* waitCond ) :
+int     g_debugId = 0;
+
+ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
                 m_clip( clip ),
                 m_buffer( NULL ),
-                m_renderMutex( renderMutex ),
-                m_condMutex( condMutex ),
-                m_waitCond( waitCond ),
+                m_usingBackBuffer( false ),
                 m_mediaPlayer(NULL),
-                m_state( ClipWorkflow::Stopped )
+                m_state( ClipWorkflow::Stopped ),
+                m_requiredState( ClipWorkflow::None )
 {
     m_buffer = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
+    m_backBuffer = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
     m_stateLock = new QReadWriteLock;
     m_requiredStateLock = new QMutex;
+    m_condMutex = new QMutex;
+    m_waitCond = new QWaitCondition;
+    m_backBufferLock = new QReadWriteLock;
+
+    this->debugId = g_debugId++;
 }
 
 ClipWorkflow::~ClipWorkflow()
 {
     delete[] m_buffer;
+    delete[] m_backBuffer;
     delete m_stateLock;
     delete m_requiredStateLock;
+    delete m_backBufferLock;
 }
 
 unsigned char*    ClipWorkflow::getOutput()
 {
-    QMutexLocker    lock( m_renderMutex );
-    return m_buffer;
+    QReadLocker     lock( m_backBufferLock );
+    if ( m_usingBackBuffer == true )
+        return m_buffer;
+    return m_backBuffer;
 }
 
 void    ClipWorkflow::checkStateChange()
 {
     QMutexLocker    lock( m_requiredStateLock );
-    QWriteLocker    lock2 ( m_stateLock );
+    QWriteLocker    lock2( m_stateLock );
     if ( m_requiredState != ClipWorkflow::None )
     {
-        qDebug() << "Changing state";
+        qDebug() << "Setting required state : " << m_requiredState;
         m_state = m_requiredState;
         m_requiredState = ClipWorkflow::None;
     }
@@ -66,29 +76,42 @@ void    ClipWorkflow::checkStateChange()
 
 void    ClipWorkflow::lock( ClipWorkflow* clipWorkflow, void** pp_ret )
 {
-    //In any case, we give vlc a buffer to render in...
-    //If we don't, segmentation fault will catch us and eat our brains !! ahem...
 //    qDebug() << "Locking in ClipWorkflow::lock";
-    clipWorkflow->m_renderMutex->lock();
-//    qDebug() << clipWorkflow->getState();
-    *pp_ret = clipWorkflow->m_buffer;
+    QReadLocker     lock( clipWorkflow->m_backBufferLock );
+
+    if ( clipWorkflow->m_usingBackBuffer )
+        *pp_ret = clipWorkflow->m_backBuffer;
+    else
+        *pp_ret = clipWorkflow->m_buffer;
 }
 
-void    ClipWorkflow::unlock( ClipWorkflow* clipWorkflow )
+void    ClipWorkflow::unlock( ClipWorkflow* cw )
 {
-    clipWorkflow->m_renderMutex->unlock();
+    cw->m_stateLock->lockForWrite();
 
-    clipWorkflow->checkStateChange();
-    clipWorkflow->m_stateLock->lockForRead();
-    if ( clipWorkflow->m_state == Rendering )
+    if ( cw->m_state == Rendering )
     {
-        QMutexLocker    lock( clipWorkflow->m_condMutex );
-        clipWorkflow->m_stateLock->unlock();
-        clipWorkflow->m_waitCond->wait( clipWorkflow->m_condMutex );
+        cw->m_state = Sleeping;
+        cw->m_stateLock->unlock();
+
+        QMutexLocker    lock( cw->m_condMutex );
+        cw->m_waitCond->wait( cw->m_condMutex );
+
+        {
+            QWriteLocker    lock2( cw->m_backBufferLock );
+            cw->m_usingBackBuffer = !cw->m_usingBackBuffer;
+        }
+
+        cw->m_stateLock->lockForWrite();
+        cw->m_state = Rendering;
     }
     else
-        qDebug() << clipWorkflow->m_state;
-    clipWorkflow->m_stateLock->unlock();
+    {
+        qDebug() << "UnLocking. State = " << cw->m_state << "Debug Id = " << cw->debugId;
+    }
+    cw->m_stateLock->unlock();
+    cw->checkStateChange();
+
 //    qDebug() << "UnLocking in ClipWorkflow::unlock";
 }
 
@@ -96,6 +119,7 @@ void    ClipWorkflow::setVmem()
 {
     char        buffer[32];
 
+    qDebug() << "Setting vmem from clip " << this->debugId;
     //TODO: it would be good if we somehow backup the old media parameters to restore it later.
     m_clip->getParent()->getVLCMedia()->addOption( ":vout=vmem" );
     m_clip->getParent()->getVLCMedia()->setDataCtx( this );
@@ -146,6 +170,7 @@ void    ClipWorkflow::pausedMediaPlayer()
 {
     disconnect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( pausedMediaPlayer() ) );
     setState( Ready );
+    qDebug() << "Set Ready state";
 }
 
 bool    ClipWorkflow::isReady() const
@@ -168,7 +193,6 @@ bool    ClipWorkflow::isStopped() const
 
 ClipWorkflow::State     ClipWorkflow::getState() const
 {
-    QReadLocker lock( m_stateLock );
     return m_state;
 }
 
@@ -199,6 +223,8 @@ void            ClipWorkflow::stop()
     qDebug() << "Stopped media player";
     m_mediaPlayer = NULL;
     setState( Stopped );
+    QMutexLocker    lock( m_requiredStateLock );
+    m_requiredState = ClipWorkflow::None;
     qDebug() << "Changed state";
 }
 
@@ -215,6 +241,7 @@ bool            ClipWorkflow::isRendering() const
 
 void            ClipWorkflow::setState( State state )
 {
+    qDebug() << "Setting state : " << state;
     QWriteLocker    lock( m_stateLock );
     m_state = state;
 }
@@ -225,3 +252,21 @@ void            ClipWorkflow::queryStateChange( State newState )
     QMutexLocker    lock( m_requiredStateLock );
     m_requiredState = newState;
 }
+
+void            ClipWorkflow::wake()
+{
+    m_waitCond->wakeAll();
+}
+
+QReadWriteLock* ClipWorkflow::getStateLock()
+{
+    return m_stateLock;
+}
+
+void            ClipWorkflow::reinitialize()
+{
+    QWriteLocker    lock( m_stateLock );
+    m_state = Stopped;
+    queryStateChange( None );
+}
+

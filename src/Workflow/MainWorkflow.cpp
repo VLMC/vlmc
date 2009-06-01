@@ -50,7 +50,6 @@ void    MainWorkflow::startRender()
     m_currentFrame = 0;
     emit frameChanged( 0 );
     m_length = m_tracks[0]->getLength();
-    m_tracks[0]->startRender();
 }
 
 unsigned char*    MainWorkflow::getOutput()
@@ -67,7 +66,6 @@ void        MainWorkflow::setPosition( float pos )
     if ( m_renderStarted == false )
         return ;
     qint64  frame = (float)m_length * pos;
-    m_tracks[0]->requirePositionChanged( pos );
     m_currentFrame = frame;
     emit frameChanged( frame );
     //Do not emit a signal for the RenderWidget, since it's the one that triggered that call...

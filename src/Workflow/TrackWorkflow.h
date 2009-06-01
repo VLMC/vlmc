@@ -27,7 +27,7 @@
 #include <QMutex>
 #include <QWaitCondition>
 #include <QMap>
-#include <QQueue>
+#include <QList>
 #include <QReadWriteLock>
 
 #include "ClipWorkflow.h"
@@ -46,58 +46,21 @@ class   TrackWorkflow : public QObject
         TrackWorkflow();
         ~TrackWorkflow();
 
-        void                                    startRender();
         unsigned char*                          getOutput( qint64 currentFrame );
         qint64                                  getLength() const;
-
-        /**
-            \brief  Set the track workflow position
-            \param  pos: The new pos in VLC position
-        */
-        void                                    setPosition( float pos );
-        void                                    requirePositionChanged( float pos );
 
         //FIXME: this won't be reliable as soon as we change the fps from the configuration
         static const unsigned int               nbFrameBeforePreload = 60;
         static unsigned char*                   blackOutput;
 
     private:
-        /**
-          * \brief      Check if there's a ClipWorkflow that's comming soon. If so, it preload it to avoid
-                        freeze when switching video.
-                        This does NOT search for the next current clip !
-          * \return     true if at least one video remains, false otherwise (IE end of this track)
-          */
-        bool                                    checkNextClip( qint64 currentFrame );
         void                                    computeLength();
-        void                                    initializeClipWorkflow( ClipWorkflow* cw );
+        unsigned char*                          renderClip( ClipWorkflow* cw, bool needRepositioning, float pos );
+        void                                    preloadClip( ClipWorkflow* cw );
         void                                    stopClipWorkflow( ClipWorkflow* cw );
-        void                                    checkStop();
 
     private:
         QMap<qint64, ClipWorkflow*>             m_clips;
-        /**
-         *  \brief      An iterator that "point" the current ClipWorkflow used.
-         *
-         * This holds the current ClipWorkflow, and the current starting frame
-         * of this ClipWorkflow.
-         * If the track is empty at a T time, this iterator still points to the last
-         * ClipWorkflow used. However, if the next video occurs to be the first one
-         * in the Track, this iterators is equal to m_clips.end();
-        */
-        QMap<qint64, ClipWorkflow*>::iterator   m_current;
-
-        /**
-         *  This mutex is used for ClipWorkflow synchronisation.
-         *  Using it otherwise might be a (really) bad idea.
-         */
-        QMutex*                                 m_condMutex;
-        QWaitCondition*                         m_waitCondition;
-
-        /**
-         *  This mutex is used to wait for the ClipWorkflow render to end
-         */
-        QMutex*                                 m_renderMutex;
 
         /**
          *  This is the MediaPlayer that the clipworkflow
@@ -109,14 +72,6 @@ class   TrackWorkflow : public QObject
          *  \brief      The track length in frames.
         */
         qint64                                  m_length;
-
-        /**
-         *  This is used to dispatch a setPosition event to the renderer thread
-         */
-        float                                   m_requiredPosition;
-        QMutex*                                 m_requiredPositionLock;
-
-        QQueue<ClipWorkflow*>                   m_toStop;
 
     public:
         void            addClip( Clip*, qint64 start );
