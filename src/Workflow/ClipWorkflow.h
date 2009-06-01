@@ -44,12 +44,13 @@ class   ClipWorkflow : public QObject
     public:
         enum        State
         {
+            None = -1,
             Stopped,
             Initializing,
             Ready,
             Rendering,
             EndReached,
-            StopScheduled,
+            StopRequired,
         };
 
         ClipWorkflow( Clip* clip, QMutex* renderMutex, QMutex* condMutex, QWaitCondition* waitCond );
@@ -110,13 +111,21 @@ class   ClipWorkflow : public QObject
         void                    stop();
         void                    setPosition( float pos );
 
-        void                    scheduleStop();
+        /**
+         *  This method must be used to change the state of the ClipWorkflow
+         *  from outside its render loop, otherwise, it may lead to deadlocks.
+         *  No additional operations will be executed (for example, if setting
+         *  the new state to stop, the media player won't be stopped.)
+         *  This is mainly to change the behaviour of the render loop.
+         */
+        void                    queryStateChange( State newState );
 
     private:
         static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret );
         static void             unlock( ClipWorkflow* clipWorkflow );
         void                    setVmem();
         void                    setState( State state );
+        void                    checkStateChange();
 
     private:
         Clip*                   m_clip;
@@ -130,6 +139,8 @@ class   ClipWorkflow : public QObject
 
         State                   m_state;
         QReadWriteLock*         m_stateLock;
+        State                   m_requiredState;
+        QMutex*                 m_requiredStateLock;
 
 
     public slots:

@@ -35,25 +35,33 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip, QMutex* renderMutex,
                 m_state( ClipWorkflow::Stopped )
 {
     m_buffer = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
-    m_stateLock = new QReadWriteLock();
+    m_stateLock = new QReadWriteLock;
+    m_requiredStateLock = new QMutex;
 }
 
 ClipWorkflow::~ClipWorkflow()
 {
     delete[] m_buffer;
     delete m_stateLock;
-}
-
-void    ClipWorkflow::scheduleStop()
-{
-    QWriteLocker        lock( m_stateLock );
-    m_state = StopScheduled;
+    delete m_requiredStateLock;
 }
 
 unsigned char*    ClipWorkflow::getOutput()
 {
     QMutexLocker    lock( m_renderMutex );
     return m_buffer;
+}
+
+void    ClipWorkflow::checkStateChange()
+{
+    QMutexLocker    lock( m_requiredStateLock );
+    QWriteLocker    lock2 ( m_stateLock );
+    if ( m_requiredState != ClipWorkflow::None )
+    {
+        qDebug() << "Changing state";
+        m_state = m_requiredState;
+        m_requiredState = ClipWorkflow::None;
+    }
 }
 
 void    ClipWorkflow::lock( ClipWorkflow* clipWorkflow, void** pp_ret )
@@ -70,13 +78,16 @@ void    ClipWorkflow::unlock( ClipWorkflow* clipWorkflow )
 {
     clipWorkflow->m_renderMutex->unlock();
 
+    clipWorkflow->checkStateChange();
     clipWorkflow->m_stateLock->lockForRead();
     if ( clipWorkflow->m_state == Rendering )
     {
-        QMutexLocker    lock5( clipWorkflow->m_condMutex );
+        QMutexLocker    lock( clipWorkflow->m_condMutex );
         clipWorkflow->m_stateLock->unlock();
         clipWorkflow->m_waitCond->wait( clipWorkflow->m_condMutex );
     }
+    else
+        qDebug() << clipWorkflow->m_state;
     clipWorkflow->m_stateLock->unlock();
 //    qDebug() << "UnLocking in ClipWorkflow::unlock";
 }
@@ -134,8 +145,7 @@ void    ClipWorkflow::pauseAfterPlaybackStarted()
 void    ClipWorkflow::pausedMediaPlayer()
 {
     disconnect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( pausedMediaPlayer() ) );
-    QWriteLocker        lock( m_stateLock );
-    m_state = ClipWorkflow::Ready;
+    setState( Ready );
 }
 
 bool    ClipWorkflow::isReady() const
@@ -183,13 +193,13 @@ const Clip*     ClipWorkflow::getClip() const
 
 void            ClipWorkflow::stop()
 {
-    QWriteLocker        lock( m_stateLock );
     qDebug() << "ClipWorkflow::stop()";
     Q_ASSERT( m_mediaPlayer != NULL );
     m_mediaPlayer->stop();
+    qDebug() << "Stopped media player";
     m_mediaPlayer = NULL;
-    //Don't use setState here since m_stateLock is already locked;
-    m_state = Stopped;
+    setState( Stopped );
+    qDebug() << "Changed state";
 }
 
 void            ClipWorkflow::setPosition( float pos )
@@ -207,4 +217,11 @@ void            ClipWorkflow::setState( State state )
 {
     QWriteLocker    lock( m_stateLock );
     m_state = state;
+}
+
+void            ClipWorkflow::queryStateChange( State newState )
+{
+    qDebug() << "Querying state change";
+    QMutexLocker    lock( m_requiredStateLock );
+    m_requiredState = newState;
 }

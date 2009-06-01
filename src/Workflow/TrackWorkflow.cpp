@@ -138,11 +138,13 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
         setPosition( m_requiredPosition );
         m_requiredPosition = -1.0f;
     }
+    checkStop();
 //    qDebug() << "Frame nb" << currentFrame;
     clipsRemaining = checkNextClip( currentFrame );
     //This is true only before the first render.
     if ( m_current == m_clips.end() )
     {
+//        qDebug() << "m_current == m_clips.end()";
         //If the track was empty, then its end is reached
         if ( clipsRemaining == false )
             emit endReached();
@@ -153,20 +155,23 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
     if ( m_current.value()->isRendering() == true )
     {
         m_waitCondition->wakeAll();
-
+//        qDebug() << "Is rendering == true";
         ret = m_current.value()->getOutput();
         return ret;
     }
     else if ( m_current.value()->getState() == ClipWorkflow::EndReached ||
-              m_current.value()->getState() == ClipWorkflow::StopScheduled )
+              m_current.value()->getState() == ClipWorkflow::StopRequired )
     {
         //First, we stop the current ClipWorkflow so that it won't
         //enter the lock/unlock cycle anymore.
+        qDebug() << "Stopping";
         m_current.value()->stop();
         //Then, if there's no remaining clip, end of track is reached.
         if ( clipsRemaining == false )
             emit endReached();
     }
+//    else
+//        qDebug() << "Uncoherent state : " << m_current.value()->getState();
     return ret;
 }
 
@@ -177,8 +182,19 @@ void        TrackWorkflow::initializeClipWorkflow( ClipWorkflow* cw )
     cw->startRender();
 }
 
+void        TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
+{
+    if ( cw->getState() != ClipWorkflow::Stopped && cw->getState() != ClipWorkflow::StopRequired )
+    {
+        cw->queryStateChange( ClipWorkflow::StopRequired );
+        //Since state change won't be immediate, we add the clip workflow to a lookup list
+        m_toStop.enqueue( cw );
+    }
+}
+
 void        TrackWorkflow::setPosition( float pos )
 {
+    qDebug() << "Setting pos";
     qint64                                      frame = (float)m_length * pos;
     QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
     const QMap<qint64, ClipWorkflow*>::iterator end = m_clips.end();
@@ -188,8 +204,9 @@ void        TrackWorkflow::setPosition( float pos )
     {
         if ( m_current != end )
         {
-            m_current.value()->scheduleStop();
+            stopClipWorkflow( m_current.value() );
             m_current = end;
+            qDebug() << "After end of current track";
             return ;
         }
     }
@@ -224,22 +241,26 @@ void        TrackWorkflow::setPosition( float pos )
         ++it;
     }
 
-    //No clip was found :
+    //No clip was found, just adjusing the current clip. (Render will be black though)
     if ( it == end )
     {
+        qDebug() << "In black zone";
         //We should use the next clip, however, we use the clip just before
         //the next.
         //We also stop the current clip if it was started.
         if ( m_current != end )
         {
-            m_current.value()->scheduleStop();
+            stopClipWorkflow( m_current.value() );
         }
+        //TODO: it seems that m_current may be equal to next... check if that could be a problem...
         m_current = next;
     }
     // If the clip found is the current, we just change the position of the
     // media player
     else if ( it == m_current )
     {
+        qDebug() << "Using current clip with new position";
+        qDebug() << it.value()->getState();
         //The clip may have been stoped (if we reached end but came back at it)
         if ( it.value()->isStopped() )
         {
@@ -252,10 +273,11 @@ void        TrackWorkflow::setPosition( float pos )
     // Else, we found a clip that is not the current one.
     else
     {
+        qDebug() << "Using other clip";
         //First, we stop the current workflow.
         if ( m_current != end )
         {
-            m_current.value()->scheduleStop();
+            stopClipWorkflow( m_current.value() );
         }
         //We initialize the new workflow
         initializeClipWorkflow( it.value() );
@@ -268,6 +290,25 @@ void        TrackWorkflow::setPosition( float pos )
 
 void    TrackWorkflow::requirePositionChanged( float pos )
 {
-//    QMutexLocker    lock( m_requiredPositionLock );
-//    m_requiredPosition = pos;
+    QMutexLocker    lock( m_requiredPositionLock );
+    m_requiredPosition = pos;
+}
+
+void    TrackWorkflow::checkStop()
+{
+    while ( m_toStop.isEmpty() == false )
+    {
+        ClipWorkflow* cw = m_toStop.head();
+        if ( cw->getState() == ClipWorkflow::StopRequired )
+        {
+            qDebug() << "Stopping from queue";
+            cw->stop();
+            m_toStop.dequeue();
+        }
+        else
+        {
+            qDebug() << cw->getState();
+            return ;
+        }
+    }
 }

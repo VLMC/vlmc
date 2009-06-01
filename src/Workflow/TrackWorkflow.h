@@ -27,6 +27,7 @@
 #include <QMutex>
 #include <QWaitCondition>
 #include <QMap>
+#include <QQueue>
 #include <QReadWriteLock>
 
 #include "ClipWorkflow.h"
@@ -70,6 +71,8 @@ class   TrackWorkflow : public QObject
         bool                                    checkNextClip( qint64 currentFrame );
         void                                    computeLength();
         void                                    initializeClipWorkflow( ClipWorkflow* cw );
+        void                                    stopClipWorkflow( ClipWorkflow* cw );
+        void                                    checkStop();
 
     private:
         QMap<qint64, ClipWorkflow*>             m_clips;
@@ -112,6 +115,8 @@ class   TrackWorkflow : public QObject
          */
         float                                   m_requiredPosition;
         QMutex*                                 m_requiredPositionLock;
+
+        QQueue<ClipWorkflow*>                   m_toStop;
 
     public:
         void            addClip( Clip*, qint64 start );
