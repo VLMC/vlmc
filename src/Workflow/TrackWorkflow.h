@@ -77,7 +77,7 @@ class   TrackWorkflow : public QObject
         void            addClip( Clip*, qint64 start );
 
     signals:
-        void            endReached();
+        void            trackEndReached();
 };
 
 #endif // TRACKWORKFLOW_H

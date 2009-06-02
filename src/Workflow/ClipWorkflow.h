@@ -178,11 +178,13 @@ class   ClipWorkflow : public QObject
         QMutex*                 m_requiredStateLock;
 
 
-    public slots:
+    private slots:
         void                    pauseAfterPlaybackStarted();
         void                    pausedMediaPlayer();
         void                    setPositionAfterPlayback();
-        void                    endReached();
+
+    public slots:
+        void                    clipEndReached();
 };
 
 #endif // CLIPWORKFLOW_H
