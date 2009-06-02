@@ -43,7 +43,7 @@ public:
     void setDuration( int duration );
     int duration() const { return m_projectDuration; }
     int tracksHeight() const { return m_tracksHeight; }
-    int tracksCount() const { return m_tracksCount; }
+    unsigned int tracksCount() const { return m_tracksCount; }
     void setCursorPos( int pos );
     int cursorPos();
     GraphicsCursorItem* tracksCursor() const { return m_cursorLine; }

@@ -25,19 +25,30 @@
 
 #include "MainWorkflow.h"
 
-MainWorkflow::MainWorkflow() : m_renderStarted( false )
+unsigned char*  MainWorkflow::blackOutput = NULL;
+
+MainWorkflow::MainWorkflow( int trackCount ) :
+        m_trackCount( trackCount ),
+        m_renderStarted( false )
 {
-    m_tracks = new TrackWorkflow*[NB_TRACKS];
-    for (unsigned int i = 0; i < NB_TRACKS; ++i)
+    if ( MainWorkflow::blackOutput == NULL )
     {
-        m_tracks[i] = new TrackWorkflow;
-        connect( m_tracks[i], SIGNAL( trackEndReached() ), this, SLOT( __endReached() ) );
+        //TODO: this ain't free !
+        MainWorkflow::blackOutput = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 3];
+        memset( MainWorkflow::blackOutput, 0, VIDEOHEIGHT * VIDEOWIDTH * 3 );
+    }
+
+    m_tracks = new Toggleable<TrackWorkflow*>[trackCount];
+    for (int i = 0; i < trackCount; ++i)
+    {
+        m_tracks[i].setPtr( new TrackWorkflow( i ) );
+        connect( m_tracks[i], SIGNAL( trackEndReached( unsigned int ) ), this, SLOT( trackEndReached(unsigned int) ) );
     }
 }
 
 void    MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
 {
-    Q_ASSERT_X( trackId < NB_TRACKS, "MainWorkflow::addClip",
+    Q_ASSERT_X( trackId < m_trackCount, "MainWorkflow::addClip",
                 "The specified trackId isn't valid, for it's higher than the number of tracks");
 
     qDebug() << "MainWorkflow: Adding clip" << clip->getUuid() << "to track" << trackId;
@@ -46,15 +57,36 @@ void    MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
 
 void    MainWorkflow::startRender()
 {
+    qint64      maxLength = 0;
+
     m_renderStarted = true;
     m_currentFrame = 0;
     emit frameChanged( 0 );
-    m_length = m_tracks[0]->getLength();
+    for ( unsigned int i = 0; i < m_trackCount; ++i )
+    {
+        if ( m_tracks[i]->getLength() > maxLength )
+            maxLength = m_tracks[i]->getLength();
+    }
+    m_length = maxLength;
 }
 
 unsigned char*    MainWorkflow::getOutput()
 {
-    unsigned char* ret = m_tracks[0]->getOutput( m_currentFrame );
+    unsigned char* ret;
+
+    for ( unsigned int i = 0; i < m_trackCount; ++i )
+    {
+        if ( m_tracks[i].activated() == false )
+            continue ;
+        if ( ( ret = m_tracks[i]->getOutput( m_currentFrame ) ) != NULL )
+        {
+            qDebug() << "Getting a frame";
+            break ;
+        }
+    }
+    if ( ret == NULL )
+        ret = MainWorkflow::blackOutput;
+
     ++m_currentFrame;
     emit frameChanged( m_currentFrame );
     emit positionChanged( (float)m_currentFrame / (float)m_length );
@@ -76,10 +108,22 @@ qint64      MainWorkflow::getLength() const
     return m_length;
 }
 
-void        MainWorkflow::__endReached()
+void        MainWorkflow::trackEndReached( unsigned int trackId )
 {
+    m_tracks[trackId].deactivate();
+
+    for ( unsigned int i = 0; i < m_trackCount; ++i)
+    {
+        if ( m_tracks[i].activated() == true )
+            return ;
+    }
     emit mainWorkflowEndReached();
     m_renderStarted = false;
     m_currentFrame = 0;
     emit frameChanged( 0 );
+}
+
+unsigned int    MainWorkflow::getTrackCount() const
+{
+    return m_trackCount;
 }

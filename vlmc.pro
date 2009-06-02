@@ -76,7 +76,8 @@ HEADERS += src/gui/MainWindow.h \
     src/Workflow/MainWorkflow.h \
     src/gui/PreviewWidget.h \
     src/gui/RenderPreviewWidget.h \
-    src/gui/GenericPreviewWidget.h
+    src/gui/GenericPreviewWidget.h \
+    src/tools/Toggleable.hpp
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \

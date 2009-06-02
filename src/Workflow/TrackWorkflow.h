@@ -43,7 +43,7 @@ class   TrackWorkflow : public QObject
     Q_OBJECT
 
     public:
-        TrackWorkflow();
+        TrackWorkflow( unsigned int trackId );
         ~TrackWorkflow();
 
         unsigned char*                          getOutput( qint64 currentFrame );
@@ -51,7 +51,6 @@ class   TrackWorkflow : public QObject
 
         //FIXME: this won't be reliable as soon as we change the fps from the configuration
         static const unsigned int               nbFrameBeforePreload = 60;
-        static unsigned char*                   blackOutput;
 
     private:
         void                                    computeLength();
@@ -62,6 +61,8 @@ class   TrackWorkflow : public QObject
         bool                                    checkEnd( qint64 currentFrame ) const;
 
     private:
+        unsigned int                            m_trackId;
+
         QMap<qint64, ClipWorkflow*>             m_clips;
 
         /**
@@ -79,7 +80,7 @@ class   TrackWorkflow : public QObject
         void            addClip( Clip*, qint64 start );
 
     signals:
-        void            trackEndReached();
+        void            trackEndReached( unsigned int );
 };
 
 #endif // TRACKWORKFLOW_H

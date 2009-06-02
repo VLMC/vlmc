@@ -24,17 +24,9 @@
 
 #include "TrackWorkflow.h"
 
-unsigned char*  TrackWorkflow::blackOutput = NULL;
-
-TrackWorkflow::TrackWorkflow()
+TrackWorkflow::TrackWorkflow( unsigned int trackId ) : m_trackId( trackId )
 {
     m_mediaPlayer = new LibVLCpp::MediaPlayer();
-    if ( TrackWorkflow::blackOutput == NULL )
-    {
-        //TODO: this ain't free !
-        TrackWorkflow::blackOutput = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 3];
-        memset( TrackWorkflow::blackOutput, 0, VIDEOHEIGHT * VIDEOWIDTH * 3 );
-    }
 }
 
 TrackWorkflow::~TrackWorkflow()
@@ -65,7 +57,7 @@ qint64              TrackWorkflow::getLength() const
 unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
                                         qint64 start , bool needRepositioning )
 {
-    unsigned char*      ret = TrackWorkflow::blackOutput;
+    unsigned char*      ret = NULL;
 
     cw->getStateLock()->lockForRead();
 
@@ -198,7 +190,7 @@ bool                TrackWorkflow::checkEnd( qint64 currentFrame ) const
 
 unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
 {
-    unsigned char*  ret = TrackWorkflow::blackOutput;
+    unsigned char*  ret = NULL;
     QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
     QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
     static  qint64                              lastFrame = 0;
@@ -206,7 +198,7 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
 
     if ( checkEnd( currentFrame ) == true )
     {
-        emit trackEndReached();
+        emit trackEndReached( m_trackId );
         //We continue, as there can be ClipWorkflow that required to be stopped.
     }
     needRepositioning = ( abs( currentFrame - lastFrame ) > 1 ) ? true : false;

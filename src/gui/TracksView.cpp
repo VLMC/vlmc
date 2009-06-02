@@ -38,7 +38,7 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
     m_tracksHeight = 50;
 
     //TODO should be dynamic
-    m_tracksCount = 5;
+    m_tracksCount = mainWorkflow->getTrackCount();
     m_fps = 30;
 
     setMouseTracking( true );

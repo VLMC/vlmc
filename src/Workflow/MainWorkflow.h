@@ -26,17 +26,15 @@
 
 #include <QObject>
 
+#include "tools/Toggleable.hpp"
 #include "TrackWorkflow.h"
-
-//TODO: THIS HAS TO GO ASAP !!!!!
-#define NB_TRACKS   1
 
 class   MainWorkflow : public QObject
 {
     Q_OBJECT
 
     public:
-        MainWorkflow();
+        MainWorkflow( int trackCount );
 
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start );
         void                    startRender();
@@ -53,18 +51,26 @@ class   MainWorkflow : public QObject
          *                      in frames.
         */
         qint64                  getLength() const;
+
+        /**
+         *  Returns the number of tracks in this workflow
+         */
+        unsigned int            getTrackCount() const;
+
+        static unsigned char*   blackOutput;
+        
+    private:
+        Toggleable<TrackWorkflow*>*     m_tracks;
+        qint64                          m_currentFrame;
+        qint64                          m_length;
+        unsigned int                    m_trackCount;
         /**
          *  This boolean describe is a render has been started
         */
-        bool                    m_renderStarted;
-
-    private:
-        TrackWorkflow**         m_tracks;
-        qint64                  m_currentFrame;
-        qint64                  m_length;
+        bool                            m_renderStarted;
 
     private slots:
-        void                    __endReached();
+        void                            trackEndReached( unsigned int trackId );
 
     signals:
         /**

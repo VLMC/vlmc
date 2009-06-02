@@ -32,7 +32,7 @@ Timeline::Timeline( QWidget *parent ) :
 {
     m_ui.setupUi( this );
 
-    m_mainWorkflow = new MainWorkflow();
+    m_mainWorkflow = new MainWorkflow( 5 );
 
     m_tracksScene = new TracksScene( this );
     m_tracksView = new TracksView( m_tracksScene, m_mainWorkflow, m_ui.tracksFrame );
