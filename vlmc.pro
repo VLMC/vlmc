@@ -64,7 +64,7 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/Transcode.h \
     src/gui/Slider.h \
     src/MetaDataManager.h \
-    src/Singleton.hpp \
+    src/tools/Singleton.hpp \
     src/Library.h \
     src/gui/AbstractGraphicsMediaItem.h \
     src/gui/GraphicsMovieItem.h \
@@ -93,6 +93,7 @@ TRANSLATIONS = ts/vlmc_es.ts \
 RESOURCES += ressources.qrc
 INCLUDEPATH += src/LibVLCpp \
     src/gui \
+    src/tools \
     src
 LIBS = -L/usr/local/lib \
     -lvlc
