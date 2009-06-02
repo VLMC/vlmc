@@ -58,6 +58,7 @@ class   TrackWorkflow : public QObject
         unsigned char*                          renderClip( ClipWorkflow* cw, bool needRepositioning, float pos );
         void                                    preloadClip( ClipWorkflow* cw );
         void                                    stopClipWorkflow( ClipWorkflow* cw );
+        bool                                    checkEnd( qint64 currentFrame ) const;
 
     private:
         QMap<qint64, ClipWorkflow*>             m_clips;

@@ -116,8 +116,6 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
             cw->m_usingBackBuffer = !cw->m_usingBackBuffer;
         }
     }
-    else
-        qDebug() << cw->m_state;
     cw->m_stateLock->unlock();
     cw->checkStateChange();
 }

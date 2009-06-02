@@ -112,6 +112,11 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, bool needReposi
         cw->getStateLock()->unlock();
         cw->startRender();
     }
+    else if ( cw->getState() == ClipWorkflow::EndReached )
+    {
+        cw->getStateLock()->unlock();
+        //The stopClipWorkflow() method will take care of that.
+    }
     else
     {
 //        qDebug() << "Unexpected ClipWorkflow::State when rendering:" << cw->getState();
@@ -174,6 +179,16 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
     }
 }
 
+bool                TrackWorkflow::checkEnd( qint64 currentFrame ) const
+{
+    if ( m_clips.size() == 0 )
+        return true;
+    //This is the last video by chronological order :
+    QMap<qint64, ClipWorkflow*>::const_iterator   it = m_clips.end() - 1;
+    //If it ends before the current frame, we reached end.
+    return ( it.value()->getClip()->getLength() + it.key() < currentFrame );
+}
+
 unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
 {
     unsigned char*  ret = TrackWorkflow::blackOutput;
@@ -182,6 +197,11 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
     static  qint64                              lastFrame = 0;
     bool                                        needRepositioning;
 
+    if ( checkEnd( currentFrame ) == true )
+    {
+        emit trackEndReached();
+        //We continue, as there can be ClipWorkflow that required to be stopped.
+    }
     needRepositioning = ( abs( currentFrame - lastFrame ) > 1 ) ? true : false;
     while ( it != end )
     {
