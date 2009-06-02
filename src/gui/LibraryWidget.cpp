@@ -136,7 +136,6 @@ void    LibraryWidget::insertNewMediasFromFileDialog( QString title, QString fil
     else
          path = m_lastDirectoryBrowsed;
 
-    qDebug() << "PATH = " << path;
     QStringList fileNames = QFileDialog::getOpenFileNames( this, title, path, filter );
     if ( fileNames.isEmpty() )
         return ;
@@ -146,7 +145,6 @@ void    LibraryWidget::insertNewMediasFromFileDialog( QString title, QString fil
 //    ListViewMediaItem* item = NULL;
     foreach ( filePath, fileNames )
     {
-        qDebug() << filePath;
 //        item = insertNewMedia( fileName, filetype );
 //        if( fileType == Library::Video )
             emit newMediaLoadingAsked( filePath );
