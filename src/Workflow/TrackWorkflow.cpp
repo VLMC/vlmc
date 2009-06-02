@@ -87,12 +87,16 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, bool needReposi
     if ( cw->getState() == ClipWorkflow::Sleeping )
     {
         cw->getStateLock()->unlock();
-        ret = cw->getOutput();
         if ( needRepositioning == true )
         {
             cw->setPosition( pos );
         }
+        ret = cw->getOutput();
+//        qDebug() << "Waking renderer";
         cw->wake();
+//        qDebug() << "Awaken renderer";
+        //FIXME: sometimes, the renderer isn't awake soon enough, and we can
+        //pass though this function many times before the frame is actually rendered.
     }
     else if ( cw->getState() == ClipWorkflow::Stopped )
     {
@@ -110,7 +114,7 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, bool needReposi
     }
     else
     {
-        qDebug() << "Unexpected ClipWorkflow::State when rendering:" << cw->getState();
+//        qDebug() << "Unexpected ClipWorkflow::State when rendering:" << cw->getState();
         cw->getStateLock()->unlock();
     }
     return ret;
@@ -165,7 +169,7 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
     }
     else
     {
-        qDebug() << "Unexpected ClipWorkflow::State when stopping :" << cw->getState();
+//        qDebug() << "Unexpected ClipWorkflow::State when stopping :" << cw->getState();
         cw->getStateLock()->unlock();
     }
 }
@@ -178,7 +182,7 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
     static  qint64                              lastFrame = 0;
     bool                                        needRepositioning;
 
-    needRepositioning = ( abs( currentFrame - lastFrame ) > 3 ) ? true : false;
+    needRepositioning = ( abs( currentFrame - lastFrame ) > 1 ) ? true : false;
     while ( it != end )
     {
         qint64          start = it.key();
@@ -189,6 +193,7 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
         {
             if ( needRepositioning == true )
             {
+//                qDebug() << "Repositionning to" << currentFrame << '(' << (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) << ')';
                 ret = renderClip( cw, true,
                                   ( (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) ) );
             }

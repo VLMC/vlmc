@@ -56,9 +56,14 @@ ClipWorkflow::~ClipWorkflow()
 
 unsigned char*    ClipWorkflow::getOutput()
 {
+//    qDebug() << "Getting output";
     QReadLocker     lock( m_backBufferLock );
     if ( m_usingBackBuffer == true )
+    {
+//        qDebug() << "Returning frontbuffer";
         return m_buffer;
+    }
+//    qDebug() << "Returning backbuffer";
     return m_backBuffer;
 }
 
@@ -68,25 +73,31 @@ void    ClipWorkflow::checkStateChange()
     QWriteLocker    lock2( m_stateLock );
     if ( m_requiredState != ClipWorkflow::None )
     {
-        qDebug() << "Setting required state : " << m_requiredState;
         m_state = m_requiredState;
         m_requiredState = ClipWorkflow::None;
     }
 }
 
-void    ClipWorkflow::lock( ClipWorkflow* clipWorkflow, void** pp_ret )
+void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret )
 {
 //    qDebug() << "Locking in ClipWorkflow::lock";
-    QReadLocker     lock( clipWorkflow->m_backBufferLock );
+    QReadLocker lock( cw->m_backBufferLock );
 
-    if ( clipWorkflow->m_usingBackBuffer )
-        *pp_ret = clipWorkflow->m_backBuffer;
+    if ( cw->m_usingBackBuffer )
+    {
+//        qDebug() << "Using backbuffer";
+        *pp_ret = cw->m_backBuffer;
+    }
     else
-        *pp_ret = clipWorkflow->m_buffer;
+    {
+//        qDebug() << "Using frontbuffer";
+        *pp_ret = cw->m_buffer;
+    }
 }
 
 void    ClipWorkflow::unlock( ClipWorkflow* cw )
 {
+//    qDebug() << "UnLocking in ClipWorkflow::unlock";
     cw->m_stateLock->lockForWrite();
 
     if ( cw->m_state == Rendering )
@@ -94,21 +105,21 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
         cw->m_state = Sleeping;
         cw->m_stateLock->unlock();
 
+//        qDebug() << "Sleeping....";
         QMutexLocker    lock( cw->m_condMutex );
         cw->m_waitCond->wait( cw->m_condMutex );
-
+        cw->m_stateLock->lockForWrite();
+        cw->m_state = Rendering;
+//        qDebug() << "Waiking";
         {
             QWriteLocker    lock2( cw->m_backBufferLock );
             cw->m_usingBackBuffer = !cw->m_usingBackBuffer;
         }
-
-        cw->m_stateLock->lockForWrite();
-        cw->m_state = Rendering;
     }
+    else
+        qDebug() << cw->m_state;
     cw->m_stateLock->unlock();
     cw->checkStateChange();
-
-//    qDebug() << "UnLocking in ClipWorkflow::unlock";
 }
 
 void    ClipWorkflow::setVmem()

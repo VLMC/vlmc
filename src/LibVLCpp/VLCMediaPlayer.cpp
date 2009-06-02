@@ -90,6 +90,7 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
         self->emit timeChanged();
         break;
     case libvlc_MediaPlayerPositionChanged:
+//        qDebug() << "Position changed" << event->u.media_player_position_changed.new_position;
         self->emit positionChanged();
         break;
 //TODO: activate this when switching to VLC 1.1
