@@ -80,15 +80,12 @@ void    MetaDataManager::run()
             m_mediaPlayer->play();
         }
         usleep( 10000 );
-        qDebug() << "New metadata threaad mainloop iteration";
     }
-    qDebug() << "End of metamanager thread";
     return;
 }
 
 void    MetaDataManager::getMetaData()
 {
-    qDebug() << "getMetaData();";
     m_mediaIsPlaying = false;
 //TODO: restore this when VLC1.1 comes out.
 //    m_lengthHasChanged = false;
@@ -215,7 +212,6 @@ void    MetaDataManager::entrypointLengthChanged()
 void    MetaDataManager::entrypointPlaying()
 {
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( entrypointPlaying() ) );
-    qDebug() << "Playing the media";
     m_mediaIsPlaying = true;
     if ( m_lengthHasChanged == true )
         getMetaData();

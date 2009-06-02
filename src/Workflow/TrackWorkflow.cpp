@@ -44,7 +44,6 @@ TrackWorkflow::~TrackWorkflow()
 
 void    TrackWorkflow::addClip( Clip* clip, qint64 start )
 {
-    qDebug() << "Inserting clip at frame nb" << start;
     ClipWorkflow* cw = new ClipWorkflow( clip );
     m_clips.insert( start, cw );
     computeLength();
@@ -76,11 +75,12 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, bool needReposi
         cw->getStateLock()->unlock();
         while ( cw->isRendering() == true )
         {
-//            qDebug() << "Waiting for complete render. State == " << cw->getState();
             usleep( 100 );
         }
-        cw->getStateLock()->lockForRead();
         //This way we can trigger the appropriate if just below.
+        //by restoring the initial state of the function, and just pretend that
+        //nothing happened.
+        cw->getStateLock()->lockForRead();
     }
 
     //If frame has been rendered :
@@ -99,7 +99,6 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, bool needReposi
         cw->getStateLock()->unlock();
         cw->initialize( m_mediaPlayer );
         cw->startRender();
-        qDebug() << "Render started for clip" << cw->debugId;
     }
     else if ( cw->getState() == ClipWorkflow::Ready ||
               cw->getState() == ClipWorkflow::Initializing )
@@ -108,7 +107,6 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, bool needReposi
         //Otherwise, it will start directly.
         cw->getStateLock()->unlock();
         cw->startRender();
-        qDebug() << "Started render for clip" << cw->debugId;
     }
     else
     {
@@ -144,7 +142,6 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
          cw->getState() == ClipWorkflow::Ready ||
          cw->getState() == ClipWorkflow::EndReached )
     {
-        qDebug() << "Stopping from sleeping / ready / endreached state for clip " << cw->debugId;
         cw->getStateLock()->unlock();
         cw->queryStateChange( ClipWorkflow::Stopping );
         cw->wake();
@@ -152,19 +149,15 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
     }
     else if ( cw->getState() == ClipWorkflow::Rendering )
     {
-        qDebug() << "Stopping from rendering state for clip" << cw->debugId;
         cw->getStateLock()->unlock();
         while ( cw->isRendering() == true )
             usleep( 100 );
-        qDebug() << "Rendering completed" << cw->debugId;
         cw->queryStateChange( ClipWorkflow::Stopping );
         cw->wake();
         cw->stop();
-        qDebug() << "Mediaplayer Stop asked for clip" << cw->debugId;
     }
     else if ( cw->getState() == ClipWorkflow::Initializing )
     {
-        qDebug() << "Stopping from initializing state for clip" << cw->debugId;
         cw->getStateLock()->unlock();
         while ( cw->isReady() == false )
             usleep( 20 );
@@ -196,7 +189,6 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
         {
             if ( needRepositioning == true )
             {
-                qDebug() << "Repositionning";
                 ret = renderClip( cw, true,
                                   ( (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) ) );
             }

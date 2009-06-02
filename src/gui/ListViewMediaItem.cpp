@@ -49,11 +49,8 @@ void        ListViewMediaItem::snapshotChanged()
     QTime   length;
     length = length.addSecs( m_media->getLength() / 1000 );
 
-    qDebug() << m_media->getLength();
-    qDebug() << length;
     setToolTip( "Filename: " + m_media->getFileInfo()->fileName() + "\n" +
                 "Length: " + length.toString() );
-    //"Length: " + length.toString("h 'h' m 'm' s 's'") );
 }
 
 const Media*     ListViewMediaItem::getMedia() const

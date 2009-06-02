@@ -105,10 +105,6 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
         cw->m_stateLock->lockForWrite();
         cw->m_state = Rendering;
     }
-    else
-    {
-        qDebug() << "UnLocking. State = " << cw->m_state << "Debug Id = " << cw->debugId;
-    }
     cw->m_stateLock->unlock();
     cw->checkStateChange();
 
@@ -119,7 +115,6 @@ void    ClipWorkflow::setVmem()
 {
     char        buffer[32];
 
-    qDebug() << "Setting vmem from clip " << this->debugId;
     //TODO: it would be good if we somehow backup the old media parameters to restore it later.
     m_clip->getParent()->getVLCMedia()->addOption( ":vout=vmem" );
     m_clip->getParent()->getVLCMedia()->setDataCtx( this );
@@ -170,7 +165,6 @@ void    ClipWorkflow::pausedMediaPlayer()
 {
     disconnect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( pausedMediaPlayer() ) );
     setState( Ready );
-    qDebug() << "Set Ready state";
 }
 
 bool    ClipWorkflow::isReady() const
@@ -206,7 +200,6 @@ void    ClipWorkflow::startRender()
 
 void    ClipWorkflow::endReached()
 {
-    qDebug() << "End reached";
     setState( EndReached );
 }
 
@@ -217,15 +210,12 @@ const Clip*     ClipWorkflow::getClip() const
 
 void            ClipWorkflow::stop()
 {
-    qDebug() << "ClipWorkflow::stop()";
     Q_ASSERT( m_mediaPlayer != NULL );
     m_mediaPlayer->stop();
-    qDebug() << "Stopped media player";
     m_mediaPlayer = NULL;
     setState( Stopped );
     QMutexLocker    lock( m_requiredStateLock );
     m_requiredState = ClipWorkflow::None;
-    qDebug() << "Changed state";
 }
 
 void            ClipWorkflow::setPosition( float pos )
@@ -241,14 +231,12 @@ bool            ClipWorkflow::isRendering() const
 
 void            ClipWorkflow::setState( State state )
 {
-    qDebug() << "Setting state : " << state;
     QWriteLocker    lock( m_stateLock );
     m_state = state;
 }
 
 void            ClipWorkflow::queryStateChange( State newState )
 {
-    qDebug() << "Querying state change";
     QMutexLocker    lock( m_requiredStateLock );
     m_requiredState = newState;
 }
@@ -269,4 +257,3 @@ void            ClipWorkflow::reinitialize()
     m_state = Stopped;
     queryStateChange( None );
 }
-
