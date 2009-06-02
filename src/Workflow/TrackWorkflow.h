@@ -55,7 +55,8 @@ class   TrackWorkflow : public QObject
 
     private:
         void                                    computeLength();
-        unsigned char*                          renderClip( ClipWorkflow* cw, bool needRepositioning, float pos );
+        unsigned char*                          renderClip( ClipWorkflow* cw, qint64 currentFrame,
+                                                            qint64 start, bool needRepositioning );
         void                                    preloadClip( ClipWorkflow* cw );
         void                                    stopClipWorkflow( ClipWorkflow* cw );
         bool                                    checkEnd( qint64 currentFrame ) const;

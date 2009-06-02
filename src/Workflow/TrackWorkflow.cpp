@@ -62,7 +62,8 @@ qint64              TrackWorkflow::getLength() const
     return m_length;
 }
 
-unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, bool needRepositioning, float pos )
+unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
+                                        qint64 start , bool needRepositioning )
 {
     unsigned char*      ret = TrackWorkflow::blackOutput;
 
@@ -89,6 +90,7 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, bool needReposi
         cw->getStateLock()->unlock();
         if ( needRepositioning == true )
         {
+            float   pos = ( (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) );
             cw->setPosition( pos );
         }
         ret = cw->getOutput();
@@ -103,6 +105,11 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, bool needReposi
         cw->getStateLock()->unlock();
         cw->initialize( m_mediaPlayer );
         cw->startRender();
+        if ( start != currentFrame ) //Clip was not started as its real begining
+        {
+            float   pos = ( (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) );
+            cw->setPosition( pos );
+        }
     }
     else if ( cw->getState() == ClipWorkflow::Ready ||
               cw->getState() == ClipWorkflow::Initializing )
@@ -211,14 +218,7 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
         //Is the clip supposed to render now ?
         if ( start <= currentFrame && currentFrame <= start + cw->getClip()->getLength() )
         {
-            if ( needRepositioning == true )
-            {
-//                qDebug() << "Repositionning to" << currentFrame << '(' << (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) << ')';
-                ret = renderClip( cw, true,
-                                  ( (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) ) );
-            }
-            else
-                ret = renderClip( cw, false, 0 );
+            ret = renderClip( cw, currentFrame, start, needRepositioning );
             lastFrame = currentFrame;
         }
         //Is it about to be rendered ?
