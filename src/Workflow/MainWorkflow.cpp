@@ -31,7 +31,7 @@ MainWorkflow::MainWorkflow() : m_renderStarted( false )
     for (unsigned int i = 0; i < NB_TRACKS; ++i)
     {
         m_tracks[i] = new TrackWorkflow;
-        connect( m_tracks[i], SIGNAL( endReached() ), this, SLOT( __endReached() ) );
+        connect( m_tracks[i], SIGNAL( trackEndReached() ), this, SLOT( __endReached() ) );
     }
 }
 
