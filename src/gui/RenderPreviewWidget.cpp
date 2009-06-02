@@ -51,7 +51,7 @@ RenderPreviewWidget::RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* r
 
     connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( __videoPlaying() ) );
     connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( __videoPaused() ) );
-    connect( m_mainWorkflow, SIGNAL( endReached() ), this, SLOT( __endReached() ) );
+    connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
     connect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
 }
 

@@ -76,7 +76,7 @@ class   MainWorkflow : public QObject
           */
         void                    positionChanged( float pos );
 
-        void                    endReached();
+        void                    mainWorkflowEndReached();
 };
 
 #endif // MAINWORKFLOW_H
