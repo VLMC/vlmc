@@ -24,7 +24,9 @@
 
 #include "TrackWorkflow.h"
 
-TrackWorkflow::TrackWorkflow( unsigned int trackId ) : m_trackId( trackId )
+TrackWorkflow::TrackWorkflow( unsigned int trackId ) :
+        m_trackId( trackId ),
+        m_length( 0 )
 {
     m_mediaPlayer = new LibVLCpp::MediaPlayer();
 }
@@ -124,7 +126,7 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
     return ret;
 }
 
-void                 TrackWorkflow::preloadClip( ClipWorkflow* cw )
+void                TrackWorkflow::preloadClip( ClipWorkflow* cw )
 {
     cw->getStateLock()->lockForRead();
 

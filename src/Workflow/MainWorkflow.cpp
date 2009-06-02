@@ -51,8 +51,10 @@ void    MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
     Q_ASSERT_X( trackId < m_trackCount, "MainWorkflow::addClip",
                 "The specified trackId isn't valid, for it's higher than the number of tracks");
 
-    qDebug() << "MainWorkflow: Adding clip" << clip->getUuid() << "to track" << trackId;
+//    qDebug() << "MainWorkflow: Adding clip" << clip->getUuid() << "to track" << trackId;
     m_tracks[trackId]->addClip( clip, start );
+    if ( m_tracks[trackId]->getLength() > m_length )
+        m_length = m_tracks[trackId]->getLength();
 }
 
 void    MainWorkflow::startRender()
@@ -80,7 +82,6 @@ unsigned char*    MainWorkflow::getOutput()
             continue ;
         if ( ( ret = m_tracks[i]->getOutput( m_currentFrame ) ) != NULL )
         {
-            qDebug() << "Getting a frame";
             break ;
         }
     }
@@ -95,6 +96,11 @@ unsigned char*    MainWorkflow::getOutput()
 
 void        MainWorkflow::setPosition( float pos )
 {
+    //Since any track can be reactivated, we reactivate all of them, and let them
+    //unable themself if required.
+    for ( unsigned int i = 0; i < m_trackCount; ++i)
+        m_tracks[i].activate();
+
     if ( m_renderStarted == false )
         return ;
     qint64  frame = (float)m_length * pos;
