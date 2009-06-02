@@ -40,9 +40,8 @@ Media::~Media()
 
 void                    Media::addOption( const char* opt )
 {
-    libvlc_media_add_option( m_internalPtr, opt, m_ex);
+    libvlc_media_add_option_non_unique( m_internalPtr, opt, m_ex);
     CheckVlcppException(m_ex);
-    qDebug() << "Added media option: " << opt;
 }
 
 void                    Media::setLockCallback( Media::lockCallback callback )
