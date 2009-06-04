@@ -8,6 +8,9 @@
         <file>images/vlmc.png</file>
         <file alias="play" >images/play.png</file>
         <file alias="pause" >images/pause.png</file>
+        <file alias="back" >images/back.png</file>
+        <file alias="forward" >images/forward.png</file>
+        <file alias="up" >images/up.png</file>
     </qresource>
     <qresource prefix="/text" >
         <file>AUTHORS</file>

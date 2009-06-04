@@ -22,15 +22,15 @@
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="1">
     <widget class="QPushButton" name="pushButtonBackward">
-     <property name="text">
-      <string>Backward</string>
+     <property name="maximumSize">
+      <size>
+       <width>30</width>
+       <height>16777215</height>
+      </size>
      </property>
-    </widget>
-   </item>
-   <item row="1" column="3">
-    <widget class="QPushButton" name="pushButtonForward">
-     <property name="text">
-      <string>Forward</string>
+     <property name="icon">
+      <iconset resource="../../../ressources.qrc">
+       <normaloff>:/images/back</normaloff>:/images/back</iconset>
      </property>
     </widget>
    </item>
@@ -59,12 +59,19 @@
    </item>
    <item row="1" column="4">
     <widget class="QPushButton" name="pushButtonParent">
-     <property name="text">
-      <string>Parent</string>
+     <property name="maximumSize">
+      <size>
+       <width>30</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="icon">
+      <iconset resource="../../../ressources.qrc">
+       <normaloff>:/images/up</normaloff>:/images/up</iconset>
      </property>
     </widget>
    </item>
-   <item row="1" column="7">
+   <item row="1" column="5" colspan="3">
     <spacer name="horizontalSpacer_2">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -77,8 +84,24 @@
      </property>
     </spacer>
    </item>
+   <item row="1" column="2">
+    <widget class="QPushButton" name="pushButtonForward">
+     <property name="maximumSize">
+      <size>
+       <width>30</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="icon">
+      <iconset resource="../../../ressources.qrc">
+       <normaloff>:/images/forward</normaloff>:/images/forward</iconset>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../../ressources.qrc"/>
+ </resources>
  <connections/>
 </ui>
