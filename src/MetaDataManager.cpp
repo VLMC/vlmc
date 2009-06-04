@@ -113,7 +113,7 @@ void    MetaDataManager::renderSnapshot()
 
     //The slot should be triggered in this methode
     m_mediaPlayer->takeSnapshot( m_tmpSnapshotFilename.toStdString().c_str()
-                                 , 32, 32 );
+                                 , 64, 64 );
     //Snapshot slot should has been called (but maybe not in next version...)
 }
 
