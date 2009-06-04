@@ -75,6 +75,11 @@ private:
      */
     const Media*            m_media;
 
+    /**
+     *  The truncated name of the media
+     */
+    QString                 m_truncatedName;
+
 private slots:
     void                    snapshotChanged();
 };

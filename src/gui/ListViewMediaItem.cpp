@@ -25,13 +25,22 @@
 #include <QDebug>
 #include <QTime>
 
+#define MAX_NAME_LENGTH 10
+
 ListViewMediaItem::ListViewMediaItem( const Media* media, Library::FileType fType, QListWidget* parent, int type ) :
         QListWidgetItem( parent, type ), m_media ( media )
 {
     m_fileType = fType;
 
     setIcon( QIcon( ":/images/images/vlmc.png") );
-    setText( media->getFileInfo()->baseName() );
+
+    m_truncatedName = media->getFileInfo()->baseName();
+    if ( m_truncatedName.length() > MAX_NAME_LENGTH )
+    {
+        m_truncatedName.truncate( MAX_NAME_LENGTH - 3 );
+        m_truncatedName += "...";
+    }
+    setText( m_truncatedName );
 
     connect( media, SIGNAL( snapshotChanged() ), this, SLOT( snapshotChanged() ) );
 }
