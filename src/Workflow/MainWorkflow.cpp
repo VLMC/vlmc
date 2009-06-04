@@ -52,6 +52,9 @@ void    MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
                 "The specified trackId isn't valid, for it's higher than the number of tracks");
 
 //    qDebug() << "MainWorkflow: Adding clip" << clip->getUuid() << "to track" << trackId;
+    //if the track is deactivated, we need to reactivate it :
+    if ( m_tracks[trackId].deactivated() == true )
+        m_tracks[trackId].activate();
     m_tracks[trackId]->addClip( clip, start );
     if ( m_tracks[trackId]->getLength() > m_length )
         m_length = m_tracks[trackId]->getLength();
