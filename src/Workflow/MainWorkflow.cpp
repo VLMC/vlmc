@@ -69,6 +69,7 @@ void    MainWorkflow::startRender()
     emit frameChanged( 0 );
     for ( unsigned int i = 0; i < m_trackCount; ++i )
     {
+        m_tracks[i].activate();
         if ( m_tracks[i]->getLength() > maxLength )
             maxLength = m_tracks[i]->getLength();
     }

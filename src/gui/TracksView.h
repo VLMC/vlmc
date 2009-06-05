@@ -52,18 +52,18 @@ public:
     void setScale( double scaleFactor );
 
 protected:
-    virtual void resizeEvent( QResizeEvent* event );
-    virtual void drawBackground( QPainter* painter, const QRectF& rect );
-    virtual void mouseMoveEvent( QMouseEvent* event );
-    virtual void mousePressEvent( QMouseEvent* event );
-    virtual void mouseReleaseEvent( QMouseEvent* event );
-    virtual void wheelEvent( QWheelEvent* event );
-    virtual void dragEnterEvent( QDragEnterEvent* event );
-    virtual void dropEvent( QDropEvent* event );
-    virtual void dragMoveEvent( QDragMoveEvent* event );
+    virtual void            resizeEvent( QResizeEvent* event );
+    virtual void            drawBackground( QPainter* painter, const QRectF& rect );
+    virtual void            mouseMoveEvent( QMouseEvent* event );
+    virtual void            mousePressEvent( QMouseEvent* event );
+    virtual void            mouseReleaseEvent( QMouseEvent* event );
+    virtual void            wheelEvent( QWheelEvent* event );
+    virtual void            dragEnterEvent( QDragEnterEvent* event );
+    virtual void            dropEvent( QDropEvent* event );
+    virtual void            dragMoveEvent( QDragMoveEvent* event );
 
 private slots:
-    void ensureCursorVisible();
+    void                    ensureCursorVisible();
 
 private:
     QGraphicsScene*         m_scene;
@@ -75,9 +75,9 @@ private:
     MainWorkflow*           m_mainWorkflow;
 
 signals:
-    void zoomIn();
-    void zoomOut();
-    void durationChanged( int duration );
+    void                    zoomIn();
+    void                    zoomOut();
+    void                    durationChanged( int duration );
 };
 
 #endif // TRACKSVIEW_H

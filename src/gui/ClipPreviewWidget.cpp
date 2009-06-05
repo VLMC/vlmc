@@ -26,7 +26,7 @@
 
 ClipPreviewWidget::ClipPreviewWidget( QWidget* renderWidget ) :
     GenericPreviewWidget( renderWidget ),
-    m_clipLoaded( false ), m_videoStopped( true )
+    m_clipLoaded( false ), m_videoStopped( true ), m_vlcMedia( NULL )
 {
 }
 
@@ -36,8 +36,11 @@ ClipPreviewWidget::~ClipPreviewWidget()
 
 void        ClipPreviewWidget::startPreview( Media* media )
 {
-    media->flushParameters();
-    m_mediaPlayer->setMedia( media->getVLCMedia() );
+    if ( m_vlcMedia != NULL )
+        delete m_vlcMedia;
+    m_vlcMedia = new LibVLCpp::Media( media->getVLCMedia() );
+
+    m_mediaPlayer->setMedia( m_vlcMedia );
 
     connect( m_mediaPlayer,     SIGNAL( stopped() ),            this,   SLOT( __videoPaused() ) );
     connect( m_mediaPlayer,     SIGNAL( paused() ),             this,   SLOT( __videoPaused() ) );

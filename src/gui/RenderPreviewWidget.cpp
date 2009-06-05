@@ -26,7 +26,9 @@
 #include "RenderPreviewWidget.h"
 
 RenderPreviewWidget::RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* renderWidget ) :
-            GenericPreviewWidget( renderWidget ), m_mainWorkflow( mainWorkflow )
+            GenericPreviewWidget( renderWidget ),
+            m_mainWorkflow( mainWorkflow ),
+            m_isRendering( false )
 {
     m_media = new LibVLCpp::Media( "fake://" );
 //      --invmem-width <integer>   Width
@@ -93,16 +95,22 @@ void        RenderPreviewWidget::setPosition( float newPos )
     m_mainWorkflow->setPosition( newPos );
 }
 
-void        RenderPreviewWidget::togglePlayPause( bool /*forcePause*/ )
+void        RenderPreviewWidget::togglePlayPause( bool forcePause )
 {
-    if ( m_isRendering == false )
+    //If force pause is true, we just ensure that this render is paused... no need to start it.
+    if ( m_isRendering == false && forcePause == false )
         startPreview( NULL );
-    else
+    else if ( m_isRendering == true )
     {
-        if ( m_mediaPlayer->isPlaying() == false )
+        if ( m_mediaPlayer->isPlaying() == false && forcePause == false )
             m_mediaPlayer->play();
         else
-            m_mediaPlayer->pause();
+        {
+            //VLC will toggle play if we call pause while already paused...
+            //So be careful about pausing two times :
+            if ( m_mediaPlayer->isPlaying() == true )
+                m_mediaPlayer->pause();
+        }
     }
 }
 
