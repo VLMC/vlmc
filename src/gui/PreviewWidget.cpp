@@ -137,7 +137,8 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
 
 void    PreviewWidget::positionChanged( float newPos )
 {
-    m_ui->seekSlider->setValue( (int)( newPos * 1000.0 ) );
+    if ( m_previewStopped == false )
+        m_ui->seekSlider->setValue( (int)( newPos * 1000.0 ) );
 }
 
 
@@ -174,7 +175,16 @@ void    PreviewWidget::seekSliderReleased()
              this, SLOT( positionChanged( float ) ) );
 }
 
-void PreviewWidget::on_pushButtonPlay_clicked()
+void    PreviewWidget::on_pushButtonStop_clicked()
+{
+    if ( m_previewStopped == false )
+    {
+        m_previewStopped = true;
+        m_currentPreviewRenderer->stop();
+    }
+}
+
+void    PreviewWidget::on_pushButtonPlay_clicked()
 {
     if ( m_previewStopped == true )
         m_previewStopped = false;

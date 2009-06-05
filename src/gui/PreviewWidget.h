@@ -66,6 +66,7 @@ protected:
     virtual void    dropEvent( QDropEvent* event );
 private slots:
     void            on_pushButtonPlay_clicked();
+    void            on_pushButtonStop_clicked();
     void            positionChanged( float );
     void            seekSliderPressed();
     void            seekSliderMoved( int value );

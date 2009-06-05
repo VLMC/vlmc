@@ -51,8 +51,9 @@ RenderPreviewWidget::RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* r
     m_media->addOption( buffer );
     m_mediaPlayer->setMedia( m_media );
 
-    connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( __videoPlaying() ) );
-    connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( __videoPaused() ) );
+    connect( m_mediaPlayer, SIGNAL( playing() ),    this,   SLOT( __videoPlaying() ) );
+    connect( m_mediaPlayer, SIGNAL( paused() ),     this,   SLOT( __videoPaused() ) );
+    connect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SLOT( __videoStopped() ) );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
     connect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
 }
@@ -65,7 +66,6 @@ RenderPreviewWidget::~RenderPreviewWidget()
 
 void*   RenderPreviewWidget::lock( void* datas )
 {
-//    qDebug() << "Locking invmem";
     RenderPreviewWidget* self = reinterpret_cast<RenderPreviewWidget*>( datas);
     void* ret = self->m_mainWorkflow->getOutput();
     return ret;
@@ -73,7 +73,6 @@ void*   RenderPreviewWidget::lock( void* datas )
 
 void    RenderPreviewWidget::unlock( void*  )
 {
-//    qDebug() << "Unlocking invmem";
 }
 
 void        RenderPreviewWidget::stopPreview()
@@ -114,13 +113,19 @@ void        RenderPreviewWidget::togglePlayPause( bool forcePause )
     }
 }
 
+void        RenderPreviewWidget::stop()
+{
+    m_isRendering = false;
+    m_mainWorkflow->stop();
+    m_mediaPlayer->stop();
+}
+
 /////////////////////////////////////////////////////////////////////
 /////SLOTS :
 /////////////////////////////////////////////////////////////////////
 
 void        RenderPreviewWidget::__endReached()
 {
-//    qDebug() << "Stopping preview";
     stopPreview();
     emit endReached();
 }
@@ -143,4 +148,9 @@ void        RenderPreviewWidget::__videoPaused()
 void        RenderPreviewWidget::__videoPlaying()
 {
     emit playing();
+}
+
+void        RenderPreviewWidget::__videoStopped()
+{
+    emit endReached();
 }

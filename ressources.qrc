@@ -11,6 +11,9 @@
         <file alias="back" >images/back.png</file>
         <file alias="forward" >images/forward.png</file>
         <file alias="up" >images/up.png</file>
+        <file>images/next_frame.png</file>
+        <file>images/previous_frame.png</file>
+        <file>images/stop.png</file>
     </qresource>
     <qresource prefix="/text" >
         <file>AUTHORS</file>

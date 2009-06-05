@@ -50,6 +50,7 @@ class   RenderPreviewWidget : public GenericPreviewWidget
         */
         virtual void        setPosition( float newPos );
         virtual void        togglePlayPause( bool forcePause );
+        virtual void        stop();
 
         static void*        lock( void* datas );
         static void         unlock( void* datas );
@@ -60,11 +61,12 @@ class   RenderPreviewWidget : public GenericPreviewWidget
         bool                m_isRendering;
 
     public slots:
-        void                    __positionChanged();
-        void                    __positionChanged( float pos );
-        void                    __videoPaused();
-        void                    __videoPlaying();
-        void                    __endReached();
+        void                __positionChanged();
+        void                __positionChanged( float pos );
+        void                __videoPaused();
+        void                __videoStopped();
+        void                __videoPlaying();
+        void                __endReached();
 };
 
 #endif // RENDERPREVIEWWIDGET_H

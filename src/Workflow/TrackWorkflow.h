@@ -48,6 +48,7 @@ class   TrackWorkflow : public QObject
 
         unsigned char*                          getOutput( qint64 currentFrame );
         qint64                                  getLength() const;
+        void                                    stop();
 
         //FIXME: this won't be reliable as soon as we change the fps from the configuration
         static const unsigned int               nbFrameBeforePreload = 60;
