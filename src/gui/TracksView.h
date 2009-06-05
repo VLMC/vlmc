@@ -26,6 +26,8 @@
 #include <QWidget>
 #include <QGraphicsView>
 #include <QGraphicsLineItem>
+#include <QGraphicsLinearLayout>
+#include <QGraphicsWidget>
 #include <QWheelEvent>
 #include <QDragEnterEvent>
 #include <QDropEvent>
@@ -33,6 +35,22 @@
 #include "Media.h"
 #include "GraphicsCursorItem.h"
 #include "Workflow/MainWorkflow.h"
+
+
+class GraphicsTrack : public QGraphicsWidget
+{
+    Q_OBJECT
+
+public:
+    GraphicsTrack( QGraphicsItem* parent = 0 ) : QGraphicsWidget( parent ) {}
+
+protected:
+    virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* = 0 )
+    {
+        painter->setBrush( Qt::cyan );
+        painter->drawRect( rect() );
+    }
+};
 
 class TracksView : public QGraphicsView
 {
@@ -66,12 +84,18 @@ private slots:
     void                    ensureCursorVisible();
 
 private:
+    void                    createLayout();
+    void                    addVideoTrack();
+    void                    addAudioTrack();
     QGraphicsScene*         m_scene;
     int                     m_tracksHeight;
     unsigned int            m_tracksCount;
     int                     m_projectDuration;
     int                     m_fps;
     GraphicsCursorItem*     m_cursorLine;
+    QGraphicsLinearLayout*  m_layout;
+    int                     m_numVideoTrack;
+    int                     m_numAudioTrack;
     MainWorkflow*           m_mainWorkflow;
 
 signals:

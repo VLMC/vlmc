@@ -23,6 +23,8 @@
 #include <QScrollBar>
 #include <QMouseEvent>
 #include <QWheelEvent>
+#include <QGraphicsLinearLayout>
+#include <QGraphicsWidget>
 #include <QtDebug>
 #include <cmath>
 #include "TracksView.h"
@@ -40,6 +42,9 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
     m_tracksCount = mainWorkflow->getTrackCount();
     m_fps = 30;
 
+    m_numAudioTrack = 0;
+    m_numVideoTrack = 0;
+
     setMouseTracking( true );
     setAcceptDrops( true );
     setContentsMargins( 0, 0, 0, 0 );
@@ -54,8 +59,46 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
     m_cursorLine = new GraphicsCursorItem( maxHeight, QPen( QColor( 220, 30, 30 ) ) );
     m_scene->addItem( m_cursorLine );
 
+    createLayout();
+
     connect( m_cursorLine, SIGNAL( cursorPositionChanged(int) ),
              this, SLOT( ensureCursorVisible() ) );
+}
+
+void TracksView::createLayout()
+{
+    m_layout = new QGraphicsLinearLayout( Qt::Vertical );
+    m_layout->setContentsMargins( 0, 0, 0, 0 );
+    m_layout->setSpacing( 0 );
+
+    QGraphicsWidget* container = new QGraphicsWidget();
+    container->setContentsMargins( 0, 0, 0, 0 );
+    container->setLayout( m_layout );
+
+    addVideoTrack();
+    addAudioTrack();
+
+    m_scene->addItem( container );
+}
+
+void TracksView::addVideoTrack()
+{
+    GraphicsTrack* track = new GraphicsTrack();
+    track->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+    track->setPreferredHeight( m_tracksHeight );
+    track->setContentsMargins( 0, 0, 0, 0 );
+    m_layout->insertItem( 0, track );
+    m_numVideoTrack++;
+}
+
+void TracksView::addAudioTrack()
+{
+    GraphicsTrack* track = new GraphicsTrack();
+    track->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+    track->setPreferredHeight( m_tracksHeight );
+    track->setContentsMargins( 0, 0, 0, 0 );
+    m_layout->insertItem( 1000, track );
+    m_numAudioTrack++;
 }
 
 void TracksView::dragEnterEvent( QDragEnterEvent* event )
