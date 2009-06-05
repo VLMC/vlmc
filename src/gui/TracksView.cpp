@@ -37,7 +37,6 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
     //TODO should be defined by the settings
     m_tracksHeight = 50;
 
-    //TODO should be dynamic
     m_tracksCount = mainWorkflow->getTrackCount();
     m_fps = 30;
 
@@ -46,9 +45,11 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
     setContentsMargins( 0, 0, 0, 0 );
     setFrameStyle( QFrame::NoFrame );
 
-    // Adjust the height using the number of tracks
-    const int maxHeight = m_tracksHeight * m_tracksCount;
-    setSceneRect( 0, 0, sceneRect().width(), maxHeight );
+    //// Adjust the height using the number of tracks
+    //const int maxHeight = m_tracksHeight * m_tracksCount;
+    //setSceneRect( 0, 0, sceneRect().width(), maxHeight );
+
+    const int maxHeight = m_tracksHeight * 4;
 
     m_cursorLine = new GraphicsCursorItem( maxHeight, QPen( QColor( 220, 30, 30 ) ) );
     m_scene->addItem( m_cursorLine );
@@ -100,7 +101,7 @@ void TracksView::resizeEvent( QResizeEvent* event )
 
 void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
 {
-    QColor base = palette().button().color();
+    /*QColor base = palette().button().color();
     QRectF r = rect;
     r.setWidth( r.width() + 1 );
 
@@ -113,7 +114,7 @@ void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
 
     int lowerLimit = m_tracksHeight * m_tracksCount + 1;
     if ( height() > lowerLimit )
-        painter->fillRect( QRectF ( r.left(), lowerLimit, r.width(), height() - lowerLimit ), QBrush( base ) );
+        painter->fillRect( QRectF ( r.left(), lowerLimit, r.width(), height() - lowerLimit ), QBrush( base ) );*/
 }
 
 void TracksView::mouseMoveEvent( QMouseEvent* event )
@@ -124,7 +125,7 @@ void TracksView::mouseMoveEvent( QMouseEvent* event )
 void TracksView::mousePressEvent( QMouseEvent* event )
 {
 
-    QList<QGraphicsItem*> collisionList = items( event->pos() );
+    /*QList<QGraphicsItem*> collisionList = items( event->pos() );
 
     if ( event->modifiers() == Qt::ControlModifier && collisionList.count() == 0 )
     {
@@ -142,13 +143,13 @@ void TracksView::mousePressEvent( QMouseEvent* event )
         return;
     }
 
-    QGraphicsView::mousePressEvent( event );
+    QGraphicsView::mousePressEvent( event );*/
 }
 
 void TracksView::mouseReleaseEvent( QMouseEvent* event )
 {
-    setDragMode( QGraphicsView::NoDrag );
-    QGraphicsView::mouseReleaseEvent( event );
+    /*setDragMode( QGraphicsView::NoDrag );
+    QGraphicsView::mouseReleaseEvent( event );*/
 }
 
 void TracksView::wheelEvent( QWheelEvent* event )
