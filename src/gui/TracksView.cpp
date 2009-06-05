@@ -35,7 +35,7 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
         : QGraphicsView( scene, parent ), m_scene( scene ), m_mainWorkflow( mainWorkflow )
 {
     //TODO should be defined by the settings
-    m_tracksHeight = 50;
+    m_tracksHeight = 25;
 
     m_tracksCount = mainWorkflow->getTrackCount();
     m_fps = 30;
