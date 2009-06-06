@@ -20,10 +20,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QPainter>
+#include <QLinearGradient>
+#include <QDebug>
 #include "GraphicsMovieItem.h"
 #include "TracksView.h"
-#include <QPainter>
-#include <QDebug>
 
 GraphicsMovieItem::GraphicsMovieItem( Media* media ) : m_media ( media ), m_width( 0 ), m_height( 0 )
 {
@@ -41,7 +42,11 @@ QRectF GraphicsMovieItem::boundingRect() const
 
 void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* )
 {
-    painter->setBrush( Qt::red );
+    QLinearGradient gradient( 0, 0, m_width, m_height );
+    gradient.setColorAt( 0, QColor::fromRgb( 32, 52, 142  ) );
+    gradient.setColorAt( 1, QColor::fromRgb( 43, 69, 181  ) );
+
+    painter->setBrush( QBrush( gradient ) );
     painter->drawRect( boundingRect() );
 
     paintAudioSpectrum( painter );

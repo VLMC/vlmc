@@ -41,15 +41,29 @@ class GraphicsTrack : public QGraphicsWidget
     Q_OBJECT
 
 public:
-    GraphicsTrack( QGraphicsItem* parent = 0 ) : QGraphicsWidget( parent ) {}
+    enum Type
+    {
+        Video,
+        Audio
+    };
+    GraphicsTrack( Type type, QGraphicsItem* parent = 0 ) : QGraphicsWidget( parent )
+    {
+        m_type = type;
+    }
 
 protected:
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* = 0 )
     {
+        if ( m_type == Video )
+            painter->setBrush( Qt::green );
+        else
+            painter->setBrush( Qt::blue );
         painter->setPen( Qt::transparent );
-        painter->setBrush( Qt::cyan );
         painter->drawRect( rect() );
     }
+
+private:
+    Type m_type;
 };
 
 class TracksView : public QGraphicsView
