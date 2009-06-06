@@ -70,11 +70,14 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
 void TracksView::createLayout()
 {
     m_layout = new QGraphicsLinearLayout( Qt::Vertical );
+    m_layout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     m_layout->setContentsMargins( 0, 0, 0, 0 );
     m_layout->setSpacing( 0 );
 
     QGraphicsWidget* container = new QGraphicsWidget();
+    container->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     container->setContentsMargins( 0, 0, 0, 0 );
+    container->setPreferredWidth( 0 );
     container->setLayout( m_layout );
 
     addVideoTrack();

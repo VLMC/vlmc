@@ -46,6 +46,7 @@ public:
 protected:
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* = 0 )
     {
+        painter->setPen( Qt::transparent );
         painter->setBrush( Qt::cyan );
         painter->drawRect( rect() );
     }
