@@ -73,11 +73,11 @@ void TracksView::createLayout()
     m_layout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     m_layout->setContentsMargins( 0, 0, 0, 0 );
     m_layout->setSpacing( 0 );
+    m_layout->setPreferredWidth( 0 );
 
     QGraphicsWidget* container = new QGraphicsWidget();
     container->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     container->setContentsMargins( 0, 0, 0, 0 );
-    container->setPreferredWidth( 0 );
     container->setLayout( m_layout );
 
     addVideoTrack();
@@ -149,12 +149,16 @@ void TracksView::dragLeaveEvent( QDragLeaveEvent* event )
     {
         delete m_dragItem;
         m_dragItem = NULL;
+        updateDuration();
     }
 }
 
 void TracksView::dropEvent( QDropEvent* event )
 {
     qDebug() << "Dropping is currently not implemented.";
+
+    if ( m_dragItem )
+        updateDuration();
 
     /*QUuid uuid = QUuid( (const QString& )event->mimeData()->data( "vlmc/uuid" ) );
     Media* media = Library::getInstance()->getMedia( uuid );
@@ -199,7 +203,8 @@ void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
 
     int lowerLimit = m_tracksHeight * m_tracksCount + 1;
     if ( height() > lowerLimit )
-        painter->fillRect( QRectF ( r.left(), lowerLimit, r.width(), height() - lowerLimit ), QBrush( base ) );*/
+        painter->fillRect( QRectF ( r.left(), lowerLimit, r.width(),
+        height() - lowerLimit ), QBrush( base ) );*/
 }
 
 void TracksView::mouseMoveEvent( QMouseEvent* event )
@@ -283,10 +288,7 @@ void TracksView::addClip( Media* clip, const QPoint& point )
     m_scene->addItem( item );
     int duration = mappedXPos + ( (double)clip->getLength() / 1000 ) * m_fps;
     if ( duration > m_projectDuration )
-    {
-        m_projectDuration = duration;
-        emit durationChanged( duration );
-    }
+        updateDuration();
     item->show();
     qDebug() << "TracksView::addClip: Adding a new clip to track" << track;
     //FIXME: this leaks, but it will be corrected once we really use Clip instead
@@ -321,4 +323,27 @@ void TracksView::ensureCursorVisible()
                   1, 1 );
         m_cursorLine->ensureVisible( r, 150, 50 );
     }
+}
+
+void TracksView::updateDuration()
+{
+    QList<QGraphicsItem*> sceneItems = m_scene->items();
+
+    int projectDuration = 0;
+    for ( int i = 0; i < sceneItems.size(); ++i )
+    {
+        AbstractGraphicsMediaItem* item =
+                dynamic_cast<AbstractGraphicsMediaItem*>( sceneItems.at( i ) );
+        if ( !item ) continue;
+        if ( item->pos().x() + item->boundingRect().width() > projectDuration )
+            projectDuration = item->pos().x() + item->boundingRect().width();
+    }
+
+    m_projectDuration = projectDuration;
+
+    // PreferredWidth not working ?
+    m_layout->setMinimumWidth( m_projectDuration );
+    m_layout->setMaximumWidth( m_projectDuration );
+
+    emit durationChanged( m_projectDuration );
 }

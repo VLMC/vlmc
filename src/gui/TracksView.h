@@ -97,6 +97,7 @@ protected:
 
 private slots:
     void                    ensureCursorVisible();
+    void                    updateDuration();
 
 private:
     void                    createLayout();
