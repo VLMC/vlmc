@@ -25,6 +25,7 @@
 #include <QWheelEvent>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsWidget>
+#include <QGraphicsSceneDragDropEvent>
 #include <QtDebug>
 #include <cmath>
 #include "TracksView.h"
@@ -44,6 +45,7 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
 
     m_numAudioTrack = 0;
     m_numVideoTrack = 0;
+    m_dragItem = NULL;
 
     setMouseTracking( true );
     setAcceptDrops( true );
@@ -76,6 +78,7 @@ void TracksView::createLayout()
     container->setLayout( m_layout );
 
     addVideoTrack();
+    addVideoTrack();
     addAudioTrack();
 
     m_scene->addItem( container );
@@ -105,23 +108,59 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
 {
     if ( event->mimeData()->hasFormat( "vlmc/uuid" ) )
         event->acceptProposedAction();
+
+    QUuid uuid = QUuid( (const QString& )event->mimeData()->data( "vlmc/uuid" ) );
+    Media* media = Library::getInstance()->getMedia( uuid );
+    if ( !media ) return;
+
+    int track = (int)( mapToScene( event->pos() ).y() / m_tracksHeight );
+    if ( track > m_numVideoTrack - 1 )
+        track = m_numVideoTrack - 1;
+
+    qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
+
+    if ( m_dragItem ) delete m_dragItem;
+    m_dragItem = new GraphicsMovieItem( media );
+    m_dragItem->setPos( mappedXPos, 0 );
+    m_dragItem->setWidth( ( (double)media->getLength() / 1000 ) * m_fps );
+    m_dragItem->setHeight( tracksHeight() );
+    m_dragItem->setParentItem( m_layout->itemAt( track )->graphicsItem() );
+}
+
+void TracksView::dragMoveEvent( QDragMoveEvent* event )
+{
+    if ( !m_dragItem ) return;
+
+    int track = (unsigned int)( mapToScene( event->pos() ).y() / m_tracksHeight );
+    if ( track > m_numVideoTrack - 1)
+        track = m_numVideoTrack - 1;
+
+    qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
+    m_dragItem->setPos( mappedXPos, 0 );
+    m_dragItem->setParentItem( m_layout->itemAt( track )->graphicsItem() );
+}
+
+void TracksView::dragLeaveEvent( QDragLeaveEvent* event )
+{
+    if ( m_dragItem )
+    {
+        delete m_dragItem;
+        m_dragItem = NULL;
+    }
 }
 
 void TracksView::dropEvent( QDropEvent* event )
 {
-    QUuid uuid = QUuid( (const QString& )event->mimeData()->data( "vlmc/uuid" ) );
+    qDebug() << "Dropping is currently not implemented.";
+
+    /*QUuid uuid = QUuid( (const QString& )event->mimeData()->data( "vlmc/uuid" ) );
     Media* media = Library::getInstance()->getMedia( uuid );
     if ( !media )
         return;
 
     addClip( media, event->pos() );
 
-    event->acceptProposedAction();
-}
-
-void TracksView::dragMoveEvent( QDragMoveEvent* )
-{
-
+    event->acceptProposedAction();*/
 }
 
 void TracksView::setDuration( int duration )

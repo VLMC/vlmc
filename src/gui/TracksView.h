@@ -29,13 +29,12 @@
 #include <QGraphicsLinearLayout>
 #include <QGraphicsWidget>
 #include <QWheelEvent>
-#include <QDragEnterEvent>
-#include <QDropEvent>
-#include <QDragMoveEvent>
+#include <QGraphicsSceneDragDropEvent>
 #include "Media.h"
 #include "GraphicsCursorItem.h"
 #include "Workflow/MainWorkflow.h"
 
+class GraphicsMovieItem;
 
 class GraphicsTrack : public QGraphicsWidget
 {
@@ -77,8 +76,9 @@ protected:
     virtual void            mouseReleaseEvent( QMouseEvent* event );
     virtual void            wheelEvent( QWheelEvent* event );
     virtual void            dragEnterEvent( QDragEnterEvent* event );
-    virtual void            dropEvent( QDropEvent* event );
     virtual void            dragMoveEvent( QDragMoveEvent* event );
+    virtual void            dragLeaveEvent( QDragLeaveEvent* event );
+    virtual void            dropEvent( QDropEvent* event );
 
 private slots:
     void                    ensureCursorVisible();
@@ -97,6 +97,7 @@ private:
     int                     m_numVideoTrack;
     int                     m_numAudioTrack;
     MainWorkflow*           m_mainWorkflow;
+    GraphicsMovieItem*      m_dragItem;
 
 signals:
     void                    zoomIn();
