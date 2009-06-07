@@ -108,13 +108,25 @@ unsigned char*    MainWorkflow::getOutput()
         if ( ret == NULL )
             ret = MainWorkflow::blackOutput;
 
-        ++m_currentFrame;
-        emit frameChanged( m_currentFrame );
-        emit positionChanged( (float)m_currentFrame / (float)m_length );
+        nextFrame();
         return ret;
     }
     else
         return MainWorkflow::blackOutput;
+}
+
+void        MainWorkflow::nextFrame()
+{
+    ++m_currentFrame;
+    emit frameChanged( m_currentFrame );
+    emit positionChanged( (float)m_currentFrame / (float)m_length );
+}
+
+void        MainWorkflow::previousFrame()
+{
+    --m_currentFrame;
+    emit frameChanged( m_currentFrame );
+    emit positionChanged( (float)m_currentFrame / (float)m_length );
 }
 
 void        MainWorkflow::setPosition( float pos )

@@ -38,7 +38,7 @@ PreviewWidget::PreviewWidget( MainWorkflow* mainWorkflow, QWidget *parent ) :
     m_sliderPosBackup( 0 )
 {
     m_ui->setupUi( this );
-    m_ui->groupBoxButton->hide();
+
     m_ui->seekSlider->setMinimum( 0 );
     m_ui->seekSlider->setMaximum( 1000 );
     m_ui->seekSlider->setSingleStep( 2 );
@@ -232,4 +232,16 @@ void    PreviewWidget::changedTab( int tabId )
     int   tmp = m_ui->seekSlider->value();
     m_ui->seekSlider->setValue( m_sliderPosBackup );
     m_sliderPosBackup = tmp;
+}
+
+void        PreviewWidget::on_pushButtonNextFrame_clicked()
+{
+    if ( m_previewStopped == false )
+        m_currentPreviewRenderer->nextFrame();
+}
+
+void        PreviewWidget::on_pushButtonPreviousFrame_clicked()
+{
+    if ( m_previewStopped == false )
+        m_currentPreviewRenderer->previousFrame();
 }

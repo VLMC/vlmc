@@ -65,6 +65,8 @@ class   MainWorkflow : public QObject
         void                    stop();
 
         static unsigned char*   blackOutput;
+        void                    nextFrame();
+        void                    previousFrame();
         
     private:
         Toggleable<TrackWorkflow*>*     m_tracks;

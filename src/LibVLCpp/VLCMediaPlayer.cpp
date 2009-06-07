@@ -86,7 +86,6 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
         self->emit endReached();
         break;
     case libvlc_MediaPlayerTimeChanged:
-        //self->timeChangedFilter();
         self->emit timeChanged();
         break;
     case libvlc_MediaPlayerPositionChanged:
@@ -227,4 +226,11 @@ int                                 MediaPlayer::getHeight()
     int height = libvlc_video_get_height( m_internalPtr, m_ex );
     CheckVlcppException( m_ex );
     return height;
+}
+
+float                               MediaPlayer::getFps()
+{
+    float   fps = libvlc_media_player_get_fps( m_internalPtr, m_ex );
+    CheckVlcppException( m_ex );
+    return fps;
 }

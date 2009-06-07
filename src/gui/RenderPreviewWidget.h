@@ -51,6 +51,8 @@ class   RenderPreviewWidget : public GenericPreviewWidget
         virtual void        setPosition( float newPos );
         virtual void        togglePlayPause( bool forcePause );
         virtual void        stop();
+        virtual void        nextFrame();
+        virtual void        previousFrame();
 
         static void*        lock( void* datas );
         static void         unlock( void* datas );
@@ -59,6 +61,8 @@ class   RenderPreviewWidget : public GenericPreviewWidget
         MainWorkflow*       m_mainWorkflow;
         LibVLCpp::Media*    m_media;
         bool                m_isRendering;
+        QReadWriteLock*     m_framePlayedLock;
+        bool                m_framePlayed;
 
     public slots:
         void                __positionChanged();
