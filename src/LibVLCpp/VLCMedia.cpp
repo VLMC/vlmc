@@ -33,7 +33,7 @@ Media::Media( const QString& filename )
     CheckVlcppException(m_ex);
 }
 
-Media::Media( const Media& media )
+Media::Media( const Media& media ) : Internal<libvlc_media_t>()
 {
     clone( media );
 }

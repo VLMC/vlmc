@@ -49,7 +49,6 @@ MainWorkflow::MainWorkflow( QObject* parent, int trackCount ) :
 
 MainWorkflow::~MainWorkflow()
 {
-    qDebug() << "MainWorkflow::~MainWorkflow()";
     delete m_renderStartedLock;
     for (unsigned int i = 0; i < m_trackCount; ++i)
         delete m_tracks[i];
@@ -138,7 +137,7 @@ void        MainWorkflow::setPosition( float pos )
 
     if ( m_renderStarted == false )
         return ;
-    qint64  frame = (float)m_length * pos;
+    qint64  frame = static_cast<qint64>( (float)m_length * pos );
     m_currentFrame = frame;
     emit frameChanged( frame );
     //Do not emit a signal for the RenderWidget, since it's the one that triggered that call...

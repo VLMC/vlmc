@@ -86,7 +86,7 @@ void        ClipPreviewWidget::nextFrame()
 {
     if ( m_videoStopped == false )
     {
-        qint64   interval =  (1.0f / m_mediaPlayer->getFps()) * 1000.0f;
+        qint64   interval =  static_cast<qint64>( (1.0f / m_mediaPlayer->getFps()) * 1000.0f );
         m_mediaPlayer->setTime( m_mediaPlayer->getTime() + interval );
     }
 }
@@ -95,7 +95,7 @@ void        ClipPreviewWidget::previousFrame()
 {
     if ( m_videoStopped == false )
     {
-        qint64   interval =  (1.0f / m_mediaPlayer->getFps()) * 1000.0f;
+        qint64   interval =  static_cast<qint64>( (1.0f / m_mediaPlayer->getFps()) * 1000.0f );
         m_mediaPlayer->setTime( m_mediaPlayer->getTime() - interval );
     }
 }

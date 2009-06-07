@@ -154,7 +154,7 @@ void                Media::addAudioFrame( void* datas, unsigned char* buffer, si
     m_audioData.buffSize = buffSize;
 
     int* frame = new int[ m_audioData.buffSize ];
-    for (int i = 0, u = 0; u < m_audioData.nbSample; i += 4, u++)
+    for (unsigned int i = 0, u = 0; u < m_audioData.nbSample; i += 4, u++)
     {
         int value = buffer[i];
         value <<= 8;
