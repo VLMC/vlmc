@@ -105,6 +105,8 @@ void TracksView::addVideoTrack()
     m_layout->insertItem( 0, track );
     m_numVideoTrack++;
     m_scene->invalidate();
+    //FIXME this should maybe go elsewhere
+    setSceneRect( m_layout->contentsRect().adjusted( 0, 0, 100, 100 ) );
 }
 
 void TracksView::addAudioTrack()
@@ -116,6 +118,8 @@ void TracksView::addAudioTrack()
     m_layout->insertItem( 1000, track );
     m_numAudioTrack++;
     m_scene->invalidate();
+    //FIXME this should maybe go elsewhere
+    setSceneRect( m_layout->contentsRect().adjusted( 0, 0, 100, 100 ) );
 }
 
 void TracksView::dragEnterEvent( QDragEnterEvent* event )
