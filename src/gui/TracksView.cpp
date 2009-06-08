@@ -80,8 +80,16 @@ void TracksView::createLayout()
     container->setContentsMargins( 0, 0, 0, 0 );
     container->setLayout( m_layout );
 
+    // Create the initial layout
+    // - 1 video track
+    // - a separator
+    // - 1 audio track
     addVideoTrack();
-    addVideoTrack();
+
+    m_separator = new QGraphicsWidget();
+    m_separator->setPreferredHeight( 20 );
+    m_layout->insertItem( 1, m_separator );
+
     addAudioTrack();
 
     m_scene->addItem( container );
@@ -190,6 +198,15 @@ void TracksView::resizeEvent( QResizeEvent* event )
 
 void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
 {
+    QRectF r = rect;
+    r.setWidth( r.width() + 1 );
+
+    painter->setBrush( palette().dark() );
+    painter->setPen( Qt::transparent );
+    painter->drawRect( r.left(), m_separator->y(),
+                       r.right(),
+                       m_separator->boundingRect().height() );
+
     /*QColor base = palette().button().color();
     QRectF r = rect;
     r.setWidth( r.width() + 1 );

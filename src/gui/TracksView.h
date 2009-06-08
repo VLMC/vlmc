@@ -114,6 +114,7 @@ private:
     int                     m_numAudioTrack;
     MainWorkflow*           m_mainWorkflow;
     GraphicsMovieItem*      m_dragItem;
+    QGraphicsWidget*        m_separator;
 
 signals:
     void                    zoomIn();
