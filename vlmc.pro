@@ -77,7 +77,8 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/PreviewWidget.h \
     src/gui/RenderPreviewWidget.h \
     src/gui/GenericPreviewWidget.h \
-    src/tools/Toggleable.hpp
+    src/tools/Toggleable.hpp \
+    src/API/vlmc_module.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \
@@ -97,5 +98,7 @@ INCLUDEPATH += src/LibVLCpp \
     src
 LIBS = -L/usr/local/lib \
     -lvlc
+SUBDIRS +=  modules
+
 CODECFORTR = UTF-8
 include(locale.pri)
