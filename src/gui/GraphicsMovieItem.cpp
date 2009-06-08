@@ -46,6 +46,7 @@ void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     gradient.setColorAt( 0, QColor::fromRgb( 32, 52, 142  ) );
     gradient.setColorAt( 1, QColor::fromRgb( 43, 69, 181  ) );
 
+    painter->setPen( QPen( Qt::NoPen ) );
     painter->setBrush( QBrush( gradient ) );
     painter->drawRect( boundingRect() );
 
