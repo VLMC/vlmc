@@ -107,3 +107,8 @@ void GraphicsMovieItem::paintAudioSpectrum( QPainter* painter )
         }
     }
 }
+
+Media* GraphicsMovieItem::media() const
+{
+    return m_media;
+}

@@ -44,6 +44,7 @@ public:
 
     void setWidth( int width );
     void setHeight( int height );
+    Media* media() const;
     //void setAudioSpectrum( QVector<float*> spectrum );
     void paintAudioSpectrum( QPainter* painter );
 

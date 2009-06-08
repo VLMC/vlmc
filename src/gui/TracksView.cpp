@@ -87,6 +87,7 @@ void TracksView::createLayout()
     addVideoTrack();
 
     m_separator = new QGraphicsWidget();
+    m_separator->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     m_separator->setPreferredHeight( 20 );
     m_layout->insertItem( 1, m_separator );
 
@@ -98,21 +99,23 @@ void TracksView::createLayout()
 void TracksView::addVideoTrack()
 {
     GraphicsTrack* track = new GraphicsTrack( GraphicsTrack::Video );
-    track->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+    track->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     track->setPreferredHeight( m_tracksHeight );
     track->setContentsMargins( 0, 0, 0, 0 );
     m_layout->insertItem( 0, track );
     m_numVideoTrack++;
+    m_scene->invalidate();
 }
 
 void TracksView::addAudioTrack()
 {
     GraphicsTrack* track = new GraphicsTrack( GraphicsTrack::Audio );
-    track->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+    track->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     track->setPreferredHeight( m_tracksHeight );
     track->setContentsMargins( 0, 0, 0, 0 );
     m_layout->insertItem( 1000, track );
     m_numAudioTrack++;
+    m_scene->invalidate();
 }
 
 void TracksView::dragEnterEvent( QDragEnterEvent* event )
@@ -166,16 +169,14 @@ void TracksView::dropEvent( QDropEvent* event )
     qDebug() << "Dropping is currently not implemented.";
 
     if ( m_dragItem )
+    {
         updateDuration();
-
-    /*QUuid uuid = QUuid( (const QString& )event->mimeData()->data( "vlmc/uuid" ) );
-    Media* media = Library::getInstance()->getMedia( uuid );
-    if ( !media )
-        return;
-
-    addClip( media, event->pos() );
-
-    event->acceptProposedAction();*/
+        if ( m_layout->itemAt( 0 )->graphicsItem()->childItems().count() > 0 )
+            addVideoTrack();
+        event->acceptProposedAction();
+        //addClip( media, event->pos() );
+        m_dragItem = NULL; // Temporary action
+    }
 }
 
 void TracksView::setDuration( int duration )
