@@ -1,3 +1,4 @@
+#include <QtDebug>
 #include "GraphicsCursorItem.h"
 
 GraphicsCursorItem::GraphicsCursorItem( int height, const QPen& pen )

@@ -43,6 +43,9 @@ public:
     virtual void            startPreview( Media* media );
     virtual void            setPosition( float newPos );
     virtual void            togglePlayPause( bool forcePause );
+    virtual void            stop();
+    virtual void            nextFrame();
+    virtual void            previousFrame();
 
 private:
     bool                    m_clipLoaded;

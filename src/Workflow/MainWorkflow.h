@@ -28,13 +28,15 @@
 
 #include "tools/Toggleable.hpp"
 #include "TrackWorkflow.h"
+#include <QReadWriteLock>
 
 class   MainWorkflow : public QObject
 {
     Q_OBJECT
 
     public:
-        MainWorkflow( int trackCount );
+        MainWorkflow( QObject* parent, int trackCount );
+        ~MainWorkflow();
 
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start );
         void                    startRender();
@@ -57,7 +59,14 @@ class   MainWorkflow : public QObject
          */
         unsigned int            getTrackCount() const;
 
+        /**
+         *  Stop the workflow (including sub track workflows and clip workflows)
+         */
+        void                    stop();
+
         static unsigned char*   blackOutput;
+        void                    nextFrame();
+        void                    previousFrame();
         
     private:
         Toggleable<TrackWorkflow*>*     m_tracks;
@@ -68,6 +77,7 @@ class   MainWorkflow : public QObject
          *  This boolean describe is a render has been started
         */
         bool                            m_renderStarted;
+        QReadWriteLock*                 m_renderStartedLock;
 
     private slots:
         void                            trackEndReached( unsigned int trackId );

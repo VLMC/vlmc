@@ -88,9 +88,7 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
             cw->setPosition( pos );
         }
         ret = cw->getOutput();
-//        qDebug() << "Waking renderer";
         cw->wake();
-//        qDebug() << "Awaken renderer";
         //FIXME: sometimes, the renderer isn't awake soon enough, and we can
         //pass though this function many times before the frame is actually rendered.
     }
@@ -188,6 +186,18 @@ bool                TrackWorkflow::checkEnd( qint64 currentFrame ) const
     QMap<qint64, ClipWorkflow*>::const_iterator   it = m_clips.end() - 1;
     //If it ends before the current frame, we reached end.
     return ( it.value()->getClip()->getLength() + it.key() < currentFrame );
+}
+
+void                    TrackWorkflow::stop()
+{
+    QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
+
+    while ( it != end )
+    {
+        stopClipWorkflow( it.value() );
+        ++it;
+    }
 }
 
 unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )

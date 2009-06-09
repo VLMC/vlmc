@@ -28,8 +28,10 @@
 RenderPreviewWidget::RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* renderWidget ) :
             GenericPreviewWidget( renderWidget ),
             m_mainWorkflow( mainWorkflow ),
-            m_isRendering( false )
+            m_isRendering( false ),
+            m_framePlayed( false )
 {
+    m_framePlayedLock = new QReadWriteLock;
     m_media = new LibVLCpp::Media( "fake://" );
 //      --invmem-width <integer>   Width
 //      --invmem-height <integer>  Height
@@ -51,8 +53,9 @@ RenderPreviewWidget::RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* r
     m_media->addOption( buffer );
     m_mediaPlayer->setMedia( m_media );
 
-    connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( __videoPlaying() ) );
-    connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( __videoPaused() ) );
+    connect( m_mediaPlayer, SIGNAL( playing() ),    this,   SLOT( __videoPlaying() ) );
+    connect( m_mediaPlayer, SIGNAL( paused() ),     this,   SLOT( __videoPaused() ) );
+    connect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SLOT( __videoStopped() ) );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
     connect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
 }
@@ -65,15 +68,18 @@ RenderPreviewWidget::~RenderPreviewWidget()
 
 void*   RenderPreviewWidget::lock( void* datas )
 {
-//    qDebug() << "Locking invmem";
-    RenderPreviewWidget* self = reinterpret_cast<RenderPreviewWidget*>( datas);
+    RenderPreviewWidget* self = reinterpret_cast<RenderPreviewWidget*>( datas );
     void* ret = self->m_mainWorkflow->getOutput();
     return ret;
 }
 
-void    RenderPreviewWidget::unlock( void*  )
+void    RenderPreviewWidget::unlock( void* datas )
 {
-//    qDebug() << "Unlocking invmem";
+    RenderPreviewWidget* self = reinterpret_cast<RenderPreviewWidget*>( datas );
+
+    qDebug() << "RenderPreviewWidget::unlock() : Frame rendered";
+    QWriteLocker    lock( self->m_framePlayedLock );
+    self->m_framePlayed = true;
 }
 
 void        RenderPreviewWidget::stopPreview()
@@ -95,6 +101,29 @@ void        RenderPreviewWidget::setPosition( float newPos )
     m_mainWorkflow->setPosition( newPos );
 }
 
+void        RenderPreviewWidget::nextFrame()
+{
+    {
+        QWriteLocker    lock( m_framePlayedLock );
+        m_framePlayed = false;
+    }
+    m_mainWorkflow->nextFrame();
+    m_mediaPlayer->play();
+    bool    framePlayed = false;
+    while ( framePlayed == false )
+    {
+        usleep( 50 );
+        QReadLocker lock( m_framePlayedLock );
+        framePlayed = m_framePlayed;
+    }
+    m_mediaPlayer->pause();
+}
+
+void        RenderPreviewWidget::previousFrame()
+{
+
+}
+
 void        RenderPreviewWidget::togglePlayPause( bool forcePause )
 {
     //If force pause is true, we just ensure that this render is paused... no need to start it.
@@ -114,13 +143,19 @@ void        RenderPreviewWidget::togglePlayPause( bool forcePause )
     }
 }
 
+void        RenderPreviewWidget::stop()
+{
+    m_isRendering = false;
+    m_mainWorkflow->stop();
+    m_mediaPlayer->stop();
+}
+
 /////////////////////////////////////////////////////////////////////
 /////SLOTS :
 /////////////////////////////////////////////////////////////////////
 
 void        RenderPreviewWidget::__endReached()
 {
-//    qDebug() << "Stopping preview";
     stopPreview();
     emit endReached();
 }
@@ -143,4 +178,9 @@ void        RenderPreviewWidget::__videoPaused()
 void        RenderPreviewWidget::__videoPlaying()
 {
     emit playing();
+}
+
+void        RenderPreviewWidget::__videoStopped()
+{
+    emit endReached();
 }

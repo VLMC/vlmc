@@ -56,6 +56,7 @@ namespace   LibVLCpp
         void                                setMedia(Media* media);
         int                                 getWidth();
         int                                 getHeight();
+        float                               getFps();
 
     private:
         static void                         callbacks( const libvlc_event_t* event, void* self );

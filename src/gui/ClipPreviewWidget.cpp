@@ -60,6 +60,15 @@ void        ClipPreviewWidget::setPosition( float newPos )
     m_mediaPlayer->setPosition( newPos );
 }
 
+void        ClipPreviewWidget::stop()
+{
+    if ( m_clipLoaded == true && m_videoStopped == false )
+    {
+        m_videoStopped = true;
+        m_mediaPlayer->stop();
+    }
+}
+
 void        ClipPreviewWidget::togglePlayPause( bool forcePause )
 {
     if ( m_clipLoaded == false)
@@ -71,6 +80,24 @@ void        ClipPreviewWidget::togglePlayPause( bool forcePause )
         m_mediaPlayer->pause();
     else if ( forcePause == false )
         m_mediaPlayer->play();
+}
+
+void        ClipPreviewWidget::nextFrame()
+{
+    if ( m_videoStopped == false )
+    {
+        qint64   interval =  (1.0f / m_mediaPlayer->getFps()) * 1000.0f;
+        m_mediaPlayer->setTime( m_mediaPlayer->getTime() + interval );
+    }
+}
+
+void        ClipPreviewWidget::previousFrame()
+{
+    if ( m_videoStopped == false )
+    {
+        qint64   interval =  (1.0f / m_mediaPlayer->getFps()) * 1000.0f;
+        m_mediaPlayer->setTime( m_mediaPlayer->getTime() - interval );
+    }
 }
 
 /////////////////////////////////////////////////////////////////////

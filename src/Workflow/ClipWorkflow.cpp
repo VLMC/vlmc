@@ -56,14 +56,9 @@ ClipWorkflow::~ClipWorkflow()
 
 unsigned char*    ClipWorkflow::getOutput()
 {
-//    qDebug() << "Getting output";
     QReadLocker     lock( m_backBufferLock );
     if ( m_usingBackBuffer == true )
-    {
-//        qDebug() << "Returning frontbuffer";
         return m_buffer;
-    }
-//    qDebug() << "Returning backbuffer";
     return m_backBuffer;
 }
 
@@ -80,24 +75,20 @@ void    ClipWorkflow::checkStateChange()
 
 void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret )
 {
-//    qDebug() << "Locking in ClipWorkflow::lock";
     QReadLocker lock( cw->m_backBufferLock );
 
     if ( cw->m_usingBackBuffer )
     {
-//        qDebug() << "Using backbuffer";
         *pp_ret = cw->m_backBuffer;
     }
     else
     {
-//        qDebug() << "Using frontbuffer";
         *pp_ret = cw->m_buffer;
     }
 }
 
 void    ClipWorkflow::unlock( ClipWorkflow* cw )
 {
-//    qDebug() << "UnLocking in ClipWorkflow::unlock";
     cw->m_stateLock->lockForWrite();
 
     if ( cw->m_state == Rendering )
@@ -105,12 +96,10 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
         cw->m_state = Sleeping;
         cw->m_stateLock->unlock();
 
-//        qDebug() << "Sleeping....";
         QMutexLocker    lock( cw->m_condMutex );
         cw->m_waitCond->wait( cw->m_condMutex );
         cw->m_stateLock->lockForWrite();
         cw->m_state = Rendering;
-//        qDebug() << "Waiking";
         {
             QWriteLocker    lock2( cw->m_backBufferLock );
             cw->m_usingBackBuffer = !cw->m_usingBackBuffer;

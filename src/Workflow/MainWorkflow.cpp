@@ -27,13 +27,13 @@
 
 unsigned char*  MainWorkflow::blackOutput = NULL;
 
-MainWorkflow::MainWorkflow( int trackCount ) :
+MainWorkflow::MainWorkflow( QObject* parent, int trackCount ) :
+        QObject( parent ),
         m_trackCount( trackCount ),
         m_renderStarted( false )
 {
     if ( MainWorkflow::blackOutput == NULL )
     {
-        //TODO: this ain't free !
         MainWorkflow::blackOutput = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 3];
         memset( MainWorkflow::blackOutput, 0, VIDEOHEIGHT * VIDEOWIDTH * 3 );
     }
@@ -44,6 +44,18 @@ MainWorkflow::MainWorkflow( int trackCount ) :
         m_tracks[i].setPtr( new TrackWorkflow( i ) );
         connect( m_tracks[i], SIGNAL( trackEndReached( unsigned int ) ), this, SLOT( trackEndReached(unsigned int) ) );
     }
+    m_renderStartedLock = new QReadWriteLock;
+}
+
+MainWorkflow::~MainWorkflow()
+{
+    qDebug() << "MainWorkflow::~MainWorkflow()";
+    delete m_renderStartedLock;
+    for (unsigned int i = 0; i < m_trackCount; ++i)
+        delete m_tracks[i];
+    delete[] m_tracks;
+    //FIXME: if we have two main workflows (which is very unlikely) this will crash...
+    delete[] blackOutput;
 }
 
 void    MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
@@ -78,24 +90,43 @@ void    MainWorkflow::startRender()
 
 unsigned char*    MainWorkflow::getOutput()
 {
-    unsigned char* ret;
+    QReadLocker     lock( m_renderStartedLock );
 
-    for ( unsigned int i = 0; i < m_trackCount; ++i )
+    if ( m_renderStarted == true )
     {
-        if ( m_tracks[i].activated() == false )
-            continue ;
-        if ( ( ret = m_tracks[i]->getOutput( m_currentFrame ) ) != NULL )
-        {
-            break ;
-        }
-    }
-    if ( ret == NULL )
-        ret = MainWorkflow::blackOutput;
+        unsigned char* ret;
 
+        for ( unsigned int i = 0; i < m_trackCount; ++i )
+        {
+            if ( m_tracks[i].activated() == false )
+                continue ;
+            if ( ( ret = m_tracks[i]->getOutput( m_currentFrame ) ) != NULL )
+            {
+                break ;
+            }
+        }
+        if ( ret == NULL )
+            ret = MainWorkflow::blackOutput;
+
+        nextFrame();
+        return ret;
+    }
+    else
+        return MainWorkflow::blackOutput;
+}
+
+void        MainWorkflow::nextFrame()
+{
     ++m_currentFrame;
     emit frameChanged( m_currentFrame );
     emit positionChanged( (float)m_currentFrame / (float)m_length );
-    return ret;
+}
+
+void        MainWorkflow::previousFrame()
+{
+    --m_currentFrame;
+    emit frameChanged( m_currentFrame );
+    emit positionChanged( (float)m_currentFrame / (float)m_length );
 }
 
 void        MainWorkflow::setPosition( float pos )
@@ -136,4 +167,20 @@ void        MainWorkflow::trackEndReached( unsigned int trackId )
 unsigned int    MainWorkflow::getTrackCount() const
 {
     return m_trackCount;
+}
+
+void            MainWorkflow::stop()
+{
+    QWriteLocker    lock( m_renderStartedLock );
+
+    m_renderStarted = false;
+    for (unsigned int i = 0; i < m_trackCount; ++i)
+    {
+        //FIXME: After debugging period, this should'nt be necessary --
+        m_tracks[i].activate();
+        //--------
+        m_tracks[i]->stop();
+    }
+    m_currentFrame = 0;
+    emit frameChanged( 0 );
 }
