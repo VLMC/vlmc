@@ -24,7 +24,31 @@
 
 #include "Module.h"
 
-Module::Module( const QString& moduleFileName )
+Module::Module( const QFileInfo& moduleFile )
 {
-    qDebug() << "Trying to load module :" << moduleFileName;
+    qDebug() << "Trying to load module :" << moduleFile.absolutePath() + '/' + moduleFile.baseName();
+    m_moduleInstance = new QLibrary( moduleFile.absolutePath() + '/' + moduleFile.baseName() );
+}
+
+Module::~Module()
+{
+    m_moduleInstance->unload();
+    delete m_moduleInstance;
+}
+
+bool        Module::initialize()
+{
+    m_entryPoint = reinterpret_cast<vlmc_module_entrypoint_t>( m_moduleInstance->resolve( "vlmc_module_entrypoint" ) );
+    if ( m_entryPoint == NULL )
+    {
+        qDebug() << "Can't find module entry point";
+        return false;
+    }
+    m_entryPoint( NULL );
+    return true;
+}
+
+bool        Module::isLibrary( const QString& fileName )
+{
+    return QLibrary::isLibrary( fileName );
 }

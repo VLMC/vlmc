@@ -1,5 +1,5 @@
 /*****************************************************************************
- * ModuleManager.h: Manage modules loading
+ * vlmc_module_internal.h: Represents the vlmc's internal representation of a module
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,28 +20,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef MODULEMANAGER_H
-#define MODULEMANAGER_H
+#ifndef VLMC_MODULE_INTERNAL_H
+#define VLMC_MODULE_INTERNAL_H
 
-#include <QFileInfo>
-#include <QHash>
+#include "vlmc_module.h"
 
-#include "Module.h"
-#include "Singleton.hpp"
-
-class   ModuleManager : public Singleton<ModuleManager>
+#ifdef  __cplusplus
+extern "C"
 {
-public:
-    bool                        loadModules();
-private:
-    ModuleManager();
-    bool                        loadSubDir( const QFileInfo& dir );
-    void                        checkAndAddModule( const QFileInfo& moduleFile );
+#endif
 
-private:
-    QHash<QString, Module*>     m_modules;
+typedef vlmc_return_type_t  (*vlmc_module_entrypoint_t)( vlmc_module_t* );
 
-    friend class    Singleton<ModuleManager>;
-};
+#ifdef  __cplusplus
+}
+#endif
 
-#endif // MODULEMANAGER_H
+#endif // VLMC_MODULE_INTERNAL_H

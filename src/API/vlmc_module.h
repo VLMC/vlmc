@@ -23,8 +23,10 @@
 #ifndef VLMC_MODULE_H
 #define VLMC_MODULE_H
 
+#define VLMC_EXTERN     extern "C"
+
 #ifdef __cplusplus
-extern "C"
+VLMC_EXTERN
 {
 #endif
 
@@ -75,7 +77,7 @@ typedef struct
 #endif
 
 #define     vlmc_module_begin()                                                             \
-    VLMC_EXPORT vlmc_return_type_t vlmc_module_entrypoint( vlmc_module_t* p_module )        \
+    VLMC_EXTERN VLMC_EXPORT vlmc_return_type_t vlmc_module_entrypoint( vlmc_module_t* p_module )        \
     {
 
 #define     vlmc_module_end()           \
