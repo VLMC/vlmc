@@ -36,6 +36,23 @@ Module::~Module()
     delete m_moduleInstance;
 }
 
+void        Module::initInternalPtr()
+{
+    m_p_module = new vlmc_module_internal_t;
+    m_p_module->public_module.f_ratio = 0;
+    m_p_module->public_module.psz_name = NULL;
+
+    m_p_module->public_module.p_callbacks = new vlmc_callback_t;
+    m_p_module->public_module.p_callbacks->pf_open = NULL;
+    m_p_module->public_module.p_callbacks->pf_close = NULL;
+    m_p_module->public_module.p_callbacks->pf_process = NULL;
+
+    m_p_module->public_module.p_output = new vlmc_output_t;
+    m_p_module->public_module.p_output->i_height = 0;
+    m_p_module->public_module.p_output->i_width = 0;
+    m_p_module->public_module.p_output->p_buffer = NULL;
+}
+
 bool        Module::initialize()
 {
     m_entryPoint = reinterpret_cast<vlmc_module_entrypoint_t>( m_moduleInstance->resolve( "vlmc_module_entrypoint" ) );
@@ -44,7 +61,13 @@ bool        Module::initialize()
         qDebug() << "Can't find module entry point";
         return false;
     }
-    m_entryPoint( NULL );
+    initInternalPtr();
+    m_entryPoint( reinterpret_cast<vlmc_module_t*>( m_p_module ) );
+    if ( m_p_module->public_module.psz_name == NULL )
+    {
+        qDebug() << "No name set. Invalid module";
+        return false;
+    }
     return true;
 }
 

@@ -39,9 +39,13 @@ public:
     static bool                 isLibrary( const QString& fileName );
 
 private:
+    void                        initInternalPtr();
+
+private:
     QString                     m_name;
     QLibrary*                   m_moduleInstance;
     vlmc_module_entrypoint_t    m_entryPoint;
+    vlmc_module_internal_t*     m_p_module;
 };
 
 #endif // MODULE_H
