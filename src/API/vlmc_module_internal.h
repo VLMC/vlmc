@@ -32,6 +32,11 @@ extern "C"
 
 typedef vlmc_return_type_t  (*vlmc_module_entrypoint_t)( vlmc_module_t* );
 
+typedef struct
+{
+    vlmc_module_t   public_module;
+}       vlmc_module_internal_t;
+
 #ifdef  __cplusplus
 }
 #endif
