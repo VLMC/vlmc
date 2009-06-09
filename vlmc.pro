@@ -41,7 +41,10 @@ SOURCES += src/main.cpp \
     src/Workflow/TrackWorkflow.cpp \
     src/Workflow/MainWorkflow.cpp \
     src/gui/PreviewWidget.cpp \
-    src/gui/RenderPreviewWidget.cpp
+    src/gui/RenderPreviewWidget.cpp \
+    src/API/vlmc_module_variables.cpp \
+    src/API/Module.cpp \
+    src/API/ModuleManager.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -78,7 +81,9 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/RenderPreviewWidget.h \
     src/gui/GenericPreviewWidget.h \
     src/tools/Toggleable.hpp \
-    src/API/vlmc_module.h
+    src/API/vlmc_module.h \
+    src/API/Module.h \
+    src/API/ModuleManager.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \
@@ -98,7 +103,6 @@ INCLUDEPATH += src/LibVLCpp \
     src
 LIBS = -L/usr/local/lib \
     -lvlc
-SUBDIRS +=  modules
-
+SUBDIRS += modules
 CODECFORTR = UTF-8
 include(locale.pri)

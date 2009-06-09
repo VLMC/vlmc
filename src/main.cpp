@@ -29,6 +29,9 @@
 #include <QApplication>
 #include "gui/MainWindow.h"
 
+//FOR DEBUG :
+#include "API/ModuleManager.h"
+
 /**
  *  VLMC Entry point
  *  \brief this is the VLMC entry point
@@ -38,6 +41,9 @@
  */
 int main( int argc, char **argv )
 {
+    ModuleManager::getInstance()->loadModules();
+    return 0;
+
     QApplication app( argc, argv );
     app.setApplicationName( "vlmc" );
     app.setOrganizationName( "vlmc" );
