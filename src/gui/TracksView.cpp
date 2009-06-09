@@ -206,7 +206,7 @@ void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
     QRectF r = rect;
     r.setWidth( r.width() + 1 );
 
-    painter->setBrush( palette().dark() );
+    painter->setBrush( QBrush( palette().dark().color(), Qt::Dense3Pattern ) );
     painter->setPen( Qt::transparent );
     painter->drawRect( r.left(), m_separator->y(),
                        r.right(),
