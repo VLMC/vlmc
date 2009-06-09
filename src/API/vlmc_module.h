@@ -82,10 +82,22 @@ typedef struct
     return VLMC_SUCCESS;                \
     }
 
+#define     vlmc_set_callbacks( open, close )   \
+    p_module->p_callbacks->pf_open = open;      \
+    p_module->p_callbacks->pf_close = close;
 
 #ifdef __cplusplus
 }
 #endif
 
+#define create_p_module( void_var )    \
+        vlmc_module_t* p_module = (vlmc_module_t*) void_var;\
+
+
+/*
+ * Function part :
+ */
+
+vlmc_return_type_t  vlmc_add_variable_int( vlmc_module_t* p_module, const char* psz_varname, int value );
 
 #endif // VLMC_MODULE_H
