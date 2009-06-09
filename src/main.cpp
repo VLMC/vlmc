@@ -41,9 +41,6 @@
  */
 int main( int argc, char **argv )
 {
-    ModuleManager::getInstance()->loadModules();
-    return 0;
-
     QApplication app( argc, argv );
     app.setApplicationName( "vlmc" );
     app.setOrganizationName( "vlmc" );
