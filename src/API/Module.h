@@ -24,16 +24,24 @@
 #define MODULE_H
 
 #include <QLibrary>
+#include <QFileInfo>
 
-#include "vlmc_module.h"
+#include "vlmc_module_internal.h"
 
 class   Module
 {
 public:
-    Module( const QString& moduleFileName );
+    Module( const QFileInfo& moduleFile );
+    ~Module();
+
+    bool                        initialize();
+
+    static bool                 isLibrary( const QString& fileName );
 
 private:
-    QString     m_name;
+    QString                     m_name;
+    QLibrary*                   m_moduleInstance;
+    vlmc_module_entrypoint_t    m_entryPoint;
 };
 
 #endif // MODULE_H

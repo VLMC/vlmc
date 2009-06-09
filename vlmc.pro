@@ -83,7 +83,8 @@ HEADERS += src/gui/MainWindow.h \
     src/tools/Toggleable.hpp \
     src/API/vlmc_module.h \
     src/API/Module.h \
-    src/API/ModuleManager.h
+    src/API/ModuleManager.h \
+    src/API/vlmc_module_internal.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \

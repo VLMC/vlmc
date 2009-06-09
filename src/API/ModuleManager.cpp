@@ -67,8 +67,22 @@ bool        ModuleManager::loadSubDir( const QFileInfo& dir )
             loadSubDir( *it );
         }
         else
-            qDebug() << it->fileName();
+            checkAndAddModule( *it );
         ++it;
     }
     return true;
+}
+
+void        ModuleManager::checkAndAddModule( const QFileInfo& moduleFile )
+{
+    if ( Module::isLibrary( moduleFile.absoluteFilePath() ) )
+    {
+        Module* module = new Module( moduleFile );
+        if (module->initialize() == false)
+        {
+            qDebug() << "Invalid module. Unloading...";
+        }
+    }
+    else
+        qDebug() << moduleFile.absoluteFilePath() << "isn't a library file";
 }
