@@ -87,6 +87,7 @@ void        RenderPreviewWidget::stopPreview()
     //This might be called multiple times, but this is due to Qt message loop
     m_mediaPlayer->stop();
     m_isRendering = false;
+    m_paused = false;
 }
 
 void        RenderPreviewWidget::startPreview( Media* )
@@ -94,6 +95,7 @@ void        RenderPreviewWidget::startPreview( Media* )
     m_mainWorkflow->startRender();
     m_mediaPlayer->play();
     m_isRendering = true;
+    m_paused = false;
 }
 
 void        RenderPreviewWidget::setPosition( float newPos )
@@ -131,14 +133,20 @@ void        RenderPreviewWidget::togglePlayPause( bool forcePause )
         startPreview( NULL );
     else if ( m_isRendering == true )
     {
-        if ( m_mediaPlayer->isPlaying() == false && forcePause == false )
+        if ( m_paused == true && forcePause == false )
+        {
             m_mediaPlayer->play();
+            m_paused = false;
+        }
         else
         {
             //VLC will toggle play if we call pause while already paused...
             //So be careful about pausing two times :
-            if ( m_mediaPlayer->isPlaying() == true )
+            if ( m_paused == false )
+            {
                 m_mediaPlayer->pause();
+                m_paused = true;
+            }
         }
     }
 }

@@ -4,11 +4,14 @@
 /qtc-gdbmacros
 /ts/*.qm
 Makefile*
+/include
 
 *.pro.user
 moc_*.cpp
 ui_*.h
 .*.swp
 *~
+*.o
+*.so*
 qrc_ressources.cpp
 

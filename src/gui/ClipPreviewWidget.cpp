@@ -51,6 +51,7 @@ void        ClipPreviewWidget::startPreview( Media* media )
     m_mediaPlayer->play();
     m_clipLoaded = true;
     m_videoStopped = false;
+    m_paused = false;
 }
 
 void        ClipPreviewWidget::setPosition( float newPos )
@@ -66,6 +67,7 @@ void        ClipPreviewWidget::stop()
     {
         m_videoStopped = true;
         m_mediaPlayer->stop();
+        m_paused = false;
     }
 }
 
@@ -76,15 +78,21 @@ void        ClipPreviewWidget::togglePlayPause( bool forcePause )
     if ( m_videoStopped == true )
         m_videoStopped = false;
 
-    if ( m_mediaPlayer->isPlaying() )
+    if ( m_paused == false )
+    {
         m_mediaPlayer->pause();
+        m_paused = true;
+    }
     else if ( forcePause == false )
+    {
         m_mediaPlayer->play();
+        m_paused = false;
+    }
 }
 
 void        ClipPreviewWidget::nextFrame()
 {
-    if ( m_videoStopped == false )
+    if ( m_videoStopped == false && m_paused == true )
     {
         qint64   interval =  static_cast<qint64>( (1.0f / m_mediaPlayer->getFps()) * 1000.0f );
         m_mediaPlayer->setTime( m_mediaPlayer->getTime() + interval );
@@ -93,7 +101,7 @@ void        ClipPreviewWidget::nextFrame()
 
 void        ClipPreviewWidget::previousFrame()
 {
-    if ( m_videoStopped == false )
+    if ( m_videoStopped == false && m_paused == true )
     {
         qint64   interval =  static_cast<qint64>( (1.0f / m_mediaPlayer->getFps()) * 1000.0f );
         m_mediaPlayer->setTime( m_mediaPlayer->getTime() - interval );
