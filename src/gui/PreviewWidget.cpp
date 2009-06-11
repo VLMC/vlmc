@@ -81,7 +81,7 @@ void    PreviewWidget::connectPreview( GenericPreviewWidget* target )
 {
     //WARNING:  the slots must NOT be virtual, since this is called from the constructor
     //          which would be unsafe... if not fatal...
-    connect( target,     SIGNAL( stopped() ),                this,       SLOT( videoPaused() ) );
+    connect( target,     SIGNAL( stopped() ),                this,       SLOT( videoStopped() ) );
     connect( target,     SIGNAL( paused() ),                 this,       SLOT( videoPaused() ) );
     connect( target,     SIGNAL( playing() ),                this,       SLOT( videoPlaying() ) );
     connect( target,     SIGNAL( positionChanged(float) ),   this,       SLOT( positionChanged(float) ) );
@@ -195,12 +195,18 @@ void    PreviewWidget::on_pushButtonPlay_clicked()
     m_currentPreviewRenderer->togglePlayPause();
 }
 
-void PreviewWidget::videoPaused()
+void    PreviewWidget::videoPaused()
 {
     m_ui->pushButtonPlay->setIcon( QIcon( ":/images/play" ) );
 }
 
-void PreviewWidget::videoPlaying()
+void    PreviewWidget::videoStopped()
+{
+    m_ui->pushButtonPlay->setIcon( QIcon( ":/images/play" ) );
+    m_ui->seekSlider->setValue( 0 );
+}
+
+void    PreviewWidget::videoPlaying()
 {
     m_ui->pushButtonPlay->setIcon( QIcon( ":/images/pause" ) );
 }

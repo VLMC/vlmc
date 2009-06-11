@@ -56,6 +56,7 @@ public slots:
     void                    __videoPaused();
     void                    __videoPlaying();
     void                    __endReached();
+    void                    __videoStopped();
 };
 
 #endif // CLIPPREVIEWWIDGET_H
