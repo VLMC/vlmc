@@ -236,12 +236,12 @@ void    PreviewWidget::changedTab( int tabId )
 
 void        PreviewWidget::on_pushButtonNextFrame_clicked()
 {
-    if ( m_previewStopped == true )
+    if ( m_previewStopped == false )
         m_currentPreviewRenderer->nextFrame();
 }
 
 void        PreviewWidget::on_pushButtonPreviousFrame_clicked()
 {
-    if ( m_previewStopped == true )
+    if ( m_previewStopped == false )
         m_currentPreviewRenderer->previousFrame();
 }

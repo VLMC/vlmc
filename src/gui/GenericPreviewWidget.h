@@ -35,7 +35,7 @@ class   GenericPreviewWidget : public QObject
     Q_DISABLE_COPY( GenericPreviewWidget );
 
 public:
-    explicit GenericPreviewWidget( QWidget* renderWidget )
+    explicit GenericPreviewWidget( QWidget* renderWidget ) : m_paused( false )
     {
         m_mediaPlayer = new LibVLCpp::MediaPlayer();
         m_mediaPlayer->setDrawable( renderWidget->winId() );
@@ -51,9 +51,19 @@ public:
     virtual void                    nextFrame() = 0;
     virtual void                    previousFrame() = 0;
     virtual void                    stop() = 0;
+    bool                            isPaused() const
+    {
+        return m_paused;
+    }
 
 protected:
     LibVLCpp::MediaPlayer*          m_mediaPlayer;
+    /**
+     *  \brief  This flag allows us to know if the render is paused
+     *          or not, without using libvlc, especially for the render preview.
+     *  If the video is stopped, then this flag will be equal to false
+     */
+    bool                            m_paused;
 
 public slots:
     virtual void                    __positionChanged() = 0;
