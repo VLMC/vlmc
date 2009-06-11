@@ -42,7 +42,7 @@ void        ClipPreviewWidget::startPreview( Media* media )
 
     m_mediaPlayer->setMedia( m_vlcMedia );
 
-    connect( m_mediaPlayer,     SIGNAL( stopped() ),            this,   SLOT( __videoPaused() ) );
+    connect( m_mediaPlayer,     SIGNAL( stopped() ),            this,   SLOT( __videoStopped() ) );
     connect( m_mediaPlayer,     SIGNAL( paused() ),             this,   SLOT( __videoPaused() ) );
     connect( m_mediaPlayer,     SIGNAL( playing() ),            this,   SLOT( __videoPlaying() ) );
     connect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,   SLOT( __positionChanged() ) );
@@ -75,16 +75,16 @@ void        ClipPreviewWidget::togglePlayPause( bool forcePause )
 {
     if ( m_clipLoaded == false)
         return ;
-    if ( m_isRendering == false )
-        m_isRendering = true;
 
-    if ( m_paused == false )
+    if ( m_paused == false && m_isRendering == true )
     {
         m_mediaPlayer->pause();
         m_paused = true;
     }
     else if ( forcePause == false )
     {
+        if ( m_isRendering == false )
+            m_isRendering = true;
         m_mediaPlayer->play();
         m_paused = false;
     }
@@ -114,6 +114,11 @@ void        ClipPreviewWidget::previousFrame()
 void        ClipPreviewWidget::__videoPaused()
 {
     emit paused();
+}
+
+void        ClipPreviewWidget::__videoStopped()
+{
+    emit stopped();
 }
 
 void        ClipPreviewWidget::__videoPlaying()

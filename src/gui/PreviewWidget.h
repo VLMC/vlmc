@@ -75,6 +75,7 @@ private slots:
     void            seekSliderReleased();
     void            videoPaused();
     void            videoPlaying();
+    void            videoStopped();
     void            endReached();
 
     void            changedTab( int );
