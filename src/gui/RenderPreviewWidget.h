@@ -60,7 +60,6 @@ class   RenderPreviewWidget : public GenericPreviewWidget
     private:
         MainWorkflow*       m_mainWorkflow;
         LibVLCpp::Media*    m_media;
-        bool                m_isRendering;
         QReadWriteLock*     m_framePlayedLock;
         bool                m_framePlayed;
 

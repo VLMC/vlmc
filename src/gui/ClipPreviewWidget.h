@@ -49,7 +49,6 @@ public:
 
 private:
     bool                    m_clipLoaded;
-    bool                    m_videoStopped;
     LibVLCpp::Media*        m_vlcMedia;
 
 public slots:

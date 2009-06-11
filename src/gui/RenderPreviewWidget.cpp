@@ -28,7 +28,6 @@
 RenderPreviewWidget::RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* renderWidget ) :
             GenericPreviewWidget( renderWidget ),
             m_mainWorkflow( mainWorkflow ),
-            m_isRendering( false ),
             m_framePlayed( false )
 {
     m_framePlayedLock = new QReadWriteLock;

@@ -35,7 +35,9 @@ class   GenericPreviewWidget : public QObject
     Q_DISABLE_COPY( GenericPreviewWidget );
 
 public:
-    explicit GenericPreviewWidget( QWidget* renderWidget ) : m_paused( false )
+    explicit GenericPreviewWidget( QWidget* renderWidget ) :
+                m_paused( false ),
+                m_isRendering( false )
     {
         m_mediaPlayer = new LibVLCpp::MediaPlayer();
         m_mediaPlayer->setDrawable( renderWidget->winId() );
@@ -55,6 +57,10 @@ public:
     {
         return m_paused;
     }
+    bool                            isRendering() const
+    {
+        return m_isRendering;
+    }
 
 protected:
     LibVLCpp::MediaPlayer*          m_mediaPlayer;
@@ -64,6 +70,12 @@ protected:
      *  If the video is stopped, then this flag will be equal to false
      */
     bool                            m_paused;
+
+    /**
+     *  \brief Will be equal to true if a render has been started, even if it paused.
+     */
+    bool                            m_isRendering;
+
 
 public slots:
     virtual void                    __positionChanged() = 0;

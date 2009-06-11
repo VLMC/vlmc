@@ -26,7 +26,7 @@
 
 ClipPreviewWidget::ClipPreviewWidget( QWidget* renderWidget ) :
     GenericPreviewWidget( renderWidget ),
-    m_clipLoaded( false ), m_videoStopped( true ), m_vlcMedia( NULL )
+    m_clipLoaded( false ), m_vlcMedia( NULL )
 {
 }
 
@@ -50,22 +50,22 @@ void        ClipPreviewWidget::startPreview( Media* media )
 
     m_mediaPlayer->play();
     m_clipLoaded = true;
-    m_videoStopped = false;
+    m_isRendering = true;
     m_paused = false;
 }
 
 void        ClipPreviewWidget::setPosition( float newPos )
 {
-    if ( m_clipLoaded == false || m_videoStopped == true )
+    if ( m_clipLoaded == false || m_isRendering == false )
         return ;
     m_mediaPlayer->setPosition( newPos );
 }
 
 void        ClipPreviewWidget::stop()
 {
-    if ( m_clipLoaded == true && m_videoStopped == false )
+    if ( m_clipLoaded == true && m_isRendering == true )
     {
-        m_videoStopped = true;
+        m_isRendering = false;
         m_mediaPlayer->stop();
         m_paused = false;
     }
@@ -75,8 +75,8 @@ void        ClipPreviewWidget::togglePlayPause( bool forcePause )
 {
     if ( m_clipLoaded == false)
         return ;
-    if ( m_videoStopped == true )
-        m_videoStopped = false;
+    if ( m_isRendering == false )
+        m_isRendering = true;
 
     if ( m_paused == false )
     {
@@ -92,7 +92,7 @@ void        ClipPreviewWidget::togglePlayPause( bool forcePause )
 
 void        ClipPreviewWidget::nextFrame()
 {
-    if ( m_videoStopped == false && m_paused == true )
+    if ( m_isRendering == true && m_paused == true )
     {
         qint64   interval =  static_cast<qint64>( (1.0f / m_mediaPlayer->getFps()) * 1000.0f );
         m_mediaPlayer->setTime( m_mediaPlayer->getTime() + interval );
@@ -101,7 +101,7 @@ void        ClipPreviewWidget::nextFrame()
 
 void        ClipPreviewWidget::previousFrame()
 {
-    if ( m_videoStopped == false && m_paused == true )
+    if ( m_isRendering == false && m_paused == true )
     {
         qint64   interval =  static_cast<qint64>( (1.0f / m_mediaPlayer->getFps()) * 1000.0f );
         m_mediaPlayer->setTime( m_mediaPlayer->getTime() - interval );
@@ -131,6 +131,6 @@ void        ClipPreviewWidget::__positionChanged()
 void        ClipPreviewWidget::__endReached()
 {
     m_mediaPlayer->stop();
-    m_videoStopped = true;
+    m_isRendering = false;
     emit endReached();
 }
