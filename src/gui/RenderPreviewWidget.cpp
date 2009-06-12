@@ -62,6 +62,14 @@ RenderPreviewWidget::RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* r
 
 RenderPreviewWidget::~RenderPreviewWidget()
 {
+    m_mediaPlayer->stop();
+
+    disconnect( m_mediaPlayer, SIGNAL( playing() ),    this,   SLOT( __videoPlaying() ) );
+    disconnect( m_mediaPlayer, SIGNAL( paused() ),     this,   SLOT( __videoPaused() ) );
+    disconnect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SLOT( __videoStopped() ) );
+    disconnect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
+    disconnect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
+
     delete m_media;
 }
 
@@ -76,7 +84,7 @@ void    RenderPreviewWidget::unlock( void* datas )
 {
     RenderPreviewWidget* self = reinterpret_cast<RenderPreviewWidget*>( datas );
 
-    qDebug() << "RenderPreviewWidget::unlock() : Frame rendered";
+//    qDebug() << "RenderPreviewWidget::unlock() : Frame rendered";
     QWriteLocker    lock( self->m_framePlayedLock );
     self->m_framePlayed = true;
 }

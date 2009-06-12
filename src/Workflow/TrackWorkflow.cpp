@@ -33,6 +33,15 @@ TrackWorkflow::TrackWorkflow( unsigned int trackId ) :
 
 TrackWorkflow::~TrackWorkflow()
 {
+    QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
+
+    while ( it != end )
+    {
+        stopClipWorkflow( it.value() );
+        delete it.value();
+        it = m_clips.erase( it );
+    }
     delete m_mediaPlayer;
 }
 
