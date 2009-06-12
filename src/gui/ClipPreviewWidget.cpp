@@ -68,6 +68,11 @@ void        ClipPreviewWidget::stop()
         m_isRendering = false;
         m_mediaPlayer->stop();
         m_paused = false;
+        disconnect( m_mediaPlayer,     SIGNAL( stopped() ),            this,   SLOT( __videoStopped() ) );
+        disconnect( m_mediaPlayer,     SIGNAL( paused() ),             this,   SLOT( __videoPaused() ) );
+        disconnect( m_mediaPlayer,     SIGNAL( playing() ),            this,   SLOT( __videoPlaying() ) );
+        disconnect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,   SLOT( __positionChanged() ) );
+        disconnect( m_mediaPlayer,     SIGNAL( endReached() ),         this,   SLOT( __endReached() ) );
     }
 }
 
