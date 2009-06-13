@@ -170,6 +170,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position
             // Collision with an item of the same type
             // Restoring original parent (vertical)
             m_dragItem->setParentItem( oldParent );
+            break;
         }
     }
 
@@ -184,6 +185,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position
             // Collision with an item of the same type
             // Restoring original position (horizontal)
             m_dragItem->setPos( oldPos );
+            break;
         }
     }
 }
