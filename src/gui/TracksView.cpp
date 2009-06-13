@@ -154,7 +154,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position
     if ( track > m_numVideoTrack - 1)
         track = m_numVideoTrack - 1;
 
-    qreal mappedXPos = ( mapToScene( position ).x() );
+    qreal mappedXPos = ( mapToScene( position ).x() + 0.5 );
 
     QPointF oldPos = m_dragItem->pos();
     QGraphicsItem* oldParent = m_dragItem->parentItem();
