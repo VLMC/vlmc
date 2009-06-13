@@ -131,31 +131,61 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
     Media* media = Library::getInstance()->getMedia( uuid );
     if ( !media ) return;
 
-    int track = (int)( mapToScene( event->pos() ).y() / m_tracksHeight );
-    if ( track > m_numVideoTrack - 1 )
-        track = m_numVideoTrack - 1;
-
     qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
 
     if ( m_dragItem ) delete m_dragItem;
     m_dragItem = new GraphicsMovieItem( media );
-    m_dragItem->setPos( mappedXPos, 0 );
     m_dragItem->setWidth( ( (double)media->getLength() / 1000 ) * m_fps );
     m_dragItem->setHeight( tracksHeight() );
-    m_dragItem->setParentItem( m_layout->itemAt( track )->graphicsItem() );
+    m_dragItem->setPos( mappedXPos, 0 );
+    m_dragItem->setParentItem( m_layout->itemAt( 0 )->graphicsItem() );
+    moveMediaItem( m_dragItem, event->pos() );
 }
 
 void TracksView::dragMoveEvent( QDragMoveEvent* event )
 {
     if ( !m_dragItem ) return;
+    moveMediaItem( m_dragItem, event->pos() );
+}
 
-    int track = (unsigned int)( mapToScene( event->pos() ).y() / m_tracksHeight );
+void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position )
+{
+    int track = (unsigned int)( mapToScene( position ).y() / m_tracksHeight );
     if ( track > m_numVideoTrack - 1)
         track = m_numVideoTrack - 1;
 
-    qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
-    m_dragItem->setPos( mappedXPos, 0 );
+    qreal mappedXPos = ( mapToScene( position ).x() );
+
+    QPointF oldPos = m_dragItem->pos();
+    QGraphicsItem* oldParent = m_dragItem->parentItem();
+
+    // Check for vertical collisions
     m_dragItem->setParentItem( m_layout->itemAt( track )->graphicsItem() );
+    QList<QGraphicsItem*> colliding = m_dragItem->collidingItems( Qt::IntersectsItemShape );
+    for ( int i = 0; i < colliding.size(); ++i )
+    {
+        AbstractGraphicsMediaItem* item = dynamic_cast<AbstractGraphicsMediaItem*>( colliding.at( i ) );
+        if ( item )
+        {
+            // Collision with an item of the same type
+            // Restoring original parent (vertical)
+            m_dragItem->setParentItem( oldParent );
+        }
+    }
+
+    // Check for horizontal collisions
+    m_dragItem->setPos( mappedXPos, 0 );
+    colliding = m_dragItem->collidingItems( Qt::IntersectsItemShape );
+    for ( int i = 0; i < colliding.size(); ++i )
+    {
+        AbstractGraphicsMediaItem* item = dynamic_cast<AbstractGraphicsMediaItem*>( colliding.at( i ) );
+        if ( item )
+        {
+            // Collision with an item of the same type
+            // Restoring original position (horizontal)
+            m_dragItem->setPos( oldPos );
+        }
+    }
 }
 
 void TracksView::dragLeaveEvent( QDragLeaveEvent* event )

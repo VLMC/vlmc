@@ -35,6 +35,7 @@
 #include "Workflow/MainWorkflow.h"
 
 class GraphicsMovieItem;
+class AbstractGraphicsMediaItem;
 
 class GraphicsTrack : public QGraphicsWidget
 {
@@ -103,6 +104,7 @@ private:
     void                    createLayout();
     void                    addVideoTrack();
     void                    addAudioTrack();
+    void                    moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position );
     QGraphicsScene*         m_scene;
     int                     m_tracksHeight;
     unsigned int            m_tracksCount;
