@@ -25,12 +25,13 @@
 #define MAINWORKFLOW_H
 
 #include <QObject>
+#include <QReadWriteLock>
 
 #include "tools/Toggleable.hpp"
 #include "TrackWorkflow.h"
-#include <QReadWriteLock>
+#include "tools/Singleton.hpp"
 
-class   MainWorkflow : public QObject
+class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 {
     Q_OBJECT
 
@@ -68,6 +69,10 @@ class   MainWorkflow : public QObject
         void                    nextFrame();
         void                    previousFrame();
         
+        static MainWorkflow*    getInstance();
+
+    private:
+        static MainWorkflow*    m_instance;
     private:
         Toggleable<TrackWorkflow*>*     m_tracks;
         qint64                          m_currentFrame;
