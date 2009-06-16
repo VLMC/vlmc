@@ -44,7 +44,8 @@ SOURCES += src/main.cpp \
     src/gui/RenderPreviewWidget.cpp \
     src/API/vlmc_module_variables.cpp \
     src/API/Module.cpp \
-    src/API/ModuleManager.cpp
+    src/API/ModuleManager.cpp \
+    src/WorkflowFileRenderer.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -84,7 +85,8 @@ HEADERS += src/gui/MainWindow.h \
     src/API/vlmc_module.h \
     src/API/Module.h \
     src/API/ModuleManager.h \
-    src/API/vlmc_module_internal.h
+    src/API/vlmc_module_internal.h \
+    src/WorkflowFileRenderer.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \
@@ -92,7 +94,8 @@ FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/LibraryWidget.ui \
     src/gui/ui/About.ui \
     src/gui/ui/Transcode.ui \
-    src/gui/ui/FileBrowser.ui
+    src/gui/ui/FileBrowser.ui \
+    src/gui/ui/WorkflowFileRenderer.ui
 FORMS += 
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \

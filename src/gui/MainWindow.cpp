@@ -37,7 +37,7 @@
 #include "PreviewWidget.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
-    QMainWindow( parent )
+    QMainWindow( parent ), m_renderer( NULL )
 {
     m_ui.setupUi( this );
     DockWidgetManager::instance( this )->setMainWindow( this );
@@ -59,6 +59,8 @@ MainWindow::MainWindow( QWidget *parent ) :
 
 MainWindow::~MainWindow()
 {
+    if ( m_renderer )
+        delete m_renderer;
 }
 
 void MainWindow::changeEvent( QEvent *e )
@@ -170,6 +172,27 @@ void MainWindow::on_actionAbout_triggered()
 void MainWindow::on_actionTranscode_File_triggered()
 {
     Transcode::instance( this )->exec();
+}
+
+void    MainWindow::on_actionRender_triggered()
+{
+    if ( MainWorkflow::getInstance()->getLength() <= 0 )
+    {
+        QMessageBox::warning( NULL, "VLMC Renderer", "There is nothing to render." );
+        return ;
+    }
+    QString outputFileName =
+            QFileDialog::getSaveFileName( NULL, "Enter the output file name",
+                                          QString(), "Videos(*.avi *.mpg)" );
+    if ( outputFileName.length() == 0 )
+        return ;
+    else
+    {
+        if ( m_renderer )
+            delete m_renderer;
+        m_renderer = new WorkflowFileRenderer( this, outputFileName );
+        m_renderer->run();
+    }
 }
 
 void MainWindow::on_actionNew_Project_triggered()

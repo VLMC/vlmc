@@ -14,7 +14,7 @@
    <string>VideoLAN Movie Creator</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../../../ressources.qrc">
     <normaloff>:/images/images/vlmc.png</normaloff>:/images/images/vlmc.png</iconset>
   </property>
   <property name="dockNestingEnabled">
@@ -27,7 +27,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>26</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -37,6 +37,7 @@
     <addaction name="actionNew_Project"/>
     <addaction name="actionOpen_Project"/>
     <addaction name="actionTranscode_File"/>
+    <addaction name="actionRender"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -159,7 +160,14 @@
     <string>F</string>
    </property>
   </action>
+  <action name="actionRender">
+   <property name="text">
+    <string>Render</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../../ressources.qrc"/>
+ </resources>
  <connections/>
 </ui>

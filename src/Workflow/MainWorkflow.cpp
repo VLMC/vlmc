@@ -26,17 +26,20 @@
 #include "MainWorkflow.h"
 
 unsigned char*  MainWorkflow::blackOutput = NULL;
+MainWorkflow*   MainWorkflow::m_instance = NULL;
 
 MainWorkflow::MainWorkflow( QObject* parent, int trackCount ) :
         QObject( parent ),
+        m_length( 0 ),
         m_trackCount( trackCount ),
         m_renderStarted( false )
 {
-    if ( MainWorkflow::blackOutput == NULL )
-    {
-        MainWorkflow::blackOutput = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 3];
-        memset( MainWorkflow::blackOutput, 0, VIDEOHEIGHT * VIDEOWIDTH * 3 );
-    }
+    Q_ASSERT_X( MainWorkflow::m_instance == NULL,
+                "MainWorkflow constructor", "Can't have more than one MainWorkflow instance" );
+    m_instance = this;
+
+    MainWorkflow::blackOutput = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 3];
+    memset( MainWorkflow::blackOutput, 0, VIDEOHEIGHT * VIDEOWIDTH * 3 );
 
     m_tracks = new Toggleable<TrackWorkflow*>[trackCount];
     for (int i = 0; i < trackCount; ++i)
@@ -53,7 +56,6 @@ MainWorkflow::~MainWorkflow()
     for (unsigned int i = 0; i < m_trackCount; ++i)
         delete m_tracks[i];
     delete[] m_tracks;
-    //FIXME: if we have two main workflows (which is very unlikely) this will crash...
     delete[] blackOutput;
 }
 
@@ -117,6 +119,7 @@ unsigned char*    MainWorkflow::getOutput()
 void        MainWorkflow::nextFrame()
 {
     ++m_currentFrame;
+    //FIXME: This is probably a bit much...
     emit frameChanged( m_currentFrame );
     emit positionChanged( (float)m_currentFrame / (float)m_length );
 }
@@ -124,6 +127,7 @@ void        MainWorkflow::nextFrame()
 void        MainWorkflow::previousFrame()
 {
     --m_currentFrame;
+    //FIXME: This is probably a bit much...
     emit frameChanged( m_currentFrame );
     emit positionChanged( (float)m_currentFrame / (float)m_length );
 }
@@ -182,4 +186,10 @@ void            MainWorkflow::stop()
     }
     m_currentFrame = 0;
     emit frameChanged( 0 );
+}
+
+MainWorkflow*   MainWorkflow::getInstance()
+{
+    Q_ASSERT( m_instance != NULL );
+    return m_instance;
 }

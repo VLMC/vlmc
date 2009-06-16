@@ -91,7 +91,7 @@ void    RenderPreviewWidget::unlock( void* datas )
 
 void        RenderPreviewWidget::stopPreview()
 {
-    //This might be called multiple times, but this is due to Qt message loop
+    //FIXME: shouldn't this call MainWorkflow::stop() ??!!
     m_mediaPlayer->stop();
     m_isRendering = false;
     m_paused = false;

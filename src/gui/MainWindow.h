@@ -25,11 +25,15 @@
 
 #include <QApplication>
 #include <QSlider>
+
 #include "ui_MainWindow.h"
+
 #include "DockWidgetManager.h"
 #include "Preferences.h"
 #include "MetaDataManager.h"
 #include "Timeline.h"
+#include "WorkflowFileRenderer.h"
+
 
 class MainWindow : public QMainWindow
 {
@@ -53,10 +57,11 @@ private:
     void        createStatusBar();
 
 
-    Ui::MainWindow      m_ui;
-    MetaDataManager*    m_metaDataManager;
-    QSlider*            m_zoomSlider;
-    Timeline*           m_timeline;
+    Ui::MainWindow          m_ui;
+    MetaDataManager*        m_metaDataManager;
+    QSlider*                m_zoomSlider;
+    Timeline*               m_timeline;
+    WorkflowFileRenderer*   m_renderer;
 
 private slots:
     void on_actionFullscreen_triggered( bool checked );
@@ -64,6 +69,7 @@ private slots:
     void on_actionAbout_triggered();
     void on_actionPreferences_triggered();
     void on_actionTranscode_File_triggered();
+    void on_actionRender_triggered();
     void on_actionNew_Project_triggered();
     void on_actionOpen_Project_triggered();
 
