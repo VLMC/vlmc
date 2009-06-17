@@ -26,6 +26,7 @@
 #include <QWidget>
 #include <QDirModel>
 #include <QStack>
+#include <QFileSystemWatcher>
 #include "ui_FileBrowser.h"
 
 class FileBrowser : public QWidget
@@ -38,11 +39,15 @@ private:
     void                    addElementToHistory();
     void                    ListViewBrowserDirectoryChanged( QModelIndex& index, bool history = true );
     void                    TreeViewBrowserDirectoryChanged( QModelIndex& index, bool history = true );
+    void                    updateFsWatcher( const QString& newPath );
+private:
     Ui::FileBrowser         m_ui;
     QDirModel*              m_DirsModel;
     QDirModel*              m_FilesModel;
     QStack<QModelIndex>*    m_previousEntries;
     QStack<QModelIndex>*    m_forwadEntries;
+    QFileSystemWatcher*     m_fsWatcher;
+    QString                 m_currentlyWatchedDir;
 
 private slots:
     void on_pushButtonParent_clicked();
