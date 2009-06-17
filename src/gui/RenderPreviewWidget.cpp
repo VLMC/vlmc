@@ -24,6 +24,7 @@
 #include <QThread>
 
 #include "RenderPreviewWidget.h"
+#include "Timeline.h"
 
 RenderPreviewWidget::RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* renderWidget ) :
             GenericPreviewWidget( renderWidget ),
@@ -91,6 +92,9 @@ void    RenderPreviewWidget::unlock( void* datas )
 
 void        RenderPreviewWidget::stopPreview()
 {
+    disconnect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
+             Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( updateCursorPos( qint64 ) ) );
+
     //FIXME: shouldn't this call MainWorkflow::stop() ??!!
     m_mediaPlayer->stop();
     m_isRendering = false;
@@ -99,6 +103,8 @@ void        RenderPreviewWidget::stopPreview()
 
 void        RenderPreviewWidget::startPreview( Media* )
 {
+    connect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
+             Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( updateCursorPos( qint64 ) ) );
     m_mainWorkflow->startRender();
     m_mediaPlayer->play();
     m_isRendering = true;

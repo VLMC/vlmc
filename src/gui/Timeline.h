@@ -38,6 +38,7 @@ public:
     TracksView*         tracksView() { return m_tracksView; }
     TracksScene*        tracksScene() { return m_tracksScene; }
     MainWorkflow*       getMainWorkflow() { return m_mainWorkflow; }
+    static Timeline*    getInstance() { return m_instance; }
 
 public slots:
     void changeZoom( int factor );
@@ -53,6 +54,7 @@ private:
     TracksRuler*        m_tracksRuler;
     double              m_scale;
     MainWorkflow*       m_mainWorkflow;
+    static Timeline*    m_instance;
 };
 
 #endif // TIMELINE_H

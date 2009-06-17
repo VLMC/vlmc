@@ -27,9 +27,13 @@
 #include "TracksView.h"
 #include "TracksScene.h"
 
+Timeline*   Timeline::m_instance = NULL;
+
 Timeline::Timeline( QWidget *parent ) :
     QWidget( parent ), m_scale( 1.0 )
 {
+    Q_ASSERT( m_instance == NULL );
+    m_instance = this;
     m_ui.setupUi( this );
 
     m_mainWorkflow = new MainWorkflow( this, 5 );
@@ -55,7 +59,6 @@ Timeline::Timeline( QWidget *parent ) :
     setDuration( 0 );
     connect( m_tracksView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), m_tracksRuler, SLOT( moveRuler( int ) ) );
     connect( m_tracksView, SIGNAL( durationChanged(int) ), this, SLOT( setDuration(int) ) );
-    connect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ), m_tracksView->tracksCursor(), SLOT( updateCursorPos( qint64 ) ) );
 }
 
 void Timeline::changeEvent( QEvent *e )
