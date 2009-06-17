@@ -55,10 +55,17 @@ FileBrowser::FileBrowser( QWidget* parent ) : QWidget( parent )
     m_ui.treeViewBrowser->setColumnHidden( 3, true );
     m_ui.pushButtonBackward->setEnabled( false );
     m_ui.pushButtonForward->setEnabled( false );
+
+    m_fsWatcher = new QFileSystemWatcher;
+    m_fsWatcher->addPath( QDir::homePath() );
+    m_currentlyWatchedDir = QDir::homePath();
+    connect( m_fsWatcher, SIGNAL( directoryChanged(QString) ), m_DirsModel, SLOT( refresh() ) );
+    connect( m_fsWatcher, SIGNAL( directoryChanged(QString) ), m_FilesModel, SLOT( refresh() ) );
 }
 
 FileBrowser::~FileBrowser()
 {
+    delete m_fsWatcher;
     delete m_DirsModel;
     delete m_FilesModel;
     delete m_forwadEntries;
@@ -85,6 +92,7 @@ void FileBrowser::TreeViewBrowserDirectoryChanged( QModelIndex& index, bool hist
 {
     if ( m_DirsModel->isDir( index ) )
     {
+        updateFsWatcher( m_DirsModel->filePath( index ) );
         if ( history == true )
             addElementToHistory();
         m_ui.listViewBrowser->setRootIndex( m_FilesModel->index( m_DirsModel->filePath( index ) ) );
@@ -102,11 +110,12 @@ void FileBrowser::on_listViewBrowser_doubleClicked( QModelIndex index )
 {
     if ( m_FilesModel->isDir( index ) )
     {
+        updateFsWatcher( m_FilesModel->filePath( index ) );
         ListViewBrowserDirectoryChanged( index );
         m_forwadEntries->clear();
         m_ui.pushButtonForward->setEnabled( false );
     }
-    else
+    else //TODO: this should be a signal.
         Library::getInstance()->newMediaLoadingAsked( m_FilesModel->filePath( index ) );
 }
 
@@ -144,4 +153,11 @@ void FileBrowser::on_pushButtonParent_clicked()
         m_ui.listViewBrowser->setRootIndex( m_FilesModel->index( m_DirsModel->filePath( m_ui.treeViewBrowser->currentIndex().parent() ) ) );
         m_ui.treeViewBrowser->setCurrentIndex( m_DirsModel->index( m_FilesModel->filePath( m_ui.listViewBrowser->rootIndex() ) ) );
     }
+}
+
+void    FileBrowser::updateFsWatcher( const QString& newPath )
+{
+    m_fsWatcher->removePath( m_currentlyWatchedDir );
+    m_currentlyWatchedDir = newPath;
+    m_fsWatcher->addPath( newPath );
 }
