@@ -161,22 +161,49 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position
 
     // Check for vertical collisions
     m_dragItem->setParentItem( m_layout->itemAt( track )->graphicsItem() );
-    QList<QGraphicsItem*> colliding = m_dragItem->collidingItems( Qt::IntersectsItemShape );
-    for ( int i = 0; i < colliding.size(); ++i )
+    bool continueSearch = true;
+    while ( continueSearch )
     {
-        AbstractGraphicsMediaItem* item = dynamic_cast<AbstractGraphicsMediaItem*>( colliding.at( i ) );
-        if ( item )
+        QList<QGraphicsItem*> colliding = m_dragItem->collidingItems( Qt::IntersectsItemShape );
+        bool itemCollision = false;
+        for ( int i = 0; i < colliding.size(); ++i )
         {
-            // Collision with an item of the same type
-            // Restoring original parent (vertical)
-            m_dragItem->setParentItem( oldParent );
-            break;
+            AbstractGraphicsMediaItem* item = dynamic_cast<AbstractGraphicsMediaItem*>( colliding.at( i ) );
+            if ( item )
+            {
+                // Collision with an item of the same type
+                itemCollision = true;
+                if ( item->pos().y() < position.y() )
+                {
+                    if ( track < 0 )
+                    {
+                        m_dragItem->setParentItem( oldParent );
+                        continueSearch = false;
+                        break;
+                    }
+                    track -= 1;
+                    m_dragItem->setParentItem( m_layout->itemAt( track )->graphicsItem() );
+                }
+                else if ( item->pos().y() > position.y() )
+                {
+                    if ( track >= m_numVideoTrack - 1 )
+                    {
+                        m_dragItem->setParentItem( oldParent );
+                        continueSearch = false;
+                        break;
+                    }
+                    track += 1;
+                    m_dragItem->setParentItem( m_layout->itemAt( track )->graphicsItem() );
+                }
+            }
         }
+        if ( !itemCollision )
+            continueSearch = false;
     }
 
     // Check for horizontal collisions
     m_dragItem->setPos( mappedXPos, 0 );
-    colliding = m_dragItem->collidingItems( Qt::IntersectsItemShape );
+    QList<QGraphicsItem*> colliding = m_dragItem->collidingItems( Qt::IntersectsItemShape );
     for ( int i = 0; i < colliding.size(); ++i )
     {
         AbstractGraphicsMediaItem* item = dynamic_cast<AbstractGraphicsMediaItem*>( colliding.at( i ) );
