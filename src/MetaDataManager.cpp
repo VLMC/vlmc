@@ -67,21 +67,40 @@ void    MetaDataManager::run()
             m_currentClip = m_mediaList.front();
             m_mediaList.pop_front();
 
-            //Disabling audio for this specific use of the media
-            m_currentClip->addParam( ":no-audio" );
-            m_currentClip->flushParameters();
-            //And re-enable it to prevent the audio to be disabled anywhere else.
-            m_currentClip->addParam( ":audio" );
-
+            if ( m_currentClip->getFileType() == Media::Video )
+            {
+                computeVideoMetaData();
+            }
+            else if ( m_currentClip->getFileType() == Media::Image )
+            {
+                computeImageMetaData();
+            }
             m_mediaPlayer->setMedia( m_currentClip->getVLCMedia() );
-            //TODO: activate this when switching to VLC 1.1
-//            connect( m_mediaPlayer, SIGNAL( lengthChanged() ), this, SLOT( entrypointLengthChanged() ) );
             connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( entrypointPlaying() ) );
             m_mediaPlayer->play();
         }
         usleep( 10000 );
     }
     return;
+}
+
+void    MetaDataManager::computeVideoMetaData()
+{
+    //Disabling audio for this specific use of the media
+    m_currentClip->addParam( ":no-audio" );
+    m_currentClip->flushParameters();
+    //And re-enable it to prevent the audio to be disabled anywhere else.
+    m_currentClip->addParam( ":audio" );
+
+    //TODO: activate this when switching to VLC 1.1
+//            connect( m_mediaPlayer, SIGNAL( lengthChanged() ), this, SLOT( entrypointLengthChanged() ) );
+}
+
+void    MetaDataManager::computeImageMetaData()
+{
+    m_currentClip->addParam( ":access=fake" );
+    m_currentClip->addParam( ":fake-duration=10000" );
+    m_currentClip->flushParameters();
 }
 
 void    MetaDataManager::getMetaData()
@@ -96,14 +115,21 @@ void    MetaDataManager::getMetaData()
     m_currentClip->setWidth( m_mediaPlayer->getWidth() );
     m_currentClip->setHeight( m_mediaPlayer->getHeight() );
 
+    qDebug() << "length =" << m_currentClip->getLength();
     //Setting time for snapshot :
-    connect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( renderSnapshot() ) );
-    m_mediaPlayer->setTime( m_mediaPlayer->getLength() / 3 );
+    if ( m_currentClip->getFileType() == Media::Video )
+    {
+        connect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( renderSnapshot() ) );
+        m_mediaPlayer->setTime( m_mediaPlayer->getLength() / 3 );
+    }
+    else
+        renderSnapshot();
 }
 
 void    MetaDataManager::renderSnapshot()
 {
-    disconnect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( renderSnapshot() ) );
+    if ( m_currentClip->getFileType() == Media::Video )
+        disconnect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( renderSnapshot() ) );
     QTemporaryFile tmp;
     tmp.setAutoRemove( false );
     tmp.open();
@@ -113,7 +139,7 @@ void    MetaDataManager::renderSnapshot()
 
     //The slot should be triggered in this methode
     m_mediaPlayer->takeSnapshot( m_tmpSnapshotFilename.toStdString().c_str()
-                                 , 64, 64 );
+                                 , 0, 0 );
     //Snapshot slot should has been called (but maybe not in next version...)
 }
 

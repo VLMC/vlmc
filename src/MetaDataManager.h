@@ -54,6 +54,10 @@ class MetaDataManager : public QThread, public Singleton<MetaDataManager>
         ~MetaDataManager();
 
         virtual void                run();
+
+        void                        computeVideoMetaData();
+        void                        computeImageMetaData();
+
         //AMEM part :
         static  void                openSoundBuffer( void* datas, unsigned int* freq,
                                                         unsigned int* nbChannels, unsigned int* fourCCFormat,
