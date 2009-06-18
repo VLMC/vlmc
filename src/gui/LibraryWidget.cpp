@@ -54,9 +54,11 @@ LibraryWidget::~LibraryWidget()
     }
 }
 
-ListViewMediaItem*  LibraryWidget::addMedia( const Media* media, Media::FileType fileType )
+ListViewMediaItem*  LibraryWidget::addMedia( const Media* media )
 {
+    Media::FileType fileType = media->getFileType();
     ListViewMediaItem* item = new ListViewMediaItem( media, fileType );
+
     //TODO: replace this :
     //emit listViewMediaAdded( item->getClip() );
     m_medias->append( item );
@@ -122,7 +124,7 @@ void                LibraryWidget::removeMedia( const QUuid& uuid )
 void    LibraryWidget::newMediaLoaded( Media* media )
 {
     //From here, the clip is const.
-    addMedia( media, Media::Video );
+    addMedia( media );
     m_ui.LibraryTabs->setCurrentIndex( 1 );
 }
 
@@ -160,17 +162,17 @@ void LibraryWidget::on_pushButtonAddMedia_clicked()
     {
     case 0:
         insertNewMediasFromFileDialog( tr( "Open Audios" ),
-                                      tr( "Audio Files" ) + " (*.mp3 *.oga *.flac *.aac *.wav)" ,
+                                      tr( "Audio Files" ) + " (" + Media::AudioExtensions + ")" ,
                                       Media::Audio );
         break;
     case 1:
         insertNewMediasFromFileDialog( tr( "Open Videos" ),
-                                      tr( "Video Files" ) + " (*.mov *.avi *.mkv *.mpg *.mpeg *.wmv *.mp4)" ,
+                                      tr( "Video Files" ) + " (" + Media::VideoExtensions + ")" ,
                                       Media::Video );
         break;
     case 2:
         insertNewMediasFromFileDialog( tr( "Open Images" ),
-                                      tr( "Images Files" ) + " (*.gif *.png *.jpg)" ,
+                                      tr( "Images Files" ) + " (" + Media::ImageExtensions + ")" ,
                                       Media::Image );
         break;
     }

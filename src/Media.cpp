@@ -29,17 +29,20 @@
 #include <QtDebug>
 #include "Media.h"
 
-QPixmap*    Media::defaultSnapshot = NULL;
+QPixmap*        Media::defaultSnapshot = NULL;
+const QString   Media::VideoExtensions = "*.mov *.avi *.mkv *.mpg *.mpeg *.wmv *.mp4";
+const QString   Media::ImageExtensions = "*.gif *.png *.jpg";
+const QString   Media::AudioExtensions = "*.mp3 *.oga *.flac *.aac *.wav";
 
-Media::Media( const QString& mrl )
-    : m_vlcMedia( NULL ), m_mrl( mrl ), m_snapshot( NULL ), m_length( 0 ),
-    m_width( 0 ), m_height( 0 )
-{
-    m_vlcMedia = new LibVLCpp::Media( mrl );
-    m_uuid = QUuid::createUuid();
-    //We avoid creating a fileInfo from the mrl since it can be "fake://" for invmem.
-    m_fileInfo = NULL;
-}
+//Media::Media( const QString& mrl )
+//    : m_vlcMedia( NULL ), m_mrl( mrl ), m_snapshot( NULL ), m_length( 0 ),
+//    m_width( 0 ), m_height( 0 )
+//{
+//    m_vlcMedia = new LibVLCpp::Media( mrl );
+//    m_uuid = QUuid::createUuid();
+//    //We avoid creating a fileInfo from the mrl since it can be "fake://" for invmem.
+//    m_fileInfo = NULL;
+//}
 
 Media::Media( const QFileInfo* fileInfo)
     : m_vlcMedia( NULL ), m_snapshot( NULL ), m_length( 0 ),
@@ -49,6 +52,7 @@ Media::Media( const QFileInfo* fileInfo)
     m_vlcMedia = new LibVLCpp::Media( m_mrl );
     m_uuid = QUuid::createUuid();
     m_fileInfo = new QFileInfo( *fileInfo );
+    setFileType();
 }
 
 Media::~Media()
@@ -57,6 +61,19 @@ Media::~Media()
     {
         delete m_vlcMedia;
     }
+}
+
+void        Media::setFileType()
+{
+    QString filter = "*." + m_fileInfo->suffix();
+    if ( Media::VideoExtensions.contains( filter ) )
+        m_fileType = Media::Video;
+    else if ( Media::AudioExtensions.contains( filter ) )
+        m_fileType = Media::Audio;
+    else if ( Media::ImageExtensions.contains( filter ) )
+        m_fileType = Media::Image;
+    else
+        qDebug() << "What the hell is this extension ? And how did you loaded it ?!";
 }
 
 void        Media::loadMedia( const QString& mrl )
