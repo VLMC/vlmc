@@ -48,7 +48,7 @@ public:
     explicit LibraryWidget( QWidget *parent = 0 );
     virtual ~LibraryWidget();
 
-    ListViewMediaItem*                  addMedia( const Media* clip, Media::FileType fileType );
+    ListViewMediaItem*                  addMedia( const Media* clip );
     void                                removeMedia( const QUuid& uuid );
     int                                 getIndex( ListViewMediaItem* media );
 

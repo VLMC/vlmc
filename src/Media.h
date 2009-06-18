@@ -70,7 +70,7 @@ public:
         Image
     };
     Media( const QFileInfo* fileInfo );
-    Media( const QString& mrl );
+//    Media( const QString& mrl );
     virtual ~Media();
 
     void                        loadMedia( const QString& mrl );
@@ -105,6 +105,9 @@ public:
     const QUuid&                getUuid() const;
 
     FileType                    getFileType() const;
+    static const QString        VideoExtensions;
+    static const QString        AudioExtensions;
+    static const QString        ImageExtensions;
 
     void                        initAudioData( void* datas, unsigned int* freq, unsigned int* nbChannels, unsigned int* fourCCFormat, unsigned int* frameSize );
     void                        addAudioFrame( void* datas, unsigned char* buffer, size_t buffSize, unsigned int nbSample );
@@ -112,6 +115,9 @@ public:
     audioData*                  getAudioData() { return &m_audioData; }
     QVector<int*>               getAudioFrameList() { return m_audioData.frameList; }
     unsigned int                getAudioNbSample() { return m_audioData.nbSample; }
+
+private:
+    void                        setFileType();
 
 protected:
     static QPixmap*             defaultSnapshot;
