@@ -125,7 +125,7 @@ void    LibraryWidget::newMediaLoaded( Media* media )
 {
     //From here, the clip is const.
     addMedia( media );
-    m_ui.LibraryTabs->setCurrentIndex( 1 );
+    m_ui.LibraryTabs->setCurrentIndex( (int) media->getFileType() );
 }
 
 void    LibraryWidget::insertNewMediasFromFileDialog( QString title, QString filter, Media::FileType fileType )
