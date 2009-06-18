@@ -31,9 +31,9 @@ LibraryWidget::LibraryWidget( QWidget *parent ) : QWidget( parent ), m_firstDire
 {
     m_ui.setupUi( this );
 
-    m_ui.listWidgetAudio->setType( Library::Audio );
-    m_ui.listWidgetImage->setType( Library::Image );
-    m_ui.listWidgetVideo->setType( Library::Video );
+    m_ui.listWidgetAudio->setType( Media::Audio );
+    m_ui.listWidgetImage->setType( Media::Image );
+    m_ui.listWidgetVideo->setType( Media::Video );
 
     setAcceptDrops( true );
 
@@ -54,7 +54,7 @@ LibraryWidget::~LibraryWidget()
     }
 }
 
-ListViewMediaItem*  LibraryWidget::addMedia( const Media* media, Library::FileType fileType )
+ListViewMediaItem*  LibraryWidget::addMedia( const Media* media, Media::FileType fileType )
 {
     ListViewMediaItem* item = new ListViewMediaItem( media, fileType );
     //TODO: replace this :
@@ -62,13 +62,13 @@ ListViewMediaItem*  LibraryWidget::addMedia( const Media* media, Library::FileTy
     m_medias->append( item );
     switch ( fileType )
     {
-    case Library::Audio:
+    case Media::Audio:
         m_ui.listWidgetAudio->addItem( item );
         break;
-    case Library::Video:
+    case Media::Video:
         m_ui.listWidgetVideo->addItem( item );
         break;
-    case Library::Image:
+    case Media::Image:
         m_ui.listWidgetImage->addItem( item );
         break;
     }
@@ -89,13 +89,13 @@ void                LibraryWidget::removeMedia( const QUuid& uuid )
         {
             switch( item->getFileType() )
             {
-            case Library::Audio:
+            case Media::Audio:
                 this->m_ui.listWidgetAudio->removeItemWidget( item );
                 break;
-            case Library::Image:
+            case Media::Image:
                 this->m_ui.listWidgetImage->removeItemWidget( item );
                 break;
-            case Library::Video:
+            case Media::Video:
                 this->m_ui.listWidgetVideo->removeItemWidget( item );
                 break;
             }
@@ -122,11 +122,11 @@ void                LibraryWidget::removeMedia( const QUuid& uuid )
 void    LibraryWidget::newMediaLoaded( Media* media )
 {
     //From here, the clip is const.
-    addMedia( media, Library::Video );
+    addMedia( media, Media::Video );
     m_ui.LibraryTabs->setCurrentIndex( 1 );
 }
 
-void    LibraryWidget::insertNewMediasFromFileDialog( QString title, QString filter, Library::FileType fileType )
+void    LibraryWidget::insertNewMediasFromFileDialog( QString title, QString filter, Media::FileType fileType )
 {
     QSettings settings;
     QString path;
@@ -146,7 +146,7 @@ void    LibraryWidget::insertNewMediasFromFileDialog( QString title, QString fil
     foreach ( filePath, fileNames )
     {
 //        item = insertNewMedia( fileName, filetype );
-//        if( fileType == Library::Video )
+//        if( fileType == Media::Video )
             emit newMediaLoadingAsked( filePath );
     }
 //    if ( item != NULL )
@@ -161,17 +161,17 @@ void LibraryWidget::on_pushButtonAddMedia_clicked()
     case 0:
         insertNewMediasFromFileDialog( tr( "Open Audios" ),
                                       tr( "Audio Files" ) + " (*.mp3 *.oga *.flac *.aac *.wav)" ,
-                                      Library::Audio );
+                                      Media::Audio );
         break;
     case 1:
         insertNewMediasFromFileDialog( tr( "Open Videos" ),
                                       tr( "Video Files" ) + " (*.mov *.avi *.mkv *.mpg *.mpeg *.wmv *.mp4)" ,
-                                      Library::Video );
+                                      Media::Video );
         break;
     case 2:
         insertNewMediasFromFileDialog( tr( "Open Images" ),
                                       tr( "Images Files" ) + " (*.gif *.png *.jpg)" ,
-                                      Library::Image );
+                                      Media::Image );
         break;
     }
 }

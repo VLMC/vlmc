@@ -59,6 +59,16 @@ class       Media : public QObject
     Q_OBJECT
 
 public:
+    /**
+     *  \enum fType
+     *  \brief enum to determine file type
+     */
+    enum FileType
+    {
+        Audio,
+        Video,
+        Image
+    };
     Media( const QFileInfo* fileInfo );
     Media( const QString& mrl );
     virtual ~Media();
@@ -94,6 +104,8 @@ public:
 
     const QUuid&                getUuid() const;
 
+    FileType                    getFileType() const;
+
     void                        initAudioData( void* datas, unsigned int* freq, unsigned int* nbChannels, unsigned int* fourCCFormat, unsigned int* frameSize );
     void                        addAudioFrame( void* datas, unsigned char* buffer, size_t buffSize, unsigned int nbSample );
 
@@ -115,6 +127,7 @@ protected:
     unsigned int                m_height;
     int*                        m_audioSpectrum;
     audioData                   m_audioData;
+    FileType                    m_fileType;
 
 signals:
     void                        snapshotChanged();

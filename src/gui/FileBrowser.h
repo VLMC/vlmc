@@ -32,7 +32,7 @@
 class FileBrowser : public QWidget
 {
     Q_OBJECT
-public:
+public:    
     FileBrowser( QWidget* parent = NULL );
     virtual ~FileBrowser();
 private:
