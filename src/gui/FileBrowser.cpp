@@ -150,6 +150,7 @@ void FileBrowser::on_pushButtonParent_clicked()
     if ( !QDir(m_DirsModel->filePath( m_ui.treeViewBrowser->currentIndex() )).isRoot() )
     {
         addElementToHistory();
+        updateFsWatcher( m_DirsModel->filePath( m_ui.treeViewBrowser->currentIndex().parent() ) );
         m_ui.listViewBrowser->setRootIndex( m_FilesModel->index( m_DirsModel->filePath( m_ui.treeViewBrowser->currentIndex().parent() ) ) );
         m_ui.treeViewBrowser->setCurrentIndex( m_DirsModel->index( m_FilesModel->filePath( m_ui.listViewBrowser->rootIndex() ) ) );
     }
