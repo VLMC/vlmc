@@ -68,6 +68,7 @@ void        Library::removingMediaAsked( const QUuid& uuid )
 
 void        Library::newMediaLoadingAsked( const QString& filePath )
 {
+    //Is this necessary ??
     QMutexLocker locker( &m_mutex );
     Media*   media;
     foreach ( media, m_medias )

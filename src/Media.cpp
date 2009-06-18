@@ -139,6 +139,11 @@ void                Media::setHeight( int height )
     m_height = height;
 }
 
+Media::FileType     Media::getFileType() const
+{
+    return m_fileType;
+}
+
 void                Media::initAudioData( void* datas, unsigned int* freq, unsigned int* nbChannels, unsigned int* fourCCFormat, unsigned int* frameSize )
 {
     m_audioData.freq = freq;

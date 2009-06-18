@@ -35,18 +35,18 @@ MediaListWidget::MediaListWidget( QWidget* parent ) : QListWidget( parent )
     setAcceptDrops( true );
 }
 
-void    MediaListWidget::setType( Library::FileType fileType )
+void    MediaListWidget::setType( Media::FileType fileType )
 {
     this->m_Type = fileType;
     switch ( fileType )
     {
-    case Library::Audio:
+    case Media::Audio:
         m_svgRenderer->load( QString( ":/images/scalable/audio-scalable" ) );
         break;
-    case Library::Image:
+    case Media::Image:
         m_svgRenderer->load( QString( ":/images/scalable/image-scalable" ) );
         break;
-    case Library::Video:
+    case Media::Video:
         m_svgRenderer->load( QString( ":/images/scalable/video-scalable" ) );
         break;
     }

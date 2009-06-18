@@ -48,7 +48,7 @@ public:
     explicit LibraryWidget( QWidget *parent = 0 );
     virtual ~LibraryWidget();
 
-    ListViewMediaItem*                  addMedia( const Media* clip, Library::FileType fileType );
+    ListViewMediaItem*                  addMedia( const Media* clip, Media::FileType fileType );
     void                                removeMedia( const QUuid& uuid );
     int                                 getIndex( ListViewMediaItem* media );
 
@@ -58,8 +58,8 @@ protected:
     virtual void                        dropEvent( QDropEvent* event );
 
 private:
-    ListViewMediaItem*                  insertNewMedia( QString filename, Library::FileType fileType );
-    void                                insertNewMediasFromFileDialog( QString title, QString filter, Library::FileType fileType );
+    ListViewMediaItem*                  insertNewMedia( QString filename, Media::FileType fileType );
+    void                                insertNewMediasFromFileDialog( QString title, QString filter, Media::FileType fileType );
 
     Ui::LibraryWidget                   m_ui;
     static QList<ListViewMediaItem*>*   m_medias;

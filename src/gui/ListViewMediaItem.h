@@ -47,7 +47,7 @@ public:
      * \param parent parent widget
      * \param type
      */
-    ListViewMediaItem( const Media* media, Library::FileType fType, QListWidget* parent = 0, int type = Type );
+    ListViewMediaItem( const Media* media, Media::FileType fType, QListWidget* parent = 0, int type = Type );
 
     /**
      *  \brief Destructor
@@ -58,7 +58,7 @@ public:
      * \brief Getter for filetype
      * \return filetype of the item
      */
-    Library::FileType           getFileType() const { return m_fileType; }
+    Media::FileType             getFileType() const { return m_fileType; }
 
     const Media*                getMedia() const;
 
@@ -68,7 +68,7 @@ private:
     /**
      *  \brief fileType member
      */
-    Library::FileType           m_fileType;
+    Media::FileType         m_fileType;
 
     /**
      * \Instance of the InputMedia
