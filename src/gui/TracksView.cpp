@@ -229,15 +229,21 @@ void TracksView::dragLeaveEvent( QDragLeaveEvent* event )
 
 void TracksView::dropEvent( QDropEvent* event )
 {
-    qDebug() << "Dropping is currently not implemented.";
-
     if ( m_dragItem )
     {
         updateDuration();
         if ( m_layout->itemAt( 0 )->graphicsItem()->childItems().count() > 0 )
             addVideoTrack();
         event->acceptProposedAction();
-        //addClip( media, event->pos() );
+
+        int track = (unsigned int)( mapToScene( event->pos() ).y() / m_tracksHeight );
+        if ( track > m_numVideoTrack - 1)
+            track = m_numVideoTrack - 1;
+        qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
+        //FIXME this leaks, but it will be corrected once we really use Clip instead
+        // of Media
+        m_mainWorkflow->addClip( new Clip( m_dragItem->media() ), track, (qint64)mappedXPos );
+
         m_dragItem = NULL; // Temporary action
     }
 }
@@ -351,30 +357,6 @@ void TracksView::setCursorPos( int pos )
 int TracksView::cursorPos()
 {
     return m_cursorLine->cursorPos();
-}
-
-void TracksView::addClip( Media* clip, const QPoint& point )
-{
-    unsigned int track = (unsigned int)( mapToScene( point ).y() / m_tracksHeight );
-    if ( track + 1 > m_tracksCount ) return;
-
-    //mappedXPos: 1 pixel = 1 frame
-    qreal mappedXPos = ( mapToScene( point ).x() + 0.5 );
-
-    GraphicsMovieItem* item = new GraphicsMovieItem( clip );
-    item->setPos( mappedXPos, track * tracksHeight() );
-    item->setWidth( ( (double)clip->getLength() / 1000 ) * m_fps );
-    item->setHeight( tracksHeight() );
-    //item->setAudioSpectrum( clip->getAudioSpectrum() );
-    m_scene->addItem( item );
-    int duration = mappedXPos + ( (double)clip->getLength() / 1000 ) * m_fps;
-    if ( duration > m_projectDuration )
-        updateDuration();
-    item->show();
-    qDebug() << "TracksView::addClip: Adding a new clip to track" << track;
-    //FIXME: this leaks, but it will be corrected once we really use Clip instead
-    //          of Media
-    m_mainWorkflow->addClip( new Clip( clip ), track, (qint64)mappedXPos );
 }
 
 void TracksView::setScale( double scaleFactor )

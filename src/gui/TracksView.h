@@ -80,8 +80,6 @@ public:
     void setCursorPos( int pos );
     int cursorPos();
     GraphicsCursorItem* tracksCursor() const { return m_cursorLine; }
-    //FIXME: this should probably take a Clip* as a parameter doesn't it ?
-    void addClip( Media* clip, const QPoint& point );
     void setScale( double scaleFactor );
 
 protected:
