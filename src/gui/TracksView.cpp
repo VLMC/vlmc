@@ -221,6 +221,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position
 
 void TracksView::dragLeaveEvent( QDragLeaveEvent* event )
 {
+    Q_UNUSED( event )
     if ( m_dragItem )
     {
         delete m_dragItem;
