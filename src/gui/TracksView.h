@@ -48,9 +48,14 @@ public:
         Video,
         Audio
     };
-    GraphicsTrack( Type type, QGraphicsItem* parent = 0 ) : QGraphicsWidget( parent )
+    GraphicsTrack( Type type, int trackNumber, QGraphicsItem* parent = 0 ) : QGraphicsWidget( parent )
     {
         m_type = type;
+        m_trackNumber = trackNumber;
+    }
+    int trackNumber()
+    {
+        return m_trackNumber;
     }
 
 protected:
@@ -66,6 +71,7 @@ protected:
 
 private:
     Type m_type;
+    int m_trackNumber;
 };
 
 class TracksView : public QGraphicsView
