@@ -23,12 +23,18 @@
 #include <QPainter>
 #include <QLinearGradient>
 #include <QDebug>
+#include <QTime>
 #include "GraphicsMovieItem.h"
 #include "TracksView.h"
 
 GraphicsMovieItem::GraphicsMovieItem( Media* media ) : m_media ( media ), m_width( 0 ), m_height( 0 )
 {
-    setToolTip( media->getFileInfo()->fileName() );
+    QTime length = QTime().addMSecs( media->getLength() );
+    QString tooltip( "<p style='white-space:pre'><b>Name:</b> " +
+                     media->getFileInfo()->fileName() +
+                     "<br><b>Length:</b> " +
+                     length.toString("hh:mm:ss.zzz") );
+    setToolTip( tooltip );
 }
 
 GraphicsMovieItem::~GraphicsMovieItem()
