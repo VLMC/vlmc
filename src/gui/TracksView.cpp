@@ -330,8 +330,12 @@ void TracksView::mousePressEvent( QMouseEvent* event )
          event->button() == Qt::LeftButton &&
          mediaCollisionList.count() == 1 )
     {
-        m_actionMove = true;
-        m_actionItem = mediaCollisionList.at( 0 );
+        AbstractGraphicsMediaItem* item = mediaCollisionList.at( 0 );
+        if ( item->moveable() )
+        {
+            m_actionMove = true;
+            m_actionItem = mediaCollisionList.at( 0 );
+        }
         return;
     }
 
