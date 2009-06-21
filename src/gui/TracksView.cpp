@@ -207,6 +207,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position
     }
 
     // Check for horizontal collisions
+    mappedXPos = qMax( mappedXPos, (qreal)0 );
     item->setPos( mappedXPos, 0 );
     QList<QGraphicsItem*> colliding = item->collidingItems( Qt::IntersectsItemShape );
     for ( int i = 0; i < colliding.size(); ++i )
