@@ -38,6 +38,10 @@
 #define FPS     30
 #endif
 
+#ifndef MAX_TRACKS
+#define MAX_TRACKS 64
+#endif
+
 class   TrackWorkflow : public QObject
 {
     Q_OBJECT
