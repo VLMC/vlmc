@@ -82,6 +82,7 @@ public:
     int cursorPos();
     GraphicsCursorItem* tracksCursor() const { return m_cursorLine; }
     void setScale( double scaleFactor );
+    QList<AbstractGraphicsMediaItem*> mediaItems( const QPoint& pos );
 
 protected:
     virtual void            resizeEvent( QResizeEvent* event );

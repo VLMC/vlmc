@@ -304,10 +304,9 @@ void TracksView::mouseMoveEvent( QMouseEvent* event )
 
 void TracksView::mousePressEvent( QMouseEvent* event )
 {
+    QList<AbstractGraphicsMediaItem*> mediaCollisionList = mediaItems( event->pos() );
 
-    QList<QGraphicsItem*> collisionList = items( event->pos() );
-
-    if ( event->modifiers() == Qt::ControlModifier && collisionList.count() == 0 )
+    if ( event->modifiers() == Qt::ControlModifier && mediaCollisionList.count() == 0 )
     {
         setDragMode( QGraphicsView::ScrollHandDrag );
         QGraphicsView::mousePressEvent( event );
@@ -349,6 +348,20 @@ void TracksView::wheelEvent( QWheelEvent* event )
         event->ignore();
         QGraphicsView::wheelEvent( event );
     }
+}
+
+QList<AbstractGraphicsMediaItem*> TracksView::mediaItems( const QPoint& pos )
+{
+    QList<QGraphicsItem*> collisionList = items( pos );
+    QList<AbstractGraphicsMediaItem*> mediaCollisionList;
+    for ( int i = 0; i < collisionList.size(); ++i )
+    {
+        AbstractGraphicsMediaItem* item =
+                dynamic_cast<AbstractGraphicsMediaItem*>( collisionList.at( i ) );
+        if ( item )
+            mediaCollisionList.append( item );
+    }
+    return mediaCollisionList;
 }
 
 void TracksView::setCursorPos( int pos )
@@ -393,6 +406,7 @@ void TracksView::ensureCursorVisible()
 
 void TracksView::updateDuration()
 {
+    //TODO this should use a variant of mediaItems( const QPoint& )
     QList<QGraphicsItem*> sceneItems = m_scene->items();
 
     int projectDuration = 0;
