@@ -30,10 +30,10 @@
 GraphicsMovieItem::GraphicsMovieItem( Media* media ) : m_media ( media ), m_width( 0 ), m_height( 0 )
 {
     QTime length = QTime().addMSecs( media->getLength() );
-    QString tooltip( "<p style='white-space:pre'><b>Name:</b> " +
-                     media->getFileInfo()->fileName() +
-                     "<br><b>Length:</b> " +
-                     length.toString("hh:mm:ss.zzz") );
+    QString tooltip( tr( "<p style='white-space:pre'><b>Name:</b> %1"
+                     "<br><b>Length:</b> %2" )
+                     .arg( media->getFileInfo()->fileName() )
+                     .arg( length.toString("hh:mm:ss.zzz") ) );
     setToolTip( tooltip );
 }
 
