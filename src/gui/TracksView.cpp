@@ -246,12 +246,10 @@ void TracksView::dropEvent( QDropEvent* event )
         event->acceptProposedAction();
 
         qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
-        //FIXME this leaks, but it will be corrected once we really use Clip instead
-        // of Media
         m_mainWorkflow->addClip( m_dragItem->clip(),
                                  m_dragItem->trackNumber(),
                                  (qint64)mappedXPos );
-        m_dragItem = NULL; // Temporary action
+        m_dragItem = NULL;
     }
 }
 
