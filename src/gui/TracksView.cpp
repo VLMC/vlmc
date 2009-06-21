@@ -357,6 +357,8 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
     if ( m_actionMove )
     {
         updateDuration();
+        if ( m_layout->itemAt( 0 )->graphicsItem()->childItems().count() > 0 )
+            addVideoTrack();
         m_actionMove = false;
         m_actionRelativeX = -1;
         m_actionItem = NULL;
