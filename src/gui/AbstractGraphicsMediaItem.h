@@ -47,6 +47,8 @@ public:
     /// Should return the unique uid of the contained media.
     virtual const QUuid& uuid() const = 0;
 
+    int trackNumber();
+
 protected:
     /**
      * Returns the current tracksView for the item,

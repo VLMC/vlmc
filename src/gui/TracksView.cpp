@@ -45,7 +45,7 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
 
     m_numAudioTrack = 0;
     m_numVideoTrack = 0;
-    m_videoTracksCounter = MAX_TRACKS;
+    m_videoTracksCounter = MAX_TRACKS - 1;
     m_dragItem = NULL;
     m_actionMove = false;
     m_actionRelativeX = -1;
@@ -245,14 +245,11 @@ void TracksView::dropEvent( QDropEvent* event )
             addVideoTrack();
         event->acceptProposedAction();
 
-        int track = (unsigned int)( mapToScene( event->pos() ).y() / m_tracksHeight );
-        if ( track > m_numVideoTrack - 1)
-            track = m_numVideoTrack - 1;
         qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
         //FIXME this leaks, but it will be corrected once we really use Clip instead
         // of Media
         m_mainWorkflow->addClip( m_dragItem->clip(),
-                                 m_videoTracksCounter + track,
+                                 m_dragItem->trackNumber(),
                                  (qint64)mappedXPos );
         m_dragItem = NULL; // Temporary action
     }
@@ -364,12 +361,8 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
             updateDuration();
             if ( m_layout->itemAt( 0 )->graphicsItem()->childItems().count() > 0 )
                 addVideoTrack();
-
-            int track = (unsigned int)( mapToScene( movieItem->pos().toPoint() ).y() / m_tracksHeight );
-            if ( track > m_numVideoTrack - 1)
-                track = m_numVideoTrack - 1;
             emit clipMoved( movieItem->clip()->getUuid(),
-                            m_videoTracksCounter + track,
+                            movieItem->trackNumber(),
                             (qint64)movieItem->pos().x() );
             m_actionMove = false;
             m_actionRelativeX = -1;
