@@ -156,7 +156,9 @@ void TracksView::dragMoveEvent( QDragMoveEvent* event )
 void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position )
 {
     int track = (unsigned int)( mapToScene( position ).y() / m_tracksHeight );
-    if ( track > m_numVideoTrack - 1)
+    if ( track < 0 )
+        track = 0;
+    else if ( track > m_numVideoTrack - 1)
         track = m_numVideoTrack - 1;
 
     qreal mappedXPos = ( mapToScene( position ).x() + 0.5 );
