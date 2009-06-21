@@ -47,6 +47,9 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
     m_numVideoTrack = 0;
     m_videoTracksCounter = MAX_TRACKS;
     m_dragItem = NULL;
+    m_actionMove = false;
+    m_actionRelativeX = -1;
+    m_actionItem = NULL;
 
     setMouseTracking( true );
     setAcceptDrops( true );
@@ -300,6 +303,15 @@ void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
 
 void TracksView::mouseMoveEvent( QMouseEvent* event )
 {
+    if ( event->modifiers() == Qt::NoModifier &&
+         event->buttons() == Qt::LeftButton &&
+         m_actionMove == true )
+    {
+        if ( m_actionRelativeX < 0 )
+            m_actionRelativeX = event->pos().x() - mapFromScene( m_actionItem->pos() ).x();
+        moveMediaItem( m_actionItem, QPoint( event->pos().x() - m_actionRelativeX, event->pos().y() ) );
+    }
+
     QGraphicsView::mouseMoveEvent( event );
 }
 
@@ -311,6 +323,15 @@ void TracksView::mousePressEvent( QMouseEvent* event )
     {
         setDragMode( QGraphicsView::ScrollHandDrag );
         QGraphicsView::mousePressEvent( event );
+        return;
+    }
+
+    if ( event->modifiers() == Qt::NoModifier &&
+         event->button() == Qt::LeftButton &&
+         mediaCollisionList.count() == 1 )
+    {
+        m_actionMove = true;
+        m_actionItem = mediaCollisionList.at( 0 );
         return;
     }
 
@@ -328,6 +349,13 @@ void TracksView::mousePressEvent( QMouseEvent* event )
 
 void TracksView::mouseReleaseEvent( QMouseEvent* event )
 {
+    if ( m_actionMove )
+    {
+        m_actionMove = false;
+        m_actionRelativeX = -1;
+        m_actionItem = NULL;
+    }
+
     setDragMode( QGraphicsView::NoDrag );
     QGraphicsView::mouseReleaseEvent( event );
 }

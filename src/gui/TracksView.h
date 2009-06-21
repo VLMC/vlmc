@@ -119,6 +119,11 @@ private:
     GraphicsMovieItem*      m_dragItem;
     QGraphicsWidget*        m_separator;
 
+    // Mouse actions on Medias
+    bool                    m_actionMove;
+    int                     m_actionRelativeX;
+    AbstractGraphicsMediaItem* m_actionItem;
+
 signals:
     void                    zoomIn();
     void                    zoomOut();
