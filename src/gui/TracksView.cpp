@@ -139,7 +139,7 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
     qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
 
     if ( m_dragItem ) delete m_dragItem;
-    m_dragItem = new GraphicsMovieItem( media );
+    m_dragItem = new GraphicsMovieItem( new Clip( media ) );
     m_dragItem->setWidth( ( (double)media->getLength() / 1000 ) * m_fps );
     m_dragItem->setHeight( tracksHeight() );
     m_dragItem->setPos( mappedXPos, 0 );
@@ -251,9 +251,9 @@ void TracksView::dropEvent( QDropEvent* event )
         qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
         //FIXME this leaks, but it will be corrected once we really use Clip instead
         // of Media
-        m_mainWorkflow->addClip( new Clip( m_dragItem->media() ),
-                                 m_videoTracksCounter + track, (qint64)mappedXPos );
-
+        m_mainWorkflow->addClip( m_dragItem->clip(),
+                                 m_videoTracksCounter + track,
+                                 (qint64)mappedXPos );
         m_dragItem = NULL; // Temporary action
     }
 }
@@ -358,12 +358,23 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
 {
     if ( m_actionMove )
     {
-        updateDuration();
-        if ( m_layout->itemAt( 0 )->graphicsItem()->childItems().count() > 0 )
-            addVideoTrack();
-        m_actionMove = false;
-        m_actionRelativeX = -1;
-        m_actionItem = NULL;
+        GraphicsMovieItem* movieItem = qgraphicsitem_cast<GraphicsMovieItem*>( m_actionItem );
+        if ( movieItem )
+        {
+            updateDuration();
+            if ( m_layout->itemAt( 0 )->graphicsItem()->childItems().count() > 0 )
+                addVideoTrack();
+
+            int track = (unsigned int)( mapToScene( movieItem->pos().toPoint() ).y() / m_tracksHeight );
+            if ( track > m_numVideoTrack - 1)
+                track = m_numVideoTrack - 1;
+            emit clipMoved( movieItem->clip()->getUuid(),
+                            m_videoTracksCounter + track,
+                            (qint64)movieItem->pos().x() );
+            m_actionMove = false;
+            m_actionRelativeX = -1;
+            m_actionItem = NULL;
+        }
     }
 
     setDragMode( QGraphicsView::NoDrag );

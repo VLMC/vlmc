@@ -24,6 +24,7 @@
 #define GRAPHICSMOVIEITEM_H
 
 #include "AbstractGraphicsMediaItem.h"
+#include "Clip.h"
 #include "Media.h"
 #include "TracksView.h"
 
@@ -32,24 +33,24 @@ class GraphicsMovieItem : public AbstractGraphicsMediaItem
     Q_OBJECT
 public:
     enum { Type = UserType + 1 };
-    GraphicsMovieItem( Media* media );
+    GraphicsMovieItem( Clip* clip );
     virtual ~GraphicsMovieItem();
 
     virtual int type() const { return Type; }
     virtual bool expandable() const { return false; }
     virtual bool moveable() const { return true; }
-    virtual const QUuid& uuid() const { return m_media->getUuid(); }
+    virtual const QUuid& uuid() const { return m_clip->getUuid(); }
     virtual QRectF boundingRect() const;
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
 
     void setWidth( int width );
     void setHeight( int height );
-    Media* media() const;
+    Clip* clip() const;
     //void setAudioSpectrum( QVector<float*> spectrum );
     void paintAudioSpectrum( QPainter* painter );
 
 private:
-    Media*          m_media;
+    Clip*           m_clip;
     int             m_width;
     int             m_height;
     QVector<float*> m_audioSpectrum;
