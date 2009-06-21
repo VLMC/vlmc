@@ -41,3 +41,14 @@ void AbstractGraphicsMediaItem::mouseReleaseEvent( QGraphicsSceneMouseEvent* )
 {
     setCursor( Qt::OpenHandCursor );
 }
+
+int AbstractGraphicsMediaItem::trackNumber()
+{
+    if ( parentItem() )
+    {
+        GraphicsTrack* graphicsTrack = dynamic_cast<GraphicsTrack*>( parentItem() );
+        if ( graphicsTrack )
+            return graphicsTrack->trackNumber();
+    }
+    return -1;
+}

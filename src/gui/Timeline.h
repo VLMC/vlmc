@@ -28,6 +28,7 @@
 #include "TracksScene.h"
 #include "TracksRuler.h"
 #include "Workflow/MainWorkflow.h"
+#include "Workflow/TrackWorkflow.h"
 
 class Timeline : public QWidget
 {

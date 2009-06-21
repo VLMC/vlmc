@@ -20,14 +20,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QPainter>
+#include <QLinearGradient>
+#include <QDebug>
+#include <QTime>
 #include "GraphicsMovieItem.h"
 #include "TracksView.h"
-#include <QPainter>
-#include <QDebug>
 
-GraphicsMovieItem::GraphicsMovieItem( Media* media ) : m_media ( media ), m_width( 0 ), m_height( 0 )
+GraphicsMovieItem::GraphicsMovieItem( Clip* clip ) : m_clip( clip ), m_width( 0 ), m_height( 0 )
 {
-
+    QTime length = QTime().addMSecs( clip->getParent()->getLength() );
+    QString tooltip( tr( "<p style='white-space:pre'><b>Name:</b> %1"
+                     "<br><b>Length:</b> %2" )
+                     .arg( clip->getParent()->getFileInfo()->fileName() )
+                     .arg( length.toString("hh:mm:ss.zzz") ) );
+    setToolTip( tooltip );
 }
 
 GraphicsMovieItem::~GraphicsMovieItem()
@@ -41,7 +48,12 @@ QRectF GraphicsMovieItem::boundingRect() const
 
 void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* )
 {
-    painter->setBrush( Qt::red );
+    QLinearGradient gradient( 0, 0, m_width, m_height );
+    gradient.setColorAt( 0, QColor::fromRgb( 32, 52, 142  ) );
+    gradient.setColorAt( 1, QColor::fromRgb( 43, 69, 181  ) );
+
+    painter->setPen( QPen( Qt::NoPen ) );
+    painter->setBrush( QBrush( gradient ) );
     painter->drawRect( boundingRect() );
 
     paintAudioSpectrum( painter );
@@ -69,14 +81,14 @@ void GraphicsMovieItem::paintAudioSpectrum( QPainter* painter )
 
     QLineF line;
 
-    for (int i = 0; i < m_media->getAudioFrameList().size(); i++)
+    for (int i = 0; i < m_clip->getParent()->getAudioFrameList().size(); i++)
     {
         //qDebug() << "Frame: " << i << "/" << m_media->getAudioFrameList().size();
-        for (unsigned int u = 0; u < m_media->getAudioNbSample(); u += 400)
+        for (unsigned int u = 0; u < m_clip->getParent()->getAudioNbSample(); u += 400)
         {
 
 
-            int value = m_media->getAudioFrameList()[i][u];
+            int value = m_clip->getParent()->getAudioFrameList()[i][u];
             value /= 30;
             if( value > 48 ) value = 48;
             if( value < 0 ) value = 0;
@@ -100,4 +112,9 @@ void GraphicsMovieItem::paintAudioSpectrum( QPainter* painter )
             point.setY( point2.y() );
         }
     }
+}
+
+Clip* GraphicsMovieItem::clip() const
+{
+    return m_clip;
 }

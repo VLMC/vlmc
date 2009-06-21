@@ -26,13 +26,53 @@
 #include <QWidget>
 #include <QGraphicsView>
 #include <QGraphicsLineItem>
+#include <QGraphicsLinearLayout>
+#include <QGraphicsWidget>
 #include <QWheelEvent>
-#include <QDragEnterEvent>
-#include <QDropEvent>
-#include <QDragMoveEvent>
+#include <QGraphicsSceneDragDropEvent>
 #include "Media.h"
 #include "GraphicsCursorItem.h"
 #include "Workflow/MainWorkflow.h"
+#include "Workflow/TrackWorkflow.h"
+
+class GraphicsMovieItem;
+class AbstractGraphicsMediaItem;
+
+class GraphicsTrack : public QGraphicsWidget
+{
+    Q_OBJECT
+
+public:
+    enum Type
+    {
+        Video,
+        Audio
+    };
+    GraphicsTrack( Type type, int trackNumber, QGraphicsItem* parent = 0 ) : QGraphicsWidget( parent )
+    {
+        m_type = type;
+        m_trackNumber = trackNumber;
+    }
+    int trackNumber()
+    {
+        return m_trackNumber;
+    }
+
+protected:
+    virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* = 0 )
+    {
+        if ( m_type == Video )
+            painter->setBrush( Qt::green );
+        else
+            painter->setBrush( Qt::blue );
+        painter->setPen( Qt::transparent );
+        painter->drawRect( rect() );
+    }
+
+private:
+    Type m_type;
+    int m_trackNumber;
+};
 
 class TracksView : public QGraphicsView
 {
@@ -47,9 +87,8 @@ public:
     void setCursorPos( int pos );
     int cursorPos();
     GraphicsCursorItem* tracksCursor() const { return m_cursorLine; }
-    //FIXME: this should probably take a Clip* as a parameter doesn't it ?
-    void addClip( Media* clip, const QPoint& point );
     void setScale( double scaleFactor );
+    QList<AbstractGraphicsMediaItem*> mediaItems( const QPoint& pos );
 
 protected:
     virtual void            resizeEvent( QResizeEvent* event );
@@ -59,25 +98,43 @@ protected:
     virtual void            mouseReleaseEvent( QMouseEvent* event );
     virtual void            wheelEvent( QWheelEvent* event );
     virtual void            dragEnterEvent( QDragEnterEvent* event );
-    virtual void            dropEvent( QDropEvent* event );
     virtual void            dragMoveEvent( QDragMoveEvent* event );
+    virtual void            dragLeaveEvent( QDragLeaveEvent* event );
+    virtual void            dropEvent( QDropEvent* event );
 
 private slots:
     void                    ensureCursorVisible();
+    void                    updateDuration();
 
 private:
+    void                    createLayout();
+    void                    addVideoTrack();
+    void                    addAudioTrack();
+    void                    moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position );
     QGraphicsScene*         m_scene;
     int                     m_tracksHeight;
     unsigned int            m_tracksCount;
     int                     m_projectDuration;
     int                     m_fps;
     GraphicsCursorItem*     m_cursorLine;
+    QGraphicsLinearLayout*  m_layout;
+    int                     m_numVideoTrack;
+    int                     m_numAudioTrack;
+    int                     m_videoTracksCounter;
     MainWorkflow*           m_mainWorkflow;
+    GraphicsMovieItem*      m_dragItem;
+    QGraphicsWidget*        m_separator;
+
+    // Mouse actions on Medias
+    bool                    m_actionMove;
+    int                     m_actionRelativeX;
+    AbstractGraphicsMediaItem* m_actionItem;
 
 signals:
     void                    zoomIn();
     void                    zoomOut();
     void                    durationChanged( int duration );
+    void                    clipMoved( const QUuid& uuid, int track, qint64 start );
 };
 
 #endif // TRACKSVIEW_H
