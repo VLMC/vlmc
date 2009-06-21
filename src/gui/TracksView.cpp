@@ -45,6 +45,7 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
 
     m_numAudioTrack = 0;
     m_numVideoTrack = 0;
+    m_videoTracksCounter = MAX_TRACKS;
     m_dragItem = NULL;
 
     setMouseTracking( true );
@@ -104,6 +105,7 @@ void TracksView::addVideoTrack()
     track->setContentsMargins( 0, 0, 0, 0 );
     m_layout->insertItem( 0, track );
     m_numVideoTrack++;
+    m_videoTracksCounter--;
     m_scene->invalidate();
     //FIXME this should maybe go elsewhere
     setSceneRect( m_layout->contentsRect().adjusted( 0, 0, 100, 100 ) );
@@ -242,7 +244,8 @@ void TracksView::dropEvent( QDropEvent* event )
         qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
         //FIXME this leaks, but it will be corrected once we really use Clip instead
         // of Media
-        m_mainWorkflow->addClip( new Clip( m_dragItem->media() ), track, (qint64)mappedXPos );
+        m_mainWorkflow->addClip( new Clip( m_dragItem->media() ),
+                                 m_videoTracksCounter + track, (qint64)mappedXPos );
 
         m_dragItem = NULL; // Temporary action
     }

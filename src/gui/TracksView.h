@@ -33,6 +33,7 @@
 #include "Media.h"
 #include "GraphicsCursorItem.h"
 #include "Workflow/MainWorkflow.h"
+#include "Workflow/TrackWorkflow.h"
 
 class GraphicsMovieItem;
 class AbstractGraphicsMediaItem;
@@ -112,6 +113,7 @@ private:
     QGraphicsLinearLayout*  m_layout;
     int                     m_numVideoTrack;
     int                     m_numAudioTrack;
+    int                     m_videoTracksCounter;
     MainWorkflow*           m_mainWorkflow;
     GraphicsMovieItem*      m_dragItem;
     QGraphicsWidget*        m_separator;
