@@ -356,6 +356,7 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
 {
     if ( m_actionMove )
     {
+        updateDuration();
         m_actionMove = false;
         m_actionRelativeX = -1;
         m_actionItem = NULL;
