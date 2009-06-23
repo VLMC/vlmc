@@ -28,6 +28,7 @@
 #include <QSlider>
 
 #include "MainWindow.h"
+#include "MediaListWidget.h"
 #include "LibraryWidget.h"
 #include "Library.h"
 #include "Timeline.h"

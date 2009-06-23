@@ -189,7 +189,7 @@
   <customwidget>
    <class>MediaListWidget</class>
    <extends>QListWidget</extends>
-   <header>src/gui/MediaListWidget.h</header>
+   <header>MediaListWidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

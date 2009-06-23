@@ -22,6 +22,11 @@
 
 #include <QtDebug>
 
+#ifdef Q_WS_WIN
+// Used for Sleep()
+#include <Windows.h>
+#endif
+
 #include "TrackWorkflow.h"
 
 TrackWorkflow::TrackWorkflow( unsigned int trackId ) :
@@ -79,7 +84,11 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
         cw->getStateLock()->unlock();
         while ( cw->isRendering() == true )
         {
+#ifdef Q_WS_WIN
+            Sleep( 1 );
+#else
             usleep( 100 );
+#endif
         }
         //This way we can trigger the appropriate if just below.
         //by restoring the initial state of the function, and just pretend that
@@ -168,7 +177,11 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
     {
         cw->getStateLock()->unlock();
         while ( cw->isRendering() == true )
+#ifdef Q_WS_WIN
+            Sleep( 1 );
+#else
             usleep( 100 );
+#endif
         cw->queryStateChange( ClipWorkflow::Stopping );
         cw->wake();
         cw->stop();
@@ -177,7 +190,11 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
     {
         cw->getStateLock()->unlock();
         while ( cw->isReady() == false )
+#ifdef Q_WS_WIN
+            Sleep( 1 );
+#else
             usleep( 20 );
+#endif
         cw->stop();
     }
     else

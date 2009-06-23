@@ -55,6 +55,10 @@ void        Module::initInternalPtr()
 
 bool        Module::initialize()
 {
+#ifdef Q_WS_WIN
+    qDebug() << "Loading of modules is currently disabled under Windows.";
+    return false;
+#else
     m_entryPoint = reinterpret_cast<vlmc_module_entrypoint_t>( m_moduleInstance->resolve( "vlmc_module_entrypoint" ) );
     if ( m_entryPoint == NULL )
     {
@@ -69,6 +73,7 @@ bool        Module::initialize()
         return false;
     }
     return true;
+#endif
 }
 
 bool        Module::isLibrary( const QString& fileName )
