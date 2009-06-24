@@ -74,8 +74,15 @@ public:
     virtual ~Media();
 
     void                        loadMedia( const QString& mrl );
-    void                        addParam( const QString& param );
-    void                        flushParameters();
+    /**
+     *  \brief  This method adds a parameter that will stay constant though the whole life of this media (unless it is explicitely overided), even if it is cloned.
+     */
+    void                        addConstantParam( const QString& param );
+    /**
+     *  \brief  This method will add a parameter that will be restored to defaultValue when the flushVolatileParameter is called
+     */
+    void                        addVolatileParam( const QString& param, const QString& defaultValue );
+    void                        flushVolatileParameters();
     LibVLCpp::Media*            getVLCMedia() { return m_vlcMedia; }
 
     void                        setSnapshot( QPixmap* snapshot );
@@ -124,7 +131,7 @@ protected:
 
     LibVLCpp::Media*            m_vlcMedia;
     QString                     m_mrl;
-    QList<QString>              m_parameters;
+    QList<QString>              m_volatileParameters;
     QPixmap*                    m_snapshot;
     QUuid                       m_uuid;
     QFileInfo*                  m_fileInfo;

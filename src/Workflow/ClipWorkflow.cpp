@@ -118,21 +118,21 @@ void    ClipWorkflow::setVmem()
 {
     char        buffer[32];
 
-    //TODO: it would be good if we somehow backup the old media parameters to restore it later.
-    m_clip->getParent()->getVLCMedia()->addOption( ":vout=vmem" );
+    m_clip->getParent()->addVolatileParam( ":no-audio", ":audio" );
+    m_clip->getParent()->addVolatileParam( ":vout=vmem", ":vout=''" );
     m_clip->getParent()->getVLCMedia()->setDataCtx( this );
     m_clip->getParent()->getVLCMedia()->setLockCallback( reinterpret_cast<LibVLCpp::Media::lockCallback>( &ClipWorkflow::lock ) );
     m_clip->getParent()->getVLCMedia()->setUnlockCallback( reinterpret_cast<LibVLCpp::Media::unlockCallback>( &ClipWorkflow::unlock ) );
-    m_clip->getParent()->getVLCMedia()->addOption( ":vmem-chroma=RV24" );
+    m_clip->getParent()->addConstantParam( ":vmem-chroma=RV24" );
 
     sprintf( buffer, ":vmem-width=%i", VIDEOWIDTH );
-    m_clip->getParent()->getVLCMedia()->addOption( buffer );
+    m_clip->getParent()->addConstantParam( buffer );
 
     sprintf( buffer, ":vmem-height=%i", VIDEOHEIGHT );
-    m_clip->getParent()->getVLCMedia()->addOption( buffer );
+    m_clip->getParent()->addConstantParam( buffer );
 
     sprintf( buffer, "vmem-pitch=%i", VIDEOWIDTH * 3 );
-    m_clip->getParent()->getVLCMedia()->addOption( buffer );
+    m_clip->getParent()->addConstantParam( buffer );
 }
 
 void    ClipWorkflow::initialize( LibVLCpp::MediaPlayer* mediaPlayer )
@@ -145,6 +145,7 @@ void    ClipWorkflow::initialize( LibVLCpp::MediaPlayer* mediaPlayer )
     connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPositionAfterPlayback() ), Qt::DirectConnection );
     connect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( clipEndReached() ), Qt::DirectConnection );
     m_mediaPlayer->play();
+    //m_clip->getParent()->flushVolatileParameters();
 }
 
 void    ClipWorkflow::setPositionAfterPlayback()

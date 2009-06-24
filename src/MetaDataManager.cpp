@@ -78,6 +78,7 @@ void    MetaDataManager::run()
             m_mediaPlayer->setMedia( m_currentClip->getVLCMedia() );
             connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( entrypointPlaying() ) );
             m_mediaPlayer->play();
+            m_currentClip->flushVolatileParameters();
         }
         usleep( 10000 );
     }
@@ -87,10 +88,7 @@ void    MetaDataManager::run()
 void    MetaDataManager::computeVideoMetaData()
 {
     //Disabling audio for this specific use of the media
-    m_currentClip->addParam( ":no-audio" );
-    m_currentClip->flushParameters();
-    //And re-enable it to prevent the audio to be disabled anywhere else.
-    m_currentClip->addParam( ":audio" );
+    m_currentClip->addVolatileParam( ":no-audio", ":audio" );
 
     //TODO: activate this when switching to VLC 1.1
 //            connect( m_mediaPlayer, SIGNAL( lengthChanged() ), this, SLOT( entrypointLengthChanged() ) );
@@ -98,9 +96,8 @@ void    MetaDataManager::computeVideoMetaData()
 
 void    MetaDataManager::computeImageMetaData()
 {
-    m_currentClip->addParam( ":access=fake" );
-    m_currentClip->addParam( ":fake-duration=10000" );
-    m_currentClip->flushParameters();
+    m_currentClip->addVolatileParam( ":access=fake", ":access=''" );
+    m_currentClip->addVolatileParam( ":fake-duration=10000", ":fake-duration=''" );
 }
 
 void    MetaDataManager::getMetaData()
@@ -176,23 +173,20 @@ void    MetaDataManager::startAudioDataParsing()
     sprintf( csb, ":amem-closesb=%lld", (long long int)(intptr_t) &MetaDataManager::closeSoundBuffer);
     sprintf( iph, ":amem-iph=%lld", (long long int)(intptr_t) &MetaDataManager::instanceParameterHandler);
     sprintf( data, ":amem-data=%lld", (long long int)(intptr_t) this);
-    m_currentClip->addParam( ":no-video" );
-    m_currentClip->addParam( ":audio" );
-    m_currentClip->addParam( ":aout=amem" );
-    m_currentClip->addParam( osb );
-    m_currentClip->addParam( psb );
-    m_currentClip->addParam( csb );
-    m_currentClip->addParam( iph );
-    m_currentClip->addParam( data );
-    m_currentClip->flushParameters();
+    m_currentClip->addVolatileParam( ":no-video", ":video" );
+    m_currentClip->addConstantParam( ":audio" );
+    m_currentClip->addVolatileParam( ":aout=amem", ":aout=''" ); //I'm really not sure about this one...
+    m_currentClip->addConstantParam( osb );
+    m_currentClip->addConstantParam( psb );
+    m_currentClip->addConstantParam( csb );
+    m_currentClip->addConstantParam( iph );
+    m_currentClip->addConstantParam( data );
 
     m_mediaPlayer->setMedia( m_currentClip->getVLCMedia() );
+    m_currentClip->flushVolatileParameters();
     connect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( stopAudioDataParsing() ) );
     qDebug() << "Starting playback again";
     m_mediaPlayer->play();
-
-    //Restoring the clip at a correct value.
-    m_currentClip->addParam( ":video" );
 }
 
 void    MetaDataManager::stopAudioDataParsing()

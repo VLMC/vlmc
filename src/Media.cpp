@@ -78,18 +78,28 @@ void        Media::loadMedia( const QString& mrl )
     m_vlcMedia = new LibVLCpp::Media( mrl );
 }
 
-void        Media::flushParameters()
+void        Media::flushVolatileParameters()
 {
-    //Flushing the args into the media :
-    QString     param;
-    foreach ( param, m_parameters )
-        m_vlcMedia->addOption( param.toStdString().c_str() );
-    m_parameters.clear();
+    QString     defaultValue;
+    foreach ( defaultValue, m_volatileParameters )
+    {
+        qDebug() << "Restoring volatile parameter" << defaultValue;
+        m_vlcMedia->addOption( defaultValue.toStdString().c_str() );
+    }
+    m_volatileParameters.clear();
 }
 
-void        Media::addParam( const QString& param )
+void        Media::addVolatileParam( const QString& param, const QString& defaultValue )
 {
-    m_parameters.append( param );
+    qDebug() << "Adding volatile parameter:" << param << ". Will be restored to:" << defaultValue;
+    m_vlcMedia->addOption( param.toStdString().c_str() );
+    m_volatileParameters.append( defaultValue );
+}
+
+void        Media::addConstantParam( const QString& param )
+{
+    qDebug() << "Adding constant parameter:" << param;
+    m_vlcMedia->addOption( param.toStdString().c_str() );
 }
 
 void        Media::setSnapshot( QPixmap* snapshot )

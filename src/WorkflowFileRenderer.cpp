@@ -72,7 +72,7 @@ void    WorkflowFileRenderer::stop()
 
 void    WorkflowFileRenderer::positionChanged( float newPos )
 {
-    m_ui.progressBar->setValue( newPos * 100 );
+    m_ui.progressBar->setValue( static_cast<int>( newPos * 100 ) );
 }
 
 void    WorkflowFileRenderer::on_cancelButton_clicked()

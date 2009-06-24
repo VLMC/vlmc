@@ -38,7 +38,7 @@ void        ClipPreviewWidget::startPreview( Media* media )
 {
     if ( m_vlcMedia != NULL )
         delete m_vlcMedia;
-    m_vlcMedia = new LibVLCpp::Media( media->getVLCMedia() );
+    m_vlcMedia = new LibVLCpp::Media( media->getFileInfo()->absoluteFilePath() );
 
     m_mediaPlayer->setMedia( m_vlcMedia );
 
