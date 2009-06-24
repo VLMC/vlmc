@@ -108,9 +108,13 @@ void        RenderPreviewWidget::stopPreview()
 
 void        RenderPreviewWidget::startPreview( Media* )
 {
+    char        buff[128];
+
     connect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
              Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( updateCursorPos( qint64 ) ) );
     m_mainWorkflow->startRender();
+    sprintf( buff, ":fake-duration=%lli", m_mainWorkflow->getLength() / FPS * 1000 );
+    m_media->addOption( buff );
     m_mediaPlayer->play();
     m_isRendering = true;
     m_paused = false;
