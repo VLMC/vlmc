@@ -22,11 +22,7 @@
 
 #include <QtDebug>
 
-#ifdef Q_WS_WIN
-// Used for Sleep()
-#include <Windows.h>
-#endif
-
+#include "vlmc.h"
 #include "ClipWorkflow.h"
 
 int     g_debugId = 0;
@@ -197,11 +193,7 @@ ClipWorkflow::State     ClipWorkflow::getState() const
 void    ClipWorkflow::startRender()
 {
     while ( isReady() == false )
-#ifdef Q_WS_WIN
-        Sleep( 1 );
-#else
-        usleep( 50 );
-#endif
+        SleepMS( 1 );
     m_mediaPlayer->play();
     setState( Rendering );
 }

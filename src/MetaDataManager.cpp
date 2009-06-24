@@ -26,6 +26,8 @@
   */
 
 #include <QtDebug>
+
+#include "vlmc.h"
 #include "MetaDataManager.h"
 #include "Library.h"
 
@@ -80,7 +82,7 @@ void    MetaDataManager::run()
             m_mediaPlayer->play();
             m_currentClip->flushVolatileParameters();
         }
-        usleep( 10000 );
+        SleepMS( 1 );
     }
     return;
 }
@@ -112,7 +114,7 @@ void    MetaDataManager::getMetaData()
     m_currentClip->setWidth( m_mediaPlayer->getWidth() );
     m_currentClip->setHeight( m_mediaPlayer->getHeight() );
 
-    qDebug() << "length =" << m_currentClip->getLength();
+//    qDebug() << "length =" << m_currentClip->getLength();
     //Setting time for snapshot :
     if ( m_currentClip->getFileType() == Media::Video )
     {

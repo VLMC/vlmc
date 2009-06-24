@@ -23,11 +23,7 @@
 #include <QtDebug>
 #include <QThread>
 
-#ifdef Q_WS_WIN
-// Used for Sleep()
-#include <Windows.h>
-#endif
-
+#include "vlmc.h"
 #include "RenderPreviewWidget.h"
 #include "Timeline.h"
 
@@ -136,11 +132,7 @@ void        RenderPreviewWidget::nextFrame()
     bool    framePlayed = false;
     while ( framePlayed == false )
     {
-#ifdef Q_WS_WIN
-        Sleep( 1 );
-#else
-        usleep( 50 );
-#endif
+        SleepMS( 50 );
         QReadLocker lock( m_framePlayedLock );
         framePlayed = m_framePlayed;
     }
