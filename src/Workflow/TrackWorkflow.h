@@ -53,6 +53,7 @@ class   TrackWorkflow : public QObject
         unsigned char*                          getOutput( qint64 currentFrame );
         qint64                                  getLength() const;
         void                                    stop();
+        void                                    moveClip( QUuid id, qint64 startingFrame );
 
         //FIXME: this won't be reliable as soon as we change the fps from the configuration
         static const unsigned int               nbFrameBeforePreload = 60;
@@ -80,6 +81,13 @@ class   TrackWorkflow : public QObject
          *  \brief      The track length in frames.
         */
         qint64                                  m_length;
+
+        /**
+         *  \brief      If a clip was moved, we may have to force repositionning.
+         *              If this flag is set to true, we will force it anyway.
+         */
+        bool                                    m_forceRepositionning;
+        QMutex*                                 m_forceRepositionningMutex;
 
     public:
         void            addClip( Clip*, qint64 start );

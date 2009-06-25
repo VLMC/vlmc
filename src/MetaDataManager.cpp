@@ -114,7 +114,6 @@ void    MetaDataManager::getMetaData()
     m_currentClip->setWidth( m_mediaPlayer->getWidth() );
     m_currentClip->setHeight( m_mediaPlayer->getHeight() );
 
-//    qDebug() << "length =" << m_currentClip->getLength();
     //Setting time for snapshot :
     if ( m_currentClip->getFileType() == Media::Video )
     {

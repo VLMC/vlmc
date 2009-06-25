@@ -27,9 +27,11 @@
 
 TrackWorkflow::TrackWorkflow( unsigned int trackId ) :
         m_trackId( trackId ),
-        m_length( 0 )
+        m_length( 0 ),
+        m_forceRepositionning( false )
 {
     m_mediaPlayer = new LibVLCpp::MediaPlayer();
+    m_forceRepositionningMutex = new QMutex;
 }
 
 TrackWorkflow::~TrackWorkflow()
@@ -43,6 +45,7 @@ TrackWorkflow::~TrackWorkflow()
         delete it.value();
         it = m_clips.erase( it );
     }
+    delete m_forceRepositionningMutex;
     delete m_mediaPlayer;
 }
 
@@ -223,7 +226,16 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
         emit trackEndReached( m_trackId );
         //We continue, as there can be ClipWorkflow that required to be stopped.
     }
-    needRepositioning = ( abs( currentFrame - lastFrame ) > 1 ) ? true : false;
+    {
+        QMutexLocker    lock( m_forceRepositionningMutex );
+        if ( m_forceRepositionning == true )
+        {
+            needRepositioning = true;
+            m_forceRepositionning = false;
+        }
+        else
+            needRepositioning = ( abs( currentFrame - lastFrame ) > 1 ) ? true : false;
+    }
     while ( it != end )
     {
         qint64          start = it.key();
@@ -248,4 +260,26 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
         ++it;
     }
     return ret;
+}
+
+void            TrackWorkflow::moveClip( QUuid id, qint64 startingFrame )
+{
+    QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
+
+    while ( it != end )
+    {
+        if ( it.value()->getClip()->getUuid() == id )
+        {
+            ClipWorkflow* cw = it.value();
+            m_clips.erase( it );
+            m_clips[startingFrame] = cw;
+            QMutexLocker    lock( m_forceRepositionningMutex );
+            m_forceRepositionning = true;
+            return ;
+        }
+        ++it;
+    }
+    qDebug() << "Track" << m_trackId << "was asked to move clip" << id << "to position" << startingFrame
+            << "but this clip doesn't exist in this track";
 }

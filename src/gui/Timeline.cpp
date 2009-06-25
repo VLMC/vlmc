@@ -59,6 +59,8 @@ Timeline::Timeline( QWidget *parent ) :
     setDuration( 0 );
     connect( m_tracksView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), m_tracksRuler, SLOT( moveRuler( int ) ) );
     connect( m_tracksView, SIGNAL( durationChanged(int) ), this, SLOT( setDuration(int) ) );
+    connect( m_tracksView, SIGNAL( clipMoved( QUuid, int, qint64) ),
+             MainWorkflow::getInstance(), SLOT( clipMoved( QUuid, int, qint64 ) ) );
 }
 
 void Timeline::changeEvent( QEvent *e )
