@@ -203,7 +203,7 @@ void    ClipWorkflow::clipEndReached()
     setState( EndReached );
 }
 
-const Clip*     ClipWorkflow::getClip() const
+Clip*     ClipWorkflow::getClip()
 {
     return m_clip;
 }

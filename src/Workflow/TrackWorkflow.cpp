@@ -32,6 +32,7 @@ TrackWorkflow::TrackWorkflow( unsigned int trackId ) :
 {
     m_mediaPlayer = new LibVLCpp::MediaPlayer();
     m_forceRepositionningMutex = new QMutex;
+    m_clipsLock = new QReadWriteLock;
 }
 
 TrackWorkflow::~TrackWorkflow()
@@ -45,17 +46,20 @@ TrackWorkflow::~TrackWorkflow()
         delete it.value();
         it = m_clips.erase( it );
     }
+    delete m_clipsLock;
     delete m_forceRepositionningMutex;
     delete m_mediaPlayer;
 }
 
 void    TrackWorkflow::addClip( Clip* clip, qint64 start )
 {
+    QWriteLocker    lock( m_clipsLock );
     ClipWorkflow* cw = new ClipWorkflow( clip );
     m_clips.insert( start, cw );
     computeLength();
 }
 
+//Must be called from a thread safe method (m_clipsLock locked)
 void                TrackWorkflow::computeLength()
 {
     if ( m_clips.count() == 0 )
@@ -215,6 +219,8 @@ void                    TrackWorkflow::stop()
 
 unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
 {
+    QReadLocker     lock( m_clipsLock );
+
     unsigned char*  ret = NULL;
     QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
     QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
@@ -262,8 +268,10 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
     return ret;
 }
 
-void            TrackWorkflow::moveClip( QUuid id, qint64 startingFrame )
+void            TrackWorkflow::moveClip( const QUuid& id, qint64 startingFrame )
 {
+    QWriteLocker    lock( m_clipsLock );
+
     QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
     QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
 
@@ -282,4 +290,24 @@ void            TrackWorkflow::moveClip( QUuid id, qint64 startingFrame )
     }
     qDebug() << "Track" << m_trackId << "was asked to move clip" << id << "to position" << startingFrame
             << "but this clip doesn't exist in this track";
+}
+
+Clip*       TrackWorkflow::removeClip( const QUuid& id )
+{
+    QWriteLocker    lock( m_clipsLock );
+
+    QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
+
+    while ( it != end )
+    {
+        if ( it.value()->getClip()->getUuid() == id )
+        {
+            ClipWorkflow*   cw = it.value();
+            m_clips.erase( it );
+            return cw->getClip();
+        }
+        ++it;
+    }
+    return NULL;
 }

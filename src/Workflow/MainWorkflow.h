@@ -85,7 +85,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         QReadWriteLock*                 m_renderStartedLock;
 
     public slots:
-        void                            clipMoved( QUuid, int, qint64 );
+        void                            clipMoved( QUuid, int, int, qint64 );
 
     private slots:
         void                            trackEndReached( unsigned int trackId );

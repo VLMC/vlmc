@@ -194,13 +194,24 @@ MainWorkflow*   MainWorkflow::getInstance()
     return m_instance;
 }
 
-void           MainWorkflow::clipMoved( QUuid clipUuid, int trackId, qint64 startingFrame )
+void           MainWorkflow::clipMoved( QUuid clipUuid, int oldTrack, int newTrack, qint64 startingFrame )
 {
+    Q_ASSERT( newTrack < m_trackCount && oldTrack < m_trackCount && oldTrack >= 0 && newTrack >= 0 );
+
     //If the frame was stopped, reactivating it, since it can have something to render after
     //the clip displacement
-    Q_ASSERT( trackId < m_trackCount );
-    if ( m_tracks[trackId].activated() == false )
-        m_tracks[trackId].activate();
-    //And now, just move the clip.
-    m_tracks[trackId]->moveClip( clipUuid, startingFrame );
+    if ( m_tracks[newTrack].activated() == false )
+        m_tracks[newTrack].activate();
+    if ( oldTrack == newTrack )
+    {
+        //And now, just move the clip.
+        m_tracks[newTrack]->moveClip( clipUuid, startingFrame );
+    }
+    else
+    {
+        if ( m_tracks[oldTrack].activated() == false )
+            m_tracks[oldTrack].activate();
+        Clip* clip = m_tracks[oldTrack]->removeClip( clipUuid );
+        m_tracks[newTrack]->addClip( clip, startingFrame );
+    }
 }

@@ -53,7 +53,9 @@ class   TrackWorkflow : public QObject
         unsigned char*                          getOutput( qint64 currentFrame );
         qint64                                  getLength() const;
         void                                    stop();
-        void                                    moveClip( QUuid id, qint64 startingFrame );
+        void                                    moveClip( const QUuid& id, qint64 startingFrame );
+        Clip*                                   removeClip( const QUuid& id );
+        void                                    addClip( Clip*, qint64 start );
 
         //FIXME: this won't be reliable as soon as we change the fps from the configuration
         static const unsigned int               nbFrameBeforePreload = 60;
@@ -89,9 +91,7 @@ class   TrackWorkflow : public QObject
         bool                                    m_forceRepositionning;
         QMutex*                                 m_forceRepositionningMutex;
 
-    public:
-        void            addClip( Clip*, qint64 start );
-
+        QReadWriteLock*                         m_clipsLock;
     signals:
         void            trackEndReached( unsigned int );
 };
