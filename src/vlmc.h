@@ -26,6 +26,10 @@
 
 #include <QtGlobal>
 
+#ifdef Q_OS_WIN
+#include <Windows.h>
+#endif
+
 #ifdef Q_OS_UNIX
 #define SleepMS( x ) usleep( (x) * 1000 )
 #else
