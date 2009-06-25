@@ -155,7 +155,7 @@ class   ClipWorkflow : public QObject
     private:
         Clip*                   m_clip;
         unsigned char*          m_buffer;
-        unsigned char*          m_backBuffer;
+        //unsigned char*          m_backBuffer;
         /**
          *  This allow the render procedure to know in which buffer it should render.
          *  If true, then the render occurs in the back buffer, which means the
@@ -164,8 +164,8 @@ class   ClipWorkflow : public QObject
          *  - When m_usingBackBuffer == false, lock() will return m_buffer, and getOutput() m_backBuffer
          *  - When m_usingBackBuffer == true, lock() will return m_backBuffer, and getOutput() m_buffer
          */
-        bool                    m_usingBackBuffer;
-        QReadWriteLock*         m_backBufferLock;
+        //bool                    m_usingBackBuffer;
+        //QReadWriteLock*         m_backBufferLock;
 
         LibVLCpp::MediaPlayer*  m_mediaPlayer;
 

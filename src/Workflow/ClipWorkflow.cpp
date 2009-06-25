@@ -30,18 +30,18 @@ int     g_debugId = 0;
 ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
                 m_clip( clip ),
                 m_buffer( NULL ),
-                m_usingBackBuffer( false ),
+                //m_usingBackBuffer( false ),
                 m_mediaPlayer(NULL),
                 m_state( ClipWorkflow::Stopped ),
                 m_requiredState( ClipWorkflow::None )
 {
     m_buffer = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
-    m_backBuffer = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
+//    m_backBuffer = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
     m_stateLock = new QReadWriteLock;
     m_requiredStateLock = new QMutex;
     m_condMutex = new QMutex;
     m_waitCond = new QWaitCondition;
-    m_backBufferLock = new QReadWriteLock;
+//    m_backBufferLock = new QReadWriteLock;
 
     this->debugId = g_debugId++;
 }
@@ -49,18 +49,18 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
 ClipWorkflow::~ClipWorkflow()
 {
     delete[] m_buffer;
-    delete[] m_backBuffer;
+//    delete[] m_backBuffer;
     delete m_stateLock;
     delete m_requiredStateLock;
-    delete m_backBufferLock;
+//    delete m_backBufferLock;
 }
 
 unsigned char*    ClipWorkflow::getOutput()
 {
-    QReadLocker     lock( m_backBufferLock );
-    if ( m_usingBackBuffer == true )
+//    QReadLocker     lock( m_backBufferLock );
+//    if ( m_usingBackBuffer == true )
         return m_buffer;
-    return m_backBuffer;
+//    return m_backBuffer;
 }
 
 void    ClipWorkflow::checkStateChange()
@@ -76,16 +76,16 @@ void    ClipWorkflow::checkStateChange()
 
 void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret )
 {
-    QReadLocker lock( cw->m_backBufferLock );
+//    QReadLocker lock( cw->m_backBufferLock );
 
-    if ( cw->m_usingBackBuffer )
-    {
-        *pp_ret = cw->m_backBuffer;
-    }
-    else
-    {
+//    if ( cw->m_usingBackBuffer )
+//    {
+//        *pp_ret = cw->m_backBuffer;
+//    }
+//    else
+//    {
         *pp_ret = cw->m_buffer;
-    }
+//    }
 }
 
 void    ClipWorkflow::unlock( ClipWorkflow* cw )
@@ -101,10 +101,10 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
         cw->m_waitCond->wait( cw->m_condMutex );
         cw->m_stateLock->lockForWrite();
         cw->m_state = Rendering;
-        {
-            QWriteLocker    lock2( cw->m_backBufferLock );
-            cw->m_usingBackBuffer = !cw->m_usingBackBuffer;
-        }
+//        {
+//            QWriteLocker    lock2( cw->m_backBufferLock );
+//            cw->m_usingBackBuffer = !cw->m_usingBackBuffer;
+//        }
     }
     cw->m_stateLock->unlock();
     cw->checkStateChange();
