@@ -134,7 +134,7 @@ signals:
     void                    zoomIn();
     void                    zoomOut();
     void                    durationChanged( int duration );
-    void                    clipMoved( const QUuid& uuid, int track, qint64 start );
+    void                    clipMoved( const QUuid& uuid, int oldTrack, int newTrack, qint64 start );
 };
 
 #endif // TRACKSVIEW_H

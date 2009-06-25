@@ -246,6 +246,7 @@ void TracksView::dropEvent( QDropEvent* event )
         event->acceptProposedAction();
 
         qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
+        m_dragItem->oldTrackNumber = m_dragItem->trackNumber();
         m_mainWorkflow->addClip( m_dragItem->clip(),
                                  m_dragItem->trackNumber(),
                                  (qint64)mappedXPos );
@@ -360,8 +361,10 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
             if ( m_layout->itemAt( 0 )->graphicsItem()->childItems().count() > 0 )
                 addVideoTrack();
             emit clipMoved( movieItem->clip()->getUuid(),
+                            movieItem->oldTrackNumber,
                             movieItem->trackNumber(),
                             (qint64)movieItem->pos().x() );
+            movieItem->oldTrackNumber = movieItem->trackNumber();
             m_actionMove = false;
             m_actionRelativeX = -1;
             m_actionItem = NULL;

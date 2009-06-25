@@ -56,6 +56,11 @@ protected:
      */
     TracksView* tracksView();
 
+    /**
+     * Contains the old trackNumber
+     */
+    int oldTrackNumber;
+
     virtual void mousePressEvent( QGraphicsSceneMouseEvent* event );
     virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
 
