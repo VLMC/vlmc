@@ -48,6 +48,11 @@ int main( int argc, char **argv )
     QSettings::setDefaultFormat( QSettings::IniFormat );
     Preferences::changeLang( QSettings().value( "Lang" ).toString() );
 
+#ifdef Q_OS_WIN
+    // Ugly workaround
+    app.setStyle( "plastique" );
+#endif
+
     // Creating the color palette
     QPalette p;
     p.setColor( QPalette::WindowText,       QColor( 255, 255, 255, 255 ) );
