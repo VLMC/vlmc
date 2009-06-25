@@ -42,9 +42,9 @@ Media::Media( const QFileInfo* fileInfo)
     m_fileInfo = new QFileInfo( *fileInfo );
     setFileType();
     if ( m_fileType == Media::Video || m_fileType == Media::Audio )
-        m_mrl = "file://" + fileInfo->absoluteFilePath();
+        m_mrl = "file:///" + fileInfo->absoluteFilePath();
     else
-        m_mrl = "fake://" + fileInfo->absoluteFilePath();
+        m_mrl = "fake:///" + fileInfo->absoluteFilePath();
     m_vlcMedia = new LibVLCpp::Media( m_mrl );
 }
 
