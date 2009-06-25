@@ -56,8 +56,7 @@ void                    Media::clone( const Media& toClone )
 
 void                    Media::addOption( const char* opt )
 {
-    libvlc_media_add_option_unused( m_internalPtr, opt, m_ex);
-//    libvlc_media_add_option( m_internalPtr, opt, m_ex);
+    libvlc_media_add_option_flag( m_internalPtr, opt, libvlc_media_option_trusted, m_ex);
     CheckVlcppException(m_ex);
 }
 
