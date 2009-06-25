@@ -165,7 +165,6 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position
 
     QPointF oldPos = item->pos();
     QGraphicsItem* oldParent = item->parentItem();
-
     // Check for vertical collisions
     item->setParentItem( m_layout->itemAt( track )->graphicsItem() );
     bool continueSearch = true;
@@ -182,13 +181,14 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position
                 itemCollision = true;
                 if ( currentItem->pos().y() < position.y() )
                 {
-                    if ( track < 0 )
+                    if ( track < 1 )
                     {
                         item->setParentItem( oldParent );
                         continueSearch = false;
                         break;
                     }
                     track -= 1;
+                    Q_ASSERT( m_layout->itemAt( track )->graphicsItem() != NULL );
                     item->setParentItem( m_layout->itemAt( track )->graphicsItem() );
                 }
                 else if ( currentItem->pos().y() > position.y() )
@@ -200,6 +200,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position
                         break;
                     }
                     track += 1;
+                    Q_ASSERT( m_layout->itemAt( track )->graphicsItem() != NULL );
                     item->setParentItem( m_layout->itemAt( track )->graphicsItem() );
                 }
             }
@@ -207,7 +208,6 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position
         if ( !itemCollision )
             continueSearch = false;
     }
-
     // Check for horizontal collisions
     mappedXPos = qMax( mappedXPos, (qreal)0 );
     item->setPos( mappedXPos, 0 );
@@ -219,7 +219,8 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position
         {
             // Collision with an item of the same type
             // Restoring original position (horizontal)
-            item->setPos( oldPos );
+            if ( oldPos.isNull() == false )
+                item->setPos( oldPos );
             break;
         }
     }
