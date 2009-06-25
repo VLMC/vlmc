@@ -132,7 +132,8 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
     if ( event->mimeData()->hasFormat( "vlmc/uuid" ) )
         event->acceptProposedAction();
 
-    QUuid uuid = QUuid( (const QString& )event->mimeData()->data( "vlmc/uuid" ) );
+    QUuid uuid = QUuid( QString( event->mimeData()->data( "vlmc/uuid" ) ) );
+    qDebug() << uuid;
     Media* media = Library::getInstance()->getMedia( uuid );
     if ( !media ) return;
 
