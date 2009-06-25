@@ -133,7 +133,7 @@ void    MetaDataManager::renderSnapshot()
     tmp.open();
     m_tmpSnapshotFilename = tmp.fileName();
 
-    connect( m_mediaPlayer, SIGNAL( snapshotTaken() ), this, SLOT( setSnapshot() ) );
+    connect( m_mediaPlayer, SIGNAL( snapshotTaken() ), this, SLOT( setSnapshot() ), Qt::QueuedConnection );
 
     //The slot should be triggered in this methode
     m_mediaPlayer->takeSnapshot( m_tmpSnapshotFilename.toStdString().c_str()
