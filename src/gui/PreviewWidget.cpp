@@ -122,9 +122,14 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
             lib->newMediaLoadingAsked( event->mimeData()->urls()[0].path() );
             media = lib->getMedia( event->mimeData()->urls()[0].path() );
         }
-        else //TODO: Could this rely on an implicit QString CTOR ?
-            media = Library::getInstance()->getMedia( QUuid( ( const QString& )event->mimeData()->data( "vlmc/uuid" ) ) );
+        else
+            media = Library::getInstance()->getMedia( QUuid( QString( event->mimeData()->data( "vlmc/uuid" ) ) ) );
 
+        if ( media == NULL )
+        {
+            qDebug() << "Unknown media" << event->mimeData()->data( "vlmc/uuid" );
+            return ;
+        }
         if ( m_currentMode != PreviewWidget::clipPreviewMode )
             m_ui->tabWidget->setCurrentIndex( PreviewWidget::clipPreviewMode );
 
