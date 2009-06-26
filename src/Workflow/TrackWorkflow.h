@@ -31,7 +31,6 @@
 #include <QReadWriteLock>
 
 #include "ClipWorkflow.h"
-#include "VLCMediaPlayer.h"
 
 //TODO: REMOVE THIS
 #ifndef FPS
@@ -56,6 +55,7 @@ class   TrackWorkflow : public QObject
         void                                    moveClip( const QUuid& id, qint64 startingFrame );
         Clip*                                   removeClip( const QUuid& id );
         void                                    addClip( Clip*, qint64 start );
+        void                                    addClip( ClipWorkflow*, qint64 start );
 
         //FIXME: this won't be reliable as soon as we change the fps from the configuration
         static const unsigned int               nbFrameBeforePreload = 60;
@@ -73,12 +73,6 @@ class   TrackWorkflow : public QObject
 
         QMap<qint64, ClipWorkflow*>             m_clips;
 
-        /**
-         *  This is the MediaPlayer that the clipworkflow
-         *  will be using to process its render.
-         *  It is never used internally.
-         */
-        LibVLCpp::MediaPlayer*                  m_mediaPlayer;
         /**
          *  \brief      The track length in frames.
         */

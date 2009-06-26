@@ -1,5 +1,5 @@
 /*****************************************************************************
- * VLCInstance.cpp: Binding for libvlc instances
+ * Pool.hpp: Generic object pool
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,33 +20,44 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <cassert>
-#include "VLCInstance.h"
-#include <QtDebug>
+#ifndef POOL_HPP
+#define POOL_HPP
 
-using namespace LibVLCpp;
+#include <QMutex>
+#include <QQueue>
 
-Instance*   Instance::m_singleton = NULL;
+#include "Singleton.hpp"
 
-Instance::Instance()
+template <typename T>
+class       Pool : public Singleton< Pool<T> >
 {
-    char const *argv[] =
+public:
+    T*      get()
     {
-//        "-vvvvv",
-        "--no-skip-frames",
-        //"--no-audio",
-        //"--plugin-path", VLC_TREE "/modules",
-        "--disable-screensaver",
-        "--ignore-config", //Don't use VLC's config files
-    };
-    int argc = sizeof( argv ) / sizeof( *argv );
+        if ( m_pool.size() == 0 )
+            return new T;
+        return m_pool.dequeue();
+    }
+    void    release( T* toRelease )
+    {
+        m_pool.enqueue( toRelease );
+    }
+private:
+    Pool()
+    {
+        m_mutex = new QMutex;
+    }
+    ~Pool()
+    {
+        while ( m_pool.size() != 0 )
+        {
+            T*  ptr = m_pool.dequeue();
+            delete ptr;
+        }
+    }
+    QQueue<T*>  m_pool;
+    QMutex*     m_mutex;
+    friend class Singleton< Pool<T> >;
+};
 
-    m_internalPtr = libvlc_new( argc, argv, m_ex );
-    CheckVlcppException(m_ex);
-}
-
-Instance::Instance( int argc, const char** argv )
-{
-    m_internalPtr = libvlc_new( argc, argv, m_ex );
-    CheckVlcppException(m_ex);
-}
+#endif // POOL_HPP

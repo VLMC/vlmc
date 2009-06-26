@@ -30,7 +30,6 @@ TrackWorkflow::TrackWorkflow( unsigned int trackId ) :
         m_length( 0 ),
         m_forceRepositionning( false )
 {
-    m_mediaPlayer = new LibVLCpp::MediaPlayer();
     m_forceRepositionningMutex = new QMutex;
     m_clipsLock = new QReadWriteLock;
 }
@@ -48,13 +47,19 @@ TrackWorkflow::~TrackWorkflow()
     }
     delete m_clipsLock;
     delete m_forceRepositionningMutex;
-    delete m_mediaPlayer;
 }
 
 void    TrackWorkflow::addClip( Clip* clip, qint64 start )
 {
     QWriteLocker    lock( m_clipsLock );
     ClipWorkflow* cw = new ClipWorkflow( clip );
+    m_clips.insert( start, cw );
+    computeLength();
+}
+
+void    TrackWorkflow::addClip( ClipWorkflow* cw, qint64 start )
+{
+    QWriteLocker    lock( m_clipsLock );
     m_clips.insert( start, cw );
     computeLength();
 }
@@ -112,7 +117,7 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
     else if ( cw->getState() == ClipWorkflow::Stopped )
     {
         cw->getStateLock()->unlock();
-        cw->initialize( m_mediaPlayer );
+        cw->initialize( );
         cw->startRender();
         if ( start != currentFrame ) //Clip was not started as its real begining
         {
@@ -148,7 +153,7 @@ void                TrackWorkflow::preloadClip( ClipWorkflow* cw )
     if ( cw->getState() == ClipWorkflow::Stopped )
     {
         cw->getStateLock()->unlock();
-        cw->initialize( m_mediaPlayer );
+        cw->initialize();
         return ;
     }
     cw->getStateLock()->unlock();
@@ -190,7 +195,7 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
     }
     else
     {
-        qDebug() << "Unexpected ClipWorkflow::State when stopping :" << cw->getState();
+//        qDebug() << "Unexpected ClipWorkflow::State when stopping :" << cw->getState();
         cw->getStateLock()->unlock();
     }
 }
@@ -308,8 +313,8 @@ Clip*       TrackWorkflow::removeClip( const QUuid& id )
             ClipWorkflow*   cw = it.value();
             Clip*           clip = cw->getClip();
             m_clips.erase( it );
-            stopClipWorkflow( cw );
-            delete cw;
+//            stopClipWorkflow( cw );
+//            delete cw;
             return clip;
         }
         ++it;

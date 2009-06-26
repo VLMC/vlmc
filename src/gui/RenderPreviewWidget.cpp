@@ -86,7 +86,6 @@ void    RenderPreviewWidget::unlock( void* datas )
 {
     RenderPreviewWidget* self = reinterpret_cast<RenderPreviewWidget*>( datas );
 
-//    qDebug() << "RenderPreviewWidget::unlock() : Frame rendered";
     QWriteLocker    lock( self->m_framePlayedLock );
     self->m_framePlayed = true;
 }

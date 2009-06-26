@@ -64,7 +64,7 @@ class   ClipWorkflow : public QObject
          *  of the rendering process advancement.
          */
         unsigned char*          getOutput();
-        void                    initialize( LibVLCpp::MediaPlayer* mediaPlayer );
+        void                    initialize();
         /**
          *  Return true ONLY if the state is equal to Ready.
          *  If the state is Rendering, EndReached or anything else, this will
@@ -154,6 +154,12 @@ class   ClipWorkflow : public QObject
 
     private:
         Clip*                   m_clip;
+
+        /**
+         *  \brief  The VLC media used to render
+         */
+        LibVLCpp::Media*        m_vlcMedia;
+
         unsigned char*          m_buffer;
         //unsigned char*          m_backBuffer;
         /**

@@ -24,6 +24,7 @@
 
 #include "vlmc.h"
 #include "ClipWorkflow.h"
+#include "Pool.hpp"
 
 int     g_debugId = 0;
 
@@ -114,34 +115,34 @@ void    ClipWorkflow::setVmem()
 {
     char        buffer[32];
 
-    m_clip->getParent()->addVolatileParam( ":no-audio", ":audio" );
-    m_clip->getParent()->addVolatileParam( ":vout=vmem", ":vout=''" );
-    m_clip->getParent()->getVLCMedia()->setDataCtx( this );
-    m_clip->getParent()->getVLCMedia()->setLockCallback( reinterpret_cast<LibVLCpp::Media::lockCallback>( &ClipWorkflow::lock ) );
-    m_clip->getParent()->getVLCMedia()->setUnlockCallback( reinterpret_cast<LibVLCpp::Media::unlockCallback>( &ClipWorkflow::unlock ) );
-    m_clip->getParent()->addConstantParam( ":vmem-chroma=RV24" );
+    m_vlcMedia->addOption( ":no-audio" );
+    m_vlcMedia->addOption( ":vout=vmem" );
+    m_vlcMedia->setDataCtx( this );
+    m_vlcMedia->setLockCallback( reinterpret_cast<LibVLCpp::Media::lockCallback>( &ClipWorkflow::lock ) );
+    m_vlcMedia->setUnlockCallback( reinterpret_cast<LibVLCpp::Media::unlockCallback>( &ClipWorkflow::unlock ) );
+    m_vlcMedia->addOption( ":vmem-chroma=RV24" );
 
     sprintf( buffer, ":vmem-width=%i", VIDEOWIDTH );
-    m_clip->getParent()->addConstantParam( buffer );
+    m_vlcMedia->addOption( buffer );
 
     sprintf( buffer, ":vmem-height=%i", VIDEOHEIGHT );
-    m_clip->getParent()->addConstantParam( buffer );
+    m_vlcMedia->addOption( buffer );
 
     sprintf( buffer, "vmem-pitch=%i", VIDEOWIDTH * 3 );
-    m_clip->getParent()->addConstantParam( buffer );
+    m_vlcMedia->addOption( buffer );
 }
 
-void    ClipWorkflow::initialize( LibVLCpp::MediaPlayer* mediaPlayer )
+void    ClipWorkflow::initialize()
 {
     setState( Initializing );
+    m_vlcMedia = new LibVLCpp::Media( m_clip->getParent()->getFileInfo()->absoluteFilePath() );
     setVmem();
-    m_mediaPlayer = mediaPlayer;
-    m_mediaPlayer->setMedia( m_clip->getParent()->getVLCMedia() );
+    m_mediaPlayer = Pool<LibVLCpp::MediaPlayer>::getInstance()->get();
+    m_mediaPlayer->setMedia( m_vlcMedia );
 
     connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPositionAfterPlayback() ), Qt::DirectConnection );
     connect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( clipEndReached() ), Qt::DirectConnection );
     m_mediaPlayer->play();
-    //m_clip->getParent()->flushVolatileParameters();
 }
 
 void    ClipWorkflow::setPositionAfterPlayback()
@@ -218,6 +219,7 @@ void            ClipWorkflow::stop()
         setState( Stopped );
         QMutexLocker    lock( m_requiredStateLock );
         m_requiredState = ClipWorkflow::None;
+        delete m_vlcMedia;
     }
     else
         qDebug() << "ClipWorkflow has already been stopped";

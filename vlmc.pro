@@ -87,7 +87,8 @@ HEADERS += src/gui/MainWindow.h \
     src/API/ModuleManager.h \
     src/API/vlmc_module_internal.h \
     src/WorkflowFileRenderer.h \
-    src/vlmc.h
+    src/vlmc.h \
+    src/tools/Pool.hpp
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \
