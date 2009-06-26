@@ -171,8 +171,8 @@ void        RenderPreviewWidget::togglePlayPause( bool forcePause )
 void        RenderPreviewWidget::stop()
 {
     m_isRendering = false;
-    m_mainWorkflow->stop();
     m_mediaPlayer->stop();
+    m_mainWorkflow->stop();
 }
 
 /////////////////////////////////////////////////////////////////////
