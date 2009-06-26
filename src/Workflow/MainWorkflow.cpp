@@ -64,7 +64,6 @@ void    MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
     Q_ASSERT_X( trackId < m_trackCount, "MainWorkflow::addClip",
                 "The specified trackId isn't valid, for it's higher than the number of tracks");
 
-//    qDebug() << "MainWorkflow: Adding clip" << clip->getUuid() << "to track" << trackId;
     //if the track is deactivated, we need to reactivate it :
     if ( m_tracks[trackId].deactivated() == true )
         m_tracks[trackId].activate();
@@ -102,9 +101,7 @@ unsigned char*    MainWorkflow::getOutput()
             if ( m_tracks[i].activated() == false )
                 continue ;
             if ( ( ret = m_tracks[i]->getOutput( m_currentFrame ) ) != NULL )
-            {
                 break ;
-            }
         }
         if ( ret == NULL )
             ret = MainWorkflow::blackOutput;
@@ -198,20 +195,17 @@ void           MainWorkflow::clipMoved( QUuid clipUuid, int oldTrack, int newTra
 {
     Q_ASSERT( newTrack < m_trackCount && oldTrack < m_trackCount && oldTrack >= 0 && newTrack >= 0 );
 
-    //If the frame was stopped, reactivating it, since it can have something to render after
-    //the clip displacement
-    if ( m_tracks[newTrack].activated() == false )
-        m_tracks[newTrack].activate();
     if ( oldTrack == newTrack )
     {
         //And now, just move the clip.
         m_tracks[newTrack]->moveClip( clipUuid, startingFrame );
+        m_tracks[newTrack].activate();
     }
     else
     {
-        if ( m_tracks[oldTrack].activated() == false )
-            m_tracks[oldTrack].activate();
         Clip* clip = m_tracks[oldTrack]->removeClip( clipUuid );
         m_tracks[newTrack]->addClip( clip, startingFrame );
+        m_tracks[oldTrack].activate();
+        m_tracks[newTrack].activate();
     }
 }

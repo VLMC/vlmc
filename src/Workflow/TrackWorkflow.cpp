@@ -190,7 +190,7 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
     }
     else
     {
-//        qDebug() << "Unexpected ClipWorkflow::State when stopping :" << cw->getState();
+        qDebug() << "Unexpected ClipWorkflow::State when stopping :" << cw->getState();
         cw->getStateLock()->unlock();
     }
 }
@@ -261,7 +261,9 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
         }
         //Is it supposed to be stopped ?
         else
+        {
             stopClipWorkflow( cw );
+        }
 
         ++it;
     }
@@ -304,8 +306,11 @@ Clip*       TrackWorkflow::removeClip( const QUuid& id )
         if ( it.value()->getClip()->getUuid() == id )
         {
             ClipWorkflow*   cw = it.value();
+            Clip*           clip = cw->getClip();
             m_clips.erase( it );
-            return cw->getClip();
+            stopClipWorkflow( cw );
+            delete cw;
+            return clip;
         }
         ++it;
     }

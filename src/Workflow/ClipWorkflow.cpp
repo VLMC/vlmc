@@ -210,13 +210,17 @@ Clip*     ClipWorkflow::getClip()
 
 void            ClipWorkflow::stop()
 {
-    Q_ASSERT( m_mediaPlayer != NULL );
-    m_mediaPlayer->stop();
-    disconnect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( clipEndReached() ) );
-    m_mediaPlayer = NULL;
-    setState( Stopped );
-    QMutexLocker    lock( m_requiredStateLock );
-    m_requiredState = ClipWorkflow::None;
+    if ( m_mediaPlayer )
+    {
+        m_mediaPlayer->stop();
+        disconnect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( clipEndReached() ) );
+        m_mediaPlayer = NULL;
+        setState( Stopped );
+        QMutexLocker    lock( m_requiredStateLock );
+        m_requiredState = ClipWorkflow::None;
+    }
+    else
+        qDebug() << "ClipWorkflow has already been stopped";
 }
 
 void            ClipWorkflow::setPosition( float pos )
