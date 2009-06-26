@@ -94,11 +94,7 @@ void        RenderPreviewWidget::stopPreview()
 {
     disconnect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
              Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( updateCursorPos( qint64 ) ) );
-
-    //FIXME: shouldn't this call MainWorkflow::stop() ??!!
-    m_mediaPlayer->stop();
-    m_isRendering = false;
-    m_paused = false;
+    stop();
 }
 
 void        RenderPreviewWidget::startPreview( Media* )
@@ -171,6 +167,7 @@ void        RenderPreviewWidget::togglePlayPause( bool forcePause )
 void        RenderPreviewWidget::stop()
 {
     m_isRendering = false;
+    m_paused = false;
     m_mediaPlayer->stop();
     m_mainWorkflow->stop();
 }
