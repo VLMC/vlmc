@@ -1,5 +1,5 @@
 /*****************************************************************************
- * ClipPreviewWidget: Preview widget
+ * ClipRenderer.cpp: Render from a Clip (mainly for previewing purpose)
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *

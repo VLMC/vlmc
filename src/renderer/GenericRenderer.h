@@ -1,5 +1,5 @@
 /*****************************************************************************
- * GenericPreviewWidget.h: Describe a common behavior for every preview widget
+ * GenericRenderer.h: Describe a common behavior for every renderers
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,8 +20,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef GENERICPREVIEWWIDGET_H
-#define GENERICPREVIEWWIDGET_H
+#ifndef GENERICRENDERER_H
+#define GENERICRENDERER_H
 
 #include <QObject>
 #include <QWidget>
@@ -29,20 +29,20 @@
 #include "Media.h"
 #include "VLCMediaPlayer.h"
 
-class   GenericPreviewWidget : public QObject
+class   GenericRenderer : public QObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY( GenericPreviewWidget );
+    Q_DISABLE_COPY( GenericRenderer );
 
 public:
-    explicit GenericPreviewWidget( QWidget* renderWidget ) :
+    explicit GenericRenderer( QWidget* renderWidget ) :
                 m_paused( false ),
                 m_isRendering( false )
     {
         m_mediaPlayer = new LibVLCpp::MediaPlayer();
         m_mediaPlayer->setDrawable( renderWidget->winId() );
     }
-    virtual ~GenericPreviewWidget()
+    virtual ~GenericRenderer()
     {
         delete m_mediaPlayer;
     }
@@ -84,11 +84,11 @@ public slots:
     virtual void                    __endReached() = 0;
 
 signals:
-    void                    stopped();
-    void                    paused();
-    void                    playing();
-    void                    positionChanged( float );
-    void                    endReached();
+    void                            stopped();
+    void                            paused();
+    void                            playing();
+    void                            positionChanged( float );
+    void                            endReached();
 };
 
-#endif // GENERICPREVIEWWIDGET_H
+#endif // GENERICRENDERER_H
