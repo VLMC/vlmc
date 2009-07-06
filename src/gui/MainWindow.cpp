@@ -36,6 +36,7 @@
 #include "Transcode.h"
 #include "FileBrowser.h"
 #include "PreviewWidget.h"
+#include "WorkflowRenderer.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
@@ -144,7 +145,7 @@ void MainWindow::m_initializeDockWidgets( void )
 
     setupLibrary();
 
-    dockManager->addDockedWidget( new PreviewWidget( m_timeline->getMainWorkflow(), this ),
+    dockManager->addDockedWidget( new PreviewWidget( new WorkflowRenderer( m_timeline->getMainWorkflow() ), this ),
                                   tr( "Preview" ),
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,

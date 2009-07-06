@@ -22,19 +22,20 @@
 
 #include <QtDebug>
 
-#include "ClipPreviewWidget.h"
+#include "ClipRenderer.h"
 
-ClipPreviewWidget::ClipPreviewWidget( QWidget* renderWidget ) :
-    GenericPreviewWidget( renderWidget ),
-    m_clipLoaded( false ), m_vlcMedia( NULL )
+ClipRenderer::ClipRenderer() :
+    GenericRenderer(),
+    m_clipLoaded( false ),
+    m_vlcMedia( NULL )
 {
 }
 
-ClipPreviewWidget::~ClipPreviewWidget()
+ClipRenderer::~ClipRenderer()
 {
 }
 
-void        ClipPreviewWidget::startPreview( Media* media )
+void        ClipRenderer::startPreview( Media* media )
 {
     if ( m_vlcMedia != NULL )
         delete m_vlcMedia;
@@ -54,14 +55,14 @@ void        ClipPreviewWidget::startPreview( Media* media )
     m_paused = false;
 }
 
-void        ClipPreviewWidget::setPosition( float newPos )
+void        ClipRenderer::setPosition( float newPos )
 {
     if ( m_clipLoaded == false || m_isRendering == false )
         return ;
     m_mediaPlayer->setPosition( newPos );
 }
 
-void        ClipPreviewWidget::stop()
+void        ClipRenderer::stop()
 {
     if ( m_clipLoaded == true && m_isRendering == true )
     {
@@ -76,7 +77,7 @@ void        ClipPreviewWidget::stop()
     }
 }
 
-void        ClipPreviewWidget::togglePlayPause( bool forcePause )
+void        ClipRenderer::togglePlayPause( bool forcePause )
 {
     if ( m_clipLoaded == false)
         return ;
@@ -95,7 +96,7 @@ void        ClipPreviewWidget::togglePlayPause( bool forcePause )
     }
 }
 
-void        ClipPreviewWidget::nextFrame()
+void        ClipRenderer::nextFrame()
 {
     if ( m_isRendering == true && m_paused == true )
     {
@@ -104,7 +105,7 @@ void        ClipPreviewWidget::nextFrame()
     }
 }
 
-void        ClipPreviewWidget::previousFrame()
+void        ClipRenderer::previousFrame()
 {
     if ( m_isRendering == false && m_paused == true )
     {
@@ -116,29 +117,29 @@ void        ClipPreviewWidget::previousFrame()
 /////////////////////////////////////////////////////////////////////
 /////SLOTS :
 /////////////////////////////////////////////////////////////////////
-void        ClipPreviewWidget::__videoPaused()
+void        ClipRenderer::__videoPaused()
 {
     emit paused();
 }
 
-void        ClipPreviewWidget::__videoStopped()
+void        ClipRenderer::__videoStopped()
 {
     emit stopped();
 }
 
-void        ClipPreviewWidget::__videoPlaying()
+void        ClipRenderer::__videoPlaying()
 {
     emit playing();
 }
 
-void        ClipPreviewWidget::__positionChanged()
+void        ClipRenderer::__positionChanged()
 {
     if ( m_clipLoaded == false)
         return ;
     emit positionChanged( m_mediaPlayer->getPosition() );
 }
 
-void        ClipPreviewWidget::__endReached()
+void        ClipRenderer::__endReached()
 {
     m_mediaPlayer->stop();
     m_isRendering = false;

@@ -35,18 +35,21 @@ class   GenericRenderer : public QObject
     Q_DISABLE_COPY( GenericRenderer );
 
 public:
-    explicit GenericRenderer( QWidget* renderWidget ) :
+    explicit GenericRenderer() :
                 m_paused( false ),
                 m_isRendering( false )
     {
         m_mediaPlayer = new LibVLCpp::MediaPlayer();
-        m_mediaPlayer->setDrawable( renderWidget->winId() );
     }
     virtual ~GenericRenderer()
     {
         delete m_mediaPlayer;
     }
 
+    virtual void                    setRenderWidget( QWidget* renderWidget )
+    {
+        m_mediaPlayer->setDrawable( renderWidget->winId() );
+    }
     virtual void                    startPreview( Media* media ) = 0;
     virtual void                    setPosition( float newPos ) = 0;
     virtual void                    togglePlayPause( bool forcePause = false ) = 0;

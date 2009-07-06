@@ -28,15 +28,15 @@
 #include <QWidget>
 
 #include "Workflow/MainWorkflow.h"
-#include "GenericPreviewWidget.h"
+#include "GenericRenderer.h"
 
-class   WorkflowRenderer : public GenericPreviewWidget
+class   WorkflowRenderer : public GenericRenderer
 {
     Q_OBJECT
     Q_DISABLE_COPY( WorkflowRenderer )
 
     public:
-        WorkflowRenderer( MainWorkflow* mainWorkflow, QWidget* renderWidget );
+        WorkflowRenderer( MainWorkflow* mainWorkflow );
         ~WorkflowRenderer();
 
         virtual void        startPreview( Media* );

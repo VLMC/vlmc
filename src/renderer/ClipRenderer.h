@@ -28,7 +28,7 @@
 
 #include "VLCMediaPlayer.h"
 #include "Media.h"
-#include "GenericPreviewWidget.h"
+#include "GenericRenderer.h"
 
 //TODO: This should really share a common interface with RenderPreviewWorkflow
 class ClipRenderer : public GenericRenderer
@@ -37,7 +37,7 @@ class ClipRenderer : public GenericRenderer
     Q_DISABLE_COPY( ClipRenderer )
 
 public:
-    explicit ClipRenderer( QWidget* renderWidget );
+    explicit ClipRenderer();
     virtual ~ClipRenderer();
 
     virtual void            startPreview( Media* media );

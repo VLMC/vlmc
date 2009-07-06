@@ -30,12 +30,11 @@
 #include "MediaListWidget.h"
 #include "Library.h"
 
-PreviewWidget::PreviewWidget( MainWorkflow* mainWorkflow, QWidget *parent ) :
+PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent ) :
     QWidget( parent ),
     m_ui( new Ui::PreviewWidget ),
-    m_currentPreviewRenderer( NULL ),
-    m_previewStopped( true ),
-    m_sliderPosBackup( 0 )
+    m_renderer( genericRenderer ),
+    m_previewStopped( true )
 {
     m_ui->setupUi( this );
 
@@ -50,42 +49,18 @@ PreviewWidget::PreviewWidget( MainWorkflow* mainWorkflow, QWidget *parent ) :
     connect( m_ui->seekSlider, SIGNAL( sliderPosChanged(int) ), this,   SLOT( seekSliderMoved(int) ) );
     connect( m_ui->seekSlider, SIGNAL( sliderReleased() ),      this,   SLOT( seekSliderReleased() ) );
 
-    initClipPreview();
-    initRenderPreview( mainWorkflow );
-
-    m_currentMode = m_ui->tabWidget->currentIndex();
-    m_currentPreviewRenderer = m_renderPreview;
-    connect( m_ui->tabWidget, SIGNAL( currentChanged(int) ), this, SLOT( changedTab(int) ) );
+    m_renderer->setRenderWidget( m_ui->renderWidget );
+    connect( m_renderer,     SIGNAL( stopped() ),                this,       SLOT( videoStopped() ) );
+    connect( m_renderer,     SIGNAL( paused() ),                 this,       SLOT( videoPaused() ) );
+    connect( m_renderer,     SIGNAL( playing() ),                this,       SLOT( videoPlaying() ) );
+    connect( m_renderer,     SIGNAL( positionChanged(float) ),   this,       SLOT( positionChanged(float) ) );
+    connect( m_renderer,     SIGNAL( endReached() ),             this,       SLOT( endReached() ) );
 }
 
 PreviewWidget::~PreviewWidget()
 {
     delete m_ui;
-    delete m_clipPreview;
-    delete m_renderPreview;
-}
-
-void    PreviewWidget::initClipPreview()
-{
-    m_clipPreview = new ClipPreviewWidget( m_ui->clipPreviewRenderWidget );
-    connectPreview( m_clipPreview );
-}
-
-void    PreviewWidget::initRenderPreview( MainWorkflow* mainWorkflow )
-{
-    m_renderPreview = new RenderPreviewWidget( mainWorkflow, m_ui->renderPreviewRenderWidget );
-    connectPreview( m_renderPreview );
-}
-
-void    PreviewWidget::connectPreview( GenericPreviewWidget* target )
-{
-    //WARNING:  the slots must NOT be virtual, since this is called from the constructor
-    //          which would be unsafe... if not fatal...
-    connect( target,     SIGNAL( stopped() ),                this,       SLOT( videoStopped() ) );
-    connect( target,     SIGNAL( paused() ),                 this,       SLOT( videoPaused() ) );
-    connect( target,     SIGNAL( playing() ),                this,       SLOT( videoPlaying() ) );
-    connect( target,     SIGNAL( positionChanged(float) ),   this,       SLOT( positionChanged(float) ) );
-    connect( target,     SIGNAL( endReached() ),             this,       SLOT( endReached() ) );
+    delete m_renderer;
 }
 
 void    PreviewWidget::changeEvent( QEvent *e )
@@ -130,14 +105,11 @@ void    PreviewWidget::dropEvent( QDropEvent* event )
             qDebug() << "Unknown media" << event->mimeData()->data( "vlmc/uuid" );
             return ;
         }
-        if ( m_currentMode != PreviewWidget::clipPreviewMode )
-            m_ui->tabWidget->setCurrentIndex( PreviewWidget::clipPreviewMode );
 
-        m_clipPreview->startPreview( media );
+        m_renderer->startPreview( media );
         event->acceptProposedAction();
         m_previewStopped = false;
     }
-    //else: I don't see how we could drag and drop a workflow :o (at the moment)
 }
 
 void    PreviewWidget::positionChanged( float newPos )
@@ -149,7 +121,7 @@ void    PreviewWidget::positionChanged( float newPos )
 
 void    PreviewWidget::seekSliderPressed()
 {
-    disconnect( m_currentPreviewRenderer, SIGNAL( positionChanged( float ) ),
+    disconnect( m_renderer, SIGNAL( positionChanged( float ) ),
                 this, SLOT( positionChanged( float ) ) );
 }
 
@@ -162,7 +134,7 @@ void    PreviewWidget::seekSliderMoved( int )
     }
     m_endReached = false;
     //Putting back the slider value into vlc position
-    m_currentPreviewRenderer->setPosition( (float)m_ui->seekSlider->value() / 1000.0f );
+    m_renderer->setPosition( (float)m_ui->seekSlider->value() / 1000.0f );
 }
 
 void    PreviewWidget::seekSliderReleased()
@@ -173,10 +145,10 @@ void    PreviewWidget::seekSliderReleased()
         //When we will release our slider, if endReached is true, we actually set the position.
         //Otherwise, we do nothing.
         //This prevents the video to stop if we put the slider to the maximum right by mistake
-        m_currentPreviewRenderer->setPosition( (float)m_ui->seekSlider->maximum() );
+        m_renderer->setPosition( (float)m_ui->seekSlider->maximum() );
         m_previewStopped = false;
     }
-    connect( m_currentPreviewRenderer, SIGNAL( positionChanged( float ) ),
+    connect( m_renderer, SIGNAL( positionChanged( float ) ),
              this, SLOT( positionChanged( float ) ) );
 }
 
@@ -185,7 +157,7 @@ void    PreviewWidget::on_pushButtonStop_clicked()
     if ( m_previewStopped == false )
     {
         m_previewStopped = true;
-        m_currentPreviewRenderer->stop();
+        m_renderer->stop();
     }
 }
 
@@ -197,7 +169,7 @@ void    PreviewWidget::on_pushButtonPlay_clicked()
 //    qDebug() << methodIndex;
 //    QMetaMethod method = m_currentPreviewRenderer->metaObject()->method( methodIndex );
 //    qDebug() << method.invoke( m_currentPreviewRenderer, Qt::QueuedConnection, Q_ARG(bool, false) );
-    m_currentPreviewRenderer->togglePlayPause();
+    m_renderer->togglePlayPause();
 }
 
 void    PreviewWidget::videoPaused()
@@ -224,35 +196,15 @@ void    PreviewWidget::endReached()
     m_ui->seekSlider->setValue( 0 );
 }
 
-void    PreviewWidget::changedTab( int tabId )
-{
-    m_currentPreviewRenderer->togglePlayPause( true );
-
-    if ( tabId == PreviewWidget::clipPreviewMode )
-    {
-        m_currentPreviewRenderer = m_clipPreview;
-    }
-    else if ( tabId == PreviewWidget::renderPreviewMode )
-    {
-        m_currentPreviewRenderer = m_renderPreview;
-    }
-    else
-        qDebug() << "Unknown and uncoherent tabId for PreviewWidget : " << tabId;
-    m_currentMode = !m_currentMode;
-
-    int   tmp = m_ui->seekSlider->value();
-    m_ui->seekSlider->setValue( m_sliderPosBackup );
-    m_sliderPosBackup = tmp;
-}
-
 void        PreviewWidget::on_pushButtonNextFrame_clicked()
 {
     if ( m_previewStopped == false )
-        m_currentPreviewRenderer->nextFrame();
+        m_renderer->nextFrame();
 }
 
 void        PreviewWidget::on_pushButtonPreviousFrame_clicked()
 {
     if ( m_previewStopped == false )
-        m_currentPreviewRenderer->previousFrame();
+        m_renderer->previousFrame();
 }
+
