@@ -39,7 +39,8 @@ class   WorkflowRenderer : public GenericRenderer
         WorkflowRenderer( MainWorkflow* mainWorkflow );
         ~WorkflowRenderer();
 
-        virtual void        startPreview( Media* );
+        virtual void        setMedia( const Media* ){}
+
         void                stopPreview();
 
         /**
@@ -56,6 +57,9 @@ class   WorkflowRenderer : public GenericRenderer
 
         static void*        lock( void* datas );
         static void         unlock( void* datas );
+
+    private:
+        virtual void        startPreview();
 
     private:
         MainWorkflow*       m_mainWorkflow;

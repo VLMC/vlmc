@@ -96,7 +96,7 @@ void        WorkflowRenderer::stopPreview()
     stop();
 }
 
-void        WorkflowRenderer::startPreview( Media* )
+void        WorkflowRenderer::startPreview()
 {
     char        buff[128];
 
@@ -142,7 +142,7 @@ void        WorkflowRenderer::togglePlayPause( bool forcePause )
 {
     //If force pause is true, we just ensure that this render is paused... no need to start it.
     if ( m_isRendering == false && forcePause == false )
-        startPreview( NULL );
+        startPreview();
     else if ( m_isRendering == true )
     {
         if ( m_paused == true && forcePause == false )

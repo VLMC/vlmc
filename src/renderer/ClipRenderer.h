@@ -40,7 +40,7 @@ public:
     explicit ClipRenderer();
     virtual ~ClipRenderer();
 
-    virtual void            startPreview( Media* media );
+    virtual void            setMedia( const Media* media );
     virtual void            setPosition( float newPos );
     virtual void            togglePlayPause( bool forcePause );
     virtual void            stop();
@@ -48,8 +48,12 @@ public:
     virtual void            previousFrame();
 
 private:
+    void                    startPreview();
+
+private:
     bool                    m_clipLoaded;
     LibVLCpp::Media*        m_vlcMedia;
+    const Media*            m_selectedMedia;
 
 public slots:
     void                    __positionChanged();

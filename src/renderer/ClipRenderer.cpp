@@ -40,12 +40,20 @@ ClipRenderer::~ClipRenderer()
 {
 }
 
-void        ClipRenderer::startPreview( Media* media )
+void        ClipRenderer::setMedia( const Media* media )
 {
+    qDebug() << "selected new media";
+    m_selectedMedia = media;
+}
+
+void        ClipRenderer::startPreview()
+{
+    if ( m_selectedMedia == NULL )
+        return ;
     //If an old media is found, we delete it, and disconnect
     if ( m_vlcMedia != NULL )
         delete m_vlcMedia;
-    m_vlcMedia = new LibVLCpp::Media( media->getFileInfo()->absoluteFilePath() );
+    m_vlcMedia = new LibVLCpp::Media( m_selectedMedia->getFileInfo()->absoluteFilePath() );
 
     m_mediaPlayer->setMedia( m_vlcMedia );
 
@@ -75,7 +83,7 @@ void        ClipRenderer::stop()
 void        ClipRenderer::togglePlayPause( bool forcePause )
 {
     if ( m_clipLoaded == false)
-        return ;
+        startPreview();
 
     if ( m_paused == false && m_isRendering == true )
     {

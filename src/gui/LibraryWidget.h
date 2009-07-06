@@ -51,6 +51,8 @@ public:
     ListViewMediaItem*                  addMedia( const Media* clip );
     void                                removeMedia( const QUuid& uuid );
     int                                 getIndex( ListViewMediaItem* media );
+    const MediaListWidget*              getVideoListWidget() const;
+    const MediaListWidget*              getAudioListWidget() const;
 
 protected:
     virtual void                        changeEvent( QEvent *e );

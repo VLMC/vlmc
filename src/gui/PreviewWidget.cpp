@@ -60,7 +60,6 @@ PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent 
 PreviewWidget::~PreviewWidget()
 {
     delete m_ui;
-    delete m_renderer;
 }
 
 void    PreviewWidget::changeEvent( QEvent *e )
@@ -208,3 +207,7 @@ void        PreviewWidget::on_pushButtonPreviousFrame_clicked()
         m_renderer->previousFrame();
 }
 
+const GenericRenderer*    PreviewWidget::getGenericRenderer() const
+{
+    return m_renderer;
+}

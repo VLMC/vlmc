@@ -40,6 +40,7 @@ class   PreviewWidget : public QWidget
 public:
     explicit PreviewWidget( GenericRenderer* renderer, QWidget* parent = NULL );
     virtual ~PreviewWidget();
+    const GenericRenderer*  getGenericRenderer() const;
 
 private:
     Ui::PreviewWidget*      m_ui;
@@ -51,6 +52,7 @@ protected:
     virtual void    changeEvent( QEvent *e );
 //    virtual void    dragEnterEvent( QDragEnterEvent* event );
 //    virtual void    dropEvent( QDropEvent* event );
+
 private slots:
     void            on_pushButtonPlay_clicked();
     void            on_pushButtonStop_clicked();
