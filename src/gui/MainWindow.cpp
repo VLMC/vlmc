@@ -37,6 +37,7 @@
 #include "FileBrowser.h"
 #include "PreviewWidget.h"
 #include "WorkflowRenderer.h"
+#include "ClipRenderer.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
@@ -145,12 +146,17 @@ void MainWindow::m_initializeDockWidgets( void )
 
     setupLibrary();
 
-    dockManager->addDockedWidget( new PreviewWidget( new WorkflowRenderer( m_timeline->getMainWorkflow() ), this ),
-                                  tr( "Preview" ),
+    dockManager->addDockedWidget( new PreviewWidget( new ClipRenderer, this ),
+                                  tr( "Clip Preview" ),
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
 
+    dockManager->addDockedWidget( new PreviewWidget( new WorkflowRenderer( m_timeline->getMainWorkflow() ), this ),
+                                  tr( "Project Preview" ),
+                                  Qt::AllDockWidgetAreas,
+                                  QDockWidget::AllDockWidgetFeatures,
+                                  Qt::TopDockWidgetArea );
     m_metaDataManager = MetaDataManager::getInstance();
 }
 

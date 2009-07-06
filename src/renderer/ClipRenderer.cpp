@@ -29,6 +29,11 @@ ClipRenderer::ClipRenderer() :
     m_clipLoaded( false ),
     m_vlcMedia( NULL )
 {
+    connect( m_mediaPlayer,     SIGNAL( stopped() ),            this,   SLOT( __videoStopped() ) );
+    connect( m_mediaPlayer,     SIGNAL( paused() ),             this,   SLOT( __videoPaused() ) );
+    connect( m_mediaPlayer,     SIGNAL( playing() ),            this,   SLOT( __videoPlaying() ) );
+    connect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,   SLOT( __positionChanged() ) );
+    connect( m_mediaPlayer,     SIGNAL( endReached() ),         this,   SLOT( __endReached() ) );
 }
 
 ClipRenderer::~ClipRenderer()
@@ -37,17 +42,12 @@ ClipRenderer::~ClipRenderer()
 
 void        ClipRenderer::startPreview( Media* media )
 {
+    //If an old media is found, we delete it, and disconnect
     if ( m_vlcMedia != NULL )
         delete m_vlcMedia;
     m_vlcMedia = new LibVLCpp::Media( media->getFileInfo()->absoluteFilePath() );
 
     m_mediaPlayer->setMedia( m_vlcMedia );
-
-    connect( m_mediaPlayer,     SIGNAL( stopped() ),            this,   SLOT( __videoStopped() ) );
-    connect( m_mediaPlayer,     SIGNAL( paused() ),             this,   SLOT( __videoPaused() ) );
-    connect( m_mediaPlayer,     SIGNAL( playing() ),            this,   SLOT( __videoPlaying() ) );
-    connect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,   SLOT( __positionChanged() ) );
-    connect( m_mediaPlayer,     SIGNAL( endReached() ),         this,   SLOT( __endReached() ) );
 
     m_mediaPlayer->play();
     m_clipLoaded = true;
@@ -69,11 +69,6 @@ void        ClipRenderer::stop()
         m_isRendering = false;
         m_mediaPlayer->stop();
         m_paused = false;
-        disconnect( m_mediaPlayer,     SIGNAL( stopped() ),            this,   SLOT( __videoStopped() ) );
-        disconnect( m_mediaPlayer,     SIGNAL( paused() ),             this,   SLOT( __videoPaused() ) );
-        disconnect( m_mediaPlayer,     SIGNAL( playing() ),            this,   SLOT( __videoPlaying() ) );
-        disconnect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,   SLOT( __positionChanged() ) );
-        disconnect( m_mediaPlayer,     SIGNAL( endReached() ),         this,   SLOT( __endReached() ) );
     }
 }
 
