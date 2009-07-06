@@ -49,8 +49,8 @@ private:
 
 protected:
     virtual void    changeEvent( QEvent *e );
-    virtual void    dragEnterEvent( QDragEnterEvent* event );
-    virtual void    dropEvent( QDropEvent* event );
+//    virtual void    dragEnterEvent( QDragEnterEvent* event );
+//    virtual void    dropEvent( QDropEvent* event );
 private slots:
     void            on_pushButtonPlay_clicked();
     void            on_pushButtonStop_clicked();

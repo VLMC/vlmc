@@ -75,42 +75,42 @@ void    PreviewWidget::changeEvent( QEvent *e )
     }
 }
 
-void    PreviewWidget::dragEnterEvent( QDragEnterEvent* event )
-{
-    if ( event->mimeData()->hasFormat( "vlmc/uuid" ) || 
-         event->mimeData()->urls().count() == 1 )
-    {
-        event->acceptProposedAction();
-    }
-}
-
-void    PreviewWidget::dropEvent( QDropEvent* event )
-{
-    //If the dropped event is a clip to preview :
-    if ( event->mimeData()->hasFormat( "vlmc/uuid" ) ||
-         event->mimeData()->urls().count() == 1 )
-    {
-        Media* media;
-        if ( event->mimeData()->urls().count() == 1 )
-        {
-            Library* lib = Library::getInstance();
-            lib->newMediaLoadingAsked( event->mimeData()->urls()[0].path() );
-            media = lib->getMedia( event->mimeData()->urls()[0].path() );
-        }
-        else
-            media = Library::getInstance()->getMedia( QUuid( QString( event->mimeData()->data( "vlmc/uuid" ) ) ) );
-
-        if ( media == NULL )
-        {
-            qDebug() << "Unknown media" << event->mimeData()->data( "vlmc/uuid" );
-            return ;
-        }
-
-        m_renderer->startPreview( media );
-        event->acceptProposedAction();
-        m_previewStopped = false;
-    }
-}
+//void    PreviewWidget::dragEnterEvent( QDragEnterEvent* event )
+//{
+//    if ( event->mimeData()->hasFormat( "vlmc/uuid" ) ||
+//         event->mimeData()->urls().count() == 1 )
+//    {
+//        event->acceptProposedAction();
+//    }
+//}
+//
+//void    PreviewWidget::dropEvent( QDropEvent* event )
+//{
+//    //If the dropped event is a clip to preview :
+//    if ( event->mimeData()->hasFormat( "vlmc/uuid" ) ||
+//         event->mimeData()->urls().count() == 1 )
+//    {
+//        Media* media;
+//        if ( event->mimeData()->urls().count() == 1 )
+//        {
+//            Library* lib = Library::getInstance();
+//            lib->newMediaLoadingAsked( event->mimeData()->urls()[0].path() );
+//            media = lib->getMedia( event->mimeData()->urls()[0].path() );
+//        }
+//        else
+//            media = Library::getInstance()->getMedia( QUuid( QString( event->mimeData()->data( "vlmc/uuid" ) ) ) );
+//
+//        if ( media == NULL )
+//        {
+//            qDebug() << "Unknown media" << event->mimeData()->data( "vlmc/uuid" );
+//            return ;
+//        }
+//
+//        event->acceptProposedAction();
+//        m_renderer->startPreview( media );
+//        m_previewStopped = false;
+//    }
+//}
 
 void    PreviewWidget::positionChanged( float newPos )
 {
