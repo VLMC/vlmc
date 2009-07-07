@@ -92,7 +92,10 @@ void        ClipRenderer::stop()
 void        ClipRenderer::togglePlayPause( bool forcePause )
 {
     if ( m_clipLoaded == false )
+    {
         startPreview();
+        return ;
+    }
     //If for some reason, nothing was loaded in startPreview(), we just return.
     if ( m_clipLoaded == false )
         return ;
