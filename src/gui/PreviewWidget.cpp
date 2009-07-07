@@ -126,6 +126,11 @@ void    PreviewWidget::seekSliderPressed()
 
 void    PreviewWidget::seekSliderMoved( int )
 {
+    if ( m_renderer->isRendering() == false )
+    {
+        m_ui->seekSlider->setValue( 0 );
+        return ;
+    }
     if ( m_ui->seekSlider->value() == m_ui->seekSlider->maximum() )
     {
         m_endReached = true;
@@ -164,10 +169,6 @@ void    PreviewWidget::on_pushButtonPlay_clicked()
 {
     if ( m_previewStopped == true )
         m_previewStopped = false;
-//    int     methodIndex = m_currentPreviewRenderer->metaObject()->indexOfMethod("togglePlayPause(bool)");
-//    qDebug() << methodIndex;
-//    QMetaMethod method = m_currentPreviewRenderer->metaObject()->method( methodIndex );
-//    qDebug() << method.invoke( m_currentPreviewRenderer, Qt::QueuedConnection, Q_ARG(bool, false) );
     m_renderer->togglePlayPause();
 }
 

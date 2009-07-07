@@ -28,7 +28,9 @@
 ClipRenderer::ClipRenderer() :
     GenericRenderer(),
     m_clipLoaded( false ),
-    m_vlcMedia( NULL )
+    m_vlcMedia( NULL ),
+    m_selectedMedia( NULL ),
+    m_mediaChanged( false )
 {
     connect( m_mediaPlayer,     SIGNAL( stopped() ),            this,   SLOT( __videoStopped() ) );
     connect( m_mediaPlayer,     SIGNAL( paused() ),             this,   SLOT( __videoPaused() ) );
@@ -43,8 +45,11 @@ ClipRenderer::~ClipRenderer()
 
 void        ClipRenderer::setMedia( const Media* media )
 {
-    qDebug() << "selected new media";
     m_selectedMedia = media;
+    if ( m_isRendering == true )
+        m_mediaChanged = true;
+    else
+        m_clipLoaded = false;
 }
 
 void        ClipRenderer::startPreview()
@@ -62,6 +67,7 @@ void        ClipRenderer::startPreview()
     m_clipLoaded = true;
     m_isRendering = true;
     m_paused = false;
+    m_mediaChanged = false;
 }
 
 void        ClipRenderer::setPosition( float newPos )
@@ -78,13 +84,18 @@ void        ClipRenderer::stop()
         m_isRendering = false;
         m_mediaPlayer->stop();
         m_paused = false;
+        if ( m_mediaChanged == true )
+            m_clipLoaded = false;
     }
 }
 
 void        ClipRenderer::togglePlayPause( bool forcePause )
 {
-    if ( m_clipLoaded == false)
+    if ( m_clipLoaded == false )
         startPreview();
+    //If for some reason, nothing was loaded in startPreview(), we just return.
+    if ( m_clipLoaded == false )
+        return ;
 
     if ( m_paused == false && m_isRendering == true )
     {

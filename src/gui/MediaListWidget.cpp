@@ -58,13 +58,16 @@ void    MediaListWidget::mousePressEvent( QMouseEvent* event )
 {
     if ( event->button() == Qt::LeftButton)
         this->m_dragStartPos = event->pos();
+    QListWidget::mousePressEvent( event );
+
     ListViewMediaItem* item = static_cast<ListViewMediaItem*>( currentItem() );
+    if ( item == NULL )
+        return ;
     if ( item->getMedia() != m_lastClicked )
     {
         m_lastClicked = item->getMedia();
         emit selectedMediaChanged( m_lastClicked );
     }
-    QListWidget::mousePressEvent( event );
 }
 
 void    MediaListWidget::mouseMoveEvent( QMouseEvent* event )

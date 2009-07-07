@@ -54,6 +54,11 @@ private:
     bool                    m_clipLoaded;
     LibVLCpp::Media*        m_vlcMedia;
     const Media*            m_selectedMedia;
+    /**
+     *  \brief  This flags is used to know if a new media has been selected in the
+     * library. If so, we must relaunch the render if the play button is clicked again.
+     */
+    bool                    m_mediaChanged;
 
 public slots:
     void                    __positionChanged();

@@ -157,7 +157,7 @@ void MainWindow::m_initializeDockWidgets( void )
                                   tr( "Project Preview" ),
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
-                                  Qt::LeftDockWidgetArea );
+                                  Qt::TopDockWidgetArea );
     setupLibrary();
     m_metaDataManager = MetaDataManager::getInstance();
 }
