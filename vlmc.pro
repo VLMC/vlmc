@@ -107,6 +107,11 @@ INCLUDEPATH += src/LibVLCpp \
     src/gui \
     src/tools \
     src
+
+# QMAKE_CFLAGS+=-pg
+# QMAKE_CXXFLAGS+=-pg
+# QMAKE_LFLAGS+=-pg
+
 LIBS = -L/usr/local/lib \
     -lvlc
 SUBDIRS += modules

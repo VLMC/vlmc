@@ -86,6 +86,7 @@ void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret )
 //    else
 //    {
         *pp_ret = cw->m_buffer;
+        qDebug() << "Clip workflow locking";
 //    }
 }
 
@@ -99,7 +100,9 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
         cw->m_stateLock->unlock();
 
         QMutexLocker    lock( cw->m_condMutex );
+            qDebug() << "Entering condwait";
         cw->m_waitCond->wait( cw->m_condMutex );
+            qDebug() << "Leaved condwait";
         cw->m_stateLock->lockForWrite();
         cw->m_state = Rendering;
 //        {
@@ -107,6 +110,7 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
 //            cw->m_usingBackBuffer = !cw->m_usingBackBuffer;
 //        }
     }
+    qDebug() << "Clip Workflow unlocking";
     cw->m_stateLock->unlock();
     cw->checkStateChange();
 }
@@ -263,4 +267,19 @@ void            ClipWorkflow::reinitialize()
     QWriteLocker    lock( m_stateLock );
     m_state = Stopped;
     queryStateChange( None );
+}
+
+void            ClipWorkflow::pause()
+{
+    qDebug() << "Clip workflow is pausing";
+    m_mediaPlayer->pause();
+    setState( Paused );
+}
+
+void            ClipWorkflow::unpause()
+{
+    qDebug() << "Unpausing clipworkflow";
+    //Since VLC will detect that the media player is paused and unpause it, we can do this safely
+    m_mediaPlayer->pause();
+    setState( ClipWorkflow::Rendering );
 }

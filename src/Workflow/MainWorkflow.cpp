@@ -113,6 +113,15 @@ unsigned char*    MainWorkflow::getOutput()
         return MainWorkflow::blackOutput;
 }
 
+void        MainWorkflow::pause()
+{
+    for ( unsigned int i = 0; i < m_trackCount; ++i )
+    {
+        if ( m_tracks[i].activated() == true )
+            m_tracks[i]->pause();
+    }
+}
+
 void        MainWorkflow::nextFrame()
 {
     ++m_currentFrame;

@@ -52,6 +52,7 @@ class   TrackWorkflow : public QObject
         unsigned char*                          getOutput( qint64 currentFrame );
         qint64                                  getLength() const;
         void                                    stop();
+        void                                    pause();
         void                                    moveClip( const QUuid& id, qint64 startingFrame );
         Clip*                                   removeClip( const QUuid& id );
         void                                    addClip( Clip*, qint64 start );
@@ -86,6 +87,8 @@ class   TrackWorkflow : public QObject
         QMutex*                                 m_forceRepositionningMutex;
 
         QReadWriteLock*                         m_clipsLock;
+
+        bool                                    m_paused;
     signals:
         void            trackEndReached( unsigned int );
 };

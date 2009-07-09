@@ -52,6 +52,11 @@ RenderPreviewWidget::RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* r
     m_media->addOption( buffer );
     sprintf( buffer, ":invmem-data=%lld", (qint64)this );
     m_media->addOption( buffer );
+    sprintf( buffer, ":width=%i", VIDEOWIDTH );
+    m_media->addOption( buffer );
+    sprintf( buffer, ":height=%i", VIDEOHEIGHT );
+    m_media->addOption( buffer );
+
     m_mediaPlayer->setMedia( m_media );
 
     connect( m_mediaPlayer, SIGNAL( playing() ),    this,   SLOT( __videoPlaying() ) );
@@ -149,6 +154,8 @@ void        RenderPreviewWidget::togglePlayPause( bool forcePause )
         if ( m_paused == true && forcePause == false )
         {
             m_mediaPlayer->play();
+            //This will automaticly unpause... no worries
+            m_mainWorkflow->pause();
             m_paused = false;
         }
         else
@@ -158,6 +165,7 @@ void        RenderPreviewWidget::togglePlayPause( bool forcePause )
             if ( m_paused == false )
             {
                 m_mediaPlayer->pause();
+                m_mainWorkflow->pause();
                 m_paused = true;
             }
         }

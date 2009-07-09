@@ -41,7 +41,7 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
     m_tracksHeight = 25;
 
     m_tracksCount = mainWorkflow->getTrackCount();
-    m_fps = 30;
+    m_fps = FPS;
 
     m_numAudioTrack = 0;
     m_numVideoTrack = 0;

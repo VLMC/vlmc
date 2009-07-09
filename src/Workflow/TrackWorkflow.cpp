@@ -28,7 +28,8 @@
 TrackWorkflow::TrackWorkflow( unsigned int trackId ) :
         m_trackId( trackId ),
         m_length( 0 ),
-        m_forceRepositionning( false )
+        m_forceRepositionning( false ),
+        m_paused( false )
 {
     m_forceRepositionningMutex = new QMutex;
     m_clipsLock = new QReadWriteLock;
@@ -273,6 +274,57 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
         ++it;
     }
     return ret;
+}
+
+void            TrackWorkflow::pause()
+{
+    QReadLocker     lock( m_clipsLock );
+
+    QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
+
+    while ( it != end )
+    {
+        ClipWorkflow*   cw = it.value();
+
+        if ( m_paused == false )
+        {
+            cw->getStateLock()->lockForRead();
+            if ( cw->getState() != ClipWorkflow::Sleeping &&
+                 cw->getState() != ClipWorkflow::Rendering )
+            {
+                qDebug() << "State when pausing ==" << cw->getState();
+                cw->getStateLock()->unlock();
+                ++it;
+                continue ; //No need to pause if nothing is happening
+            }
+            if ( cw->getState() == ClipWorkflow::Sleeping )
+            {
+                cw->getStateLock()->unlock();
+                cw->wake();
+            }
+            else
+                cw->getStateLock()->unlock();
+            cw->pause();
+        }
+        else
+        {
+            cw->getStateLock()->lockForRead();
+            if ( cw->getState() == ClipWorkflow::Paused )
+            {
+                cw->getStateLock()->unlock();
+                cw->unpause();
+            }
+            else
+            {
+                qDebug() << "State when unpausing is (wierdly) ==" << cw->getState();
+                cw->getStateLock()->unlock();
+            }
+        }
+        ++it;
+    }
+    qDebug() << "End of loop";
+    m_paused = !m_paused;
 }
 
 void            TrackWorkflow::moveClip( const QUuid& id, qint64 startingFrame )
