@@ -55,10 +55,7 @@ void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     painter->setPen( QPen( Qt::NoPen ) );
     painter->setBrush( QBrush( gradient ) );
     painter->drawRect( boundingRect() );
-
-    paintAudioSpectrum( painter );
 }
-
 
 void GraphicsMovieItem::setWidth( int width )
 {

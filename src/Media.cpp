@@ -4,6 +4,7 @@
  * Copyright (C) 2008-2009 the VLMC team
  *
  * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
+ *	    Geoffroy Lacarriere  <geoffroylaca@gmail.com>		
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -28,6 +29,7 @@
 
 #include <QtDebug>
 #include "Media.h"
+#include <QPainter>
 
 QPixmap*        Media::defaultSnapshot = NULL;
 const QString   Media::VideoExtensions = "*.mov *.avi *.mkv *.mpg *.mpeg *.wmv *.mp4";
@@ -46,6 +48,8 @@ Media::Media( const QFileInfo* fileInfo)
     else
         m_mrl = "fake:///" + fileInfo->absoluteFilePath();
     m_vlcMedia = new LibVLCpp::Media( m_mrl );
+
+    connect(this, SIGNAL(audioFramePointList(QVector<uint>*)), this, SLOT(addAudioFramePointList(QVector<uint>*)));
 }
 
 Media::~Media()
@@ -173,10 +177,10 @@ Media::FileType     Media::getFileType() const
 
 void                Media::initAudioData( void* datas, unsigned int* freq, unsigned int* nbChannels, unsigned int* fourCCFormat, unsigned int* frameSize )
 {
-    m_audioData.freq = freq;
-    m_audioData.nbChannels = nbChannels;
-    m_audioData.frameSize = frameSize;
-    m_audioData.fourCCFormat = fourCCFormat;
+    m_audioData.freq = *freq;
+    m_audioData.nbChannels = *nbChannels;
+    m_audioData.frameSize = *frameSize;
+    m_audioData.fourCCFormat = *fourCCFormat;
     m_audioData.datas = datas;
 }
 
@@ -184,19 +188,47 @@ void                Media::addAudioFrame( void* datas, unsigned char* buffer, si
 {
     m_audioData.nbSample = nbSample;
     m_audioData.buffSize = buffSize;
+    unsigned int bytePerSample = buffSize / nbSample;
+    unsigned int bytePerChannelPerSample = bytePerSample / m_audioData.nbChannels;
 
-    int* frame = new int[ m_audioData.buffSize ];
-    for (unsigned int i = 0, u = 0; u < m_audioData.nbSample; i += 4, u++)
+    int average = 0;
+    for (unsigned int i = 0; i < nbSample; i++)
     {
-        int value = buffer[i];
-        value <<= 8;
-        value += buffer[i + 1];
-        value <<= 8;
-        value += buffer[i + 2];
-        value <<= 8;
-        value += buffer[i + 3];
-        frame[u] = value;
+        unsigned int left = 0;
+        unsigned int right = 0;
+        for ( unsigned int u = 0; u < bytePerChannelPerSample ; u++ )
+        {
+            int increment = 0;
+            if ( m_audioData.nbChannels == 2 )
+                increment = 2;
+            left <<= 8;
+            left += buffer[ u ];
+            right <<= 8;
+            right += buffer[ u + increment ];
+        }
+        average += left;
+        //qDebug() << "Left: " << left << " Right: " << right;
     }
-    m_audioData.frameList.append( frame );
-//    qDebug() << m_audioData.frameList.size();
+
+    static int i = 0;
+    average /= nbSample;
+
+    if ( i < 64 )
+    {
+        //qDebug() << i;
+        m_pointList.append( average );
+        i++;
+    }
+    else
+    {
+        emit audioFramePointList( &m_pointList );
+        i = 0;
+    }
+}
+
+void                        Media::addAudioFramePointList( QVector<uint>* pointList )
+{
+    QPainter painter;
+    QPixmap  pixmap;
+    qDebug("new frame");
 }

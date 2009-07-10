@@ -41,10 +41,10 @@
 struct          audioData
 {
     void*               datas;
-    unsigned int*       freq;
-    unsigned int*       nbChannels;
-    unsigned int*       fourCCFormat;
-    unsigned int*       frameSize;
+    unsigned int        freq;
+    unsigned int        nbChannels;
+    unsigned int        fourCCFormat;
+    unsigned int        frameSize;
     unsigned int        nbSample;
     unsigned char*      buffer;
     size_t              buffSize;
@@ -129,6 +129,9 @@ public:
 private:
     void                        setFileType();
 
+private slots:
+    void                        addAudioFramePointList( QVector<uint>* );
+
 protected:
     static QPixmap*             defaultSnapshot;
 
@@ -146,8 +149,11 @@ protected:
     audioData                   m_audioData;
     FileType                    m_fileType;
 
+    QVector<uint>               m_pointList;
+
 signals:
     void                        snapshotChanged();
+    void                        audioFramePointList( QVector<uint>* );
 };
 
 #endif // CLIP_H__

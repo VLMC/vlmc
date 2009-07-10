@@ -34,22 +34,21 @@ class GraphicsMovieItem : public AbstractGraphicsMediaItem
 public:
     enum { Type = UserType + 1 };
     GraphicsMovieItem( Clip* clip );
-    virtual ~GraphicsMovieItem();
+    virtual                 ~GraphicsMovieItem();
+    Clip*                   clip() const;
+    virtual int             type() const { return Type; }
+    virtual bool            expandable() const { return false; }
+    virtual bool            moveable() const { return true; }
+    virtual const QUuid&    uuid() const { return m_media->getUuid(); }
+    virtual QRectF          boundingRect() const;
+    virtual void            paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
+    void                    setWidth( int width );
+    void                    setHeight( int height );
 
-    virtual int type() const { return Type; }
-    virtual bool expandable() const { return false; }
-    virtual bool moveable() const { return true; }
-    virtual const QUuid& uuid() const { return m_clip->getUuid(); }
-    virtual QRectF boundingRect() const;
-    virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
-
-    void setWidth( int width );
-    void setHeight( int height );
-    Clip* clip() const;
-    //void setAudioSpectrum( QVector<float*> spectrum );
     void paintAudioSpectrum( QPainter* painter );
 
 private:
+    Media*          m_media;
     Clip*           m_clip;
     int             m_width;
     int             m_height;
