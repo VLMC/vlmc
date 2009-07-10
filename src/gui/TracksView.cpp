@@ -140,7 +140,7 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
 
     if ( m_dragItem ) delete m_dragItem;
     m_dragItem = new GraphicsMovieItem( new Clip( media ) );
-    m_dragItem->setWidth( ( (double)media->getLength() / 1000 ) * m_fps );
+    m_dragItem->setWidth( ( int ) ( ( (double)media->getLength() / 1000 ) * m_fps ) );
     m_dragItem->setHeight( tracksHeight() );
     m_dragItem->setPos( mappedXPos, 0 );
     m_dragItem->setParentItem( m_layout->itemAt( 0 )->graphicsItem() );
@@ -257,7 +257,7 @@ void TracksView::dropEvent( QDropEvent* event )
 
 void TracksView::setDuration( int duration )
 {
-    int diff = qAbs( duration - sceneRect().width() );
+    int diff = ( int ) qAbs( ( qreal )duration - sceneRect().width() );
     if ( diff * matrix().m11() > -50 )
     {
         if ( matrix().m11() < 0.4 )
@@ -280,9 +280,9 @@ void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
 
     painter->setBrush( QBrush( palette().dark().color(), Qt::Dense3Pattern ) );
     painter->setPen( Qt::transparent );
-    painter->drawRect( r.left(), m_separator->y(),
-                       r.right(),
-                       m_separator->boundingRect().height() );
+    painter->drawRect( ( int ) r.left(), ( int ) m_separator->y(),
+                       ( int ) r.right(),
+                       ( int ) m_separator->boundingRect().height() );
 
     /*QColor base = palette().button().color();
     QRectF r = rect;
@@ -427,7 +427,7 @@ void TracksView::setScale( double scaleFactor )
     //TODO update the scene scale ?
     setMatrix( matrix );
 
-    int diff = sceneRect().width() - m_projectDuration;
+    int diff = ( int ) ( sceneRect().width() - ( qreal ) m_projectDuration );
     if ( diff * matrix.m11() < 50 )
     {
         if ( matrix.m11() < 0.4 )
@@ -461,7 +461,7 @@ void TracksView::updateDuration()
                 dynamic_cast<AbstractGraphicsMediaItem*>( sceneItems.at( i ) );
         if ( !item ) continue;
         if ( item->pos().x() + item->boundingRect().width() > projectDuration )
-            projectDuration = item->pos().x() + item->boundingRect().width();
+            projectDuration = ( int ) ( item->pos().x() + item->boundingRect().width() );
     }
 
     m_projectDuration = projectDuration;

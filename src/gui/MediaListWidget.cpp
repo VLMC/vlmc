@@ -95,11 +95,11 @@ void MediaListWidget::paintEvent( QPaintEvent* event )
         if ( wRatio < hRatio )
         {
             destRect.setWidth( viewportRect.width() );
-            destRect.setHeight( svgRect.height() * wRatio );
+            destRect.setHeight( ( int ) ( svgRect.height() * wRatio ) );
         }
         else
         {
-            destRect.setWidth( svgRect.width() * hRatio );
+            destRect.setWidth( ( int ) ( svgRect.width() * hRatio ) );
             destRect.setHeight( viewportRect.height() );
         }
 

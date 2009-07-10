@@ -94,8 +94,8 @@ void TracksRuler::setDuration( int duration )
 {
     int oldDuration = m_duration;
     m_duration = duration;
-    update( qMin( oldDuration, m_duration ) * m_factor - 1 - m_offset, 0,
-            qAbs( oldDuration - m_duration ) * m_factor + 2, height() );
+    update( ( int ) ( qMin( oldDuration, m_duration ) * m_factor - 1 - m_offset ), 0,
+            ( int ) ( qAbs( oldDuration - m_duration ) * m_factor + 2 ), height() );
 }
 
 void TracksRuler::paintEvent( QPaintEvent* e )
@@ -117,8 +117,8 @@ void TracksRuler::paintEvent( QPaintEvent* e )
 
     QPalette palette;
     painter.setPen( palette.dark().color() );
-    offsetMin = ( e->rect().left() + m_offset ) / m_textSpacing;
-    offsetMin = offsetMin * m_textSpacing;
+    offsetMin = ( int ) ( ( e->rect().left() + m_offset ) / m_textSpacing );
+    offsetMin = ( int ) ( offsetMin * m_textSpacing );
     for ( f = offsetMin; f < offsetMax; f += m_textSpacing )
     {
         QString time = getTimeCode( (int)( f / m_factor + 0.5 ) );
@@ -149,7 +149,7 @@ void TracksRuler::paintEvent( QPaintEvent* e )
             painter.drawLine( ( int )f, BIG_MARK_X1, ( int )f, BIG_MARK_X2 );
 
     // Draw the pointer
-    int cursorPos = m_tracksView->cursorPos() * m_factor - offset();
+    int cursorPos = ( int ) ( m_tracksView->cursorPos() * m_factor - offset() );
     QPolygon cursor( 3 );
     cursor.setPoints( 3, cursorPos - 9, 11, cursorPos + 9, 11, cursorPos, 30 );
     painter.setBrush( QBrush( QColor( 82, 97, 122, 150 ) ) );
@@ -161,7 +161,7 @@ void TracksRuler::mousePressEvent( QMouseEvent* event )
     if ( event->buttons() == Qt::LeftButton &&
          event->modifiers() == Qt::NoModifier )
     {
-        m_tracksView->setCursorPos( ( event->x() + offset() ) / m_factor );
+        m_tracksView->setCursorPos( ( int ) ( ( event->x() + offset() ) / m_factor ) );
     }
 }
 
@@ -170,7 +170,7 @@ void TracksRuler::mouseMoveEvent( QMouseEvent* event )
     if ( event->buttons() == Qt::LeftButton &&
          event->modifiers() == Qt::NoModifier )
     {
-        m_tracksView->setCursorPos( ( event->x() + offset() ) / m_factor );
+        m_tracksView->setCursorPos( ( int ) ( ( event->x() + offset() ) / m_factor ) );
     }
 }
 
