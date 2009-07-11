@@ -67,6 +67,7 @@ class   TrackWorkflow : public QObject
                                                             qint64 start, bool needRepositioning );
         void                                    preloadClip( ClipWorkflow* cw );
         void                                    stopClipWorkflow( ClipWorkflow* cw );
+        void                                    pauseClipWorkflow( ClipWorkflow* cw );
         bool                                    checkEnd( qint64 currentFrame ) const;
 
     private:

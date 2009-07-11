@@ -276,6 +276,48 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
     return ret;
 }
 
+void            TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
+{
+    cw->getStateLock()->lockForRead();
+
+    if ( cw->getState() == ClipWorkflow::Sleeping ||
+         cw->getState() == ClipWorkflow::Ready ||
+         cw->getState() == ClipWorkflow::EndReached )
+    {
+        cw->getStateLock()->unlock();
+        cw->queryStateChange( ClipWorkflow::Pausing );
+        cw->wake();
+    }
+    else if ( cw->getState() == ClipWorkflow::Rendering )
+    {
+        cw->getStateLock()->unlock();
+        while ( cw->isRendering() == true )
+            SleepMS( 1 );
+        cw->queryStateChange( ClipWorkflow::Pausing );
+        cw->wake();
+    }
+    else if ( cw->getState() == ClipWorkflow::Initializing )
+    {
+        cw->getStateLock()->unlock();
+        while ( cw->isReady() == false )
+            SleepMS( 1 );
+    }
+    else
+    {
+//        qDebug() << "Unexpected ClipWorkflow::State when pausing:" << cw->getState();
+        cw->getStateLock()->unlock();
+    }
+    bool pausing = false;
+    while ( pausing == false )
+    {
+        cw->getStateLock()->lockForRead();
+        pausing = ( cw->getState() == ClipWorkflow::Pausing );
+        SleepMS( 1 );
+        cw->getStateLock()->unlock();
+    }
+    cw->pause();
+}
+
 void            TrackWorkflow::pause()
 {
     QReadLocker     lock( m_clipsLock );
@@ -287,25 +329,10 @@ void            TrackWorkflow::pause()
     {
         ClipWorkflow*   cw = it.value();
 
+        //TODO: try to do this with the State
         if ( m_paused == false )
         {
-            cw->getStateLock()->lockForRead();
-            if ( cw->getState() != ClipWorkflow::Sleeping &&
-                 cw->getState() != ClipWorkflow::Rendering )
-            {
-                qDebug() << "State when pausing ==" << cw->getState();
-                cw->getStateLock()->unlock();
-                ++it;
-                continue ; //No need to pause if nothing is happening
-            }
-            if ( cw->getState() == ClipWorkflow::Sleeping )
-            {
-                cw->getStateLock()->unlock();
-                cw->wake();
-            }
-            else
-                cw->getStateLock()->unlock();
-            cw->pause();
+            pauseClipWorkflow( cw );
         }
         else
         {
@@ -317,13 +344,11 @@ void            TrackWorkflow::pause()
             }
             else
             {
-                qDebug() << "State when unpausing is (wierdly) ==" << cw->getState();
                 cw->getStateLock()->unlock();
             }
         }
         ++it;
     }
-    qDebug() << "End of loop";
     m_paused = !m_paused;
 }
 

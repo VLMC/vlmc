@@ -50,6 +50,7 @@ class   ClipWorkflow : public QObject
             Ready,
             Rendering,
             Sleeping,
+            Pausing,
             Paused,
             Stopping,
             EndReached,
