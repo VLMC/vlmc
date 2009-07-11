@@ -26,6 +26,8 @@
 
 #include <QObject>
 #include <QReadWriteLock>
+#include <QAtomicInt>
+#include <QAtomicPointer>
 
 #include "tools/Toggleable.hpp"
 #include "TrackWorkflow.h"
@@ -73,6 +75,13 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         static unsigned char*   blackOutput;
         void                    nextFrame();
         void                    previousFrame();
+
+        /**
+         *  \brief  By calling this method, you ensure that the MainWorkflow will
+         *          only return one frame to you, until you restore the normal render mode,
+         *          or until you call this method again.
+         */
+        void                    activateOneFrameOnly();
         
         static MainWorkflow*    getInstance();
 
@@ -88,6 +97,14 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         */
         bool                            m_renderStarted;
         QReadWriteLock*                 m_renderStartedLock;
+
+        /**
+         *  \brief  This will be used in case of next frame, to avoid rendering more than one frame
+         *          at a time
+         */
+        QAtomicPointer<unsigned char>   m_lastRenderedFrame;
+
+        QAtomicInt                      m_renderOnlyOneFrame;
 
     public slots:
         void                            clipMoved( QUuid, int, int, qint64 );
