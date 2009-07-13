@@ -87,7 +87,7 @@ void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret )
 //    else
 //    {
         *pp_ret = cw->m_buffer;
-//        qDebug() << "Clip workflow locking";
+        qDebug() << "Clip workflow locking";
 //    }
 }
 
@@ -101,10 +101,10 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
         cw->m_stateLock->unlock();
 
         QMutexLocker    lock( cw->m_condMutex );
-//            qDebug() << "Entering condwait";
+            qDebug() << "Entering condwait";
 
         cw->m_waitCond->wait( cw->m_condMutex );
-//            qDebug() << "Leaved condwait";
+            qDebug() << "Leaved condwait";
         cw->m_stateLock->lockForWrite();
         cw->m_state = Rendering;
 //        {

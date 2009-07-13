@@ -246,7 +246,10 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
             m_forceRepositionning = false;
         }
         else
+        {
+            qDebug() << currentFrame - lastFrame;
             needRepositioning = ( currentFrame - lastFrame != 1 ) ? true : false;
+        }
     }
     while ( it != end )
     {
