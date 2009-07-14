@@ -80,16 +80,28 @@ RenderPreviewWidget::~RenderPreviewWidget()
 
 void*   RenderPreviewWidget::lock( void* datas )
 {
-    qDebug() << "\nQuerying new picture";
     RenderPreviewWidget* self = reinterpret_cast<RenderPreviewWidget*>( datas );
-    void* ret = self->m_mainWorkflow->getOutput();
-    return ret;
+
+    if ( self->m_oneFrameOnly < 2 )
+    {
+        qDebug() << "\nQuerying new picture";
+        void* ret = self->m_mainWorkflow->getOutput();
+        self->m_lastFrame = static_cast<unsigned char*>( ret );
+        return ret;
+    }
+    else
+        return self->m_lastFrame;
 }
 
 void    RenderPreviewWidget::unlock( void* datas )
 {
     RenderPreviewWidget* self = reinterpret_cast<RenderPreviewWidget*>( datas );
-    self->m_framePlayed = 1;
+    if ( self->m_oneFrameOnly == 1 )
+    {
+        self->m_mediaPlayer->pause();
+        self->m_oneFrameOnly = 2;
+        qDebug() << "Pausing RenderPreviewWidget";
+    }
 }
 
 void        RenderPreviewWidget::stopPreview()
@@ -121,15 +133,16 @@ void        RenderPreviewWidget::setPosition( float newPos )
 void        RenderPreviewWidget::nextFrame()
 {
     qDebug() << "Next frame :";
+    m_oneFrameOnly = 1;
     m_mainWorkflow->nextFrame();
     qDebug() << "Activatign one frame only";
     m_mainWorkflow->activateOneFrameOnly();
     //Both media players should be stopped now... restauring playback
-    m_framePlayed = 0;
+//    m_framePlayed = 0;
     m_mediaPlayer->pause();
-    while ( m_framePlayed == 0 )
-        SleepMS( 1 );
-    m_mediaPlayer->pause();
+//    while ( m_framePlayed == 0 )
+//        SleepMS( 1 );
+//    m_mediaPlayer->pause();
 }
 
 void        RenderPreviewWidget::previousFrame()
@@ -197,6 +210,10 @@ void        RenderPreviewWidget::__positionChanged( float pos )
 
 void        RenderPreviewWidget::__videoPaused()
 {
+    if ( m_oneFrameOnly != 0 )
+    {
+        m_oneFrameOnly = 0;
+    }
     emit paused();
 }
 

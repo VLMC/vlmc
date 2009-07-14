@@ -60,7 +60,8 @@ class   RenderPreviewWidget : public GenericPreviewWidget
     private:
         MainWorkflow*       m_mainWorkflow;
         LibVLCpp::Media*    m_media;
-        QAtomicInt          m_framePlayed;
+        QAtomicInt          m_oneFrameOnly;
+        unsigned char*      m_lastFrame;
 
     public slots:
         void                __positionChanged();
