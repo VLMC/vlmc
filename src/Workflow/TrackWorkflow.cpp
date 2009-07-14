@@ -87,11 +87,11 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
 
     cw->getStateLock()->lockForRead();
 
-    qDebug() << "Rendering clip";
+//    qDebug() << "Rendering clip";
     if ( cw->getState() == ClipWorkflow::Paused && pauseAfterRender == false )
     {
         cw->getStateLock()->unlock();
-        qDebug() << "Unpausing clip workflow";
+//        qDebug() << "Unpausing clip workflow";
         //If we must pause after render, we must NOT wake the renderer thread, or it could render more than one frame
         // (since this is for the next/previous frame)
         //However, if this is just for a classic unpause, with just don't give a shit :)
@@ -102,7 +102,6 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
     {
         //The rendering state meens... whell it means that the frame is
         //beeing rendered, so we wait.
-        qDebug() << "State == rendering";
         cw->getStateLock()->unlock();
         while ( cw->isRendering() == true )
         {
@@ -127,7 +126,7 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
         if ( pauseAfterRender == true )
         {
             cw->unpause( false );
-            qDebug() << "Querying state back to pause after render";
+//            qDebug() << "Querying state back to pause after render";
             cw->queryStateChange( ClipWorkflow::Paused );
         }
         cw->wake();
@@ -260,14 +259,14 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
     bool                                        needRepositioning;
     bool                                        oneFrameOnlyFlag = false;
 
-    qDebug() << "Checking flag...";
+//    qDebug() << "Checking flag...";
     if ( m_oneFrameOnly == 1 )
     {
-        qDebug() << "...Flag is activated";
+//        qDebug() << "...Flag is activated";
         oneFrameOnlyFlag = true;
     }
-    else
-        qDebug() << "...Flag is OFF";
+//    else
+//        qDebug() << "...Flag is OFF";
     if ( checkEnd( currentFrame ) == true )
     {
         emit trackEndReached( m_trackId );
@@ -297,7 +296,7 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
             if ( oneFrameOnlyFlag == true )
             {
                 cw->pause();
-                qDebug() << "Pausing back clip workflow";
+//                qDebug() << "Pausing back clip workflow";
             }
             lastFrame = currentFrame;
         }
@@ -317,7 +316,7 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
     }
     if ( oneFrameOnlyFlag == true )
     {
-        qDebug() << "Switching off m_oneFrameOnly";
+//        qDebug() << "Switching off m_oneFrameOnly";
         m_oneFrameOnly = 0;
     }
     return ret;
@@ -351,7 +350,7 @@ void            TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
     }
     else
     {
-        qDebug() << "Unexpected ClipWorkflow::State when pausing:" << cw->getState();
+//        qDebug() << "Unexpected ClipWorkflow::State when pausing:" << cw->getState();
         cw->getStateLock()->unlock();
     }
     bool pausing = false;
@@ -375,13 +374,11 @@ void            TrackWorkflow::pause()
     //FIXME: it's probably bad to iterate over every clip workflows.
     while ( it != end )
     {
-        qDebug() << "Iterating...";
         ClipWorkflow*   cw = it.value();
 
         cw->getStateLock()->lockForRead();
         if ( cw->getState() != ClipWorkflow::Paused )
         {
-            qDebug() << "Pausing clip workflow";
             cw->getStateLock()->unlock();
             pauseClipWorkflow( cw );
         }
@@ -453,7 +450,5 @@ Clip*       TrackWorkflow::removeClip( const QUuid& id )
 
 void        TrackWorkflow::activateOneFrameOnly()
 {
-    qDebug() << "Activating flag";
     m_oneFrameOnly = 1;
-    qDebug() << "Flag activated";
 }

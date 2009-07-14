@@ -87,7 +87,7 @@ void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret )
 //    else
 //    {
         *pp_ret = cw->m_buffer;
-        qDebug() << "Clip workflow locking <<<<<<<<<<<<<<<<<<<<<<<<<<";
+//        qDebug() << "Clip workflow locking <<<<<<<<<<<<<<<<<<<<<<<<<<";
 //    }
 }
 
@@ -124,7 +124,7 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
     }
     else if ( cw->m_state == Paused )
     {
-        qDebug() << "Forcing pause by pausing thread";
+//        qDebug() << "Forcing pause by pausing thread";
         cw->m_stateLock->unlock();
         QMutexLocker    lock( cw->m_condMutex );
         cw->m_waitCond->wait( cw->m_condMutex );

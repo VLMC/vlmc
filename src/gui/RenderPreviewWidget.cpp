@@ -84,7 +84,7 @@ void*   RenderPreviewWidget::lock( void* datas )
 
     if ( self->m_oneFrameOnly < 2 )
     {
-        qDebug() << "\nQuerying new picture";
+//        qDebug() << "\nQuerying new picture";
         void* ret = self->m_mainWorkflow->getOutput();
         self->m_lastFrame = static_cast<unsigned char*>( ret );
         return ret;
@@ -100,7 +100,7 @@ void    RenderPreviewWidget::unlock( void* datas )
     {
         self->m_mediaPlayer->pause();
         self->m_oneFrameOnly = 2;
-        qDebug() << "Pausing RenderPreviewWidget";
+//        qDebug() << "Pausing RenderPreviewWidget";
     }
 }
 
@@ -132,10 +132,10 @@ void        RenderPreviewWidget::setPosition( float newPos )
 
 void        RenderPreviewWidget::nextFrame()
 {
-    qDebug() << "Next frame :";
+//    qDebug() << "Next frame :";
     m_oneFrameOnly = 1;
     m_mainWorkflow->nextFrame();
-    qDebug() << "Activatign one frame only";
+//    qDebug() << "Activatign one frame only";
     m_mainWorkflow->activateOneFrameOnly();
     //Both media players should be stopped now... restauring playback
 //    m_framePlayed = 0;
@@ -159,7 +159,7 @@ void        RenderPreviewWidget::togglePlayPause( bool forcePause )
     {
         if ( m_paused == true && forcePause == false )
         {
-            qDebug() << "Unpausing";
+//            qDebug() << "Unpausing";
             m_mediaPlayer->play();
             //This will automaticly unpause... no worries
 //            m_mainWorkflow->pause();
@@ -171,7 +171,6 @@ void        RenderPreviewWidget::togglePlayPause( bool forcePause )
             //So be careful about pausing two times :
             if ( m_paused == false )
             {
-                qDebug() << "Pausing";
                 m_mediaPlayer->pause();
                 m_mainWorkflow->pause();
                 m_paused = true;
