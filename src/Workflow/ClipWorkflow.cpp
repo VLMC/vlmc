@@ -70,6 +70,7 @@ void    ClipWorkflow::checkStateChange()
     QWriteLocker    lock2( m_stateLock );
     if ( m_requiredState != ClipWorkflow::None )
     {
+//        qDebug() << "Changed state from" << m_state << "to state" << m_requiredState;
         m_state = m_requiredState;
         m_requiredState = ClipWorkflow::None;
     }
@@ -86,6 +87,7 @@ void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret )
 //    else
 //    {
         *pp_ret = cw->m_buffer;
+        qDebug() << "Clip workflow locking <<<<<<<<<<<<<<<<<<<<<<<<<<";
 //    }
 }
 
@@ -93,21 +95,42 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
 {
     cw->m_stateLock->lockForWrite();
 
+//    if ( cw->m_oneFrameOnly )
+//    {
+//        qDebug() << "One frame only mode is ON :)";
+//        //Forcing pause after rendering a frame
+//        cw->m_oneFrameOnly = 0;
+//        cw->m_state = Paused;
+//    }
+//    else
+//        qDebug() << "One frame only mode is OFF :(";
     if ( cw->m_state == Rendering )
     {
         cw->m_state = Sleeping;
         cw->m_stateLock->unlock();
 
         QMutexLocker    lock( cw->m_condMutex );
+//            qDebug() << "Entering condwait";
+
         cw->m_waitCond->wait( cw->m_condMutex );
+//            qDebug() << "Leaved condwait";
         cw->m_stateLock->lockForWrite();
         cw->m_state = Rendering;
 //        {
 //            QWriteLocker    lock2( cw->m_backBufferLock );
 //            cw->m_usingBackBuffer = !cw->m_usingBackBuffer;
 //        }
+        cw->m_stateLock->unlock();
     }
-    cw->m_stateLock->unlock();
+    else if ( cw->m_state == Paused )
+    {
+        qDebug() << "Forcing pause by pausing thread";
+        cw->m_stateLock->unlock();
+        QMutexLocker    lock( cw->m_condMutex );
+        cw->m_waitCond->wait( cw->m_condMutex );
+    }
+    else
+        cw->m_stateLock->unlock();
     cw->checkStateChange();
 }
 
@@ -264,3 +287,28 @@ void            ClipWorkflow::reinitialize()
     m_state = Stopped;
     queryStateChange( None );
 }
+
+void            ClipWorkflow::pause()
+{
+    setState( Paused );
+    m_mediaPlayer->pause();
+    QMutexLocker    lock( m_requiredStateLock );
+    m_requiredState = ClipWorkflow::None;
+}
+
+void            ClipWorkflow::unpause( bool wakeRenderThread /*= true*/ )
+{
+    //Since VLC will detect that the media player is paused and unpause it, we can do this safely
+    setState( ClipWorkflow::Rendering );
+    m_mediaPlayer->pause();
+//    QMutexLocker    lock( m_requiredStateLock );
+//    m_requiredState = ClipWorkflow::None;
+    if ( wakeRenderThread == true )
+        wake();
+}
+
+//void            ClipWorkflow::activateOneFrameOnly()
+//{
+//    qDebug() << "Activating one frame only";
+//    m_oneFrameOnly = 1;
+//}

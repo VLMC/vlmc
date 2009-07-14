@@ -50,6 +50,8 @@ class   ClipWorkflow : public QObject
             Ready,
             Rendering,
             Sleeping,
+            Pausing,
+            Paused,
             Stopping,
             EndReached,
         };
@@ -84,7 +86,7 @@ class   ClipWorkflow : public QObject
         bool                    isStopped() const;
 
         /**
-         *  Return true ONLY if the state is equal to Stopped.
+         *  Return true ONLY if the state is equal to Rendering.
          *  In any other cases, this will return false.
          */
         bool                    isRendering() const;
@@ -114,6 +116,7 @@ class   ClipWorkflow : public QObject
             \brief  Stop this workflow.
         */
         void                    stop();
+        void                    pause();
         void                    setPosition( float pos );
 
         /**
@@ -141,6 +144,10 @@ class   ClipWorkflow : public QObject
          *  Put back the ClipWorkflow in its initial state.
          */
         void                    reinitialize();
+
+        void                    unpause( bool wakeRenderThread = true );
+
+//        void                    activateOneFrameOnly();
 
     private:
         static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret );
@@ -182,6 +189,8 @@ class   ClipWorkflow : public QObject
         QReadWriteLock*         m_stateLock;
         State                   m_requiredState;
         QMutex*                 m_requiredStateLock;
+
+        QAtomicInt              m_oneFrameOnly;
 
 
     private slots:

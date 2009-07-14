@@ -65,9 +65,16 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          */
         void                    stop();
 
+        /**
+         *  Pause the main workflow and all its sub-workflows
+         */
+        void                    pause();
+
         static unsigned char*   blackOutput;
         void                    nextFrame();
         void                    previousFrame();
+
+        void                    activateOneFrameOnly();
         
         static MainWorkflow*    getInstance();
 
