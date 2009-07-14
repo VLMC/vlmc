@@ -99,7 +99,6 @@ unsigned char*    MainWorkflow::getOutput()
         qDebug() << "Returning last frame";
         return m_lastRenderedFrame;
     }
-    qDebug() << "Computing frame";
     if ( m_renderStarted == true )
     {
         unsigned char* ret;
@@ -236,5 +235,5 @@ void           MainWorkflow::clipMoved( QUuid clipUuid, int oldTrack, int newTra
 void        MainWorkflow::activateOneFrameOnly()
 {
     m_renderOnlyOneFrame = 1;
-    m_lastRenderedFrame = NULL;
+//    m_lastRenderedFrame = NULL;
 }
