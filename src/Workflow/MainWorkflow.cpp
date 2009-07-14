@@ -48,7 +48,6 @@ MainWorkflow::MainWorkflow( QObject* parent, int trackCount ) :
         connect( m_tracks[i], SIGNAL( trackEndReached( unsigned int ) ), this, SLOT( trackEndReached(unsigned int) ) );
     }
     m_renderStartedLock = new QReadWriteLock;
-    m_lastRenderedFrame = MainWorkflow::blackOutput;
 }
 
 MainWorkflow::~MainWorkflow()
@@ -92,13 +91,7 @@ void    MainWorkflow::startRender()
 unsigned char*    MainWorkflow::getOutput()
 {
     QReadLocker     lock( m_renderStartedLock );
-    qDebug() << "New frame asked";
 
-    if ( m_renderOnlyOneFrame == 1 && m_lastRenderedFrame != NULL )
-    {
-        qDebug() << "Returning last frame";
-        return m_lastRenderedFrame;
-    }
     if ( m_renderStarted == true )
     {
         unsigned char* ret;
@@ -113,16 +106,11 @@ unsigned char*    MainWorkflow::getOutput()
         if ( ret == NULL )
             ret = MainWorkflow::blackOutput;
 
-        if ( m_renderOnlyOneFrame == 0 )
-            nextFrame();
-        m_lastRenderedFrame = ret;
+        nextFrame();
         return ret;
     }
     else
-    {
-        m_lastRenderedFrame = MainWorkflow::blackOutput;
         return MainWorkflow::blackOutput;
-    }
 }
 
 void        MainWorkflow::pause()
@@ -136,7 +124,6 @@ void        MainWorkflow::pause()
 
 void        MainWorkflow::nextFrame()
 {
-    qDebug() << "Going to next frame";
     ++m_currentFrame;
     //FIXME: This is probably a bit much...
     emit frameChanged( m_currentFrame );
@@ -230,10 +217,4 @@ void           MainWorkflow::clipMoved( QUuid clipUuid, int oldTrack, int newTra
         m_tracks[oldTrack].activate();
         m_tracks[newTrack].activate();
     }
-}
-
-void        MainWorkflow::activateOneFrameOnly()
-{
-    m_renderOnlyOneFrame = 1;
-//    m_lastRenderedFrame = NULL;
 }

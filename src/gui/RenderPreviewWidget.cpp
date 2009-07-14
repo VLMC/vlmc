@@ -127,11 +127,7 @@ void        RenderPreviewWidget::nextFrame()
         QWriteLocker    lock( m_framePlayedLock );
         m_framePlayed = false;
     }
-    //FIXME: MainWorkflow should be paused
     m_mainWorkflow->nextFrame();
-    qDebug() << "Activated one frame only";
-    m_mainWorkflow->activateOneFrameOnly();
-    m_mainWorkflow->pause();
     m_mediaPlayer->play();
     bool    framePlayed = false;
     while ( framePlayed == false )
@@ -141,7 +137,6 @@ void        RenderPreviewWidget::nextFrame()
         framePlayed = m_framePlayed;
     }
     m_mediaPlayer->pause();
-    m_mainWorkflow->pause();
 }
 
 void        RenderPreviewWidget::previousFrame()
