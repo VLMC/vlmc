@@ -140,7 +140,8 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
 
     if ( m_dragItem ) delete m_dragItem;
     m_dragItem = new GraphicsMovieItem( new Clip( media ) );
-    m_dragItem->setWidth( ( int ) ( ( (double)media->getLength() / 1000 ) * m_fps ) );
+    m_dragItem->setWidth( ( int ) ( ( (double)media->getLength() / 1000 ) *
+                                    ( (media->getFps() > 0) ? media->getFps() : m_fps) ) );
     m_dragItem->setHeight( tracksHeight() );
     m_dragItem->setPos( mappedXPos, 0 );
     m_dragItem->setParentItem( m_layout->itemAt( 0 )->graphicsItem() );
