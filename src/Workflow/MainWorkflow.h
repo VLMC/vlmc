@@ -73,6 +73,8 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         static unsigned char*   blackOutput;
         void                    nextFrame();
         void                    previousFrame();
+
+        void                    activateOneFrameOnly();
         
         static MainWorkflow*    getInstance();
 

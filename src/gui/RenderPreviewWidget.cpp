@@ -29,10 +29,8 @@
 
 RenderPreviewWidget::RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* renderWidget ) :
             GenericPreviewWidget( renderWidget ),
-            m_mainWorkflow( mainWorkflow ),
-            m_framePlayed( false )
+            m_mainWorkflow( mainWorkflow )
 {
-    m_framePlayedLock = new QReadWriteLock;
     m_media = new LibVLCpp::Media( "fake://" );
 //      --invmem-width <integer>   Width
 //      --invmem-height <integer>  Height
@@ -82,6 +80,7 @@ RenderPreviewWidget::~RenderPreviewWidget()
 
 void*   RenderPreviewWidget::lock( void* datas )
 {
+    qDebug() << "\nQuerying new picture";
     RenderPreviewWidget* self = reinterpret_cast<RenderPreviewWidget*>( datas );
     void* ret = self->m_mainWorkflow->getOutput();
     return ret;
@@ -90,9 +89,7 @@ void*   RenderPreviewWidget::lock( void* datas )
 void    RenderPreviewWidget::unlock( void* datas )
 {
     RenderPreviewWidget* self = reinterpret_cast<RenderPreviewWidget*>( datas );
-
-    QWriteLocker    lock( self->m_framePlayedLock );
-    self->m_framePlayed = true;
+    self->m_framePlayed = 1;
 }
 
 void        RenderPreviewWidget::stopPreview()
@@ -123,19 +120,15 @@ void        RenderPreviewWidget::setPosition( float newPos )
 
 void        RenderPreviewWidget::nextFrame()
 {
-    {
-        QWriteLocker    lock( m_framePlayedLock );
-        m_framePlayed = false;
-    }
+    qDebug() << "Next frame :";
     m_mainWorkflow->nextFrame();
-    m_mediaPlayer->play();
-    bool    framePlayed = false;
-    while ( framePlayed == false )
-    {
-        SleepMS( 50 );
-        QReadLocker lock( m_framePlayedLock );
-        framePlayed = m_framePlayed;
-    }
+    qDebug() << "Activatign one frame only";
+    m_mainWorkflow->activateOneFrameOnly();
+    //Both media players should be stopped now... restauring playback
+    m_framePlayed = 0;
+    m_mediaPlayer->pause();
+    while ( m_framePlayed == 0 )
+        SleepMS( 1 );
     m_mediaPlayer->pause();
 }
 
@@ -153,9 +146,10 @@ void        RenderPreviewWidget::togglePlayPause( bool forcePause )
     {
         if ( m_paused == true && forcePause == false )
         {
+            qDebug() << "Unpausing";
             m_mediaPlayer->play();
             //This will automaticly unpause... no worries
-            m_mainWorkflow->pause();
+//            m_mainWorkflow->pause();
             m_paused = false;
         }
         else
@@ -164,6 +158,7 @@ void        RenderPreviewWidget::togglePlayPause( bool forcePause )
             //So be careful about pausing two times :
             if ( m_paused == false )
             {
+                qDebug() << "Pausing";
                 m_mediaPlayer->pause();
                 m_mainWorkflow->pause();
                 m_paused = true;

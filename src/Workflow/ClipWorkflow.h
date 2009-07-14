@@ -145,7 +145,9 @@ class   ClipWorkflow : public QObject
          */
         void                    reinitialize();
 
-        void                    unpause();
+        void                    unpause( bool wakeRenderThread = true );
+
+//        void                    activateOneFrameOnly();
 
     private:
         static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret );
@@ -187,6 +189,8 @@ class   ClipWorkflow : public QObject
         QReadWriteLock*         m_stateLock;
         State                   m_requiredState;
         QMutex*                 m_requiredStateLock;
+
+        QAtomicInt              m_oneFrameOnly;
 
 
     private slots:

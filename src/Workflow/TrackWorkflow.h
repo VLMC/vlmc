@@ -57,6 +57,7 @@ class   TrackWorkflow : public QObject
         Clip*                                   removeClip( const QUuid& id );
         void                                    addClip( Clip*, qint64 start );
         void                                    addClip( ClipWorkflow*, qint64 start );
+        void                                    activateOneFrameOnly();
 
         //FIXME: this won't be reliable as soon as we change the fps from the configuration
         static const unsigned int               nbFrameBeforePreload = 60;
@@ -64,7 +65,8 @@ class   TrackWorkflow : public QObject
     private:
         void                                    computeLength();
         unsigned char*                          renderClip( ClipWorkflow* cw, qint64 currentFrame,
-                                                            qint64 start, bool needRepositioning );
+                                                            qint64 start, bool needRepositioning,
+                                                            bool pauseAfterRender );
         void                                    preloadClip( ClipWorkflow* cw );
         void                                    stopClipWorkflow( ClipWorkflow* cw );
         void                                    pauseClipWorkflow( ClipWorkflow* cw );
@@ -90,6 +92,8 @@ class   TrackWorkflow : public QObject
         QReadWriteLock*                         m_clipsLock;
 
         bool                                    m_paused;
+
+        QAtomicInt                              m_oneFrameOnly;
     signals:
         void            trackEndReached( unsigned int );
 };
