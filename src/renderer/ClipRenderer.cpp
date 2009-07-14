@@ -41,6 +41,7 @@ ClipRenderer::ClipRenderer() :
 
 ClipRenderer::~ClipRenderer()
 {
+    stop();
 }
 
 void        ClipRenderer::setMedia( const Media* media )
