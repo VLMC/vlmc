@@ -45,7 +45,8 @@ SOURCES += src/main.cpp \
     src/API/vlmc_module_variables.cpp \
     src/API/Module.cpp \
     src/API/ModuleManager.cpp \
-    src/WorkflowFileRenderer.cpp
+    src/WorkflowFileRenderer.cpp \
+    src/gui/SimplePreferences.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -88,7 +89,8 @@ HEADERS += src/gui/MainWindow.h \
     src/API/vlmc_module_internal.h \
     src/WorkflowFileRenderer.h \
     src/vlmc.h \
-    src/tools/Pool.hpp
+    src/tools/Pool.hpp \
+    src/gui/SimplePreferences.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \
