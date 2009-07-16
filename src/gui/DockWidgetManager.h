@@ -24,37 +24,39 @@
 #define DOCKWIDGETMANAGER_H
 
 #include <QObject>
-#include <QMainWindow>
 #include <QWidget>
 #include <QDockWidget>
 #include <QString>
 #include <QMap>
+#include "MainWindow.h"
+
+class MainWindow;
 
 class DockWidgetManager : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
-	public:
-		static DockWidgetManager *instance( QObject *parent = 0 );
-		void setMainWindow( QMainWindow *mainWin );
-		void addDockedWidget( QWidget *widget,
-							  const QString &qs_name,
-							  Qt::DockWidgetAreas areas,
-							  QDockWidget::DockWidgetFeature features,
-							  Qt::DockWidgetArea startArea );
+    public:
+        static DockWidgetManager *instance( QObject *parent = 0 );
+        void setMainWindow( MainWindow *mainWin );
+        void addDockedWidget( QWidget *widget,
+                              const QString &qs_name,
+                              Qt::DockWidgetAreas areas,
+                              QDockWidget::DockWidgetFeature features,
+                              Qt::DockWidgetArea startArea );
 
     protected:
         //virtual void changeEvent( QEvent *e );
 
-	private:
-		explicit DockWidgetManager( QObject *parent = 0 );
+    private:
+        explicit DockWidgetManager( QObject *parent = 0 );
         virtual ~DockWidgetManager();
-		DockWidgetManager(const DockWidgetManager &);
-		DockWidgetManager & operator = ( const DockWidgetManager & );
+        DockWidgetManager(const DockWidgetManager &);
+        DockWidgetManager & operator = ( const DockWidgetManager & );
 
-		QMainWindow *m_mainWin;
+        MainWindow *m_mainWin;
         QMap<QString, QDockWidget*> m_dockWidgets;
-		static DockWidgetManager *m_instance;
+        static DockWidgetManager *m_instance;
 
     public slots:
         void transLateWidgetTitle();

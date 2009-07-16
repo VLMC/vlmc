@@ -235,3 +235,8 @@ void MainWindow::on_actionFullscreen_triggered( bool checked )
     else
         showNormal();
 }
+
+void MainWindow::registerWidgetInViewMenu( QDockWidget* widget )
+{
+    m_ui.menuView->addAction( widget->toggleViewAction() );
+}

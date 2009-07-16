@@ -35,7 +35,7 @@ DockWidgetManager *DockWidgetManager::instance( QObject *parent )
     return (m_instance);
 }
 
-void DockWidgetManager::setMainWindow( QMainWindow *mainWin )
+void DockWidgetManager::setMainWindow( MainWindow *mainWin )
 {
     m_mainWin = mainWin;
 }
@@ -56,6 +56,7 @@ void DockWidgetManager::addDockedWidget( QWidget *widget,
     dock->setAllowedAreas( areas );
     dock->setFeatures( features );
     m_mainWin->addDockWidget( startArea, dock );
+    m_mainWin->registerWidgetInViewMenu( dock );
     widget->show();
 }
 
