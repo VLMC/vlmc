@@ -113,7 +113,7 @@ void    MetaDataManager::getMetaData()
     m_currentClip->setLength( m_mediaPlayer->getLength() );
     m_currentClip->setWidth( m_mediaPlayer->getWidth() );
     m_currentClip->setHeight( m_mediaPlayer->getHeight() );
-    m_currentClip->setFps( m_mediaPlayer->getFps() );
+    m_currentClip->setFps( static_cast<unsigned int>( m_mediaPlayer->getFps() ) );
 
     //Setting time for snapshot :
     if ( m_currentClip->getFileType() == Media::Video )

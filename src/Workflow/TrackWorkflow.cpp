@@ -326,6 +326,11 @@ void            TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
 {
     cw->getStateLock()->lockForRead();
 
+    if ( cw->getState() == ClipWorkflow::Stopped )
+    {
+        cw->getStateLock()->unlock();
+        return ;
+    }
     if ( cw->getState() == ClipWorkflow::Sleeping ||
          cw->getState() == ClipWorkflow::Ready ||
          cw->getState() == ClipWorkflow::EndReached )
@@ -350,12 +355,13 @@ void            TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
     }
     else
     {
-//        qDebug() << "Unexpected ClipWorkflow::State when pausing:" << cw->getState();
+        qDebug() << "Unexpected ClipWorkflow::State when pausing:" << cw->getState();
         cw->getStateLock()->unlock();
     }
     bool pausing = false;
     while ( pausing == false )
     {
+        qDebug() << "Waiting for Pausing mode";
         cw->getStateLock()->lockForRead();
         pausing = ( cw->getState() == ClipWorkflow::Pausing );
         SleepMS( 1 );
@@ -364,7 +370,7 @@ void            TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
     cw->pause();
 }
 
-void            TrackWorkflow::pause()
+void                TrackWorkflow::pause()
 {
     QReadLocker     lock( m_clipsLock );
 
@@ -372,31 +378,34 @@ void            TrackWorkflow::pause()
     QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
 
     //FIXME: it's probably bad to iterate over every clip workflows.
-    while ( it != end )
+    qDebug() << "Starting iteration";
+    for ( ; it != end; ++it )
     {
+        qDebug() << "Getting clip workflow";
         ClipWorkflow*   cw = it.value();
 
+        qDebug() << "Aquiering lock";
         cw->getStateLock()->lockForRead();
-        if ( cw->getState() != ClipWorkflow::Paused )
+        qDebug() << "Lock aquiered";
+        if ( cw->getState() == ClipWorkflow::Stopped )
         {
             cw->getStateLock()->unlock();
+            continue ;
+        }
+        if ( cw->getState() != ClipWorkflow::Paused )
+        {
+            qDebug() << "Unlocking";
+            cw->getStateLock()->unlock();
+            qDebug() << "Pausing clip workflow";
             pauseClipWorkflow( cw );
+            qDebug() << "Paused clip workflow";
         }
         else
         {
             //This should never be used.
+            //TODO: remove this in a few revision (wrote on July 16 2009 )
             Q_ASSERT( false );
-            if ( cw->getState() == ClipWorkflow::Paused )
-            {
-                cw->getStateLock()->unlock();
-                cw->unpause();
-            }
-            else
-            {
-                cw->getStateLock()->unlock();
-            }
         }
-        ++it;
     }
     m_paused = !m_paused;
 }

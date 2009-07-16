@@ -171,6 +171,7 @@ void        RenderPreviewWidget::togglePlayPause( bool forcePause )
             //So be careful about pausing two times :
             if ( m_paused == false )
             {
+                qDebug() << "Pausing";
                 m_mediaPlayer->pause();
                 m_mainWorkflow->pause();
                 m_paused = true;
