@@ -152,6 +152,11 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
         //Otherwise, it will start directly.
         cw->getStateLock()->unlock();
         cw->startRender();
+        if ( needRepositioning == true )
+        {
+            float   pos = ( (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) );
+            cw->setPosition( pos );
+        }
     }
     else if ( cw->getState() == ClipWorkflow::EndReached )
     {
