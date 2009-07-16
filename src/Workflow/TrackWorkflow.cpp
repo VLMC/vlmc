@@ -87,7 +87,7 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
 
     cw->getStateLock()->lockForRead();
 
-    qDebug() << "Rendering clip";
+//    qDebug() << "Rendering clip";
     if ( cw->getState() == ClipWorkflow::Paused && pauseAfterRender == false )
     {
         cw->getStateLock()->unlock();
@@ -95,7 +95,7 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
         //If we must pause after render, we must NOT wake the renderer thread, or it could render more than one frame
         // (since this is for the next/previous frame)
         //However, if this is just for a classic unpause, with just don't give a shit :)
-        qDebug() << "Unpausing clip";
+//        qDebug() << "Unpausing clip";
         cw->unpause( true );
         cw->getStateLock()->lockForRead();
     }
@@ -362,7 +362,6 @@ void            TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
     bool pausing = false;
     while ( pausing == false )
     {
-        qDebug() << "Waiting for Pausing mode";
         cw->getStateLock()->lockForRead();
         pausing = ( cw->getState() == ClipWorkflow::Pausing );
         SleepMS( 1 );
@@ -373,22 +372,17 @@ void            TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
 
 void                TrackWorkflow::pause()
 {
-    qDebug() << "Trying to acquire lock";
     QReadLocker     lock( m_clipsLock );
 
     QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
     QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
 
     //FIXME: it's probably bad to iterate over every clip workflows.
-    qDebug() << "Starting iteration";
     for ( ; it != end; ++it )
     {
-        qDebug() << "Getting clip workflow";
         ClipWorkflow*   cw = it.value();
 
-        qDebug() << "Aquiering lock";
         cw->getStateLock()->lockForRead();
-        qDebug() << "Lock aquiered";
         if ( cw->getState() == ClipWorkflow::Stopped )
         {
             cw->getStateLock()->unlock();
@@ -396,7 +390,6 @@ void                TrackWorkflow::pause()
         }
         if ( cw->getState() != ClipWorkflow::Paused )
         {
-            qDebug() << "pausing clip workflow";
             cw->getStateLock()->unlock();
             pauseClipWorkflow( cw );
         }

@@ -115,16 +115,11 @@ unsigned char*    MainWorkflow::getOutput()
 
 void        MainWorkflow::pause()
 {
-    qDebug() << "pausing MainWorkflow";
     for ( unsigned int i = 0; i < m_trackCount; ++i )
     {
         if ( m_tracks[i].activated() == true )
-        {
-            qDebug() << "Pausing track workflow";
             m_tracks[i]->pause();
-        }
     }
-    qDebug() << "MainWorkflow is paused";
 }
 
 void        MainWorkflow::nextFrame()
