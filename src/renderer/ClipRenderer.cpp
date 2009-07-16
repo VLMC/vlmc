@@ -1,9 +1,10 @@
 /*****************************************************************************
- * ClipPreviewWidget: Preview widget
+ * ClipRenderer.cpp: Render from a Clip (mainly for previewing purpose)
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
  * Authors: Geoffroy Lacarrière <geoffroylaca@gmail.com>
+ *          Hugo Beauzee-Luyssen <hugo@vlmc.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,63 +23,82 @@
 
 #include <QtDebug>
 
-#include "ClipPreviewWidget.h"
+#include "ClipRenderer.h"
 
-ClipPreviewWidget::ClipPreviewWidget( QWidget* renderWidget ) :
-    GenericPreviewWidget( renderWidget ),
-    m_clipLoaded( false ), m_vlcMedia( NULL )
+ClipRenderer::ClipRenderer() :
+    GenericRenderer(),
+    m_clipLoaded( false ),
+    m_vlcMedia( NULL ),
+    m_selectedMedia( NULL ),
+    m_mediaChanged( false )
 {
-}
-
-ClipPreviewWidget::~ClipPreviewWidget()
-{
-}
-
-void        ClipPreviewWidget::startPreview( Media* media )
-{
-    if ( m_vlcMedia != NULL )
-        delete m_vlcMedia;
-    m_vlcMedia = new LibVLCpp::Media( media->getFileInfo()->absoluteFilePath() );
-
-    m_mediaPlayer->setMedia( m_vlcMedia );
-
     connect( m_mediaPlayer,     SIGNAL( stopped() ),            this,   SLOT( __videoStopped() ) );
     connect( m_mediaPlayer,     SIGNAL( paused() ),             this,   SLOT( __videoPaused() ) );
     connect( m_mediaPlayer,     SIGNAL( playing() ),            this,   SLOT( __videoPlaying() ) );
     connect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,   SLOT( __positionChanged() ) );
     connect( m_mediaPlayer,     SIGNAL( endReached() ),         this,   SLOT( __endReached() ) );
+}
+
+ClipRenderer::~ClipRenderer()
+{
+    stop();
+}
+
+void        ClipRenderer::setMedia( const Media* media )
+{
+    m_selectedMedia = media;
+    if ( m_isRendering == true )
+        m_mediaChanged = true;
+    else
+        m_clipLoaded = false;
+}
+
+void        ClipRenderer::startPreview()
+{
+    if ( m_selectedMedia == NULL )
+        return ;
+    //If an old media is found, we delete it, and disconnect
+    if ( m_vlcMedia != NULL )
+        delete m_vlcMedia;
+    m_vlcMedia = new LibVLCpp::Media( m_selectedMedia->getFileInfo()->absoluteFilePath() );
+
+    m_mediaPlayer->setMedia( m_vlcMedia );
 
     m_mediaPlayer->play();
     m_clipLoaded = true;
     m_isRendering = true;
     m_paused = false;
+    m_mediaChanged = false;
 }
 
-void        ClipPreviewWidget::setPosition( float newPos )
+void        ClipRenderer::setPosition( float newPos )
 {
     if ( m_clipLoaded == false || m_isRendering == false )
         return ;
     m_mediaPlayer->setPosition( newPos );
 }
 
-void        ClipPreviewWidget::stop()
+void        ClipRenderer::stop()
 {
     if ( m_clipLoaded == true && m_isRendering == true )
     {
         m_isRendering = false;
         m_mediaPlayer->stop();
         m_paused = false;
-        disconnect( m_mediaPlayer,     SIGNAL( stopped() ),            this,   SLOT( __videoStopped() ) );
-        disconnect( m_mediaPlayer,     SIGNAL( paused() ),             this,   SLOT( __videoPaused() ) );
-        disconnect( m_mediaPlayer,     SIGNAL( playing() ),            this,   SLOT( __videoPlaying() ) );
-        disconnect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,   SLOT( __positionChanged() ) );
-        disconnect( m_mediaPlayer,     SIGNAL( endReached() ),         this,   SLOT( __endReached() ) );
+        if ( m_mediaChanged == true )
+            m_clipLoaded = false;
     }
 }
 
-void        ClipPreviewWidget::togglePlayPause( bool forcePause )
+void        ClipRenderer::togglePlayPause( bool forcePause )
 {
-    if ( m_clipLoaded == false)
+    if ( m_clipLoaded == false )
+    {
+        startPreview();
+        return ;
+    }
+    //If for some reason, nothing was loaded in startPreview(), we just return.
+    if ( m_clipLoaded == false )
         return ;
 
     if ( m_paused == false && m_isRendering == true )
@@ -95,7 +115,7 @@ void        ClipPreviewWidget::togglePlayPause( bool forcePause )
     }
 }
 
-void        ClipPreviewWidget::nextFrame()
+void        ClipRenderer::nextFrame()
 {
     if ( m_isRendering == true && m_paused == true )
     {
@@ -104,7 +124,7 @@ void        ClipPreviewWidget::nextFrame()
     }
 }
 
-void        ClipPreviewWidget::previousFrame()
+void        ClipRenderer::previousFrame()
 {
     if ( m_isRendering == false && m_paused == true )
     {
@@ -116,29 +136,29 @@ void        ClipPreviewWidget::previousFrame()
 /////////////////////////////////////////////////////////////////////
 /////SLOTS :
 /////////////////////////////////////////////////////////////////////
-void        ClipPreviewWidget::__videoPaused()
+void        ClipRenderer::__videoPaused()
 {
     emit paused();
 }
 
-void        ClipPreviewWidget::__videoStopped()
+void        ClipRenderer::__videoStopped()
 {
     emit stopped();
 }
 
-void        ClipPreviewWidget::__videoPlaying()
+void        ClipRenderer::__videoPlaying()
 {
     emit playing();
 }
 
-void        ClipPreviewWidget::__positionChanged()
+void        ClipRenderer::__positionChanged()
 {
     if ( m_clipLoaded == false)
         return ;
     emit positionChanged( m_mediaPlayer->getPosition() );
 }
 
-void        ClipPreviewWidget::__endReached()
+void        ClipRenderer::__endReached()
 {
     m_mediaPlayer->stop();
     m_isRendering = false;

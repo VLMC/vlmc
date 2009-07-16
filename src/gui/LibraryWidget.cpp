@@ -215,3 +215,13 @@ void    LibraryWidget::dropEvent( QDropEvent* event )
         lib->newMediaLoadingAsked( url.path() );
     }
 }
+
+const MediaListWidget*      LibraryWidget::getVideoListWidget() const
+{
+    return m_ui.listWidgetVideo;
+}
+
+const MediaListWidget*      LibraryWidget::getAudioListWidget() const
+{
+    return m_ui.listWidgetAudio;
+}

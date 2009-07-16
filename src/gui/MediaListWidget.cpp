@@ -27,7 +27,9 @@
 
 #include "MediaListWidget.h"
 
-MediaListWidget::MediaListWidget( QWidget* parent ) : QListWidget( parent )
+MediaListWidget::MediaListWidget( QWidget* parent ) :
+        QListWidget( parent ),
+        m_lastClicked( NULL )
 {
     m_svgRenderer = new QSvgRenderer( this );
     setIconSize( QSize( 128, 128 ) );
@@ -57,11 +59,20 @@ void    MediaListWidget::mousePressEvent( QMouseEvent* event )
     if ( event->button() == Qt::LeftButton)
         this->m_dragStartPos = event->pos();
     QListWidget::mousePressEvent( event );
+
+    ListViewMediaItem* item = static_cast<ListViewMediaItem*>( currentItem() );
+    if ( item == NULL )
+        return ;
+    if ( item->getMedia() != m_lastClicked )
+    {
+        m_lastClicked = item->getMedia();
+        emit selectedMediaChanged( m_lastClicked );
+    }
 }
 
 void    MediaListWidget::mouseMoveEvent( QMouseEvent* event )
 {
-    if ( this->currentItem() == NULL )
+    if ( currentItem() == NULL )
         return;
     if ( !( event->buttons() & Qt::LeftButton ) )
          return;
@@ -70,7 +81,6 @@ void    MediaListWidget::mouseMoveEvent( QMouseEvent* event )
         return;
 
     ListViewMediaItem* item = static_cast<ListViewMediaItem*>( currentItem() );
-
     QMimeData* mimeData = new QMimeData;
     mimeData->setData( "vlmc/uuid", item->getMedia()->getUuid().toString().toAscii() );
     QDrag* drag = new QDrag( this );

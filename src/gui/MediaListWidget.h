@@ -48,6 +48,10 @@ private:
     Media::FileType     m_Type;
     QPoint              m_dragStartPos;
     QSvgRenderer*       m_svgRenderer;
+    const Media*        m_lastClicked;
+
+signals:
+    void                selectedMediaChanged( const Media* newMedia );
 };
 
 #endif // MEDIALISTWIDGET_H

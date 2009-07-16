@@ -1,5 +1,5 @@
 /*****************************************************************************
- * RenderPreviewWidget.h: Allow a current workflow preview
+ * WorkflowRenderer.h: Render the main workflow
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,26 +20,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef RENDERPREVIEWWIDGET_H
-#define RENDERPREVIEWWIDGET_H
+#ifndef WORKFLOWRENDERER_H
+#define WORKFLOWRENDERER_H
 
 
 #include <QObject>
 #include <QWidget>
 
 #include "Workflow/MainWorkflow.h"
-#include "GenericPreviewWidget.h"
+#include "GenericRenderer.h"
 
-class   RenderPreviewWidget : public GenericPreviewWidget
+class   WorkflowRenderer : public GenericRenderer
 {
     Q_OBJECT
-    Q_DISABLE_COPY( RenderPreviewWidget )
+    Q_DISABLE_COPY( WorkflowRenderer )
 
     public:
-        RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* renderWidget );
-        ~RenderPreviewWidget();
+        WorkflowRenderer( MainWorkflow* mainWorkflow );
+        ~WorkflowRenderer();
 
-        virtual void        startPreview( Media* );
+        virtual void        setMedia( const Media* ){}
+
         void                stopPreview();
 
         /**
@@ -58,10 +59,14 @@ class   RenderPreviewWidget : public GenericPreviewWidget
         static void         unlock( void* datas );
 
     private:
+        virtual void        startPreview();
+
+    private:
         MainWorkflow*       m_mainWorkflow;
         LibVLCpp::Media*    m_media;
         QAtomicInt          m_oneFrameOnly;
         unsigned char*      m_lastFrame;
+        bool                m_framePlayed;
 
     public slots:
         void                __positionChanged();
@@ -72,4 +77,4 @@ class   RenderPreviewWidget : public GenericPreviewWidget
         void                __endReached();
 };
 
-#endif // RENDERPREVIEWWIDGET_H
+#endif // WORKFLOWRENDERER_H

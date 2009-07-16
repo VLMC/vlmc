@@ -1,5 +1,5 @@
 /*****************************************************************************
- * GenericPreviewWidget.h: Describe a common behavior for every preview widget
+ * GenericRenderer.h: Describe a common behavior for every renderers
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,8 +20,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef GENERICPREVIEWWIDGET_H
-#define GENERICPREVIEWWIDGET_H
+#ifndef GENERICRENDERER_H
+#define GENERICRENDERER_H
 
 #include <QObject>
 #include <QWidget>
@@ -29,25 +29,27 @@
 #include "Media.h"
 #include "VLCMediaPlayer.h"
 
-class   GenericPreviewWidget : public QObject
+class   GenericRenderer : public QObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY( GenericPreviewWidget );
+    Q_DISABLE_COPY( GenericRenderer );
 
 public:
-    explicit GenericPreviewWidget( QWidget* renderWidget ) :
+    explicit GenericRenderer() :
                 m_paused( false ),
                 m_isRendering( false )
     {
         m_mediaPlayer = new LibVLCpp::MediaPlayer();
-        m_mediaPlayer->setDrawable( renderWidget->winId() );
     }
-    virtual ~GenericPreviewWidget()
+    virtual ~GenericRenderer()
     {
         delete m_mediaPlayer;
     }
 
-    virtual void                    startPreview( Media* media ) = 0;
+    virtual void                    setRenderWidget( QWidget* renderWidget )
+    {
+        m_mediaPlayer->setDrawable( renderWidget->winId() );
+    }
     virtual void                    setPosition( float newPos ) = 0;
     virtual void                    togglePlayPause( bool forcePause = false ) = 0;
     virtual void                    nextFrame() = 0;
@@ -82,13 +84,15 @@ public slots:
     virtual void                    __videoPaused() = 0;
     virtual void                    __videoPlaying() = 0;
     virtual void                    __endReached() = 0;
+    virtual void                    setMedia( const Media* media ) = 0;
+
 
 signals:
-    void                    stopped();
-    void                    paused();
-    void                    playing();
-    void                    positionChanged( float );
-    void                    endReached();
+    void                            stopped();
+    void                            paused();
+    void                            playing();
+    void                            positionChanged( float );
+    void                            endReached();
 };
 
-#endif // GENERICPREVIEWWIDGET_H
+#endif // GENERICRENDERER_H

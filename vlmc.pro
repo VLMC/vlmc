@@ -21,7 +21,7 @@ SOURCES += src/main.cpp \
     src/LibVLCpp/VLCMedia.cpp \
     src/gui/TracksView.cpp \
     src/gui/TracksScene.cpp \
-    src/gui/ClipPreviewWidget.cpp \
+    src/renderer/ClipRenderer.cpp \
     src/gui/TracksRuler.cpp \
     src/gui/Preferences.cpp \
     src/gui/ListViewMediaItem.cpp \
@@ -41,7 +41,7 @@ SOURCES += src/main.cpp \
     src/Workflow/TrackWorkflow.cpp \
     src/Workflow/MainWorkflow.cpp \
     src/gui/PreviewWidget.cpp \
-    src/gui/RenderPreviewWidget.cpp \
+    src/renderer/WorkflowRenderer.cpp \
     src/API/vlmc_module_variables.cpp \
     src/API/Module.cpp \
     src/API/ModuleManager.cpp \
@@ -57,7 +57,7 @@ HEADERS += src/gui/MainWindow.h \
     src/LibVLCpp/VLCMedia.h \
     src/gui/TracksView.h \
     src/gui/TracksScene.h \
-    src/gui/ClipPreviewWidget.h \
+    src/renderer/ClipRenderer.h \
     src/gui/TracksRuler.h \
     src/gui/Preferences.h \
     src/gui/ListViewMediaItem.h \
@@ -79,8 +79,8 @@ HEADERS += src/gui/MainWindow.h \
     src/Workflow/TrackWorkflow.h \
     src/Workflow/MainWorkflow.h \
     src/gui/PreviewWidget.h \
-    src/gui/RenderPreviewWidget.h \
-    src/gui/GenericPreviewWidget.h \
+    src/renderer/WorkflowRenderer.h \
+    src/renderer/GenericRenderer.h \
     src/tools/Toggleable.hpp \
     src/API/vlmc_module.h \
     src/API/Module.h \
@@ -106,6 +106,7 @@ RESOURCES += ressources.qrc
 INCLUDEPATH += src/LibVLCpp \
     src/gui \
     src/tools \
+    src/renderer \
     src
 
 # QMAKE_CFLAGS+=-pg

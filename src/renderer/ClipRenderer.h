@@ -1,5 +1,5 @@
 /*****************************************************************************
- * ClipPreviewWidget.cpp: Preview widget
+ * ClipRenderer.h: Preview widget
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,27 +20,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef CLIPPREVIEWWIDGET_H
-#define CLIPPREVIEWWIDGET_H
+#ifndef CLIPRENDERER_H
+#define CLIPRENDERER_H
 
 #include <QWidget>
 #include <QObject>
 
 #include "VLCMediaPlayer.h"
 #include "Media.h"
-#include "GenericPreviewWidget.h"
+#include "GenericRenderer.h"
 
 //TODO: This should really share a common interface with RenderPreviewWorkflow
-class ClipPreviewWidget : public GenericPreviewWidget
+class ClipRenderer : public GenericRenderer
 {
     Q_OBJECT
-    Q_DISABLE_COPY( ClipPreviewWidget )
+    Q_DISABLE_COPY( ClipRenderer )
 
 public:
-    explicit ClipPreviewWidget( QWidget* renderWidget );
-    virtual ~ClipPreviewWidget();
+    explicit ClipRenderer();
+    virtual ~ClipRenderer();
 
-    virtual void            startPreview( Media* media );
+    virtual void            setMedia( const Media* media );
     virtual void            setPosition( float newPos );
     virtual void            togglePlayPause( bool forcePause );
     virtual void            stop();
@@ -48,8 +48,17 @@ public:
     virtual void            previousFrame();
 
 private:
+    void                    startPreview();
+
+private:
     bool                    m_clipLoaded;
     LibVLCpp::Media*        m_vlcMedia;
+    const Media*            m_selectedMedia;
+    /**
+     *  \brief  This flags is used to know if a new media has been selected in the
+     * library. If so, we must relaunch the render if the play button is clicked again.
+     */
+    bool                    m_mediaChanged;
 
 public slots:
     void                    __positionChanged();
@@ -59,4 +68,4 @@ public slots:
     void                    __videoStopped();
 };
 
-#endif // CLIPPREVIEWWIDGET_H
+#endif // CLIPRENDERER_H

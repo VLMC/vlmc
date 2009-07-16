@@ -26,8 +26,7 @@
 
 #include <QWidget>
 #include "Workflow/MainWorkflow.h"
-#include "ClipPreviewWidget.h"
-#include "RenderPreviewWidget.h"
+#include "GenericRenderer.h"
 
 namespace Ui {
     class PreviewWidget;
@@ -39,31 +38,21 @@ class   PreviewWidget : public QWidget
     Q_DISABLE_COPY( PreviewWidget )
 
 public:
-    explicit PreviewWidget( MainWorkflow* mainWorkflow, QWidget* parent = NULL );
+    explicit PreviewWidget( GenericRenderer* renderer, QWidget* parent = NULL );
     virtual ~PreviewWidget();
-
-private:
-    void                    initRenderPreview( MainWorkflow* );
-    void                    initClipPreview();
-    void                    connectPreview( GenericPreviewWidget* target );
+    const GenericRenderer*  getGenericRenderer() const;
 
 private:
     Ui::PreviewWidget*      m_ui;
-    GenericPreviewWidget*   m_clipPreview;
-    GenericPreviewWidget*   m_renderPreview;
-    GenericPreviewWidget*   m_currentPreviewRenderer;
+    GenericRenderer*        m_renderer;
     bool                    m_endReached;
     bool                    m_previewStopped;
-    int                     m_currentMode;
-
-    static const int        renderPreviewMode = 0;
-    static const int        clipPreviewMode = 1;
-    int                     m_sliderPosBackup;
 
 protected:
     virtual void    changeEvent( QEvent *e );
-    virtual void    dragEnterEvent( QDragEnterEvent* event );
-    virtual void    dropEvent( QDropEvent* event );
+//    virtual void    dragEnterEvent( QDragEnterEvent* event );
+//    virtual void    dropEvent( QDropEvent* event );
+
 private slots:
     void            on_pushButtonPlay_clicked();
     void            on_pushButtonStop_clicked();
@@ -77,8 +66,6 @@ private slots:
     void            videoPlaying();
     void            videoStopped();
     void            endReached();
-
-    void            changedTab( int );
 };
 
 #endif // PREVIEWWIDGET_H

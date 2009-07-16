@@ -33,7 +33,7 @@
 #include "MetaDataManager.h"
 #include "Timeline.h"
 #include "WorkflowFileRenderer.h"
-
+#include "PreviewWidget.h"
 
 class MainWindow : public QMainWindow
 {
@@ -61,6 +61,8 @@ private:
     MetaDataManager*        m_metaDataManager;
     QSlider*                m_zoomSlider;
     Timeline*               m_timeline;
+    PreviewWidget*          m_clipPreview;
+    PreviewWidget*          m_projectPreview;
     WorkflowFileRenderer*   m_renderer;
 
 private slots:

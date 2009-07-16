@@ -35,7 +35,8 @@
 #include "About.h"
 #include "Transcode.h"
 #include "FileBrowser.h"
-#include "PreviewWidget.h"
+#include "WorkflowRenderer.h"
+#include "ClipRenderer.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
@@ -111,6 +112,9 @@ void        MainWindow::setupLibrary()
              SIGNAL( mediaRemoved( const QUuid& ) ),
              libraryWidget,
              SLOT( mediaRemoved( const QUuid& ) ) );
+
+    connect ( libraryWidget->getVideoListWidget(), SIGNAL( selectedMediaChanged(const Media*) ),
+              m_clipPreview->getGenericRenderer(), SLOT( setMedia(const Media*) ) );
 }
 
 void MainWindow::createStatusBar()
@@ -141,15 +145,20 @@ void MainWindow::m_initializeDockWidgets( void )
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea);
 
-
-    setupLibrary();
-
-    dockManager->addDockedWidget( new PreviewWidget( m_timeline->getMainWorkflow(), this ),
-                                  tr( "Preview" ),
+    m_clipPreview = new PreviewWidget( new ClipRenderer, this );
+    dockManager->addDockedWidget( m_clipPreview,
+                                  tr( "Clip Preview" ),
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
 
+    m_projectPreview = new PreviewWidget( new WorkflowRenderer( m_timeline->getMainWorkflow() ), this );
+    dockManager->addDockedWidget( m_projectPreview,
+                                  tr( "Project Preview" ),
+                                  Qt::AllDockWidgetAreas,
+                                  QDockWidget::AllDockWidgetFeatures,
+                                  Qt::TopDockWidgetArea );
+    setupLibrary();
     m_metaDataManager = MetaDataManager::getInstance();
 }
 

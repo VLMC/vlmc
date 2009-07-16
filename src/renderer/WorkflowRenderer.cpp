@@ -1,5 +1,5 @@
 /*****************************************************************************
- * RenderPreviewWidget.cpp: Allow a current workflow preview
+ * WorkflowRenderer.cpp: Allow a current workflow preview
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -24,12 +24,12 @@
 #include <QThread>
 
 #include "vlmc.h"
-#include "RenderPreviewWidget.h"
+#include "WorkflowRenderer.h"
 #include "Timeline.h"
 
-RenderPreviewWidget::RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* renderWidget ) :
-            GenericPreviewWidget( renderWidget ),
-            m_mainWorkflow( mainWorkflow )
+WorkflowRenderer::WorkflowRenderer( MainWorkflow* mainWorkflow ) :
+            m_mainWorkflow( mainWorkflow ),
+            m_framePlayed( false )
 {
     m_media = new LibVLCpp::Media( "fake://" );
 //      --invmem-width <integer>   Width
@@ -44,9 +44,9 @@ RenderPreviewWidget::RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* r
     m_media->addOption( buffer );
     sprintf( buffer, ":invmem-height=%i", VIDEOHEIGHT );
     m_media->addOption( buffer );
-    sprintf( buffer, ":invmem-lock=%lld", (qint64)RenderPreviewWidget::lock );
+    sprintf( buffer, ":invmem-lock=%lld", (qint64)WorkflowRenderer::lock );
     m_media->addOption( buffer );
-    sprintf( buffer, ":invmem-unlock=%lld", (qint64)RenderPreviewWidget::unlock );
+    sprintf( buffer, ":invmem-unlock=%lld", (qint64)WorkflowRenderer::unlock );
     m_media->addOption( buffer );
     sprintf( buffer, ":invmem-data=%lld", (qint64)this );
     m_media->addOption( buffer );
@@ -65,7 +65,7 @@ RenderPreviewWidget::RenderPreviewWidget( MainWorkflow* mainWorkflow, QWidget* r
 }
 
 
-RenderPreviewWidget::~RenderPreviewWidget()
+WorkflowRenderer::~WorkflowRenderer()
 {
     m_mediaPlayer->stop();
 
@@ -78,9 +78,9 @@ RenderPreviewWidget::~RenderPreviewWidget()
     delete m_media;
 }
 
-void*   RenderPreviewWidget::lock( void* datas )
+void*   WorkflowRenderer::lock( void* datas )
 {
-    RenderPreviewWidget* self = reinterpret_cast<RenderPreviewWidget*>( datas );
+    WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
     if ( self->m_oneFrameOnly < 2 )
     {
@@ -93,24 +93,25 @@ void*   RenderPreviewWidget::lock( void* datas )
         return self->m_lastFrame;
 }
 
-void    RenderPreviewWidget::unlock( void* datas )
+void    WorkflowRenderer::unlock( void* datas )
 {
-    RenderPreviewWidget* self = reinterpret_cast<RenderPreviewWidget*>( datas );
+    WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
     if ( self->m_oneFrameOnly == 1 )
     {
         self->m_mediaPlayer->pause();
         self->m_oneFrameOnly = 2;
     }
+    self->m_framePlayed = true;
 }
 
-void        RenderPreviewWidget::stopPreview()
+void        WorkflowRenderer::stopPreview()
 {
     disconnect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
              Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( updateCursorPos( qint64 ) ) );
     stop();
 }
 
-void        RenderPreviewWidget::startPreview( Media* )
+void        WorkflowRenderer::startPreview()
 {
     char        buff[128];
 
@@ -124,12 +125,12 @@ void        RenderPreviewWidget::startPreview( Media* )
     m_paused = false;
 }
 
-void        RenderPreviewWidget::setPosition( float newPos )
+void        WorkflowRenderer::setPosition( float newPos )
 {
     m_mainWorkflow->setPosition( newPos );
 }
 
-void        RenderPreviewWidget::nextFrame()
+void        WorkflowRenderer::nextFrame()
 {
 //    qDebug() << "Next frame :";
     m_oneFrameOnly = 1;
@@ -144,16 +145,16 @@ void        RenderPreviewWidget::nextFrame()
 //    m_mediaPlayer->pause();
 }
 
-void        RenderPreviewWidget::previousFrame()
+void        WorkflowRenderer::previousFrame()
 {
 
 }
 
-void        RenderPreviewWidget::togglePlayPause( bool forcePause )
+void        WorkflowRenderer::togglePlayPause( bool forcePause )
 {
     //If force pause is true, we just ensure that this render is paused... no need to start it.
     if ( m_isRendering == false && forcePause == false )
-        startPreview( NULL );
+        startPreview();
     else if ( m_isRendering == true )
     {
         if ( m_paused == true && forcePause == false )
@@ -177,7 +178,7 @@ void        RenderPreviewWidget::togglePlayPause( bool forcePause )
     }
 }
 
-void        RenderPreviewWidget::stop()
+void        WorkflowRenderer::stop()
 {
     m_isRendering = false;
     m_paused = false;
@@ -189,23 +190,23 @@ void        RenderPreviewWidget::stop()
 /////SLOTS :
 /////////////////////////////////////////////////////////////////////
 
-void        RenderPreviewWidget::__endReached()
+void        WorkflowRenderer::__endReached()
 {
     stopPreview();
     emit endReached();
 }
 
-void        RenderPreviewWidget::__positionChanged()
+void        WorkflowRenderer::__positionChanged()
 {
     qFatal("This should never be used ! Get out of here !");
 }
 
-void        RenderPreviewWidget::__positionChanged( float pos )
+void        WorkflowRenderer::__positionChanged( float pos )
 {
     emit positionChanged( pos );
 }
 
-void        RenderPreviewWidget::__videoPaused()
+void        WorkflowRenderer::__videoPaused()
 {
     if ( m_oneFrameOnly != 0 )
     {
@@ -214,12 +215,12 @@ void        RenderPreviewWidget::__videoPaused()
     emit paused();
 }
 
-void        RenderPreviewWidget::__videoPlaying()
+void        WorkflowRenderer::__videoPlaying()
 {
     emit playing();
 }
 
-void        RenderPreviewWidget::__videoStopped()
+void        WorkflowRenderer::__videoStopped()
 {
     emit endReached();
 }
