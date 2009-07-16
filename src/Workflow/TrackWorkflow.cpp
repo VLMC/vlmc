@@ -87,7 +87,7 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
 
     cw->getStateLock()->lockForRead();
 
-//    qDebug() << "Rendering clip";
+    qDebug() << "Rendering clip";
     if ( cw->getState() == ClipWorkflow::Paused && pauseAfterRender == false )
     {
         cw->getStateLock()->unlock();
@@ -95,7 +95,8 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
         //If we must pause after render, we must NOT wake the renderer thread, or it could render more than one frame
         // (since this is for the next/previous frame)
         //However, if this is just for a classic unpause, with just don't give a shit :)
-        cw->unpause( false );
+        qDebug() << "Unpausing clip";
+        cw->unpause( true );
         cw->getStateLock()->lockForRead();
     }
     if ( cw->getState() == ClipWorkflow::Rendering )
@@ -372,6 +373,7 @@ void            TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
 
 void                TrackWorkflow::pause()
 {
+    qDebug() << "Trying to acquire lock";
     QReadLocker     lock( m_clipsLock );
 
     QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
@@ -394,11 +396,9 @@ void                TrackWorkflow::pause()
         }
         if ( cw->getState() != ClipWorkflow::Paused )
         {
-            qDebug() << "Unlocking";
+            qDebug() << "pausing clip workflow";
             cw->getStateLock()->unlock();
-            qDebug() << "Pausing clip workflow";
             pauseClipWorkflow( cw );
-            qDebug() << "Paused clip workflow";
         }
         else
         {

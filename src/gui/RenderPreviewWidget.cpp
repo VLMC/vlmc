@@ -82,6 +82,7 @@ void*   RenderPreviewWidget::lock( void* datas )
 {
     RenderPreviewWidget* self = reinterpret_cast<RenderPreviewWidget*>( datas );
 
+    qDebug() << self->m_oneFrameOnly << "<<<<<<<<";
     if ( self->m_oneFrameOnly < 2 )
     {
 //        qDebug() << "\nQuerying new picture";
@@ -159,7 +160,7 @@ void        RenderPreviewWidget::togglePlayPause( bool forcePause )
     {
         if ( m_paused == true && forcePause == false )
         {
-//            qDebug() << "Unpausing";
+            qDebug() << "Unpausing";
             m_mediaPlayer->play();
             //This will automaticly unpause... no worries
 //            m_mainWorkflow->pause();
