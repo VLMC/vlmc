@@ -26,6 +26,7 @@
 #include <QDockWidget>
 #include <QFileDialog>
 #include <QSlider>
+#include <QUndoView>
 
 #include "MainWindow.h"
 #include "MediaListWidget.h"
@@ -37,6 +38,7 @@
 #include "FileBrowser.h"
 #include "WorkflowRenderer.h"
 #include "ClipRenderer.h"
+#include "UndoStack.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
@@ -158,6 +160,11 @@ void MainWindow::m_initializeDockWidgets( void )
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
+    dockManager->addDockedWidget( new QUndoView( UndoStack::getInstance(), this),
+                                  tr( "History" ),
+                                  Qt::AllDockWidgetAreas,
+                                  QDockWidget::AllDockWidgetFeatures,
+                                  Qt::LeftDockWidgetArea );
     setupLibrary();
     m_metaDataManager = MetaDataManager::getInstance();
 }

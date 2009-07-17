@@ -45,7 +45,8 @@ SOURCES += src/main.cpp \
     src/API/vlmc_module_variables.cpp \
     src/API/Module.cpp \
     src/API/ModuleManager.cpp \
-    src/WorkflowFileRenderer.cpp
+    src/WorkflowFileRenderer.cpp \
+    src/UndoStack.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -88,7 +89,8 @@ HEADERS += src/gui/MainWindow.h \
     src/API/vlmc_module_internal.h \
     src/WorkflowFileRenderer.h \
     src/vlmc.h \
-    src/tools/Pool.hpp
+    src/tools/Pool.hpp \
+    src/UndoStack.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \
@@ -98,7 +100,7 @@ FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/Transcode.ui \
     src/gui/ui/FileBrowser.ui \
     src/gui/ui/WorkflowFileRenderer.ui
-FORMS += 
+FORMS +=
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts
