@@ -39,6 +39,7 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
     m_stateLock = new QReadWriteLock;
     m_requiredStateLock = new QMutex;
     m_waitCond = new WaitCondition;
+    m_initWaitCond = new WaitCondition;
 //    m_backBufferLock = new QReadWriteLock;
 }
 
@@ -46,6 +47,7 @@ ClipWorkflow::~ClipWorkflow()
 {
 //    delete[] m_backBuffer;
 //    delete m_backBufferLock;
+    delete m_initWaitCond;
     delete m_waitCond;
     delete m_requiredStateLock;
     delete m_stateLock;
@@ -209,8 +211,9 @@ ClipWorkflow::State     ClipWorkflow::getState() const
 
 void    ClipWorkflow::startRender()
 {
-    while ( isReady() == false )
-        SleepMS( 1 );
+    if ( isReady() == false )
+        m_initWaitCond->wait();
+
     m_mediaPlayer->play();
     setState( Rendering );
 }
@@ -253,10 +256,25 @@ bool            ClipWorkflow::isRendering() const
     return m_state == ClipWorkflow::Rendering;
 }
 
+void            ClipWorkflow::checkSynchronisation( State newState )
+{
+    switch ( newState )
+    {
+        case Ready:
+            m_initWaitCond->wake();
+            break ;
+        default:
+            break ;
+    }
+}
+
 void            ClipWorkflow::setState( State state )
 {
-    QWriteLocker    lock( m_stateLock );
-    m_state = state;
+    {
+        QWriteLocker    lock( m_stateLock );
+        m_state = state;
+    }
+    checkSynchronisation( state );
 }
 
 void            ClipWorkflow::queryStateChange( State newState )

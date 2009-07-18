@@ -154,6 +154,7 @@ class   ClipWorkflow : public QObject
         static void             unlock( ClipWorkflow* clipWorkflow );
         void                    setVmem();
         void                    setState( State state );
+        void                    checkSynchronisation( State newState );
         /**
          *  Don't ever call this method from anywhere else than the unlock() method
          */
@@ -191,6 +192,8 @@ class   ClipWorkflow : public QObject
         QMutex*                 m_requiredStateLock;
 
         QAtomicInt              m_oneFrameOnly;
+
+        WaitCondition*          m_initWaitCond;
 
 
     private slots:
