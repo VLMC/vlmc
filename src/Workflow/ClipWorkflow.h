@@ -31,7 +31,7 @@
 
 #include <QReadWriteLock>
 #include <QMutex>
-#include <QWaitCondition>
+#include "WaitCondition.hpp"
 #include <QObject>
 
 #include "Clip.h"
@@ -183,7 +183,7 @@ class   ClipWorkflow : public QObject
         LibVLCpp::MediaPlayer*  m_mediaPlayer;
 
         QMutex*                 m_condMutex;
-        QWaitCondition*         m_waitCond;
+        WaitCondition*          m_waitCond;
 
         State                   m_state;
         QReadWriteLock*         m_stateLock;

@@ -26,8 +26,6 @@
 #include "ClipWorkflow.h"
 #include "Pool.hpp"
 
-int     g_debugId = 0;
-
 ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
                 m_clip( clip ),
                 m_buffer( NULL ),
@@ -40,20 +38,18 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
 //    m_backBuffer = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
     m_stateLock = new QReadWriteLock;
     m_requiredStateLock = new QMutex;
-    m_condMutex = new QMutex;
-    m_waitCond = new QWaitCondition;
+    m_waitCond = new WaitCondition;
 //    m_backBufferLock = new QReadWriteLock;
-
-    this->debugId = g_debugId++;
 }
 
 ClipWorkflow::~ClipWorkflow()
 {
-    delete[] m_buffer;
 //    delete[] m_backBuffer;
-    delete m_stateLock;
-    delete m_requiredStateLock;
 //    delete m_backBufferLock;
+    delete m_waitCond;
+    delete m_requiredStateLock;
+    delete m_stateLock;
+    delete[] m_buffer;
 }
 
 unsigned char*    ClipWorkflow::getOutput()
@@ -109,10 +105,8 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
         cw->m_state = Sleeping;
         cw->m_stateLock->unlock();
 
-        QMutexLocker    lock( cw->m_condMutex );
 //            qDebug() << "Entering condwait";
-
-        cw->m_waitCond->wait( cw->m_condMutex );
+        cw->m_waitCond->wait();
 //            qDebug() << "Leaved condwait";
         cw->m_stateLock->lockForWrite();
         cw->m_state = Rendering;
@@ -126,8 +120,7 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
     {
 //        qDebug() << "Forcing pause by pausing thread";
         cw->m_stateLock->unlock();
-        QMutexLocker    lock( cw->m_condMutex );
-        cw->m_waitCond->wait( cw->m_condMutex );
+        cw->m_waitCond->wait();
     }
     else
         cw->m_stateLock->unlock();
@@ -274,7 +267,7 @@ void            ClipWorkflow::queryStateChange( State newState )
 
 void            ClipWorkflow::wake()
 {
-    m_waitCond->wakeAll();
+    m_waitCond->wake();
 }
 
 QReadWriteLock* ClipWorkflow::getStateLock()
