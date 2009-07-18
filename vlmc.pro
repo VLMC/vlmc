@@ -90,7 +90,8 @@ HEADERS += src/gui/MainWindow.h \
     src/WorkflowFileRenderer.h \
     src/vlmc.h \
     src/tools/Pool.hpp \
-    src/UndoStack.h
+    src/UndoStack.h \
+    src/tools/WaitCondition.hpp
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \
@@ -100,7 +101,7 @@ FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/Transcode.ui \
     src/gui/ui/FileBrowser.ui \
     src/gui/ui/WorkflowFileRenderer.ui
-FORMS +=
+FORMS += 
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts
@@ -114,7 +115,6 @@ INCLUDEPATH += src/LibVLCpp \
 # QMAKE_CFLAGS+=-pg
 # QMAKE_CXXFLAGS+=-pg
 # QMAKE_LFLAGS+=-pg
-
 LIBS = -L/usr/local/lib \
     -lvlc
 SUBDIRS += modules
