@@ -104,10 +104,7 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
         //The rendering state meens... whell it means that the frame is
         //beeing rendered, so we wait.
         cw->getStateLock()->unlock();
-        while ( cw->isRendering() == true )
-        {
-            SleepMS( 100 );
-        }
+        cw->waitForCompleteRender();
         //This way we can trigger the appropriate if just below.
         //by restoring the initial state of the function, and just pretend that
         //nothing happened.
@@ -205,8 +202,7 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
     else if ( cw->getState() == ClipWorkflow::Rendering )
     {
         cw->getStateLock()->unlock();
-        while ( cw->isRendering() == true )
-            SleepMS( 1 );
+        cw->waitForCompleteRender();
         cw->queryStateChange( ClipWorkflow::Stopping );
         cw->wake();
         cw->stop();
@@ -214,8 +210,7 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
     else if ( cw->getState() == ClipWorkflow::Initializing )
     {
         cw->getStateLock()->unlock();
-        while ( cw->isReady() == false )
-            SleepMS( 1 );
+        cw->waitForCompleteInit();
         cw->stop();
     }
     else if ( cw->getState() == ClipWorkflow::Paused )
@@ -348,30 +343,21 @@ void            TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
     else if ( cw->getState() == ClipWorkflow::Rendering )
     {
         cw->getStateLock()->unlock();
-        while ( cw->isRendering() == true )
-            SleepMS( 1 );
+        cw->waitForCompleteRender();
         cw->queryStateChange( ClipWorkflow::Pausing );
         cw->wake();
     }
     else if ( cw->getState() == ClipWorkflow::Initializing )
     {
         cw->getStateLock()->unlock();
-        while ( cw->isReady() == false )
-            SleepMS( 1 );
+        cw->waitForCompleteInit();
     }
     else
     {
         qDebug() << "Unexpected ClipWorkflow::State when pausing:" << cw->getState();
         cw->getStateLock()->unlock();
     }
-    bool pausing = false;
-    while ( pausing == false )
-    {
-        cw->getStateLock()->lockForRead();
-        pausing = ( cw->getState() == ClipWorkflow::Pausing );
-        SleepMS( 1 );
-        cw->getStateLock()->unlock();
-    }
+    cw->waitForPausingState();
     cw->pause();
 }
 

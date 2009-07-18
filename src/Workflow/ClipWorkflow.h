@@ -147,6 +147,10 @@ class   ClipWorkflow : public QObject
 
         void                    unpause( bool wakeRenderThread = true );
 
+        void                    waitForCompleteInit();
+        void                    waitForCompleteRender();
+        void                    waitForPausingState();
+
 //        void                    activateOneFrameOnly();
 
     private:
@@ -194,7 +198,8 @@ class   ClipWorkflow : public QObject
         QAtomicInt              m_oneFrameOnly;
 
         WaitCondition*          m_initWaitCond;
-
+        WaitCondition*          m_renderWaitCond;
+        WaitCondition*          m_pausingStateWaitCond;
 
     private slots:
         void                    pauseAfterPlaybackStarted();

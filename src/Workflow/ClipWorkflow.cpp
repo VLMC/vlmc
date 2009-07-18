@@ -40,6 +40,8 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
     m_requiredStateLock = new QMutex;
     m_waitCond = new WaitCondition;
     m_initWaitCond = new WaitCondition;
+    m_renderWaitCond = new WaitCondition;
+    m_pausingStateWaitCond = new WaitCondition;
 //    m_backBufferLock = new QReadWriteLock;
 }
 
@@ -47,6 +49,7 @@ ClipWorkflow::~ClipWorkflow()
 {
 //    delete[] m_backBuffer;
 //    delete m_backBufferLock;
+    delete m_pausingStateWaitCond;
     delete m_initWaitCond;
     delete m_waitCond;
     delete m_requiredStateLock;
@@ -71,6 +74,7 @@ void    ClipWorkflow::checkStateChange()
 //        qDebug() << "Changed state from" << m_state << "to state" << m_requiredState;
         m_state = m_requiredState;
         m_requiredState = ClipWorkflow::None;
+        checkSynchronisation( m_state );
     }
 }
 
@@ -106,6 +110,7 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
     {
         cw->m_state = Sleeping;
         cw->m_stateLock->unlock();
+        cw->m_renderWaitCond->wake();
 
 //            qDebug() << "Entering condwait";
         cw->m_waitCond->wait();
@@ -263,6 +268,9 @@ void            ClipWorkflow::checkSynchronisation( State newState )
         case Ready:
             m_initWaitCond->wake();
             break ;
+        case Pausing:
+            m_pausingStateWaitCond->wake();
+            break ;
         default:
             break ;
     }
@@ -324,3 +332,21 @@ void            ClipWorkflow::unpause( bool wakeRenderThread /*= true*/ )
 //    qDebug() << "Activating one frame only";
 //    m_oneFrameOnly = 1;
 //}
+
+void        ClipWorkflow::waitForCompleteRender()
+{
+    if ( isRendering() == true )
+        m_renderWaitCond->wait();
+}
+
+void        ClipWorkflow::waitForCompleteInit()
+{
+    if ( isReady() == false )
+        m_initWaitCond->wait();
+}
+
+void        ClipWorkflow::waitForPausingState()
+{
+    if ( getState() != Pausing )
+        m_pausingStateWaitCond->wait();
+}
