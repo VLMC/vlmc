@@ -80,6 +80,10 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
     private:
         static MainWorkflow*    m_instance;
+
+    private:
+        void                    computeLength();
+
     private:
         Toggleable<TrackWorkflow*>*     m_tracks;
         qint64                          m_currentFrame;

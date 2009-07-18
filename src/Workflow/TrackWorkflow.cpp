@@ -52,10 +52,8 @@ TrackWorkflow::~TrackWorkflow()
 
 void    TrackWorkflow::addClip( Clip* clip, qint64 start )
 {
-    QWriteLocker    lock( m_clipsLock );
     ClipWorkflow* cw = new ClipWorkflow( clip );
-    m_clips.insert( start, cw );
-    computeLength();
+    addClip( cw, start );
 }
 
 void    TrackWorkflow::addClip( ClipWorkflow* cw, qint64 start )
@@ -410,6 +408,7 @@ void            TrackWorkflow::moveClip( const QUuid& id, qint64 startingFrame )
             m_clips[startingFrame] = cw;
             QMutexLocker    lock( m_forceRepositionningMutex );
             m_forceRepositionning = true;
+            computeLength();
             return ;
         }
         ++it;
@@ -434,6 +433,7 @@ Clip*       TrackWorkflow::removeClip( const QUuid& id )
             m_clips.erase( it );
 //            stopClipWorkflow( cw );
 //            delete cw;
+            computeLength();
             return clip;
         }
         ++it;

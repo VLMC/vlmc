@@ -72,20 +72,26 @@ void    MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
         m_length = m_tracks[trackId]->getLength();
 }
 
-void    MainWorkflow::startRender()
+void            MainWorkflow::computeLength()
 {
     qint64      maxLength = 0;
 
-    m_renderStarted = true;
-    m_currentFrame = 0;
-    emit frameChanged( 0 );
     for ( unsigned int i = 0; i < m_trackCount; ++i )
     {
-        m_tracks[i].activate();
         if ( m_tracks[i]->getLength() > maxLength )
             maxLength = m_tracks[i]->getLength();
     }
     m_length = maxLength;
+}
+
+void    MainWorkflow::startRender()
+{
+    m_renderStarted = true;
+    m_currentFrame = 0;
+    emit frameChanged( 0 );
+    for ( unsigned int i = 0; i < m_trackCount; ++i )
+        m_tracks[i].activate();
+    computeLength();
 }
 
 unsigned char*    MainWorkflow::getOutput()
@@ -217,6 +223,7 @@ void           MainWorkflow::clipMoved( QUuid clipUuid, int oldTrack, int newTra
         m_tracks[oldTrack].activate();
         m_tracks[newTrack].activate();
     }
+    computeLength();
 }
 
 void        MainWorkflow::activateOneFrameOnly()
