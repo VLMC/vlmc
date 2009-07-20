@@ -45,7 +45,7 @@ MainWindow::MainWindow( QWidget *parent ) :
 {
     m_ui.setupUi( this );
     DockWidgetManager::instance( this )->setMainWindow( this );
-    m_initializeDockWidgets();
+    initializeDockWidgets();
     createStatusBar();
 
     // Translation
@@ -133,7 +133,7 @@ void MainWindow::createStatusBar()
     m_ui.statusbar->addPermanentWidget( m_zoomSlider );
 }
 
-void MainWindow::m_initializeDockWidgets( void )
+void MainWindow::initializeDockWidgets( void )
 {
     m_timeline = new Timeline( this );
     m_timeline->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -160,6 +160,7 @@ void MainWindow::m_initializeDockWidgets( void )
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
+
     dockManager->addDockedWidget( new QUndoView( UndoStack::getInstance(), this),
                                   tr( "History" ),
                                   Qt::AllDockWidgetAreas,

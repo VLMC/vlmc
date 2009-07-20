@@ -59,6 +59,7 @@ PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent 
 
 PreviewWidget::~PreviewWidget()
 {
+    delete m_renderer;
     delete m_ui;
 }
 

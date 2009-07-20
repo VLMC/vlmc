@@ -67,7 +67,10 @@ void    TrackWorkflow::addClip( ClipWorkflow* cw, qint64 start )
 void                TrackWorkflow::computeLength()
 {
     if ( m_clips.count() == 0 )
+    {
         m_length = 0;
+        return ;
+    }
     QMap<qint64, ClipWorkflow*>::const_iterator it = m_clips.end() - 1;
     m_length = (it.key() + it.value()->getClip()->getLength() );
 }
@@ -199,11 +202,15 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
     }
     else if ( cw->getState() == ClipWorkflow::Rendering )
     {
+        qDebug() << "Stopping while rendering";
         cw->getStateLock()->unlock();
+        qDebug() << "Waiting complete render";
         cw->waitForCompleteRender();
+        qDebug() << "Waited ok.";
         cw->queryStateChange( ClipWorkflow::Stopping );
         cw->wake();
         cw->stop();
+        qDebug() << "Stopped clip workflow";
     }
     else if ( cw->getState() == ClipWorkflow::Initializing )
     {

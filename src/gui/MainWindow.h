@@ -53,7 +53,7 @@ protected:
     virtual void changeEvent( QEvent *e );
 
 private:
-    void        m_initializeDockWidgets( void );
+    void        initializeDockWidgets( void );
     void        setupLibrary();
     void        createStatusBar();
 

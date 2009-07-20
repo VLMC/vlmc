@@ -28,8 +28,7 @@
 unsigned char*  MainWorkflow::blackOutput = NULL;
 MainWorkflow*   MainWorkflow::m_instance = NULL;
 
-MainWorkflow::MainWorkflow( QObject* parent, int trackCount ) :
-        QObject( parent ),
+MainWorkflow::MainWorkflow( int trackCount ) :
         m_length( 0 ),
         m_trackCount( trackCount ),
         m_renderStarted( false )
@@ -52,6 +51,8 @@ MainWorkflow::MainWorkflow( QObject* parent, int trackCount ) :
 
 MainWorkflow::~MainWorkflow()
 {
+    stop();
+
     delete m_renderStartedLock;
     for (unsigned int i = 0; i < m_trackCount; ++i)
         delete m_tracks[i];
@@ -191,19 +192,27 @@ void            MainWorkflow::stop()
     m_renderStarted = false;
     for (unsigned int i = 0; i < m_trackCount; ++i)
     {
-        //FIXME: After debugging period, this should'nt be necessary --
-        m_tracks[i].activate();
-        //--------
-        m_tracks[i]->stop();
+        if ( m_tracks[i].activated() == true )
+            m_tracks[i]->stop();
     }
     m_currentFrame = 0;
     emit frameChanged( 0 );
+    qDebug() << "Stopped main workflow";
 }
 
 MainWorkflow*   MainWorkflow::getInstance()
 {
     Q_ASSERT( m_instance != NULL );
     return m_instance;
+}
+
+void            MainWorkflow::deleteInstance()
+{
+    if ( m_instance != NULL )
+    {
+        delete m_instance;
+        m_instance = NULL;
+    }
 }
 
 void           MainWorkflow::clipMoved( QUuid clipUuid, int oldTrack, int newTrack, qint64 startingFrame )

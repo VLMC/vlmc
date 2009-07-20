@@ -36,7 +36,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
     Q_OBJECT
 
     public:
-        MainWorkflow( QObject* parent, int trackCount );
+        MainWorkflow( int trackCount );
         ~MainWorkflow();
 
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start );
@@ -77,6 +77,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    activateOneFrameOnly();
         
         static MainWorkflow*    getInstance();
+        static void             deleteInstance();
 
     private:
         static MainWorkflow*    m_instance;

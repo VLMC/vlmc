@@ -76,6 +76,7 @@ WorkflowRenderer::~WorkflowRenderer()
     disconnect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
 
     delete m_media;
+    delete m_mainWorkflow;
 }
 
 void*   WorkflowRenderer::lock( void* datas )
