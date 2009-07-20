@@ -197,7 +197,6 @@ void            MainWorkflow::stop()
     }
     m_currentFrame = 0;
     emit frameChanged( 0 );
-    qDebug() << "Stopped main workflow";
 }
 
 MainWorkflow*   MainWorkflow::getInstance()
