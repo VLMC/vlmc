@@ -38,7 +38,8 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
 //    m_backBuffer = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
     m_stateLock = new QReadWriteLock;
     m_requiredStateLock = new QMutex;
-    m_waitCond = new WaitCondition;
+    m_waitCond = new QWaitCondition;
+    m_condMutex = new QMutex;
     m_initWaitCond = new WaitCondition;
     m_renderWaitCond = new WaitCondition;
     m_pausingStateWaitCond = new WaitCondition;
@@ -51,6 +52,7 @@ ClipWorkflow::~ClipWorkflow()
 //    delete m_backBufferLock;
     delete m_pausingStateWaitCond;
     delete m_initWaitCond;
+    delete m_condMutex;
     delete m_waitCond;
     delete m_requiredStateLock;
     delete m_stateLock;
@@ -71,11 +73,13 @@ void    ClipWorkflow::checkStateChange()
     QWriteLocker    lock2( m_stateLock );
     if ( m_requiredState != ClipWorkflow::None )
     {
-//        qDebug() << "Changed state from" << m_state << "to state" << m_requiredState;
+        qDebug() << "Changed state from" << m_state << "to state" << m_requiredState;
         m_state = m_requiredState;
         m_requiredState = ClipWorkflow::None;
         checkSynchronisation( m_state );
     }
+    else
+        qDebug() << "No state required";
 }
 
 void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret )
@@ -108,13 +112,15 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
 //        qDebug() << "One frame only mode is OFF :(";
     if ( cw->m_state == Rendering )
     {
+        QMutexLocker    lock( cw->m_condMutex );
+
         cw->m_state = Sleeping;
         cw->m_stateLock->unlock();
         cw->m_renderWaitCond->wake();
 
-//            qDebug() << "Entering condwait";
-        cw->m_waitCond->wait();
-//            qDebug() << "Leaved condwait";
+        qDebug() << "Entering condwait";
+        cw->m_waitCond->wait( cw->m_condMutex );
+        qDebug() << "Leaved condwait";
         cw->m_stateLock->lockForWrite();
         cw->m_state = Rendering;
 //        {
@@ -125,9 +131,9 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
     }
     else if ( cw->m_state == Paused )
     {
-//        qDebug() << "Forcing pause by pausing thread";
+        qDebug() << "Forcing pause inside of unlock";
         cw->m_stateLock->unlock();
-        cw->m_waitCond->wait();
+        cw->m_waitCond->wait( cw->m_condMutex );
     }
     else
         cw->m_stateLock->unlock();
@@ -195,6 +201,12 @@ bool    ClipWorkflow::isReady() const
 {
     QReadLocker lock( m_stateLock );
     return m_state == ClipWorkflow::Ready;
+}
+
+bool    ClipWorkflow::isPausing() const
+{
+    QReadLocker lock( m_stateLock );
+    return m_state == ClipWorkflow::Pausing;
 }
 
 bool    ClipWorkflow::isEndReached() const
@@ -269,6 +281,7 @@ void            ClipWorkflow::checkSynchronisation( State newState )
             m_initWaitCond->wake();
             break ;
         case Pausing:
+            qDebug() << "Waking m_pausingStateWaitCond";
             m_pausingStateWaitCond->wake();
             break ;
         default:
@@ -287,13 +300,15 @@ void            ClipWorkflow::setState( State state )
 
 void            ClipWorkflow::queryStateChange( State newState )
 {
+    qDebug() << "Querying state change to" << newState;
     QMutexLocker    lock( m_requiredStateLock );
     m_requiredState = newState;
 }
 
 void            ClipWorkflow::wake()
 {
-    m_waitCond->wake();
+    m_waitCond->wakeAll();
+    qDebug() << "Awaked thread";
 }
 
 QReadWriteLock* ClipWorkflow::getStateLock()
@@ -313,6 +328,7 @@ void            ClipWorkflow::pause()
     setState( Paused );
     m_mediaPlayer->pause();
     QMutexLocker    lock( m_requiredStateLock );
+    qDebug() << "ClipWorkflow::pause(); Reseting required state";
     m_requiredState = ClipWorkflow::None;
 }
 
@@ -347,6 +363,11 @@ void        ClipWorkflow::waitForCompleteInit()
 
 void        ClipWorkflow::waitForPausingState()
 {
-    if ( getState() != Pausing )
+    if ( isPausing() == false )
         m_pausingStateWaitCond->wait();
+}
+
+QMutex*     ClipWorkflow::getSleepMutex()
+{
+    return m_condMutex;
 }

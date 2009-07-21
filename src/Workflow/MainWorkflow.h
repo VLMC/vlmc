@@ -26,6 +26,7 @@
 
 #include <QObject>
 #include <QReadWriteLock>
+#include <QMutex>
 
 #include "tools/Toggleable.hpp"
 #include "TrackWorkflow.h"
@@ -95,6 +96,8 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         */
         bool                            m_renderStarted;
         QReadWriteLock*                 m_renderStartedLock;
+
+        QMutex*                         m_renderMutex;
 
     public slots:
         void                            clipMoved( QUuid, int, int, qint64 );

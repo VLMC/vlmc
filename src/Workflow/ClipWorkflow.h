@@ -91,6 +91,8 @@ class   ClipWorkflow : public QObject
          */
         bool                    isRendering() const;
 
+        bool                    isPausing() const;
+
         /**
          *  Returns the current workflow state.
          *  Be carrefull, as this function is NOT thread safe, and return the
@@ -150,6 +152,7 @@ class   ClipWorkflow : public QObject
         void                    waitForCompleteInit();
         void                    waitForCompleteRender();
         void                    waitForPausingState();
+        QMutex*                 getSleepMutex();
 
 //        void                    activateOneFrameOnly();
 
@@ -188,7 +191,7 @@ class   ClipWorkflow : public QObject
         LibVLCpp::MediaPlayer*  m_mediaPlayer;
 
         QMutex*                 m_condMutex;
-        WaitCondition*          m_waitCond;
+        QWaitCondition*         m_waitCond;
 
         State                   m_state;
         QReadWriteLock*         m_stateLock;
