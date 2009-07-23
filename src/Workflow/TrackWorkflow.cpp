@@ -341,7 +341,7 @@ void            TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
          cw->getState() == ClipWorkflow::Ready ||
          cw->getState() == ClipWorkflow::EndReached )
     {
-        qDebug() << "Pausing a sleeping, ready or EndReached ClipWorkflow";
+        qDebug() << "Pausing a sleeping, ready or EndReached ClipWorkflow, state =" << cw->getState();
         cw->getStateLock()->unlock();
         cw->queryStateChange( ClipWorkflow::Pausing );
         cw->wake();
@@ -406,8 +406,7 @@ void                TrackWorkflow::pause()
         {
             //This should never be used.
             //TODO: remove this in a few revision (wrote on July 16 2009 )
-            qDebug() << "State before crash is:" << cw->getState();
-            Q_ASSERT( false );
+            qDebug() << "Asking to pause in an already paused state";
         }
     }
     qDebug() << "End of loop";
