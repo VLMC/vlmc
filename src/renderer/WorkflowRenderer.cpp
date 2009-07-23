@@ -85,9 +85,10 @@ void*   WorkflowRenderer::lock( void* datas )
 
     if ( self->m_oneFrameOnly < 2 )
     {
-//        qDebug() << "\nQuerying new picture";
+        qDebug() << "\nQuerying new picture";
         void* ret = self->m_mainWorkflow->getOutput();
         self->m_lastFrame = static_cast<unsigned char*>( ret );
+        qDebug() << "Got picture";
         return ret;
     }
     else
@@ -151,6 +152,13 @@ void        WorkflowRenderer::previousFrame()
 
 }
 
+void        WorkflowRenderer::pauseMainWorkflow()
+{
+    qDebug() << "In pause callback";
+    m_mainWorkflow->pause();
+    m_paused = true;
+}
+
 void        WorkflowRenderer::togglePlayPause( bool forcePause )
 {
     //If force pause is true, we just ensure that this render is paused... no need to start it.
@@ -160,9 +168,8 @@ void        WorkflowRenderer::togglePlayPause( bool forcePause )
     {
         if ( m_paused == true && forcePause == false )
         {
+            //This will automaticly unpause the ClipWorkflow... no worries
             m_mediaPlayer->play();
-            //This will automaticly unpause... no worries
-//            m_mainWorkflow->pause();
             m_paused = false;
         }
         else
@@ -172,8 +179,7 @@ void        WorkflowRenderer::togglePlayPause( bool forcePause )
             if ( m_paused == false )
             {
                 m_mediaPlayer->pause();
-                m_mainWorkflow->pause();
-                m_paused = true;
+                qDebug() << "Waiting for paused media player";
             }
         }
     }
@@ -213,6 +219,7 @@ void        WorkflowRenderer::__videoPaused()
     {
         m_oneFrameOnly = 0;
     }
+    pauseMainWorkflow();
     emit paused();
 }
 

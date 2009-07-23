@@ -48,6 +48,10 @@ class   WaitCondition
         {
             m_waitCond->wakeAll();
         }
+        QMutex*         getMutex()
+        {
+            return m_mutex;
+        }
     private:
         QMutex*         m_mutex;
         QWaitCondition* m_waitCond;

@@ -59,6 +59,7 @@ class   WorkflowRenderer : public GenericRenderer
         static void         unlock( void* datas );
 
     private:
+        void                pauseMainWorkflow();
         virtual void        startPreview();
 
     private:
