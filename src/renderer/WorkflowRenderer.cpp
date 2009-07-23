@@ -83,9 +83,11 @@ void*   WorkflowRenderer::lock( void* datas )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
+    //If we're not playing, then where in a paused media player.
+    if ( self->m_mediaPlayer->isPlaying() == false )
+        return self->m_lastFrame;
     if ( self->m_oneFrameOnly < 2 )
     {
-//        qDebug() << "\nQuerying new picture";
         void* ret = self->m_mainWorkflow->getOutput();
         self->m_lastFrame = static_cast<unsigned char*>( ret );
         return ret;
@@ -149,6 +151,12 @@ void        WorkflowRenderer::nextFrame()
 void        WorkflowRenderer::previousFrame()
 {
 
+}
+
+void        WorkflowRenderer::pauseMainWorkflow()
+{
+    m_mainWorkflow->pause();
+    m_paused = true;
 }
 
 void        WorkflowRenderer::togglePlayPause( bool forcePause )

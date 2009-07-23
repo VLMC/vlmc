@@ -202,15 +202,11 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
     }
     else if ( cw->getState() == ClipWorkflow::Rendering )
     {
-        qDebug() << "Stopping while rendering";
         cw->getStateLock()->unlock();
-        qDebug() << "Waiting complete render";
         cw->waitForCompleteRender();
-        qDebug() << "Waited ok.";
         cw->queryStateChange( ClipWorkflow::Stopping );
         cw->wake();
         cw->stop();
-        qDebug() << "Stopped clip workflow";
     }
     else if ( cw->getState() == ClipWorkflow::Initializing )
     {
@@ -265,14 +261,8 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
     bool                                        needRepositioning;
     bool                                        oneFrameOnlyFlag = false;
 
-//    qDebug() << "Checking flag...";
     if ( m_oneFrameOnly == 1 )
-    {
-//        qDebug() << "...Flag is activated";
         oneFrameOnlyFlag = true;
-    }
-//    else
-//        qDebug() << "...Flag is OFF";
     if ( checkEnd( currentFrame ) == true )
     {
         emit trackEndReached( m_trackId );
@@ -341,14 +331,15 @@ void            TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
          cw->getState() == ClipWorkflow::Ready ||
          cw->getState() == ClipWorkflow::EndReached )
     {
-        cw->getStateLock()->unlock();
         cw->queryStateChange( ClipWorkflow::Pausing );
+        cw->getStateLock()->unlock();
         cw->wake();
     }
     else if ( cw->getState() == ClipWorkflow::Rendering )
     {
         cw->getStateLock()->unlock();
         cw->waitForCompleteRender();
+        QMutexLocker    lock( cw->getSleepMutex() );
         cw->queryStateChange( ClipWorkflow::Pausing );
         cw->wake();
     }
@@ -359,7 +350,6 @@ void            TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
     }
     else
     {
-        qDebug() << "Unexpected ClipWorkflow::State when pausing:" << cw->getState();
         cw->getStateLock()->unlock();
     }
     cw->waitForPausingState();
@@ -393,7 +383,7 @@ void                TrackWorkflow::pause()
         {
             //This should never be used.
             //TODO: remove this in a few revision (wrote on July 16 2009 )
-            Q_ASSERT( false );
+            qDebug() << "Asking to pause in an already    paused state";
         }
     }
     m_paused = !m_paused;

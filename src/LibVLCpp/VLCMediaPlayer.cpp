@@ -173,7 +173,7 @@ void                            MediaPlayer::takeSnapshot( const char* outputFil
     CheckVlcppException( m_ex );
 }
 
-bool                                MediaPlayer::isPlaying()
+bool                            MediaPlayer::isPlaying()
 {
     int res = libvlc_media_player_is_playing( m_internalPtr, m_ex );
     CheckVlcppException( m_ex );
