@@ -342,8 +342,9 @@ void            TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
          cw->getState() == ClipWorkflow::EndReached )
     {
         qDebug() << "Pausing a sleeping, ready or EndReached ClipWorkflow, state =" << cw->getState();
-        cw->getStateLock()->unlock();
         cw->queryStateChange( ClipWorkflow::Pausing );
+        qDebug() << "Unlocked state mutex";
+        cw->getStateLock()->unlock();
         cw->wake();
     }
     else if ( cw->getState() == ClipWorkflow::Rendering )

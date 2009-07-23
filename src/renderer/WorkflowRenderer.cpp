@@ -85,6 +85,9 @@ void*   WorkflowRenderer::lock( void* datas )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
+    //If we're not playing, then where in a paused media player.
+    if ( self->m_mediaPlayer->isPlaying() == false )
+        return self->m_lastFrame;
     if ( self->m_oneFrameOnly < 2 )
     {
         qDebug() << "\nQuerying new picture";
@@ -122,6 +125,7 @@ void        WorkflowRenderer::checkActions()
         switch ( act )
         {
             case    Pause:
+                qDebug() << "Pausing WorkflowRenderer mediaPlayer";
                 m_mediaPlayer->pause();
                 //This will also pause the MainWorkflow via a signal/slot
                 break ;
