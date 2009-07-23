@@ -93,7 +93,7 @@ void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret )
 //    else
 //    {
         *pp_ret = cw->m_buffer;
-//        qDebug() << "Clip workflow locking <<<<<<<<<<<<<<<<<<<<<<<<<<";
+        qDebug() << "Clip workflow locking <<<<<<<<<<<<<<<<<<<<<<<<<<";
 //    }
 }
 
@@ -114,8 +114,10 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
     {
         QMutexLocker    lock( cw->m_condMutex );
 
+        qDebug() << "Setting state to Sleeping";
         cw->m_state = Sleeping;
         cw->m_stateLock->unlock();
+        //Signal that render has been completed.
         cw->m_renderWaitCond->wake();
 
         qDebug() << "Entering condwait";
