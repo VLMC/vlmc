@@ -122,8 +122,6 @@ unsigned char*    MainWorkflow::getOutput()
 
 void        MainWorkflow::pause()
 {
-    QMutexLocker    lock( m_renderMutex );
-
     for ( unsigned int i = 0; i < m_trackCount; ++i )
     {
         if ( m_tracks[i].activated() == true )
