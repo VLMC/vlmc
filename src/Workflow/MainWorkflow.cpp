@@ -47,7 +47,6 @@ MainWorkflow::MainWorkflow( int trackCount ) :
         connect( m_tracks[i], SIGNAL( trackEndReached( unsigned int ) ), this, SLOT( trackEndReached(unsigned int) ) );
     }
     m_renderStartedLock = new QReadWriteLock;
-    m_renderMutex = new QMutex;
 }
 
 MainWorkflow::~MainWorkflow()
@@ -99,7 +98,6 @@ void    MainWorkflow::startRender()
 unsigned char*    MainWorkflow::getOutput()
 {
     QReadLocker     lock( m_renderStartedLock );
-    QMutexLocker    lock2( m_renderMutex );
 
     if ( m_renderStarted == true )
     {
@@ -124,15 +122,11 @@ unsigned char*    MainWorkflow::getOutput()
 
 void        MainWorkflow::pause()
 {
-    QMutexLocker    lock( m_renderMutex );
-
-    qDebug() << "Pausing.......................";
     for ( unsigned int i = 0; i < m_trackCount; ++i )
     {
         if ( m_tracks[i].activated() == true )
             m_tracks[i]->pause();
     }
-    qDebug() << "Pausing completed <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
 }
 
 void        MainWorkflow::nextFrame()

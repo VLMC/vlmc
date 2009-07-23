@@ -128,8 +128,9 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
 //            qDebug() << "Querying state back to pause after render";
             cw->queryStateChange( ClipWorkflow::Paused );
         }
-        qDebug() << ">>> Awaking ClipWorkflow thread for render";
         cw->wake();
+        //FIXME: sometimes, the renderer isn't awake soon enough, and we can
+        //pass though this function many times before the frame is actually rendered.
     }
     else if ( cw->getState() == ClipWorkflow::Stopped )
     {
@@ -264,8 +265,7 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
     bool                                        needRepositioning;
     bool                                        oneFrameOnlyFlag = false;
 
-qDebug() << "Asking for track output";
-    //    qDebug() << "Checking flag...";
+//    qDebug() << "Checking flag...";
     if ( m_oneFrameOnly == 1 )
     {
 //        qDebug() << "...Flag is activated";
@@ -341,29 +341,20 @@ void            TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
          cw->getState() == ClipWorkflow::Ready ||
          cw->getState() == ClipWorkflow::EndReached )
     {
-        qDebug() << "Pausing a sleeping, ready or EndReached ClipWorkflow";
         cw->getStateLock()->unlock();
         cw->queryStateChange( ClipWorkflow::Pausing );
         cw->wake();
     }
     else if ( cw->getState() == ClipWorkflow::Rendering )
     {
-        qDebug() << "Pausing a rendering clip workflow";
         cw->getStateLock()->unlock();
-        qDebug() << "Waiting for render complete";
         cw->waitForCompleteRender();
-        qDebug() << "Waiting complete";
-        qDebug() << "Waiting for sleep mutex";
-        QMutexLocker    lock( cw->getSleepMutex() );
-        qDebug() << "Got sleep mutex";
         cw->queryStateChange( ClipWorkflow::Pausing );
         cw->wake();
     }
     else if ( cw->getState() == ClipWorkflow::Initializing )
     {
-        qDebug() << "Pausing a Initializing ClipWorkflow";
         cw->getStateLock()->unlock();
-        //TODO: since a Initializing clipworkflow will pause itself at the end, shouldn't we do nothing ?
         cw->waitForCompleteInit();
     }
     else
@@ -371,11 +362,8 @@ void            TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
         qDebug() << "Unexpected ClipWorkflow::State when pausing:" << cw->getState();
         cw->getStateLock()->unlock();
     }
-    qDebug() << "Waiting for pausing state";
     cw->waitForPausingState();
-    qDebug() << "Waiting ok. Pausing now... ";
     cw->pause();
-    qDebug() << "Clip paused.";
 }
 
 void                TrackWorkflow::pause()
@@ -386,7 +374,6 @@ void                TrackWorkflow::pause()
     QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
 
     //FIXME: it's probably bad to iterate over every clip workflows.
-    qDebug() << "Started track pause loop";
     for ( ; it != end; ++it )
     {
         ClipWorkflow*   cw = it.value();
@@ -406,11 +393,9 @@ void                TrackWorkflow::pause()
         {
             //This should never be used.
             //TODO: remove this in a few revision (wrote on July 16 2009 )
-            qDebug() << "State before crash is:" << cw->getState();
             Q_ASSERT( false );
         }
     }
-    qDebug() << "End of loop";
     m_paused = !m_paused;
 }
 
