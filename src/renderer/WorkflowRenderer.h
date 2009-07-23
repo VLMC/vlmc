@@ -26,7 +26,6 @@
 
 #include <QObject>
 #include <QWidget>
-#include <QStack>
 
 #include "Workflow/MainWorkflow.h"
 #include "GenericRenderer.h"
@@ -37,11 +36,6 @@ class   WorkflowRenderer : public GenericRenderer
     Q_DISABLE_COPY( WorkflowRenderer )
 
     public:
-        enum    Actions
-        {
-            Pause,
-            Unpause,
-        };
         WorkflowRenderer( MainWorkflow* mainWorkflow );
         ~WorkflowRenderer();
 
@@ -67,7 +61,6 @@ class   WorkflowRenderer : public GenericRenderer
     private:
         void                pauseMainWorkflow();
         virtual void        startPreview();
-        void                checkActions();
 
     private:
         MainWorkflow*       m_mainWorkflow;
@@ -75,8 +68,6 @@ class   WorkflowRenderer : public GenericRenderer
         QAtomicInt          m_oneFrameOnly;
         unsigned char*      m_lastFrame;
         bool                m_framePlayed;
-        QStack<Actions>     m_actions;
-        QReadWriteLock*     m_actionsLock;
 
     public slots:
         void                __positionChanged();

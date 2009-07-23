@@ -31,7 +31,6 @@ WorkflowRenderer::WorkflowRenderer( MainWorkflow* mainWorkflow ) :
             m_mainWorkflow( mainWorkflow ),
             m_framePlayed( false )
 {
-    m_actionsLock = new QReadWriteLock;
     m_media = new LibVLCpp::Media( "fake://" );
 //      --invmem-width <integer>   Width
 //      --invmem-height <integer>  Height
@@ -76,7 +75,6 @@ WorkflowRenderer::~WorkflowRenderer()
     disconnect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
     disconnect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
 
-    delete m_actionsLock;
     delete m_media;
     delete m_mainWorkflow;
 }
@@ -106,30 +104,6 @@ void    WorkflowRenderer::unlock( void* datas )
         self->m_oneFrameOnly = 2;
     }
     self->m_framePlayed = true;
-    self->checkActions();
-}
-
-void        WorkflowRenderer::checkActions()
-{
-    QReadLocker     lock( m_actionsLock );
-
-    if ( m_actions.size() == 0 )
-        return ;
-    while ( m_actions.empty() == false )
-    {
-        Actions act = m_actions.top();
-        m_actions.pop();
-        switch ( act )
-        {
-            case    Pause:
-                m_mediaPlayer->pause();
-                //This will also pause the MainWorkflow via a signal/slot
-                break ;
-            default:
-                qDebug() << "Unhandled action:" << act;
-                break ;
-        }
-    }
 }
 
 void        WorkflowRenderer::stopPreview()
@@ -204,10 +178,8 @@ void        WorkflowRenderer::togglePlayPause( bool forcePause )
             //So be careful about pausing two times :
             if ( m_paused == false )
             {
-//                m_mediaPlayer->pause();
-//                qDebug() << "Waiting for paused media player";
-                QWriteLocker        lock( m_actionsLock );
-                m_actions.push( Pause );
+                m_mediaPlayer->pause();
+                qDebug() << "Waiting for paused media player";
             }
         }
     }
