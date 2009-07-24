@@ -1,4 +1,29 @@
+/*****************************************************************************
+ * SimplePreferences.cpp: generic preferences interface
+ *****************************************************************************
+ * Copyright (C) 2008-2009 the VLMC team
+ *
+ * Authors: Clement CHAVANCE <kinder@vlmc.org>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ *****************************************************************************/
 #include <QPushButton>
+#include <QDialogButtonBox>
+#include <QApplication>
+#include <QLabel>
+#include <QHash>
 #include <QLabel>
 
 
@@ -19,6 +44,7 @@ PreferencesPanel::PreferencesPanel( QWidget* parent )
 
     QObject::connect( m_buttonGroup, SIGNAL( buttonClicked( int ) ),
                       this, SLOT( switchPanel( int ) ) );
+    setLayout( m_layout );
 }
 
 PreferencesPanel::~PreferencesPanel()
@@ -90,10 +116,22 @@ void        SimplePreferences::addWidget( const QString& name,
     m_panel->addPanel( icon, label, name );
 }
 
+void        SimplePreferences::build()
+{
+    if (m_currentWidget == 0)
+        qFatal( "Can't build the preference panel without an added widget" );
+    QHBoxLayout*        hLayout = new QHBoxLayout( this );
+    PreferencesPanel*   prefPanel = new PreferencesPanel( this );
+    //TODO : change the size of the widgets to make it look cleaner
+    hLayout->addWidget( prefPanel );
+    hLayout->addLayout( buildRightHLayout() );
+}
+
 SimplePreferences::SimplePreferences()
+    : m_currentWidget( NULL ),
+    m_panel(NULL)
 {
     m_panel = new PreferencesPanel( this );
-    //Build Ui here
 }
 
 SimplePreferences::~SimplePreferences()
@@ -104,8 +142,36 @@ SimplePreferences::~SimplePreferences()
         delete it.value();
 }
 
+QVBoxLayout*    SimplePreferences::buildRightHLayout()
+{
+    QVBoxLayout*    layout = new QVBoxLayout( this );
+    QFrame*         titleLine = new QFrame;
+    QDialogButtonBox*     buttons = new QDialogButtonBox( this );
+
+    m_title = new QLabel( this );
+    titleLine->setFrameShape( QFrame::HLine );
+    titleLine->setFrameShadow( QFrame::Sunken );
+
+    QFont   labelFont = QApplication::font(this);
+
+    labelFont.setPointSize( labelFont.pointSize() + 6 );
+    labelFont.setFamily( "Verdana" );
+    m_title->setFont( labelFont );
+
+    buttons->setStandardButtons( QDialogButtonBox::Ok |
+                                 QDialogButtonBox::Cancel |
+                                 QDialogButtonBox::Apply );
+
+    layout->addWidget( m_title );
+    layout->addWidget( m_title );
+    layout->addWidget( m_currentWidget );
+    layout->addWidget( buttons );
+    return ( layout );
+} 
+
 void    SimplePreferences::switchWidget( const QString& name )
 {
+    //TODO : Change the title of the preferences shown
     //Hide the current widget and show the new one.
     
     if ( !m_widgets.contains( name ) )
@@ -117,3 +183,4 @@ void    SimplePreferences::switchWidget( const QString& name )
     m_currentWidget = wid;
     m_currentWidget->show();
 }
+
