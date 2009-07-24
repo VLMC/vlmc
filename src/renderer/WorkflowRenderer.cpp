@@ -90,8 +90,10 @@ void*   WorkflowRenderer::lock( void* datas )
         return self->m_lastFrame;
     if ( self->m_oneFrameOnly < 2 )
     {
+        qDebug() << "\nQuerying new picture";
         void* ret = self->m_mainWorkflow->getOutput();
         self->m_lastFrame = static_cast<unsigned char*>( ret );
+        qDebug() << "Got picture";
         return ret;
     }
     else
@@ -123,6 +125,7 @@ void        WorkflowRenderer::checkActions()
         switch ( act )
         {
             case    Pause:
+                qDebug() << "Pausing WorkflowRenderer mediaPlayer";
                 m_mediaPlayer->pause();
                 //This will also pause the MainWorkflow via a signal/slot
                 break ;
@@ -181,6 +184,7 @@ void        WorkflowRenderer::previousFrame()
 
 void        WorkflowRenderer::pauseMainWorkflow()
 {
+    qDebug() << "In pause callback";
     m_mainWorkflow->pause();
     m_paused = true;
 }
