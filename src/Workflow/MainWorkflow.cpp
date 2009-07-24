@@ -53,6 +53,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
 
 MainWorkflow::~MainWorkflow()
 {
+    qDebug() << "MainWorkflow::~MainWorkflow()";
     stop();
 
     delete m_renderStartedLock;

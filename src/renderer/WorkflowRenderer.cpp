@@ -80,7 +80,6 @@ WorkflowRenderer::~WorkflowRenderer()
 
     delete m_actionsLock;
     delete m_media;
-    delete m_mainWorkflow;
 }
 
 void*   WorkflowRenderer::lock( void* datas )

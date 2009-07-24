@@ -63,6 +63,11 @@ Timeline::Timeline( QWidget *parent ) :
              MainWorkflow::getInstance(), SLOT( clipMoved( QUuid, int, int, qint64 ) ) );
 }
 
+Timeline::~Timeline()
+{
+    delete m_mainWorkflow;
+}
+
 void Timeline::changeEvent( QEvent *e )
 {
     switch ( e->type() )
