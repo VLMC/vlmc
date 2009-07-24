@@ -30,7 +30,8 @@
 WorkflowRenderer::WorkflowRenderer( MainWorkflow* mainWorkflow ) :
             m_mainWorkflow( mainWorkflow ),
             m_framePlayed( false ),
-            m_pauseAsked( false )
+            m_pauseAsked( false ),
+            m_pausedMediaPlayer( false )
 {
     m_actionsLock = new QReadWriteLock;
     m_media = new LibVLCpp::Media( "fake://" );
@@ -87,7 +88,7 @@ void*   WorkflowRenderer::lock( void* datas )
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
     //If we're not playing, then where in a paused media player.
-    if ( self->m_mediaPlayer->isPlaying() == false )
+    if ( self->m_pausedMediaPlayer == true )
         return self->m_lastFrame;
     if ( self->m_oneFrameOnly < 2 )
     {
@@ -192,6 +193,7 @@ void        WorkflowRenderer::pauseMainWorkflow()
     qDebug() << "In pause callback";
     if ( m_paused == true )
         return ;
+    m_pausedMediaPlayer = true;
     m_mainWorkflow->pause();
 }
 
@@ -214,16 +216,11 @@ void        WorkflowRenderer::togglePlayPause( bool forcePause )
         {
             //This will automaticly unpause the ClipWorkflow... no worries
             m_mediaPlayer->play();
-            m_paused = false;
         }
         else
         {
-            //VLC will toggle play if we call pause while already paused...
-            //So be careful about pausing two times :
             if ( m_paused == false )
             {
-//                m_mediaPlayer->pause();
-//                qDebug() << "Waiting for paused media player";
                 QWriteLocker        lock( m_actionsLock );
                 m_actions.push( Pause );
             }
@@ -271,6 +268,8 @@ void        WorkflowRenderer::__videoPaused()
 void        WorkflowRenderer::__videoPlaying()
 {
     emit playing();
+    m_pausedMediaPlayer = false;
+    m_paused = false;
 }
 
 void        WorkflowRenderer::__videoStopped()

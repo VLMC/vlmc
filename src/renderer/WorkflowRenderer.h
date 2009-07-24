@@ -79,6 +79,12 @@ class   WorkflowRenderer : public GenericRenderer
         QReadWriteLock*     m_actionsLock;
         bool                m_pauseAsked;
 
+        /**
+         *  \brief This flag is used to avoid using libvlc function from the media player thread,
+         *          which can cause deadlock when stopping.
+         */
+        bool                m_pausedMediaPlayer;
+
     public slots:
         void                mainWorkflowPaused();
 
