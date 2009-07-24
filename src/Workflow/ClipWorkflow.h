@@ -45,15 +45,15 @@ class   ClipWorkflow : public QObject
         enum        State
         {
             None = -1,
-            Stopped,
-            Initializing,
-            Ready,
-            Rendering,
-            Sleeping,
-            Pausing,
-            Paused,
-            Stopping,
-            EndReached,
+            Stopped,        //0
+            Initializing,   //1
+            Ready,          //2
+            Rendering,      //3
+            Sleeping,       //4
+            Pausing,        //5
+            Paused,         //6
+            Stopping,       //7
+            EndReached,     //8
         };
        int                     debugId;
 
@@ -154,6 +154,8 @@ class   ClipWorkflow : public QObject
         void                    waitForPausingState();
         QMutex*                 getSleepMutex();
 
+        LibVLCpp::MediaPlayer*  getMediaPlayer();
+
 //        void                    activateOneFrameOnly();
 
     private:
@@ -206,7 +208,7 @@ class   ClipWorkflow : public QObject
 
     private slots:
         void                    pauseAfterPlaybackStarted();
-        void                    pausedMediaPlayer();
+        void                    initializedMediaPlayer();
         void                    setPositionAfterPlayback();
 
     public slots:

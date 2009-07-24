@@ -149,6 +149,7 @@ void        WorkflowRenderer::startPreview()
 
     connect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
              Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( updateCursorPos( qint64 ) ) );
+    connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ) );
     m_mainWorkflow->startRender();
     sprintf( buff, ":fake-duration=%lli", m_mainWorkflow->getLength() / FPS * 1000 );
     m_media->addOption( buff );
@@ -186,7 +187,12 @@ void        WorkflowRenderer::pauseMainWorkflow()
 {
     qDebug() << "In pause callback";
     m_mainWorkflow->pause();
+}
+
+void        WorkflowRenderer::mainWorkflowPaused()
+{
     m_paused = true;
+    emit paused();
 }
 
 void        WorkflowRenderer::togglePlayPause( bool forcePause )
@@ -252,7 +258,6 @@ void        WorkflowRenderer::__videoPaused()
         m_oneFrameOnly = 0;
     }
     pauseMainWorkflow();
-    emit paused();
 }
 
 void        WorkflowRenderer::__videoPlaying()

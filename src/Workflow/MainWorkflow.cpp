@@ -45,6 +45,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     {
         m_tracks[i].setPtr( new TrackWorkflow( i ) );
         connect( m_tracks[i], SIGNAL( trackEndReached( unsigned int ) ), this, SLOT( trackEndReached(unsigned int) ) );
+        connect( m_tracks[i], SIGNAL( trackPaused() ), this, SLOT( trackPaused() ) );
     }
     m_renderStartedLock = new QReadWriteLock;
     m_renderMutex = new QMutex;
@@ -127,10 +128,14 @@ void        MainWorkflow::pause()
     QMutexLocker    lock( m_renderMutex );
 
     qDebug() << "Pausing.......................";
+    m_nbTracksToPause = 0;
     for ( unsigned int i = 0; i < m_trackCount; ++i )
     {
         if ( m_tracks[i].activated() == true )
+        {
+            m_nbTracksToPause.fetchAndAddAcquire( 1 );
             m_tracks[i]->pause();
+        }
     }
     qDebug() << "Pausing completed <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
 }
@@ -247,5 +252,15 @@ void        MainWorkflow::activateOneFrameOnly()
         //FIXME: After debugging period, this should'nt be necessary --
         if ( m_tracks[i].activated() == true )
             m_tracks[i]->activateOneFrameOnly();
+    }
+}
+
+void        MainWorkflow::trackPaused()
+{
+    m_nbTracksToPause.fetchAndAddAcquire( -1 );
+    if ( m_nbTracksToPause == 0 )
+    {
+        emit mainWorkflowPaused();
+        qDebug() << "Emitted mainworkflow paused";
     }
 }

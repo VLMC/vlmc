@@ -98,12 +98,14 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         QReadWriteLock*                 m_renderStartedLock;
 
         QMutex*                         m_renderMutex;
+        QAtomicInt                      m_nbTracksToPause;
 
     public slots:
         void                            clipMoved( QUuid, int, int, qint64 );
 
     private slots:
         void                            trackEndReached( unsigned int trackId );
+        void                            trackPaused();
 
     signals:
         /**
@@ -116,6 +118,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    positionChanged( float pos );
 
         void                    mainWorkflowEndReached();
+        void                    mainWorkflowPaused();
 };
 
 #endif // MAINWORKFLOW_H

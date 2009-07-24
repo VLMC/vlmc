@@ -79,6 +79,8 @@ class   WorkflowRenderer : public GenericRenderer
         QReadWriteLock*     m_actionsLock;
 
     public slots:
+        void                mainWorkflowPaused();
+
         void                __positionChanged();
         void                __positionChanged( float pos );
         void                __videoPaused();

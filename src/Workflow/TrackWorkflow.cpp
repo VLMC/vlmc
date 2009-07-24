@@ -342,9 +342,13 @@ void            TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
          cw->getState() == ClipWorkflow::EndReached )
     {
         qDebug() << "Pausing a sleeping, ready or EndReached ClipWorkflow, state =" << cw->getState();
+        qDebug() << "getting condwait lock";
+        cw->getSleepMutex()->lock();
         cw->queryStateChange( ClipWorkflow::Pausing );
-        qDebug() << "Unlocked state mutex";
         cw->getStateLock()->unlock();
+        qDebug() << "Unlocked state mutex";
+        qDebug() << "Realeasing condwait lock";
+        cw->getSleepMutex()->unlock();
         cw->wake();
     }
     else if ( cw->getState() == ClipWorkflow::Rendering )
@@ -388,6 +392,7 @@ void                TrackWorkflow::pause()
 
     //FIXME: it's probably bad to iterate over every clip workflows.
     qDebug() << "Started track pause loop";
+    m_nbClipToPause = 0;
     for ( ; it != end; ++it )
     {
         ClipWorkflow*   cw = it.value();
@@ -401,6 +406,8 @@ void                TrackWorkflow::pause()
         if ( cw->getState() != ClipWorkflow::Paused )
         {
             cw->getStateLock()->unlock();
+            m_nbClipToPause.fetchAndAddAcquire( 1 );
+            connect( cw->getMediaPlayer(), SIGNAL( paused() ), this, SLOT( clipWorkflowPaused() ) );
             pauseClipWorkflow( cw );
         }
         else
@@ -466,4 +473,14 @@ Clip*       TrackWorkflow::removeClip( const QUuid& id )
 void        TrackWorkflow::activateOneFrameOnly()
 {
     m_oneFrameOnly = 1;
+}
+
+void        TrackWorkflow::clipWorkflowPaused()
+{
+    m_nbClipToPause.fetchAndAddAcquire( -1 );
+    if ( m_nbClipToPause == 0 )
+    {
+        emit trackPaused();
+        qDebug() << "Emitted track paused";
+    }
 }

@@ -94,8 +94,14 @@ class   TrackWorkflow : public QObject
         bool                                    m_paused;
 
         QAtomicInt                              m_oneFrameOnly;
+        QAtomicInt                              m_nbClipToPause;
+
+    private slots:
+        void                                    clipWorkflowPaused();
+
     signals:
-        void            trackEndReached( unsigned int );
+        void                                    trackEndReached( unsigned int );
+        void                                    trackPaused();
 };
 
 #endif // TRACKWORKFLOW_H

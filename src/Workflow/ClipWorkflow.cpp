@@ -188,14 +188,14 @@ void    ClipWorkflow::pauseAfterPlaybackStarted()
     disconnect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( pauseAfterPlaybackStarted() ) );
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( pauseAfterPlaybackStarted() ) );
 
-    connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( pausedMediaPlayer() ), Qt::DirectConnection );
+    connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( initializedMediaPlayer() ), Qt::DirectConnection );
     m_mediaPlayer->pause();
 
 }
 
-void    ClipWorkflow::pausedMediaPlayer()
+void    ClipWorkflow::initializedMediaPlayer()
 {
-    disconnect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( pausedMediaPlayer() ) );
+    disconnect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( initializedMediaPlayer() ) );
     setState( Ready );
 }
 
@@ -372,4 +372,9 @@ void        ClipWorkflow::waitForPausingState()
 QMutex*     ClipWorkflow::getSleepMutex()
 {
     return m_condMutex;
+}
+
+LibVLCpp::MediaPlayer*       ClipWorkflow::getMediaPlayer()
+{
+    return m_mediaPlayer;
 }
