@@ -77,6 +77,7 @@ class   WorkflowRenderer : public GenericRenderer
         bool                m_framePlayed;
         QStack<Actions>     m_actions;
         QReadWriteLock*     m_actionsLock;
+        bool                m_pauseAsked;
 
     public slots:
         void                mainWorkflowPaused();

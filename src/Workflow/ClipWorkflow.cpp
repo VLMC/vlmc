@@ -93,7 +93,7 @@ void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret )
 //    else
 //    {
         *pp_ret = cw->m_buffer;
-        qDebug() << "Clip workflow locking <<<<<<<<<<<<<<<<<<<<<<<<<<";
+//        qDebug() << "Clip workflow locking <<<<<<<<<<<<<<<<<<<<<<<<<<";
 //    }
 }
 

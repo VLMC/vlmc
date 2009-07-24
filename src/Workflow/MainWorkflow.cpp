@@ -127,7 +127,7 @@ void        MainWorkflow::pause()
 {
     QMutexLocker    lock( m_renderMutex );
 
-    qDebug() << "Pausing.......................";
+    qDebug() << "MainWorkflow Pausing Started >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n";
     m_nbTracksToPause = 0;
     for ( unsigned int i = 0; i < m_trackCount; ++i )
     {
@@ -137,7 +137,7 @@ void        MainWorkflow::pause()
             m_tracks[i]->pause();
         }
     }
-    qDebug() << "Pausing completed <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
+    qDebug() << "MainWorkflow Pausing asked completed <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
 }
 
 void        MainWorkflow::nextFrame()

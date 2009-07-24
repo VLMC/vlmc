@@ -29,7 +29,8 @@
 
 WorkflowRenderer::WorkflowRenderer( MainWorkflow* mainWorkflow ) :
             m_mainWorkflow( mainWorkflow ),
-            m_framePlayed( false )
+            m_framePlayed( false ),
+            m_pauseAsked( false )
 {
     m_actionsLock = new QReadWriteLock;
     m_media = new LibVLCpp::Media( "fake://" );
@@ -126,6 +127,9 @@ void        WorkflowRenderer::checkActions()
         {
             case    Pause:
                 qDebug() << "Pausing WorkflowRenderer mediaPlayer";
+                if ( m_pauseAsked == true )
+                    continue ;
+                m_pauseAsked = true;
                 m_mediaPlayer->pause();
                 //This will also pause the MainWorkflow via a signal/slot
                 break ;
@@ -186,12 +190,16 @@ void        WorkflowRenderer::previousFrame()
 void        WorkflowRenderer::pauseMainWorkflow()
 {
     qDebug() << "In pause callback";
+    if ( m_paused == true )
+        return ;
     m_mainWorkflow->pause();
 }
 
 void        WorkflowRenderer::mainWorkflowPaused()
 {
+    qDebug() << "MAIN WORKFLOW PAUSED<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<";
     m_paused = true;
+    m_pauseAsked = false;
     emit paused();
 }
 

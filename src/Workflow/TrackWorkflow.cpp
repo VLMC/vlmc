@@ -342,13 +342,13 @@ void            TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
          cw->getState() == ClipWorkflow::EndReached )
     {
         qDebug() << "Pausing a sleeping, ready or EndReached ClipWorkflow, state =" << cw->getState();
-        qDebug() << "getting condwait lock";
-        cw->getSleepMutex()->lock();
-        cw->queryStateChange( ClipWorkflow::Pausing );
-        cw->getStateLock()->unlock();
         qDebug() << "Unlocked state mutex";
-        qDebug() << "Realeasing condwait lock";
-        cw->getSleepMutex()->unlock();
+        cw->getStateLock()->unlock();
+
+        qDebug() << "Waiting for sleep mutex";
+        QMutexLocker    lock( cw->getSleepMutex() );
+        qDebug() << "Got sleep mutex";
+        cw->queryStateChange( ClipWorkflow::Pausing );
         cw->wake();
     }
     else if ( cw->getState() == ClipWorkflow::Rendering )
@@ -415,6 +415,7 @@ void                TrackWorkflow::pause()
             //This should never be used.
             //TODO: remove this in a few revision (wrote on July 16 2009 )
             qDebug() << "Asking to pause in an already paused state";
+            cw->getStateLock()->unlock();
         }
     }
     qDebug() << "End of loop";
