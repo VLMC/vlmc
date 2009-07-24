@@ -53,7 +53,6 @@ MainWorkflow::MainWorkflow( int trackCount ) :
 
 MainWorkflow::~MainWorkflow()
 {
-    qDebug() << "MainWorkflow::~MainWorkflow()";
     stop();
 
     delete m_renderStartedLock;
@@ -128,7 +127,6 @@ void        MainWorkflow::pause()
 {
     QMutexLocker    lock( m_renderMutex );
 
-    qDebug() << "MainWorkflow Pausing Started >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n";
     m_nbTracksToPause = 0;
     for ( unsigned int i = 0; i < m_trackCount; ++i )
     {
@@ -138,7 +136,6 @@ void        MainWorkflow::pause()
             m_tracks[i]->pause();
         }
     }
-    qDebug() << "MainWorkflow Pausing asked completed <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n";
 }
 
 void        MainWorkflow::nextFrame()
@@ -262,6 +259,5 @@ void        MainWorkflow::trackPaused()
     if ( m_nbTracksToPause == 0 )
     {
         emit mainWorkflowPaused();
-        qDebug() << "Emitted mainworkflow paused";
     }
 }
