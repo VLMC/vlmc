@@ -79,20 +79,21 @@ void    PreferencesPanel::switchPanel( int panel )
                              SimplePreferences
 ********************************************************************************/
 
-SimplePreferences*  SimplePreferences::m_instance = 0;
-
-SimplePreferences*  SimplePreferences::getInstance()
+SimplePreferences::SimplePreferences()
+    : m_currentWidget( NULL ),
+    m_panel(NULL)
 {
-    if ( 0 == SimplePreferences::m_instance )
-        SimplePreferences::m_instance = new SimplePreferences();
-    return ( SimplePreferences::m_instance );
+    m_panel = new PreferencesPanel( this );
 }
 
-void                SimplePreferences::releaseInstance()
+SimplePreferences::~SimplePreferences()
 {
-    if ( 0 != SimplePreferences::m_instance )
-        delete SimplePreferences::m_instance;
-    return ;
+    QHash<QString, QWidget*>::iterator     end = m_widgets.end();
+    QHash<QString, QWidget*>::iterator     it = m_widgets.begin();
+    for ( ; it != end; ++it )
+        delete it.value();
+    delete m_panel;
+    delete m_title;
 }
 
 QWidget*    SimplePreferences::getWidget( const QString& name ) const
@@ -127,20 +128,6 @@ void        SimplePreferences::build()
     hLayout->addLayout( buildRightHLayout() );
 }
 
-SimplePreferences::SimplePreferences()
-    : m_currentWidget( NULL ),
-    m_panel(NULL)
-{
-    m_panel = new PreferencesPanel( this );
-}
-
-SimplePreferences::~SimplePreferences()
-{
-    QHash<QString, QWidget*>::iterator     end = m_widgets.end();
-    QHash<QString, QWidget*>::iterator     it = m_widgets.begin();
-    for ( ; it != end; ++it )
-        delete it.value();
-}
 
 QVBoxLayout*    SimplePreferences::buildRightHLayout()
 {

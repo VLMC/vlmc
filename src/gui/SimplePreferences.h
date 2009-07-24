@@ -63,8 +63,8 @@ class   SimplePreferences : public QWidget
     Q_DISABLE_COPY( SimplePreferences )
 
     public:
-        SimplePreferences*  getInstance();
-        void                releaseInstance();
+        SimplePreferences();
+        ~SimplePreferences();
         QWidget*            getWidget( const QString& name ) const;
         void                addWidget( const QString& name,
                                        QWidget* widget,
@@ -73,12 +73,9 @@ class   SimplePreferences : public QWidget
         void                build();
 
     private:
-        SimplePreferences();
-        ~SimplePreferences();
         QVBoxLayout*    buildRightHLayout();
 
     private:
-        static SimplePreferences*       m_instance;
         QHash<QString, QWidget*>        m_widgets;
         QWidget*                        m_currentWidget;
         PreferencesPanel*               m_panel;
