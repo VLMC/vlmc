@@ -66,6 +66,9 @@ MainWindow::~MainWindow()
     if ( m_renderer )
         delete m_renderer;
     MetaDataManager::destroyInstance();
+    LibVLCpp::Instance::kill();
+    UndoStack::destroyInstance();
+    UndoStack::destroyInstance();
 }
 
 void MainWindow::changeEvent( QEvent *e )

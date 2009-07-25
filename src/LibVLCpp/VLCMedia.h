@@ -41,8 +41,6 @@ namespace LibVLCpp
         typedef void    (*unlockCallback)( void* dataCtx );
 
         Media( const QString& filename );
-        Media( const Media* media );
-        Media( const Media& media );
         ~Media();
         void                addOption( const char* opt );
         void                setLockCallback( Media::lockCallback );
@@ -54,7 +52,6 @@ namespace LibVLCpp
         uchar*              getPixelBuffer();
 
     private:
-        void                clone( const Media& toClone );
 
     private:
 

@@ -33,25 +33,9 @@ Media::Media( const QString& filename )
     CheckVlcppException(m_ex);
 }
 
-Media::Media( const Media& media ) : Internal<libvlc_media_t>()
-{
-    clone( media );
-}
-
-Media::Media( const Media* media )
-{
-    clone( *media );
-}
-
 Media::~Media()
 {
     libvlc_media_release( m_internalPtr );
-}
-
-void                    Media::clone( const Media& toClone )
-{
-    m_pixelBuffer = NULL;
-    m_internalPtr = libvlc_media_duplicate( toClone.m_internalPtr );
 }
 
 void                    Media::addOption( const char* opt )
