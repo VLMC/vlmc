@@ -65,6 +65,7 @@ MainWindow::~MainWindow()
 {
     if ( m_renderer )
         delete m_renderer;
+    MetaDataManager::destroyInstance();
 }
 
 void MainWindow::changeEvent( QEvent *e )

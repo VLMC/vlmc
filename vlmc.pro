@@ -30,7 +30,7 @@ SOURCES += src/main.cpp \
     src/gui/About.cpp \
     src/gui/Transcode.cpp \
     src/gui/Slider.cpp \
-    src/MetaDataManager.cpp \
+    src/metadata/MetaDataWorker.cpp \
     src/Library.cpp \
     src/gui/GraphicsMovieItem.cpp \
     src/gui/AbstractGraphicsMediaItem.cpp \
@@ -46,7 +46,8 @@ SOURCES += src/main.cpp \
     src/API/Module.cpp \
     src/API/ModuleManager.cpp \
     src/WorkflowFileRenderer.cpp \
-    src/UndoStack.cpp
+    src/UndoStack.cpp \
+    src/metadata/MetaDataManager.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -68,7 +69,7 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/About.h \
     src/gui/Transcode.h \
     src/gui/Slider.h \
-    src/MetaDataManager.h \
+    src/metadata/MetaDataWorker.h \
     src/tools/Singleton.hpp \
     src/Library.h \
     src/gui/AbstractGraphicsMediaItem.h \
@@ -91,7 +92,8 @@ HEADERS += src/gui/MainWindow.h \
     src/vlmc.h \
     src/tools/Pool.hpp \
     src/UndoStack.h \
-    src/tools/WaitCondition.hpp
+    src/tools/WaitCondition.hpp \
+    src/metadata/MetaDataManager.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \
@@ -110,6 +112,7 @@ INCLUDEPATH += src/LibVLCpp \
     src/gui \
     src/tools \
     src/renderer \
+    src/metadata \
     src
 
 # QMAKE_CFLAGS+=-pg

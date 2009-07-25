@@ -1,5 +1,5 @@
 /*****************************************************************************
- * MetaDataManmger.h: MetaDataManager
+ * MetaDataWorker.h: MetaDataWorker
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -21,14 +21,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-/** \file
-  * This file contains the MetaDataManager class declaration/definition.
-  * It used by the library in Library.[hc]pp.
-  * It parse a Clip (see in Clip.[hc]pp) to get meta-data like length, first image, etc.
-  */
-
-#ifndef METADATAMANAGER_H
-#define METADATAMANAGER_H
+#ifndef METADATAWORKER_H
+#define METADATAWORKER_H
 
 #include <QList>
 #include <QTemporaryFile>
@@ -36,25 +30,19 @@
 #include <QWidget>
 #include "Media.h"
 #include "VLCMediaPlayer.h"
-#include "Singleton.hpp"
 
-class MetaDataManager : public QThread, public Singleton<MetaDataManager>
+class MetaDataWorker : public QThread
 {
     Q_OBJECT
-    Q_DISABLE_COPY( MetaDataManager )
-
-    friend class Singleton<MetaDataManager>;
+    Q_DISABLE_COPY( MetaDataWorker )
 
     public:
-        Media*                  getCurrentMedia() { return m_currentClip; }
-        LibVLCpp::MediaPlayer*  getMediaPlayer() { return m_mediaPlayer; }
-
-    private:
-        MetaDataManager();
-        ~MetaDataManager();
-
+        MetaDataWorker( Media* media );
+        ~MetaDataWorker();
+        void                        setRenderWidget( QWidget* widget );
         virtual void                run();
 
+    private:
         void                        computeVideoMetaData();
         void                        computeImageMetaData();
 
@@ -70,16 +58,11 @@ class MetaDataManager : public QThread, public Singleton<MetaDataManager>
     private:
         void                        getMetaData();
 
+    private:
         LibVLCpp::MediaPlayer*      m_mediaPlayer;
+
+        Media*                      m_currentMedia;
         QWidget*                    m_renderWidget;
-
-        // TODO: THREAD SAFING
-        QList<Media*>               m_mediaList;
-
-        // Thread component
-        bool                        m_nextMedia;
-        Media*                      m_currentClip;
-        //FIXME: Won't work in asynchrone mode
         QString                     m_tmpSnapshotFilename;
 
         bool                        m_mediaIsPlaying;
@@ -87,7 +70,6 @@ class MetaDataManager : public QThread, public Singleton<MetaDataManager>
 
     private slots:
         void    renderSnapshot();
-        void    newMediaLoaded( Media* );
         void    setSnapshot();
         void    startAudioDataParsing();
         void    stopAudioDataParsing();
@@ -95,4 +77,4 @@ class MetaDataManager : public QThread, public Singleton<MetaDataManager>
         void    entrypointLengthChanged();
 };
 
-#endif // METADATAMANAGER_H
+#endif // METADATAWORKER_H
