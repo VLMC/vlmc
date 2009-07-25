@@ -191,16 +191,16 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
          cw->getState() == ClipWorkflow::Ready ||
          cw->getState() == ClipWorkflow::EndReached )
     {
-        qDebug() << "Stopping a sleeping / ready / endreached clip. Status == " << cw->getState();
+//        qDebug() << "Stopping a sleeping / ready / endreached clip. Status == " << cw->getState();
         cw->getStateLock()->unlock();
         cw->queryStateChange( ClipWorkflow::Stopping );
         cw->wake();
         cw->stop();
-        qDebug() << "Stopping sleeping/ready/endreached clip";
+//        qDebug() << "Stopping sleeping/ready/endreached clip";
     }
     else if ( cw->getState() == ClipWorkflow::Rendering )
     {
-        qDebug() << "Stopping a rendering clipworkflow";
+//        qDebug() << "Stopping a rendering clipworkflow";
         cw->getStateLock()->unlock();
         cw->waitForCompleteRender();
         {
@@ -209,24 +209,24 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
         }
         cw->wake();
         cw->stop();
-        qDebug() << "Stopped rendering clipworkflow";
+//        qDebug() << "Stopped rendering clipworkflow";
     }
     else if ( cw->getState() == ClipWorkflow::Initializing )
     {
-        qDebug() << "Stopping an Initializing clipworkflow";
+//        qDebug() << "Stopping an Initializing clipworkflow";
         cw->getStateLock()->unlock();
         cw->waitForCompleteInit();
         cw->stop();
-        qDebug() << "Stopped Initializing clipworkflow";
+//        qDebug() << "Stopped Initializing clipworkflow";
     }
     else if ( cw->getState() == ClipWorkflow::Paused )
     {
-        qDebug() << "Stopping a paused clipworkflow";
+//        qDebug() << "Stopping a paused clipworkflow";
         cw->getStateLock()->unlock();
         cw->queryStateChange( ClipWorkflow::Stopping );
         cw->unpause();
         cw->stop();
-        qDebug() << "Stopped a paused clipworkflow";
+//        qDebug() << "Stopped a paused clipworkflow";
     }
     else
     {
