@@ -31,9 +31,8 @@
 #include "MetaDataManager.h"
 #include "Library.h"
 
-//TODO: change m_lengthHasChanged default value to false when switching to VLC 1.1
 MetaDataManager::MetaDataManager() : m_renderWidget( NULL ),
-    m_mediaIsPlaying( false), m_lengthHasChanged( true )
+    m_mediaIsPlaying( false), m_lengthHasChanged( false )
 {
     m_mediaPlayer = new LibVLCpp::MediaPlayer();
     connect( Library::getInstance(), SIGNAL( newMediaLoaded( Media* ) ),this, SLOT( newMediaLoaded( Media* ) ) );
@@ -92,8 +91,7 @@ void    MetaDataManager::computeVideoMetaData()
     //Disabling audio for this specific use of the media
     m_currentClip->addVolatileParam( ":no-audio", ":audio" );
 
-    //TODO: activate this when switching to VLC 1.1
-//            connect( m_mediaPlayer, SIGNAL( lengthChanged() ), this, SLOT( entrypointLengthChanged() ) );
+    connect( m_mediaPlayer, SIGNAL( lengthChanged() ), this, SLOT( entrypointLengthChanged() ) );
 }
 
 void    MetaDataManager::computeImageMetaData()
@@ -106,8 +104,7 @@ void    MetaDataManager::getMetaData()
 {
     m_mediaIsPlaying = false;
 //TODO: restore this when VLC1.1 comes out.
-//    m_lengthHasChanged = false;
-    m_lengthHasChanged = true;
+    m_lengthHasChanged = false;
 
     m_nextMedia = true;
     m_currentClip->setLength( m_mediaPlayer->getLength() );
@@ -169,7 +166,6 @@ void    MetaDataManager::startAudioDataParsing()
 
 //    disconnect( m_mediaPlayer, SIGNAL( stopped() ), this, SLOT( startAudioDataParsing() ) );
 
-    //Deactivating video, so that real time doesn't matter
     sprintf( osb, ":amem-opensb=%lld", (long long int)(intptr_t) &MetaDataManager::openSoundBuffer);
     sprintf( psb, ":amem-playsb=%lld", (long long int)(intptr_t) &MetaDataManager::playSoundBuffer);
     sprintf( csb, ":amem-closesb=%lld", (long long int)(intptr_t) &MetaDataManager::closeSoundBuffer);
