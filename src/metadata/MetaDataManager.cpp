@@ -20,6 +20,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QtDebug>
 #include "MetaDataManager.h"
 #include "MetaDataWorker.h"
 #include "Library.h"
@@ -39,5 +40,5 @@ void        MetaDataManager::newMediaLoaded( Media* media )
 {
     MetaDataWorker* w = new MetaDataWorker( media );
     w->setRenderWidget( m_renderWidget );
-    w->run();
+    w->start();
 }

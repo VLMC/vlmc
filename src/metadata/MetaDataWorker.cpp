@@ -38,8 +38,6 @@ MetaDataWorker::~MetaDataWorker()
 {
     if (m_mediaPlayer)
         delete m_mediaPlayer;
-    if (m_renderWidget)
-        delete m_renderWidget;
 }
 
 void    MetaDataWorker::setRenderWidget( QWidget* widget )
@@ -134,6 +132,7 @@ void    MetaDataWorker::setSnapshot()
 
     m_mediaPlayer->stop();
     //startAudioDataParsing();
+    delete this;
 }
 
 void    MetaDataWorker::startAudioDataParsing()
@@ -215,4 +214,3 @@ void    MetaDataWorker::entrypointPlaying()
     if ( m_lengthHasChanged == true )
         getMetaData();
 }
-
