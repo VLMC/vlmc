@@ -119,8 +119,10 @@ void        MainWindow::setupLibrary()
              libraryWidget,
              SLOT( mediaRemoved( const QUuid& ) ) );
 
-    connect ( libraryWidget->getVideoListWidget(), SIGNAL( selectedMediaChanged(const Media*) ),
+    connect( libraryWidget->getVideoListWidget(), SIGNAL( selectedMediaChanged(const Media*) ),
               m_clipPreview->getGenericRenderer(), SLOT( setMedia(const Media*) ) );
+    connect( Library::getInstance(), SIGNAL( mediaRemoved( const QUuid& ) ),
+             m_clipPreview->getGenericRenderer(), SLOT( mediaUnloaded( QUuid ) ) );
 }
 
 void MainWindow::createStatusBar()

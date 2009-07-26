@@ -45,8 +45,6 @@ class   WorkflowRenderer : public GenericRenderer
         WorkflowRenderer( MainWorkflow* mainWorkflow );
         ~WorkflowRenderer();
 
-        virtual void        setMedia( const Media* ){}
-
         void                stopPreview();
 
         /**
@@ -86,6 +84,9 @@ class   WorkflowRenderer : public GenericRenderer
         bool                m_pausedMediaPlayer;
 
     public slots:
+        void                setMedia( const Media* ){}
+        void                mediaUnloaded( const QUuid& uuid ) {}
+
         void                mainWorkflowPaused();
 
         void                __positionChanged();

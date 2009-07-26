@@ -40,7 +40,6 @@ public:
     explicit ClipRenderer();
     virtual ~ClipRenderer();
 
-    virtual void            setMedia( const Media* media );
     virtual void            setPosition( float newPos );
     virtual void            togglePlayPause( bool forcePause );
     virtual void            stop();
@@ -61,6 +60,9 @@ private:
     bool                    m_mediaChanged;
 
 public slots:
+    virtual void            setMedia( const Media* media );
+    virtual void            mediaUnloaded( const QUuid& );
+
     void                    __positionChanged();
     void                    __videoPaused();
     void                    __videoPlaying();

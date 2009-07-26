@@ -40,6 +40,7 @@ namespace   LibVLCpp
     public:
         MediaPlayer();
         MediaPlayer( Media* media );
+        ~MediaPlayer();
         void                                play();
         void                                pause();
         void                                stop();

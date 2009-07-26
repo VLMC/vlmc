@@ -51,9 +51,10 @@ Media::Media( const QFileInfo* fileInfo)
 Media::~Media()
 {
     if ( m_vlcMedia )
-    {
         delete m_vlcMedia;
-    }
+    if ( m_snapshot )
+        delete m_snapshot;
+    delete m_fileInfo;
 }
 
 void        Media::setFileType()

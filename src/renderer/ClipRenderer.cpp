@@ -133,6 +133,19 @@ void        ClipRenderer::previousFrame()
     }
 }
 
+void        ClipRenderer::mediaUnloaded( const QUuid& uuid )
+{
+    if ( m_selectedMedia != NULL && m_selectedMedia->getUuid() == uuid )
+    {
+        m_mediaPlayer->stop();
+        qDebug() << "Media unloaded";
+        m_clipLoaded = false;
+        m_selectedMedia = NULL;
+        m_isRendering = false;
+        m_paused = false;
+    }
+}
+
 /////////////////////////////////////////////////////////////////////
 /////SLOTS :
 /////////////////////////////////////////////////////////////////////

@@ -84,7 +84,8 @@ public slots:
     virtual void                    __videoPaused() = 0;
     virtual void                    __videoPlaying() = 0;
     virtual void                    __endReached() = 0;
-    virtual void                    setMedia( const Media* media ) = 0;
+    virtual void                    setMedia( const Media* ) = 0;
+    virtual void                    mediaUnloaded( const QUuid& ) = 0;
 
 
 signals:

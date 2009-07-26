@@ -43,7 +43,7 @@ PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent 
     m_ui->seekSlider->setSingleStep( 2 );
     m_ui->seekSlider->setFocusPolicy( Qt::NoFocus );
 
-    setAcceptDrops( true );
+    setAcceptDrops( false );
 
     connect( m_ui->seekSlider, SIGNAL( sliderPressed() ),       this,   SLOT( seekSliderPressed() ) );
     connect( m_ui->seekSlider, SIGNAL( sliderPosChanged(int) ), this,   SLOT( seekSliderMoved(int) ) );
@@ -74,43 +74,6 @@ void    PreviewWidget::changeEvent( QEvent *e )
         break;
     }
 }
-
-//void    PreviewWidget::dragEnterEvent( QDragEnterEvent* event )
-//{
-//    if ( event->mimeData()->hasFormat( "vlmc/uuid" ) ||
-//         event->mimeData()->urls().count() == 1 )
-//    {
-//        event->acceptProposedAction();
-//    }
-//}
-//
-//void    PreviewWidget::dropEvent( QDropEvent* event )
-//{
-//    //If the dropped event is a clip to preview :
-//    if ( event->mimeData()->hasFormat( "vlmc/uuid" ) ||
-//         event->mimeData()->urls().count() == 1 )
-//    {
-//        Media* media;
-//        if ( event->mimeData()->urls().count() == 1 )
-//        {
-//            Library* lib = Library::getInstance();
-//            lib->newMediaLoadingAsked( event->mimeData()->urls()[0].path() );
-//            media = lib->getMedia( event->mimeData()->urls()[0].path() );
-//        }
-//        else
-//            media = Library::getInstance()->getMedia( QUuid( QString( event->mimeData()->data( "vlmc/uuid" ) ) ) );
-//
-//        if ( media == NULL )
-//        {
-//            qDebug() << "Unknown media" << event->mimeData()->data( "vlmc/uuid" );
-//            return ;
-//        }
-//
-//        event->acceptProposedAction();
-//        m_renderer->startPreview( media );
-//        m_previewStopped = false;
-//    }
-//}
 
 void    PreviewWidget::positionChanged( float newPos )
 {

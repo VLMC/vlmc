@@ -64,6 +64,18 @@ MediaPlayer::MediaPlayer( Media* media )
     libvlc_event_attach( p_em, libvlc_MediaPlayerPositionChanged, callbacks, this, m_ex );
 }
 
+MediaPlayer::~MediaPlayer()
+{
+    libvlc_event_detach( p_em, libvlc_MediaPlayerSnapshotTaken, callbacks, this, m_ex );
+    libvlc_event_detach( p_em, libvlc_MediaPlayerTimeChanged, callbacks, this, m_ex );
+    libvlc_event_detach( p_em, libvlc_MediaPlayerPlaying, callbacks, this, m_ex );
+    libvlc_event_detach( p_em, libvlc_MediaPlayerPaused, callbacks, this, m_ex );
+    libvlc_event_detach( p_em, libvlc_MediaPlayerStopped, callbacks, this, m_ex );
+    libvlc_event_detach( p_em, libvlc_MediaPlayerEndReached, callbacks, this, m_ex );
+    libvlc_event_detach( p_em, libvlc_MediaPlayerPositionChanged, callbacks, this, m_ex );
+    libvlc_media_player_release( m_internalPtr );
+}
+
 /**
  * Event dispatcher.
  */
