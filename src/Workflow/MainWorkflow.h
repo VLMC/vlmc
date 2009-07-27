@@ -43,6 +43,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start );
         void                    startRender();
         unsigned char*          getOutput();
+        unsigned char*          getSynchroneOutput();
 
         /**
          *  \brief              Set the workflow position
@@ -99,6 +100,12 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
         QMutex*                         m_renderMutex;
         QAtomicInt                      m_nbTracksToPause;
+        QAtomicInt                      m_nbTracksToRender;
+        QMutex*                         m_highestTrackNumberMutex;
+        unsigned int                    m_highestTrackNumber;
+        unsigned char*                  m_synchroneRenderingBuffer;
+        QWaitCondition*                 m_synchroneRenderWaitCondition;
+        QMutex*                         m_synchroneRenderWaitConditionMutex;
 
     public slots:
         void                            clipMoved( QUuid, int, int, qint64 );
@@ -106,6 +113,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
     private slots:
         void                            trackEndReached( unsigned int trackId );
         void                            trackPaused();
+        void                            tracksRenderCompleted( unsigned int trackId );
 
     signals:
         /**

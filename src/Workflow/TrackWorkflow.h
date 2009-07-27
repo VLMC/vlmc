@@ -58,6 +58,10 @@ class   TrackWorkflow : public QObject
         void                                    addClip( Clip*, qint64 start );
         void                                    addClip( ClipWorkflow*, qint64 start );
         void                                    activateOneFrameOnly();
+        /**
+         *  Returns the output that has been computed in synchrone mode.
+         */
+        unsigned char*                          getSynchroneOutput();
 
         //FIXME: this won't be reliable as soon as we change the fps from the configuration
         static const unsigned int               nbFrameBeforePreload = 60;
@@ -97,7 +101,7 @@ class   TrackWorkflow : public QObject
         QAtomicInt                              m_nbClipToPause;
         QAtomicInt                              m_nbClipToRender;
 
-        unsigned char*                          m_lastFrame;
+        unsigned char*                          m_synchroneRenderBuffer;
 
     private slots:
         void                                    clipWorkflowPaused();
@@ -106,7 +110,7 @@ class   TrackWorkflow : public QObject
     signals:
         void                                    trackEndReached( unsigned int );
         void                                    trackPaused();
-        void                                    renderCompleted();
+        void                                    renderCompleted( unsigned int );
 };
 
 #endif // TRACKWORKFLOW_H

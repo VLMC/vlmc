@@ -46,15 +46,23 @@ MainWorkflow::MainWorkflow( int trackCount ) :
         m_tracks[i].setPtr( new TrackWorkflow( i ) );
         connect( m_tracks[i], SIGNAL( trackEndReached( unsigned int ) ), this, SLOT( trackEndReached(unsigned int) ) );
         connect( m_tracks[i], SIGNAL( trackPaused() ), this, SLOT( trackPaused() ) );
+        connect( m_tracks[i], SIGNAL( renderCompleted( unsigned int ) ), this,  SLOT( tracksRenderCompleted( unsigned int ) ), Qt::DirectConnection );
     }
     m_renderStartedLock = new QReadWriteLock;
     m_renderMutex = new QMutex;
+    m_highestTrackNumberMutex = new QMutex;
+    m_synchroneRenderWaitCondition = new QWaitCondition;
+    m_synchroneRenderWaitConditionMutex = new QMutex;
 }
 
 MainWorkflow::~MainWorkflow()
 {
     stop();
 
+    delete m_synchroneRenderWaitConditionMutex;
+    delete m_synchroneRenderWaitCondition;
+    delete m_highestTrackNumberMutex;
+    delete m_renderMutex;
     delete m_renderStartedLock;
     for (unsigned int i = 0; i < m_trackCount; ++i)
         delete m_tracks[i];
@@ -102,6 +110,12 @@ unsigned char*    MainWorkflow::getOutput()
     QReadLocker     lock( m_renderStartedLock );
     QMutexLocker    lock2( m_renderMutex );
 
+    {
+        QMutexLocker    lockHighestTrackNumber( m_highestTrackNumberMutex );
+        m_highestTrackNumber = 0;
+    }
+    m_nbTracksToRender = 0;
+    m_synchroneRenderingBuffer = NULL;
     if ( m_renderStarted == true )
     {
         unsigned char* ret;
@@ -110,12 +124,15 @@ unsigned char*    MainWorkflow::getOutput()
         {
             if ( m_tracks[i].activated() == false )
                 continue ;
+
             if ( ( ret = m_tracks[i]->getOutput( m_currentFrame ) ) != NULL )
+            {
+                m_nbTracksToRender.fetchAndAddAcquire( 1 );
                 break ;
+            }
         }
         if ( ret == NULL )
             ret = MainWorkflow::blackOutput;
-
         nextFrame();
         return ret;
     }
@@ -260,4 +277,45 @@ void        MainWorkflow::trackPaused()
     {
         emit mainWorkflowPaused();
     }
+}
+
+void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
+{
+    m_nbTracksToRender.fetchAndAddAcquire( -1 );
+
+    {
+        QMutexLocker    lock( m_highestTrackNumberMutex );
+        if ( m_highestTrackNumber <= trackId )
+        {
+            m_highestTrackNumber = trackId;
+            m_synchroneRenderingBuffer = m_tracks[trackId]->getSynchroneOutput();
+        }
+    }
+    //We check for minus or equal, since we can have 0 frame to compute,
+    //therefore, m_nbTracksToRender will be equal to -1
+    if ( m_nbTracksToRender <= 0 )
+    {
+        qDebug() << "MainWorkflow render completed";
+        //Just a synchronisation barriere
+        {
+            QMutexLocker    lock( m_synchroneRenderWaitConditionMutex );
+        }
+        m_synchroneRenderWaitCondition->wakeAll();
+    }
+    else
+        qDebug() << m_nbTracksToRender << "tracks left to render";
+}
+
+unsigned char*  MainWorkflow::getSynchroneOutput()
+{
+    m_synchroneRenderWaitConditionMutex->lock();
+    getOutput();
+    qDebug() << "Waiting for synchrone output";
+    m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
+    qDebug() << "Got it";
+    m_synchroneRenderWaitConditionMutex->unlock();
+    qDebug() << (void*)m_synchroneRenderingBuffer;
+    if ( m_synchroneRenderingBuffer == NULL )
+        return MainWorkflow::blackOutput;
+    return m_synchroneRenderingBuffer;
 }

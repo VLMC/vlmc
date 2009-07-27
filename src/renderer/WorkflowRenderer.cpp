@@ -95,7 +95,7 @@ void*   WorkflowRenderer::lock( void* datas )
     }
     if ( self->m_oneFrameOnly < 2 )
     {
-        void* ret = self->m_mainWorkflow->getOutput();
+        void* ret = self->m_mainWorkflow->getSynchroneOutput();
         self->m_lastFrame = static_cast<unsigned char*>( ret );
         qDebug() << "Returning new frame";
         return ret;
