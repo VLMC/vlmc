@@ -95,13 +95,18 @@ class   TrackWorkflow : public QObject
 
         QAtomicInt                              m_oneFrameOnly;
         QAtomicInt                              m_nbClipToPause;
+        QAtomicInt                              m_nbClipToRender;
+
+        unsigned char*                          m_lastFrame;
 
     private slots:
         void                                    clipWorkflowPaused();
+        void                                    clipWorkflowRenderCompleted( ClipWorkflow* );
 
     signals:
         void                                    trackEndReached( unsigned int );
         void                                    trackPaused();
+        void                                    renderCompleted();
 };
 
 #endif // TRACKWORKFLOW_H

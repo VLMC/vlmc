@@ -116,6 +116,7 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
         cw->m_stateLock->unlock();
         //Signal that render has been completed.
         cw->m_renderWaitCond->wake();
+        cw->emit renderComplete( cw );
 
 //        qDebug() << "Entering condwait";
         cw->m_waitCond->wait( cw->m_condMutex );

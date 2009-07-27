@@ -59,6 +59,7 @@ void    TrackWorkflow::addClip( Clip* clip, qint64 start )
 void    TrackWorkflow::addClip( ClipWorkflow* cw, qint64 start )
 {
     QWriteLocker    lock( m_clipsLock );
+    connect( cw, SIGNAL( renderComplete( ClipWorkflow* ) ), this, SLOT( clipWorkflowRenderCompleted( ClipWorkflow* ) ), Qt::DirectConnection );
     m_clips.insert( start, cw );
     computeLength();
 }
@@ -268,14 +269,8 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
     bool                                        needRepositioning;
     bool                                        oneFrameOnlyFlag = false;
 
-    //    qDebug() << "Checking flag...";
     if ( m_oneFrameOnly == 1 )
-    {
-//        qDebug() << "...Flag is activated";
         oneFrameOnlyFlag = true;
-    }
-//    else
-//        qDebug() << "...Flag is OFF";
     if ( checkEnd( currentFrame ) == true )
     {
         emit trackEndReached( m_trackId );
@@ -291,6 +286,7 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
         else
             needRepositioning = ( abs( currentFrame - lastFrame ) > 1 ) ? true : false;
     }
+    m_nbClipToRender = 0;
     while ( it != end )
     {
         qint64          start = it.key();
@@ -299,13 +295,11 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
         //Is the clip supposed to render now ?
         if ( start <= currentFrame && currentFrame <= start + cw->getClip()->getLength() )
         {
-//            if ( oneFrameOnlyFlag == true )
-//                cw->activateOneFrameOnly();
+            m_nbClipToRender.fetchAndAddAcquire( 1 );
             ret = renderClip( cw, currentFrame, start, needRepositioning, oneFrameOnlyFlag );
             if ( oneFrameOnlyFlag == true )
             {
                 cw->pause();
-//                qDebug() << "Pausing back clip workflow";
             }
             lastFrame = currentFrame;
         }
@@ -325,7 +319,6 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
     }
     if ( oneFrameOnlyFlag == true )
     {
-//        qDebug() << "Switching off m_oneFrameOnly";
         m_oneFrameOnly = 0;
     }
     return ret;
@@ -470,5 +463,20 @@ void        TrackWorkflow::clipWorkflowPaused()
     if ( m_nbClipToPause == 0 )
     {
         emit trackPaused();
+    }
+}
+
+void        TrackWorkflow::clipWorkflowRenderCompleted( ClipWorkflow* cw )
+{
+    m_lastFrame = cw->getOutput();
+    m_nbClipToRender.fetchAndAddAcquire( -1 );
+    if ( m_nbClipToRender == 0 )
+    {
+        qDebug() << "TrackWorkflow render is completed";
+        emit renderCompleted();
+    }
+    else
+    {
+        qDebug() << "Clip workflow render complete." << m_nbClipToRender << "clips remaining.";
     }
 }

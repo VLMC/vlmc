@@ -213,6 +213,9 @@ class   ClipWorkflow : public QObject
 
     public slots:
         void                    clipEndReached();
+
+    signals:
+        void                    renderComplete( ClipWorkflow* );
 };
 
 #endif // CLIPWORKFLOW_H
