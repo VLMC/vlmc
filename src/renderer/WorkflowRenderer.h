@@ -85,7 +85,7 @@ class   WorkflowRenderer : public GenericRenderer
 
     public slots:
         void                setMedia( const Media* ){}
-        void                mediaUnloaded( const QUuid& uuid ) {}
+        void                mediaUnloaded( const QUuid& ) {}
 
         void                mainWorkflowPaused();
 
