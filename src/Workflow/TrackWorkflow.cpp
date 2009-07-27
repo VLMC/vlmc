@@ -329,6 +329,15 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
     {
         m_oneFrameOnly = 0;
     }
+    if ( ret == NULL )
+    {
+    	qDebug() << "No output";
+        clipWorkflowRenderCompleted( NULL );
+    }
+    else
+    {
+	qDebug() << "Got output";
+    }
     return ret;
 }
 
@@ -476,13 +485,23 @@ void        TrackWorkflow::clipWorkflowPaused()
 
 void        TrackWorkflow::clipWorkflowRenderCompleted( ClipWorkflow* cw )
 {
-    m_synchroneRenderBuffer = cw->getOutput();
+    if ( cw != NULL )
+        m_synchroneRenderBuffer = cw->getOutput();
+    else
+        m_synchroneRenderBuffer = NULL;
     m_nbClipToRender.fetchAndAddAcquire( -1 );
-    if ( m_nbClipToRender == 0 )
+    //When there is nothing to render, m_nbClipToRender will be equal to one here, so we check for minus
+    //or equal to 0
+    if ( m_nbClipToRender <= 0 )
     {
         qDebug() << "TrackWorkflow render is completed. Buffer =" << (void*)m_synchroneRenderBuffer;
         emit renderCompleted( m_trackId );
     }
+    else
+    {
+	qDebug() << "Trackworfklow render isn't complete yet." << m_nbClipToRender << "cw remaining";
+    }
+    qDebug() << "End of method";
 }
 
 unsigned char*  TrackWorkflow::getSynchroneOutput()

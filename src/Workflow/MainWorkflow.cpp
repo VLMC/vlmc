@@ -46,7 +46,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
         m_tracks[i].setPtr( new TrackWorkflow( i ) );
         connect( m_tracks[i], SIGNAL( trackEndReached( unsigned int ) ), this, SLOT( trackEndReached(unsigned int) ) );
         connect( m_tracks[i], SIGNAL( trackPaused() ), this, SLOT( trackPaused() ) );
-        connect( m_tracks[i], SIGNAL( renderCompleted( unsigned int ) ), this,  SLOT( tracksRenderCompleted( unsigned int ) ), Qt::DirectConnection );
+        connect( m_tracks[i], SIGNAL( renderCompleted( unsigned int ) ), this,  SLOT( tracksRenderCompleted( unsigned int ) ), Qt::QueuedConnection );
     }
     m_renderStartedLock = new QReadWriteLock;
     m_renderMutex = new QMutex;
@@ -134,10 +134,14 @@ unsigned char*    MainWorkflow::getOutput()
         if ( ret == NULL )
             ret = MainWorkflow::blackOutput;
         nextFrame();
+	qDebug() << "Getoutput complete";
         return ret;
     }
     else
+    {
+        qDebug() << "Getoutput empty";
         return MainWorkflow::blackOutput;
+    }
 }
 
 void        MainWorkflow::pause()
