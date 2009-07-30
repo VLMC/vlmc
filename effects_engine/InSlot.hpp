@@ -32,20 +32,22 @@ template<typename T>
 class	InSlot
 {
 
-private:
+public:
 
   enum	OUTTYPE				// DEFINTION OF MANY OUTPUTS TYPES
     {
       GUI,				// OUTPUTS FROM GUI
-      EMPTY,				// WHEN NO OUTPUTS ARE CONNECTED
+      DEFAULT,				// WHEN NO OUTPUTS ARE CONNECTED
       INTERPRETER,			// OUTPUT FROM INTERPRETER
       NORMAL,				// OUTPUT FROM STREAMING 
       NBTYPES
     };					// IT'S SORTED BY PRIORITY
 
+private:
+
   enum	PRIORITY
     {
-      LOWER = EMPTY,
+      LOWER = DEFAULT,
       HIGHER = ( NBTYPES - 1 )
     };
 
@@ -100,13 +102,13 @@ unsigned int  InSlot<T>::m_outNbLimits[] = {InSlot<T>::INFINITE, InSlot<T>::INFI
 // CTOR & DTOR
 
 template<typename T>
-InSlot<T>::InSlot() : m_currentShared( EMPTY )
+InSlot<T>::InSlot() : m_currentShared( DEFAULT )
 {
   unsigned int 	type;
 
-  m_shared[EMPTY] = 0; // DEFAULT VALUE SET HERE FOR FORWARD THIS WHEN THERE AREN'T OUTSLOTS CONNECTED
+  m_shared[DEFAULT] = 0; // DEFAULT VALUE SET HERE FOR FORWARD THIS WHEN THERE AREN'T OUTSLOTS CONNECTED
 
-  for (type = static_cast<unsigned int>( InSlot<T>::EMPTY );
+  for (type = static_cast<unsigned int>( InSlot<T>::DEFAULT );
        type < static_cast<unsigned int>( InSlot<T>::NBTYPES );
        ++type)
     m_nbOutByType[type] = 0;
@@ -191,7 +193,8 @@ void	InSlot<T>::switchCurrentShared( void )
       if ( m_nbOutByType[priority] )
 	break;
     }
-  m_currentShared = static_cast< typename InSlot<T>::OUTTYPE >( priority );  
+  m_currentShared = static_cast< typename InSlot<T>::OUTTYPE >( priority );
+  m_shared[m_currentShared] = m_shared[DEFAULT];
   return ;
 }
 
