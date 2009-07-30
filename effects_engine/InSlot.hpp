@@ -24,6 +24,8 @@
 #ifndef INSLOT_HPP_
 #define INSLOT_HPP_
 
+#include <cstdlib>
+
 template<typename T> class OutSlot;
 
 template<typename T>
@@ -34,11 +36,17 @@ private:
 
   enum	OUTTYPE				// DEFINTION OF MANY OUTPUTS TYPES
     {
-      EMPTY,				// WHEN NO OUTPUTS ARE CONNECTED
       GUI,				// OUTPUTS FROM GUI
+      EMPTY,				// WHEN NO OUTPUTS ARE CONNECTED
       INTERPRETER,			// OUTPUT FROM INTERPRETER
       NORMAL,				// OUTPUT FROM STREAMING 
       NBTYPES
+    };					// IT'S SORTED BY PRIORITY
+
+  enum	PRIORITY
+    {
+      LOWER = EMPTY,
+      HIGHER = ( NBTYPES - 1 )
     };
 
   enum	CONSTANTS
@@ -65,8 +73,12 @@ private:
 
   // CONNECTION & DISCONNECTION
 
-  void	connect( OutSlot<T>& );
-  void	disconnect( OutSlot<T>& );
+  bool	connect( OutSlot<T>& );
+  bool	disconnect( OutSlot<T>& );
+
+  // OTHERS
+
+  void	switchCurrentShared( void );
 
 private:
   T			m_shared[NBTYPES];
@@ -78,17 +90,8 @@ private:
 
 // STATIC MEMBERS INTIALIZATION
 
-template<T>
-unsigned int  InSlot<T>::m_outnblimits[InSlot<T>::EMPTY] = InSlot<T>::INFINITE; // USELESS BUT JUST FOR CLEANESS
-
-template<T>
-unsigned int  InSlot<T>::m_outnblimits[InSlot<T>::GUI] = InSlot<T>::INFINITE;
-
-template<T>
-unsigned int  InSlot<T>::m_outnblimits[InSlot<T>::INTERPRETER] = InSlot<T>::ONLYONE;
-
-template<T>
-unsigned int  InSlot<T>::m_outnblimits[InSlot<T>::NORMAL] = InSlot<T>::ONLYONE;
+template<typename T>
+unsigned int  InSlot<T>::m_outnblimits[] = {InSlot<T>::INFINITE, InSlot<T>::INFINITE, InSlot<T>::ONLYONE,  InSlot<T>::ONLYONE} ; // USELESS BUT JUST FOR CLEANESS
 
 ////
 //// Publics Methods
@@ -97,9 +100,16 @@ unsigned int  InSlot<T>::m_outnblimits[InSlot<T>::NORMAL] = InSlot<T>::ONLYONE;
 // CTOR & DTOR
 
 template<typename T>
-InSlot<T>::InSlot() m_currentShared( EMPTY )
+InSlot<T>::InSlot() : m_currentShared( EMPTY )
 {
-  m_shared[EMPTY] = 0;
+  unsigned int 	type;
+
+  m_shared[EMPTY] = 0; // DEFAULT VALUE SET HERE FOR FORWARD THIS WHEN THERE AREN'T OUTSLOTS CONNECTED
+
+  for (type = static_cast<unsigned int>( InSlot<T>::EMPTY );
+       type < static_cast<unsigned int>( InSlot<T>::NBTYPES );
+       ++type)
+    m_nboutbytype[type] = 0;
 }
 
 template<typename T>
@@ -140,14 +150,19 @@ bool	InSlot<T>::connect( OutSlot<T>& toconnect )
   OUTTYPE	type;
 
   type = toconnect.getType();
-  if ( m_nbshared[type] >= m_outnblimits[type] )
-    return ( false );
-  ++(m_nbshared[type]);
+  if ( m_outnblimits[type] != InSlot<T>::INFINITE)
+    if ( m_nboutbytype[type] >= m_outnblimits[type] )
+      {
+	std::cout << "m_outnblimits[type] = " << m_outnblimits[type] << std::endl;
+	std::cout << "m_nboutbytype[type] = " << m_nboutbytype[type] << std::endl;
+	return ( false );
+      }
+  ++(m_nboutbytype[type]);
 
   toconnect.setPipe( &m_shared[type] );
   toconnect.setInSlotPtr( this );
 
-  connectChooser()
+  switchCurrentShared();
   return ( true );
 }
 
@@ -162,13 +177,27 @@ bool	InSlot<T>::disconnect( OutSlot<T>& todisconnect )
   OUTTYPE	type;
 
   type = todisconnect.getType();
-  --(m_nbshared[type]);
+  --(m_nboutbytype[type]);
 
   todisconnect.resetPipe();
   todisconnect.resetInSlotPtr();
 
-  connectChooser()
+  switchCurrentShared();
   return ( true );
+}
+
+template<typename T>
+void	InSlot<T>::switchCurrentShared( void )
+{
+  unsigned int	priority;
+
+  for ( priority = InSlot<T>::HIGHER; priority > InSlot<T>::LOWER; --priority )
+    {
+      if ( m_nboutbytype[priority] )
+	break;
+    }
+  m_currentShared = static_cast< typename InSlot<T>::OUTTYPE >( priority );  
+  return ;
 }
 
 #endif // INSLOT_HPP_
