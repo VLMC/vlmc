@@ -46,7 +46,8 @@ SOURCES += src/main.cpp \
     src/API/Module.cpp \
     src/API/ModuleManager.cpp \
     src/WorkflowFileRenderer.cpp \
-    src/gui/SimplePreferences.cpp
+    src/gui/SimplePreferences.cpp \
+    src/gui/Panel.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -90,7 +91,8 @@ HEADERS += src/gui/MainWindow.h \
     src/WorkflowFileRenderer.h \
     src/vlmc.h \
     src/tools/Pool.hpp \
-    src/gui/SimplePreferences.h
+    src/gui/SimplePreferences.h \
+    src/gui/Panel.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/LanguagePreferences.ui \

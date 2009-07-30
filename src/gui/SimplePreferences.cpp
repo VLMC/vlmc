@@ -30,14 +30,19 @@
 
 
 #include "SimplePreferences.h"
+#include "Panel.h"
 
 
 SimplePreferences::SimplePreferences( QWidget* parent)
     : QWidget(parent),
     m_currentWidget( NULL ),
-    m_panel(NULL)
+    m_panel( NULL ),
+    m_title( NULL ),
+    m_widgetNumber( 0 )
 {
-    m_panel = new PreferencesPanel( this );
+    m_panel = new Panel( this );
+    connect( m_panel, SIGNAL( changePanel( int ) ),
+             SLOT( switchWidget( int ) ) );
 }
 
 SimplePreferences::~SimplePreferences()
@@ -50,12 +55,6 @@ SimplePreferences::~SimplePreferences()
     delete m_title;
 }
 
-QWidget*    SimplePreferences::getWidget( const QString& name ) const
-{
-    if ( m_widgets.contains( name ) )
-        return ( m_widgets.value( name ) );
-    return ( NULL );
-}
 
 //TODO : see if the widget MUST have a fixed size, or if the window can dynamicaly
 //adjust to the size of the biggest Widget.
@@ -64,11 +63,9 @@ void        SimplePreferences::addWidget( const QString& name,
                                           const QString& icon,
                                           const QString& label)
 {
-    //If there's already a widget with the same name, remove it
-    if ( m_widgets.contains( name ) )
-       m_widgets.remove( name );
-    m_widgets.insert( name, widget );
-    m_panel->addPanel( icon, label, name );
+    m_widgets.insert( m_widgetNumber, widget );
+    m_panel->addButton( label, icon, m_widgetNumber );
+    ++m_widgetNumber;
     if (m_currentWidget == 0)
         m_currentWidget = widget;
 }
@@ -78,11 +75,10 @@ void        SimplePreferences::build()
     if (m_currentWidget == 0)
         qFatal( "Can't build the preference panel without an added widget" );
     QHBoxLayout*        hLayout = new QHBoxLayout( this );
-    PreferencesPanel*   prefPanel = new PreferencesPanel( this );
     setLayout( hLayout );
     //TODO : change the size of the widgets to make it look cleaner
-    //hLayout->addWidget( prefPanel );
-    //hLayout->addWidget( m_currentWidget );
+    hLayout->addWidget( m_panel );
+    hLayout->addWidget( m_currentWidget );
     hLayout->insertLayout( 1, buildRightHLayout() );
 }
 
@@ -114,16 +110,16 @@ QVBoxLayout*    SimplePreferences::buildRightHLayout()
     return ( layout );
 } 
 
-void    SimplePreferences::switchWidget( const QString& name )
+void    SimplePreferences::switchWidget( int widget )
 {
     //TODO : Change the title of the preferences shown
     //Hide the current widget and show the new one.
     
-    if ( !m_widgets.contains( name ) )
+    if ( !m_widgets.contains( widget ) )
         return ;
     m_currentWidget->hide();
 
-    QWidget*    wid = m_widgets.value( name );
+    QWidget*    wid = m_widgets.value( widget );
 
     m_currentWidget = wid;
     m_currentWidget->show();

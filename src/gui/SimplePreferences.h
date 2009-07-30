@@ -30,6 +30,8 @@
 #include <QVBoxLayout>
 #include <QButtonGroup>
 
+#include "Panel.h"
+
 class   SimplePreferences : public QWidget
 {
     Q_OBJECT
@@ -38,7 +40,6 @@ class   SimplePreferences : public QWidget
     public:
         SimplePreferences( QWidget* parent = 0 );
         ~SimplePreferences();
-        QWidget*            getWidget( const QString& name ) const;
         void                addWidget( const QString& name,
                                        QWidget* widget,
                                        const QString& icon,
@@ -49,13 +50,14 @@ class   SimplePreferences : public QWidget
         QVBoxLayout*    buildRightHLayout();
 
     private:
-        QHash<QString, QWidget*>        m_widgets;
-        QWidget*                        m_currentWidget;
-        PreferencesPanel*               m_panel;
-        QLabel*                         m_title;
+        QHash<int, QWidget*>        m_widgets;
+        QWidget*                    m_currentWidget;
+        Panel*                      m_panel;
+        QLabel*                     m_title;
+        int                         m_widgetNumber;
 
     public slots:
-        void    switchWidget( const QString& name );
+        void    switchWidget( int widget );
 };
 
 #endif /* !SIMPLEPREFERENCES_H */
