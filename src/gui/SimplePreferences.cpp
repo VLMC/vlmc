@@ -38,11 +38,15 @@ SimplePreferences::SimplePreferences( QWidget* parent)
     m_currentWidget( NULL ),
     m_panel( NULL ),
     m_title( NULL ),
-    m_widgetNumber( 0 )
+    m_widgetNumber( 0 ),
+    m_stackedWidgets( 0 )
 {
     m_panel = new Panel( this );
+    m_stackedWidgets = new QStackedWidget( this );
     connect( m_panel, SIGNAL( changePanel( int ) ),
              SLOT( switchWidget( int ) ) );
+    QObject::connect( this, SIGNAL( widgetSwitched( int ) ),
+                      m_stackedWidgets, SLOT( setCurrentIndex( int ) ));
 }
 
 SimplePreferences::~SimplePreferences()
@@ -105,7 +109,7 @@ QVBoxLayout*    SimplePreferences::buildRightHLayout()
 
     layout->addWidget( m_title );
     layout->addWidget( titleLine );
-    layout->addWidget( m_currentWidget );
+    layout->addWidget( m_stackedWidgets );
     layout->addWidget( buttons );
     return ( layout );
 } 
@@ -117,11 +121,6 @@ void    SimplePreferences::switchWidget( int widget )
     
     if ( !m_widgets.contains( widget ) )
         return ;
-    m_currentWidget->hide();
-
-    QWidget*    wid = m_widgets.value( widget );
-
-    m_currentWidget = wid;
-    m_currentWidget->show();
+    emit widgetSwitched( widget );
 }
 

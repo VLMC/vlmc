@@ -29,6 +29,7 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QButtonGroup>
+#include <QStackedWidget>
 
 #include "Panel.h"
 
@@ -55,9 +56,13 @@ class   SimplePreferences : public QWidget
         Panel*                      m_panel;
         QLabel*                     m_title;
         int                         m_widgetNumber;
+        QStackedWidget*             m_stackedWidgets;
 
     public slots:
         void    switchWidget( int widget );
+
+    signals:
+        void    widgetSwitched( int widget );
 };
 
 #endif /* !SIMPLEPREFERENCES_H */
