@@ -16,8 +16,8 @@ public:
 
   // STREAMING
 
-  OutSlot&	operator<<(T const &);
-  OutSlot&	operator=(T const &);
+  OutSlot&	operator<<( T const & );
+  OutSlot&	operator=( T const & );
 
   // CONNECTION & DISCONNECTION
 
@@ -27,7 +27,7 @@ public:
 
 private:
 
-  void		setPipe(T*);
+  void		setPipe( T* );
 private:
   
   InSlot<T>*		m_connectedto;
@@ -37,7 +37,7 @@ private:
 };
 
 template<typename T>
-OutSlot<T>::OutSlot() : m_connectedto(NULL), m_pipe(&m_junk)
+OutSlot<T>::OutSlot() : m_connectedto( NULL ), m_pipe( &m_junk )
 {
 }
 
@@ -46,34 +46,66 @@ OutSlot<T>::~OutSlot()
 {
 }
 
+// WRITING METHODS
+
 template<typename T>
-OutSlot<T>&	OutSlot<T>::operator=(T const & val)
+OutSlot<T>&	OutSlot<T>::operator=( T const & val )
+{
+  (*m_pipe) = val;
+  return ( *this );
+}
+
+template<typename T>
+OutSlot<T>&	OutSlot<T>::operator<<( T const & val )
 {
   (*m_pipe) = val;
   return (*this);
 }
 
+// CONNECTION METHODS
+
 template<typename T>
-OutSlot<T>&	OutSlot<T>::operator<<(T const & val)
+bool	OutSlot<T>::connect( InSlot<T>& toconnect )
 {
-  (*m_pipe) = val;
-  return (*this);
+  if ( m_connectedto != NULL )
+    return ( false );
+  if ( toconnect.connect( (*this) ) == false)
+    return ( false );
+  return ( true );
 }
 
 template<typename T>
-void	OutSlot<T>::connect(InSlot<T>& toconnect)
+bool	OutSlot<T>::disconnect( void )
 {
-  m_connectedto = &toconnect;
-  m_connectedto->connect((*this));
+  if ( m_connectedto == NULL)
+    return ( false );
+  if ( m_connectedto->disconnect( (*this) ) == false)
+    return ( false );
+  return ( true );
+}
+
+// OTHERS
+
+void	OutSlot<T>::setPipe( T* shared )
+{
+  m_pipe = shared;
   return ;
 }
 
-template<typename T>
-void	OutSlot<T>::disconnect(void)
+void	OutSlot<T>::resetPipe( void )
 {
-  m_connectedto->disconnect( (*this) );
-  m_connectedto = NULL;
   m_pipe = &m_junk;
+  return ;
+}
+void	OutSlot<T>::setInSlotPtr( InSlot<T>* ptr )
+{
+  m_connectedto = ptr;
+  return ;
+}
+
+void	OutSlot<T>::resetInSlotPtr( void )
+{
+  m_connectedto = NULL;
   return ;
 }
 
