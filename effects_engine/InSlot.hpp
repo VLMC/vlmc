@@ -82,8 +82,8 @@ private:
 
 private:
   T			m_shared[NBTYPES];
-  unsigned int		m_nboutbytype[NBTYPES];
-  static unsigned int	m_outnblimits[NBTYPES];
+  unsigned int		m_nbOutByType[NBTYPES];
+  static unsigned int	m_outNbLimits[NBTYPES];
   OUTTYPE		m_currentShared;
 };
 
@@ -91,11 +91,11 @@ private:
 // STATIC MEMBERS INTIALIZATION
 
 template<typename T>
-unsigned int  InSlot<T>::m_outnblimits[] = {InSlot<T>::INFINITE, InSlot<T>::INFINITE, InSlot<T>::ONLYONE,  InSlot<T>::ONLYONE} ; // USELESS BUT JUST FOR CLEANESS
+unsigned int  InSlot<T>::m_outNbLimits[] = {InSlot<T>::INFINITE, InSlot<T>::INFINITE, InSlot<T>::ONLYONE,  InSlot<T>::ONLYONE} ; // USELESS BUT JUST FOR CLEANESS
 
-////
-//// Publics Methods
-////
+/////////////////////////
+//// PUBLICS METHODS ////
+/////////////////////////
 
 // CTOR & DTOR
 
@@ -109,7 +109,7 @@ InSlot<T>::InSlot() : m_currentShared( EMPTY )
   for (type = static_cast<unsigned int>( InSlot<T>::EMPTY );
        type < static_cast<unsigned int>( InSlot<T>::NBTYPES );
        ++type)
-    m_nboutbytype[type] = 0;
+    m_nbOutByType[type] = 0;
 }
 
 template<typename T>
@@ -132,17 +132,16 @@ InSlot<T>::operator T const & () const
   return ( m_shared[m_currentShared] );
 }
 
-////
-//// Privates Methods
-////
+//////////////////////////
+//// PRIVATES METHODS ////
+//////////////////////////
 
 // CONNECTION METHODS
 
-
-// Un OutSlot a le droit de se connecter ssi :
-// -il ne depasse pas le nombre maximal de son type
-// -il n'est pas deja connecte --> implicite car la verification a ete faite dans l'appel a la method connect de l'OutSlot
-// Une fois qu'on a verifie qu'il avait ce droit, il faut modifier le m_currentShared en fonction
+// An OutSlot can be connected only if :
+// -The number of OutSlot of the same type isn't at the maximum
+// -The OutSlot isn't already connected --> verified in the method void OutSlot<T>::connect( InSlot<T>& T )
+// So, the OutSlot can be connected and the m_currentShared must be updated
 
 template<typename T>
 bool	InSlot<T>::connect( OutSlot<T>& toconnect )
@@ -150,14 +149,10 @@ bool	InSlot<T>::connect( OutSlot<T>& toconnect )
   OUTTYPE	type;
 
   type = toconnect.getType();
-  if ( m_outnblimits[type] != InSlot<T>::INFINITE)
-    if ( m_nboutbytype[type] >= m_outnblimits[type] )
-      {
-	std::cout << "m_outnblimits[type] = " << m_outnblimits[type] << std::endl;
-	std::cout << "m_nboutbytype[type] = " << m_nboutbytype[type] << std::endl;
+  if ( m_outNbLimits[type] != InSlot<T>::INFINITE)
+    if ( m_nbOutByType[type] >= m_outNbLimits[type] )
 	return ( false );
-      }
-  ++(m_nboutbytype[type]);
+  ++(m_nbOutByType[type]);
 
   toconnect.setPipe( &m_shared[type] );
   toconnect.setInSlotPtr( this );
@@ -166,10 +161,10 @@ bool	InSlot<T>::connect( OutSlot<T>& toconnect )
   return ( true );
 }
 
-// Un OutSlot a le droit de se deconnecter ssi :
-// -il est connecte sur cet InSlot --> implicite car la methode est appele depuis le OutSlot qui a sauvegarde
-// le pointeur sur InSlot duquel il veut se deconnecter
-// Une fois qu'on a verifie qu'il avait ce droit, il faut modifier le m_currentShared en fonction
+// An OutSlot can be disconnected only if :
+// -The OutSlot is connected on this InSlot --> this is implicit because this method is call only by
+// bool OutSlot<T>::disconnect( ), and this method call the first method with the InSlot<T> pointer saved at connection
+// So, the OutSlot can be connected and the m_currentShared must be updated
 
 template<typename T>
 bool	InSlot<T>::disconnect( OutSlot<T>& todisconnect )
@@ -177,7 +172,7 @@ bool	InSlot<T>::disconnect( OutSlot<T>& todisconnect )
   OUTTYPE	type;
 
   type = todisconnect.getType();
-  --(m_nboutbytype[type]);
+  --(m_nbOutByType[type]);
 
   todisconnect.resetPipe();
   todisconnect.resetInSlotPtr();
@@ -193,7 +188,7 @@ void	InSlot<T>::switchCurrentShared( void )
 
   for ( priority = InSlot<T>::HIGHER; priority > InSlot<T>::LOWER; --priority )
     {
-      if ( m_nboutbytype[priority] )
+      if ( m_nbOutByType[priority] )
 	break;
     }
   m_currentShared = static_cast< typename InSlot<T>::OUTTYPE >( priority );  
