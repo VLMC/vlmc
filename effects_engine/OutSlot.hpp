@@ -30,6 +30,8 @@ template<typename T>
 class   OutSlot
 {
 
+  friend class InSlot<T>;
+
 public:
 
   // CTOR & DTOR
@@ -46,21 +48,37 @@ public:
 
   bool		connect( InSlot<T>& );
   bool		disconnect( void );
+  void		setType( typename InSlot<T>::OUTTYPE type );
+
 
 
 private:
 
-  void		setPipe( T* );
+  // OTHERS
+
+  typename InSlot<T>::OUTTYPE		getType( void ) const;
+  void			setPipe( T* shared );
+  void			resetPipe( void );
+  void			setInSlotPtr( InSlot<T>* );
+  void			resetInSlotPtr( void );
+
 private:
-  
+
+  typename InSlot<T>::OUTTYPE	m_type;
   InSlot<T>*		m_connectedto;
   T*			m_pipe;
   T			m_junk;
 
 };
 
+////
+//// Publics Methods
+////
+
+// CTOR & DTOR
+
 template<typename T>
-OutSlot<T>::OutSlot() : m_connectedto( NULL ), m_pipe( &m_junk )
+OutSlot<T>::OutSlot() : m_type( InSlot<T>::NORMAL ), m_connectedto( NULL ), m_pipe( &m_junk )
 {
 }
 
@@ -91,9 +109,15 @@ template<typename T>
 bool	OutSlot<T>::connect( InSlot<T>& toconnect )
 {
   if ( m_connectedto != NULL )
-    return ( false );
+    {
+      std::cout << "deja connecte" << std::endl;
+      return ( false );
+    }
   if ( toconnect.connect( (*this) ) == false)
-    return ( false );
+    {
+      std::cout << "mukitude" << std::endl;
+      return ( false );
+    }
   return ( true );
 }
 
@@ -101,32 +125,59 @@ template<typename T>
 bool	OutSlot<T>::disconnect( void )
 {
   if ( m_connectedto == NULL)
-    return ( false );
+    {
+      std::cout << "deja deconnecte" << std::endl;
+      return ( false );
+    }
   if ( m_connectedto->disconnect( (*this) ) == false)
-    return ( false );
+    {
+      std::cout << "pliure" << std::endl;
+      return ( false );
+    }
   return ( true );
 }
 
+template<typename T>
+void	OutSlot<T>::setType( typename InSlot<T>::OUTTYPE type )
+{
+  m_type = type;
+  return ;
+}
+
+////
+//// Privates Methods
+////
+
 // OTHERS
 
+template<typename T>
+typename InSlot<T>::OUTTYPE	OutSlot<T>::getType( void ) const
+{
+  return ( m_type );
+}
+
+template<typename T>
 void	OutSlot<T>::setPipe( T* shared )
 {
   m_pipe = shared;
   return ;
 }
 
+template<typename T>
 void	OutSlot<T>::resetPipe( void )
 {
   m_pipe = &m_junk;
   return ;
 }
 
+template<typename T>
 void	OutSlot<T>::setInSlotPtr( InSlot<T>* ptr )
 {
   m_connectedto = ptr;
   return ;
 }
 
+template<typename T>
 void	OutSlot<T>::resetInSlotPtr( void )
 {
   m_connectedto = NULL;
