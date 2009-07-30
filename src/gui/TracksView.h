@@ -32,8 +32,8 @@
 #include <QGraphicsSceneDragDropEvent>
 #include "Media.h"
 #include "GraphicsCursorItem.h"
-#include "Workflow/MainWorkflow.h"
-#include "Workflow/TrackWorkflow.h"
+#include "MainWorkflow.h"
+#include "TrackWorkflow.h"
 
 class GraphicsMovieItem;
 class AbstractGraphicsMediaItem;

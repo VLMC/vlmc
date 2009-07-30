@@ -264,6 +264,15 @@ void           MainWorkflow::clipMoved( QUuid clipUuid, int oldTrack, int newTra
     computeLength();
 }
 
+Clip*       MainWorkflow::removeClip( const QUuid& uuid, unsigned int trackId )
+{
+    Q_ASSERT( trackId < m_trackCount );
+
+    Clip* clip = m_tracks[trackId]->removeClip( uuid );
+    emit clipRemoved( uuid, trackId );
+    return clip;
+}
+
 void        MainWorkflow::activateOneFrameOnly()
 {
      for (unsigned int i = 0; i < m_trackCount; ++i)

@@ -93,7 +93,8 @@ HEADERS += src/gui/MainWindow.h \
     src/tools/Pool.hpp \
     src/UndoStack.h \
     src/tools/WaitCondition.hpp \
-    src/metadata/MetaDataManager.h
+    src/metadata/MetaDataManager.h \
+    src/commands/Commands.hpp
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \
@@ -113,6 +114,8 @@ INCLUDEPATH += src/LibVLCpp \
     src/tools \
     src/renderer \
     src/metadata \
+    src/commands \
+    src/Workflow \
     src
 
 # QMAKE_CFLAGS+=-pg

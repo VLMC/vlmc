@@ -32,6 +32,8 @@
 #ifndef SINGLETON_HPP
 #define SINGLETON_HPP
 
+#include <stdlib.h>
+
 template <typename T>
 class       Singleton
 {

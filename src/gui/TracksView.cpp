@@ -33,6 +33,7 @@
 #include "Library.h"
 #include "GraphicsMovieItem.h"
 #include "GraphicsCursorItem.h"
+#include "Commands.hpp"
 
 TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidget* parent )
         : QGraphicsView( scene, parent ), m_scene( scene ), m_mainWorkflow( mainWorkflow )
@@ -249,9 +250,10 @@ void TracksView::dropEvent( QDropEvent* event )
 
         qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
         m_dragItem->oldTrackNumber = m_dragItem->trackNumber();
-        m_mainWorkflow->addClip( m_dragItem->clip(),
-                                 m_dragItem->trackNumber(),
-                                 (qint64)mappedXPos );
+        Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
+                                                                m_dragItem->clip(),
+                                                                m_dragItem->trackNumber(),
+                                                                (qint64)mappedXPos ) );
         m_dragItem = NULL;
     }
 }

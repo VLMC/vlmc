@@ -80,6 +80,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         
         static MainWorkflow*    getInstance();
         static void             deleteInstance();
+        Clip*                   removeClip( const QUuid& uuid, unsigned int trackId );
 
     private:
         static MainWorkflow*    m_instance;
@@ -127,6 +128,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
         void                    mainWorkflowEndReached();
         void                    mainWorkflowPaused();
+        void                    clipRemoved( QUuid, unsigned int );
 };
 
 #endif // MAINWORKFLOW_H
