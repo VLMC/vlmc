@@ -12,9 +12,9 @@ private:
   enum	OUTTYPE				// DEFINTION OF MANY OUTPUTS TYPES
     {
       EMPTY,				// WHEN NO OUTPUTS ARE CONNECTED
-      DYN,				// OUTPUTS FROM GUI
-      INTERPRET,			// OUTPUT FROM INTERPRETER
-      STREAM,				// OUTPUT FROM STREAMING 
+      GUI,				// OUTPUTS FROM GUI
+      INTERPRETER,			// OUTPUT FROM INTERPRETER
+      NORMAL,				// OUTPUT FROM STREAMING 
       NBTYPES
     };
 
@@ -35,7 +35,7 @@ public:
 
   // STREAMING
 
-  InSlot<T>&	operator>>(T &);
+  InSlot<T>&	operator>>( T & );
                 operator T const & () const;
 
 private:
@@ -53,20 +53,28 @@ private:
 };
 
 
+// STATIC MEMBERS INTIALIZATION
+
 template<T>
 unsigned int  InSlot<T>::m_outnblimits[InSlot<T>::EMPTY] = InSlot<T>::INFINITE; // USELESS BUT JUST FOR CLEANESS
 
 template<T>
-unsigned int  InSlot<T>::m_outnblimits[InSlot<T>::DYN] = InSlot<T>::INFINITE;
+unsigned int  InSlot<T>::m_outnblimits[InSlot<T>::GUI] = InSlot<T>::INFINITE;
 
 template<T>
-unsigned int  InSlot<T>::m_outnblimits[InSlot<T>::INTERPRET] = InSlot<T>::ONLYONE;
+unsigned int  InSlot<T>::m_outnblimits[InSlot<T>::INTERPRETER] = InSlot<T>::ONLYONE;
 
 template<T>
-unsigned int  InSlot<T>::m_outnblimits[InSlot<T>::STREAM] = InSlot<T>::ONLYONE;
+unsigned int  InSlot<T>::m_outnblimits[InSlot<T>::NORMAL] = InSlot<T>::ONLYONE;
+
+////
+//// Publics Methods
+////
+
+// CTOR & DTOR
 
 template<typename T>
-InSlot<T>::InSlot() m_currentShared(EMPTY)
+InSlot<T>::InSlot() m_currentShared( EMPTY )
 {
   m_shared[EMPTY] = 0;
 }
@@ -75,6 +83,8 @@ template<typename T>
 InSlot<T>::~InSlot()
 {
 }
+
+// READING METHODS
 
 template<typename T>
 InSlot<T>&	InSlot<T>::operator>>( T& val )
@@ -89,28 +99,53 @@ InSlot<T>::operator T const & () const
   return ( m_shared[m_currentShared] );
 }
 
+////
+//// Privates Methods
+////
+
+// CONNECTION METHODS
+
+
+// Un OutSlot a le droit de se connecter ssi :
+// -il ne depasse pas le nombre maximal de son type
+// -il n'est pas deja connecte --> implicite car la verification a ete faite dans l'appel a la method connect de l'OutSlot
+// Une fois qu'on a verifie qu'il avait ce droit, il faut modifier le m_currentShared en fonction
+
 template<typename T>
 bool	InSlot<T>::connect( OutSlot<T>& toconnect )
 {
   OUTTYPE	type;
 
   type = toconnect.getType();
-  if ( m_nbshared[type] < m_outnblimits[type] )
-    {
-      toconnect.setPipe( &m_shared[type] );
-      ++m_nbshared[type];
-      
-      return ( true );
-    }
+  if ( m_nbshared[type] >= m_outnblimits[type] )
+    return ( false );
+  ++(m_nbshared[type]);
 
-  return ( false );
+  toconnect.setPipe( &m_shared[type] );
+  toconnect.setInSlotPtr( this );
+
+  connectChooser()
+  return ( true );
 }
 
+// Un OutSlot a le droit de se deconnecter ssi :
+// -il est connecte sur cet InSlot --> implicite car la methode est appele depuis le OutSlot qui a sauvegarde
+// le pointeur sur InSlot duquel il veut se deconnecter
+// Une fois qu'on a verifie qu'il avait ce droit, il faut modifier le m_currentShared en fonction
+
 template<typename T>
-void	InSlot<T>::disconnect( OutSlot<T>& todisconnect )
+bool	InSlot<T>::disconnect( OutSlot<T>& todisconnect )
 {
-  m_shared = 0;
-  return ;
+  OUTTYPE	type;
+
+  type = todisconnect.getType();
+  --(m_nbshared[type]);
+
+  todisconnect.resetPipe();
+  todisconnect.resetInSlotPtr();
+
+  connectChooser()
+  return ( true );
 }
 
 #endif // INSLOT_HPP_
