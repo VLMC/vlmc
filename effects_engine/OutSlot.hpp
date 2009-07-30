@@ -65,20 +65,20 @@ private:
 private:
 
   typename InSlot<T>::OUTTYPE	m_type;
-  InSlot<T>*		m_connectedto;
+  InSlot<T>*		m_connectedTo;
   T*			m_pipe;
   T			m_junk;
 
 };
 
-////
-//// Publics Methods
-////
+/////////////////////////
+//// PUBLICS METHODS ////
+/////////////////////////
 
 // CTOR & DTOR
 
 template<typename T>
-OutSlot<T>::OutSlot() : m_type( InSlot<T>::NORMAL ), m_connectedto( NULL ), m_pipe( &m_junk )
+OutSlot<T>::OutSlot() : m_type( InSlot<T>::NORMAL ), m_connectedTo( NULL ), m_pipe( &m_junk )
 {
 }
 
@@ -108,32 +108,20 @@ OutSlot<T>&	OutSlot<T>::operator<<( T const & val )
 template<typename T>
 bool	OutSlot<T>::connect( InSlot<T>& toconnect )
 {
-  if ( m_connectedto != NULL )
-    {
-      std::cout << "deja connecte" << std::endl;
+  if ( m_connectedTo != NULL )
       return ( false );
-    }
   if ( toconnect.connect( (*this) ) == false)
-    {
-      std::cout << "mukitude" << std::endl;
       return ( false );
-    }
   return ( true );
 }
 
 template<typename T>
 bool	OutSlot<T>::disconnect( void )
 {
-  if ( m_connectedto == NULL)
-    {
-      std::cout << "deja deconnecte" << std::endl;
+  if ( m_connectedTo == NULL)
       return ( false );
-    }
-  if ( m_connectedto->disconnect( (*this) ) == false)
-    {
-      std::cout << "pliure" << std::endl;
+  if ( m_connectedTo->disconnect( (*this) ) == false)
       return ( false );
-    }
   return ( true );
 }
 
@@ -144,9 +132,9 @@ void	OutSlot<T>::setType( typename InSlot<T>::OUTTYPE type )
   return ;
 }
 
-////
-//// Privates Methods
-////
+//////////////////////////
+//// PRIVATES METHODS ////
+//////////////////////////
 
 // OTHERS
 
@@ -173,14 +161,14 @@ void	OutSlot<T>::resetPipe( void )
 template<typename T>
 void	OutSlot<T>::setInSlotPtr( InSlot<T>* ptr )
 {
-  m_connectedto = ptr;
+  m_connectedTo = ptr;
   return ;
 }
 
 template<typename T>
 void	OutSlot<T>::resetInSlotPtr( void )
 {
-  m_connectedto = NULL;
+  m_connectedTo = NULL;
   return ;
 }
 
