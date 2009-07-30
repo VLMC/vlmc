@@ -364,10 +364,13 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
             updateDuration();
             if ( m_layout->itemAt( 0 )->graphicsItem()->childItems().count() > 0 )
                 addVideoTrack();
-            emit clipMoved( movieItem->clip()->getUuid(),
-                            movieItem->oldTrackNumber,
-                            movieItem->trackNumber(),
-                            (qint64)movieItem->pos().x() );
+//            emit clipMoved( movieItem->clip()->getUuid(),
+//                            movieItem->oldTrackNumber,
+//                            movieItem->trackNumber(),
+//                            (qint64)movieItem->pos().x() );
+            Commands::trigger( new Commands::MainWorkflow::MoveClip( m_mainWorkflow, movieItem->clip()->getUuid(),
+                                                                     movieItem->oldTrackNumber, movieItem->trackNumber(),
+                                                                     (qint64)movieItem->pos().x() ) );
             movieItem->oldTrackNumber = movieItem->trackNumber();
             m_actionMove = false;
             m_actionRelativeX = -1;

@@ -61,6 +61,34 @@ namespace Commands
                 unsigned int    m_trackNumber;
                 qint64          m_pos;
         };
+
+        NEW_COMMAND( MoveClip )
+        {
+            public:
+                MoveClip( ::MainWorkflow* workflow, const QUuid& uuid,
+                        unsigned int oldTrack, unsigned int newTrack, qint64 newPos ) :
+                    m_workflow( workflow ), m_uuid( uuid ), m_oldTrack( oldTrack ), m_newTrack( newTrack ), m_pos( newPos )
+                {
+                    setText( "Moving clip" );
+                    m_oldPos = m_workflow->getClipPosition( uuid, oldTrack );
+                }
+                virtual void    redo()
+                {
+                    m_workflow->moveClip( m_uuid, m_oldTrack, m_newTrack, m_pos );
+                }
+                virtual void    undo()
+                {
+                    m_workflow->moveClip( m_uuid, m_newTrack, m_oldTrack, m_oldPos );
+                }
+
+            private:
+                ::MainWorkflow*     m_workflow;
+                QUuid               m_uuid;
+                unsigned int        m_oldTrack;
+                unsigned int        m_newTrack;
+                qint64              m_pos;
+                qint64              m_oldPos;
+        };
     }
 }
 

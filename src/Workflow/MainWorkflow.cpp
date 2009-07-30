@@ -195,6 +195,13 @@ qint64      MainWorkflow::getLength() const
     return m_length;
 }
 
+qint64      MainWorkflow::getClipPosition( const QUuid& uuid, unsigned int trackId ) const
+{
+    Q_ASSERT( trackId < m_trackCount );
+
+    return m_tracks[trackId]->getClipPosition( uuid );
+}
+
 void        MainWorkflow::trackEndReached( unsigned int trackId )
 {
     m_tracks[trackId].deactivate();
@@ -244,9 +251,9 @@ void            MainWorkflow::deleteInstance()
     }
 }
 
-void           MainWorkflow::clipMoved( QUuid clipUuid, int oldTrack, int newTrack, qint64 startingFrame )
+void           MainWorkflow::moveClip( const QUuid& clipUuid, unsigned int oldTrack, unsigned int newTrack, qint64 startingFrame )
 {
-    Q_ASSERT( newTrack < m_trackCount && oldTrack < m_trackCount && oldTrack >= 0 && newTrack >= 0 );
+    Q_ASSERT( newTrack < m_trackCount && oldTrack < m_trackCount );
 
     if ( oldTrack == newTrack )
     {

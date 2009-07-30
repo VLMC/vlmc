@@ -81,6 +81,9 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         static MainWorkflow*    getInstance();
         static void             deleteInstance();
         Clip*                   removeClip( const QUuid& uuid, unsigned int trackId );
+        void                    moveClip( const QUuid& uuid, unsigned int oldTrack,
+                                          unsigned int newTrack, qint64 pos );
+        qint64                  getClipPosition( const QUuid& uuid, unsigned int trackId ) const;
 
     private:
         static MainWorkflow*    m_instance;
@@ -107,9 +110,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         unsigned char*                  m_synchroneRenderingBuffer;
         QWaitCondition*                 m_synchroneRenderWaitCondition;
         QMutex*                         m_synchroneRenderWaitConditionMutex;
-
-    public slots:
-        void                            clipMoved( QUuid, int, int, qint64 );
 
     private slots:
         void                            trackEndReached( unsigned int trackId );
