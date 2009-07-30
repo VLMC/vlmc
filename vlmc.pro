@@ -23,7 +23,7 @@ SOURCES += src/main.cpp \
     src/gui/TracksScene.cpp \
     src/gui/ClipPreviewWidget.cpp \
     src/gui/TracksRuler.cpp \
-    src/gui/Preferences.cpp \
+    src/gui/LanguagePreferences.cpp \
     src/gui/ListViewMediaItem.cpp \
     src/gui/MediaListWidget.cpp \
     src/Clip.cpp \
@@ -60,7 +60,7 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/TracksScene.h \
     src/gui/ClipPreviewWidget.h \
     src/gui/TracksRuler.h \
-    src/gui/Preferences.h \
+    src/gui/LanguagePreferences.h \
     src/gui/ListViewMediaItem.h \
     src/Clip.h \
     src/Image.h \
@@ -93,7 +93,7 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/SimplePreferences.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
-    src/gui/ui/Preferences.ui \
+    src/gui/ui/LanguagePreferences.ui \
     src/gui/ui/Timeline.ui \
     src/gui/ui/LibraryWidget.ui \
     src/gui/ui/About.ui \

@@ -30,40 +30,13 @@
 #include <QVBoxLayout>
 #include <QButtonGroup>
 
-class   PreferencesPanel : public QWidget
-{
-    Q_OBJECT
-    Q_DISABLE_COPY( PreferencesPanel )
-
-    public:
-        PreferencesPanel( QWidget* parent = 0 );
-        ~PreferencesPanel();
-        void    addPanel( const QString& icon,
-                          const QString& label,
-                          const QString& name );
-        static const int   ICON_HEIGHT;
-
-    private:
-        int                 m_nbPanel;
-        QVBoxLayout*        m_layout;
-        QButtonGroup*       m_buttonGroup;
-        QHash<int, QString> m_panels;
-
-    private slots:
-        void    switchPanel( int panel );
-
-    signals:
-        void    panelSwitched( const QString& panel );
-
-};
-
 class   SimplePreferences : public QWidget
 {
     Q_OBJECT
     Q_DISABLE_COPY( SimplePreferences )
 
     public:
-        SimplePreferences();
+        SimplePreferences( QWidget* parent = 0 );
         ~SimplePreferences();
         QWidget*            getWidget( const QString& name ) const;
         void                addWidget( const QString& name,

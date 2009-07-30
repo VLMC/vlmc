@@ -44,6 +44,7 @@ MainWindow::MainWindow( QWidget *parent ) :
     DockWidgetManager::instance( this )->setMainWindow( this );
     m_initializeDockWidgets();
     createStatusBar();
+    createGlobalPreferences();
 
     // Translation
     connect( this, SIGNAL( translateDockWidgetTitle() ),
@@ -56,6 +57,12 @@ MainWindow::MainWindow( QWidget *parent ) :
              this, SLOT( zoomIn() ) );
     connect( m_timeline->tracksView(), SIGNAL( zoomOut() ),
              this, SLOT( zoomOut() ) );
+
+    //Global Preferences
+    QObject::connect( qApp,
+                      SIGNAL( aboutToQuit() ),
+                      m_globalPreferences,
+                      SLOT( deleteLater() ) );
 }
 
 MainWindow::~MainWindow()
@@ -153,6 +160,21 @@ void MainWindow::m_initializeDockWidgets( void )
     m_metaDataManager = MetaDataManager::getInstance();
 }
 
+void        MainWindow::createGlobalPreferences()
+{
+    m_globalPreferences = new SimplePreferences(  );
+    m_globalPreferences->addWidget("language",
+                                   Preferences::instance(),
+                                   "images/vlmc.png",
+                                   "Language");
+    //For debugging purpose
+    m_globalPreferences->addWidget("language",
+                                   new QWidget,
+                                   "images/vlmc.png",
+                                   "Language");
+    m_globalPreferences->build();
+}
+
 //Private slots definition
 
 void MainWindow::on_actionQuit_triggered()
@@ -162,7 +184,7 @@ void MainWindow::on_actionQuit_triggered()
 
 void MainWindow::on_actionPreferences_triggered()
 {
-    Preferences::instance()->exec();
+   m_globalPreferences->show();
 }
 
 void MainWindow::on_actionAbout_triggered()

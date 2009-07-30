@@ -29,10 +29,11 @@
 #include "ui_MainWindow.h"
 
 #include "DockWidgetManager.h"
-#include "Preferences.h"
+#include "LanguagePreferences.h"
 #include "MetaDataManager.h"
 #include "Timeline.h"
 #include "WorkflowFileRenderer.h"
+#include "SimplePreferences.h"
 
 
 class MainWindow : public QMainWindow
@@ -55,6 +56,7 @@ private:
     void        m_initializeDockWidgets( void );
     void        setupLibrary();
     void        createStatusBar();
+    void        createGlobalPreferences();
 
 
     Ui::MainWindow          m_ui;
@@ -62,6 +64,7 @@ private:
     QSlider*                m_zoomSlider;
     Timeline*               m_timeline;
     WorkflowFileRenderer*   m_renderer;
+    SimplePreferences*      m_globalPreferences;
 
 private slots:
     void on_actionFullscreen_triggered( bool checked );

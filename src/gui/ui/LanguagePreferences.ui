@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Preferences</class>
- <widget class="QDialog" name="Preferences">
+ <class>LanguagePreferences</class>
+ <widget class="QDialog" name="LanguagePreferences">
   <property name="geometry">
    <rect>
     <x>0</x>

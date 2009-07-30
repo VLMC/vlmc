@@ -22,65 +22,19 @@
 #include <QPushButton>
 #include <QDialogButtonBox>
 #include <QApplication>
+#include <QSizePolicy>
 #include <QLabel>
 #include <QHash>
+#include <QIcon>
 #include <QLabel>
 
 
 #include "SimplePreferences.h"
 
-/********************************************************************************
-                            PreferencesPanel
-********************************************************************************/
 
-const int   PreferencesPanel::ICON_HEIGHT = 64;
-
-PreferencesPanel::PreferencesPanel( QWidget* parent )
-    : QWidget( parent ),
-    m_nbPanel(0)
-{
-    m_layout = new QVBoxLayout( this );
-    m_buttonGroup = new QButtonGroup( this );
-
-    QObject::connect( m_buttonGroup, SIGNAL( buttonClicked( int ) ),
-                      this, SLOT( switchPanel( int ) ) );
-    setLayout( m_layout );
-}
-
-PreferencesPanel::~PreferencesPanel()
-{
-    delete m_layout;
-    delete m_buttonGroup;
-}
-
-void    PreferencesPanel::addPanel( const QString& icon,
-                                    const QString& label,
-                                    const QString& name)
-{
-    QPushButton* button = new QPushButton( this );
-
-    ++m_nbPanel;
-    //button->setIcon(IconPath + icon);
-    button->setText( label );
-    button->resize( ICON_HEIGHT + 6, ICON_HEIGHT + 6 );
-    m_panels.insert( m_nbPanel, name );
-    m_buttonGroup->addButton( button, m_nbPanel );
-    m_layout->addWidget( button );
-}
-
-void    PreferencesPanel::switchPanel( int panel )
-{
-    if ( !m_panels.contains( panel ) )
-        return ;
-    emit panelSwitched( m_panels.value( panel ) );
-}
-
-/********************************************************************************
-                             SimplePreferences
-********************************************************************************/
-
-SimplePreferences::SimplePreferences()
-    : m_currentWidget( NULL ),
+SimplePreferences::SimplePreferences( QWidget* parent)
+    : QWidget(parent),
+    m_currentWidget( NULL ),
     m_panel(NULL)
 {
     m_panel = new PreferencesPanel( this );
@@ -88,10 +42,10 @@ SimplePreferences::SimplePreferences()
 
 SimplePreferences::~SimplePreferences()
 {
-    QHash<QString, QWidget*>::iterator     end = m_widgets.end();
-    QHash<QString, QWidget*>::iterator     it = m_widgets.begin();
-    for ( ; it != end; ++it )
-        delete it.value();
+    //QHash<QString, QWidget*>::iterator     end = m_widgets.end();
+    //QHash<QString, QWidget*>::iterator     it = m_widgets.begin();
+    //for ( ; it != end; ++it )
+    //    delete it.value();
     delete m_panel;
     delete m_title;
 }
@@ -115,6 +69,8 @@ void        SimplePreferences::addWidget( const QString& name,
        m_widgets.remove( name );
     m_widgets.insert( name, widget );
     m_panel->addPanel( icon, label, name );
+    if (m_currentWidget == 0)
+        m_currentWidget = widget;
 }
 
 void        SimplePreferences::build()
@@ -123,15 +79,17 @@ void        SimplePreferences::build()
         qFatal( "Can't build the preference panel without an added widget" );
     QHBoxLayout*        hLayout = new QHBoxLayout( this );
     PreferencesPanel*   prefPanel = new PreferencesPanel( this );
+    setLayout( hLayout );
     //TODO : change the size of the widgets to make it look cleaner
-    hLayout->addWidget( prefPanel );
-    hLayout->addLayout( buildRightHLayout() );
+    //hLayout->addWidget( prefPanel );
+    //hLayout->addWidget( m_currentWidget );
+    hLayout->insertLayout( 1, buildRightHLayout() );
 }
 
 
 QVBoxLayout*    SimplePreferences::buildRightHLayout()
 {
-    QVBoxLayout*    layout = new QVBoxLayout( this );
+    QVBoxLayout*    layout = new QVBoxLayout;
     QFrame*         titleLine = new QFrame;
     QDialogButtonBox*     buttons = new QDialogButtonBox( this );
 
@@ -150,7 +108,7 @@ QVBoxLayout*    SimplePreferences::buildRightHLayout()
                                  QDialogButtonBox::Apply );
 
     layout->addWidget( m_title );
-    layout->addWidget( m_title );
+    layout->addWidget( titleLine );
     layout->addWidget( m_currentWidget );
     layout->addWidget( buttons );
     return ( layout );
