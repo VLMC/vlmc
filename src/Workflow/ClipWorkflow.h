@@ -52,8 +52,9 @@ class   ClipWorkflow : public QObject
             Sleeping,       //4
             Pausing,        //5
             Paused,         //6
-            Stopping,       //7
-            EndReached,     //8
+            ThreadPaused,   //7
+            Stopping,       //8
+            EndReached,     //9
         };
        int                     debugId;
 
@@ -92,6 +93,8 @@ class   ClipWorkflow : public QObject
         bool                    isRendering() const;
 
         bool                    isPausing() const;
+
+        bool                    isThreadPaused() const;
 
         /**
          *  Returns the current workflow state.
@@ -150,8 +153,9 @@ class   ClipWorkflow : public QObject
         void                    unpause( bool wakeRenderThread = true );
 
         void                    waitForCompleteInit();
-        void                    waitForCompleteRender();
+        void                    waitForCompleteRender( bool dontCheckRenderStarted = false );
         void                    waitForPausingState();
+        void                    waitForPausedThread();
         QMutex*                 getSleepMutex();
 
         LibVLCpp::MediaPlayer*  getMediaPlayer();
@@ -205,6 +209,7 @@ class   ClipWorkflow : public QObject
         WaitCondition*          m_initWaitCond;
         WaitCondition*          m_renderWaitCond;
         WaitCondition*          m_pausingStateWaitCond;
+        WaitCondition*          m_pausedThreadCondWait;
 
     private slots:
         void                    pauseAfterPlaybackStarted();

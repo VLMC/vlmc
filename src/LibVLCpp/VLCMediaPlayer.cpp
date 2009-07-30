@@ -84,7 +84,6 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
     MediaPlayer* self = reinterpret_cast<MediaPlayer*>( ptr );
     switch ( event->type )
     {
-        qDebug() << "Event received" << event->type;
     case libvlc_MediaPlayerPlaying:
         qDebug() << "Media player playing";
         self->emit playing();

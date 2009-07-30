@@ -84,7 +84,6 @@ WorkflowRenderer::~WorkflowRenderer()
 
 void*   WorkflowRenderer::lock( void* datas )
 {
-    qDebug() << "WorkflowRenderer::lock()";
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
     //If we're not playing, then where in a paused media player.
@@ -95,7 +94,14 @@ void*   WorkflowRenderer::lock( void* datas )
     }
     if ( self->m_oneFrameOnly < 2 )
     {
-        void* ret = self->m_mainWorkflow->getSynchroneOutput();
+        void* ret;
+//        if ( self->m_oneFrameOnly == 0 )
+//            ret = self->m_mainWorkflow->getOutput();
+//        else
+//        {
+//            qDebug() << "Asking synchrone frame";
+            ret = self->m_mainWorkflow->getSynchroneOutput();
+//        }
         self->m_lastFrame = static_cast<unsigned char*>( ret );
         qDebug() << "Returning new frame";
         return ret;
@@ -109,11 +115,11 @@ void*   WorkflowRenderer::lock( void* datas )
 
 void    WorkflowRenderer::unlock( void* datas )
 {
-    qDebug() << __func__;
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
     if ( self->m_oneFrameOnly == 1 )
     {
-        self->m_mediaPlayer->pause();
+        qDebug() << "Pausing back";
+        self->togglePlayPause( true );
         qDebug() << "Switching m_oneFrameOnly flag to 2";
         self->m_oneFrameOnly = 2;
     }
@@ -174,19 +180,45 @@ void        WorkflowRenderer::setPosition( float newPos )
     m_mainWorkflow->setPosition( newPos );
 }
 
+void        WorkflowRenderer::frameByFrameAfterPaused()
+{
+    qDebug() << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<";
+    qDebug() << "Activatin one frame only";
+    m_oneFrameOnly = 1;
+    m_mainWorkflow->activateOneFrameOnly();
+
+//    m_mainWorkflow->nextFrame();
+
+    qDebug() << "Unpausing everything";
+    togglePlayPause( false );
+}
+
+void        WorkflowRenderer::frameByFramePausingProxy()
+{
+    static unsigned int nbPaused = 0;
+    ++nbPaused;
+    if ( nbPaused == 2 )
+    {
+        nbPaused = 0;
+        frameByFrameAfterPaused();
+    }
+}
+
 void        WorkflowRenderer::nextFrame()
 {
-//    qDebug() << "Next frame :";
-    m_oneFrameOnly = 1;
-    m_mainWorkflow->nextFrame();
-//    qDebug() << "Activatign one frame only";
-    m_mainWorkflow->activateOneFrameOnly();
-    //Both media players should be stopped now... restauring playback
-//    m_framePlayed = 0;
-    m_mediaPlayer->pause();
-//    while ( m_framePlayed == 0 )
-//        SleepMS( 1 );
-//    m_mediaPlayer->pause();
+    qDebug() << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<";
+    if ( m_pausedMediaPlayer == true )
+    {
+        qDebug() << "Already paused media player";
+        frameByFrameAfterPaused();
+    }
+    else
+    {
+        qDebug() << "Waiting for paused media player";
+        connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( frameByFramePausingProxy() ), Qt::QueuedConnection );
+        connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( frameByFramePausingProxy() ), Qt::QueuedConnection );
+        togglePlayPause( true );
+    }
 }
 
 void        WorkflowRenderer::previousFrame()
@@ -196,10 +228,8 @@ void        WorkflowRenderer::previousFrame()
 
 void        WorkflowRenderer::pauseMainWorkflow()
 {
-    qDebug() << "Pausing main workflow, setting m_pausedMediaPlayer to true... ?";
     if ( m_paused == true )
         return ;
-    qDebug() << "Indeed. Setting m_pausedMediaPlayer to true";
     m_pausedMediaPlayer = true;
     m_mainWorkflow->pause();
 }
@@ -274,7 +304,6 @@ void        WorkflowRenderer::__videoPaused()
 void        WorkflowRenderer::__videoPlaying()
 {
     emit playing();
-    qDebug() << "Setting m_pausedMediaPlayer to false";
     m_pausedMediaPlayer = false;
     m_paused = false;
 }

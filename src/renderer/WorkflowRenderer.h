@@ -66,6 +66,7 @@ class   WorkflowRenderer : public GenericRenderer
         void                pauseMainWorkflow();
         virtual void        startPreview();
         void                checkActions();
+        void                frameByFrameAfterPaused();
 
     private:
         MainWorkflow*       m_mainWorkflow;
@@ -82,6 +83,9 @@ class   WorkflowRenderer : public GenericRenderer
          *          which can cause deadlock when stopping.
          */
         bool                m_pausedMediaPlayer;
+
+    private slots:
+        void                frameByFramePausingProxy();
 
     public slots:
         void                setMedia( const Media* ){}

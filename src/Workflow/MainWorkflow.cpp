@@ -134,14 +134,10 @@ unsigned char*    MainWorkflow::getOutput()
         if ( ret == NULL )
             ret = MainWorkflow::blackOutput;
         nextFrame();
-	qDebug() << "Getoutput complete";
         return ret;
     }
     else
-    {
-        qDebug() << "Getoutput empty";
         return MainWorkflow::blackOutput;
-    }
 }
 
 void        MainWorkflow::pause()
@@ -161,6 +157,7 @@ void        MainWorkflow::pause()
 
 void        MainWorkflow::nextFrame()
 {
+    qDebug() << "Going to the next frame";
     ++m_currentFrame;
     //FIXME: This is probably a bit much...
     emit frameChanged( m_currentFrame );
@@ -169,6 +166,7 @@ void        MainWorkflow::nextFrame()
 
 void        MainWorkflow::previousFrame()
 {
+    qDebug() << "Going to the previous frame";
     --m_currentFrame;
     //FIXME: This is probably a bit much...
     emit frameChanged( m_currentFrame );
@@ -266,7 +264,7 @@ void           MainWorkflow::clipMoved( QUuid clipUuid, int oldTrack, int newTra
 
 void        MainWorkflow::activateOneFrameOnly()
 {
-     for (unsigned int i = 0; i < m_trackCount; ++i)
+    for (unsigned int i = 0; i < m_trackCount; ++i)
     {
         //FIXME: After debugging period, this should'nt be necessary --
         if ( m_tracks[i].activated() == true )
@@ -277,8 +275,9 @@ void        MainWorkflow::activateOneFrameOnly()
 void        MainWorkflow::trackPaused()
 {
     m_nbTracksToPause.fetchAndAddAcquire( -1 );
-    if ( m_nbTracksToPause == 0 )
+    if ( m_nbTracksToPause <= 0 )
     {
+        qDebug() << "MainWorkflow is paused";
         emit mainWorkflowPaused();
     }
 }
@@ -299,15 +298,16 @@ void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
     //therefore, m_nbTracksToRender will be equal to -1
     if ( m_nbTracksToRender <= 0 )
     {
-        qDebug() << "MainWorkflow render completed";
+        qDebug() << "MainWorkflow render is completed. Acquiring synchronization lock";
         //Just a synchronisation barriere
         {
             QMutexLocker    lock( m_synchroneRenderWaitConditionMutex );
         }
+        qDebug() << "Waking synchronisation threads";
         m_synchroneRenderWaitCondition->wakeAll();
     }
-    else
-        qDebug() << m_nbTracksToRender << "tracks left to render";
+//    else
+//        qDebug() << m_nbTracksToRender << "tracks left to render";
 }
 
 unsigned char*  MainWorkflow::getSynchroneOutput()
