@@ -166,7 +166,9 @@ void MainWindow::initializeDockWidgets( void )
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
 
-    dockManager->addDockedWidget( new QUndoView( UndoStack::getInstance(), this),
+    QUndoView* undoView = new QUndoView( UndoStack::getInstance(), this);
+    undoView->setEmptyLabel( tr( "Nothing to undo" ) );
+    dockManager->addDockedWidget( undoView,
                                   tr( "History" ),
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
