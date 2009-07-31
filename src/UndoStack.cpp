@@ -22,7 +22,20 @@
 
 #include "UndoStack.h"
 
-UndoStack::UndoStack()
+UndoStack::UndoStack( QWidget* parent ) : QUndoView( parent )
 {
+    setEmptyLabel( tr( "Nothing to undo" ) );
 
+    m_undoStack = new QUndoStack( this );
+    setStack( m_undoStack );
+
+    m_undoShortcut = new QShortcut( QKeySequence( tr( "Ctrl+z", "Undo" ) ), this );
+    m_redoShortcut = new QShortcut( QKeySequence( tr( "Ctrl+Shift+z", "Redo" ) ), this );
+    connect( m_undoShortcut, SIGNAL( activated() ), m_undoStack, SLOT( undo() ) );
+    connect( m_redoShortcut, SIGNAL( activated() ), m_undoStack, SLOT( redo() ) );
+}
+
+void    UndoStack::push( QUndoCommand* command )
+{
+    m_undoStack->push( command );
 }

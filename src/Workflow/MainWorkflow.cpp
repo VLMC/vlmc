@@ -251,7 +251,8 @@ void            MainWorkflow::deleteInstance()
     }
 }
 
-void           MainWorkflow::moveClip( const QUuid& clipUuid, unsigned int oldTrack, unsigned int newTrack, qint64 startingFrame )
+void           MainWorkflow::moveClip( const QUuid& clipUuid, unsigned int oldTrack,
+                                       unsigned int newTrack, qint64 startingFrame, bool undoRedoCommand /*= false*/ )
 {
     Q_ASSERT( newTrack < m_trackCount && oldTrack < m_trackCount );
 
@@ -269,7 +270,11 @@ void           MainWorkflow::moveClip( const QUuid& clipUuid, unsigned int oldTr
         m_tracks[newTrack].activate();
     }
     computeLength();
-    emit clipMoved( clipUuid, newTrack, startingFrame );
+    if ( undoRedoCommand == true )
+    {
+        qDebug() << "Emitted Clip moved: to track" << newTrack << "at pos" << startingFrame;
+        emit clipMoved( clipUuid, newTrack, startingFrame );
+    }
 }
 
 Clip*       MainWorkflow::removeClip( const QUuid& uuid, unsigned int trackId )

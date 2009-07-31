@@ -71,14 +71,20 @@ namespace Commands
                 {
                     setText( "Moving clip" );
                     m_oldPos = m_workflow->getClipPosition( uuid, oldTrack );
+                    qDebug() << "Old pos == " << m_oldPos;
+                    m_undoRedoAction = false;
                 }
                 virtual void    redo()
                 {
-                    m_workflow->moveClip( m_uuid, m_oldTrack, m_newTrack, m_pos );
+                    qDebug() << "Moving from track" << m_oldTrack << "to" << m_newTrack << "at pos" << m_pos;
+                    m_workflow->moveClip( m_uuid, m_oldTrack, m_newTrack, m_pos, m_undoRedoAction );
+                    m_undoRedoAction = true;
                 }
                 virtual void    undo()
                 {
-                    m_workflow->moveClip( m_uuid, m_newTrack, m_oldTrack, m_oldPos );
+                    qDebug() << "Moving from track" << m_newTrack << "to" << m_oldTrack << "at pos" << m_oldPos;
+                    m_workflow->moveClip( m_uuid, m_newTrack, m_oldTrack, m_oldPos, m_undoRedoAction );
+                    m_undoRedoAction = true;
                 }
 
             private:
@@ -88,6 +94,7 @@ namespace Commands
                 unsigned int        m_newTrack;
                 qint64              m_pos;
                 qint64              m_oldPos;
+                bool                m_undoRedoAction;
         };
     }
 }

@@ -82,7 +82,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         static void             deleteInstance();
         Clip*                   removeClip( const QUuid& uuid, unsigned int trackId );
         void                    moveClip( const QUuid& uuid, unsigned int oldTrack,
-                                          unsigned int newTrack, qint64 pos );
+                                          unsigned int newTrack, qint64 pos, bool undoRedoCommand = false );
         qint64                  getClipPosition( const QUuid& uuid, unsigned int trackId ) const;
 
     private:

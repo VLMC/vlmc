@@ -381,6 +381,7 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
             updateDuration();
             if ( m_layout->itemAt( 0 )->graphicsItem()->childItems().count() > 0 )
                 addVideoTrack();
+            qDebug() << "Trigerring move command. track" << movieItem->oldTrackNumber << "->" << movieItem->trackNumber();
             Commands::trigger( new Commands::MainWorkflow::MoveClip( m_mainWorkflow, movieItem->clip()->getUuid(),
                                                                      movieItem->oldTrackNumber, movieItem->trackNumber(),
                                                                      (qint64)movieItem->pos().x() ) );
