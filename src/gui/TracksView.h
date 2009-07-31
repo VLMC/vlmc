@@ -90,6 +90,9 @@ public:
     void setScale( double scaleFactor );
     QList<AbstractGraphicsMediaItem*> mediaItems( const QPoint& pos );
 
+public slots:
+    void                    moveMediaItem( const QUuid& uuid, int track, int time );
+
 protected:
     virtual void            resizeEvent( QResizeEvent* event );
     virtual void            drawBackground( QPainter* painter, const QRectF& rect );
@@ -111,6 +114,7 @@ private:
     void                    addVideoTrack();
     void                    addAudioTrack();
     void                    moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position );
+    void                    moveMediaItem( AbstractGraphicsMediaItem* item, int track, int time );
     QGraphicsScene*         m_scene;
     int                     m_tracksHeight;
     unsigned int            m_tracksCount;
