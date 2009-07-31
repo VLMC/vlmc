@@ -51,12 +51,11 @@ class   SimplePreferences : public QWidget
         QVBoxLayout*    buildRightHLayout();
 
     private:
-        QHash<int, QWidget*>        m_widgets;
-        QWidget*                    m_currentWidget;
-        Panel*                      m_panel;
-        QLabel*                     m_title;
-        int                         m_widgetNumber;
-        QStackedWidget*             m_stackedWidgets;
+        QHash<int, QString>        m_widgets;
+        QWidget*                   m_currentWidget;
+        Panel*                     m_panel;
+        QLabel*                    m_title;
+        QStackedWidget*            m_stackedWidgets;
 
     public slots:
         void    switchWidget( int widget );

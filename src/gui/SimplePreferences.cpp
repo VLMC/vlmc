@@ -38,7 +38,6 @@ SimplePreferences::SimplePreferences( QWidget* parent)
     m_currentWidget( NULL ),
     m_panel( NULL ),
     m_title( NULL ),
-    m_widgetNumber( 0 ),
     m_stackedWidgets( 0 )
 {
     m_panel = new Panel( this );
@@ -51,12 +50,9 @@ SimplePreferences::SimplePreferences( QWidget* parent)
 
 SimplePreferences::~SimplePreferences()
 {
-    //QHash<QString, QWidget*>::iterator     end = m_widgets.end();
-    //QHash<QString, QWidget*>::iterator     it = m_widgets.begin();
-    //for ( ; it != end; ++it )
-    //    delete it.value();
     delete m_panel;
     delete m_title;
+    delete m_stackedWidgets;
 }
 
 
@@ -67,9 +63,11 @@ void        SimplePreferences::addWidget( const QString& name,
                                           const QString& icon,
                                           const QString& label)
 {
-    m_widgets.insert( m_widgetNumber, widget );
-    m_panel->addButton( label, icon, m_widgetNumber );
-    ++m_widgetNumber;
+    m_stackedWidgets->addWidget( widget );
+
+    int idx = m_stackedWidgets->indexOf( widget );
+    m_widgets.insert( idx, name );
+    m_panel->addButton( label, icon, idx );
     if (m_currentWidget == 0)
         m_currentWidget = widget;
 }
@@ -82,7 +80,6 @@ void        SimplePreferences::build()
     setLayout( hLayout );
     //TODO : change the size of the widgets to make it look cleaner
     hLayout->addWidget( m_panel );
-    hLayout->addWidget( m_currentWidget );
     hLayout->insertLayout( 1, buildRightHLayout() );
 }
 
