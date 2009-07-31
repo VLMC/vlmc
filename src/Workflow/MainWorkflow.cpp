@@ -269,7 +269,7 @@ void           MainWorkflow::moveClip( const QUuid& clipUuid, unsigned int oldTr
         m_tracks[newTrack].activate();
     }
     computeLength();
-    emit clipMoved( clipUuid, oldTrack, newTrack, startingFrame );
+    emit clipMoved( clipUuid, newTrack, startingFrame );
 }
 
 Clip*       MainWorkflow::removeClip( const QUuid& uuid, unsigned int trackId )

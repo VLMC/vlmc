@@ -155,7 +155,7 @@ void TracksView::dragMoveEvent( QDragMoveEvent* event )
     moveMediaItem( m_dragItem, event->pos() );
 }
 
-void TracksView::moveMediaItem( const QUuid& uuid, int track, int time )
+void TracksView::moveMediaItem( const QUuid& uuid, unsigned int track, qint64 time )
 {
     QList<QGraphicsItem*> sceneItems = m_scene->items();
 

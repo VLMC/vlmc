@@ -91,7 +91,7 @@ public:
     QList<AbstractGraphicsMediaItem*> mediaItems( const QPoint& pos );
 
 public slots:
-    void                    moveMediaItem( const QUuid& uuid, int track, int time );
+    void                    moveMediaItem( const QUuid& uuid, unsigned int track, qint64 time );
 
 protected:
     virtual void            resizeEvent( QResizeEvent* event );
