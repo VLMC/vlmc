@@ -91,8 +91,9 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
     cw->getStateLock()->lockForRead();
 
     qDebug() << "Rendering clip";
-    if ( cw->getState() == ClipWorkflow::Paused && pauseAfterRender == false )
+    if ( cw->getState() == ClipWorkflow::ThreadPaused && pauseAfterRender == false )
     {
+        qDebug() << "Paused clip, but no need to repause it after";
         cw->getStateLock()->unlock();
         //If we must pause after render, we must NOT wake the renderer thread, or it could render more than one frame
         // (since this is for the next/previous frame)
@@ -116,7 +117,7 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
     //If frame has been rendered :
     if ( cw->getState() == ClipWorkflow::Sleeping || pauseAfterRender == true )
     {
-//        qDebug() << "rendering a sleeping clip workflow";
+        qDebug() << "rendering a sleeping clip workflow";
         if ( pauseAfterRender == true )
             qDebug() << "Rendering only one frame";
         cw->getStateLock()->unlock();
@@ -126,6 +127,7 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
             float   pos = ( (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) );
             cw->setPosition( pos );
         }
+        qDebug() << "getting clip output";
         ret = cw->getOutput();
         if ( pauseAfterRender == false )
         {
@@ -150,6 +152,7 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
     }
     else if ( cw->getState() == ClipWorkflow::Stopped )
     {
+        qDebug() << "Rendering a stopped clip workflow";
         cw->getStateLock()->unlock();
         cw->initialize( );
         cw->startRender();
@@ -164,6 +167,7 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
     {
         //If the state is Initializing, then the workflow will wait.
         //Otherwise, it will start directly.
+        qDebug() << "Rendering a ready clip workflow";
         cw->getStateLock()->unlock();
         cw->startRender();
         if ( needRepositioning == true )
@@ -495,10 +499,17 @@ void        TrackWorkflow::clipWorkflowPaused()
 
 void        TrackWorkflow::clipWorkflowRenderCompleted( ClipWorkflow* cw )
 {
+    qDebug() << "clip workflow render complete. Checking for track completed";
     if ( cw != NULL )
+    {
+        qDebug() << " There is a complete buffer to return/////////////////////";
         m_synchroneRenderBuffer = cw->getOutput();
+    }
     else
+    {
+        qDebug() << "cw is null, no tracks to render/////////////////////////";
         m_synchroneRenderBuffer = NULL;
+    }
     m_nbClipToRender.fetchAndAddAcquire( -1 );
     //When there is nothing to render, m_nbClipToRender will be equal to one here, so we check for minus
     //or equal to 0

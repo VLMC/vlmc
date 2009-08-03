@@ -349,7 +349,7 @@ void            ClipWorkflow::pause()
 void            ClipWorkflow::unpause( bool wakeRenderThread /*= true*/ )
 {
     //Since VLC will detect that the media player is paused and unpause it, we can do this safely
-    setState( ClipWorkflow::Rendering );
+    queryStateChange( ClipWorkflow::Rendering );
     m_mediaPlayer->pause();
 //    QMutexLocker    lock( m_requiredStateLock );
 //    m_requiredState = ClipWorkflow::None;

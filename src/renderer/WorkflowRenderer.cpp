@@ -84,10 +84,14 @@ WorkflowRenderer::~WorkflowRenderer()
 
 void*   WorkflowRenderer::lock( void* datas )
 {
+    qDebug() << "Locking workflow renderer";
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
     //If renderer is stopping, don't ask for another frame:
     if ( self->m_isRendering == false )
+        return self->m_lastFrame;
+    //If a pause was asked, don't try to start a new render... it could (and would) dead lock...
+    if ( self->m_pauseAsked == true )
         return self->m_lastFrame;
     //If we're not playing, then where in a paused media player.
     if ( self->m_pausedMediaPlayer == true )
@@ -102,7 +106,7 @@ void*   WorkflowRenderer::lock( void* datas )
 //            ret = self->m_mainWorkflow->getOutput();
 //        else
 //        {
-//            qDebug() << "Asking synchrone frame";
+            qDebug() << "Asking synchrone frame";
             ret = self->m_mainWorkflow->getSynchroneOutput();
 //        }
         self->m_lastFrame = static_cast<unsigned char*>( ret );
@@ -119,6 +123,8 @@ void*   WorkflowRenderer::lock( void* datas )
 void    WorkflowRenderer::unlock( void* datas )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
+
+    qDebug() << "Workflowrenderer::unlock. m_oneFrameOnly ==" << self->m_oneFrameOnly;
     if ( self->m_oneFrameOnly == 1 )
     {
         qDebug() << "Pausing back";
@@ -146,6 +152,7 @@ void        WorkflowRenderer::checkActions()
                 if ( m_pauseAsked == true )
                     continue ;
                 m_pauseAsked = true;
+                qDebug() << "Pausing workflow renderer";
                 m_mediaPlayer->pause();
                 //This will also pause the MainWorkflow via a signal/slot
                 break ;
@@ -154,6 +161,7 @@ void        WorkflowRenderer::checkActions()
                 break ;
         }
     }
+    qDebug() << "End of method ----------------------------------------";
 }
 
 void        WorkflowRenderer::stopPreview()
@@ -194,6 +202,7 @@ void        WorkflowRenderer::frameByFrameAfterPaused()
 
     qDebug() << "Unpausing everything";
     togglePlayPause( false );
+    qDebug() << "Everything should be unpaused";
 }
 
 void        WorkflowRenderer::frameByFramePausingProxy()
@@ -254,6 +263,7 @@ void        WorkflowRenderer::togglePlayPause( bool forcePause )
         if ( m_paused == true && forcePause == false )
         {
             //This will automaticly unpause the ClipWorkflow... no worries
+            qDebug() << "Unpausing workflow renderer";
             m_mediaPlayer->play();
         }
         else
@@ -301,6 +311,7 @@ void        WorkflowRenderer::__positionChanged( float pos )
 
 void        WorkflowRenderer::__videoPaused()
 {
+    qDebug() << "Slot for media player paused";
     if ( m_oneFrameOnly != 0 )
     {
         m_oneFrameOnly = 0;

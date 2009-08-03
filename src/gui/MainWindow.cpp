@@ -119,10 +119,10 @@ void        MainWindow::setupLibrary()
              libraryWidget,
              SLOT( mediaRemoved( const QUuid& ) ) );
 
-    connect( libraryWidget->getVideoListWidget(), SIGNAL( selectedMediaChanged(const Media*) ),
-              m_clipPreview->getGenericRenderer(), SLOT( setMedia(const Media*) ) );
-    connect( Library::getInstance(), SIGNAL( mediaRemoved( const QUuid& ) ),
-             m_clipPreview->getGenericRenderer(), SLOT( mediaUnloaded( QUuid ) ) );
+//    connect( libraryWidget->getVideoListWidget(), SIGNAL( selectedMediaChanged(const Media*) ),
+//              m_clipPreview->getGenericRenderer(), SLOT( setMedia(const Media*) ) );
+//    connect( Library::getInstance(), SIGNAL( mediaRemoved( const QUuid& ) ),
+//             m_clipPreview->getGenericRenderer(), SLOT( mediaUnloaded( QUuid ) ) );
 }
 
 void MainWindow::createStatusBar()
@@ -153,12 +153,12 @@ void MainWindow::initializeDockWidgets( void )
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea);
 
-    m_clipPreview = new PreviewWidget( new ClipRenderer, this );
-    dockManager->addDockedWidget( m_clipPreview,
-                                  tr( "Clip Preview" ),
-                                  Qt::AllDockWidgetAreas,
-                                  QDockWidget::AllDockWidgetFeatures,
-                                  Qt::TopDockWidgetArea );
+//    m_clipPreview = new PreviewWidget( new ClipRenderer, this );
+//    dockManager->addDockedWidget( m_clipPreview,
+//                                  tr( "Clip Preview" ),
+//                                  Qt::AllDockWidgetAreas,
+//                                  QDockWidget::AllDockWidgetFeatures,
+//                                  Qt::TopDockWidgetArea );
 
     m_projectPreview = new PreviewWidget( new WorkflowRenderer( m_timeline->getMainWorkflow() ), this );
     dockManager->addDockedWidget( m_projectPreview,
