@@ -266,9 +266,13 @@ void        WorkflowRenderer::togglePlayPause( bool forcePause )
 
 void        WorkflowRenderer::stop()
 {
+    qDebug() << "Stopping workflow renderer";
     m_isRendering = false;
     m_paused = false;
+    qDebug() << "Stopping media player";
+    m_mainWorkflow->cancelSynchronisation();
     m_mediaPlayer->stop();
+    qDebug() << "Stopping main workflow";
     m_mainWorkflow->stop();
 }
 

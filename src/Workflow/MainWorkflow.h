@@ -81,6 +81,12 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         static MainWorkflow*    getInstance();
         static void             deleteInstance();
 
+        /**
+         *  \brief  This method will wake every wait condition, so that threads won't
+         *          be waiting anymore, thus avoiding dead locks.
+         */
+        void                    cancelSynchronisation();
+
     private:
         static MainWorkflow*    m_instance;
 //        QAtomicInt              m_oneFrameOnly;

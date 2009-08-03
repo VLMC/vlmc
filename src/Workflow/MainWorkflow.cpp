@@ -323,3 +323,11 @@ unsigned char*  MainWorkflow::getSynchroneOutput()
         return MainWorkflow::blackOutput;
     return m_synchroneRenderingBuffer;
 }
+
+void        MainWorkflow::cancelSynchronisation()
+{
+    {
+        QMutexLocker    lock( m_synchroneRenderWaitConditionMutex );
+    }
+    m_synchroneRenderWaitCondition->wakeAll();
+}
