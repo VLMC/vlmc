@@ -102,7 +102,6 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
     }
     if ( cw->getState() == ClipWorkflow::Rendering )
     {
-        qDebug() << "Rendering a 'Rendering' ClipWorkflow";
         //The rendering state meens... whell it means that the frame is
         //beeing rendered, so we wait.
         cw->getStateLock()->unlock();
@@ -116,7 +115,6 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
     //If frame has been rendered :
     if ( cw->getState() == ClipWorkflow::Sleeping || pauseAfterRender == true )
     {
-        qDebug() << "renderign a sleeping clip worjkflow";
         cw->getStateLock()->unlock();
 
         if ( needRepositioning == true )
@@ -238,7 +236,7 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
     }
     else
     {
-        qDebug() << "Unexpected ClipWorkflow::State when stopping :" << cw->getState();
+//        qDebug() << "Unexpected ClipWorkflow::State when stopping :" << cw->getState();
         cw->getStateLock()->unlock();
     }
 }
@@ -267,7 +265,6 @@ void                    TrackWorkflow::stop()
 
 unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
 {
-    qDebug() << "Getting track output";
     QReadLocker     lock( m_clipsLock );
 
     unsigned char*  ret = NULL;
@@ -331,12 +328,7 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
     }
     if ( ret == NULL )
     {
-    	qDebug() << "No output";
         clipWorkflowRenderCompleted( NULL );
-    }
-    else
-    {
-	qDebug() << "Got output";
     }
     return ret;
 }
@@ -494,14 +486,8 @@ void        TrackWorkflow::clipWorkflowRenderCompleted( ClipWorkflow* cw )
     //or equal to 0
     if ( m_nbClipToRender <= 0 )
     {
-        qDebug() << "TrackWorkflow render is completed. Buffer =" << (void*)m_synchroneRenderBuffer;
         emit renderCompleted( m_trackId );
     }
-    else
-    {
-	qDebug() << "Trackworfklow render isn't complete yet." << m_nbClipToRender << "cw remaining";
-    }
-    qDebug() << "End of method";
 }
 
 unsigned char*  TrackWorkflow::getSynchroneOutput()

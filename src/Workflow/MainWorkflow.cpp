@@ -134,12 +134,10 @@ unsigned char*    MainWorkflow::getOutput()
         if ( ret == NULL )
             ret = MainWorkflow::blackOutput;
         nextFrame();
-	qDebug() << "Getoutput complete";
         return ret;
     }
     else
     {
-        qDebug() << "Getoutput empty";
         return MainWorkflow::blackOutput;
     }
 }
@@ -299,26 +297,20 @@ void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
     //therefore, m_nbTracksToRender will be equal to -1
     if ( m_nbTracksToRender <= 0 )
     {
-        qDebug() << "MainWorkflow render completed";
         //Just a synchronisation barriere
         {
             QMutexLocker    lock( m_synchroneRenderWaitConditionMutex );
         }
         m_synchroneRenderWaitCondition->wakeAll();
     }
-    else
-        qDebug() << m_nbTracksToRender << "tracks left to render";
 }
 
 unsigned char*  MainWorkflow::getSynchroneOutput()
 {
     m_synchroneRenderWaitConditionMutex->lock();
     getOutput();
-    qDebug() << "Waiting for synchrone output";
     m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
-    qDebug() << "Got it";
     m_synchroneRenderWaitConditionMutex->unlock();
-    qDebug() << (void*)m_synchroneRenderingBuffer;
     if ( m_synchroneRenderingBuffer == NULL )
         return MainWorkflow::blackOutput;
     return m_synchroneRenderingBuffer;

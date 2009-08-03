@@ -84,37 +84,31 @@ WorkflowRenderer::~WorkflowRenderer()
 
 void*   WorkflowRenderer::lock( void* datas )
 {
-    qDebug() << "WorkflowRenderer::lock()";
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
     //If we're not playing, then where in a paused media player.
     if ( self->m_pausedMediaPlayer == true )
     {
-        qDebug() << "Returning last frame, since media player is paused";
         return self->m_lastFrame;
     }
     if ( self->m_oneFrameOnly < 2 )
     {
         void* ret = self->m_mainWorkflow->getSynchroneOutput();
         self->m_lastFrame = static_cast<unsigned char*>( ret );
-        qDebug() << "Returning new frame";
         return ret;
     }
     else
     {
-        qDebug() << "Returning last frame, due to m_oneFrameOnly flag (" << self->m_oneFrameOnly << ")";
         return self->m_lastFrame;
     }
 }
 
 void    WorkflowRenderer::unlock( void* datas )
 {
-    qDebug() << __func__;
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
     if ( self->m_oneFrameOnly == 1 )
     {
         self->m_mediaPlayer->pause();
-        qDebug() << "Switching m_oneFrameOnly flag to 2";
         self->m_oneFrameOnly = 2;
     }
     self->m_framePlayed = true;
@@ -196,10 +190,8 @@ void        WorkflowRenderer::previousFrame()
 
 void        WorkflowRenderer::pauseMainWorkflow()
 {
-    qDebug() << "Pausing main workflow, setting m_pausedMediaPlayer to true... ?";
     if ( m_paused == true )
         return ;
-    qDebug() << "Indeed. Setting m_pausedMediaPlayer to true";
     m_pausedMediaPlayer = true;
     m_mainWorkflow->pause();
 }
@@ -274,7 +266,6 @@ void        WorkflowRenderer::__videoPaused()
 void        WorkflowRenderer::__videoPlaying()
 {
     emit playing();
-    qDebug() << "Setting m_pausedMediaPlayer to false";
     m_pausedMediaPlayer = false;
     m_paused = false;
 }
