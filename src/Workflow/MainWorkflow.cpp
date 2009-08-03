@@ -175,16 +175,17 @@ void        MainWorkflow::previousFrame()
 
 void        MainWorkflow::setPosition( float pos )
 {
+    if ( m_renderStarted == false )
+        return ;
     //Since any track can be reactivated, we reactivate all of them, and let them
     //unable themself if required.
     for ( unsigned int i = 0; i < m_trackCount; ++i)
         m_tracks[i].activate();
 
-    if ( m_renderStarted == false )
-        return ;
     qint64  frame = static_cast<qint64>( (float)m_length * pos );
     m_currentFrame = frame;
     emit frameChanged( frame );
+    cancelSynchronisation();
     //Do not emit a signal for the RenderWidget, since it's the one that triggered that call...
 }
 

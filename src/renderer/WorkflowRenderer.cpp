@@ -86,6 +86,9 @@ void*   WorkflowRenderer::lock( void* datas )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
+    //If renderer is stopping, don't ask for another frame:
+    if ( self->m_isRendering == false )
+        return self->m_lastFrame;
     //If we're not playing, then where in a paused media player.
     if ( self->m_pausedMediaPlayer == true )
     {
