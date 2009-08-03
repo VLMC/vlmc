@@ -154,32 +154,15 @@ void TracksView::dragMoveEvent( QDragMoveEvent* event )
     moveMediaItem( m_dragItem, event->pos() );
 }
 
-void TracksView::moveMediaItem( const QUuid& uuid, int track, int time )
-{
-    QList<QGraphicsItem*> sceneItems = m_scene->items();
-
-    for ( int i = 0; i < sceneItems.size(); ++i )
-    {
-        AbstractGraphicsMediaItem* item =
-                dynamic_cast<AbstractGraphicsMediaItem*>( sceneItems.at( i ) );
-        if ( !item || item->uuid() != uuid ) continue;
-        moveMediaItem( item, track, time );
-    }
-}
-
 void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position )
 {
     int track = (unsigned int)( mapToScene( position ).y() / m_tracksHeight );
-    qreal time = ( mapToScene( position ).x() + 0.5 );
-    moveMediaItem( item, track, (int)time);
-}
-
-void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, int time )
-{
     if ( track < 0 )
         track = 0;
     else if ( track > m_numVideoTrack - 1)
         track = m_numVideoTrack - 1;
+
+    qreal mappedXPos = ( mapToScene( position ).x() + 0.5 );
 
     QPointF oldPos = item->pos();
     QGraphicsItem* oldParent = item->parentItem();
@@ -197,7 +180,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, int 
             {
                 // Collision with an item of the same type
                 itemCollision = true;
-                if ( currentItem->trackNumber() > track )
+                if ( currentItem->pos().y() < position.y() )
                 {
                     if ( track < 1 )
                     {
@@ -209,7 +192,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, int 
                     Q_ASSERT( m_layout->itemAt( track )->graphicsItem() != NULL );
                     item->setParentItem( m_layout->itemAt( track )->graphicsItem() );
                 }
-                else if ( currentItem->trackNumber() < track )
+                else if ( currentItem->pos().y() > position.y() )
                 {
                     if ( track >= m_numVideoTrack - 1 )
                     {
@@ -227,7 +210,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, int 
             continueSearch = false;
     }
     // Check for horizontal collisions
-    int mappedXPos = qMax( time, 0 );
+    mappedXPos = qMax( mappedXPos, (qreal)0 );
     item->setPos( mappedXPos, 0 );
     QList<QGraphicsItem*> colliding = item->collidingItems( Qt::IntersectsItemShape );
     for ( int i = 0; i < colliding.size(); ++i )
