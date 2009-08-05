@@ -95,7 +95,7 @@ void*   WorkflowRenderer::lock( void* datas )
     //If a pause was asked, don't try to start a new render... it could (and would) dead lock...
     if ( self->m_pauseAsked == true )
     {
-        qDebug() << "WorkflowRenderer is paused, returning last frame";
+        qDebug() << "WorkflowRenderer is pausing, returning last frame";
         return self->m_lastFrame;
     }
     //If we're not playing, then where in a paused media player.
@@ -247,6 +247,7 @@ void        WorkflowRenderer::pauseMainWorkflow()
 
 void        WorkflowRenderer::mainWorkflowPaused()
 {
+    qDebug() << "Mainworkflow is now paused";
     m_paused = true;
     m_pauseAsked = false;
     emit paused();
@@ -279,6 +280,7 @@ void        WorkflowRenderer::stop()
 {
     m_isRendering = false;
     m_paused = false;
+    m_pauseAsked = false;
     m_mainWorkflow->cancelSynchronisation();
     m_mediaPlayer->stop();
     m_mainWorkflow->stop();
