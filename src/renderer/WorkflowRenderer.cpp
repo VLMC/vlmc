@@ -89,19 +89,19 @@ void*   WorkflowRenderer::lock( void* datas )
     //If renderer is stopping, don't ask for another frame:
     if ( self->m_isRendering == false )
     {
-        qDebug() << "WorkflowRenderer doesn't render anymore (stopping state)";
+//        qDebug() << "WorkflowRenderer doesn't render anymore (stopping state)";
         return self->m_lastFrame;
     }
     //If a pause was asked, don't try to start a new render... it could (and would) dead lock...
     if ( self->m_pauseAsked == true )
     {
-        qDebug() << "WorkflowRenderer is pausing, returning last frame";
+//        qDebug() << "WorkflowRenderer is pausing, returning last frame";
         return self->m_lastFrame;
     }
     //If we're not playing, then where in a paused media player.
     if ( self->m_pausedMediaPlayer == true )
     {
-        qDebug() << "Returning last frame, since media player is paused";
+//        qDebug() << "Returning last frame, since media player is paused";
         return self->m_lastFrame;
     }
     if ( self->m_oneFrameOnly < 2 )
@@ -111,17 +111,17 @@ void*   WorkflowRenderer::lock( void* datas )
 //            ret = self->m_mainWorkflow->getOutput();
 //        else
 //        {
-            qDebug() << "Asking synchrone frame";
+//            qDebug() << "Asking synchrone frame";
             ret = self->m_mainWorkflow->getSynchroneOutput();
-            qDebug() << "Got it";
+//            qDebug() << "Got it";
 //        }
         self->m_lastFrame = static_cast<unsigned char*>( ret );
-        qDebug() << "Returning new frame";
+//        qDebug() << "Returning new frame";
         return ret;
     }
     else
     {
-        qDebug() << "Returning last frame, due to m_oneFrameOnly flag (" << self->m_oneFrameOnly << ")";
+//        qDebug() << "Returning last frame, due to m_oneFrameOnly flag (" << self->m_oneFrameOnly << ")";
         return self->m_lastFrame;
     }
 }
@@ -133,9 +133,9 @@ void    WorkflowRenderer::unlock( void* datas )
 //    qDebug() << "Workflowrenderer::unlock. m_oneFrameOnly ==" << self->m_oneFrameOnly;
     if ( self->m_oneFrameOnly == 1 )
     {
-        qDebug() << "Pausing back";
+//        qDebug() << "Pausing back";
         self->togglePlayPause( true );
-        qDebug() << "Switching m_oneFrameOnly flag to 2";
+//        qDebug() << "Switching m_oneFrameOnly flag to 2";
         self->m_oneFrameOnly = 2;
     }
     self->m_framePlayed = true;
@@ -197,7 +197,7 @@ void        WorkflowRenderer::setPosition( float newPos )
 
 void        WorkflowRenderer::frameByFrameAfterPaused()
 {
-    qDebug() << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<";
+//    qDebug() << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<";
 
     m_oneFrameOnly = 1;
     m_mainWorkflow->activateOneFrameOnly();
@@ -249,7 +249,7 @@ void        WorkflowRenderer::pauseMainWorkflow()
 
 void        WorkflowRenderer::mainWorkflowPaused()
 {
-    qDebug() << "Mainworkflow is now paused";
+//    qDebug() << "Mainworkflow is now paused";
     m_paused = true;
     m_pauseAsked = false;
     emit paused();
@@ -315,7 +315,7 @@ void        WorkflowRenderer::__videoPaused()
     {
         m_oneFrameOnly = 0;
     }
-    qDebug() << "Pausing main workflow";
+//    qDebug() << "Pausing main workflow";
     pauseMainWorkflow();
 }
 

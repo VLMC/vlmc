@@ -381,9 +381,9 @@ void                TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
         else if ( cw->getState() == ClipWorkflow::Rendering )
         {
             cw->getStateLock()->unlock();
-            qDebug() << "Waiting for complete render";
+//            qDebug() << "Waiting for complete render";
             cw->waitForCompleteRender();
-            qDebug() << "Render has been completed... continue pausing";
+//            qDebug() << "Render has been completed... continue pausing";
             QMutexLocker    lock( cw->getSleepMutex() );
             cw->queryStateChange( ClipWorkflow::Pausing );
             cw->wake();
@@ -404,9 +404,9 @@ void                TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
     }
     else
         cw->getStateLock()->unlock();
-    qDebug() << "Wait for pausedthread state";
+//    qDebug() << "Wait for pausedthread state";
     cw->waitForPausedThread();
-    qDebug() << "Ok thread is paused";
+//    qDebug() << "Ok thread is paused";
 }
 
 void                TrackWorkflow::pause()
@@ -423,7 +423,7 @@ void                TrackWorkflow::pause()
         ClipWorkflow*   cw = it.value();
 
         cw->getStateLock()->lockForRead();
-        qDebug() << "Pausing a clip in state" << cw->getState();
+//        qDebug() << "Pausing a clip in state" << cw->getState();
         if ( cw->getState() == ClipWorkflow::Stopped )
         {
             cw->getStateLock()->unlock();
@@ -444,7 +444,6 @@ void                TrackWorkflow::pause()
         }
     }
     m_paused = !m_paused;
-    qDebug() << "m_paused ==" << m_paused;
     if ( m_paused == true )
         emit trackPaused();
 }
