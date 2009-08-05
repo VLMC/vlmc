@@ -75,7 +75,7 @@ void    ClipWorkflow::checkStateChange()
     QWriteLocker    lock2( m_stateLock );
     if ( m_requiredState != ClipWorkflow::None )
     {
-//        qDebug() << "Changed state from" << m_state << "to state" << m_requiredState;
+        qDebug() << "Changed state from" << m_state << "to state" << m_requiredState;
         m_state = m_requiredState;
         m_requiredState = ClipWorkflow::None;
         checkSynchronisation( m_state );
@@ -122,9 +122,9 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
 //        qDebug() << "Clip render completed";
         cw->emit renderComplete( cw );
 
-//        qDebug() << "Entering condwait";
+        qDebug() << "\t\tEntering condwait";
         cw->m_waitCond->wait( cw->m_condMutex );
-//        qDebug() << "Leaved condwait";
+        qDebug() << "\t\tLeaved condwait";
         cw->m_stateLock->lockForWrite();
         cw->m_state = Rendering;
 //        {
@@ -138,11 +138,11 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
         QMutexLocker    lock( cw->m_condMutex );
 
         cw->m_stateLock->unlock();
-//        qDebug() << "Entering forced pause condwait";
+        qDebug() << "Entering forced pause condwait";
         cw->setState( ClipWorkflow::ThreadPaused );
         cw->m_pausedThreadCondWait->wake();
         cw->m_waitCond->wait( cw->m_condMutex );
-//        qDebug() << "Leaving forced pause condwait";
+        qDebug() << "Leaving forced pause condwait";
         cw->setState( ClipWorkflow::Paused );
     }
     else
@@ -309,6 +309,7 @@ void            ClipWorkflow::setState( State state )
 {
     {
         QWriteLocker    lock( m_stateLock );
+        qDebug() << "Changing from state" << m_state << "to state" << state;
         m_state = state;
     }
     checkSynchronisation( state );

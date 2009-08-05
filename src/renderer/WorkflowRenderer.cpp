@@ -133,9 +133,9 @@ void    WorkflowRenderer::unlock( void* datas )
 //    qDebug() << "Workflowrenderer::unlock. m_oneFrameOnly ==" << self->m_oneFrameOnly;
     if ( self->m_oneFrameOnly == 1 )
     {
-//        qDebug() << "Pausing back";
+        qDebug() << "Pausing back";
         self->togglePlayPause( true );
-//        qDebug() << "Switching m_oneFrameOnly flag to 2";
+        qDebug() << "Switching m_oneFrameOnly flag to 2";
         self->m_oneFrameOnly = 2;
     }
     self->m_framePlayed = true;
@@ -214,6 +214,8 @@ void        WorkflowRenderer::frameByFramePausingProxy()
     if ( nbPaused == 2 )
     {
         nbPaused = 0;
+        disconnect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( frameByFramePausingProxy() ) );
+        disconnect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( frameByFramePausingProxy() ) );
         frameByFrameAfterPaused();
     }
 }
@@ -313,6 +315,7 @@ void        WorkflowRenderer::__videoPaused()
     {
         m_oneFrameOnly = 0;
     }
+    qDebug() << "Pausing main workflow";
     pauseMainWorkflow();
 }
 

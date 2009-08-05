@@ -153,6 +153,7 @@ void        MainWorkflow::pause()
             m_tracks[i]->pause();
         }
     }
+    qDebug() << "All tracks are paused";
 }
 
 void        MainWorkflow::nextFrame()
@@ -275,10 +276,11 @@ void        MainWorkflow::activateOneFrameOnly()
 
 void        MainWorkflow::trackPaused()
 {
+    qDebug() << "Track pausing finished...";
     m_nbTracksToPause.fetchAndAddAcquire( -1 );
     if ( m_nbTracksToPause <= 0 )
     {
-//        qDebug() << "MainWorkflow is paused";
+        qDebug() << "\t\t...MainWorkflow is paused";
         emit mainWorkflowPaused();
     }
 }

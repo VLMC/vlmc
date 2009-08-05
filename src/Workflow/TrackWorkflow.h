@@ -52,6 +52,10 @@ class   TrackWorkflow : public QObject
         unsigned char*                          getOutput( qint64 currentFrame );
         qint64                                  getLength() const;
         void                                    stop();
+        /**
+         *  Will pause all the track's ClipWorkflow.
+         *  This method *is synchrone*, and will not return until all of the ClipWorkflow's thread are asleep
+         */
         void                                    pause();
         void                                    moveClip( const QUuid& id, qint64 startingFrame );
         Clip*                                   removeClip( const QUuid& id );
@@ -104,7 +108,7 @@ class   TrackWorkflow : public QObject
         unsigned char*                          m_synchroneRenderBuffer;
 
     private slots:
-        void                                    clipWorkflowPaused();
+//        void                                    clipWorkflowPaused();
         void                                    clipWorkflowRenderCompleted( ClipWorkflow* );
 
     signals:
