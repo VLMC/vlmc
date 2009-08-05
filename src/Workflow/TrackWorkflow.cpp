@@ -167,7 +167,7 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
     {
         //If the state is Initializing, then the workflow will wait.
         //Otherwise, it will start directly.
-        qDebug() << "Rendering a ready clip workflow";
+//        qDebug() << "Rendering a ready clip workflow";
         cw->getStateLock()->unlock();
         cw->startRender();
         if ( needRepositioning == true )

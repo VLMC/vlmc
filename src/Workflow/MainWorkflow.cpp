@@ -319,7 +319,6 @@ unsigned char*  MainWorkflow::getSynchroneOutput()
     m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
 //    qDebug() << "Got it";
     m_synchroneRenderWaitConditionMutex->unlock();
-    qDebug() << (void*)m_synchroneRenderingBuffer;
     if ( m_synchroneRenderingBuffer == NULL )
         return MainWorkflow::blackOutput;
     return m_synchroneRenderingBuffer;
