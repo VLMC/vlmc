@@ -279,6 +279,7 @@ void                    TrackWorkflow::stop()
         stopClipWorkflow( it.value() );
         ++it;
     }
+    m_oneFrameOnly = 0;
 }
 
 unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )

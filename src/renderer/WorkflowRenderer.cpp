@@ -287,6 +287,7 @@ void        WorkflowRenderer::stop()
     m_mediaPlayer->stop();
     qDebug() << "Stopping main workflow";
     m_mainWorkflow->stop();
+    m_oneFrameOnly = 0;
 }
 
 /////////////////////////////////////////////////////////////////////
