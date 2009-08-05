@@ -108,6 +108,7 @@ void*   WorkflowRenderer::lock( void* datas )
 //        {
             qDebug() << "Asking synchrone frame";
             ret = self->m_mainWorkflow->getSynchroneOutput();
+            qDebug() << "Got it";
 //        }
         self->m_lastFrame = static_cast<unsigned char*>( ret );
         qDebug() << "Returning new frame";

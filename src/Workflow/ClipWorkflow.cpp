@@ -75,7 +75,7 @@ void    ClipWorkflow::checkStateChange()
     QWriteLocker    lock2( m_stateLock );
     if ( m_requiredState != ClipWorkflow::None )
     {
-        qDebug() << "Changed state from" << m_state << "to state" << m_requiredState;
+//        qDebug() << "Changed state from" << m_state << "to state" << m_requiredState;
         m_state = m_requiredState;
         m_requiredState = ClipWorkflow::None;
         checkSynchronisation( m_state );
@@ -93,13 +93,13 @@ void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret )
 //    else
 //    {
         *pp_ret = cw->m_buffer;
-        qDebug() << "Clip workflow locking <<<<<<<<<<<<<<<<<<<<<<<<<<";
+//        qDebug() << "Clip workflow locking <<<<<<<<<<<<<<<<<<<<<<<<<<";
 //    }
 }
 
 void    ClipWorkflow::unlock( ClipWorkflow* cw )
 {
-    qDebug() << "ClipWorkflow::unlock()";
+//    qDebug() << "ClipWorkflow::unlock()";
     cw->m_stateLock->lockForWrite();
 
 //    if ( cw->m_oneFrameOnly )
@@ -119,7 +119,7 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
         cw->m_stateLock->unlock();
         //Signal that render has been completed.
         cw->m_renderWaitCond->wake();
-        qDebug() << "Clip render completed";
+//        qDebug() << "Clip render completed";
         cw->emit renderComplete( cw );
 
 //        qDebug() << "Entering condwait";
@@ -138,16 +138,16 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
         QMutexLocker    lock( cw->m_condMutex );
 
         cw->m_stateLock->unlock();
-        qDebug() << "Entering forced pause condwait";
+//        qDebug() << "Entering forced pause condwait";
         cw->setState( ClipWorkflow::ThreadPaused );
         cw->m_pausedThreadCondWait->wake();
         cw->m_waitCond->wait( cw->m_condMutex );
-        qDebug() << "Leaving forced pause condwait";
+//        qDebug() << "Leaving forced pause condwait";
         cw->setState( ClipWorkflow::Paused );
     }
     else
         cw->m_stateLock->unlock();
-    qDebug() << "End of the ClipWorkflow::unlock()";
+//    qDebug() << "End of the ClipWorkflow::unlock()";
     cw->checkStateChange();
 }
 
@@ -355,7 +355,7 @@ void            ClipWorkflow::unpause( bool wakeRenderThread /*= true*/ )
 //    m_requiredState = ClipWorkflow::None;
     if ( wakeRenderThread == true )
     {
-        qDebug() << "Unpausing and waking thread";
+//        qDebug() << "Unpausing and waking thread";
         wake();
     }
 }
@@ -370,8 +370,8 @@ void        ClipWorkflow::waitForCompleteRender( bool dontCheckRenderStarted /*=
 {
     if ( isRendering() == true || dontCheckRenderStarted == true )
         m_renderWaitCond->wait();
-    else
-        qDebug() << "waitForCompleteRender(), not rendering. State == " << getState();
+//    else
+//        qDebug() << "waitForCompleteRender(), not rendering. State == " << getState();
 }
 
 void        ClipWorkflow::waitForCompleteInit()

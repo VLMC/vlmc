@@ -157,7 +157,7 @@ void        MainWorkflow::pause()
 
 void        MainWorkflow::nextFrame()
 {
-    qDebug() << "Going to the next frame";
+//    qDebug() << "Going to the next frame";
     ++m_currentFrame;
     //FIXME: This is probably a bit much...
     emit frameChanged( m_currentFrame );
@@ -166,7 +166,7 @@ void        MainWorkflow::nextFrame()
 
 void        MainWorkflow::previousFrame()
 {
-    qDebug() << "Going to the previous frame";
+//    qDebug() << "Going to the previous frame";
     --m_currentFrame;
     //FIXME: This is probably a bit much...
     emit frameChanged( m_currentFrame );
@@ -278,7 +278,7 @@ void        MainWorkflow::trackPaused()
     m_nbTracksToPause.fetchAndAddAcquire( -1 );
     if ( m_nbTracksToPause <= 0 )
     {
-        qDebug() << "MainWorkflow is paused";
+//        qDebug() << "MainWorkflow is paused";
         emit mainWorkflowPaused();
     }
 }
@@ -299,12 +299,12 @@ void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
     //therefore, m_nbTracksToRender will be equal to -1
     if ( m_nbTracksToRender <= 0 )
     {
-        qDebug() << "MainWorkflow render is completed. Acquiring synchronization lock";
+//        qDebug() << "MainWorkflow render is completed. Acquiring synchronization lock";
         //Just a synchronisation barriere
         {
             QMutexLocker    lock( m_synchroneRenderWaitConditionMutex );
         }
-        qDebug() << "Waking synchronisation threads";
+//        qDebug() << "Waking synchronisation threads";
         m_synchroneRenderWaitCondition->wakeAll();
     }
 //    else
@@ -315,9 +315,9 @@ unsigned char*  MainWorkflow::getSynchroneOutput()
 {
     m_synchroneRenderWaitConditionMutex->lock();
     getOutput();
-    qDebug() << "Waiting for synchrone output";
+//    qDebug() << "Waiting for synchrone output";
     m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
-    qDebug() << "Got it";
+//    qDebug() << "Got it";
     m_synchroneRenderWaitConditionMutex->unlock();
     qDebug() << (void*)m_synchroneRenderingBuffer;
     if ( m_synchroneRenderingBuffer == NULL )
