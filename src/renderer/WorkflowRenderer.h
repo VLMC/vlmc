@@ -63,6 +63,7 @@ class   WorkflowRenderer : public GenericRenderer
         static void         unlock( void* datas );
 
     private:
+        void                internalPlayPause( bool forcePause );
         void                pauseMainWorkflow();
         virtual void        startPreview();
         void                checkActions();
@@ -83,6 +84,12 @@ class   WorkflowRenderer : public GenericRenderer
          *          which can cause deadlock when stopping.
          */
         bool                m_pausedMediaPlayer;
+        /**
+         *  This is a flag used to avoid emitting play/paused signals.
+         *  We're not using anything else, since it's a very fragile mess,
+         *  and I don't want to screw it arround by switching a method call and an assignation...
+         */
+        unsigned int        m_frameByFrameMode;
 
     private slots:
         void                frameByFramePausingProxy();

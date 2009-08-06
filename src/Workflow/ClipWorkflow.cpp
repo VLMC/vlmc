@@ -92,6 +92,7 @@ void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret )
 //    }
 //    else
 //    {
+    qDebug() << "Rendering one frame";
         *pp_ret = cw->m_buffer;
 //        qDebug() << "Clip workflow locking <<<<<<<<<<<<<<<<<<<<<<<<<<";
 //    }
