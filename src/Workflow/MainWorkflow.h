@@ -42,7 +42,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start );
         void                    startRender();
-        unsigned char*          getOutput();
+        void                    getOutput();
         unsigned char*          getSynchroneOutput();
 
         /**

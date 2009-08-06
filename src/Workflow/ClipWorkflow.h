@@ -33,6 +33,7 @@
 #include <QMutex>
 #include "WaitCondition.hpp"
 #include <QObject>
+#include <QQueue>
 
 #include "Clip.h"
 #include "VLCMediaPlayer.h"
@@ -160,8 +161,6 @@ class   ClipWorkflow : public QObject
 
         LibVLCpp::MediaPlayer*  getMediaPlayer();
 
-//        void                    activateOneFrameOnly();
-
     private:
         static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret );
         static void             unlock( ClipWorkflow* clipWorkflow );
@@ -181,18 +180,9 @@ class   ClipWorkflow : public QObject
          */
         LibVLCpp::Media*        m_vlcMedia;
 
-        unsigned char*          m_buffer;
-        //unsigned char*          m_backBuffer;
-        /**
-         *  This allow the render procedure to know in which buffer it should render.
-         *  If true, then the render occurs in the back buffer, which means the
-         *  returned buffer much be the "front" buffer.
-         *  In other term :
-         *  - When m_usingBackBuffer == false, lock() will return m_buffer, and getOutput() m_backBuffer
-         *  - When m_usingBackBuffer == true, lock() will return m_backBuffer, and getOutput() m_buffer
-         */
-        //bool                    m_usingBackBuffer;
-        //QReadWriteLock*         m_backBufferLock;
+        QQueue<unsigned char*>  m_availableBuffers;
+        QQueue<unsigned char*>  m_buffers;
+        QMutex*                 m_buffersLock;
 
         LibVLCpp::MediaPlayer*  m_mediaPlayer;
 

@@ -105,7 +105,7 @@ void    MainWorkflow::startRender()
     computeLength();
 }
 
-unsigned char*    MainWorkflow::getOutput()
+void                MainWorkflow::getOutput()
 {
     QReadLocker     lock( m_renderStartedLock );
     QMutexLocker    lock2( m_renderMutex );
@@ -118,26 +118,19 @@ unsigned char*    MainWorkflow::getOutput()
     m_synchroneRenderingBuffer = NULL;
     if ( m_renderStarted == true )
     {
-        unsigned char* ret;
-
         for ( unsigned int i = 0; i < m_trackCount; ++i )
         {
             if ( m_tracks[i].activated() == false )
                 continue ;
 
-            if ( ( ret = m_tracks[i]->getOutput( m_currentFrame ) ) != NULL )
+            if ( m_tracks[i]->getOutput( m_currentFrame ) != false )
             {
                 m_nbTracksToRender.fetchAndAddAcquire( 1 );
                 break ;
             }
         }
-        if ( ret == NULL )
-            ret = MainWorkflow::blackOutput;
         nextFrame();
-        return ret;
     }
-    else
-        return MainWorkflow::blackOutput;
 }
 
 void        MainWorkflow::pause()
@@ -316,9 +309,7 @@ unsigned char*  MainWorkflow::getSynchroneOutput()
 {
     m_synchroneRenderWaitConditionMutex->lock();
     getOutput();
-//    qDebug() << "Waiting for synchrone output";
     m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
-//    qDebug() << "Got it";
     m_synchroneRenderWaitConditionMutex->unlock();
     if ( m_synchroneRenderingBuffer == NULL )
         return MainWorkflow::blackOutput;

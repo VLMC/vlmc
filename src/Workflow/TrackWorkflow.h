@@ -49,7 +49,7 @@ class   TrackWorkflow : public QObject
         TrackWorkflow( unsigned int trackId );
         ~TrackWorkflow();
 
-        unsigned char*                          getOutput( qint64 currentFrame );
+        bool                                    getOutput( qint64 currentFrame );
         qint64                                  getLength() const;
         void                                    stop();
         /**
@@ -72,7 +72,7 @@ class   TrackWorkflow : public QObject
 
     private:
         void                                    computeLength();
-        unsigned char*                          renderClip( ClipWorkflow* cw, qint64 currentFrame,
+        void                                    renderClip( ClipWorkflow* cw, qint64 currentFrame,
                                                             qint64 start, bool needRepositioning,
                                                             bool pauseAfterRender );
         void                                    preloadClip( ClipWorkflow* cw );

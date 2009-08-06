@@ -28,12 +28,12 @@
 
 ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
                 m_clip( clip ),
-                m_buffer( NULL ),
                 m_mediaPlayer(NULL),
                 m_state( ClipWorkflow::Stopped ),
                 m_requiredState( ClipWorkflow::None )
 {
-    m_buffer = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
+    for ( unsigned int i = 0; i < 5; ++i )
+        m_availableBuffers.enqueue( new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4] );
     m_stateLock = new QReadWriteLock;
     m_requiredStateLock = new QMutex;
     m_waitCond = new QWaitCondition;
@@ -42,10 +42,12 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
     m_renderWaitCond = new WaitCondition;
     m_pausingStateWaitCond = new WaitCondition;
     m_pausedThreadCondWait = new WaitCondition;
+    m_buffersLock = new QMutex;
 }
 
 ClipWorkflow::~ClipWorkflow()
 {
+    delete m_buffersLock;
     delete m_pausedThreadCondWait;
     delete m_pausingStateWaitCond;
     delete m_initWaitCond;
@@ -53,12 +55,21 @@ ClipWorkflow::~ClipWorkflow()
     delete m_waitCond;
     delete m_requiredStateLock;
     delete m_stateLock;
-    delete[] m_buffer;
+    while ( m_buffers.empty() == false )
+        delete[] m_availableBuffers.dequeue();
 }
 
 unsigned char*    ClipWorkflow::getOutput()
 {
-        return m_buffer;
+    QMutexLocker    lock( m_buffersLock );
+
+    qDebug() << "Getting output";
+
+    if ( m_buffers.isEmpty() == true )
+        return NULL;
+    unsigned char* buff = m_buffers.dequeue();
+    m_availableBuffers.enqueue( buff );
+    return buff;
 }
 
 void    ClipWorkflow::checkStateChange()
@@ -75,11 +86,20 @@ void    ClipWorkflow::checkStateChange()
 
 void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret )
 {
-    *pp_ret = cw->m_buffer;
+    qDebug() << "Computing new frame";
+    cw->m_buffersLock->lock();
+    unsigned char*  buff;
+    if ( cw->m_availableBuffers.size() > 0 )
+        buff = cw->m_availableBuffers.dequeue();
+    else
+        buff = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
+    cw->m_buffers.enqueue( buff );
+    *pp_ret = buff;
 }
 
 void    ClipWorkflow::unlock( ClipWorkflow* cw )
 {
+    cw->m_buffersLock->unlock();
     cw->m_stateLock->lockForWrite();
 
     if ( cw->m_state == Rendering )
