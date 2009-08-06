@@ -330,6 +330,8 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
     {
         m_oneFrameOnly = 0;
     }
+    if ( hasRendered == false )
+        clipWorkflowRenderCompleted( NULL );
     return hasRendered;
 }
 
@@ -480,7 +482,6 @@ void        TrackWorkflow::clipWorkflowRenderCompleted( ClipWorkflow* cw )
 {
     if ( cw != NULL )
     {
-        qDebug() << "Track is asking a ClipWorkflow output";
         m_synchroneRenderBuffer = cw->getOutput();
     }
     else

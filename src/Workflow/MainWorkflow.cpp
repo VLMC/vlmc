@@ -293,16 +293,12 @@ void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
     //therefore, m_nbTracksToRender will be equal to -1
     if ( m_nbTracksToRender <= 0 )
     {
-//        qDebug() << "MainWorkflow render is completed. Acquiring synchronization lock";
         //Just a synchronisation barriere
         {
             QMutexLocker    lock( m_synchroneRenderWaitConditionMutex );
         }
-//        qDebug() << "Waking synchronisation threads";
         m_synchroneRenderWaitCondition->wakeAll();
     }
-//    else
-//        qDebug() << m_nbTracksToRender << "tracks left to render";
 }
 
 unsigned char*  MainWorkflow::getSynchroneOutput()
