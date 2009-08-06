@@ -34,14 +34,10 @@ WorkflowRenderer::WorkflowRenderer( MainWorkflow* mainWorkflow ) :
             m_pausedMediaPlayer( false ),
             m_frameByFrameMode( 0 )
 {
+    char        buffer[64];
+
     m_actionsLock = new QReadWriteLock;
     m_media = new LibVLCpp::Media( "fake://" );
-//      --invmem-width <integer>   Width
-//      --invmem-height <integer>  Height
-//      --invmem-lock <string>     Lock function
-//      --invmem-unlock <string>   Unlock function
-//      --invmem-data <string>     Callback data
-    char        buffer[64];
 
     sprintf( buffer, ":invmem-width=%i", VIDEOWIDTH );
     m_media->addOption( ":codec=invmem" );
@@ -86,26 +82,18 @@ WorkflowRenderer::~WorkflowRenderer()
 void*   WorkflowRenderer::lock( void* datas )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
-    qDebug() << "One frame is queryied by the workflowrenderer";
 
     //If renderer is stopping, don't ask for another frame:
     if ( self->m_isRendering == false )
-    {
-//        qDebug() << "WorkflowRenderer doesn't render anymore (stopping state)";
         return self->m_lastFrame;
-    }
     //If a pause was asked, don't try to start a new render... it could (and would) dead lock...
     if ( self->m_pauseAsked == true )
-    {
-//        qDebug() << "WorkflowRenderer is pausing, returning last frame";
         return self->m_lastFrame;
-    }
     //If we're not playing, then where in a paused media player.
     if ( self->m_pausedMediaPlayer == true )
-    {
-//        qDebug() << "Returning last frame, since media player is paused";
         return self->m_lastFrame;
-    }
+
+
     if ( self->m_oneFrameOnly < 2 )
     {
         void* ret;
@@ -118,26 +106,19 @@ void*   WorkflowRenderer::lock( void* datas )
 //            qDebug() << "Got it";
 //        }
         self->m_lastFrame = static_cast<unsigned char*>( ret );
-//        qDebug() << "Returning new frame";
         return ret;
     }
     else
-    {
-//        qDebug() << "Returning last frame, due to m_oneFrameOnly flag (" << self->m_oneFrameOnly << ")";
         return self->m_lastFrame;
-    }
 }
 
 void    WorkflowRenderer::unlock( void* datas )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
-//    qDebug() << "Workflowrenderer::unlock. m_oneFrameOnly ==" << self->m_oneFrameOnly;
     if ( self->m_oneFrameOnly == 1 )
     {
-//        qDebug() << "Pausing back";
         self->internalPlayPause( true );
-//        qDebug() << "Switching m_oneFrameOnly flag to 2";
         self->m_oneFrameOnly = 2;
     }
     self->m_framePlayed = true;
@@ -160,7 +141,6 @@ void        WorkflowRenderer::checkActions()
                 if ( m_pauseAsked == true )
                     continue ;
                 m_pauseAsked = true;
-                qDebug() << "Asking the media player to pause";
                 m_mediaPlayer->pause();
                 //This will also pause the MainWorkflow via a signal/slot
                 break ;
@@ -200,12 +180,8 @@ void        WorkflowRenderer::setPosition( float newPos )
 
 void        WorkflowRenderer::frameByFrameAfterPaused()
 {
-    qDebug() << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<";
-
     m_oneFrameOnly = 1;
     m_mainWorkflow->activateOneFrameOnly();
-
-//    m_mainWorkflow->nextFrame();
 
     internalPlayPause( false );
 }
@@ -227,7 +203,6 @@ void        WorkflowRenderer::nextFrame()
 {
     if ( m_frameByFrameMode == 0 )
     {
-//        disconnect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ) );
         m_frameByFrameMode = 1;
     }
     if ( m_pausedMediaPlayer == true )
@@ -257,10 +232,8 @@ void        WorkflowRenderer::pauseMainWorkflow()
 
 void        WorkflowRenderer::mainWorkflowPaused()
 {
-//    qDebug() << "Mainworkflow is now paused";
     m_paused = true;
     m_pauseAsked = false;
-    qDebug() << "mainWorkflowPaused();, m_oneFrameOnly ==" << m_oneFrameOnly;
     if ( m_frameByFrameMode < 2 )
     {
         emit paused();
@@ -274,8 +247,6 @@ void        WorkflowRenderer::togglePlayPause( bool forcePause )
 {
     if ( m_frameByFrameMode != 0 )
     {
-        qDebug() << "Falling back in normal render mode";
-//        connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ) );
         m_frameByFrameMode = 0;
     }
     if ( m_isRendering == false && forcePause == false )
@@ -342,13 +313,11 @@ void        WorkflowRenderer::__videoPaused()
     {
         m_oneFrameOnly = 0;
     }
-//    qDebug() << "Pausing main workflow";
     pauseMainWorkflow();
 }
 
 void        WorkflowRenderer::__videoPlaying()
 {
-    qDebug() << "__videoPlaying(), m_oneFrameOnly ==" << m_oneFrameOnly;
     if ( m_frameByFrameMode == 0 )
         emit playing();
     m_pausedMediaPlayer = false;

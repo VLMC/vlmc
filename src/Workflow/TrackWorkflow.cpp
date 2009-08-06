@@ -90,10 +90,8 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
 
     cw->getStateLock()->lockForRead();
 
-//    qDebug() << "Rendering clip";
     if ( cw->getState() == ClipWorkflow::ThreadPaused && pauseAfterRender == false )
     {
-//        qDebug() << "Paused clip, but no need to repause it after";
         cw->getStateLock()->unlock();
         //If we must pause after render, we must NOT wake the renderer thread, or it could render more than one frame
         // (since this is for the next/previous frame)
@@ -103,7 +101,6 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
     }
     if ( cw->getState() == ClipWorkflow::Rendering )
     {
-//        qDebug() << "Rendering a 'Rendering' ClipWorkflow";
         //The rendering state meens... whell it means that the frame is
         //beeing rendered, so we wait.
         cw->getStateLock()->unlock();
@@ -117,9 +114,6 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
     //If frame has been rendered :
     if ( cw->getState() == ClipWorkflow::Sleeping || pauseAfterRender == true )
     {
-//        qDebug() << "rendering a sleeping clip workflow";
-//        if ( pauseAfterRender == true )
-//            qDebug() << "Rendering only one frame";
         cw->getStateLock()->unlock();
 
         if ( needRepositioning == true )
@@ -127,7 +121,6 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
             float   pos = ( (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) );
             cw->setPosition( pos );
         }
-//        qDebug() << "getting clip output";
         ret = cw->getOutput();
         if ( pauseAfterRender == false )
         {
@@ -137,22 +130,18 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
         else
         {
             cw->queryStateChange( ClipWorkflow::Rendering );
-//            cw->unpause( true );
             cw->getMediaPlayer()->pause();
             cw->wake();
-//            qDebug() << "Waiting for render now...";
             cw->waitForCompleteRender( true );
             {
                 QMutexLocker    lock( cw->getSleepMutex() );
             }
-//            qDebug() << "Querying state back to pause after render";
             cw->queryStateChange( ClipWorkflow::Paused );
             cw->wake();
         }
     }
     else if ( cw->getState() == ClipWorkflow::Stopped )
     {
-//        qDebug() << "Rendering a stopped clip workflow";
         cw->getStateLock()->unlock();
         cw->initialize( );
         cw->startRender();
@@ -167,7 +156,6 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
     {
         //If the state is Initializing, then the workflow will wait.
         //Otherwise, it will start directly.
-//        qDebug() << "Rendering a ready clip workflow";
         cw->getStateLock()->unlock();
         cw->startRender();
         if ( needRepositioning == true )
@@ -183,7 +171,6 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
     }
     else
     {
-//        qDebug() << "Unexpected ClipWorkflow::State when rendering:" << cw->getState();
         cw->getStateLock()->unlock();
     }
     return ret;
@@ -215,16 +202,13 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
          cw->getState() == ClipWorkflow::Ready ||
          cw->getState() == ClipWorkflow::EndReached )
     {
-//        qDebug() << "Stopping a sleeping / ready / endreached clip. Status == " << cw->getState();
         cw->getStateLock()->unlock();
         cw->queryStateChange( ClipWorkflow::Stopping );
         cw->wake();
         cw->stop();
-//        qDebug() << "Stopping sleeping/ready/endreached clip";
     }
     else if ( cw->getState() == ClipWorkflow::Rendering )
     {
-//        qDebug() << "Stopping a rendering clipworkflow";
         cw->getStateLock()->unlock();
         cw->waitForCompleteRender();
         {
@@ -233,24 +217,19 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
         }
         cw->wake();
         cw->stop();
-//        qDebug() << "Stopped rendering clipworkflow";
     }
     else if ( cw->getState() == ClipWorkflow::Initializing )
     {
-//        qDebug() << "Stopping an Initializing clipworkflow";
         cw->getStateLock()->unlock();
         cw->waitForCompleteInit();
         cw->stop();
-//        qDebug() << "Stopped Initializing clipworkflow";
     }
     else if ( cw->getState() == ClipWorkflow::Paused )
     {
-//        qDebug() << "Stopping a paused clipworkflow";
         cw->getStateLock()->unlock();
         cw->queryStateChange( ClipWorkflow::Stopping );
         cw->wake();
         cw->stop();
-//        qDebug() << "Stopped a paused clipworkflow";
     }
     else if ( cw->getState() == ClipWorkflow::ThreadPaused )
     {
@@ -305,10 +284,7 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
     bool                                        oneFrameOnlyFlag = false;
 
     if ( m_oneFrameOnly == 1 )
-    {
-//        qDebug() << "Activating oneFrameOnlyFlag";
         oneFrameOnlyFlag = true;
-    }
     if ( checkEnd( currentFrame ) == true )
     {
         emit trackEndReached( m_trackId );
@@ -337,10 +313,6 @@ unsigned char*      TrackWorkflow::getOutput( qint64 currentFrame )
         {
             m_nbClipToRender.fetchAndAddAcquire( 1 );
             ret = renderClip( cw, currentFrame, start, needRepositioning, oneFrameOnlyFlag );
-//            if ( oneFrameOnlyFlag == true )
-//            {
-//                cw->pause();
-//            }
             lastFrame = currentFrame;
         }
         //Is it about to be rendered ?
@@ -385,18 +357,20 @@ void                TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
 
             //Locking this mutex ensure that the thread is really asleep, and hasn't
             //just changed the state, and then get pulled back by the scheduler...
-            QMutexLocker    lock( cw->getSleepMutex() );
-            cw->queryStateChange( ClipWorkflow::Pausing );
+            {
+                QMutexLocker    lock( cw->getSleepMutex() );
+                cw->queryStateChange( ClipWorkflow::Pausing );
+            }
             cw->wake();
         }
         else if ( cw->getState() == ClipWorkflow::Rendering )
         {
             cw->getStateLock()->unlock();
-//            qDebug() << "Waiting for complete render";
             cw->waitForCompleteRender();
-//            qDebug() << "Render has been completed... continue pausing";
-            QMutexLocker    lock( cw->getSleepMutex() );
-            cw->queryStateChange( ClipWorkflow::Pausing );
+            {
+                QMutexLocker    lock( cw->getSleepMutex() );
+                cw->queryStateChange( ClipWorkflow::Pausing );
+            }
             cw->wake();
         }
         else if ( cw->getState() == ClipWorkflow::Initializing )
@@ -407,7 +381,7 @@ void                TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
         }
         else
         {
-    //        qDebug() << "Unexpected ClipWorkflow::State when pausing:" << cw->getState();
+//            qDebug() << "Unexpected ClipWorkflow::State when pausing:" << cw->getState();
             cw->getStateLock()->unlock();
         }
         cw->waitForPausingState();
@@ -415,9 +389,7 @@ void                TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
     }
     else
         cw->getStateLock()->unlock();
-//    qDebug() << "Wait for pausedthread state";
     cw->waitForPausedThread();
-//    qDebug() << "Ok thread is paused";
 }
 
 void                TrackWorkflow::pause()
@@ -434,7 +406,6 @@ void                TrackWorkflow::pause()
         ClipWorkflow*   cw = it.value();
 
         cw->getStateLock()->lockForRead();
-//        qDebug() << "Pausing a clip in state" << cw->getState();
         if ( cw->getState() == ClipWorkflow::Stopped )
         {
             cw->getStateLock()->unlock();
@@ -444,7 +415,6 @@ void                TrackWorkflow::pause()
         {
             cw->getStateLock()->unlock();
             m_nbClipToPause.fetchAndAddAcquire( 1 );
-//            connect( cw->getMediaPlayer(), SIGNAL( paused() ), this, SLOT( clipWorkflowPaused() ) );
             pauseClipWorkflow( cw );
         }
         else
@@ -498,8 +468,6 @@ Clip*       TrackWorkflow::removeClip( const QUuid& id )
             ClipWorkflow*   cw = it.value();
             Clip*           clip = cw->getClip();
             m_clips.erase( it );
-//            stopClipWorkflow( cw );
-//            delete cw;
             computeLength();
             return clip;
         }
@@ -513,18 +481,8 @@ void        TrackWorkflow::activateOneFrameOnly()
     m_oneFrameOnly = 1;
 }
 
-//void        TrackWorkflow::clipWorkflowPaused()
-//{
-//    m_nbClipToPause.fetchAndAddAcquire( -1 );
-//    if ( m_nbClipToPause == 0 )
-//    {
-//        emit trackPaused();
-//    }
-//}
-
 void        TrackWorkflow::clipWorkflowRenderCompleted( ClipWorkflow* cw )
 {
-//    qDebug() << "clip workflow render complete. Checking for track completed";
     if ( cw != NULL )
     {
         m_synchroneRenderBuffer = cw->getOutput();
@@ -538,8 +496,6 @@ void        TrackWorkflow::clipWorkflowRenderCompleted( ClipWorkflow* cw )
     //or equal to 0
     if ( m_nbClipToRender <= 0 )
         emit renderCompleted( m_trackId );
-//    else
-//	qDebug() << "Trackworfklow render isn't complete yet." << m_nbClipToRender << "cw remaining";
 }
 
 unsigned char*  TrackWorkflow::getSynchroneOutput()
