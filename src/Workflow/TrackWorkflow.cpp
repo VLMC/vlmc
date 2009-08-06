@@ -248,9 +248,20 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
 //        qDebug() << "Stopping a paused clipworkflow";
         cw->getStateLock()->unlock();
         cw->queryStateChange( ClipWorkflow::Stopping );
-        cw->unpause();
+        cw->wake();
         cw->stop();
 //        qDebug() << "Stopped a paused clipworkflow";
+    }
+    else if ( cw->getState() == ClipWorkflow::ThreadPaused )
+    {
+        cw->getStateLock()->unlock();
+        //Ensure the thread is really paused...
+        {
+            QMutexLocker    lock( cw->getSleepMutex() );
+        }
+        cw->queryStateChange( ClipWorkflow::Stopped );
+        cw->wake();
+        cw->stop();
     }
     else
     {
