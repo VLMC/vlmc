@@ -34,6 +34,7 @@
 #include "Timeline.h"
 #include "WorkflowFileRenderer.h"
 #include "PreviewWidget.h"
+#include "ListViewMediaItem.h"
 
 class MainWindow : public QMainWindow
 {
@@ -75,6 +76,7 @@ private slots:
     void on_actionRender_triggered();
     void on_actionNew_Project_triggered();
     void on_actionOpen_Project_triggered();
+    void mediaListItemDoubleClicked( QListWidgetItem* );
 
 signals:
     void translateDockWidgetTitle();

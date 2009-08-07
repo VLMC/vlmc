@@ -39,7 +39,6 @@ class MetaDataWorker : public QThread
     public:
         MetaDataWorker( Media* media );
         ~MetaDataWorker();
-        void                        setRenderWidget( QWidget* widget );
         virtual void                run();
 
     private:
@@ -62,7 +61,6 @@ class MetaDataWorker : public QThread
         LibVLCpp::MediaPlayer*      m_mediaPlayer;
 
         Media*                      m_currentMedia;
-        QWidget*                    m_renderWidget;
         QString                     m_tmpSnapshotFilename;
 
         bool                        m_mediaIsPlaying;

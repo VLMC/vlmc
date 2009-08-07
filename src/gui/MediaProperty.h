@@ -1,5 +1,5 @@
 /*****************************************************************************
- * MetaDataManager.h: Launch the metadata threads
+ * MediaProperty.h: Handle the media property and meta tags edition
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,27 +20,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#ifndef MEDIAPROPERTY_H
+#define MEDIAPROPERTY_H
 
-#ifndef METADATAMANAGER_H
-#define METADATAMANAGER_H
-
-#include <QObject>
-
+#include <QDialog>
 #include "Media.h"
-#include "Singleton.hpp"
 
-class       MetaDataManager : public QObject, public Singleton<MetaDataManager>
+namespace Ui {
+    class MediaProperty;
+}
+
+class MediaProperty : public QDialog
 {
     Q_OBJECT
-    Q_DISABLE_COPY( MetaDataManager );
+public:
+    MediaProperty( const Media* media, QWidget *parent = 0 );
+    ~MediaProperty();
 
-    friend class        Singleton<MetaDataManager>;
-    public slots:
-        void            newMediaLoaded( Media* );
+protected:
+    void changeEvent(QEvent *e);
 
-    private:
-        MetaDataManager();
-        ~MetaDataManager();
+private:
+    Ui::MediaProperty*  ui;
+    const Media*        m_media;
 };
 
-#endif // METADATAMANAGER_H
+#endif // MEDIAPROPERTY_H

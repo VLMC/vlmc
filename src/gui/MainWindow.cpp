@@ -39,6 +39,7 @@
 #include "WorkflowRenderer.h"
 #include "ClipRenderer.h"
 #include "UndoStack.h"
+#include "MediaProperty.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
@@ -123,6 +124,8 @@ void        MainWindow::setupLibrary()
               m_clipPreview->getGenericRenderer(), SLOT( setMedia(const Media*) ) );
     connect( Library::getInstance(), SIGNAL( mediaRemoved( const QUuid& ) ),
              m_clipPreview->getGenericRenderer(), SLOT( mediaUnloaded( QUuid ) ) );
+    connect( libraryWidget->getVideoListWidget(), SIGNAL( itemDoubleClicked( QListWidgetItem* ) ),
+             this, SLOT( mediaListItemDoubleClicked( QListWidgetItem* ) ) );
 }
 
 void MainWindow::createStatusBar()
@@ -253,4 +256,11 @@ void MainWindow::on_actionFullscreen_triggered( bool checked )
 void MainWindow::registerWidgetInViewMenu( QDockWidget* widget )
 {
     m_ui.menuView->addAction( widget->toggleViewAction() );
+}
+
+void    MainWindow::mediaListItemDoubleClicked( QListWidgetItem* qItem )
+{
+    ListViewMediaItem* item = static_cast<ListViewMediaItem*>( qItem );
+    MediaProperty* mp = new MediaProperty( item->getMedia(), this );
+    mp->show();
 }

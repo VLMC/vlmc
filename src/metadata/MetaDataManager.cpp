@@ -27,18 +27,15 @@
 
 MetaDataManager::MetaDataManager()
 {
-    connect( Library::getInstance(), SIGNAL( newMediaLoaded( Media* ) ),this, SLOT( newMediaLoaded( Media* ) ) );
-    m_renderWidget = new QWidget;
+    connect( Library::getInstance(), SIGNAL( newMediaLoaded( Media* ) ), this, SLOT( newMediaLoaded( Media* ) ) );
 }
 
 MetaDataManager::~MetaDataManager()
 {
-    delete m_renderWidget;
 }
 
 void        MetaDataManager::newMediaLoaded( Media* media )
 {
     MetaDataWorker* w = new MetaDataWorker( media );
-    w->setRenderWidget( m_renderWidget );
     w->start();
 }

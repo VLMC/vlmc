@@ -40,12 +40,6 @@ MetaDataWorker::~MetaDataWorker()
         delete m_mediaPlayer;
 }
 
-void    MetaDataWorker::setRenderWidget( QWidget* widget )
-{
-    m_renderWidget = widget;
-    m_mediaPlayer->setDrawable( m_renderWidget->winId() );
-}
-
 void    MetaDataWorker::run()
 {
     if ( m_currentMedia->getFileType() == Media::Video )
@@ -66,6 +60,7 @@ void    MetaDataWorker::computeVideoMetaData()
 {
     //Disabling audio for this specific use of the media
     m_currentMedia->addVolatileParam( ":no-audio", ":audio" );
+    m_currentMedia->addVolatileParam( ":vout=dummy", ":vout=" );
 
     connect( m_mediaPlayer, SIGNAL( lengthChanged() ), this, SLOT( entrypointLengthChanged() ) );
 }

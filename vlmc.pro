@@ -47,7 +47,8 @@ SOURCES += src/main.cpp \
     src/API/ModuleManager.cpp \
     src/WorkflowFileRenderer.cpp \
     src/UndoStack.cpp \
-    src/metadata/MetaDataManager.cpp
+    src/metadata/MetaDataManager.cpp \
+    src/gui/MediaProperty.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -93,7 +94,8 @@ HEADERS += src/gui/MainWindow.h \
     src/tools/Pool.hpp \
     src/UndoStack.h \
     src/tools/WaitCondition.hpp \
-    src/metadata/MetaDataManager.h
+    src/metadata/MetaDataManager.h \
+    src/gui/MediaProperty.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \
@@ -102,8 +104,9 @@ FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/About.ui \
     src/gui/ui/Transcode.ui \
     src/gui/ui/FileBrowser.ui \
-    src/gui/ui/WorkflowFileRenderer.ui
-FORMS += 
+    src/gui/ui/WorkflowFileRenderer.ui \
+    src/gui/ui/MediaProperty.ui
+
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts
