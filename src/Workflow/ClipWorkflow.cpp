@@ -30,7 +30,9 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
                 m_clip( clip ),
                 m_mediaPlayer(NULL),
                 m_state( ClipWorkflow::Stopped ),
-                m_requiredState( ClipWorkflow::None )
+                m_requiredState( ClipWorkflow::None ),
+                m_rendering( false ),
+                m_initFlag( false )
 {
     for ( unsigned int i = 0; i < 5; ++i )
         m_availableBuffers.enqueue( new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4] );
@@ -56,6 +58,8 @@ ClipWorkflow::~ClipWorkflow()
     delete m_requiredStateLock;
     delete m_stateLock;
     while ( m_buffers.empty() == false )
+        delete[] m_buffers.dequeue();
+    while ( m_availableBuffers.empty() == false )
         delete[] m_availableBuffers.dequeue();
 }
 
@@ -63,12 +67,18 @@ unsigned char*    ClipWorkflow::getOutput()
 {
     QMutexLocker    lock( m_buffersLock );
 
-    qDebug() << "Getting output";
+    if ( m_mediaPlayer->isPlaying() == false )
+    {
+        qDebug() << "Generating in same buffer as last time";
+        return m_buffers.head();
+    }
+
 
     if ( m_buffers.isEmpty() == true )
         return NULL;
     unsigned char* buff = m_buffers.dequeue();
     m_availableBuffers.enqueue( buff );
+    qDebug() << "Getting output. Buffers... Available:" << m_availableBuffers.size() << "Used:" << m_buffers.size();
     return buff;
 }
 
@@ -86,9 +96,19 @@ void    ClipWorkflow::checkStateChange()
 
 void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret )
 {
-    qDebug() << "Computing new frame";
+    qDebug() << "Buffers... Available:" << cw->m_availableBuffers.size() << "Used:" << cw->m_buffers.size();
     cw->m_buffersLock->lock();
     unsigned char*  buff;
+    if ( cw->m_mediaPlayer->isPlaying() == false )
+    {
+        if ( cw->m_buffers.size() > 0 )
+            *pp_ret = cw->m_buffers.last();
+        else
+            *pp_ret = cw->m_availableBuffers.head();
+        qDebug() << "Using same buffer than last time";
+        return ;
+    }
+    qDebug() << "New frame";
     if ( cw->m_availableBuffers.size() > 0 )
         buff = cw->m_availableBuffers.dequeue();
     else
@@ -255,6 +275,8 @@ void            ClipWorkflow::stop()
         QMutexLocker    lock( m_requiredStateLock );
         m_requiredState = ClipWorkflow::None;
         delete m_vlcMedia;
+        m_initFlag = false;
+        m_rendering = false;
     }
     else
         qDebug() << "ClipWorkflow has already been stopped";

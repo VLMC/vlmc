@@ -178,6 +178,7 @@ void                TrackWorkflow::preloadClip( ClipWorkflow* cw )
 
     if ( cw->getState() == ClipWorkflow::Stopped )
     {
+        qDebug() << "Preloading clip";
         cw->getStateLock()->unlock();
         cw->initialize();
         return ;

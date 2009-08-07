@@ -201,6 +201,18 @@ class   ClipWorkflow : public QObject
         WaitCondition*          m_pausingStateWaitCond;
         WaitCondition*          m_pausedThreadCondWait;
 
+        /**
+         *  While this flag is set to false, we will use the same buffer, to prevent
+         *  having X buffers with the same picture (when media player is paused mainly)
+         */
+        bool                                    m_rendering;
+        /**
+         *  This flag is here to avoid multiple connection to the mediaPlayer* slots.
+         *  It's essentially a nasty hack due to the multiples calls to lock/unlock when
+         *  the render is started, and that cannot really be avoided...
+         */
+        bool                                    m_initFlag;
+
     private slots:
         void                    pauseAfterPlaybackStarted();
         void                    initializedMediaPlayer();
