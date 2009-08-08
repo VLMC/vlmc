@@ -2,6 +2,7 @@
 #include <QTime>
 #include <QPushButton>
 #include <QStringListModel>
+#include <QInputDialog>
 
 #include "MediaProperty.h"
 #include "ui_MediaProperty.h"
@@ -31,6 +32,8 @@ MediaProperty::MediaProperty( Media* media, QWidget *parent ) :
 
     QStringListModel*   model = new QStringListModel( media->getMetaTags(), this );
     ui->metaTagsView->setModel( model );
+
+    connect( ui->addTagButton, SIGNAL( clicked() ), this, SLOT( addTagRequired() ) );
 }
 
 MediaProperty::~MediaProperty()
@@ -54,5 +57,26 @@ void MediaProperty::changeEvent( QEvent *e )
 void    MediaProperty::apply()
 {
     QStringListModel* model = dynamic_cast<QStringListModel*>( ui->metaTagsView->model() );
+    if ( model == NULL )
+        return ;
     m_media->setMetaTags( model->stringList() );
+}
+
+void    MediaProperty::addTagRequired()
+{
+    bool                ok;
+    QString             newTags = QInputDialog::getText( this, tr( "New tags edition" ),
+                                            tr( "Enter tags (you can enter multiple tags, separated by a comma)" ),
+                                            QLineEdit::Normal, "", &ok );
+    if ( ok == true && newTags.length() > 0 )
+    {
+        QStringListModel*   model = dynamic_cast<QStringListModel*>( ui->metaTagsView->model() );
+        if ( model == NULL )
+            return ;
+        QStringList         list = model->stringList();
+        QStringList         toAdd = newTags.split( ",", QString::SkipEmptyParts );
+        list.append( toAdd );
+        model->setStringList( list );
+        ui->metaTagsView->update( QModelIndex() );
+    }
 }
