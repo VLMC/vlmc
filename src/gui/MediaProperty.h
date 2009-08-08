@@ -25,6 +25,7 @@
 
 #include <QDialog>
 #include "Media.h"
+#include <QAbstractButton>
 
 namespace Ui {
     class MediaProperty;
@@ -39,6 +40,9 @@ public:
 
 protected:
     void changeEvent(QEvent *e);
+
+private slots:
+    void        apply();
 
 private:
     Ui::MediaProperty*  ui;

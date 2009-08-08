@@ -126,6 +126,10 @@ public:
     QVector<int*>               getAudioFrameList() { return m_audioData.frameList; }
     unsigned int                getAudioNbSample() { return m_audioData.nbSample; }
 
+    const QStringList&          getMetaTags() const;
+    void                        setMetaTags( const QStringList& tags );
+    bool                        matchMetaTag( const QString& tag ) const;
+
 private:
     void                        setFileType();
 
@@ -145,6 +149,7 @@ protected:
     int*                        m_audioSpectrum;
     audioData                   m_audioData;
     FileType                    m_fileType;
+    QStringList                 m_metaTags;
 
 signals:
     void                        snapshotChanged();

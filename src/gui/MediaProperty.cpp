@@ -1,5 +1,7 @@
 #include <QtDebug>
 #include <QTime>
+#include <QPushButton>
+#include <QStringListModel>
 
 #include "MediaProperty.h"
 #include "ui_MediaProperty.h"
@@ -22,6 +24,13 @@ MediaProperty::MediaProperty( const Media* media, QWidget *parent ) :
     ui->fpsValueLabel->setText( QString::number( m_media->getFps() ) );
     ui->snapshotLabel->setPixmap( m_media->getSnapshot().scaled( 128, 128, Qt::KeepAspectRatio ) );
     setWindowTitle( m_media->getFileInfo()->fileName() + " " + tr( "properties" ) );
+
+    const QPushButton* button = ui->buttonBox->button( QDialogButtonBox::Apply );
+    Q_ASSERT( button != NULL);
+    connect( button, SIGNAL( clicked() ), this, SLOT( apply() ) );
+
+    QStringListModel*   model = new QStringListModel( media->getMetaTags(), this );
+    ui->metaTagsView->setModel( model );
 }
 
 MediaProperty::~MediaProperty()
@@ -40,4 +49,9 @@ void MediaProperty::changeEvent( QEvent *e )
     default:
         break;
     }
+}
+
+void    MediaProperty::apply()
+{
+
 }

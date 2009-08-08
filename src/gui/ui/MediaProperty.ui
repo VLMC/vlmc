@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>450</width>
     <height>300</height>
    </rect>
   </property>
@@ -14,9 +14,6 @@
    <string/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="0" colspan="6">
-    <widget class="QListWidget" name="listWidget"/>
-   </item>
    <item row="0" column="0">
     <widget class="QFrame" name="frame">
      <property name="frameShape">
@@ -196,6 +193,16 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="3" column="0" colspan="6">
+    <widget class="QListView" name="metaTagsView"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Metatags :</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
