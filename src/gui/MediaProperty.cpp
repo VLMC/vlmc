@@ -77,6 +77,5 @@ void    MediaProperty::addTagRequired()
         QStringList         toAdd = newTags.split( ",", QString::SkipEmptyParts );
         list.append( toAdd );
         model->setStringList( list );
-        ui->metaTagsView->update( QModelIndex() );
     }
 }
