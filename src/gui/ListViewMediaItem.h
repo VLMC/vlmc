@@ -47,7 +47,7 @@ public:
      * \param parent parent widget
      * \param type
      */
-    ListViewMediaItem( const Media* media, Media::FileType fType, QListWidget* parent = 0, int type = Type );
+    ListViewMediaItem( Media* media, Media::FileType fType, QListWidget* parent = 0, int type = Type );
 
     /**
      *  \brief Destructor
@@ -60,7 +60,7 @@ public:
      */
     Media::FileType             getFileType() const { return m_fileType; }
 
-    const Media*                getMedia() const;
+    Media*                      getMedia();
 
     //void                      setInputMedia( InputMedia* inputMedia ) { m_inputMedia = inputMedia; }
 
@@ -73,7 +73,7 @@ private:
     /**
      * \Instance of the InputMedia
      */
-    const Media*            m_media;
+    Media*                  m_media;
 
     /**
      *  The truncated name of the media

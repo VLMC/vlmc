@@ -6,7 +6,7 @@
 #include "MediaProperty.h"
 #include "ui_MediaProperty.h"
 
-MediaProperty::MediaProperty( const Media* media, QWidget *parent ) :
+MediaProperty::MediaProperty( Media* media, QWidget *parent ) :
     QDialog( parent ),
     ui( new Ui::MediaProperty ),
     m_media( media )
@@ -53,5 +53,6 @@ void MediaProperty::changeEvent( QEvent *e )
 
 void    MediaProperty::apply()
 {
-
+    QStringListModel* model = dynamic_cast<QStringListModel*>( ui->metaTagsView->model() );
+    m_media->setMetaTags( model->stringList() );
 }

@@ -35,7 +35,7 @@ class MediaProperty : public QDialog
 {
     Q_OBJECT
 public:
-    MediaProperty( const Media* media, QWidget *parent = 0 );
+    MediaProperty( Media* media, QWidget *parent = 0 );
     ~MediaProperty();
 
 protected:
@@ -46,7 +46,7 @@ private slots:
 
 private:
     Ui::MediaProperty*  ui;
-    const Media*        m_media;
+    Media*              m_media;
 };
 
 #endif // MEDIAPROPERTY_H

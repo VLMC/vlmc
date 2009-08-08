@@ -27,7 +27,7 @@
 
 #define MAX_NAME_LENGTH 10
 
-ListViewMediaItem::ListViewMediaItem( const Media* media, Media::FileType fType, QListWidget* parent, int type ) :
+ListViewMediaItem::ListViewMediaItem( Media* media, Media::FileType fType, QListWidget* parent, int type ) :
         QListWidgetItem( parent, type ), m_media ( media )
 {
     m_fileType = fType;
@@ -62,7 +62,7 @@ void        ListViewMediaItem::snapshotChanged()
                 "Length: " + length.toString() );
 }
 
-const Media*     ListViewMediaItem::getMedia() const
+Media*      ListViewMediaItem::getMedia()
 {
     return m_media;
 }

@@ -54,7 +54,7 @@ LibraryWidget::~LibraryWidget()
     }
 }
 
-ListViewMediaItem*  LibraryWidget::addMedia( const Media* media )
+ListViewMediaItem*  LibraryWidget::addMedia( Media* media )
 {
     Media::FileType fileType = media->getFileType();
     ListViewMediaItem* item = new ListViewMediaItem( media, fileType );
