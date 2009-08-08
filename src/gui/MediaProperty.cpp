@@ -33,7 +33,8 @@ MediaProperty::MediaProperty( Media* media, QWidget *parent ) :
     QStringListModel*   model = new QStringListModel( media->getMetaTags(), this );
     ui->metaTagsView->setModel( model );
 
-    connect( ui->addTagButton, SIGNAL( clicked() ), this, SLOT( addTagRequired() ) );
+    connect( ui->addTagsButton, SIGNAL( clicked() ), this, SLOT( addTagsRequired() ) );
+    connect( ui->deleteTagsButton, SIGNAL( clicked() ), this, SLOT( removeTagsRequired() ) );
 }
 
 MediaProperty::~MediaProperty()
@@ -62,7 +63,7 @@ void    MediaProperty::apply()
     m_media->setMetaTags( model->stringList() );
 }
 
-void    MediaProperty::addTagRequired()
+void    MediaProperty::addTagsRequired()
 {
     bool                ok;
     QString             newTags = QInputDialog::getText( this, tr( "New tags edition" ),
@@ -78,4 +79,21 @@ void    MediaProperty::addTagRequired()
         list.append( toAdd );
         model->setStringList( list );
     }
+}
+
+void    MediaProperty::removeTagsRequired()
+{
+    QStringListModel*   model = dynamic_cast<QStringListModel*>( ui->metaTagsView->model() );
+    if ( model == NULL )
+        return ;
+    QItemSelectionModel*    selected = ui->metaTagsView->selectionModel();
+    QModelIndexList         listSelected = selected->selectedIndexes();
+    QStringList             list = model->stringList();
+    while ( listSelected.empty() == false )
+    {
+        QVariant    elem = model->data( listSelected.first(), Qt::DisplayRole );
+        list.removeOne( elem.toString() );
+        listSelected.removeFirst();
+    }
+    model->setStringList( list );
 }

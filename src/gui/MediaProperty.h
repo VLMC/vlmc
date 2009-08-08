@@ -43,7 +43,8 @@ protected:
 
 private slots:
     void        apply();
-    void        addTagRequired();
+    void        addTagsRequired();
+    void        removeTagsRequired();
 
 private:
     Ui::MediaProperty*  ui;
