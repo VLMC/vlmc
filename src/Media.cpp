@@ -215,5 +215,14 @@ void                    Media::setMetaTags( const QStringList& tags )
 
 bool                    Media::matchMetaTag( const QString& tag ) const
 {
-    return m_metaTags.contains( tag, Qt::CaseInsensitive );
+    if ( tag.length() == 0 )
+        return true;
+    QString metaTag;
+    foreach ( metaTag, m_metaTags )
+    {
+        if ( metaTag.startsWith( tag, Qt::CaseInsensitive ) == true )
+            return true;
+    }
+    return false;
+//    m_metaTags.contains( tag, Qt::CaseInsensitive );
 }

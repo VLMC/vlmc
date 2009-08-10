@@ -213,6 +213,10 @@
      <property name="text">
       <string>...</string>
      </property>
+     <property name="icon">
+      <iconset resource="../../../ressources.qrc">
+       <normaloff>:/images/images/add.png</normaloff>:/images/images/add.png</iconset>
+     </property>
     </widget>
    </item>
    <item row="1" column="2">
@@ -220,11 +224,17 @@
      <property name="text">
       <string>...</string>
      </property>
+     <property name="icon">
+      <iconset resource="../../../ressources.qrc">
+       <normaloff>:/images/images/remove.png</normaloff>:/images/images/remove.png</iconset>
+     </property>
     </widget>
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../../ressources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

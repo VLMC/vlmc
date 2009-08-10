@@ -72,6 +72,7 @@ private:
 public slots:
     void                                newMediaLoaded( Media* );
     void                                mediaRemoved( const QUuid& );
+    void                                updateFilter( const QString& );
 
 private slots:
     void                                on_pushButtonAddMedia_clicked();

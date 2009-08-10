@@ -120,4 +120,3 @@ void MediaListWidget::paintEvent( QPaintEvent* event )
     }
     QListWidget::paintEvent( event );
 }
-

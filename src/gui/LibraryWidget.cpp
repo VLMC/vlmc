@@ -42,6 +42,8 @@ LibraryWidget::LibraryWidget( QWidget *parent ) : QWidget( parent ), m_firstDire
 
     if ( LibraryWidget::m_medias == NULL )
         LibraryWidget::m_medias = new QList<ListViewMediaItem*>();
+    connect( m_ui.filterInput, SIGNAL( textChanged( QString ) ), this, SLOT( updateFilter( QString ) ) );
+    connect( m_ui.clearFilterButton, SIGNAL( clicked() ), m_ui.filterInput, SLOT( clear() ) );
 }
 
 LibraryWidget::~LibraryWidget()
@@ -224,4 +226,19 @@ const MediaListWidget*      LibraryWidget::getVideoListWidget() const
 const MediaListWidget*      LibraryWidget::getAudioListWidget() const
 {
     return m_ui.listWidgetAudio;
+}
+
+void                        LibraryWidget::updateFilter( const QString& filter )
+{
+    qDebug() << "Updating filter with:"<<filter;
+    QListWidget* mediaList = ( QListWidget* )( m_ui.LibraryTabs->currentWidget()->children().back() );
+    unsigned int count = mediaList->count();
+    for ( unsigned int i = 0; i < count; ++i )
+    {
+        ListViewMediaItem*  item = static_cast<ListViewMediaItem*>( mediaList->item( i ) );
+        if ( item != NULL )
+        {
+            item->setHidden( !(item->getMedia()->matchMetaTag( filter )) );
+        }
+    }
 }
