@@ -32,8 +32,8 @@ MediaListWidget::MediaListWidget( QWidget* parent ) :
         m_lastClicked( NULL )
 {
     m_svgRenderer = new QSvgRenderer( this );
-    setIconSize( QSize( 128, 128 ) );
-    setContentsMargins( 2, 2,2, 2 );
+    setIconSize( QSize( 64, 64 ) );
+    setContentsMargins( 2, 2, 2, 2 );
     setAcceptDrops( true );
 }
 
