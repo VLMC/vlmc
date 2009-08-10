@@ -77,6 +77,7 @@ public slots:
 private slots:
     void                                on_pushButtonAddMedia_clicked();
     void                                on_pushButtonRemoveMedia_clicked();
+    void                                tabChanged( int );
 
 signals:
 //    void    listViewMediaAdded(Clip* clip);
