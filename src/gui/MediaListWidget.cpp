@@ -66,7 +66,8 @@ void    MediaListWidget::mousePressEvent( QMouseEvent* event )
     if ( item->getMedia() != m_lastClicked )
     {
         m_lastClicked = item->getMedia();
-        emit selectedMediaChanged( m_lastClicked );
+        //TODO: change this piece of ....
+        emit selectedClipChanged( new Clip( m_lastClicked ) );
     }
 }
 

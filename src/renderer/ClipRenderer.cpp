@@ -29,7 +29,7 @@ ClipRenderer::ClipRenderer() :
     GenericRenderer(),
     m_clipLoaded( false ),
     m_vlcMedia( NULL ),
-    m_selectedMedia( NULL ),
+    m_selectedClip( NULL ),
     m_mediaChanged( false )
 {
     connect( m_mediaPlayer,     SIGNAL( stopped() ),            this,   SLOT( __videoStopped() ) );
@@ -44,9 +44,9 @@ ClipRenderer::~ClipRenderer()
     stop();
 }
 
-void        ClipRenderer::setMedia( const Media* media )
+void        ClipRenderer::setClip( Clip* clip )
 {
-    m_selectedMedia = media;
+    m_selectedClip = clip;
     if ( m_isRendering == true )
         m_mediaChanged = true;
     else
@@ -55,12 +55,12 @@ void        ClipRenderer::setMedia( const Media* media )
 
 void        ClipRenderer::startPreview()
 {
-    if ( m_selectedMedia == NULL )
+    if ( m_selectedClip == NULL )
         return ;
     //If an old media is found, we delete it, and disconnect
     if ( m_vlcMedia != NULL )
         delete m_vlcMedia;
-    m_vlcMedia = new LibVLCpp::Media( m_selectedMedia->getFileInfo()->absoluteFilePath() );
+    m_vlcMedia = new LibVLCpp::Media( m_selectedClip->getParent()->getFileInfo()->absoluteFilePath() );
 
     m_mediaPlayer->setMedia( m_vlcMedia );
 
@@ -135,12 +135,12 @@ void        ClipRenderer::previousFrame()
 
 void        ClipRenderer::mediaUnloaded( const QUuid& uuid )
 {
-    if ( m_selectedMedia != NULL && m_selectedMedia->getUuid() == uuid )
+    if ( m_selectedClip != NULL && m_selectedClip->getUuid() == uuid )
     {
         m_mediaPlayer->stop();
         qDebug() << "Media unloaded";
         m_clipLoaded = false;
-        m_selectedMedia = NULL;
+        m_selectedClip = NULL;
         m_isRendering = false;
         m_paused = false;
     }

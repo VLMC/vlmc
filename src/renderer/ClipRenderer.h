@@ -27,7 +27,7 @@
 #include <QObject>
 
 #include "VLCMediaPlayer.h"
-#include "Media.h"
+#include "Clip.h"
 #include "GenericRenderer.h"
 
 //TODO: This should really share a common interface with RenderPreviewWorkflow
@@ -52,7 +52,7 @@ private:
 private:
     bool                    m_clipLoaded;
     LibVLCpp::Media*        m_vlcMedia;
-    const Media*            m_selectedMedia;
+    Clip*                   m_selectedClip;
     /**
      *  \brief  This flags is used to know if a new media has been selected in the
      * library. If so, we must relaunch the render if the play button is clicked again.
@@ -60,7 +60,7 @@ private:
     bool                    m_mediaChanged;
 
 public slots:
-    virtual void            setMedia( const Media* media );
+    virtual void            setClip( Clip* clip );
     virtual void            mediaUnloaded( const QUuid& );
 
     void                    __positionChanged();

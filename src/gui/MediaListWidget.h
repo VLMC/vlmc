@@ -31,7 +31,7 @@
 #include <QApplication>
 #include <QSvgRenderer>
 #include "ListViewMediaItem.h"
-#include "Media.h"
+#include "Clip.h"
 
 class MediaListWidget : public QListWidget
 {
@@ -48,10 +48,10 @@ private:
     Media::FileType     m_Type;
     QPoint              m_dragStartPos;
     QSvgRenderer*       m_svgRenderer;
-    const Media*        m_lastClicked;
+    Media*              m_lastClicked;
 
 signals:
-    void                selectedMediaChanged( const Media* newMedia );
+    void                selectedClipChanged( Clip* newClip );
 };
 
 #endif // MEDIALISTWIDGET_H

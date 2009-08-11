@@ -84,7 +84,7 @@ class   WorkflowRenderer : public GenericRenderer
         bool                m_pausedMediaPlayer;
 
     public slots:
-        void                setMedia( const Media* ){}
+        void                setClip( Clip* ){}
         void                mediaUnloaded( const QUuid& ) {}
 
         void                mainWorkflowPaused();

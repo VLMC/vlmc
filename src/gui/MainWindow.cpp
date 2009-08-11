@@ -120,8 +120,8 @@ void        MainWindow::setupLibrary()
              libraryWidget,
              SLOT( mediaRemoved( const QUuid& ) ) );
 
-    connect( libraryWidget->getVideoListWidget(), SIGNAL( selectedMediaChanged(const Media*) ),
-              m_clipPreview->getGenericRenderer(), SLOT( setMedia(const Media*) ) );
+    connect( libraryWidget->getVideoListWidget(), SIGNAL( selectedClipChanged( Clip* ) ),
+              m_clipPreview->getGenericRenderer(), SLOT( setClip( Clip* ) ) );
     connect( Library::getInstance(), SIGNAL( mediaRemoved( const QUuid& ) ),
              m_clipPreview->getGenericRenderer(), SLOT( mediaUnloaded( QUuid ) ) );
     connect( libraryWidget->getVideoListWidget(), SIGNAL( itemDoubleClicked( QListWidgetItem* ) ),
