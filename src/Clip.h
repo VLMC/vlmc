@@ -44,7 +44,8 @@ class   Clip : public QObject
 
     public:
         Clip( Media* parent );
-        Clip( Clip* creator, qint64 begin, qint64 end );
+        Clip( Media* parent, float begin, float end );
+        Clip( Clip* creator, float begin, float end );
         virtual ~Clip();
 
         /**

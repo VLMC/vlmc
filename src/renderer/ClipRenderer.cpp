@@ -65,6 +65,7 @@ void        ClipRenderer::startPreview()
     m_mediaPlayer->setMedia( m_vlcMedia );
 
     m_mediaPlayer->play();
+    m_mediaPlayer->setPosition( m_selectedClip->getBegin() );
     m_clipLoaded = true;
     m_isRendering = true;
     m_paused = false;
@@ -75,7 +76,8 @@ void        ClipRenderer::setPosition( float newPos )
 {
     if ( m_clipLoaded == false || m_isRendering == false )
         return ;
-    m_mediaPlayer->setPosition( newPos );
+    float   pos = newPos * ( m_selectedClip->getEnd() - m_selectedClip->getBegin() ) + m_selectedClip->getBegin();
+    m_mediaPlayer->setPosition( pos );
 }
 
 void        ClipRenderer::stop()
@@ -109,8 +111,13 @@ void        ClipRenderer::togglePlayPause( bool forcePause )
     else if ( forcePause == false )
     {
         if ( m_isRendering == false )
+        {
+            m_mediaPlayer->play();
+            m_mediaPlayer->setPosition( m_selectedClip->getBegin() );
             m_isRendering = true;
-        m_mediaPlayer->play();
+        }
+        else
+            m_mediaPlayer->play();
         m_paused = false;
     }
 }
@@ -138,7 +145,6 @@ void        ClipRenderer::mediaUnloaded( const QUuid& uuid )
     if ( m_selectedClip != NULL && m_selectedClip->getUuid() == uuid )
     {
         m_mediaPlayer->stop();
-        qDebug() << "Media unloaded";
         m_clipLoaded = false;
         m_selectedClip = NULL;
         m_isRendering = false;
@@ -168,7 +174,9 @@ void        ClipRenderer::__positionChanged()
 {
     if ( m_clipLoaded == false)
         return ;
-    emit positionChanged( m_mediaPlayer->getPosition() );
+    float pos = ( m_mediaPlayer->getPosition() - m_selectedClip->getBegin() ) /
+                ( m_selectedClip->getEnd() - m_selectedClip->getBegin() );
+    emit positionChanged( pos );
 }
 
 void        ClipRenderer::__endReached()
