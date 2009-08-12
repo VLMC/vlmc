@@ -75,10 +75,11 @@ qint64      Clip::getLength() const
 
 void        Clip::computeLength()
 {
-    qDebug() << "Begin:" << m_begin << "End:" << m_end << "Parent length" << m_parent->getLength();
+    float   fps = m_parent->getFps();
+    if ( fps < 0.1f )
+        fps = FPS;
     qint64 nbMs = (qint64)( ( m_end - m_begin ) * (float)m_parent->getLength() );
-    m_length = (nbMs / 1000) * FPS;
-    qDebug() << "Computing length. nbMs:" << nbMs << "m_length:" << m_length;
+    m_length = (nbMs / 1000) * fps;
 }
 
 const QUuid&    Clip::getUuid() const

@@ -228,7 +228,6 @@ bool                    Media::matchMetaTag( const QString& tag ) const
 
 void                    Media::emitMetaDataComputed()
 {
-    qDebug() << "Emmiting";
     emit metaDataComputed();
     emit metaDataComputed( this );
 }
