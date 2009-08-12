@@ -120,6 +120,7 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
         if ( needRepositioning == true )
         {
             float   pos = ( (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) );
+            pos = pos * ( cw->getClip()->getEnd() - cw->getClip()->getBegin() ) + cw->getClip()->getBegin();
             cw->setPosition( pos );
         }
         ret = cw->getOutput();
@@ -142,6 +143,7 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
         if ( start != currentFrame ) //Clip was not started as its real begining
         {
             float   pos = ( (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) );
+            pos = pos * ( cw->getClip()->getEnd() - cw->getClip()->getBegin() ) + cw->getClip()->getBegin();
             cw->setPosition( pos );
         }
     }
@@ -155,6 +157,7 @@ unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentF
         if ( needRepositioning == true )
         {
             float   pos = ( (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) );
+            pos = pos * ( cw->getClip()->getEnd() - cw->getClip()->getBegin() ) + cw->getClip()->getBegin();
             cw->setPosition( pos );
         }
     }
