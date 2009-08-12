@@ -44,7 +44,7 @@ ListViewMediaItem::ListViewMediaItem( Clip* clip, Media::FileType fType, QListWi
 
     setIcon( QIcon( m_clip->getParent()->getSnapshot() ) );
     QTime   length;
-    length = length.addSecs( m_clip->getLength() / 1000 );
+    length = length.addSecs( m_clip->getLengthSecond() );
 
     setToolTip( "Filename: " + m_clip->getParent()->getFileInfo()->fileName() + "\n" +
                 "Length: " + length.toString() );

@@ -73,12 +73,18 @@ qint64      Clip::getLength() const
     return m_length;
 }
 
+qint64      Clip::getLengthSecond() const
+{
+    return m_lengthSeconds;
+}
+
 void        Clip::computeLength()
 {
-    float   fps = m_parent->getFps();
+    unsigned int   fps = m_parent->getFps();
     if ( fps < 0.1f )
         fps = FPS;
     qint64 nbMs = (qint64)( ( m_end - m_begin ) * (float)m_parent->getLength() );
+    m_lengthSeconds = nbMs / 1000;
     m_length = (nbMs / 1000) * fps;
 }
 

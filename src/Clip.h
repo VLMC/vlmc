@@ -70,6 +70,11 @@ class   Clip : public QObject
         qint64          getLength() const;
 
         /**
+            \return     Returns the clip length in seconds.
+        */
+        qint64          getLengthSecond() const;
+
+        /**
             \return     Returns the Media that the clip was basep uppon.
 
         */
@@ -91,6 +96,7 @@ class   Clip : public QObject
         float       m_begin;
         float       m_end;
         qint64      m_length;
+        qint64      m_lengthSeconds;
         QUuid       m_uuid;
 };
 
