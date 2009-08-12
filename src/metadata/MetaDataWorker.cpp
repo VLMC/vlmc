@@ -74,8 +74,7 @@ void    MetaDataWorker::computeImageMetaData()
 void    MetaDataWorker::getMetaData()
 {
     m_mediaIsPlaying = false;
-//TODO: restore this when VLC1.1 comes out.
-    m_lengthHasChanged = false;
+   m_lengthHasChanged = false;
 
     m_currentMedia->setLength( m_mediaPlayer->getLength() );
     m_currentMedia->setWidth( m_mediaPlayer->getWidth() );
@@ -122,9 +121,10 @@ void    MetaDataWorker::setSnapshot()
 
     disconnect( m_mediaPlayer, SIGNAL( snapshotTaken() ), this, SLOT( setSnapshot() ) );
 
+    m_currentMedia->emitMetaDataComputed();
+
     //CHECKME:
     //This is synchrone, but it may become asynchrone in the future...
-
     m_mediaPlayer->stop();
     //startAudioDataParsing();
     delete this;

@@ -27,14 +27,14 @@
 
 #define MAX_NAME_LENGTH 10
 
-ListViewMediaItem::ListViewMediaItem( Media* media, Media::FileType fType, QListWidget* parent, int type ) :
-        QListWidgetItem( parent, type ), m_media ( media )
+ListViewMediaItem::ListViewMediaItem( Clip* clip, Media::FileType fType, QListWidget* parent, int type ) :
+        QListWidgetItem( parent, type ), m_clip ( clip )
 {
     m_fileType = fType;
 
     setIcon( QIcon( ":/images/images/vlmc.png") );
 
-    m_truncatedName = media->getFileInfo()->baseName();
+    m_truncatedName = clip->getParent()->getFileInfo()->baseName();
     if ( m_truncatedName.length() > MAX_NAME_LENGTH )
     {
         m_truncatedName.truncate( MAX_NAME_LENGTH - 3 );
@@ -42,7 +42,12 @@ ListViewMediaItem::ListViewMediaItem( Media* media, Media::FileType fType, QList
     }
     setText( m_truncatedName );
 
-    connect( media, SIGNAL( snapshotChanged() ), this, SLOT( snapshotChanged() ) );
+    setIcon( QIcon( m_clip->getParent()->getSnapshot() ) );
+    QTime   length;
+    length = length.addSecs( m_clip->getLength() / 1000 );
+
+    setToolTip( "Filename: " + m_clip->getParent()->getFileInfo()->fileName() + "\n" +
+                "Length: " + length.toString() );
 }
 
 ListViewMediaItem::~ListViewMediaItem()
@@ -50,21 +55,9 @@ ListViewMediaItem::~ListViewMediaItem()
 
 }
 
-void        ListViewMediaItem::snapshotChanged()
+Clip*      ListViewMediaItem::getClip()
 {
-    setIcon( QIcon( m_media->getSnapshot() ) );
-    //this is a nasty patch for the moment :
-    //TODO: fix this !!!!
-    QTime   length;
-    length = length.addSecs( m_media->getLength() / 1000 );
-
-    setToolTip( "Filename: " + m_media->getFileInfo()->fileName() + "\n" +
-                "Length: " + length.toString() );
-}
-
-Media*      ListViewMediaItem::getMedia()
-{
-    return m_media;
+    return m_clip;
 }
 
 

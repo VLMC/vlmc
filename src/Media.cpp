@@ -106,7 +106,6 @@ void        Media::setSnapshot( QPixmap* snapshot )
     if ( m_snapshot != NULL )
         delete m_snapshot;
     m_snapshot = snapshot;
-    emit snapshotChanged();
 }
 
 const QPixmap&    Media::getSnapshot() const
@@ -225,4 +224,11 @@ bool                    Media::matchMetaTag( const QString& tag ) const
     }
     return false;
 //    m_metaTags.contains( tag, Qt::CaseInsensitive );
+}
+
+void                    Media::emitMetaDataComputed()
+{
+    qDebug() << "Emmiting";
+    emit metaDataComputed();
+    emit metaDataComputed( this );
 }

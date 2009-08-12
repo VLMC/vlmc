@@ -37,6 +37,7 @@
 #include <QMutexLocker>
 
 #include "Media.h"
+#include "Clip.h"
 #include "Singleton.hpp"
 
 class   Library : public QObject, public Singleton<Library>
@@ -45,18 +46,31 @@ class   Library : public QObject, public Singleton<Library>
     Q_DISABLE_COPY( Library );
 public:
     Media*                  getMedia( const QUuid& uuid );
-    Media*                  getMedia( const QString& path );
+    Clip*                   getClip( const QUuid& uudi );
 
 private:
     Library();
     QHash<QUuid, Media*>    m_medias;
+    QHash<QUuid, Clip*>     m_clips;
     QMutex                  m_mutex;
+    template <typename T>
+    T                       getElementByUuid( const QHash<QUuid, T>& container , const QUuid& uuid )
+    {
+        typename QHash<QUuid, T>::const_iterator   it = container.find( uuid );
+        if ( it == container.end() )
+            return NULL;
+        return *it;
+    }
 
 public slots:
     void                    newMediaLoadingAsked( const QString& filePath );
     void                    removingMediaAsked( const QUuid& uuid );
 
+private slots:
+    void                    metaDataComputed( Media* );
+
 signals:
+    void                    newClipLoaded( Clip* );
     void                    newMediaLoaded( Media* );
     void                    mediaRemoved( const QUuid& );
 

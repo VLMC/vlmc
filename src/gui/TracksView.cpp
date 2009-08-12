@@ -133,15 +133,15 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
         event->acceptProposedAction();
 
     QUuid uuid = QUuid( QString( event->mimeData()->data( "vlmc/uuid" ) ) );
-    Media* media = Library::getInstance()->getMedia( uuid );
-    if ( !media ) return;
+    Clip* clip = Library::getInstance()->getClip( uuid );
+    if ( !clip ) return;
 
     qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
 
     if ( m_dragItem ) delete m_dragItem;
-    m_dragItem = new GraphicsMovieItem( new Clip( media ) );
-    m_dragItem->setWidth( ( int ) ( ( (double)media->getLength() / 1000 ) *
-                                    ( (media->getFps() > 0) ? media->getFps() : m_fps) ) );
+    m_dragItem = new GraphicsMovieItem( clip );
+    m_dragItem->setWidth( ( int ) ( ( (double)clip->getLength() / 1000 ) *
+                                    ( (clip->getParent()->getFps() > 0) ? clip->getParent()->getFps() : m_fps) ) );
     m_dragItem->setHeight( tracksHeight() );
     m_dragItem->setPos( mappedXPos, 0 );
     m_dragItem->setParentItem( m_layout->itemAt( 0 )->graphicsItem() );

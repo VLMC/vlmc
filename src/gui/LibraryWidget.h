@@ -48,7 +48,7 @@ public:
     explicit LibraryWidget( QWidget *parent = 0 );
     virtual ~LibraryWidget();
 
-    ListViewMediaItem*                  addMedia( Media* clip );
+    ListViewMediaItem*                  addClip( Clip* clip );
     void                                removeMedia( const QUuid& uuid );
     int                                 getIndex( ListViewMediaItem* media );
     const MediaListWidget*              getVideoListWidget() const;
@@ -64,13 +64,13 @@ private:
     void                                insertNewMediasFromFileDialog( QString title, QString filter, Media::FileType fileType );
 
     Ui::LibraryWidget                   m_ui;
-    static QList<ListViewMediaItem*>*   m_medias;
+    QList<ListViewMediaItem*>*          m_clips;
     QString                             m_lastDirectoryBrowsed;
     bool                                m_firstDirectoryBrowsing;
 
 
 public slots:
-    void                                newMediaLoaded( Media* );
+    void                                newClipLoaded( Clip* );
     void                                mediaRemoved( const QUuid& );
     void                                updateFilter( const QString& );
 

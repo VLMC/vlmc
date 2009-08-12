@@ -48,7 +48,7 @@ private:
     Media::FileType     m_Type;
     QPoint              m_dragStartPos;
     QSvgRenderer*       m_svgRenderer;
-    Media*              m_lastClicked;
+    Clip*               m_lastClicked;
 
 signals:
     void                selectedClipChanged( Clip* newClip );

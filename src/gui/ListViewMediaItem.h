@@ -47,7 +47,7 @@ public:
      * \param parent parent widget
      * \param type
      */
-    ListViewMediaItem( Media* media, Media::FileType fType, QListWidget* parent = 0, int type = Type );
+    ListViewMediaItem( Clip* media, Media::FileType fType, QListWidget* parent = 0, int type = Type );
 
     /**
      *  \brief Destructor
@@ -60,7 +60,7 @@ public:
      */
     Media::FileType             getFileType() const { return m_fileType; }
 
-    Media*                      getMedia();
+    Clip*                       getClip();
 
     //void                      setInputMedia( InputMedia* inputMedia ) { m_inputMedia = inputMedia; }
 
@@ -68,20 +68,18 @@ private:
     /**
      *  \brief fileType member
      */
-    Media::FileType         m_fileType;
+    Media::FileType             m_fileType;
 
     /**
      * \Instance of the InputMedia
      */
-    Media*                  m_media;
+    Clip*                       m_clip;
 
     /**
      *  The truncated name of the media
      */
-    QString                 m_truncatedName;
+    QString                     m_truncatedName;
 
-private slots:
-    void                    snapshotChanged();
 };
 
 #endif /* !LISTVIEWMEDIAITEM_H */

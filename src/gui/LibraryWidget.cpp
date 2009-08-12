@@ -25,8 +25,6 @@
 #include <QUrl>
 #include "LibraryWidget.h"
 
-QList<ListViewMediaItem*>* LibraryWidget::m_medias = NULL;
-
 LibraryWidget::LibraryWidget( QWidget *parent ) : QWidget( parent ), m_firstDirectoryBrowsing(true)
 {
     m_ui.setupUi( this );
@@ -40,8 +38,7 @@ LibraryWidget::LibraryWidget( QWidget *parent ) : QWidget( parent ), m_firstDire
     // *Always* force the selection of the first tab
     m_ui.LibraryTabs->setCurrentIndex( 0 );
 
-    if ( LibraryWidget::m_medias == NULL )
-        LibraryWidget::m_medias = new QList<ListViewMediaItem*>();
+    m_clips = new QList<ListViewMediaItem*>;
     connect( m_ui.filterInput, SIGNAL( textChanged( QString ) ), this, SLOT( updateFilter( QString ) ) );
     connect( m_ui.clearFilterButton, SIGNAL( clicked() ), m_ui.filterInput, SLOT( clear() ) );
     connect( m_ui.LibraryTabs, SIGNAL( currentChanged( int ) ), this, SLOT( tabChanged( int ) ) );
@@ -49,22 +46,19 @@ LibraryWidget::LibraryWidget( QWidget *parent ) : QWidget( parent ), m_firstDire
 
 LibraryWidget::~LibraryWidget()
 {
-    if ( LibraryWidget::m_medias )
-    {
-        while ( !LibraryWidget::m_medias->isEmpty() )
-            delete LibraryWidget::m_medias->takeLast();
-        delete LibraryWidget::m_medias;
-    }
+    while ( m_clips->isEmpty() == false )
+        delete m_clips->takeLast();
+    delete m_clips;
 }
 
-ListViewMediaItem*  LibraryWidget::addMedia( Media* media )
+ListViewMediaItem*  LibraryWidget::addClip( Clip* clip )
 {
-    Media::FileType fileType = media->getFileType();
-    ListViewMediaItem* item = new ListViewMediaItem( media, fileType );
+    Media::FileType fileType = clip->getParent()->getFileType();
+    ListViewMediaItem* item = new ListViewMediaItem( clip, fileType );
 
     //TODO: replace this :
     //emit listViewMediaAdded( item->getClip() );
-    m_medias->append( item );
+    m_clips->append( item );
     switch ( fileType )
     {
     case Media::Audio:
@@ -88,9 +82,9 @@ void                LibraryWidget::mediaRemoved( const QUuid& uuid )
 void                LibraryWidget::removeMedia( const QUuid& uuid )
 {
     ListViewMediaItem* item;
-    foreach (item, *m_medias)
+    foreach (item, *m_clips)
     {
-        if ( item->getMedia()->getUuid() == uuid )
+        if ( item->getClip()->getUuid() == uuid )
         {
             switch( item->getFileType() )
             {
@@ -104,7 +98,7 @@ void                LibraryWidget::removeMedia( const QUuid& uuid )
                 this->m_ui.listWidgetVideo->removeItemWidget( item );
                 break;
             }
-            m_medias->removeOne( item );
+            m_clips->removeOne( item );
             delete item;
         }
     }
@@ -124,11 +118,11 @@ void                LibraryWidget::removeMedia( const QUuid& uuid )
 //    return item;
 //}
 
-void    LibraryWidget::newMediaLoaded( Media* media )
+void    LibraryWidget::newClipLoaded( Clip* clip )
 {
     //From here, the clip is const.
-    addMedia( media );
-    m_ui.LibraryTabs->setCurrentIndex( (int) media->getFileType() );
+    addClip( clip );
+    m_ui.LibraryTabs->setCurrentIndex( (int) clip->getParent()->getFileType() );
 }
 
 void    LibraryWidget::insertNewMediasFromFileDialog( QString title, QString filter, Media::FileType fileType )
@@ -188,7 +182,7 @@ void LibraryWidget::on_pushButtonRemoveMedia_clicked()
     ListViewMediaItem* item = ( ListViewMediaItem* ) mediaList->currentItem();
     if ( !item ) return;
 //    removeMedia( item );
-    emit removingMediaAsked( item->getMedia()->getUuid() );
+    emit removingMediaAsked( item->getClip()->getParent()->getUuid() );
 }
 
 void LibraryWidget::changeEvent( QEvent *e )
@@ -238,7 +232,7 @@ void                        LibraryWidget::updateFilter( const QString& filter )
         ListViewMediaItem*  item = static_cast<ListViewMediaItem*>( mediaList->item( i ) );
         if ( item != NULL )
         {
-            item->setHidden( !(item->getMedia()->matchMetaTag( filter )) );
+            item->setHidden( !(item->getClip()->getParent()->matchMetaTag( filter )) );
         }
     }
 }

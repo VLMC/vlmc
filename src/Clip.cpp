@@ -24,6 +24,8 @@
   * This file contains the Clip class implementation.
   */
 
+#include <QtDebug>
+
 #include "Clip.h"
 
 Clip::Clip( Media* parent ) : m_parent( parent ), m_begin( 0.0f ), m_end( 1.0f )
@@ -73,8 +75,10 @@ qint64      Clip::getLength() const
 
 void        Clip::computeLength()
 {
+    qDebug() << "Begin:" << m_begin << "End:" << m_end << "Parent length" << m_parent->getLength();
     qint64 nbMs = (qint64)( ( m_end - m_begin ) * (float)m_parent->getLength() );
     m_length = (nbMs / 1000) * FPS;
+    qDebug() << "Computing length. nbMs:" << nbMs << "m_length:" << m_length;
 }
 
 const QUuid&    Clip::getUuid() const

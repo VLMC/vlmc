@@ -33,24 +33,14 @@ Library::Library()
 {
 }
 
-Media*       Library::getMedia( const QUuid& uuid )
+Media*          Library::getMedia( const QUuid& uuid )
 {
-    QMutexLocker locker( &m_mutex );
-    QHash<QUuid, Media*>::iterator   it = m_medias.find( uuid );
-    if ( it == m_medias.end() )
-        return NULL;
-    return *it;
+    return getElementByUuid( m_medias, uuid );
 }
 
-Media*      Library::getMedia( const QString& path )
+Clip*           Library::getClip( const QUuid& uuid )
 {
-    QMutexLocker locker( &m_mutex );
-    QHash<QUuid, Media*>::iterator it;
-    QHash<QUuid, Media*>::iterator ite = m_medias.end();
-    for ( it = m_medias.begin(); it != ite; ++it )
-        if ( ((Media*)it.value())->getFileInfo()->absoluteFilePath() == path )
-            return it.value();
-    return NULL;
+    return getElementByUuid( m_clips, uuid );
 }
 
 void        Library::removingMediaAsked( const QUuid& uuid )
@@ -64,6 +54,13 @@ void        Library::removingMediaAsked( const QUuid& uuid )
     //and won't be abble to remove the ListViewMediaItem without it.
     //delete *it;
     m_medias.erase( it );
+}
+
+void        Library::metaDataComputed( Media* media )
+{
+    Clip* clip = new Clip( media );
+    m_clips[clip->getUuid()] = clip;
+    emit newClipLoaded( clip );
 }
 
 void        Library::newMediaLoadingAsked( const QString& filePath )
@@ -80,6 +77,7 @@ void        Library::newMediaLoadingAsked( const QString& filePath )
     QFileInfo* fInfo = new QFileInfo( filePath );
     media = new Media( fInfo );
     m_medias[media->getUuid()] = media;
+    connect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ), Qt::DirectConnection );
     emit newMediaLoaded( media );
     delete fInfo;
 }

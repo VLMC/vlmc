@@ -106,9 +106,9 @@ void        MainWindow::setupLibrary()
              SLOT( newMediaLoadingAsked( const QString& ) ) );
 
     connect( library,
-             SIGNAL( newMediaLoaded( Media* ) ),
+             SIGNAL( newClipLoaded( Clip* ) ),
              libraryWidget,
-             SLOT( newMediaLoaded( Media* ) ) );
+             SLOT( newClipLoaded( Clip* ) ) );
 
     connect( libraryWidget,
              SIGNAL( removingMediaAsked( const QUuid& ) ),
@@ -261,6 +261,6 @@ void MainWindow::registerWidgetInViewMenu( QDockWidget* widget )
 void    MainWindow::mediaListItemDoubleClicked( QListWidgetItem* qItem )
 {
     ListViewMediaItem* item = static_cast<ListViewMediaItem*>( qItem );
-    MediaProperty* mp = new MediaProperty( item->getMedia(), this );
+    MediaProperty* mp = new MediaProperty( item->getClip()->getParent(), this );
     mp->show();
 }

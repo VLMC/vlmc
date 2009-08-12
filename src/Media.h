@@ -129,6 +129,7 @@ public:
     const QStringList&          getMetaTags() const;
     void                        setMetaTags( const QStringList& tags );
     bool                        matchMetaTag( const QString& tag ) const;
+    void                        emitMetaDataComputed();
 
 private:
     void                        setFileType();
@@ -152,7 +153,8 @@ protected:
     QStringList                 m_metaTags;
 
 signals:
-    void                        snapshotChanged();
+    void                        metaDataComputed();
+    void                        metaDataComputed( Media* );
 };
 
 #endif // CLIP_H__
