@@ -46,7 +46,6 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
 
     m_numAudioTrack = 0;
     m_numVideoTrack = 0;
-    m_videoTracksCounter = MAX_TRACKS - 1;
     m_dragItem = NULL;
     m_actionMove = false;
     m_actionRelativeX = -1;
@@ -103,14 +102,13 @@ void TracksView::createLayout()
 
 void TracksView::addVideoTrack()
 {
-    GraphicsTrack* track = new GraphicsTrack( GraphicsTrack::Video, m_videoTracksCounter );
+    GraphicsTrack* track = new GraphicsTrack( GraphicsTrack::Video, m_numVideoTrack );
     track->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     track->setPreferredHeight( m_tracksHeight );
     track->setContentsMargins( 0, 0, 0, 0 );
     m_layout->insertItem( 0, track );
     QApplication::processEvents(); //FIXME This is a bit hackish
     m_numVideoTrack++;
-    m_videoTracksCounter--;
     m_scene->invalidate();
     //FIXME this should maybe go elsewhere
     setSceneRect( m_layout->contentsRect().adjusted( 0, 0, 100, 100 ) );
@@ -174,9 +172,18 @@ void TracksView::moveMediaItem( const QUuid& uuid, unsigned int track, qint64 ti
 
 void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position )
 {
-    int track = (unsigned int)( mapToScene( position ).y() / m_tracksHeight );
+    GraphicsTrack* track = NULL;
+    QList<QGraphicsItem*> list = items( position );
+    for ( int i = 0; i < list.size(); ++i )
+    {
+        track = qgraphicsitem_cast<GraphicsTrack*>( list.at(i) );
+        if (track) break;
+    }
+
+    if (!track) return;
+
     qreal time = ( mapToScene( position ).x() + 0.5 );
-    moveMediaItem( item, track, (int)time);
+    moveMediaItem( item, track->trackNumber(), (int)time);
 }
 
 void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, int time )
@@ -186,10 +193,12 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, int 
     else if ( track > m_numVideoTrack - 1)
         track = m_numVideoTrack - 1;
 
+    //qDebug() << ">>>>>> Move track number" << track;
+
     QPointF oldPos = item->pos();
     QGraphicsItem* oldParent = item->parentItem();
     // Check for vertical collisions
-    item->setParentItem( m_layout->itemAt( track )->graphicsItem() );
+    item->setParentItem( m_layout->itemAt( m_numVideoTrack - track - 1 )->graphicsItem() );
     bool continueSearch = true;
     while ( continueSearch )
     {

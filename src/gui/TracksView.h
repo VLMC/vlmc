@@ -44,12 +44,13 @@ class GraphicsTrack : public QGraphicsWidget
     Q_OBJECT
 
 public:
-    enum Type
+    enum { Type = UserType + 2 };
+    enum MediaType
     {
         Video,
         Audio
     };
-    GraphicsTrack( Type type, int trackNumber, QGraphicsItem* parent = 0 ) : QGraphicsWidget( parent )
+    GraphicsTrack( MediaType type, int trackNumber, QGraphicsItem* parent = 0 ) : QGraphicsWidget( parent )
     {
         m_type = type;
         m_trackNumber = trackNumber;
@@ -58,6 +59,7 @@ public:
     {
         return m_trackNumber;
     }
+    virtual int type() const { return Type; }
 
 protected:
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* = 0 )
@@ -71,7 +73,7 @@ protected:
     }
 
 private:
-    Type m_type;
+    MediaType m_type;
     int m_trackNumber;
 };
 
@@ -125,7 +127,6 @@ private:
     QGraphicsLinearLayout*  m_layout;
     int                     m_numVideoTrack;
     int                     m_numAudioTrack;
-    int                     m_videoTracksCounter;
     MainWorkflow*           m_mainWorkflow;
     GraphicsMovieItem*      m_dragItem;
     QGraphicsWidget*        m_separator;
