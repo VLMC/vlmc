@@ -1,3 +1,4 @@
 #!/bin/sh
 
+export LD_LIBRARY_PATH=/home/etix/dev/vlc/build/src/.libs
 exec bin/vlmc "$@"

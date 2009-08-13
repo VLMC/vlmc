@@ -36,7 +36,7 @@ Instance::Instance()
         "--no-skip-frames",
 //        "--intf", "dummy",
         //"--no-audio",
-        //"--plugin-path", VLC_TREE "/modules",
+        "--plugin-path", "/home/etix/dev/vlc/build/modules",
         "--disable-screensaver",
         "--ignore-config", //Don't use VLC's config files
     };
