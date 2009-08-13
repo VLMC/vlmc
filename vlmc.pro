@@ -117,15 +117,13 @@ INCLUDEPATH += src/LibVLCpp \
     src/metadata \
     src/commands \
     src/Workflow \
-    src \
-    /home/etix/dev/vlc/include
+    src
 
 # QMAKE_CFLAGS+=-pg
 # QMAKE_CXXFLAGS+=-pg
 # QMAKE_LFLAGS+=-pg
 LIBS = -L/usr/local/lib \
-    -lvlc \
-    -L/home/etix/dev/vlc/build/src/.libs
+    -lvlc
 SUBDIRS += modules
 CODECFORTR = UTF-8
 include(locale.pri)
