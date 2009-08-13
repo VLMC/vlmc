@@ -39,7 +39,7 @@
 #include "WorkflowRenderer.h"
 #include "ClipRenderer.h"
 #include "UndoStack.h"
-#include "MediaProperty.h"
+#include "ClipProperty.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
@@ -259,6 +259,6 @@ void MainWindow::registerWidgetInViewMenu( QDockWidget* widget )
 void    MainWindow::mediaListItemDoubleClicked( QListWidgetItem* qItem )
 {
     ListViewMediaItem* item = static_cast<ListViewMediaItem*>( qItem );
-    MediaProperty* mp = new MediaProperty( item->getClip(), this );
+    ClipProperty* mp = new ClipProperty( item->getClip(), this );
     mp->show();
 }

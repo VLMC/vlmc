@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MediaProperty</class>
- <widget class="QDialog" name="MediaProperty">
+ <class>ClipProperty</class>
+ <widget class="QDialog" name="ClipProperty">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -239,7 +239,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>MediaProperty</receiver>
+   <receiver>ClipProperty</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -255,7 +255,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>MediaProperty</receiver>
+   <receiver>ClipProperty</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

@@ -1,15 +1,37 @@
+/*****************************************************************************
+ * ClipProperty.cpp: Handle the clip properties and meta tags edition
+ *****************************************************************************
+ * Copyright (C) 2008-2009 the VLMC team
+ *
+ * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ *****************************************************************************/
+
 #include <QtDebug>
 #include <QTime>
 #include <QPushButton>
 #include <QStringListModel>
 #include <QInputDialog>
 
-#include "MediaProperty.h"
-#include "ui_MediaProperty.h"
+#include "ClipProperty.h"
+#include "ui_ClipProperty.h"
 
-MediaProperty::MediaProperty( Clip* clip, QWidget *parent ) :
+ClipProperty::ClipProperty( Clip* clip, QWidget *parent ) :
     QDialog( parent ),
-    ui( new Ui::MediaProperty ),
+    ui( new Ui::ClipProperty ),
     m_clip( clip )
 {
     QTime   duration;
@@ -37,12 +59,12 @@ MediaProperty::MediaProperty( Clip* clip, QWidget *parent ) :
     connect( ui->deleteTagsButton, SIGNAL( clicked() ), this, SLOT( removeTagsRequired() ) );
 }
 
-MediaProperty::~MediaProperty()
+ClipProperty::~ClipProperty()
 {
     delete ui;
 }
 
-void MediaProperty::changeEvent( QEvent *e )
+void ClipProperty::changeEvent( QEvent *e )
 {
     QDialog::changeEvent( e );
     switch ( e->type() )
@@ -55,7 +77,7 @@ void MediaProperty::changeEvent( QEvent *e )
     }
 }
 
-void    MediaProperty::apply()
+void    ClipProperty::apply()
 {
     QStringListModel* model = dynamic_cast<QStringListModel*>( ui->metaTagsView->model() );
     if ( model == NULL )
@@ -63,7 +85,7 @@ void    MediaProperty::apply()
     m_clip->setMetaTags( model->stringList() );
 }
 
-void    MediaProperty::addTagsRequired()
+void    ClipProperty::addTagsRequired()
 {
     bool                ok;
     QString             newTags = QInputDialog::getText( this, tr( "New tags edition" ),
@@ -81,7 +103,7 @@ void    MediaProperty::addTagsRequired()
     }
 }
 
-void    MediaProperty::removeTagsRequired()
+void    ClipProperty::removeTagsRequired()
 {
     QStringListModel*   model = dynamic_cast<QStringListModel*>( ui->metaTagsView->model() );
     if ( model == NULL )
