@@ -259,6 +259,6 @@ void MainWindow::registerWidgetInViewMenu( QDockWidget* widget )
 void    MainWindow::mediaListItemDoubleClicked( QListWidgetItem* qItem )
 {
     ListViewMediaItem* item = static_cast<ListViewMediaItem*>( qItem );
-    MediaProperty* mp = new MediaProperty( item->getClip()->getParent(), this );
+    MediaProperty* mp = new MediaProperty( item->getClip(), this );
     mp->show();
 }

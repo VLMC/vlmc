@@ -51,6 +51,7 @@ void        Clip::init()
 {
     m_uuid = QUuid::createUuid();
     computeLength();
+    m_metaTags << "Toto" << "titi" << "tutu";
 }
 
 float       Clip::getBegin() const
@@ -91,4 +92,28 @@ void        Clip::computeLength()
 const QUuid&    Clip::getUuid() const
 {
     return m_uuid;
+}
+
+const QStringList&      Clip::getMetaTags() const
+{
+    return m_metaTags;
+}
+
+void            Clip::setMetaTags( const QStringList& tags )
+{
+    m_metaTags = tags;
+}
+
+bool            Clip::matchMetaTag( const QString& tag ) const
+{
+    if ( tag.length() == 0 )
+        return true;
+    QString metaTag;
+    foreach ( metaTag, m_metaTags )
+    {
+        if ( metaTag.startsWith( tag, Qt::CaseInsensitive ) == true )
+            return true;
+    }
+    return false;
+//    m_metaTags.contains( tag, Qt::CaseInsensitive );
 }

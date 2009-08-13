@@ -7,30 +7,30 @@
 #include "MediaProperty.h"
 #include "ui_MediaProperty.h"
 
-MediaProperty::MediaProperty( Media* media, QWidget *parent ) :
+MediaProperty::MediaProperty( Clip* clip, QWidget *parent ) :
     QDialog( parent ),
     ui( new Ui::MediaProperty ),
-    m_media( media )
+    m_clip( clip )
 {
     QTime   duration;
-    duration = duration.addMSecs( m_media->getLength() );
+    duration = duration.addSecs( m_clip->getLengthSecond() );
 
     ui->setupUi(this);
     connect( this, SIGNAL( accepted() ), this, SLOT( deleteLater() ) );
     connect( this, SIGNAL( rejected() ), this, SLOT( deleteLater() ) );
     ui->durationValueLabel->setText( duration.toString( "hh:mm:ss" ) );
-    ui->nameValueLabel->setText( m_media->getFileInfo()->fileName() );
-    ui->resolutionValueLabel->setText( QString::number( m_media->getWidth() )
-                                       + " x " + QString::number( m_media->getHeight() ) );
-    ui->fpsValueLabel->setText( QString::number( m_media->getFps() ) );
-    ui->snapshotLabel->setPixmap( m_media->getSnapshot().scaled( 128, 128, Qt::KeepAspectRatio ) );
-    setWindowTitle( m_media->getFileInfo()->fileName() + " " + tr( "properties" ) );
+    ui->nameValueLabel->setText( m_clip->getParent()->getFileInfo()->fileName() );
+    ui->resolutionValueLabel->setText( QString::number( m_clip->getParent()->getWidth() )
+                                       + " x " + QString::number( m_clip->getParent()->getHeight() ) );
+    ui->fpsValueLabel->setText( QString::number( m_clip->getParent()->getFps() ) );
+    ui->snapshotLabel->setPixmap( m_clip->getParent()->getSnapshot().scaled( 128, 128, Qt::KeepAspectRatio ) );
+    setWindowTitle( m_clip->getParent()->getFileInfo()->fileName() + " " + tr( "properties" ) );
 
     const QPushButton* button = ui->buttonBox->button( QDialogButtonBox::Apply );
     Q_ASSERT( button != NULL);
     connect( button, SIGNAL( clicked() ), this, SLOT( apply() ) );
 
-    QStringListModel*   model = new QStringListModel( media->getMetaTags(), this );
+    QStringListModel*   model = new QStringListModel( m_clip->getMetaTags(), this );
     ui->metaTagsView->setModel( model );
 
     connect( ui->addTagsButton, SIGNAL( clicked() ), this, SLOT( addTagsRequired() ) );
@@ -60,7 +60,7 @@ void    MediaProperty::apply()
     QStringListModel* model = dynamic_cast<QStringListModel*>( ui->metaTagsView->model() );
     if ( model == NULL )
         return ;
-    m_media->setMetaTags( model->stringList() );
+    m_clip->setMetaTags( model->stringList() );
 }
 
 void    MediaProperty::addTagsRequired()

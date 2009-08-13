@@ -86,7 +86,12 @@ class   Clip : public QObject
 
             \return     The Clip's Uuid as a QUuid
         */
-        const QUuid&    getUuid() const;
+        const QUuid&        getUuid() const;
+
+        const QStringList&  getMetaTags() const;
+        void                setMetaTags( const QStringList& tags );
+        bool                matchMetaTag( const QString& tag ) const;
+
 
     private:
         void        computeLength();
@@ -98,6 +103,8 @@ class   Clip : public QObject
         qint64      m_length;
         qint64      m_lengthSeconds;
         QUuid       m_uuid;
+        QStringList m_metaTags;
+
 };
 
 #endif //CLIP_H__

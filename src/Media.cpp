@@ -46,7 +46,6 @@ Media::Media( const QFileInfo* fileInfo)
     else
         m_mrl = "fake:///" + fileInfo->absoluteFilePath();
     m_vlcMedia = new LibVLCpp::Media( m_mrl );
-    m_metaTags << "Toto" << "titi" << "tutu";
 }
 
 Media::~Media()
@@ -202,31 +201,7 @@ void                Media::addAudioFrame( void* datas, unsigned char* buffer, si
 //    qDebug() << m_audioData.frameList.size();
 }
 
-const QStringList&      Media::getMetaTags() const
-{
-    return m_metaTags;
-}
-
-void                    Media::setMetaTags( const QStringList& tags )
-{
-    m_metaTags = tags;
-}
-
-bool                    Media::matchMetaTag( const QString& tag ) const
-{
-    if ( tag.length() == 0 )
-        return true;
-    QString metaTag;
-    foreach ( metaTag, m_metaTags )
-    {
-        if ( metaTag.startsWith( tag, Qt::CaseInsensitive ) == true )
-            return true;
-    }
-    return false;
-//    m_metaTags.contains( tag, Qt::CaseInsensitive );
-}
-
-void                    Media::emitMetaDataComputed()
+void            Media::emitMetaDataComputed()
 {
     emit metaDataComputed();
     emit metaDataComputed( this );

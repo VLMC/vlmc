@@ -232,7 +232,7 @@ void                        LibraryWidget::updateFilter( const QString& filter )
         ListViewMediaItem*  item = static_cast<ListViewMediaItem*>( mediaList->item( i ) );
         if ( item != NULL )
         {
-            item->setHidden( !(item->getClip()->getParent()->matchMetaTag( filter )) );
+            item->setHidden( !(item->getClip()->matchMetaTag( filter )) );
         }
     }
 }

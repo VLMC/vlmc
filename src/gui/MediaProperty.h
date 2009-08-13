@@ -24,7 +24,7 @@
 #define MEDIAPROPERTY_H
 
 #include <QDialog>
-#include "Media.h"
+#include "Clip.h"
 #include <QAbstractButton>
 
 namespace Ui {
@@ -35,7 +35,7 @@ class MediaProperty : public QDialog
 {
     Q_OBJECT
 public:
-    MediaProperty( Media* media, QWidget *parent = 0 );
+    MediaProperty( Clip* clip, QWidget *parent = 0 );
     ~MediaProperty();
 
 protected:
@@ -48,7 +48,7 @@ private slots:
 
 private:
     Ui::MediaProperty*  ui;
-    Media*              m_media;
+    Clip*               m_clip;
 };
 
 #endif // MEDIAPROPERTY_H
