@@ -33,6 +33,7 @@
 #include "Library.h"
 #include "GraphicsMovieItem.h"
 #include "GraphicsCursorItem.h"
+#include "Commands.hpp"
 
 TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidget* parent )
         : QGraphicsView( scene, parent ), m_scene( scene ), m_mainWorkflow( mainWorkflow )
@@ -45,7 +46,6 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
 
     m_numAudioTrack = 0;
     m_numVideoTrack = 0;
-    m_videoTracksCounter = MAX_TRACKS - 1;
     m_dragItem = NULL;
     m_actionMove = false;
     m_actionRelativeX = -1;
@@ -102,16 +102,17 @@ void TracksView::createLayout()
 
 void TracksView::addVideoTrack()
 {
-    GraphicsTrack* track = new GraphicsTrack( GraphicsTrack::Video, m_videoTracksCounter );
+    GraphicsTrack* track = new GraphicsTrack( GraphicsTrack::Video, m_numVideoTrack );
     track->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     track->setPreferredHeight( m_tracksHeight );
     track->setContentsMargins( 0, 0, 0, 0 );
     m_layout->insertItem( 0, track );
+    QApplication::processEvents(); //FIXME This is a bit hackish
     m_numVideoTrack++;
-    m_videoTracksCounter--;
     m_scene->invalidate();
     //FIXME this should maybe go elsewhere
     setSceneRect( m_layout->contentsRect().adjusted( 0, 0, 100, 100 ) );
+    m_cursorLine->setHeight( m_layout->contentsRect().height() );
 }
 
 void TracksView::addAudioTrack()
@@ -121,10 +122,12 @@ void TracksView::addAudioTrack()
     track->setPreferredHeight( m_tracksHeight );
     track->setContentsMargins( 0, 0, 0, 0 );
     m_layout->insertItem( 1000, track );
+    QApplication::processEvents(); //FIXME This is a bit hackish
     m_numAudioTrack++;
     m_scene->invalidate();
     //FIXME this should maybe go elsewhere
     setSceneRect( m_layout->contentsRect().adjusted( 0, 0, 100, 100 ) );
+    m_cursorLine->setHeight( m_layout->contentsRect().height() );
 }
 
 void TracksView::dragEnterEvent( QDragEnterEvent* event )
@@ -153,20 +156,48 @@ void TracksView::dragMoveEvent( QDragMoveEvent* event )
     moveMediaItem( m_dragItem, event->pos() );
 }
 
+void TracksView::moveMediaItem( const QUuid& uuid, unsigned int track, qint64 time )
+{
+    QList<QGraphicsItem*> sceneItems = m_scene->items();
+
+    for ( int i = 0; i < sceneItems.size(); ++i )
+    {
+        AbstractGraphicsMediaItem* item =
+                dynamic_cast<AbstractGraphicsMediaItem*>( sceneItems.at( i ) );
+        if ( !item || item->uuid() != uuid ) continue;
+        moveMediaItem( item, track, time );
+    }
+}
+
 void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position )
 {
-    int track = (unsigned int)( mapToScene( position ).y() / m_tracksHeight );
+    GraphicsTrack* track = NULL;
+    QList<QGraphicsItem*> list = items( position );
+    for ( int i = 0; i < list.size(); ++i )
+    {
+        track = qgraphicsitem_cast<GraphicsTrack*>( list.at(i) );
+        if (track) break;
+    }
+
+    if (!track) return;
+
+    qreal time = ( mapToScene( position ).x() + 0.5 );
+    moveMediaItem( item, track->trackNumber(), (int)time);
+}
+
+void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, int time )
+{
     if ( track < 0 )
         track = 0;
     else if ( track > m_numVideoTrack - 1)
         track = m_numVideoTrack - 1;
 
-    qreal mappedXPos = ( mapToScene( position ).x() + 0.5 );
+    //qDebug() << ">>>>>> Move track number" << track;
 
     QPointF oldPos = item->pos();
     QGraphicsItem* oldParent = item->parentItem();
     // Check for vertical collisions
-    item->setParentItem( m_layout->itemAt( track )->graphicsItem() );
+    item->setParentItem( m_layout->itemAt( m_numVideoTrack - track - 1 )->graphicsItem() );
     bool continueSearch = true;
     while ( continueSearch )
     {
@@ -179,7 +210,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position
             {
                 // Collision with an item of the same type
                 itemCollision = true;
-                if ( currentItem->pos().y() < position.y() )
+                if ( currentItem->trackNumber() > track )
                 {
                     if ( track < 1 )
                     {
@@ -191,7 +222,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position
                     Q_ASSERT( m_layout->itemAt( track )->graphicsItem() != NULL );
                     item->setParentItem( m_layout->itemAt( track )->graphicsItem() );
                 }
-                else if ( currentItem->pos().y() > position.y() )
+                else if ( currentItem->trackNumber() < track )
                 {
                     if ( track >= m_numVideoTrack - 1 )
                     {
@@ -209,7 +240,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position
             continueSearch = false;
     }
     // Check for horizontal collisions
-    mappedXPos = qMax( mappedXPos, (qreal)0 );
+    int mappedXPos = qMax( time, 0 );
     item->setPos( mappedXPos, 0 );
     QList<QGraphicsItem*> colliding = item->collidingItems( Qt::IntersectsItemShape );
     for ( int i = 0; i < colliding.size(); ++i )
@@ -248,9 +279,10 @@ void TracksView::dropEvent( QDropEvent* event )
 
         qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
         m_dragItem->oldTrackNumber = m_dragItem->trackNumber();
-        m_mainWorkflow->addClip( m_dragItem->clip(),
-                                 m_dragItem->trackNumber(),
-                                 (qint64)mappedXPos );
+        Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
+                                                                m_dragItem->clip(),
+                                                                m_dragItem->trackNumber(),
+                                                                (qint64)mappedXPos ) );
         m_dragItem = NULL;
     }
 }
@@ -361,10 +393,10 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
             updateDuration();
             if ( m_layout->itemAt( 0 )->graphicsItem()->childItems().count() > 0 )
                 addVideoTrack();
-            emit clipMoved( movieItem->clip()->getUuid(),
-                            movieItem->oldTrackNumber,
-                            movieItem->trackNumber(),
-                            (qint64)movieItem->pos().x() );
+            qDebug() << "Trigerring move command. track" << movieItem->oldTrackNumber << "->" << movieItem->trackNumber();
+            Commands::trigger( new Commands::MainWorkflow::MoveClip( m_mainWorkflow, movieItem->clip()->getUuid(),
+                                                                     movieItem->oldTrackNumber, movieItem->trackNumber(),
+                                                                     (qint64)movieItem->pos().x() ) );
             movieItem->oldTrackNumber = movieItem->trackNumber();
             m_actionMove = false;
             m_actionRelativeX = -1;

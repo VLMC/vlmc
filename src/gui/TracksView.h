@@ -30,10 +30,11 @@
 #include <QGraphicsWidget>
 #include <QWheelEvent>
 #include <QGraphicsSceneDragDropEvent>
+#include <QApplication>
 #include "Media.h"
 #include "GraphicsCursorItem.h"
-#include "Workflow/MainWorkflow.h"
-#include "Workflow/TrackWorkflow.h"
+#include "MainWorkflow.h"
+#include "TrackWorkflow.h"
 
 class GraphicsMovieItem;
 class AbstractGraphicsMediaItem;
@@ -43,12 +44,13 @@ class GraphicsTrack : public QGraphicsWidget
     Q_OBJECT
 
 public:
-    enum Type
+    enum { Type = UserType + 2 };
+    enum MediaType
     {
         Video,
         Audio
     };
-    GraphicsTrack( Type type, int trackNumber, QGraphicsItem* parent = 0 ) : QGraphicsWidget( parent )
+    GraphicsTrack( MediaType type, int trackNumber, QGraphicsItem* parent = 0 ) : QGraphicsWidget( parent )
     {
         m_type = type;
         m_trackNumber = trackNumber;
@@ -57,6 +59,7 @@ public:
     {
         return m_trackNumber;
     }
+    virtual int type() const { return Type; }
 
 protected:
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* = 0 )
@@ -70,7 +73,7 @@ protected:
     }
 
 private:
-    Type m_type;
+    MediaType m_type;
     int m_trackNumber;
 };
 
@@ -89,6 +92,9 @@ public:
     GraphicsCursorItem* tracksCursor() const { return m_cursorLine; }
     void setScale( double scaleFactor );
     QList<AbstractGraphicsMediaItem*> mediaItems( const QPoint& pos );
+
+public slots:
+    void                    moveMediaItem( const QUuid& uuid, unsigned int track, qint64 time );
 
 protected:
     virtual void            resizeEvent( QResizeEvent* event );
@@ -111,6 +117,7 @@ private:
     void                    addVideoTrack();
     void                    addAudioTrack();
     void                    moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position );
+    void                    moveMediaItem( AbstractGraphicsMediaItem* item, int track, int time );
     QGraphicsScene*         m_scene;
     int                     m_tracksHeight;
     unsigned int            m_tracksCount;
@@ -120,7 +127,6 @@ private:
     QGraphicsLinearLayout*  m_layout;
     int                     m_numVideoTrack;
     int                     m_numAudioTrack;
-    int                     m_videoTracksCounter;
     MainWorkflow*           m_mainWorkflow;
     GraphicsMovieItem*      m_dragItem;
     QGraphicsWidget*        m_separator;
@@ -134,7 +140,6 @@ signals:
     void                    zoomIn();
     void                    zoomOut();
     void                    durationChanged( int duration );
-    void                    clipMoved( const QUuid& uuid, int oldTrack, int newTrack, qint64 start );
 };
 
 #endif // TRACKSVIEW_H

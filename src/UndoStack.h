@@ -24,16 +24,26 @@
 #define UNDOSTACK_H
 
 #include <QUndoStack>
-#include "Singleton.hpp"
+#include <QUndoView>
+#include <QShortcut>
+#include <QUndoCommand>
+#include "QSingleton.hpp"
 
-class UndoStack : public QUndoStack, public Singleton<UndoStack>
+class UndoStack : public QUndoView, public QSingleton<UndoStack>
 {
     Q_OBJECT
     Q_DISABLE_COPY( UndoStack );
 
+    public:
+        void        push( QUndoCommand* command );
+
     private:
-        UndoStack();
-    friend class Singleton<UndoStack>;
+        UndoStack( QWidget* parent );
+
+        QUndoStack*     m_undoStack;
+        QShortcut*      m_undoShortcut;
+        QShortcut*      m_redoShortcut;
+    friend class        QSingleton<UndoStack>;
 };
 
 #endif // UNDOSTACK_H

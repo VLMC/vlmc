@@ -82,6 +82,20 @@ qint64              TrackWorkflow::getLength() const
     return m_length;
 }
 
+qint64              TrackWorkflow::getClipPosition( const QUuid& uuid ) const
+{
+    QMap<qint64, ClipWorkflow*>::const_iterator     it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::const_iterator     end = m_clips.end();
+
+    while ( it != end )
+    {
+        if ( it.value()->getClip()->getUuid() == uuid )
+            return it.key();
+        ++it;
+    }
+    return -1;
+}
+
 unsigned char*      TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
                                         qint64 start , bool needRepositioning,
                                         bool pauseAfterRender )

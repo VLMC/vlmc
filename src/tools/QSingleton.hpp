@@ -1,5 +1,6 @@
 /*****************************************************************************
- * Singleton.hpp : Generic singleton pattern implementation
+ * QSingleton.hpp : Generic singleton pattern implementation with Qt parent's
+ *                  parameter that can be passed to the ctor
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -29,19 +30,20 @@
   * don't you :) ?
   */
 
-#ifndef SINGLETON_HPP
-#define SINGLETON_HPP
+#ifndef QSINGLETON_HPP
+#define QSINGLETON_HPP
 
 #include <stdlib.h>
+#include <QWidget>
 
 template <typename T>
-class       Singleton
+class       QSingleton
 {
 public:
-    static T*      getInstance()
+    static T*      getInstance( QWidget* parent = NULL )
     {
         if ( m_instance == NULL )
-            m_instance = new T;
+            m_instance = new T( parent );
         return m_instance;
     }
 
@@ -54,17 +56,17 @@ public:
         }
     }
 protected:
-    Singleton(){}
-    virtual ~Singleton(){}
+    QSingleton(){}
+    virtual ~QSingleton(){}
     //Not implemented since these methods should *NEVER* been called. If they do, it probably won't compile :)
-    Singleton(const Singleton<T>&);
-    Singleton<T>&   operator=(const Singleton<T>&);
+    QSingleton(const QSingleton<T>&);
+    QSingleton<T>&   operator=(const QSingleton<T>&);
 
 private:
     static T*      m_instance;
 };
 
 template <typename T>
-T*  Singleton<T>::m_instance = NULL;
+T*  QSingleton<T>::m_instance = NULL;
 
-#endif // SINGLETON_HPP
+#endif // QSINGLETON_HPP

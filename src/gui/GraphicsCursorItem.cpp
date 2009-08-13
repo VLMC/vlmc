@@ -2,13 +2,13 @@
 #include "GraphicsCursorItem.h"
 
 GraphicsCursorItem::GraphicsCursorItem( int height, const QPen& pen )
-        : m_height( height ), m_pen( pen )
+        : m_pen( pen )
 {
     setFlags( QGraphicsItem::ItemIgnoresTransformations | QGraphicsItem::ItemIsMovable );
     setCursor( QCursor( Qt::SizeHorCursor ) );
     setZValue( 100 );
 
-    m_boundingRect = QRectF( -2, 0, 3, m_height );
+    m_boundingRect = QRectF( -2, 0, 3, height );
 }
 
 QRectF GraphicsCursorItem::boundingRect() const
@@ -19,7 +19,7 @@ QRectF GraphicsCursorItem::boundingRect() const
 void GraphicsCursorItem::paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* )
 {
     painter->setPen( m_pen );
-    painter->drawLine( 0, 0, 0, m_height );
+    painter->drawLine( 0, 0, 0, m_boundingRect.height() );
 }
 
 QVariant GraphicsCursorItem::itemChange( GraphicsItemChange change, const QVariant& value )
@@ -45,4 +45,10 @@ void GraphicsCursorItem::setCursorPos( int position )
 void    GraphicsCursorItem::updateCursorPos( qint64 position )
 {
     setCursorPos( (qint64) position );
+}
+
+void GraphicsCursorItem::setHeight( int height )
+{
+    m_boundingRect.setHeight( height );
+    update();
 }

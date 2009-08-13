@@ -17,13 +17,13 @@ public:
     int cursorPos() const { return ( int )pos().x(); }
     void setCursorPos( int position );
     virtual QRectF boundingRect() const;
+    void setHeight( int height );
 
 protected:
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
     virtual QVariant itemChange( GraphicsItemChange change, const QVariant& value );
 
 private:
-    int m_height;
     QPen m_pen;
     QRectF m_boundingRect;
 

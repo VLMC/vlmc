@@ -1,9 +1,9 @@
 /*****************************************************************************
- * UndoStack.cpp: UndoStack For Undo/Redo Purposes
+ * CommandManager.h: Manage the VLMC command pattern implementation
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Christophe Courtaut <christophe.courtaut@gmail.com>
+ * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,22 +20,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "UndoStack.h"
 
-UndoStack::UndoStack( QWidget* parent ) : QUndoView( parent )
+#ifndef COMMANDMANAGER_H
+#define COMMANDMANAGER_H
+
+#include "Singleton.hpp"
+#include "Command.h"
+
+class   CommandManager : public Singleton<CommandManager>
 {
-    setEmptyLabel( tr( "Nothing to undo" ) );
+    void        triggerCommand( Command* command );
+private:
+    ActionManager();
+    ~ActionManager();
+};
 
-    m_undoStack = new QUndoStack( this );
-    setStack( m_undoStack );
-
-    m_undoShortcut = new QShortcut( QKeySequence( tr( "Ctrl+z", "Undo" ) ), this );
-    m_redoShortcut = new QShortcut( QKeySequence( tr( "Ctrl+Shift+z", "Redo" ) ), this );
-    connect( m_undoShortcut, SIGNAL( activated() ), m_undoStack, SLOT( undo() ) );
-    connect( m_redoShortcut, SIGNAL( activated() ), m_undoStack, SLOT( redo() ) );
-}
-
-void    UndoStack::push( QUndoCommand* command )
-{
-    m_undoStack->push( command );
-}
+#endif // ACTIONMANAGER_H
