@@ -56,13 +56,9 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
     setContentsMargins( 0, 0, 0, 0 );
     setFrameStyle( QFrame::NoFrame );
 
-    //// Adjust the height using the number of tracks
-    //const int maxHeight = m_tracksHeight * m_tracksCount;
-    //setSceneRect( 0, 0, sceneRect().width(), maxHeight );
+    //TODO Remove the GraphicsCursorItem parameter height (not useful anymore)
+    m_cursorLine = new GraphicsCursorItem( 1, QPen( QColor( 220, 30, 30 ) ) );
 
-    const int maxHeight = m_tracksHeight * 4;
-
-    m_cursorLine = new GraphicsCursorItem( maxHeight, QPen( QColor( 220, 30, 30 ) ) );
     m_scene->addItem( m_cursorLine );
 
     createLayout();
