@@ -34,8 +34,6 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
                 m_rendering( false ),
                 m_initFlag( false )
 {
-    for ( unsigned int i = 0; i < 5; ++i )
-        m_availableBuffers.enqueue( new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4] );
     m_stateLock = new QReadWriteLock;
     m_requiredStateLock = new QMutex;
     m_waitCond = new QWaitCondition;
@@ -43,43 +41,27 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
     m_initWaitCond = new WaitCondition;
     m_renderWaitCond = new WaitCondition;
     m_pausingStateWaitCond = new WaitCondition;
-    m_pausedThreadCondWait = new WaitCondition;
-    m_buffersLock = new QMutex;
+    m_renderLock = new QMutex;
+    m_buffer = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
 }
 
 ClipWorkflow::~ClipWorkflow()
 {
-    delete m_buffersLock;
-    delete m_pausedThreadCondWait;
+    delete m_renderLock;
     delete m_pausingStateWaitCond;
     delete m_initWaitCond;
     delete m_condMutex;
     delete m_waitCond;
     delete m_requiredStateLock;
     delete m_stateLock;
-    while ( m_buffers.empty() == false )
-        delete[] m_buffers.dequeue();
-    while ( m_availableBuffers.empty() == false )
-        delete[] m_availableBuffers.dequeue();
+    delete[] m_buffer;
 }
 
 unsigned char*    ClipWorkflow::getOutput()
 {
-    QMutexLocker    lock( m_buffersLock );
+    QMutexLocker    lock( m_renderLock );
 
-    if ( m_mediaPlayer->isPlaying() == false )
-    {
-        qDebug() << "Generating in same buffer as last time";
-        return m_buffers.head();
-    }
-
-
-    if ( m_buffers.isEmpty() == true )
-        return NULL;
-    unsigned char* buff = m_buffers.dequeue();
-    m_availableBuffers.enqueue( buff );
-    qDebug() << "Getting output. Buffers... Available:" << m_availableBuffers.size() << "Used:" << m_buffers.size();
-    return buff;
+    return m_buffer;
 }
 
 void    ClipWorkflow::checkStateChange()
@@ -96,30 +78,13 @@ void    ClipWorkflow::checkStateChange()
 
 void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret )
 {
-    qDebug() << "Buffers... Available:" << cw->m_availableBuffers.size() << "Used:" << cw->m_buffers.size();
-    cw->m_buffersLock->lock();
-    unsigned char*  buff;
-    if ( cw->m_mediaPlayer->isPlaying() == false )
-    {
-        if ( cw->m_buffers.size() > 0 )
-            *pp_ret = cw->m_buffers.last();
-        else
-            *pp_ret = cw->m_availableBuffers.head();
-        qDebug() << "Using same buffer than last time";
-        return ;
-    }
-    qDebug() << "New frame";
-    if ( cw->m_availableBuffers.size() > 0 )
-        buff = cw->m_availableBuffers.dequeue();
-    else
-        buff = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
-    cw->m_buffers.enqueue( buff );
-    *pp_ret = buff;
+    cw->m_renderLock->lock();
+    *pp_ret = cw->m_buffer;
 }
 
 void    ClipWorkflow::unlock( ClipWorkflow* cw )
 {
-    cw->m_buffersLock->unlock();
+    cw->m_renderLock->unlock();
     cw->m_stateLock->lockForWrite();
 
     if ( cw->m_state == Rendering )
@@ -136,16 +101,6 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
         cw->m_stateLock->lockForWrite();
         cw->m_state = Rendering;
         cw->m_stateLock->unlock();
-    }
-    else if ( cw->m_state == Paused )
-    {
-        QMutexLocker    lock( cw->m_condMutex );
-
-        cw->m_stateLock->unlock();
-        cw->setState( ClipWorkflow::ThreadPaused );
-        cw->m_pausedThreadCondWait->wake();
-        cw->m_waitCond->wait( cw->m_condMutex );
-        cw->setState( ClipWorkflow::Paused );
     }
     else
         cw->m_stateLock->unlock();
@@ -183,6 +138,7 @@ void    ClipWorkflow::initialize()
 
     connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPositionAfterPlayback() ), Qt::DirectConnection );
     connect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( clipEndReached() ), Qt::DirectConnection );
+    connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( pausedMediaPlayer() ), Qt::DirectConnection );
     m_mediaPlayer->play();
 }
 
@@ -213,18 +169,6 @@ bool    ClipWorkflow::isReady() const
 {
     QReadLocker lock( m_stateLock );
     return m_state == ClipWorkflow::Ready;
-}
-
-bool    ClipWorkflow::isPausing() const
-{
-    QReadLocker lock( m_stateLock );
-    return m_state == ClipWorkflow::Pausing;
-}
-
-bool    ClipWorkflow::isThreadPaused() const
-{
-    QReadLocker lock( m_stateLock );
-    return m_state == ClipWorkflow::ThreadPaused;
 }
 
 bool    ClipWorkflow::isEndReached() const
@@ -300,9 +244,6 @@ void            ClipWorkflow::checkSynchronisation( State newState )
         case Ready:
             m_initWaitCond->wake();
             break ;
-        case Pausing:
-            m_pausingStateWaitCond->wake();
-            break ;
         default:
             break ;
     }
@@ -344,20 +285,22 @@ void            ClipWorkflow::reinitialize()
 
 void            ClipWorkflow::pause()
 {
-    setState( Paused );
+    setState( Pausing );
     m_mediaPlayer->pause();
     QMutexLocker    lock( m_requiredStateLock );
     m_requiredState = ClipWorkflow::None;
+    QReadLocker    lock2( m_stateLock );
+    if ( m_state == Sleeping )
+    {
+        QMutexLocker    sync( m_condMutex );
+        wake();
+    }
 }
 
-void            ClipWorkflow::unpause( bool wakeRenderThread /*= true*/ )
+void            ClipWorkflow::unpause()
 {
     queryStateChange( ClipWorkflow::Rendering );
     m_mediaPlayer->pause();
-    if ( wakeRenderThread == true )
-    {
-        wake();
-    }
 }
 
 void        ClipWorkflow::waitForCompleteRender( bool dontCheckRenderStarted /*= false*/ )
@@ -372,18 +315,6 @@ void        ClipWorkflow::waitForCompleteInit()
         m_initWaitCond->wait();
 }
 
-void        ClipWorkflow::waitForPausingState()
-{
-    if ( isPausing() == false )
-        m_pausingStateWaitCond->wait();
-}
-
-void        ClipWorkflow::waitForPausedThread()
-{
-    if ( isThreadPaused() == false )
-        m_pausedThreadCondWait->wait();
-}
-
 QMutex*     ClipWorkflow::getSleepMutex()
 {
     return m_condMutex;
@@ -392,4 +323,9 @@ QMutex*     ClipWorkflow::getSleepMutex()
 LibVLCpp::MediaPlayer*       ClipWorkflow::getMediaPlayer()
 {
     return m_mediaPlayer;
+}
+
+void        ClipWorkflow::pausedMediaPlayer()
+{
+    setState( Paused );
 }

@@ -29,10 +29,8 @@
 
 WorkflowRenderer::WorkflowRenderer( MainWorkflow* mainWorkflow ) :
             m_mainWorkflow( mainWorkflow ),
-            m_framePlayed( false ),
             m_pauseAsked( false ),
-            m_pausedMediaPlayer( false ),
-            m_frameByFrameMode( 0 )
+            m_pausedMediaPlayer( false )
 {
     char        buffer[64];
 
@@ -86,42 +84,17 @@ void*   WorkflowRenderer::lock( void* datas )
     //If renderer is stopping, don't ask for another frame:
     if ( self->m_isRendering == false )
         return self->m_lastFrame;
-    //If a pause was asked, don't try to start a new render... it could (and would) dead lock...
-    if ( self->m_pauseAsked == true )
-        return self->m_lastFrame;
-    //If we're not playing, then where in a paused media player.
-    if ( self->m_pausedMediaPlayer == true )
-        return self->m_lastFrame;
 
-
-    if ( self->m_oneFrameOnly < 2 )
-    {
-        void* ret;
-//        if ( self->m_oneFrameOnly == 0 )
-//            ret = self->m_mainWorkflow->getOutput();
-//        else
-//        {
-//            qDebug() << "Asking synchrone frame";
-            ret = self->m_mainWorkflow->getSynchroneOutput();
-//            qDebug() << "Got it";
-//        }
-        self->m_lastFrame = static_cast<unsigned char*>( ret );
-        return ret;
-    }
-    else
-        return self->m_lastFrame;
+    void* ret = self->m_mainWorkflow->getSynchroneOutput();
+    self->m_lastFrame = static_cast<unsigned char*>( ret );
+    return ret;
 }
 
 void    WorkflowRenderer::unlock( void* datas )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
-    if ( self->m_oneFrameOnly == 1 )
-    {
-        self->internalPlayPause( true );
-        self->m_oneFrameOnly = 2;
-    }
-    self->m_framePlayed = true;
+    self->internalPlayPause( true );
     self->checkActions();
 }
 
@@ -178,43 +151,8 @@ void        WorkflowRenderer::setPosition( float newPos )
     m_mainWorkflow->setPosition( newPos );
 }
 
-void        WorkflowRenderer::frameByFrameAfterPaused()
-{
-    m_oneFrameOnly = 1;
-    m_mainWorkflow->activateOneFrameOnly();
-
-    internalPlayPause( false );
-}
-
-void        WorkflowRenderer::frameByFramePausingProxy()
-{
-    static unsigned int nbPaused = 0;
-    ++nbPaused;
-    if ( nbPaused == 2 )
-    {
-        nbPaused = 0;
-        disconnect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( frameByFramePausingProxy() ) );
-        disconnect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( frameByFramePausingProxy() ) );
-        frameByFrameAfterPaused();
-    }
-}
-
 void        WorkflowRenderer::nextFrame()
 {
-    if ( m_frameByFrameMode == 0 )
-    {
-        m_frameByFrameMode = 1;
-    }
-    if ( m_pausedMediaPlayer == true )
-    {
-        frameByFrameAfterPaused();
-    }
-    else
-    {
-        connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( frameByFramePausingProxy() ), Qt::QueuedConnection );
-        connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( frameByFramePausingProxy() ), Qt::QueuedConnection );
-        internalPlayPause( true );
-    }
 }
 
 void        WorkflowRenderer::previousFrame()
@@ -234,21 +172,11 @@ void        WorkflowRenderer::mainWorkflowPaused()
 {
     m_paused = true;
     m_pauseAsked = false;
-    if ( m_frameByFrameMode < 2 )
-    {
-        emit paused();
-        //On the first iteration, when inform the PreviewWidget that we are in some paused mode
-        if ( m_frameByFrameMode == 1 )
-            m_frameByFrameMode = 2;
-    }
+    emit paused();
 }
 
 void        WorkflowRenderer::togglePlayPause( bool forcePause )
 {
-    if ( m_frameByFrameMode != 0 )
-    {
-        m_frameByFrameMode = 0;
-    }
     if ( m_isRendering == false && forcePause == false )
         startPreview();
     else
@@ -284,7 +212,6 @@ void        WorkflowRenderer::stop()
     m_mainWorkflow->cancelSynchronisation();
     m_mediaPlayer->stop();
     m_mainWorkflow->stop();
-    m_oneFrameOnly = 0;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -309,17 +236,12 @@ void        WorkflowRenderer::__positionChanged( float pos )
 
 void        WorkflowRenderer::__videoPaused()
 {
-    if ( m_oneFrameOnly != 0 )
-    {
-        m_oneFrameOnly = 0;
-    }
     pauseMainWorkflow();
 }
 
 void        WorkflowRenderer::__videoPlaying()
 {
-    if ( m_frameByFrameMode == 0 )
-        emit playing();
+    emit playing();
     m_pausedMediaPlayer = false;
     m_paused = false;
 }

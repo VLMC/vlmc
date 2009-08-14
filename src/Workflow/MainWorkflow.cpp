@@ -256,16 +256,6 @@ void           MainWorkflow::clipMoved( QUuid clipUuid, int oldTrack, int newTra
     computeLength();
 }
 
-void        MainWorkflow::activateOneFrameOnly()
-{
-    for (unsigned int i = 0; i < m_trackCount; ++i)
-    {
-        //FIXME: After debugging period, this should'nt be necessary --
-        if ( m_tracks[i].activated() == true )
-            m_tracks[i]->activateOneFrameOnly();
-    }
-}
-
 void        MainWorkflow::trackPaused()
 {
 //    qDebug() << "Track pausing finished...";

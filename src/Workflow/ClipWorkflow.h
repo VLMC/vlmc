@@ -53,9 +53,8 @@ class   ClipWorkflow : public QObject
             Sleeping,       //4
             Pausing,        //5
             Paused,         //6
-            ThreadPaused,   //7
-            Stopping,       //8
-            EndReached,     //9
+            Stopping,       //7
+            EndReached,     //8
         };
        int                     debugId;
 
@@ -151,12 +150,10 @@ class   ClipWorkflow : public QObject
          */
         void                    reinitialize();
 
-        void                    unpause( bool wakeRenderThread = true );
+        void                    unpause();
 
         void                    waitForCompleteInit();
         void                    waitForCompleteRender( bool dontCheckRenderStarted = false );
-        void                    waitForPausingState();
-        void                    waitForPausedThread();
         QMutex*                 getSleepMutex();
 
         LibVLCpp::MediaPlayer*  getMediaPlayer();
@@ -180,9 +177,8 @@ class   ClipWorkflow : public QObject
          */
         LibVLCpp::Media*        m_vlcMedia;
 
-        QQueue<unsigned char*>  m_availableBuffers;
-        QQueue<unsigned char*>  m_buffers;
-        QMutex*                 m_buffersLock;
+        unsigned char*          m_buffer;
+        QMutex*                 m_renderLock;
 
         LibVLCpp::MediaPlayer*  m_mediaPlayer;
 
@@ -194,12 +190,9 @@ class   ClipWorkflow : public QObject
         State                   m_requiredState;
         QMutex*                 m_requiredStateLock;
 
-        QAtomicInt              m_oneFrameOnly;
-
         WaitCondition*          m_initWaitCond;
         WaitCondition*          m_renderWaitCond;
         WaitCondition*          m_pausingStateWaitCond;
-        WaitCondition*          m_pausedThreadCondWait;
 
         /**
          *  While this flag is set to false, we will use the same buffer, to prevent
@@ -217,6 +210,7 @@ class   ClipWorkflow : public QObject
         void                    pauseAfterPlaybackStarted();
         void                    initializedMediaPlayer();
         void                    setPositionAfterPlayback();
+        void                    pausedMediaPlayer();
 
     public slots:
         void                    clipEndReached();

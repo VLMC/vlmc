@@ -67,14 +67,11 @@ class   WorkflowRenderer : public GenericRenderer
         void                pauseMainWorkflow();
         virtual void        startPreview();
         void                checkActions();
-        void                frameByFrameAfterPaused();
 
     private:
         MainWorkflow*       m_mainWorkflow;
         LibVLCpp::Media*    m_media;
-        QAtomicInt          m_oneFrameOnly;
         unsigned char*      m_lastFrame;
-        bool                m_framePlayed;
         QStack<Actions>     m_actions;
         QReadWriteLock*     m_actionsLock;
         bool                m_pauseAsked;
@@ -84,15 +81,6 @@ class   WorkflowRenderer : public GenericRenderer
          *          which can cause deadlock when stopping.
          */
         bool                m_pausedMediaPlayer;
-        /**
-         *  This is a flag used to avoid emitting play/paused signals.
-         *  We're not using anything else, since it's a very fragile mess,
-         *  and I don't want to screw it arround by switching a method call and an assignation...
-         */
-        unsigned int        m_frameByFrameMode;
-
-    private slots:
-        void                frameByFramePausingProxy();
 
     public slots:
         void                setMedia( const Media* ){}

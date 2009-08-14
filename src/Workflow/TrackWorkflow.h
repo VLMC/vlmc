@@ -61,7 +61,6 @@ class   TrackWorkflow : public QObject
         Clip*                                   removeClip( const QUuid& id );
         void                                    addClip( Clip*, qint64 start );
         void                                    addClip( ClipWorkflow*, qint64 start );
-        void                                    activateOneFrameOnly();
         /**
          *  Returns the output that has been computed in synchrone mode.
          */
@@ -73,8 +72,7 @@ class   TrackWorkflow : public QObject
     private:
         void                                    computeLength();
         void                                    renderClip( ClipWorkflow* cw, qint64 currentFrame,
-                                                            qint64 start, bool needRepositioning,
-                                                            bool pauseAfterRender );
+                                                            qint64 start, bool needRepositioning );
         void                                    preloadClip( ClipWorkflow* cw );
         void                                    stopClipWorkflow( ClipWorkflow* cw );
         void                                    pauseClipWorkflow( ClipWorkflow* cw );
@@ -101,7 +99,6 @@ class   TrackWorkflow : public QObject
 
         bool                                    m_paused;
 
-        QAtomicInt                              m_oneFrameOnly;
         QAtomicInt                              m_nbClipToPause;
         QAtomicInt                              m_nbClipToRender;
 

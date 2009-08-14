@@ -76,8 +76,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    nextFrame();
         void                    previousFrame();
 
-        void                    activateOneFrameOnly();
-        
         static MainWorkflow*    getInstance();
         static void             deleteInstance();
 
