@@ -168,7 +168,7 @@ void TracksView::moveMediaItem( const QUuid& uuid, unsigned int track, qint64 ti
 void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position )
 {
     GraphicsTrack* track = NULL;
-    QList<QGraphicsItem*> list = items( position );
+    QList<QGraphicsItem*> list = items( 0, position.y() );
     for ( int i = 0; i < list.size(); ++i )
     {
         track = qgraphicsitem_cast<GraphicsTrack*>( list.at(i) );
