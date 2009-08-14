@@ -39,12 +39,14 @@ public:
     virtual ~Timeline();
     TracksView*         tracksView() { return m_tracksView; }
     TracksScene*        tracksScene() { return m_tracksScene; }
+    TracksRuler*        tracksRuler() { return m_tracksRuler; }
     MainWorkflow*       getMainWorkflow() { return m_mainWorkflow; }
     static Timeline*    getInstance() { return m_instance; }
 
 public slots:
     void changeZoom( int factor );
     void setDuration( int duration );
+    void actionMoveClip( const QUuid& uuid, unsigned int track, qint64 time );
 
 protected:
     virtual void changeEvent( QEvent *e );

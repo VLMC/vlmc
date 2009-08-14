@@ -144,6 +144,8 @@ signals:
     void                    zoomIn();
     void                    zoomOut();
     void                    durationChanged( int duration );
+
+friend class Timeline;
 };
 
 #endif // TRACKSVIEW_H
