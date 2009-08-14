@@ -71,6 +71,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          *  Pause the main workflow and all its sub-workflows
          */
         void                    pause();
+        void                    unpause();
 
         static unsigned char*   blackOutput;
         void                    nextFrame();
@@ -87,7 +88,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
     private:
         static MainWorkflow*    m_instance;
-//        QAtomicInt              m_oneFrameOnly;
 
     private:
         void                    computeLength();
@@ -105,6 +105,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
         QMutex*                         m_renderMutex;
         QAtomicInt                      m_nbTracksToPause;
+        QAtomicInt                      m_nbTracksToUnpause;
         QAtomicInt                      m_nbTracksToRender;
         QMutex*                         m_highestTrackNumberMutex;
         unsigned int                    m_highestTrackNumber;
@@ -118,6 +119,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
     private slots:
         void                            trackEndReached( unsigned int trackId );
         void                            trackPaused();
+        void                            trackUnpaused();
         void                            tracksRenderCompleted( unsigned int trackId );
 
     signals:
@@ -132,6 +134,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
         void                    mainWorkflowEndReached();
         void                    mainWorkflowPaused();
+        void                    mainWorkflowUnpaused();
 };
 
 #endif // MAINWORKFLOW_H

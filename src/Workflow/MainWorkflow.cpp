@@ -46,6 +46,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
         m_tracks[i].setPtr( new TrackWorkflow( i ) );
         connect( m_tracks[i], SIGNAL( trackEndReached( unsigned int ) ), this, SLOT( trackEndReached(unsigned int) ) );
         connect( m_tracks[i], SIGNAL( trackPaused() ), this, SLOT( trackPaused() ) );
+        connect( m_tracks[i], SIGNAL( trackUnpaused() ), this, SLOT( trackUnpaused() ) );
         connect( m_tracks[i], SIGNAL( renderCompleted( unsigned int ) ), this,  SLOT( tracksRenderCompleted( unsigned int ) ), Qt::QueuedConnection );
     }
     m_renderStartedLock = new QReadWriteLock;
@@ -144,6 +145,21 @@ void        MainWorkflow::pause()
         {
             m_nbTracksToPause.fetchAndAddAcquire( 1 );
             m_tracks[i]->pause();
+        }
+    }
+}
+
+void        MainWorkflow::unpause()
+{
+    QMutexLocker    lock( m_renderMutex );
+
+    m_nbTracksToUnpause = 0;
+    for ( unsigned int i = 0; i < m_trackCount; ++i )
+    {
+        if ( m_tracks[i].activated() == true )
+        {
+            m_nbTracksToUnpause.fetchAndAddAcquire( 1 );
+            m_tracks[i]->unpause();
         }
     }
 }
@@ -258,12 +274,19 @@ void           MainWorkflow::clipMoved( QUuid clipUuid, int oldTrack, int newTra
 
 void        MainWorkflow::trackPaused()
 {
-//    qDebug() << "Track pausing finished...";
     m_nbTracksToPause.fetchAndAddAcquire( -1 );
     if ( m_nbTracksToPause <= 0 )
     {
-//        qDebug() << "\t\t...MainWorkflow is paused";
         emit mainWorkflowPaused();
+    }
+}
+
+void        MainWorkflow::trackUnpaused()
+{
+    m_nbTracksToUnpause.fetchAndAddAcquire( -1 );
+    if ( m_nbTracksToUnpause <= 0 )
+    {
+        emit mainWorkflowUnpaused();
     }
 }
 

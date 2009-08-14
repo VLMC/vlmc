@@ -30,6 +30,7 @@
 WorkflowRenderer::WorkflowRenderer( MainWorkflow* mainWorkflow ) :
             m_mainWorkflow( mainWorkflow ),
             m_pauseAsked( false ),
+            m_unpauseAsked( false ),
             m_pausedMediaPlayer( false )
 {
     char        buffer[64];
@@ -93,8 +94,6 @@ void*   WorkflowRenderer::lock( void* datas )
 void    WorkflowRenderer::unlock( void* datas )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
-
-    self->internalPlayPause( true );
     self->checkActions();
 }
 
@@ -136,8 +135,9 @@ void        WorkflowRenderer::startPreview()
     char        buff[128];
 
     connect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
-             Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( updateCursorPos( qint64 ) ) );
+            Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( updateCursorPos( qint64 ) ) );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ) );
+    connect( m_mainWorkflow, SIGNAL( mainWorkflowUnpaused() ), this, SLOT( mainWorkflowUnpaused() ) );
     m_mainWorkflow->startRender();
     sprintf( buff, ":fake-duration=%lli", m_mainWorkflow->getLength() / FPS * 1000 );
     m_media->addOption( buff );
@@ -168,11 +168,28 @@ void        WorkflowRenderer::pauseMainWorkflow()
     m_mainWorkflow->pause();
 }
 
+void        WorkflowRenderer::unpauseMainWorkflow()
+{
+    qDebug() << "unpauseMainWorkflow();";
+    if ( m_paused == false )
+        return ;
+    m_pausedMediaPlayer = false;
+    m_mainWorkflow->unpause();
+}
+
 void        WorkflowRenderer::mainWorkflowPaused()
 {
     m_paused = true;
     m_pauseAsked = false;
     emit paused();
+}
+
+void        WorkflowRenderer::mainWorkflowUnpaused()
+{
+    qDebug() << "Emmiting signal playing";
+    m_paused = false;
+    m_unpauseAsked = false;
+    emit playing();
 }
 
 void        WorkflowRenderer::togglePlayPause( bool forcePause )
@@ -190,8 +207,11 @@ void        WorkflowRenderer::internalPlayPause( bool forcePause )
     {
         if ( m_paused == true && forcePause == false )
         {
-            //This will automaticly unpause the ClipWorkflow... no worries
-            m_mediaPlayer->play();
+            if ( m_paused == true )
+            {
+                m_unpauseAsked = true;
+                m_mediaPlayer->play();
+            }
         }
         else
         {
@@ -236,14 +256,21 @@ void        WorkflowRenderer::__positionChanged( float pos )
 
 void        WorkflowRenderer::__videoPaused()
 {
-    pauseMainWorkflow();
+    if ( m_pauseAsked == true )
+        pauseMainWorkflow();
 }
 
 void        WorkflowRenderer::__videoPlaying()
 {
-    emit playing();
-    m_pausedMediaPlayer = false;
-    m_paused = false;
+    if ( m_unpauseAsked == true )
+        unpauseMainWorkflow();
+    else
+    {
+        qDebug() << "Emmiting signal playing without mainworkflow";
+        m_paused = false;
+        m_pausedMediaPlayer = false;
+        emit playing();
+    }
 }
 
 void        WorkflowRenderer::__videoStopped()

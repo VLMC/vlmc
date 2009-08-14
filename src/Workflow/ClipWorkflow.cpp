@@ -97,7 +97,9 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
         cw->m_renderWaitCond->wake();
         cw->emit renderComplete( cw );
 
+        qDebug() << "Entering condwait";
         cw->m_waitCond->wait( cw->m_condMutex );
+        qDebug() << "Leaving condwait";
         cw->m_stateLock->lockForWrite();
         cw->m_state = Rendering;
         cw->m_stateLock->unlock();
@@ -130,6 +132,7 @@ void    ClipWorkflow::setVmem()
 
 void    ClipWorkflow::initialize()
 {
+    qDebug() << "Initialize";
     setState( Initializing );
     m_vlcMedia = new LibVLCpp::Media( m_clip->getParent()->getFileInfo()->absoluteFilePath() );
     setVmem();
@@ -138,31 +141,37 @@ void    ClipWorkflow::initialize()
 
     connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPositionAfterPlayback() ), Qt::DirectConnection );
     connect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( clipEndReached() ), Qt::DirectConnection );
-    connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( pausedMediaPlayer() ), Qt::DirectConnection );
     m_mediaPlayer->play();
+    qDebug() << "playback required";
 }
 
 void    ClipWorkflow::setPositionAfterPlayback()
 {
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPositionAfterPlayback() ) );
     connect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( pauseAfterPlaybackStarted() ), Qt::DirectConnection );
+
     m_mediaPlayer->setPosition( m_clip->getBegin() );
+    qDebug() << "Set position";
 }
 
 void    ClipWorkflow::pauseAfterPlaybackStarted()
 {
+    qDebug() << "pauseAfterPlaybackStarted();";
     disconnect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( pauseAfterPlaybackStarted() ) );
+    //FIXME: it seems that this signal is never connected :o
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( pauseAfterPlaybackStarted() ) );
-
     connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( initializedMediaPlayer() ), Qt::DirectConnection );
-    m_mediaPlayer->pause();
 
+    m_mediaPlayer->pause();
 }
 
 void    ClipWorkflow::initializedMediaPlayer()
 {
+    qDebug() << "initializedMediaPlayer();";
     disconnect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( initializedMediaPlayer() ) );
+    connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( pausedMediaPlayer() ), Qt::DirectConnection );
     setState( Ready );
+    qDebug() << "Ready";
 }
 
 bool    ClipWorkflow::isReady() const
@@ -300,6 +309,7 @@ void            ClipWorkflow::pause()
 void            ClipWorkflow::unpause()
 {
     queryStateChange( ClipWorkflow::Rendering );
+    connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( unpausedMediaPlayer() ), Qt::DirectConnection );
     m_mediaPlayer->pause();
 }
 
@@ -328,4 +338,11 @@ LibVLCpp::MediaPlayer*       ClipWorkflow::getMediaPlayer()
 void        ClipWorkflow::pausedMediaPlayer()
 {
     setState( Paused );
+    emit paused();
+}
+
+void        ClipWorkflow::unpausedMediaPlayer()
+{
+    disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( unpausedMediaPlayer() ) );
+    emit unpaused();
 }

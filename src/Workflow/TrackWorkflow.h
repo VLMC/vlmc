@@ -52,11 +52,8 @@ class   TrackWorkflow : public QObject
         bool                                    getOutput( qint64 currentFrame );
         qint64                                  getLength() const;
         void                                    stop();
-        /**
-         *  Will pause all the track's ClipWorkflow.
-         *  This method *is synchrone*, and will not return until all of the ClipWorkflow's thread are asleep
-         */
         void                                    pause();
+        void                                    unpause();
         void                                    moveClip( const QUuid& id, qint64 startingFrame );
         Clip*                                   removeClip( const QUuid& id );
         void                                    addClip( Clip*, qint64 start );
@@ -75,7 +72,6 @@ class   TrackWorkflow : public QObject
                                                             qint64 start, bool needRepositioning );
         void                                    preloadClip( ClipWorkflow* cw );
         void                                    stopClipWorkflow( ClipWorkflow* cw );
-        void                                    pauseClipWorkflow( ClipWorkflow* cw );
         bool                                    checkEnd( qint64 currentFrame ) const;
 
     private:
@@ -100,17 +96,20 @@ class   TrackWorkflow : public QObject
         bool                                    m_paused;
 
         QAtomicInt                              m_nbClipToPause;
+        QAtomicInt                              m_nbClipToUnpause;
         QAtomicInt                              m_nbClipToRender;
 
         unsigned char*                          m_synchroneRenderBuffer;
 
     private slots:
-//        void                                    clipWorkflowPaused();
+        void                                    clipWorkflowPaused();
+        void                                    clipWorkflowUnpaused();
         void                                    clipWorkflowRenderCompleted( ClipWorkflow* );
 
     signals:
         void                                    trackEndReached( unsigned int );
         void                                    trackPaused();
+        void                                    trackUnpaused();
         void                                    renderCompleted( unsigned int );
 };
 

@@ -211,12 +211,15 @@ class   ClipWorkflow : public QObject
         void                    initializedMediaPlayer();
         void                    setPositionAfterPlayback();
         void                    pausedMediaPlayer();
+        void                    unpausedMediaPlayer();
 
     public slots:
         void                    clipEndReached();
 
     signals:
         void                    renderComplete( ClipWorkflow* );
+        void                    paused();
+        void                    unpaused();
 };
 
 #endif // CLIPWORKFLOW_H

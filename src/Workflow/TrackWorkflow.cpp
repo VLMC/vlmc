@@ -61,6 +61,8 @@ void    TrackWorkflow::addClip( ClipWorkflow* cw, qint64 start )
 {
     QWriteLocker    lock( m_clipsLock );
     connect( cw, SIGNAL( renderComplete( ClipWorkflow* ) ), this, SLOT( clipWorkflowRenderCompleted( ClipWorkflow* ) ), Qt::DirectConnection );
+    connect( cw, SIGNAL( paused() ), this, SLOT( clipWorkflowPaused() ) );
+    connect( cw, SIGNAL( unpaused() ), this, SLOT( clipWorkflowUnpaused() ) );
     m_clips.insert( start, cw );
     computeLength();
 }
@@ -130,6 +132,7 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
         //Otherwise, it will start directly.
         cw->getStateLock()->unlock();
         cw->startRender();
+
         if ( needRepositioning == true )
         {
             float   pos = ( (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) );
@@ -292,24 +295,6 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
     return hasRendered;
 }
 
-void                TrackWorkflow::pauseClipWorkflow( ClipWorkflow* cw )
-{
-    cw->getStateLock()->lockForRead();
-
-    if ( cw->getState() == ClipWorkflow::Stopped )
-    {
-        cw->getStateLock()->unlock();
-        return ;
-    }
-    if ( cw->getState() != ClipWorkflow::Paused )
-    {
-        //TODO  (redo actually...) :)
-        Q_ASSERT( false );
-    }
-    else
-        cw->getStateLock()->unlock();
-}
-
 void                TrackWorkflow::pause()
 {
     QReadLocker     lock( m_clipsLock );
@@ -317,7 +302,6 @@ void                TrackWorkflow::pause()
     QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
     QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
 
-    //FIXME: it's probably bad to iterate over every clip workflows.
     m_nbClipToPause = 0;
     for ( ; it != end; ++it )
     {
@@ -333,7 +317,7 @@ void                TrackWorkflow::pause()
         {
             cw->getStateLock()->unlock();
             m_nbClipToPause.fetchAndAddAcquire( 1 );
-            pauseClipWorkflow( cw );
+            cw->pause();
         }
         else
         {
@@ -343,8 +327,6 @@ void                TrackWorkflow::pause()
         }
     }
     m_paused = !m_paused;
-    if ( m_paused == true )
-        emit trackPaused();
 }
 
 void            TrackWorkflow::moveClip( const QUuid& id, qint64 startingFrame )
@@ -414,4 +396,50 @@ void        TrackWorkflow::clipWorkflowRenderCompleted( ClipWorkflow* cw )
 unsigned char*  TrackWorkflow::getSynchroneOutput()
 {
     return m_synchroneRenderBuffer;
+}
+
+void    TrackWorkflow::clipWorkflowPaused()
+{
+    m_nbClipToPause.fetchAndAddAcquire( -1 );
+    if ( m_nbClipToPause <= 0 )
+    {
+        emit trackPaused();
+    }
+}
+
+void    TrackWorkflow::unpause()
+{
+    QReadLocker     lock( m_clipsLock );
+
+    QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
+
+    m_nbClipToUnpause = 0;
+    for ( ; it != end; ++it )
+    {
+        ClipWorkflow*   cw = it.value();
+
+        cw->getStateLock()->lockForRead();
+        if ( cw->getState() == ClipWorkflow::Paused )
+        {
+            cw->getStateLock()->unlock();
+            m_nbClipToUnpause.fetchAndAddAcquire( 1 );
+            cw->unpause();
+        }
+        else
+        {
+            cw->getStateLock()->unlock();
+        }
+    }
+    m_paused = !m_paused;
+}
+
+void    TrackWorkflow::clipWorkflowUnpaused()
+{
+    m_nbClipToUnpause.fetchAndAddAcquire( -1 );
+    if ( m_nbClipToUnpause <= 0 )
+    {
+        qDebug() << "Track unpaused";
+        emit trackUnpaused();
+    }
 }
