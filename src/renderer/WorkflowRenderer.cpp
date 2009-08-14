@@ -83,8 +83,9 @@ void*   WorkflowRenderer::lock( void* datas )
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
     //If renderer is stopping, don't ask for another frame:
-    if ( self->m_isRendering == false )
-        return self->m_lastFrame;
+//    if ( self->m_isRendering == false )
+//        return self->m_lastFrame;
+    qDebug() << "WorkflowRenderer::lock()";
 
     void* ret = self->m_mainWorkflow->getSynchroneOutput();
     self->m_lastFrame = static_cast<unsigned char*>( ret );
