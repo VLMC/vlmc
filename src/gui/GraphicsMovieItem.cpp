@@ -35,6 +35,14 @@ GraphicsMovieItem::GraphicsMovieItem( Clip* clip ) : m_clip( clip ), m_width( 0 
                      .arg( clip->getParent()->getFileInfo()->fileName() )
                      .arg( length.toString("hh:mm:ss.zzz") ) );
     setToolTip( tooltip );
+
+    m_movieTitle = new QGraphicsTextItem( this, scene() );
+    m_movieTitle->setFlag( QGraphicsItem::ItemIgnoresTransformations );
+    QFont titleFont = m_movieTitle->font();
+    titleFont.setPointSize( 8 );
+    m_movieTitle->setFont( titleFont );
+
+    updateTitle();
 }
 
 GraphicsMovieItem::~GraphicsMovieItem()
@@ -57,6 +65,7 @@ void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     painter->drawRect( boundingRect() );
 
     paintAudioSpectrum( painter );
+    updateTitle();
 }
 
 
@@ -117,4 +126,18 @@ void GraphicsMovieItem::paintAudioSpectrum( QPainter* painter )
 Clip* GraphicsMovieItem::clip() const
 {
     return m_clip;
+}
+
+void GraphicsMovieItem::updateTitle()
+{
+    QFontMetrics fm( m_movieTitle->font() );
+    QString text = m_clip->getParent()->getFileInfo()->fileName();
+
+    static int lastWidth = 0;
+    int width = TracksView::instance()->mapFromScene( boundingRect() ).boundingRect().width();
+    if ( lastWidth == width ) return;
+
+    lastWidth = width;
+    //FIXME there is a small visual refresh bug here
+    m_movieTitle->setPlainText( fm.elidedText( text, Qt::ElideRight, width ) );
 }

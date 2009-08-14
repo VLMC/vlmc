@@ -23,6 +23,7 @@
 #ifndef GRAPHICSMOVIEITEM_H
 #define GRAPHICSMOVIEITEM_H
 
+#include <QFontMetrics>
 #include "AbstractGraphicsMediaItem.h"
 #include "Clip.h"
 #include "TracksView.h"
@@ -49,10 +50,12 @@ public:
     void paintAudioSpectrum( QPainter* painter );
 
 private:
-    Clip*           m_clip;
-    int             m_width;
-    int             m_height;
-    QVector<float*> m_audioSpectrum;
+    void                updateTitle();
+    Clip*               m_clip;
+    int                 m_width;
+    int                 m_height;
+    QVector<float*>     m_audioSpectrum;
+    QGraphicsTextItem*  m_movieTitle;
 };
 
 #endif // GRAPHICSMOVIEITEM_H
