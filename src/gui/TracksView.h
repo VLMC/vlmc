@@ -132,6 +132,7 @@ private:
 
     // Mouse actions on Medias
     bool                    m_actionMove;
+    bool                    m_actionMoveExecuted;
     int                     m_actionRelativeX;
     AbstractGraphicsMediaItem* m_actionItem;
 

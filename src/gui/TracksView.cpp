@@ -346,6 +346,9 @@ void TracksView::mouseMoveEvent( QMouseEvent* event )
          event->buttons() == Qt::LeftButton &&
          m_actionMove == true )
     {
+        // The move action is obviously executed
+        m_actionMoveExecuted = true;
+
         if ( m_actionRelativeX < 0 )
             m_actionRelativeX = event->pos().x() - mapFromScene( m_actionItem->pos() ).x();
         moveMediaItem( m_actionItem, QPoint( event->pos().x() - m_actionRelativeX, event->pos().y() ) );
@@ -373,6 +376,7 @@ void TracksView::mousePressEvent( QMouseEvent* event )
         if ( item->moveable() )
         {
             m_actionMove = true;
+            m_actionMoveExecuted = false;
             m_actionItem = mediaCollisionList.at( 0 );
         }
         return;
@@ -392,7 +396,7 @@ void TracksView::mousePressEvent( QMouseEvent* event )
 
 void TracksView::mouseReleaseEvent( QMouseEvent* event )
 {
-    if ( m_actionMove )
+    if ( m_actionMove && m_actionMoveExecuted )
     {
         GraphicsMovieItem* movieItem = qgraphicsitem_cast<GraphicsMovieItem*>( m_actionItem );
         if ( movieItem )
