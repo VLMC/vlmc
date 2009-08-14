@@ -215,7 +215,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, int 
             {
                 // Collision with an item of the same type
                 itemCollision = true;
-                if ( currentItem->trackNumber() > track )
+                if ( currentItem->trackNumber() >= track )
                 {
                     if ( track < 1 )
                     {
