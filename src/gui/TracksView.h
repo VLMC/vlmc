@@ -81,8 +81,7 @@ class TracksView : public QGraphicsView
     Q_OBJECT
 
 public:
-    static TracksView* instance( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidget* parent = 0 );
-    static TracksView* instance();
+    TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidget* parent = 0 );
     void setDuration( int duration );
     int duration() const { return m_projectDuration; }
     int tracksHeight() const { return m_tracksHeight; }
@@ -113,14 +112,11 @@ private slots:
     void                    updateDuration();
 
 private:
-    TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidget* parent = 0 );
-    virtual ~TracksView() { }
     void                    createLayout();
     void                    addVideoTrack();
     void                    addAudioTrack();
     void                    moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position );
     void                    moveMediaItem( AbstractGraphicsMediaItem* item, int track, int time );
-    static TracksView*      m_instance;
     QGraphicsScene*         m_scene;
     int                     m_tracksHeight;
     unsigned int            m_tracksCount;

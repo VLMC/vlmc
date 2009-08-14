@@ -35,26 +35,9 @@
 #include "GraphicsCursorItem.h"
 #include "Commands.hpp"
 
-TracksView* TracksView::m_instance = NULL;
-
-TracksView* TracksView::instance( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidget* parent )
-{
-    if ( m_instance ) return m_instance;
-    m_instance = new TracksView( scene, mainWorkflow, parent );
-    return m_instance;
-}
-
-TracksView* TracksView::instance()
-{
-    Q_ASSERT( m_instance );
-    return m_instance;
-}
-
 TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidget* parent )
         : QGraphicsView( scene, parent ), m_scene( scene ), m_mainWorkflow( mainWorkflow )
 {
-    connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( deleteLater() ) );
-
     //TODO should be defined by the settings
     m_tracksHeight = 25;
 
