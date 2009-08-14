@@ -167,7 +167,9 @@ void TracksView::moveMediaItem( const QUuid& uuid, unsigned int track, qint64 ti
 
 void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position )
 {
+    static GraphicsTrack* lastKnownTrack = NULL;
     GraphicsTrack* track = NULL;
+
     QList<QGraphicsItem*> list = items( 0, position.y() );
     for ( int i = 0; i < list.size(); ++i )
     {
@@ -175,7 +177,16 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position
         if (track) break;
     }
 
-    if (!track) return;
+    if ( !track )
+    {
+        // When the mouse pointer is not on a track,
+        // use the last known track.
+        // This avoids "breaks" when moving a rush
+        if ( !lastKnownTrack ) return;
+        track = lastKnownTrack;
+    }
+
+    lastKnownTrack = track;
 
     qreal time = ( mapToScene( position ).x() + 0.5 );
     moveMediaItem( item, track->trackNumber(), (int)time);
