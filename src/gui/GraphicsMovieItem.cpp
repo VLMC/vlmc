@@ -26,6 +26,7 @@
 #include <QTime>
 #include "GraphicsMovieItem.h"
 #include "TracksView.h"
+#include "Timeline.h"
 
 GraphicsMovieItem::GraphicsMovieItem( Clip* clip ) : m_clip( clip ), m_width( 0 ), m_height( 0 )
 {
@@ -134,7 +135,7 @@ void GraphicsMovieItem::updateTitle()
     QString text = m_clip->getParent()->getFileInfo()->fileName();
 
     static int lastWidth = 0;
-    int width = TracksView::instance()->mapFromScene( boundingRect() ).boundingRect().width();
+    int width = Timeline::getInstance()->tracksView()->mapFromScene( boundingRect() ).boundingRect().width();
     if ( lastWidth == width ) return;
 
     lastWidth = width;
