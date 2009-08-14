@@ -70,8 +70,6 @@ namespace Commands
                     m_workflow( workflow ), m_uuid( uuid ), m_oldTrack( oldTrack ), m_newTrack( newTrack ), m_pos( newPos )
                 {
                     setText( "Moving clip" );
-                    m_oldPos = m_workflow->getClipPosition( uuid, oldTrack );
-                    qDebug() << "Old pos == " << m_oldPos;
                     m_undoRedoAction = false;
                 }
                 virtual void    redo()

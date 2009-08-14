@@ -270,7 +270,6 @@ void           MainWorkflow::moveClip( const QUuid& clipUuid, unsigned int oldTr
     computeLength();
     if ( undoRedoCommand == true )
     {
-        qDebug() << "Emitted Clip moved: to track" << newTrack << "at pos" << startingFrame;
         emit clipMoved( clipUuid, newTrack, startingFrame );
     }
 }

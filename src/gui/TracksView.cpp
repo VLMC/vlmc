@@ -199,8 +199,6 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, int 
     else if ( track > m_numVideoTrack - 1)
         track = m_numVideoTrack - 1;
 
-    //qDebug() << ">>>>>> Move track number" << track;
-
     QPointF oldPos = item->pos();
     QGraphicsItem* oldParent = item->parentItem();
     // Check for vertical collisions
@@ -404,7 +402,6 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
             updateDuration();
             if ( m_layout->itemAt( 0 )->graphicsItem()->childItems().count() > 0 )
                 addVideoTrack();
-            qDebug() << "Trigerring move command. track" << movieItem->oldTrackNumber << "->" << movieItem->trackNumber();
             Commands::trigger( new Commands::MainWorkflow::MoveClip( m_mainWorkflow, movieItem->clip()->getUuid(),
                                                                      movieItem->oldTrackNumber, movieItem->trackNumber(),
                                                                      (qint64)movieItem->pos().x() ) );
