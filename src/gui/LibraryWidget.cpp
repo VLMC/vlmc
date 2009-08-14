@@ -56,8 +56,6 @@ ListViewMediaItem*  LibraryWidget::addClip( Clip* clip )
     Media::FileType fileType = clip->getParent()->getFileType();
     ListViewMediaItem* item = new ListViewMediaItem( clip, fileType );
 
-    //TODO: replace this :
-    //emit listViewMediaAdded( item->getClip() );
     m_clips->append( item );
     switch ( fileType )
     {

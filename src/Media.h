@@ -69,8 +69,7 @@ public:
         Video,
         Image
     };
-    Media( const QFileInfo* fileInfo );
-//    Media( const QString& mrl );
+    Media( const QString& filePath );
     virtual ~Media();
 
     void                        loadMedia( const QString& mrl );

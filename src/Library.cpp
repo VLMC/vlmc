@@ -73,11 +73,8 @@ void        Library::newMediaLoadingAsked( const QString& filePath )
         if ( media->getFileInfo()->absoluteFilePath() == filePath )
             return ;
     }
-    //TODO: maybe we should think about taking a reference to a QFileInfo on Clip::Clip() to avoid multiple new...
-    QFileInfo* fInfo = new QFileInfo( filePath );
-    media = new Media( fInfo );
+    media = new Media( filePath );
     m_medias[media->getUuid()] = media;
     connect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ), Qt::DirectConnection );
     emit newMediaLoaded( media );
-    delete fInfo;
 }

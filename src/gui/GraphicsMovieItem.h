@@ -25,7 +25,6 @@
 
 #include "AbstractGraphicsMediaItem.h"
 #include "Clip.h"
-#include "Media.h"
 #include "TracksView.h"
 
 class GraphicsMovieItem : public AbstractGraphicsMediaItem

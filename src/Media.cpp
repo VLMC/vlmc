@@ -34,17 +34,17 @@ const QString   Media::VideoExtensions = "*.mov *.avi *.mkv *.mpg *.mpeg *.wmv *
 const QString   Media::ImageExtensions = "*.gif *.png *.jpg";
 const QString   Media::AudioExtensions = "*.mp3 *.oga *.flac *.aac *.wav";
 
-Media::Media( const QFileInfo* fileInfo)
+Media::Media( const QString& filePath )
     : m_vlcMedia( NULL ), m_snapshot( NULL ), m_length( 0 ),
     m_width( 0 ), m_height( 0 )
 {
     m_uuid = QUuid::createUuid();
-    m_fileInfo = new QFileInfo( *fileInfo );
+    m_fileInfo = new QFileInfo( filePath );
     setFileType();
     if ( m_fileType == Media::Video || m_fileType == Media::Audio )
-        m_mrl = "file:///" + fileInfo->absoluteFilePath();
+        m_mrl = "file:///" + m_fileInfo->absoluteFilePath();
     else
-        m_mrl = "fake:///" + fileInfo->absoluteFilePath();
+        m_mrl = "fake:///" + m_fileInfo->absoluteFilePath();
     m_vlcMedia = new LibVLCpp::Media( m_mrl );
 }
 

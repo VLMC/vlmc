@@ -30,7 +30,6 @@
 #include "Clip.h"
 #include "GenericRenderer.h"
 
-//TODO: This should really share a common interface with RenderPreviewWorkflow
 class ClipRenderer : public GenericRenderer
 {
     Q_OBJECT

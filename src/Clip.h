@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Media.h : Represents a basic container for media informations.
+ * Clip.h : Represents a basic container for media informations.
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *

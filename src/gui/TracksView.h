@@ -31,7 +31,6 @@
 #include <QWheelEvent>
 #include <QGraphicsSceneDragDropEvent>
 #include <QApplication>
-#include "Media.h"
 #include "GraphicsCursorItem.h"
 #include "MainWorkflow.h"
 #include "TrackWorkflow.h"

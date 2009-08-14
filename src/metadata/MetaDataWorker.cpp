@@ -60,7 +60,7 @@ void    MetaDataWorker::computeVideoMetaData()
 {
     //Disabling audio for this specific use of the media
     m_currentMedia->addVolatileParam( ":no-audio", ":audio" );
-    m_currentMedia->addVolatileParam( ":vout=dummy", ":vout=" );
+    m_currentMedia->addConstantParam( ":vout=dummy" );
 
     connect( m_mediaPlayer, SIGNAL( lengthChanged() ), this, SLOT( entrypointLengthChanged() ) );
 }
@@ -74,8 +74,11 @@ void    MetaDataWorker::computeImageMetaData()
 void    MetaDataWorker::getMetaData()
 {
     m_mediaIsPlaying = false;
-   m_lengthHasChanged = false;
+    m_lengthHasChanged = false;
 
+    //In order to wait for the VOUT to be ready:
+    while ( m_mediaPlayer->getWidth() == 0 )
+        SleepMS( 1 ); //Ugly isn't it :)
     m_currentMedia->setLength( m_mediaPlayer->getLength() );
     m_currentMedia->setWidth( m_mediaPlayer->getWidth() );
     m_currentMedia->setHeight( m_mediaPlayer->getHeight() );
