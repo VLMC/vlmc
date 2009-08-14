@@ -182,6 +182,7 @@ void                Media::initAudioData( void* datas, unsigned int* freq, unsig
 
 void                Media::addAudioFrame( void* datas, unsigned char* buffer, size_t buffSize, unsigned int nbSample )
 {
+    Q_UNUSED( datas );
     m_audioData.nbSample = nbSample;
     m_audioData.buffSize = buffSize;
 

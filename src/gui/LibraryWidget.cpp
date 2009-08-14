@@ -125,6 +125,7 @@ void    LibraryWidget::newClipLoaded( Clip* clip )
 
 void    LibraryWidget::insertNewMediasFromFileDialog( QString title, QString filter, Media::FileType fileType )
 {
+    Q_UNUSED( fileType );
     QSettings settings;
     QString path;
 
