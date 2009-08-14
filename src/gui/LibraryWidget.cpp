@@ -231,7 +231,12 @@ void                        LibraryWidget::updateFilter( const QString& filter )
         ListViewMediaItem*  item = static_cast<ListViewMediaItem*>( mediaList->item( i ) );
         if ( item != NULL )
         {
-            item->setHidden( !(item->getClip()->matchMetaTag( filter )) );
+            QString filename = item->getClip()->getParent()->getFileInfo()->fileName();
+
+            if ( !filename.contains( filter, Qt::CaseInsensitive ) && !item->getClip()->matchMetaTag( filter ) )
+                item->setHidden( true );
+            else
+                item->setHidden( false );
         }
     }
 }
