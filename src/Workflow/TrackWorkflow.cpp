@@ -116,7 +116,6 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
     }
     else if ( cw->getState() == ClipWorkflow::Stopped )
     {
-        qDebug() << "Rendering a stopped clip. m_paused ==" << m_paused;
         cw->getStateLock()->unlock();
         cw->initialize();
         cw->startRender( m_paused );
@@ -129,7 +128,6 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
     else if ( cw->getState() == ClipWorkflow::Ready ||
               cw->getState() == ClipWorkflow::Initializing )
     {
-        qDebug() << "Rendering a ready clip";
         //If the state is Initializing, then the workflow will wait.
         //Otherwise, it will start directly.
         cw->getStateLock()->unlock();

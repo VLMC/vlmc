@@ -277,7 +277,6 @@ void        WorkflowRenderer::__videoPlaying()
     {
         m_paused = false;
         m_pausedMediaPlayer = false;
-        qDebug() << "Emmiting playing";
         emit playing();
     }
 }
