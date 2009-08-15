@@ -87,11 +87,6 @@ void*   WorkflowRenderer::lock( void* datas )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
-    //If renderer is stopping, don't ask for another frame:
-//    if ( self->m_isRendering == false )
-//        return self->m_lastFrame;
-    qDebug() << "WorkflowRenderer::lock()";
-
     void* ret = self->m_mainWorkflow->getSynchroneOutput();
     self->m_lastFrame = static_cast<unsigned char*>( ret );
     return ret;
@@ -190,11 +185,9 @@ void        WorkflowRenderer::mainWorkflowPaused()
 {
     m_paused = true;
     m_pauseAsked = false;
-    qDebug() << "mainworkflow is paused 1";
     {
         QMutexLocker    lock( m_condMutex );
     }
-    qDebug() << "mainworkflow is paused 2";
     m_waitCond->wakeAll();
     emit paused();
 }
@@ -280,7 +273,6 @@ void        WorkflowRenderer::__videoPlaying()
         unpauseMainWorkflow();
     else
     {
-        qDebug() << "Emmiting signal playing without mainworkflow";
         m_paused = false;
         m_pausedMediaPlayer = false;
         emit playing();

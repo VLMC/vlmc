@@ -130,7 +130,8 @@ void                MainWorkflow::getOutput()
                 break ;
             }
         }
-        nextFrame();
+        if ( m_paused == false )
+            nextFrame();
     }
 }
 
@@ -277,6 +278,7 @@ void        MainWorkflow::trackPaused()
     m_nbTracksToPause.fetchAndAddAcquire( -1 );
     if ( m_nbTracksToPause <= 0 )
     {
+        m_paused = true;
         emit mainWorkflowPaused();
     }
 }
@@ -286,6 +288,7 @@ void        MainWorkflow::trackUnpaused()
     m_nbTracksToUnpause.fetchAndAddAcquire( -1 );
     if ( m_nbTracksToUnpause <= 0 )
     {
+        m_paused = false;
         emit mainWorkflowUnpaused();
     }
 }
@@ -318,9 +321,7 @@ unsigned char*  MainWorkflow::getSynchroneOutput()
 {
     m_synchroneRenderWaitConditionMutex->lock();
     getOutput();
-    qDebug() << "Waiting for synchrone output";
     m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
-    qDebug() << "And got it";
     m_synchroneRenderWaitConditionMutex->unlock();
     if ( m_synchroneRenderingBuffer == NULL )
         return MainWorkflow::blackOutput;

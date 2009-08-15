@@ -156,7 +156,6 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
     }
     else
     {
-        qDebug() << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Unexpected state while rendering";
         cw->getStateLock()->unlock();
     }
 }
@@ -167,7 +166,6 @@ void                TrackWorkflow::preloadClip( ClipWorkflow* cw )
 
     if ( cw->getState() == ClipWorkflow::Stopped )
     {
-        qDebug() << "Preloading clip";
         cw->getStateLock()->unlock();
         cw->initialize();
         return ;
@@ -328,7 +326,6 @@ void                TrackWorkflow::pause()
         {
             cw->getStateLock()->unlock();
             m_nbClipToPause.fetchAndAddAcquire( 1 );
-            qDebug() << "Track is asking clip to pause. state lock unlocked";
             cw->pause();
         }
         else

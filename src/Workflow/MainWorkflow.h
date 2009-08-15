@@ -112,6 +112,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         unsigned char*                  m_synchroneRenderingBuffer;
         QWaitCondition*                 m_synchroneRenderWaitCondition;
         QMutex*                         m_synchroneRenderWaitConditionMutex;
+        bool                            m_paused;
 
     public slots:
         void                            clipMoved( QUuid, int, int, qint64 );

@@ -294,11 +294,8 @@ void            ClipWorkflow::reinitialize()
 
 void            ClipWorkflow::pause()
 {
-    qDebug() << "Pausing clip workflow";
     setState( Pausing );
-    qDebug() << "State set to Pausing";
     m_mediaPlayer->pause();
-    qDebug() << "Pause asked";
     QMutexLocker    lock( m_requiredStateLock );
     m_requiredState = ClipWorkflow::None;
 
@@ -340,7 +337,6 @@ LibVLCpp::MediaPlayer*       ClipWorkflow::getMediaPlayer()
 void        ClipWorkflow::pausedMediaPlayer()
 {
     setState( Paused );
-    qDebug() << "Clip workflow is paused";
     emit paused();
 }
 
