@@ -448,7 +448,6 @@ void    TrackWorkflow::clipWorkflowUnpaused()
     m_nbClipToUnpause.fetchAndAddAcquire( -1 );
     if ( m_nbClipToUnpause <= 0 )
     {
-        qDebug() << "Track unpaused";
         emit trackUnpaused();
     }
 }

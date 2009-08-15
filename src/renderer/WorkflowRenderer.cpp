@@ -217,7 +217,7 @@ void        WorkflowRenderer::internalPlayPause( bool forcePause )
             if ( m_paused == true )
             {
                 m_unpauseAsked = true;
-                m_mediaPlayer->play();
+                unpauseMainWorkflow();
             }
         }
         else
