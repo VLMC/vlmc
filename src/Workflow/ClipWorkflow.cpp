@@ -143,6 +143,7 @@ void    ClipWorkflow::initialize()
     m_mediaPlayer->play();
 }
 
+//FIXME: this step is probably useless, due to modification in the TrackWorkflow
 void    ClipWorkflow::setPositionAfterPlayback()
 {
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPositionAfterPlayback() ) );
@@ -190,13 +191,20 @@ ClipWorkflow::State     ClipWorkflow::getState() const
     return m_state;
 }
 
-void    ClipWorkflow::startRender()
+void    ClipWorkflow::startRender( bool startInPausedMode )
 {
     if ( isReady() == false )
         m_initWaitCond->wait();
 
-    m_mediaPlayer->play();
-    setState( Rendering );
+    if ( startInPausedMode == false )
+    {
+        m_mediaPlayer->play();
+        setState( Rendering );
+    }
+    else
+    {
+        setState( Paused );
+    }
 }
 
 void    ClipWorkflow::clipEndReached()

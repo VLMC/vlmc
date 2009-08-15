@@ -107,7 +107,7 @@ class   ClipWorkflow : public QObject
          *  on the media player.
          *  If the media player isn't ready, this method waits.
          */
-        void                    startRender();
+        void                    startRender( bool startInPausedMode );
 
         /**
             \brief              Returns the Clip this workflow instance is based

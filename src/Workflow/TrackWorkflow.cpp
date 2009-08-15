@@ -116,9 +116,10 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
     }
     else if ( cw->getState() == ClipWorkflow::Stopped )
     {
+        qDebug() << "Rendering a stopped clip. m_paused ==" << m_paused;
         cw->getStateLock()->unlock();
-        cw->initialize( );
-        cw->startRender();
+        cw->initialize();
+        cw->startRender( m_paused );
         if ( start != currentFrame ) //Clip was not started as its real begining
         {
             float   pos = ( (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) );
@@ -128,10 +129,11 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
     else if ( cw->getState() == ClipWorkflow::Ready ||
               cw->getState() == ClipWorkflow::Initializing )
     {
+        qDebug() << "Rendering a ready clip";
         //If the state is Initializing, then the workflow will wait.
         //Otherwise, it will start directly.
         cw->getStateLock()->unlock();
-        cw->startRender();
+        cw->startRender( false );
 
         if ( needRepositioning == true )
         {
@@ -270,8 +272,7 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
             needRepositioning = ( abs( currentFrame - lastFrame ) > 1 ) ? true : false;
     }
     m_nbClipToRender = 0;
-    //If we ask for an output, then the track should'nt be paused anymore.
-    m_paused = false;
+
     while ( it != end )
     {
         qint64          start = it.key();
