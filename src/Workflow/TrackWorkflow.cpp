@@ -144,8 +144,19 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
         cw->getStateLock()->unlock();
         //The stopClipWorkflow() method will take care of that.
     }
+    else if ( cw->getState() == ClipWorkflow::Paused )
+    {
+        cw->getStateLock()->unlock();
+        if ( needRepositioning == true )
+        {
+            float   pos = ( (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) );
+            cw->setPosition( pos );
+        }
+        clipWorkflowRenderCompleted( cw );
+    }
     else
     {
+        qDebug() << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Unexpected state while rendering";
         cw->getStateLock()->unlock();
     }
 }
@@ -317,6 +328,7 @@ void                TrackWorkflow::pause()
         {
             cw->getStateLock()->unlock();
             m_nbClipToPause.fetchAndAddAcquire( 1 );
+            qDebug() << "Track is asking clip to pause. state lock unlocked";
             cw->pause();
         }
         else

@@ -97,7 +97,9 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
         cw->m_renderWaitCond->wake();
         cw->emit renderComplete( cw );
 
+//        qDebug() << ">>>Entering condwait";
         cw->m_waitCond->wait( cw->m_condMutex );
+//        qDebug() << "<<<Leaving condwait";
         cw->m_stateLock->lockForWrite();
         cw->m_state = Rendering;
         cw->m_stateLock->unlock();
@@ -238,6 +240,12 @@ bool            ClipWorkflow::isRendering() const
     return m_state == ClipWorkflow::Rendering;
 }
 
+bool            ClipWorkflow::isSleeping() const
+{
+    QReadLocker lock( m_stateLock );
+    return m_state == ClipWorkflow::Sleeping;
+}
+
 void            ClipWorkflow::checkSynchronisation( State newState )
 {
     switch ( newState )
@@ -286,12 +294,14 @@ void            ClipWorkflow::reinitialize()
 
 void            ClipWorkflow::pause()
 {
+    qDebug() << "Pausing clip workflow";
     setState( Pausing );
+    qDebug() << "State set to Pausing";
     m_mediaPlayer->pause();
+    qDebug() << "Pause asked";
     QMutexLocker    lock( m_requiredStateLock );
     m_requiredState = ClipWorkflow::None;
-    QReadLocker    lock2( m_stateLock );
-    if ( m_state == Sleeping )
+
     {
         QMutexLocker    sync( m_condMutex );
         wake();
@@ -330,6 +340,7 @@ LibVLCpp::MediaPlayer*       ClipWorkflow::getMediaPlayer()
 void        ClipWorkflow::pausedMediaPlayer()
 {
     setState( Paused );
+    qDebug() << "Clip workflow is paused";
     emit paused();
 }
 

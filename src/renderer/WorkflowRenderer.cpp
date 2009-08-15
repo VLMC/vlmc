@@ -61,6 +61,9 @@ WorkflowRenderer::WorkflowRenderer( MainWorkflow* mainWorkflow ) :
     connect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SLOT( __videoStopped() ) );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
     connect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
+
+    m_condMutex = new QMutex;
+    m_waitCond = new QWaitCondition;
 }
 
 
@@ -76,6 +79,8 @@ WorkflowRenderer::~WorkflowRenderer()
 
     delete m_actionsLock;
     delete m_media;
+    delete m_condMutex;
+    delete m_waitCond;
 }
 
 void*   WorkflowRenderer::lock( void* datas )
@@ -114,7 +119,8 @@ void        WorkflowRenderer::checkActions()
                 if ( m_pauseAsked == true )
                     continue ;
                 m_pauseAsked = true;
-                m_mediaPlayer->pause();
+//                m_mediaPlayer->pause();
+                pauseMainWorkflow();
                 //This will also pause the MainWorkflow via a signal/slot
                 break ;
             default:
@@ -166,12 +172,14 @@ void        WorkflowRenderer::pauseMainWorkflow()
     if ( m_paused == true )
         return ;
     m_pausedMediaPlayer = true;
+
+    QMutexLocker    lock( m_condMutex );
     m_mainWorkflow->pause();
+    m_waitCond->wait( m_condMutex );
 }
 
 void        WorkflowRenderer::unpauseMainWorkflow()
 {
-    qDebug() << "unpauseMainWorkflow();";
     if ( m_paused == false )
         return ;
     m_pausedMediaPlayer = false;
@@ -182,12 +190,17 @@ void        WorkflowRenderer::mainWorkflowPaused()
 {
     m_paused = true;
     m_pauseAsked = false;
+    qDebug() << "mainworkflow is paused 1";
+    {
+        QMutexLocker    lock( m_condMutex );
+    }
+    qDebug() << "mainworkflow is paused 2";
+    m_waitCond->wakeAll();
     emit paused();
 }
 
 void        WorkflowRenderer::mainWorkflowUnpaused()
 {
-    qDebug() << "Emmiting signal playing";
     m_paused = false;
     m_unpauseAsked = false;
     emit playing();

@@ -92,9 +92,7 @@ class   ClipWorkflow : public QObject
          */
         bool                    isRendering() const;
 
-        bool                    isPausing() const;
-
-        bool                    isThreadPaused() const;
+        bool                    isSleeping() const;
 
         /**
          *  Returns the current workflow state.

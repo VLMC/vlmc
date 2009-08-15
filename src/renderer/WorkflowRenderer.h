@@ -77,6 +77,8 @@ class   WorkflowRenderer : public GenericRenderer
         QReadWriteLock*     m_actionsLock;
         bool                m_pauseAsked;
         bool                m_unpauseAsked;
+        QMutex*             m_condMutex;
+        QWaitCondition*     m_waitCond;
 
         /**
          *  \brief This flag is used to avoid using libvlc function from the media player thread,
@@ -88,15 +90,17 @@ class   WorkflowRenderer : public GenericRenderer
         void                setMedia( const Media* ){}
         void                mediaUnloaded( const QUuid& ) {}
 
-        void                mainWorkflowPaused();
-        void                mainWorkflowUnpaused();
-
         void                __positionChanged();
         void                __positionChanged( float pos );
         void                __videoPaused();
         void                __videoStopped();
         void                __videoPlaying();
         void                __endReached();
+
+    private slots:
+        void                mainWorkflowPaused();
+        void                mainWorkflowUnpaused();
+
 };
 
 #endif // WORKFLOWRENDERER_H
