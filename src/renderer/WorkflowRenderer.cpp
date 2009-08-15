@@ -189,6 +189,7 @@ void        WorkflowRenderer::mainWorkflowPaused()
         QMutexLocker    lock( m_condMutex );
     }
     m_waitCond->wakeAll();
+    qDebug() << "mainWorkflowPaused();";
     emit paused();
 }
 
@@ -196,6 +197,7 @@ void        WorkflowRenderer::mainWorkflowUnpaused()
 {
     m_paused = false;
     m_unpauseAsked = false;
+    qDebug() << "mainWorkflowUnpaused";
     emit playing();
 }
 
@@ -275,6 +277,7 @@ void        WorkflowRenderer::__videoPlaying()
     {
         m_paused = false;
         m_pausedMediaPlayer = false;
+        qDebug() << "Emmiting playing";
         emit playing();
     }
 }

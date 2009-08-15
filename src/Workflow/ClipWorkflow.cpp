@@ -164,7 +164,6 @@ void    ClipWorkflow::pauseAfterPlaybackStarted()
 void    ClipWorkflow::initializedMediaPlayer()
 {
     disconnect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( initializedMediaPlayer() ) );
-    connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( pausedMediaPlayer() ), Qt::DirectConnection );
     setState( Ready );
 }
 
@@ -294,6 +293,7 @@ void            ClipWorkflow::reinitialize()
 
 void            ClipWorkflow::pause()
 {
+    connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( pausedMediaPlayer() ), Qt::DirectConnection );
     setState( Pausing );
     m_mediaPlayer->pause();
     QMutexLocker    lock( m_requiredStateLock );
@@ -336,6 +336,7 @@ LibVLCpp::MediaPlayer*       ClipWorkflow::getMediaPlayer()
 
 void        ClipWorkflow::pausedMediaPlayer()
 {
+    disconnect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( pausedMediaPlayer() ) );
     setState( Paused );
     emit paused();
 }
