@@ -283,6 +283,8 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
             needRepositioning = true;
             m_forceRepositionning = false;
         }
+        else if ( m_paused == true )
+            needRepositioning = true;
         else
             needRepositioning = ( abs( currentFrame - lastFrame ) > 1 ) ? true : false;
     }

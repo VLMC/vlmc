@@ -160,11 +160,12 @@ void        WorkflowRenderer::setPosition( float newPos )
 
 void        WorkflowRenderer::nextFrame()
 {
+    m_mainWorkflow->nextFrame();
 }
 
 void        WorkflowRenderer::previousFrame()
 {
-
+    m_mainWorkflow->previousFrame();
 }
 
 void        WorkflowRenderer::pauseMainWorkflow()
