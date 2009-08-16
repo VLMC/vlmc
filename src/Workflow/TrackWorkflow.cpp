@@ -275,7 +275,6 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
     {
         qint64          start = it.key();
         ClipWorkflow*   cw = it.value();
-
         //Is the clip supposed to render now ?
         if ( start <= currentFrame && currentFrame <= start + cw->getClip()->getLength() )
         {
@@ -299,7 +298,9 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
         ++it;
     }
     if ( hasRendered == false )
+    {
         clipWorkflowRenderCompleted( NULL );
+    }
     return hasRendered;
 }
 
@@ -403,7 +404,9 @@ void        TrackWorkflow::clipWorkflowRenderCompleted( ClipWorkflow* cw )
     //When there is nothing to render, m_nbClipToRender will be equal to one here, so we check for minus
     //or equal to 0
     if ( m_nbClipToRender <= 0 )
+    {
         emit renderCompleted( m_trackId );
+    }
 }
 
 unsigned char*  TrackWorkflow::getSynchroneOutput()

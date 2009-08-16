@@ -124,9 +124,9 @@ void                MainWorkflow::getOutput()
             if ( m_tracks[i].activated() == false )
                 continue ;
 
+            m_nbTracksToRender.fetchAndAddAcquire( 1 );
             if ( m_tracks[i]->getOutput( m_currentFrame ) != false )
             {
-                m_nbTracksToRender.fetchAndAddAcquire( 1 );
                 break ;
             }
         }
@@ -195,7 +195,7 @@ void        MainWorkflow::setPosition( float pos )
     qint64  frame = static_cast<qint64>( (float)m_length * pos );
     m_currentFrame = frame;
     emit frameChanged( frame );
-    cancelSynchronisation();
+//    cancelSynchronisation();
     //Do not emit a signal for the RenderWidget, since it's the one that triggered that call...
 }
 
