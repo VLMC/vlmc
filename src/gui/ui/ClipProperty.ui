@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>450</width>
-    <height>300</height>
+    <height>313</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -166,7 +166,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="7">
+   <item row="2" column="0" colspan="6">
     <widget class="QListView" name="metaTagsView">
      <property name="selectionMode">
       <enum>QAbstractItemView::MultiSelection</enum>
@@ -227,6 +227,16 @@
      <property name="icon">
       <iconset resource="../../../ressources.qrc">
        <normaloff>:/images/images/remove.png</normaloff>:/images/images/remove.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="6">
+    <widget class="QPlainTextEdit" name="annotationInput"/>
+   </item>
+   <item row="1" column="6">
+    <widget class="QLabel" name="annotationLabel">
+     <property name="text">
+      <string>Annotations :</string>
      </property>
     </widget>
    </item>

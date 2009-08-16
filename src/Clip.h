@@ -92,6 +92,9 @@ class   Clip : public QObject
         void                setMetaTags( const QStringList& tags );
         bool                matchMetaTag( const QString& tag ) const;
 
+        const QString&      getNotes() const;
+        void                setNotes( const QString& notes );
+
 
     private:
         void        computeLength();
@@ -104,6 +107,7 @@ class   Clip : public QObject
         qint64      m_lengthSeconds;
         QUuid       m_uuid;
         QStringList m_metaTags;
+        QString     m_notes;
 
 };
 

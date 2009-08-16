@@ -40,20 +40,29 @@ ClipProperty::ClipProperty( Clip* clip, QWidget *parent ) :
     ui->setupUi(this);
     connect( this, SIGNAL( accepted() ), this, SLOT( deleteLater() ) );
     connect( this, SIGNAL( rejected() ), this, SLOT( deleteLater() ) );
+    //Duration
     ui->durationValueLabel->setText( duration.toString( "hh:mm:ss" ) );
+    //Filename || title
     ui->nameValueLabel->setText( m_clip->getParent()->getFileInfo()->fileName() );
+    setWindowTitle( m_clip->getParent()->getFileInfo()->fileName() + " " + tr( "properties" ) );
+    //Resolution
     ui->resolutionValueLabel->setText( QString::number( m_clip->getParent()->getWidth() )
                                        + " x " + QString::number( m_clip->getParent()->getHeight() ) );
+    //FPS
     ui->fpsValueLabel->setText( QString::number( m_clip->getParent()->getFps() ) );
+    //Snapshot
     ui->snapshotLabel->setPixmap( m_clip->getParent()->getSnapshot().scaled( 128, 128, Qt::KeepAspectRatio ) );
-    setWindowTitle( m_clip->getParent()->getFileInfo()->fileName() + " " + tr( "properties" ) );
 
+    //Metatags
     const QPushButton* button = ui->buttonBox->button( QDialogButtonBox::Apply );
     Q_ASSERT( button != NULL);
     connect( button, SIGNAL( clicked() ), this, SLOT( apply() ) );
 
     QStringListModel*   model = new QStringListModel( m_clip->getMetaTags(), this );
     ui->metaTagsView->setModel( model );
+
+    //Notes:
+    ui->annotationInput->setPlainText( m_clip->getNotes() );
 
     connect( ui->addTagsButton, SIGNAL( clicked() ), this, SLOT( addTagsRequired() ) );
     connect( ui->deleteTagsButton, SIGNAL( clicked() ), this, SLOT( removeTagsRequired() ) );
@@ -79,6 +88,8 @@ void ClipProperty::changeEvent( QEvent *e )
 
 void    ClipProperty::apply()
 {
+    m_clip->setNotes( ui->annotationInput->toPlainText() );
+
     QStringListModel* model = dynamic_cast<QStringListModel*>( ui->metaTagsView->model() );
     if ( model == NULL )
         return ;

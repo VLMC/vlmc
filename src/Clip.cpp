@@ -117,3 +117,13 @@ bool            Clip::matchMetaTag( const QString& tag ) const
     return false;
 //    m_metaTags.contains( tag, Qt::CaseInsensitive );
 }
+
+const   QString&    Clip::getNotes() const
+{
+    return m_notes;
+}
+
+void                Clip::setNotes( const QString& notes )
+{
+    m_notes = notes;
+}
