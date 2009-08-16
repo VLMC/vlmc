@@ -24,6 +24,8 @@
 #define CLIPPROPERTY_H
 
 #include <QDialog>
+#include <QStringListModel>
+
 #include "Clip.h"
 #include <QAbstractButton>
 
@@ -47,8 +49,9 @@ private slots:
     void        removeTagsRequired();
 
 private:
-    Ui::ClipProperty*  ui;
+    Ui::ClipProperty*   ui;
     Clip*               m_clip;
+    QStringListModel*   m_model;
 };
 
 #endif // CLIPPROPERTY_H

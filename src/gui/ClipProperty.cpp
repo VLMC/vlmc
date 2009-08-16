@@ -23,7 +23,6 @@
 #include <QtDebug>
 #include <QTime>
 #include <QPushButton>
-#include <QStringListModel>
 #include <QInputDialog>
 
 #include "ClipProperty.h"
@@ -58,8 +57,8 @@ ClipProperty::ClipProperty( Clip* clip, QWidget *parent ) :
     Q_ASSERT( button != NULL);
     connect( button, SIGNAL( clicked() ), this, SLOT( apply() ) );
 
-    QStringListModel*   model = new QStringListModel( m_clip->getMetaTags(), this );
-    ui->metaTagsView->setModel( model );
+    m_model = new QStringListModel( m_clip->getMetaTags(), this );
+    ui->metaTagsView->setModel( m_model );
 
     //Notes:
     ui->annotationInput->setPlainText( m_clip->getNotes() );
@@ -89,11 +88,7 @@ void ClipProperty::changeEvent( QEvent *e )
 void    ClipProperty::apply()
 {
     m_clip->setNotes( ui->annotationInput->toPlainText() );
-
-    QStringListModel* model = dynamic_cast<QStringListModel*>( ui->metaTagsView->model() );
-    if ( model == NULL )
-        return ;
-    m_clip->setMetaTags( model->stringList() );
+    m_clip->setMetaTags( m_model->stringList() );
 }
 
 void    ClipProperty::addTagsRequired()
@@ -104,29 +99,23 @@ void    ClipProperty::addTagsRequired()
                                             QLineEdit::Normal, "", &ok );
     if ( ok == true && newTags.length() > 0 )
     {
-        QStringListModel*   model = dynamic_cast<QStringListModel*>( ui->metaTagsView->model() );
-        if ( model == NULL )
-            return ;
-        QStringList         list = model->stringList();
+        QStringList         list = m_model->stringList();
         QStringList         toAdd = newTags.split( ",", QString::SkipEmptyParts );
         list.append( toAdd );
-        model->setStringList( list );
+        m_model->setStringList( list );
     }
 }
 
 void    ClipProperty::removeTagsRequired()
 {
-    QStringListModel*   model = dynamic_cast<QStringListModel*>( ui->metaTagsView->model() );
-    if ( model == NULL )
-        return ;
     QItemSelectionModel*    selected = ui->metaTagsView->selectionModel();
     QModelIndexList         listSelected = selected->selectedIndexes();
-    QStringList             list = model->stringList();
+    QStringList             list = m_model->stringList();
     while ( listSelected.empty() == false )
     {
-        QVariant    elem = model->data( listSelected.first(), Qt::DisplayRole );
+        QVariant    elem = m_model->data( listSelected.first(), Qt::DisplayRole );
         list.removeOne( elem.toString() );
         listSelected.removeFirst();
     }
-    model->setStringList( list );
+    m_model->setStringList( list );
 }
