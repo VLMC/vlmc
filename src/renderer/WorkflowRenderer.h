@@ -40,7 +40,7 @@ class   WorkflowRenderer : public GenericRenderer
         enum    Actions
         {
             Pause,
-            Unpause,
+            //Unpause,
         };
         WorkflowRenderer( MainWorkflow* mainWorkflow );
         ~WorkflowRenderer();
@@ -63,19 +63,22 @@ class   WorkflowRenderer : public GenericRenderer
         static void         unlock( void* datas );
 
     private:
+        void                internalPlayPause( bool forcePause );
         void                pauseMainWorkflow();
+        void                unpauseMainWorkflow();
         virtual void        startPreview();
         void                checkActions();
 
     private:
         MainWorkflow*       m_mainWorkflow;
         LibVLCpp::Media*    m_media;
-        QAtomicInt          m_oneFrameOnly;
         unsigned char*      m_lastFrame;
-        bool                m_framePlayed;
         QStack<Actions>     m_actions;
         QReadWriteLock*     m_actionsLock;
         bool                m_pauseAsked;
+        bool                m_unpauseAsked;
+        QMutex*             m_condMutex;
+        QWaitCondition*     m_waitCond;
 
         /**
          *  \brief This flag is used to avoid using libvlc function from the media player thread,
@@ -87,14 +90,17 @@ class   WorkflowRenderer : public GenericRenderer
         void                setClip( Clip* ){}
         void                mediaUnloaded( const QUuid& ) {}
 
-        void                mainWorkflowPaused();
-
         void                __positionChanged();
         void                __positionChanged( float pos );
         void                __videoPaused();
         void                __videoStopped();
         void                __videoPlaying();
         void                __endReached();
+
+    private slots:
+        void                mainWorkflowPaused();
+        void                mainWorkflowUnpaused();
+
 };
 
 #endif // WORKFLOWRENDERER_H

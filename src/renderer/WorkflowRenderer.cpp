@@ -29,18 +29,14 @@
 
 WorkflowRenderer::WorkflowRenderer( MainWorkflow* mainWorkflow ) :
             m_mainWorkflow( mainWorkflow ),
-            m_framePlayed( false ),
             m_pauseAsked( false ),
+            m_unpauseAsked( false ),
             m_pausedMediaPlayer( false )
 {
+    char        buffer[64];
+
     m_actionsLock = new QReadWriteLock;
     m_media = new LibVLCpp::Media( "fake://" );
-//      --invmem-width <integer>   Width
-//      --invmem-height <integer>  Height
-//      --invmem-lock <string>     Lock function
-//      --invmem-unlock <string>   Unlock function
-//      --invmem-data <string>     Callback data
-    char        buffer[64];
 
     sprintf( buffer, ":invmem-width=%i", VIDEOWIDTH );
     m_media->addOption( ":codec=invmem" );
@@ -65,6 +61,9 @@ WorkflowRenderer::WorkflowRenderer( MainWorkflow* mainWorkflow ) :
     connect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SLOT( __videoStopped() ) );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
     connect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
+
+    m_condMutex = new QMutex;
+    m_waitCond = new QWaitCondition;
 }
 
 
@@ -80,38 +79,22 @@ WorkflowRenderer::~WorkflowRenderer()
 
     delete m_actionsLock;
     delete m_media;
+    delete m_condMutex;
+    delete m_waitCond;
 }
 
 void*   WorkflowRenderer::lock( void* datas )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
-    //If we're not playing, then where in a paused media player.
-    if ( self->m_pausedMediaPlayer == true )
-    {
-        return self->m_lastFrame;
-    }
-    if ( self->m_oneFrameOnly < 2 )
-    {
-        void* ret = self->m_mainWorkflow->getOutput();
-        self->m_lastFrame = static_cast<unsigned char*>( ret );
-        return ret;
-    }
-    else
-    {
-        return self->m_lastFrame;
-    }
+    void* ret = self->m_mainWorkflow->getSynchroneOutput();
+    self->m_lastFrame = static_cast<unsigned char*>( ret );
+    return ret;
 }
 
 void    WorkflowRenderer::unlock( void* datas )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
-    if ( self->m_oneFrameOnly == 1 )
-    {
-        self->m_mediaPlayer->pause();
-        self->m_oneFrameOnly = 2;
-    }
-    self->m_framePlayed = true;
     self->checkActions();
 }
 
@@ -131,7 +114,8 @@ void        WorkflowRenderer::checkActions()
                 if ( m_pauseAsked == true )
                     continue ;
                 m_pauseAsked = true;
-                m_mediaPlayer->pause();
+//                m_mediaPlayer->pause();
+                pauseMainWorkflow();
                 //This will also pause the MainWorkflow via a signal/slot
                 break ;
             default:
@@ -153,8 +137,9 @@ void        WorkflowRenderer::startPreview()
     char        buff[128];
 
     connect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
-             Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( updateCursorPos( qint64 ) ) );
+            Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( updateCursorPos( qint64 ) ) );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ) );
+    connect( m_mainWorkflow, SIGNAL( mainWorkflowUnpaused() ), this, SLOT( mainWorkflowUnpaused() ) );
     m_mainWorkflow->startRender();
     sprintf( buff, ":fake-duration=%lli", m_mainWorkflow->getLength() / FPS * 1000 );
     m_media->addOption( buff );
@@ -170,17 +155,6 @@ void        WorkflowRenderer::setPosition( float newPos )
 
 void        WorkflowRenderer::nextFrame()
 {
-//    qDebug() << "Next frame :";
-    m_oneFrameOnly = 1;
-    m_mainWorkflow->nextFrame();
-//    qDebug() << "Activatign one frame only";
-    m_mainWorkflow->activateOneFrameOnly();
-    //Both media players should be stopped now... restauring playback
-//    m_framePlayed = 0;
-    m_mediaPlayer->pause();
-//    while ( m_framePlayed == 0 )
-//        SleepMS( 1 );
-//    m_mediaPlayer->pause();
 }
 
 void        WorkflowRenderer::previousFrame()
@@ -193,27 +167,58 @@ void        WorkflowRenderer::pauseMainWorkflow()
     if ( m_paused == true )
         return ;
     m_pausedMediaPlayer = true;
+
+    QMutexLocker    lock( m_condMutex );
     m_mainWorkflow->pause();
+    m_waitCond->wait( m_condMutex );
+}
+
+void        WorkflowRenderer::unpauseMainWorkflow()
+{
+    if ( m_paused == false )
+        return ;
+    m_pausedMediaPlayer = false;
+    m_mainWorkflow->unpause();
 }
 
 void        WorkflowRenderer::mainWorkflowPaused()
 {
     m_paused = true;
     m_pauseAsked = false;
+    {
+        QMutexLocker    lock( m_condMutex );
+    }
+    m_waitCond->wakeAll();
     emit paused();
+}
+
+void        WorkflowRenderer::mainWorkflowUnpaused()
+{
+    m_paused = false;
+    m_unpauseAsked = false;
+    emit playing();
 }
 
 void        WorkflowRenderer::togglePlayPause( bool forcePause )
 {
-    //If force pause is true, we just ensure that this render is paused... no need to start it.
     if ( m_isRendering == false && forcePause == false )
         startPreview();
-    else if ( m_isRendering == true )
+    else
+        internalPlayPause( forcePause );
+}
+
+void        WorkflowRenderer::internalPlayPause( bool forcePause )
+{
+    //If force pause is true, we just ensure that this render is paused... no need to start it.
+    if ( m_isRendering == true )
     {
         if ( m_paused == true && forcePause == false )
         {
-            //This will automaticly unpause the ClipWorkflow... no worries
-            m_mediaPlayer->play();
+            if ( m_paused == true )
+            {
+                m_unpauseAsked = true;
+                unpauseMainWorkflow();
+            }
         }
         else
         {
@@ -230,6 +235,8 @@ void        WorkflowRenderer::stop()
 {
     m_isRendering = false;
     m_paused = false;
+    m_pauseAsked = false;
+    m_mainWorkflow->cancelSynchronisation();
     m_mediaPlayer->stop();
     m_mainWorkflow->stop();
 }
@@ -256,18 +263,20 @@ void        WorkflowRenderer::__positionChanged( float pos )
 
 void        WorkflowRenderer::__videoPaused()
 {
-    if ( m_oneFrameOnly != 0 )
-    {
-        m_oneFrameOnly = 0;
-    }
-    pauseMainWorkflow();
+    if ( m_pauseAsked == true )
+        pauseMainWorkflow();
 }
 
 void        WorkflowRenderer::__videoPlaying()
 {
-    emit playing();
-    m_pausedMediaPlayer = false;
-    m_paused = false;
+    if ( m_unpauseAsked == true )
+        unpauseMainWorkflow();
+    else
+    {
+        m_paused = false;
+        m_pausedMediaPlayer = false;
+        emit playing();
+    }
 }
 
 void        WorkflowRenderer::__videoStopped()

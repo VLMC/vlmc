@@ -33,6 +33,7 @@
 #include <QMutex>
 #include "WaitCondition.hpp"
 #include <QObject>
+#include <QQueue>
 
 #include "Clip.h"
 #include "VLCMediaPlayer.h"
@@ -91,7 +92,7 @@ class   ClipWorkflow : public QObject
          */
         bool                    isRendering() const;
 
-        bool                    isPausing() const;
+        bool                    isSleeping() const;
 
         /**
          *  Returns the current workflow state.
@@ -106,7 +107,7 @@ class   ClipWorkflow : public QObject
          *  on the media player.
          *  If the media player isn't ready, this method waits.
          */
-        void                    startRender();
+        void                    startRender( bool startInPausedMode );
 
         /**
             \brief              Returns the Clip this workflow instance is based
@@ -147,16 +148,13 @@ class   ClipWorkflow : public QObject
          */
         void                    reinitialize();
 
-        void                    unpause( bool wakeRenderThread = true );
+        void                    unpause();
 
         void                    waitForCompleteInit();
-        void                    waitForCompleteRender();
-        void                    waitForPausingState();
+        void                    waitForCompleteRender( bool dontCheckRenderStarted = false );
         QMutex*                 getSleepMutex();
 
         LibVLCpp::MediaPlayer*  getMediaPlayer();
-
-//        void                    activateOneFrameOnly();
 
     private:
         static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret );
@@ -178,17 +176,7 @@ class   ClipWorkflow : public QObject
         LibVLCpp::Media*        m_vlcMedia;
 
         unsigned char*          m_buffer;
-        //unsigned char*          m_backBuffer;
-        /**
-         *  This allow the render procedure to know in which buffer it should render.
-         *  If true, then the render occurs in the back buffer, which means the
-         *  returned buffer much be the "front" buffer.
-         *  In other term :
-         *  - When m_usingBackBuffer == false, lock() will return m_buffer, and getOutput() m_backBuffer
-         *  - When m_usingBackBuffer == true, lock() will return m_backBuffer, and getOutput() m_buffer
-         */
-        //bool                    m_usingBackBuffer;
-        //QReadWriteLock*         m_backBufferLock;
+        QMutex*                 m_renderLock;
 
         LibVLCpp::MediaPlayer*  m_mediaPlayer;
 
@@ -200,22 +188,36 @@ class   ClipWorkflow : public QObject
         State                   m_requiredState;
         QMutex*                 m_requiredStateLock;
 
-        QAtomicInt              m_oneFrameOnly;
-
         WaitCondition*          m_initWaitCond;
         WaitCondition*          m_renderWaitCond;
         WaitCondition*          m_pausingStateWaitCond;
+
+        /**
+         *  While this flag is set to false, we will use the same buffer, to prevent
+         *  having X buffers with the same picture (when media player is paused mainly)
+         */
+        bool                                    m_rendering;
+        /**
+         *  This flag is here to avoid multiple connection to the mediaPlayer* slots.
+         *  It's essentially a nasty hack due to the multiples calls to lock/unlock when
+         *  the render is started, and that cannot really be avoided...
+         */
+        bool                                    m_initFlag;
 
     private slots:
         void                    pauseAfterPlaybackStarted();
         void                    initializedMediaPlayer();
         void                    setPositionAfterPlayback();
+        void                    pausedMediaPlayer();
+        void                    unpausedMediaPlayer();
 
     public slots:
         void                    clipEndReached();
 
     signals:
         void                    renderComplete( ClipWorkflow* );
+        void                    paused();
+        void                    unpaused();
 };
 
 #endif // CLIPWORKFLOW_H

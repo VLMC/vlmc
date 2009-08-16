@@ -46,6 +46,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
         m_tracks[i].setPtr( new TrackWorkflow( i ) );
         connect( m_tracks[i], SIGNAL( trackEndReached( unsigned int ) ), this, SLOT( trackEndReached(unsigned int) ) );
         connect( m_tracks[i], SIGNAL( trackPaused() ), this, SLOT( trackPaused() ) );
+        connect( m_tracks[i], SIGNAL( trackUnpaused() ), this, SLOT( trackUnpaused() ) );
         connect( m_tracks[i], SIGNAL( renderCompleted( unsigned int ) ), this,  SLOT( tracksRenderCompleted( unsigned int ) ), Qt::QueuedConnection );
     }
     m_renderStartedLock = new QReadWriteLock;
@@ -105,7 +106,7 @@ void    MainWorkflow::startRender()
     computeLength();
 }
 
-unsigned char*    MainWorkflow::getOutput()
+void                MainWorkflow::getOutput()
 {
     QReadLocker     lock( m_renderStartedLock );
     QMutexLocker    lock2( m_renderMutex );
@@ -118,27 +119,19 @@ unsigned char*    MainWorkflow::getOutput()
     m_synchroneRenderingBuffer = NULL;
     if ( m_renderStarted == true )
     {
-        unsigned char* ret;
-
         for ( unsigned int i = 0; i < m_trackCount; ++i )
         {
             if ( m_tracks[i].activated() == false )
                 continue ;
 
-            if ( ( ret = m_tracks[i]->getOutput( m_currentFrame ) ) != NULL )
+            m_nbTracksToRender.fetchAndAddAcquire( 1 );
+            if ( m_tracks[i]->getOutput( m_currentFrame ) != false )
             {
-                m_nbTracksToRender.fetchAndAddAcquire( 1 );
                 break ;
             }
         }
-        if ( ret == NULL )
-            ret = MainWorkflow::blackOutput;
-        nextFrame();
-        return ret;
-    }
-    else
-    {
-        return MainWorkflow::blackOutput;
+        if ( m_paused == false )
+            nextFrame();
     }
 }
 
@@ -157,8 +150,24 @@ void        MainWorkflow::pause()
     }
 }
 
+void        MainWorkflow::unpause()
+{
+    QMutexLocker    lock( m_renderMutex );
+
+    m_nbTracksToUnpause = 0;
+    for ( unsigned int i = 0; i < m_trackCount; ++i )
+    {
+        if ( m_tracks[i].activated() == true )
+        {
+            m_nbTracksToUnpause.fetchAndAddAcquire( 1 );
+            m_tracks[i]->unpause();
+        }
+    }
+}
+
 void        MainWorkflow::nextFrame()
 {
+//    qDebug() << "Going to the next frame";
     ++m_currentFrame;
     //FIXME: This is probably a bit much...
     emit frameChanged( m_currentFrame );
@@ -167,6 +176,7 @@ void        MainWorkflow::nextFrame()
 
 void        MainWorkflow::previousFrame()
 {
+//    qDebug() << "Going to the previous frame";
     --m_currentFrame;
     //FIXME: This is probably a bit much...
     emit frameChanged( m_currentFrame );
@@ -175,16 +185,17 @@ void        MainWorkflow::previousFrame()
 
 void        MainWorkflow::setPosition( float pos )
 {
+    if ( m_renderStarted == false )
+        return ;
     //Since any track can be reactivated, we reactivate all of them, and let them
     //unable themself if required.
     for ( unsigned int i = 0; i < m_trackCount; ++i)
         m_tracks[i].activate();
 
-    if ( m_renderStarted == false )
-        return ;
     qint64  frame = static_cast<qint64>( (float)m_length * pos );
     m_currentFrame = frame;
     emit frameChanged( frame );
+//    cancelSynchronisation();
     //Do not emit a signal for the RenderWidget, since it's the one that triggered that call...
 }
 
@@ -283,22 +294,23 @@ Clip*       MainWorkflow::removeClip( const QUuid& uuid, unsigned int trackId )
     return clip;
 }
 
-void        MainWorkflow::activateOneFrameOnly()
-{
-     for (unsigned int i = 0; i < m_trackCount; ++i)
-    {
-        //FIXME: After debugging period, this should'nt be necessary --
-        if ( m_tracks[i].activated() == true )
-            m_tracks[i]->activateOneFrameOnly();
-    }
-}
-
 void        MainWorkflow::trackPaused()
 {
     m_nbTracksToPause.fetchAndAddAcquire( -1 );
-    if ( m_nbTracksToPause == 0 )
+    if ( m_nbTracksToPause <= 0 )
     {
+        m_paused = true;
         emit mainWorkflowPaused();
+    }
+}
+
+void        MainWorkflow::trackUnpaused()
+{
+    m_nbTracksToUnpause.fetchAndAddAcquire( -1 );
+    if ( m_nbTracksToUnpause <= 0 )
+    {
+        m_paused = false;
+        emit mainWorkflowUnpaused();
     }
 }
 
@@ -335,4 +347,12 @@ unsigned char*  MainWorkflow::getSynchroneOutput()
     if ( m_synchroneRenderingBuffer == NULL )
         return MainWorkflow::blackOutput;
     return m_synchroneRenderingBuffer;
+}
+
+void        MainWorkflow::cancelSynchronisation()
+{
+    {
+        QMutexLocker    lock( m_synchroneRenderWaitConditionMutex );
+    }
+    m_synchroneRenderWaitCondition->wakeAll();
 }

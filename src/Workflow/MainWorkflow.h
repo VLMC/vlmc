@@ -42,7 +42,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start );
         void                    startRender();
-        unsigned char*          getOutput();
+        void                    getOutput();
         unsigned char*          getSynchroneOutput();
 
         /**
@@ -71,19 +71,24 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          *  Pause the main workflow and all its sub-workflows
          */
         void                    pause();
+        void                    unpause();
 
         static unsigned char*   blackOutput;
         void                    nextFrame();
         void                    previousFrame();
 
-        void                    activateOneFrameOnly();
-        
         static MainWorkflow*    getInstance();
         static void             deleteInstance();
         Clip*                   removeClip( const QUuid& uuid, unsigned int trackId );
         void                    moveClip( const QUuid& uuid, unsigned int oldTrack,
                                           unsigned int newTrack, qint64 pos, bool undoRedoCommand = false );
         qint64                  getClipPosition( const QUuid& uuid, unsigned int trackId ) const;
+
+        /**
+         *  \brief  This method will wake every wait condition, so that threads won't
+         *          be waiting anymore, thus avoiding dead locks.
+         */
+        void                    cancelSynchronisation();
 
     private:
         static MainWorkflow*    m_instance;
@@ -104,16 +109,19 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
         QMutex*                         m_renderMutex;
         QAtomicInt                      m_nbTracksToPause;
+        QAtomicInt                      m_nbTracksToUnpause;
         QAtomicInt                      m_nbTracksToRender;
         QMutex*                         m_highestTrackNumberMutex;
         unsigned int                    m_highestTrackNumber;
         unsigned char*                  m_synchroneRenderingBuffer;
         QWaitCondition*                 m_synchroneRenderWaitCondition;
         QMutex*                         m_synchroneRenderWaitConditionMutex;
+        bool                            m_paused;
 
     private slots:
         void                            trackEndReached( unsigned int trackId );
         void                            trackPaused();
+        void                            trackUnpaused();
         void                            tracksRenderCompleted( unsigned int trackId );
 
     signals:
@@ -128,6 +136,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
         void                    mainWorkflowEndReached();
         void                    mainWorkflowPaused();
+        void                    mainWorkflowUnpaused();
         void                    clipRemoved( QUuid, unsigned int );
         void                    clipMoved( QUuid, unsigned int, qint64 );
 };

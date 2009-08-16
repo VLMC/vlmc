@@ -17,7 +17,7 @@ WorkflowFileRenderer::~WorkflowFileRenderer()
 void*       WorkflowFileRenderer::lock( void* datas )
 {
     WorkflowFileRenderer* self = reinterpret_cast<WorkflowFileRenderer*>( datas );
-    return self->m_mainWorkflow->getOutput();
+    return self->m_mainWorkflow->getSynchroneOutput();
 }
 
 void        WorkflowFileRenderer::unlock( void* )
