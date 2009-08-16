@@ -309,6 +309,7 @@ void                TrackWorkflow::pause()
 
     QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
     QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
+    bool                                        pauseRequired = false;
 
     m_nbClipToPause = 0;
     for ( ; it != end; ++it )
@@ -326,6 +327,7 @@ void                TrackWorkflow::pause()
             cw->getStateLock()->unlock();
             m_nbClipToPause.fetchAndAddAcquire( 1 );
             cw->pause();
+            pauseRequired = true;
         }
         else
         {
@@ -334,7 +336,10 @@ void                TrackWorkflow::pause()
             cw->getStateLock()->unlock();
         }
     }
-    m_paused = !m_paused;
+    if ( pauseRequired == false )
+    {
+        clipWorkflowPaused();
+    }
 }
 
 void            TrackWorkflow::moveClip( const QUuid& id, qint64 startingFrame )
@@ -411,6 +416,7 @@ void    TrackWorkflow::clipWorkflowPaused()
     m_nbClipToPause.fetchAndAddAcquire( -1 );
     if ( m_nbClipToPause <= 0 )
     {
+        m_paused = true;
         emit trackPaused();
     }
 }
@@ -421,6 +427,7 @@ void    TrackWorkflow::unpause()
 
     QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
     QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
+    bool                                        unpauseRequired = false;
 
     m_nbClipToUnpause = 0;
     for ( ; it != end; ++it )
@@ -433,13 +440,15 @@ void    TrackWorkflow::unpause()
             cw->getStateLock()->unlock();
             m_nbClipToUnpause.fetchAndAddAcquire( 1 );
             cw->unpause();
+            unpauseRequired = true;
         }
         else
         {
             cw->getStateLock()->unlock();
         }
     }
-    m_paused = !m_paused;
+    if ( unpauseRequired == false )
+        clipWorkflowUnpaused();
 }
 
 void    TrackWorkflow::clipWorkflowUnpaused()
@@ -447,6 +456,7 @@ void    TrackWorkflow::clipWorkflowUnpaused()
     m_nbClipToUnpause.fetchAndAddAcquire( -1 );
     if ( m_nbClipToUnpause <= 0 )
     {
+        m_paused = false;
         emit trackUnpaused();
     }
 }
