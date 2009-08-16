@@ -31,7 +31,8 @@ WorkflowRenderer::WorkflowRenderer( MainWorkflow* mainWorkflow ) :
             m_mainWorkflow( mainWorkflow ),
             m_pauseAsked( false ),
             m_unpauseAsked( false ),
-            m_pausedMediaPlayer( false )
+            m_pausedMediaPlayer( false ),
+            m_stopping( false )
 {
     char        buffer[64];
 
@@ -69,7 +70,7 @@ WorkflowRenderer::WorkflowRenderer( MainWorkflow* mainWorkflow ) :
 
 WorkflowRenderer::~WorkflowRenderer()
 {
-    m_mediaPlayer->stop();
+    stop();
 
     disconnect( m_mediaPlayer, SIGNAL( playing() ),    this,   SLOT( __videoPlaying() ) );
     disconnect( m_mediaPlayer, SIGNAL( paused() ),     this,   SLOT( __videoPaused() ) );
@@ -87,9 +88,13 @@ void*   WorkflowRenderer::lock( void* datas )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
-    void* ret = self->m_mainWorkflow->getSynchroneOutput();
-    self->m_lastFrame = static_cast<unsigned char*>( ret );
-    return ret;
+    if ( self->m_stopping == false )
+    {
+        void* ret = self->m_mainWorkflow->getSynchroneOutput();
+        self->m_lastFrame = static_cast<unsigned char*>( ret );
+        return ret;
+    }
+    return self->m_lastFrame;
 }
 
 void    WorkflowRenderer::unlock( void* datas )
@@ -236,6 +241,7 @@ void        WorkflowRenderer::stop()
     m_isRendering = false;
     m_paused = false;
     m_pauseAsked = false;
+    m_stopping = true;
     m_mainWorkflow->cancelSynchronisation();
     m_mediaPlayer->stop();
     m_mainWorkflow->stop();

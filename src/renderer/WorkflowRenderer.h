@@ -79,6 +79,7 @@ class   WorkflowRenderer : public GenericRenderer
         bool                m_unpauseAsked;
         QMutex*             m_condMutex;
         QWaitCondition*     m_waitCond;
+        bool                m_stopping;
 
         /**
          *  \brief This flag is used to avoid using libvlc function from the media player thread,
