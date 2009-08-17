@@ -81,12 +81,6 @@ class   WorkflowRenderer : public GenericRenderer
         QWaitCondition*     m_waitCond;
         bool                m_stopping;
 
-        /**
-         *  \brief This flag is used to avoid using libvlc function from the media player thread,
-         *          which can cause deadlock when stopping.
-         */
-        bool                m_pausedMediaPlayer;
-
     public slots:
         void                setClip( Clip* ){}
         void                mediaUnloaded( const QUuid& ) {}

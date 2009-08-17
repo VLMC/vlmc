@@ -31,7 +31,6 @@ WorkflowRenderer::WorkflowRenderer( MainWorkflow* mainWorkflow ) :
             m_mainWorkflow( mainWorkflow ),
             m_pauseAsked( false ),
             m_unpauseAsked( false ),
-            m_pausedMediaPlayer( false ),
             m_stopping( false )
 {
     char        buffer[64];
@@ -151,6 +150,8 @@ void        WorkflowRenderer::startPreview()
     m_mediaPlayer->play();
     m_isRendering = true;
     m_paused = false;
+    m_stopping = false;
+    m_lastFrame = NULL;
 }
 
 void        WorkflowRenderer::setPosition( float newPos )
@@ -172,7 +173,6 @@ void        WorkflowRenderer::pauseMainWorkflow()
 {
     if ( m_paused == true )
         return ;
-    m_pausedMediaPlayer = true;
 
     QMutexLocker    lock( m_condMutex );
     m_mainWorkflow->pause();
@@ -183,7 +183,6 @@ void        WorkflowRenderer::unpauseMainWorkflow()
 {
     if ( m_paused == false )
         return ;
-    m_pausedMediaPlayer = false;
     m_mainWorkflow->unpause();
 }
 
@@ -242,6 +241,7 @@ void        WorkflowRenderer::stop()
     m_isRendering = false;
     m_paused = false;
     m_pauseAsked = false;
+    m_unpauseAsked = false;
     m_stopping = true;
     m_mainWorkflow->cancelSynchronisation();
     m_mediaPlayer->stop();
@@ -281,7 +281,6 @@ void        WorkflowRenderer::__videoPlaying()
     else
     {
         m_paused = false;
-        m_pausedMediaPlayer = false;
         emit playing();
     }
 }

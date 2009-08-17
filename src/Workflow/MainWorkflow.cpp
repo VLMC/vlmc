@@ -100,6 +100,7 @@ void            MainWorkflow::computeLength()
 void    MainWorkflow::startRender()
 {
     m_renderStarted = true;
+    m_paused = false;
     m_currentFrame = 0;
     emit frameChanged( 0 );
     for ( unsigned int i = 0; i < m_trackCount; ++i )
