@@ -142,8 +142,11 @@ void        WorkflowRenderer::startPreview()
 
     connect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
             Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( updateCursorPos( qint64 ) ) );
+    connect( Timeline::getInstance()->tracksView()->tracksCursor(), SIGNAL( cursorPositionChanged( qint64 ) ),
+             this, SLOT( timelineCursorChanged(qint64) ) );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ) );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowUnpaused() ), this, SLOT( mainWorkflowUnpaused() ) );
+
     m_mainWorkflow->startRender();
     sprintf( buff, ":fake-duration=%lli", m_mainWorkflow->getLength() / FPS * 1000 );
     m_media->addOption( buff );
@@ -288,4 +291,9 @@ void        WorkflowRenderer::__videoPlaying()
 void        WorkflowRenderer::__videoStopped()
 {
     emit endReached();
+}
+
+void        WorkflowRenderer::timelineCursorChanged( qint64 newFrame )
+{
+    m_mainWorkflow->setCurrentFrame( newFrame );
 }

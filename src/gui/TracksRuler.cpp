@@ -43,7 +43,7 @@ TracksRuler::TracksRuler( TracksView* tracksView, QWidget* parent )
     setPixelPerMark( 5 );
 
     // Redraw the ruler when the cursor position change
-    connect( tracksView->tracksCursor(), SIGNAL( cursorPositionChanged(int) ),
+    connect( tracksView->tracksCursor(), SIGNAL( cursorPositionChanged(qint64) ),
              this, SLOT( update() ) );
 }
 

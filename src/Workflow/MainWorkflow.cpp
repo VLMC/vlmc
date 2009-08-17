@@ -49,7 +49,6 @@ MainWorkflow::MainWorkflow( int trackCount ) :
         connect( m_tracks[i], SIGNAL( trackUnpaused() ), this, SLOT( trackUnpaused() ) );
         connect( m_tracks[i], SIGNAL( renderCompleted( unsigned int ) ), this,  SLOT( tracksRenderCompleted( unsigned int ) ), Qt::QueuedConnection );
     }
-    muteTrack( 0 );
     m_renderStartedLock = new QReadWriteLock;
     m_renderMutex = new QMutex;
     m_highestTrackNumberMutex = new QMutex;
@@ -169,18 +168,14 @@ void        MainWorkflow::unpause()
 
 void        MainWorkflow::nextFrame()
 {
-//    qDebug() << "Going to the next frame";
     ++m_currentFrame;
-    //FIXME: This is probably a bit much...
     emit frameChanged( m_currentFrame );
     emit positionChanged( (float)m_currentFrame / (float)m_length );
 }
 
 void        MainWorkflow::previousFrame()
 {
-//    qDebug() << "Going to the previous frame";
     --m_currentFrame;
-    //FIXME: This is probably a bit much...
     emit frameChanged( m_currentFrame );
     emit positionChanged( (float)m_currentFrame / (float)m_length );
 }
@@ -367,4 +362,10 @@ void        MainWorkflow::muteTrack( unsigned int trackId )
 void        MainWorkflow::unmuteTrack( unsigned int trackId )
 {
     m_tracks[trackId].setHardDeactivation( false );
+}
+
+void        MainWorkflow::setCurrentFrame( qint64 currentFrame )
+{
+    m_currentFrame = currentFrame;
+    emit positionChanged( (float)m_currentFrame / (float)m_length );
 }

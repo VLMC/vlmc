@@ -63,7 +63,7 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
 
     createLayout();
 
-    connect( m_cursorLine, SIGNAL( cursorPositionChanged(int) ),
+    connect( m_cursorLine, SIGNAL( cursorPositionChanged(qint64) ),
              this, SLOT( ensureCursorVisible() ) );
 }
 

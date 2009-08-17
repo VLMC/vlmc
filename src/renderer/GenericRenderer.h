@@ -50,11 +50,12 @@ public:
     {
         m_mediaPlayer->setDrawable( renderWidget->winId() );
     }
-    virtual void                    setPosition( float newPos ) = 0;
     virtual void                    togglePlayPause( bool forcePause = false ) = 0;
     virtual void                    nextFrame() = 0;
     virtual void                    previousFrame() = 0;
     virtual void                    stop() = 0;
+    virtual void                    setPosition( float newPos ) = 0;
+
     bool                            isPaused() const
     {
         return m_paused;

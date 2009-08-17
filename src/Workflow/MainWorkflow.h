@@ -52,6 +52,12 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    setPosition( float pos );
 
         /**
+         *  \brief              Set the workflow position by the desired frame
+         *  \param              currentFrame: The desired frame to render from
+        */
+        void                    setCurrentFrame( qint64 currentFrame );
+
+        /**
          *  \return             Returns the global length of the workflow
          *                      in frames.
         */

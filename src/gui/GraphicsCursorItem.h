@@ -26,9 +26,10 @@ protected:
 private:
     QPen m_pen;
     QRectF m_boundingRect;
+    bool    m_moveRequired;
 
 signals:
-    void cursorPositionChanged( int pos );
+    void cursorPositionChanged( qint64 pos );
 
 public slots:
     void    updateCursorPos( qint64 pos );

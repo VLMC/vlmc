@@ -84,6 +84,7 @@ class   WorkflowRenderer : public GenericRenderer
     public slots:
         void                setClip( Clip* ){}
         void                mediaUnloaded( const QUuid& ) {}
+        void                timelineCursorChanged( qint64 newFrame );
 
         void                __positionChanged();
         void                __positionChanged( float pos );
