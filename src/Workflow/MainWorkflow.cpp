@@ -41,7 +41,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     memset( MainWorkflow::blackOutput, 0, VIDEOHEIGHT * VIDEOWIDTH * 3 );
 
     m_tracks = new Toggleable<TrackWorkflow*>[trackCount];
-    for (int i = 0; i < trackCount; ++i)
+    for ( int i = 0; i < trackCount; ++i )
     {
         m_tracks[i].setPtr( new TrackWorkflow( i ) );
         connect( m_tracks[i], SIGNAL( trackEndReached( unsigned int ) ), this, SLOT( trackEndReached(unsigned int) ) );
@@ -49,6 +49,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
         connect( m_tracks[i], SIGNAL( trackUnpaused() ), this, SLOT( trackUnpaused() ) );
         connect( m_tracks[i], SIGNAL( renderCompleted( unsigned int ) ), this,  SLOT( tracksRenderCompleted( unsigned int ) ), Qt::QueuedConnection );
     }
+    muteTrack( 0 );
     m_renderStartedLock = new QReadWriteLock;
     m_renderMutex = new QMutex;
     m_highestTrackNumberMutex = new QMutex;
@@ -355,4 +356,14 @@ void        MainWorkflow::cancelSynchronisation()
         QMutexLocker    lock( m_synchroneRenderWaitConditionMutex );
     }
     m_synchroneRenderWaitCondition->wakeAll();
+}
+
+void        MainWorkflow::muteTrack( unsigned int trackId )
+{
+    m_tracks[trackId].setHardDeactivation( true );
+}
+
+void        MainWorkflow::unmuteTrack( unsigned int trackId )
+{
+    m_tracks[trackId].setHardDeactivation( false );
 }

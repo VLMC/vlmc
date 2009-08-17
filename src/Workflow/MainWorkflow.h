@@ -90,6 +90,9 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          */
         void                    cancelSynchronisation();
 
+        void                    muteTrack( unsigned int trackId );
+        void                    unmuteTrack( unsigned int trackId );
+
     private:
         static MainWorkflow*    m_instance;
 
