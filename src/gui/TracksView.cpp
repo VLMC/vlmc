@@ -247,18 +247,23 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, qint
     // Check for horizontal collisions
     qint64 mappedXPos = qMax( time, (qint64)0 );
     item->setPos( mappedXPos, 0 );
-    QList<QGraphicsItem*> colliding = item->collidingItems( Qt::IntersectsItemShape );
-    for ( int i = 0; i < colliding.size(); ++i )
+
+    while ( item->pos().x() != oldPos.x() )
     {
-        AbstractGraphicsMediaItem* currentItem = dynamic_cast<AbstractGraphicsMediaItem*>( colliding.at( i ) );
-        if ( currentItem )
+        bool emptyPlace = true;
+        QList<QGraphicsItem*> colliding = item->collidingItems( Qt::IntersectsItemShape );
+        for ( int i = 0; i < colliding.size(); ++i )
         {
-            // Collision with an item of the same type
-            // Restoring original position (horizontal)
-            if ( oldPos.isNull() == false )
-                item->setPos( oldPos );
-            break;
+            AbstractGraphicsMediaItem* currentItem = dynamic_cast<AbstractGraphicsMediaItem*>( colliding.at( i ) );
+            if ( currentItem ) emptyPlace = false;
         }
+
+        if ( emptyPlace ) break;
+
+        if ( item->pos().x() > oldPos.x() )
+            item->setPos( item->pos().x() - 1, 0 );
+        else
+            item->setPos( item->pos().x() + 1, 0 );
     }
 }
 
