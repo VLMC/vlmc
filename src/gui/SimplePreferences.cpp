@@ -69,13 +69,15 @@ void        SimplePreferences::addWidget( const QString& name,
     m_widgets.insert( idx, name );
     m_panel->addButton( label, icon, idx );
     if (m_currentWidget == 0)
+    {
         m_currentWidget = widget;
+    }
 }
 
 void        SimplePreferences::build()
 {
     if (m_currentWidget == 0)
-        qFatal( "Can't build the preference panel without an added widget" );
+        qFatal(  "Can't build the preference panel without an added widget"  );
     QHBoxLayout*        hLayout = new QHBoxLayout( this );
     setLayout( hLayout );
     //TODO : change the size of the widgets to make it look cleaner
@@ -104,6 +106,8 @@ QVBoxLayout*    SimplePreferences::buildRightHLayout()
                                  QDialogButtonBox::Cancel |
                                  QDialogButtonBox::Apply );
 
+    QString title( m_widgets.value( m_stackedWidgets->indexOf( m_currentWidget ) ) );
+    m_title->setText( title );
     layout->addWidget( m_title );
     layout->addWidget( titleLine );
     layout->addWidget( m_stackedWidgets );
@@ -118,6 +122,7 @@ void    SimplePreferences::switchWidget( int widget )
     
     if ( !m_widgets.contains( widget ) )
         return ;
+    m_title->setText( m_widgets.value( widget ) );
     emit widgetSwitched( widget );
 }
 

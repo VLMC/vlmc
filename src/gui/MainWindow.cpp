@@ -168,10 +168,10 @@ void        MainWindow::createGlobalPreferences()
                                    "images/vlmc.png",
                                    "Language");
     //For debugging purpose
-    m_globalPreferences->addWidget("language",
+    m_globalPreferences->addWidget("Test",
                                    new QLabel("This is a test"),
                                    "images/vlmc.png",
-                                   "Language");
+                                   "Test");
     m_globalPreferences->build();
 }
 
