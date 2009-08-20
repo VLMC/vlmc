@@ -362,11 +362,8 @@ void TracksView::mousePressEvent( QMouseEvent* event )
     if ( event->modifiers() == Qt::ControlModifier && mediaCollisionList.count() == 0 )
     {
         setDragMode( QGraphicsView::ScrollHandDrag );
-        QGraphicsView::mousePressEvent( event );
-        return;
     }
-
-    if ( event->modifiers() == Qt::NoModifier &&
+    else if ( event->modifiers() == Qt::NoModifier &&
          event->button() == Qt::LeftButton &&
          mediaCollisionList.count() == 1 )
     {
@@ -377,17 +374,22 @@ void TracksView::mousePressEvent( QMouseEvent* event )
             m_actionMoveExecuted = false;
             m_actionItem = mediaCollisionList.at( 0 );
         }
-        return;
+        scene()->clearSelection();
+        item->setSelected( true );
     }
-
-    /*if ( event->modifiers() & Qt::ShiftModifier && collisionList.count() == 0 )
+    else if ( event->modifiers() == Qt::ControlModifier &&
+              event->button() == Qt::LeftButton &&
+              mediaCollisionList.count() == 1 )
+    {
+        AbstractGraphicsMediaItem* item = mediaCollisionList.at( 0 );
+        item->setSelected( !item->isSelected() );
+    }
+    else if ( event->modifiers() & Qt::ShiftModifier && mediaCollisionList.count() == 0 )
     {
         setDragMode( QGraphicsView::RubberBandDrag );
         if ( !event->modifiers() & Qt::ControlModifier )
             scene()->clearSelection();
-        QGraphicsView::mousePressEvent( event );
-        return;
-    }*/
+    }
 
     QGraphicsView::mousePressEvent( event );
 }

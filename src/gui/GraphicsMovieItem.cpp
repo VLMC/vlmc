@@ -30,6 +30,8 @@
 
 GraphicsMovieItem::GraphicsMovieItem( Clip* clip ) : m_clip( clip ), m_width( 0 ), m_height( 0 )
 {
+    setFlags( QGraphicsItem::ItemIsSelectable );
+
     QTime length = QTime().addMSecs( clip->getParent()->getLength() );
     QString tooltip( tr( "<p style='white-space:pre'><b>Name:</b> %1"
                      "<br><b>Length:</b> %2" )
@@ -61,7 +63,11 @@ void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     gradient.setColorAt( 0, QColor::fromRgb( 32, 52, 142  ) );
     gradient.setColorAt( 1, QColor::fromRgb( 43, 69, 181  ) );
 
-    painter->setPen( QPen( Qt::NoPen ) );
+    if ( isSelected() )
+        painter->setPen( QPen( Qt::yellow ) );
+    else
+        painter->setPen( QPen( Qt::NoPen ) );
+
     painter->setBrush( QBrush( gradient ) );
     painter->drawRect( boundingRect() );
 
