@@ -116,7 +116,7 @@ private:
     void                    addVideoTrack();
     void                    addAudioTrack();
     void                    moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position );
-    void                    moveMediaItem( AbstractGraphicsMediaItem* item, int track, int time );
+    void                    moveMediaItem( AbstractGraphicsMediaItem* item, int track, qint64 time );
     QGraphicsScene*         m_scene;
     int                     m_tracksHeight;
     unsigned int            m_tracksCount;

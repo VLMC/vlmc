@@ -47,6 +47,7 @@ public:
     /// Should return the unique uid of the contained media.
     virtual const QUuid& uuid() const = 0;
 
+    /// Return the current track of the item
     int trackNumber();
 
 protected:
@@ -60,6 +61,10 @@ protected:
      * Contains the old trackNumber
      */
     int oldTrackNumber;
+    /**
+     * Contains the old position
+     */
+    qint64 oldPosition;
 
     virtual void mousePressEvent( QGraphicsSceneMouseEvent* event );
     virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent* event );

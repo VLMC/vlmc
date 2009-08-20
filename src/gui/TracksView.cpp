@@ -161,6 +161,7 @@ void TracksView::moveMediaItem( const QUuid& uuid, unsigned int track, qint64 ti
         AbstractGraphicsMediaItem* item =
                 dynamic_cast<AbstractGraphicsMediaItem*>( sceneItems.at( i ) );
         if ( !item || item->uuid() != uuid ) continue;
+        qDebug() << uuid.toString() << track << time;
         moveMediaItem( item, track, time );
     }
 }
@@ -189,10 +190,10 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position
     lastKnownTrack = track;
 
     qreal time = ( mapToScene( position ).x() + 0.5 );
-    moveMediaItem( item, track->trackNumber(), (int)time);
+    moveMediaItem( item, track->trackNumber(), (qint64)time);
 }
 
-void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, int time )
+void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, qint64 time )
 {
     if ( track < 0 )
         track = 0;
@@ -245,7 +246,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, int 
             continueSearch = false;
     }
     // Check for horizontal collisions
-    int mappedXPos = qMax( time, 0 );
+    qint64 mappedXPos = qMax( time, (qint64)0 );
     item->setPos( mappedXPos, 0 );
     QList<QGraphicsItem*> colliding = item->collidingItems( Qt::IntersectsItemShape );
     for ( int i = 0; i < colliding.size(); ++i )
@@ -402,10 +403,14 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
             updateDuration();
             if ( m_layout->itemAt( 0 )->graphicsItem()->childItems().count() > 0 )
                 addVideoTrack();
-            Commands::trigger( new Commands::MainWorkflow::MoveClip( m_mainWorkflow, movieItem->clip()->getUuid(),
-                                                                     movieItem->oldTrackNumber, movieItem->trackNumber(),
+            Commands::trigger( new Commands::MainWorkflow::MoveClip( m_mainWorkflow,
+                                                                     movieItem->clip()->getUuid(),
+                                                                     movieItem->oldTrackNumber,
+                                                                     movieItem->oldPosition,
+                                                                     movieItem->trackNumber(),
                                                                      (qint64)movieItem->pos().x() ) );
             movieItem->oldTrackNumber = movieItem->trackNumber();
+            movieItem->oldPosition = movieItem->pos().x();
             m_actionMove = false;
             m_actionRelativeX = -1;
             m_actionItem = NULL;

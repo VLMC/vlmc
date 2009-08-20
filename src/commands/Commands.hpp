@@ -66,8 +66,9 @@ namespace Commands
         {
             public:
                 MoveClip( ::MainWorkflow* workflow, const QUuid& uuid,
-                        unsigned int oldTrack, unsigned int newTrack, qint64 newPos ) :
-                    m_workflow( workflow ), m_uuid( uuid ), m_oldTrack( oldTrack ), m_newTrack( newTrack ), m_pos( newPos )
+                        unsigned int oldTrack, qint64 oldPos, unsigned int newTrack, qint64 newPos ) :
+                    m_workflow( workflow ), m_uuid( uuid ), m_oldTrack( oldTrack ),
+                    m_newTrack( newTrack ), m_pos( newPos ), m_oldPos( oldPos )
                 {
                     setText( "Moving clip" );
                     m_undoRedoAction = false;

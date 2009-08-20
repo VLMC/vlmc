@@ -23,7 +23,7 @@
 #include "AbstractGraphicsMediaItem.h"
 
 AbstractGraphicsMediaItem::AbstractGraphicsMediaItem() :
-        oldTrackNumber( -1 ), m_tracksView( NULL )
+        oldTrackNumber( -1 ), oldPosition( -1 ), m_tracksView( NULL )
 {
     setCursor( Qt::OpenHandCursor );
 }
