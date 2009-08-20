@@ -161,7 +161,6 @@ void TracksView::moveMediaItem( const QUuid& uuid, unsigned int track, qint64 ti
         AbstractGraphicsMediaItem* item =
                 dynamic_cast<AbstractGraphicsMediaItem*>( sceneItems.at( i ) );
         if ( !item || item->uuid() != uuid ) continue;
-        qDebug() << uuid.toString() << track << time;
         moveMediaItem( item, track, time );
     }
 }
