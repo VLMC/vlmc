@@ -30,8 +30,10 @@
 #include <QVBoxLayout>
 #include <QButtonGroup>
 #include <QStackedWidget>
+#include <QVector>
 
 #include "Panel.h"
+#include "PreferenceWidget.h"
 
 class   SimplePreferences : public QWidget
 {
@@ -42,23 +44,28 @@ class   SimplePreferences : public QWidget
         SimplePreferences( QWidget* parent = 0 );
         ~SimplePreferences();
         void                addWidget( const QString& name,
-                                       QWidget* widget,
+                                       PreferenceWidget* pWidget,
                                        const QString& icon,
                                        const QString& label );
         void                build();
 
     private:
         QVBoxLayout*    buildRightHLayout();
+        void    save( void );
 
     private:
-        QHash<int, QString>        m_widgets;
-        QWidget*                   m_currentWidget;
-        Panel*                     m_panel;
-        QLabel*                    m_title;
-        QStackedWidget*            m_stackedWidgets;
+        QHash<int, QString>         m_widgets;
+        QVector<PreferenceWidget*>  m_pWidgets;
+        QWidget*                    m_currentWidget;
+        Panel*                      m_panel;
+        QLabel*                     m_title;
+        QStackedWidget*             m_stackedWidgets;
+        bool                        m_saved;
 
     public slots:
         void    switchWidget( int widget );
+
+    private slots:
 
     signals:
         void    widgetSwitched( int widget );

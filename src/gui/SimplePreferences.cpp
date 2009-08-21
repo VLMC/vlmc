@@ -29,6 +29,7 @@
 #include <QLabel>
 
 
+#include "PreferenceWidget.h"
 #include "SimplePreferences.h"
 #include "Panel.h"
 
@@ -59,19 +60,21 @@ SimplePreferences::~SimplePreferences()
 //TODO : see if the widget MUST have a fixed size, or if the window can dynamicaly
 //adjust to the size of the biggest Widget.
 void        SimplePreferences::addWidget( const QString& name,
-                                          QWidget* widget,
+                                          PreferenceWidget* pWidget,
                                           const QString& icon,
                                           const QString& label)
 {
-    m_stackedWidgets->addWidget( widget );
+    widget->setParent( this );
+    m_stackedWidgets->addWidget( pWidget->widget() );
 
-    int idx = m_stackedWidgets->indexOf( widget );
+    int idx = m_stackedWidgets->indexOf( pWidget->widget() );
     m_widgets.insert( idx, name );
     m_panel->addButton( label, icon, idx );
     if (m_currentWidget == 0)
     {
-        m_currentWidget = widget;
+        m_currentWidget = pWidget->widget();
     }
+    m_pWidgets.append( pWidget );
 }
 
 void        SimplePreferences::build()
@@ -114,6 +117,11 @@ QVBoxLayout*    SimplePreferences::buildRightHLayout()
     layout->addWidget( buttons );
     return ( layout );
 } 
+
+void    SimplePreferences::save( void )
+{
+}
+
 
 void    SimplePreferences::switchWidget( int widget )
 {
