@@ -24,18 +24,20 @@
 #ifndef PREFERENCEWIDGET_H
 #define PREFERENCEWIDGET_H
 
+#include <QSettings>
 #include <QWidget>
 
 class   PreferenceWidget
 {
     public:
-        PreferenceWidget( QWidget* widget );
+        PreferenceWidget( QWidget* widget = 0 );
         virtual ~PreferenceWidget() {}
 
         virtual bool    load() = 0;
-        virtual bool    save() = 0;
+        virtual void    save( QSettings& settings ) = 0;
 
         QWidget*        widget() const;
+        void            setWidget( QWidget* widget );
 
     private:
         QWidget*        m_widget;

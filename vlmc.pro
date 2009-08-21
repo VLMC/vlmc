@@ -47,7 +47,10 @@ SOURCES += src/main.cpp \
     src/API/ModuleManager.cpp \
     src/WorkflowFileRenderer.cpp \
     src/gui/SimplePreferences.cpp \
-    src/gui/Panel.cpp
+    src/gui/Panel.cpp \
+    src/gui/PreferenceWidget.cpp \
+    src/gui/ProjectPreferences.cpp
+
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -92,7 +95,9 @@ HEADERS += src/gui/MainWindow.h \
     src/vlmc.h \
     src/tools/Pool.hpp \
     src/gui/SimplePreferences.h \
-    src/gui/Panel.h
+    src/gui/Panel.h \
+    src/gui/PreferenceWidget.h \
+    src/gui/ProjectPreferences.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/LanguagePreferences.ui \
@@ -101,7 +106,8 @@ FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/About.ui \
     src/gui/ui/Transcode.ui \
     src/gui/ui/FileBrowser.ui \
-    src/gui/ui/WorkflowFileRenderer.ui
+    src/gui/ui/WorkflowFileRenderer.ui \
+    src/gui/ui/ProjectPreferences.ui
 FORMS += 
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \

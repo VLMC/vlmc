@@ -1,16 +1,20 @@
 #ifndef PROJECTPREFERENCES_H
 #define PROJECTPREFERENCES_H
 
-#include "ui_ProjectPreferences.h"
+#include <QSettings>
+#include <QWidget>
 
-class   ProjectPreferences : public PreferenceWidget
+#include "ui_ProjectPreferences.h"
+#include "PreferenceWidget.h"
+
+class   ProjectPreferences : public QWidget, public PreferenceWidget
 {
     //Q_OBJECT
     public:
         ProjectPreferences( QWidget* parent = 0 );
         ~ProjectPreferences();
         bool    load();
-        bool    save();
+        void    save( QSettings& settings );
     private:
         Ui::ProjectPreferences  m_ui;
 };

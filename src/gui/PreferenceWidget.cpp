@@ -34,3 +34,9 @@ QWidget*    PreferenceWidget::widget() const
 {
     return ( m_widget );
 }
+
+void        PreferenceWidget::setWidget( QWidget* widget )
+{
+    m_widget = widget;
+    return ;
+}

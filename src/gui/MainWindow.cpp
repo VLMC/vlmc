@@ -36,6 +36,8 @@
 #include "Transcode.h"
 #include "FileBrowser.h"
 #include "PreviewWidget.h"
+#include "PreferenceWidget.h"
+#include "ProjectPreferences.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
@@ -163,15 +165,19 @@ void MainWindow::m_initializeDockWidgets( void )
 void        MainWindow::createGlobalPreferences()
 {
     m_globalPreferences = new SimplePreferences(  );
-    m_globalPreferences->addWidget("language",
-                                   Preferences::instance(),
+    m_globalPreferences->addWidget("Project",
+                                   new ProjectPreferences,
                                    "images/vlmc.png",
-                                   "Language");
-    //For debugging purpose
-    m_globalPreferences->addWidget("Test",
-                                   new QLabel("This is a test"),
+                                   "Project");
+    m_globalPreferences->addWidget("test",
+                                   new ProjectPreferences,
                                    "images/vlmc.png",
-                                   "Test");
+                                   "Truc");
+    ////For debugging purpose
+    //m_globalPreferences->addWidget("Test",
+    //                               new QLabel("This is a test"),
+    //                               "images/vlmc.png",
+    //                               "Test");
     m_globalPreferences->build();
 }
 

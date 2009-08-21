@@ -64,7 +64,6 @@ void        SimplePreferences::addWidget( const QString& name,
                                           const QString& icon,
                                           const QString& label)
 {
-    widget->setParent( this );
     m_stackedWidgets->addWidget( pWidget->widget() );
 
     int idx = m_stackedWidgets->indexOf( pWidget->widget() );
@@ -74,7 +73,6 @@ void        SimplePreferences::addWidget( const QString& name,
     {
         m_currentWidget = pWidget->widget();
     }
-    m_pWidgets.append( pWidget );
 }
 
 void        SimplePreferences::build()
