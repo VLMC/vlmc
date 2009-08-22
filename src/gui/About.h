@@ -34,13 +34,13 @@ public:
     static About* instance();
 
 protected:
-    virtual void changeEvent( QEvent *e );
+    virtual void    changeEvent( QEvent *e );
 
 private:
-    explicit About( QWidget *parent = 0 );
-    void setText( const QString& filename, QPlainTextEdit* widget );
-    Ui::About m_ui;
-    static About* m_instance;
+    explicit        About( QWidget *parent = 0 );
+    void            setText( const QString& filename, QPlainTextEdit* widget );
+    Ui::AboutVLMC   m_ui;
+    static About*   m_instance;
 };
 
 #endif // ABOUT_H

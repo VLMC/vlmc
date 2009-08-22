@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>About</class>
- <widget class="QDialog" name="About">
+ <class>AboutVLMC</class>
+ <widget class="QDialog" name="AboutVLMC">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -69,7 +69,7 @@ p, li { white-space: pre-wrap; }
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="About">
       <attribute name="title">
