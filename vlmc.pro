@@ -66,7 +66,6 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/Preferences.h \
     src/gui/ListViewMediaItem.h \
     src/Clip.h \
-    src/Image.h \
     src/gui/MediaListWidget.h \
     src/gui/About.h \
     src/gui/Transcode.h \
@@ -121,6 +120,7 @@ INCLUDEPATH += src/LibVLCpp \
     src/metadata \
     src/commands \
     src/Workflow \
+    src/Library \
     src
 
 # QMAKE_CFLAGS+=-pg
