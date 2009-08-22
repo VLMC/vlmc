@@ -31,7 +31,7 @@ SOURCES += src/main.cpp \
     src/gui/Transcode.cpp \
     src/gui/Slider.cpp \
     src/metadata/MetaDataWorker.cpp \
-    src/Library.cpp \
+    src/Library/Library.cpp \
     src/gui/GraphicsMovieItem.cpp \
     src/gui/AbstractGraphicsMediaItem.cpp \
     src/Media.cpp \
@@ -73,7 +73,7 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/Slider.h \
     src/metadata/MetaDataWorker.h \
     src/tools/Singleton.hpp \
-    src/Library.h \
+    src/Library/Library.h \
     src/gui/AbstractGraphicsMediaItem.h \
     src/gui/GraphicsMovieItem.h \
     src/Media.h \
