@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>WorkflowFileRenderer</class>
- <widget class="QDialog" name="WorkflowFileRenderer">
+ <class>WorkflowFileRendererDialog</class>
+ <widget class="QDialog" name="WorkflowFileRendererDialog">
   <property name="geometry">
    <rect>
     <x>0</x>

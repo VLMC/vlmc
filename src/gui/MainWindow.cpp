@@ -161,7 +161,7 @@ void MainWindow::initializeDockWidgets( void )
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
 
-    m_projectPreview = new PreviewWidget( new WorkflowRenderer( m_timeline->getMainWorkflow() ), this );
+    m_projectPreview = new PreviewWidget( new WorkflowRenderer(), this );
     dockManager->addDockedWidget( m_projectPreview,
                                   tr( "Project Preview" ),
                                   Qt::AllDockWidgetAreas,
@@ -215,7 +215,7 @@ void    MainWindow::on_actionRender_triggered()
     {
         if ( m_renderer )
             delete m_renderer;
-        m_renderer = new WorkflowFileRenderer( this, outputFileName );
+        m_renderer = new WorkflowFileRenderer( outputFileName );
         m_renderer->run();
     }
 }

@@ -48,7 +48,8 @@ SOURCES += src/main.cpp \
     src/WorkflowFileRenderer.cpp \
     src/UndoStack.cpp \
     src/metadata/MetaDataManager.cpp \
-    src/gui/ClipProperty.cpp
+    src/gui/ClipProperty.cpp \
+    src/gui/WorkflowFileRendererDialog.cpp
 HEADERS += src/gui/MainWindow.h \
     src/gui/DockWidgetManager.h \
     src/gui/LibraryWidget.h \
@@ -97,7 +98,8 @@ HEADERS += src/gui/MainWindow.h \
     src/metadata/MetaDataManager.h \
     src/commands/Commands.hpp \
     src/tools/QSingleton.hpp \
-    src/gui/ClipProperty.h
+    src/gui/ClipProperty.h \
+    src/gui/WorkflowFileRendererDialog.h
 FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/PreviewWidget.ui \
     src/gui/ui/Preferences.ui \
@@ -106,9 +108,8 @@ FORMS += src/gui/ui/MainWindow.ui \
     src/gui/ui/About.ui \
     src/gui/ui/Transcode.ui \
     src/gui/ui/FileBrowser.ui \
-    src/gui/ui/WorkflowFileRenderer.ui \
+    src/gui/ui/WorkflowFileRendererDialog.ui \
     src/gui/ui/ClipProperty.ui
-
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts

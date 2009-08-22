@@ -27,8 +27,8 @@
 #include "WorkflowRenderer.h"
 #include "Timeline.h"
 
-WorkflowRenderer::WorkflowRenderer( MainWorkflow* mainWorkflow ) :
-            m_mainWorkflow( mainWorkflow ),
+WorkflowRenderer::WorkflowRenderer() :
+            m_mainWorkflow( MainWorkflow::getInstance() ),
             m_pauseAsked( false ),
             m_unpauseAsked( false ),
             m_stopping( false )
@@ -54,14 +54,6 @@ WorkflowRenderer::WorkflowRenderer( MainWorkflow* mainWorkflow ) :
     sprintf( buffer, ":height=%i", VIDEOHEIGHT );
     m_media->addOption( buffer );
 
-    m_mediaPlayer->setMedia( m_media );
-
-    connect( m_mediaPlayer, SIGNAL( playing() ),    this,   SLOT( __videoPlaying() ), Qt::DirectConnection );
-    connect( m_mediaPlayer, SIGNAL( paused() ),     this,   SLOT( __videoPaused() ), Qt::DirectConnection );
-    connect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SLOT( __videoStopped() ) );
-    connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
-    connect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
-
     m_condMutex = new QMutex;
     m_waitCond = new QWaitCondition;
 }
@@ -71,6 +63,7 @@ WorkflowRenderer::~WorkflowRenderer()
 {
     stop();
 
+    //FIXME this is probably useless...
     disconnect( m_mediaPlayer, SIGNAL( playing() ),    this,   SLOT( __videoPlaying() ) );
     disconnect( m_mediaPlayer, SIGNAL( paused() ),     this,   SLOT( __videoPaused() ) );
     disconnect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SLOT( __videoStopped() ) );
@@ -140,12 +133,22 @@ void        WorkflowRenderer::startPreview()
 {
     char        buff[128];
 
+    m_mediaPlayer->setMedia( m_media );
+
+    //Workflow part
     connect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
             Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( updateCursorPos( qint64 ) ) );
     connect( Timeline::getInstance()->tracksView()->tracksCursor(), SIGNAL( cursorPositionChanged( qint64 ) ),
              this, SLOT( timelineCursorChanged(qint64) ) );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ) );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowUnpaused() ), this, SLOT( mainWorkflowUnpaused() ) );
+
+    //Media player part: to update PreviewWidget
+    connect( m_mediaPlayer, SIGNAL( playing() ),    this,   SLOT( __videoPlaying() ), Qt::DirectConnection );
+    connect( m_mediaPlayer, SIGNAL( paused() ),     this,   SLOT( __videoPaused() ), Qt::DirectConnection );
+    connect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SLOT( __videoStopped() ) );
+    connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
+    connect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
 
     m_mainWorkflow->startRender();
     sprintf( buff, ":fake-duration=%lli", m_mainWorkflow->getLength() / FPS * 1000 );

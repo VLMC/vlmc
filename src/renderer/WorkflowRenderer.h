@@ -42,7 +42,7 @@ class   WorkflowRenderer : public GenericRenderer
             Pause,
             //Unpause,
         };
-        WorkflowRenderer( MainWorkflow* mainWorkflow );
+        WorkflowRenderer();
         ~WorkflowRenderer();
 
         void                stopPreview();
@@ -69,9 +69,10 @@ class   WorkflowRenderer : public GenericRenderer
         virtual void        startPreview();
         void                checkActions();
 
-    private:
+    protected:
         MainWorkflow*       m_mainWorkflow;
         LibVLCpp::Media*    m_media;
+    private:
         unsigned char*      m_lastFrame;
         QStack<Actions>     m_actions;
         QReadWriteLock*     m_actionsLock;

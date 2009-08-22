@@ -20,35 +20,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef WORKFLOWFILERENDERER_H
-#define WORKFLOWFILERENDERER_H
+#ifndef WORKFLOWFILERENDERERDIALOG_H
+#define WORKFLOWFILERENDERERDIALOG_H
 
-#include "VLCMediaPlayer.h"
-#include "Workflow/MainWorkflow.h"
-#include "WorkflowRenderer.h"
-#include "WorkflowFileRendererDialog.h"
+#include <QDialog>
+#include "ui_WorkflowFileRendererDialog.h"
 
-class   WorkflowFileRenderer : public WorkflowRenderer
+class   WorkflowFileRendererDialog : public QDialog
 {
     Q_OBJECT
-    Q_DISABLE_COPY( WorkflowFileRenderer )
-
+    Q_DISABLE_COPY( WorkflowFileRendererDialog );
 public:
-    WorkflowFileRenderer( const QString& outputFileName );
-    virtual ~WorkflowFileRenderer();
-
-    static void*        lock( void* datas );
-    static void         unlock( void* datas );
-
-    void                run();
+    WorkflowFileRendererDialog();
+    void    setOutputFileName( const QString& filename );
+    void    setProgressBarValue( int val );
 private:
-    const QString               m_outputFileName;
-    WorkflowFileRendererDialog* m_dialog;
-
-private slots:
-    void                        stop();
-    void                        positionChanged( float newPos );
-    void                        on_cancelButton_clicked();
+    Ui::WorkflowFileRendererDialog      m_ui;
 };
 
-#endif // WORKFLOWFILERENDERER_H
+#endif // WORKFLOWFILERENDERERDIALOG_H
