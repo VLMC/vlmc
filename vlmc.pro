@@ -46,7 +46,7 @@ SOURCES += src/main.cpp \
     src/API/Module.cpp \
     src/API/ModuleManager.cpp \
     src/renderer/WorkflowFileRenderer.cpp \
-    src/UndoStack.cpp \
+    src/gui/UndoStack.cpp \
     src/metadata/MetaDataManager.cpp \
     src/gui/ClipProperty.cpp \
     src/gui/WorkflowFileRendererDialog.cpp
@@ -93,7 +93,7 @@ HEADERS += src/gui/MainWindow.h \
     src/renderer/WorkflowFileRenderer.h \
     src/vlmc.h \
     src/tools/Pool.hpp \
-    src/UndoStack.h \
+    src/gui/UndoStack.h \
     src/tools/WaitCondition.hpp \
     src/metadata/MetaDataManager.h \
     src/commands/Commands.hpp \
