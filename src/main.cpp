@@ -27,10 +27,7 @@
  */
 
 #include <QApplication>
-#include "gui/MainWindow.h"
-
-//FOR DEBUG :
-#include "API/ModuleManager.h"
+#include "MainWindow.h"
 
 /**
  *  VLMC Entry point

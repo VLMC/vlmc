@@ -26,7 +26,7 @@
 #include <QMetaMethod>
 
 #include "ui_PreviewWidget.h"
-#include "gui/PreviewWidget.h"
+#include "PreviewWidget.h"
 #include "MediaListWidget.h"
 #include "Library.h"
 

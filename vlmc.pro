@@ -11,114 +11,114 @@ QT += gui \
     network \
     svg
 SOURCES += src/main.cpp \
-    src/gui/MainWindow.cpp \
-    src/gui/LibraryWidget.cpp \
-    src/gui/DockWidgetManager.cpp \
+    src/GUI/MainWindow.cpp \
+    src/GUI/LibraryWidget.cpp \
+    src/GUI/DockWidgetManager.cpp \
     src/LibVLCpp/VLCException.cpp \
     src/LibVLCpp/VLCInstance.cpp \
-    src/gui/Timeline.cpp \
+    src/GUI/Timeline.cpp \
     src/LibVLCpp/VLCMediaPlayer.cpp \
     src/LibVLCpp/VLCMedia.cpp \
-    src/gui/TracksView.cpp \
-    src/gui/TracksScene.cpp \
-    src/renderer/ClipRenderer.cpp \
-    src/gui/TracksRuler.cpp \
-    src/gui/Preferences.cpp \
-    src/gui/ListViewMediaItem.cpp \
-    src/gui/MediaListWidget.cpp \
+    src/GUI/TracksView.cpp \
+    src/GUI/TracksScene.cpp \
+    src/Renderer/ClipRenderer.cpp \
+    src/GUI/TracksRuler.cpp \
+    src/GUI/Preferences.cpp \
+    src/GUI/ListViewMediaItem.cpp \
+    src/GUI/MediaListWidget.cpp \
     src/Media/Clip.cpp \
-    src/gui/About.cpp \
-    src/gui/Transcode.cpp \
-    src/gui/Slider.cpp \
-    src/metadata/MetaDataWorker.cpp \
+    src/GUI/About.cpp \
+    src/GUI/Transcode.cpp \
+    src/GUI/Slider.cpp \
+    src/Metadata/MetadataWorker.cpp \
     src/Library/Library.cpp \
-    src/gui/GraphicsMovieItem.cpp \
-    src/gui/AbstractGraphicsMediaItem.cpp \
+    src/GUI/GraphicsMovieItem.cpp \
+    src/GUI/AbstractGraphicsMediaItem.cpp \
     src/Media/Media.cpp \
-    src/gui/FileBrowser.cpp \
-    src/gui/GraphicsCursorItem.cpp \
+    src/GUI/FileBrowser.cpp \
+    src/GUI/GraphicsCursorItem.cpp \
     src/Workflow/ClipWorkflow.cpp \
     src/Workflow/TrackWorkflow.cpp \
     src/Workflow/MainWorkflow.cpp \
-    src/gui/PreviewWidget.cpp \
-    src/renderer/WorkflowRenderer.cpp \
+    src/GUI/PreviewWidget.cpp \
+    src/Renderer/WorkflowRenderer.cpp \
     src/API/vlmc_module_variables.cpp \
     src/API/Module.cpp \
     src/API/ModuleManager.cpp \
-    src/renderer/WorkflowFileRenderer.cpp \
-    src/gui/UndoStack.cpp \
-    src/metadata/MetaDataManager.cpp \
-    src/gui/ClipProperty.cpp \
-    src/gui/WorkflowFileRendererDialog.cpp
-HEADERS += src/gui/MainWindow.h \
-    src/gui/DockWidgetManager.h \
-    src/gui/LibraryWidget.h \
+    src/Renderer/WorkflowFileRenderer.cpp \
+    src/GUI/UndoStack.cpp \
+    src/Metadata/MetadataManager.cpp \
+    src/GUI/ClipProperty.cpp \
+    src/GUI/WorkflowFileRendererDialog.cpp
+HEADERS += src/GUI/MainWindow.h \
+    src/GUI/DockWidgetManager.h \
+    src/GUI/LibraryWidget.h \
     src/LibVLCpp/VLCpp.hpp \
     src/LibVLCpp/VLCException.h \
     src/LibVLCpp/VLCInstance.h \
-    src/gui/Timeline.h \
+    src/GUI/Timeline.h \
     src/LibVLCpp/VLCMediaPlayer.h \
     src/LibVLCpp/VLCMedia.h \
-    src/gui/TracksView.h \
-    src/gui/TracksScene.h \
-    src/renderer/ClipRenderer.h \
-    src/gui/TracksRuler.h \
-    src/gui/Preferences.h \
-    src/gui/ListViewMediaItem.h \
+    src/GUI/TracksView.h \
+    src/GUI/TracksScene.h \
+    src/Renderer/ClipRenderer.h \
+    src/GUI/TracksRuler.h \
+    src/GUI/Preferences.h \
+    src/GUI/ListViewMediaItem.h \
     src/Media/Clip.h \
-    src/gui/MediaListWidget.h \
-    src/gui/About.h \
-    src/gui/Transcode.h \
-    src/gui/Slider.h \
-    src/metadata/MetaDataWorker.h \
-    src/tools/Singleton.hpp \
+    src/GUI/MediaListWidget.h \
+    src/GUI/About.h \
+    src/GUI/Transcode.h \
+    src/GUI/Slider.h \
+    src/Metadata/MetadataWorker.h \
+    src/Tools/Singleton.hpp \
     src/Library/Library.h \
-    src/gui/AbstractGraphicsMediaItem.h \
-    src/gui/GraphicsMovieItem.h \
+    src/GUI/AbstractGraphicsMediaItem.h \
+    src/GUI/GraphicsMovieItem.h \
     src/Media/Media.h \
-    src/gui/FileBrowser.h \
-    src/gui/GraphicsCursorItem.h \
+    src/GUI/FileBrowser.h \
+    src/GUI/GraphicsCursorItem.h \
     src/Workflow/ClipWorkflow.h \
     src/Workflow/TrackWorkflow.h \
     src/Workflow/MainWorkflow.h \
-    src/gui/PreviewWidget.h \
-    src/renderer/WorkflowRenderer.h \
-    src/renderer/GenericRenderer.h \
-    src/tools/Toggleable.hpp \
+    src/GUI/PreviewWidget.h \
+    src/Renderer/WorkflowRenderer.h \
+    src/Renderer/GenericRenderer.h \
+    src/Tools/Toggleable.hpp \
     src/API/vlmc_module.h \
     src/API/Module.h \
     src/API/ModuleManager.h \
     src/API/vlmc_module_internal.h \
-    src/renderer/WorkflowFileRenderer.h \
+    src/Renderer/WorkflowFileRenderer.h \
     src/vlmc.h \
-    src/tools/Pool.hpp \
-    src/gui/UndoStack.h \
-    src/tools/WaitCondition.hpp \
-    src/metadata/MetaDataManager.h \
-    src/commands/Commands.hpp \
-    src/tools/QSingleton.hpp \
-    src/gui/ClipProperty.h \
-    src/gui/WorkflowFileRendererDialog.h
-FORMS += src/gui/ui/MainWindow.ui \
-    src/gui/ui/PreviewWidget.ui \
-    src/gui/ui/Preferences.ui \
-    src/gui/ui/Timeline.ui \
-    src/gui/ui/LibraryWidget.ui \
-    src/gui/ui/About.ui \
-    src/gui/ui/Transcode.ui \
-    src/gui/ui/FileBrowser.ui \
-    src/gui/ui/WorkflowFileRendererDialog.ui \
-    src/gui/ui/ClipProperty.ui
+    src/Tools/Pool.hpp \
+    src/GUI/UndoStack.h \
+    src/Tools/WaitCondition.hpp \
+    src/Metadata/MetadataManager.h \
+    src/Commands/Commands.hpp \
+    src/Tools/QSingleton.hpp \
+    src/GUI/ClipProperty.h \
+    src/GUI/WorkflowFileRendererDialog.h
+FORMS += src/GUI/ui/MainWindow.ui \
+    src/GUI/ui/PreviewWidget.ui \
+    src/GUI/ui/Preferences.ui \
+    src/GUI/ui/Timeline.ui \
+    src/GUI/ui/LibraryWidget.ui \
+    src/GUI/ui/About.ui \
+    src/GUI/ui/Transcode.ui \
+    src/GUI/ui/FileBrowser.ui \
+    src/GUI/ui/WorkflowFileRendererDialog.ui \
+    src/GUI/ui/ClipProperty.ui
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts
 RESOURCES += ressources.qrc
 INCLUDEPATH += src/LibVLCpp \
-    src/gui \
-    src/tools \
-    src/renderer \
-    src/metadata \
-    src/commands \
+    src/GUI \
+    src/Tools \
+    src/Renderer \
+    src/Metadata \
+    src/Commands \
     src/Workflow \
     src/Library \
     src/Media \

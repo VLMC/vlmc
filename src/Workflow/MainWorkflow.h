@@ -28,9 +28,9 @@
 #include <QReadWriteLock>
 #include <QMutex>
 
-#include "tools/Toggleable.hpp"
+#include "Toggleable.hpp"
 #include "TrackWorkflow.h"
-#include "tools/Singleton.hpp"
+#include "Singleton.hpp"
 
 class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 {
