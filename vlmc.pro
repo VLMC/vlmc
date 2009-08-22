@@ -26,7 +26,7 @@ SOURCES += src/main.cpp \
     src/gui/Preferences.cpp \
     src/gui/ListViewMediaItem.cpp \
     src/gui/MediaListWidget.cpp \
-    src/Clip.cpp \
+    src/Media/Clip.cpp \
     src/gui/About.cpp \
     src/gui/Transcode.cpp \
     src/gui/Slider.cpp \
@@ -34,7 +34,7 @@ SOURCES += src/main.cpp \
     src/Library/Library.cpp \
     src/gui/GraphicsMovieItem.cpp \
     src/gui/AbstractGraphicsMediaItem.cpp \
-    src/Media.cpp \
+    src/Media/Media.cpp \
     src/gui/FileBrowser.cpp \
     src/gui/GraphicsCursorItem.cpp \
     src/Workflow/ClipWorkflow.cpp \
@@ -65,7 +65,7 @@ HEADERS += src/gui/MainWindow.h \
     src/gui/TracksRuler.h \
     src/gui/Preferences.h \
     src/gui/ListViewMediaItem.h \
-    src/Clip.h \
+    src/Media/Clip.h \
     src/gui/MediaListWidget.h \
     src/gui/About.h \
     src/gui/Transcode.h \
@@ -75,7 +75,7 @@ HEADERS += src/gui/MainWindow.h \
     src/Library/Library.h \
     src/gui/AbstractGraphicsMediaItem.h \
     src/gui/GraphicsMovieItem.h \
-    src/Media.h \
+    src/Media/Media.h \
     src/gui/FileBrowser.h \
     src/gui/GraphicsCursorItem.h \
     src/Workflow/ClipWorkflow.h \
@@ -121,6 +121,7 @@ INCLUDEPATH += src/LibVLCpp \
     src/commands \
     src/Workflow \
     src/Library \
+    src/Media \
     src
 
 # QMAKE_CFLAGS+=-pg
