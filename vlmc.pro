@@ -45,7 +45,7 @@ SOURCES += src/main.cpp \
     src/API/vlmc_module_variables.cpp \
     src/API/Module.cpp \
     src/API/ModuleManager.cpp \
-    src/WorkflowFileRenderer.cpp \
+    src/renderer/WorkflowFileRenderer.cpp \
     src/UndoStack.cpp \
     src/metadata/MetaDataManager.cpp \
     src/gui/ClipProperty.cpp \
@@ -90,7 +90,7 @@ HEADERS += src/gui/MainWindow.h \
     src/API/Module.h \
     src/API/ModuleManager.h \
     src/API/vlmc_module_internal.h \
-    src/WorkflowFileRenderer.h \
+    src/renderer/WorkflowFileRenderer.h \
     src/vlmc.h \
     src/tools/Pool.hpp \
     src/UndoStack.h \
