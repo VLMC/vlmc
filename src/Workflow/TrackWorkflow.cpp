@@ -159,6 +159,7 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
     else if ( cw->getState() == ClipWorkflow::EndReached )
     {
         cw->getStateLock()->unlock();
+        clipWorkflowRenderCompleted( cw );
         //The stopClipWorkflow() method will take care of that.
     }
     else if ( cw->getState() == ClipWorkflow::Paused )
