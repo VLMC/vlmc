@@ -35,9 +35,6 @@ class   Toggleable
         Toggleable() : m_ptr( NULL ), m_activated( true ), m_hardDeactivated( false )
         {
         }
-        Toggleable( T ptr ) : m_ptr( ptr ), m_activated( true ), m_hardDeactivated( false )
-        {
-        }
         void    setPtr( T ptr )
         {
             Q_ASSERT( m_ptr == NULL );
@@ -51,10 +48,6 @@ class   Toggleable
         {
 //            Q_ASSERT_X( m_activated == true, "Toggleable<T>::operator->", "Pointer is deactivated" );
             return m_ptr;
-        }
-        bool    operator==( const T& rightValue ) const
-        {
-            return m_ptr == rightValue;
         }
         bool    activated() const
         {

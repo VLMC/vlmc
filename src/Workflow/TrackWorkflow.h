@@ -31,7 +31,6 @@
 #include <QReadWriteLock>
 
 #include "ClipWorkflow.h"
-#include "Toggleable.hpp"
 
 //TODO: REMOVE THIS
 #ifndef FPS
@@ -47,7 +46,6 @@ class   TrackWorkflow : public QObject
     Q_OBJECT
 
     public:
-        typedef     Toggleable<ClipWorkflow*>   CW;
         TrackWorkflow( unsigned int trackId );
         ~TrackWorkflow();
 
@@ -60,7 +58,7 @@ class   TrackWorkflow : public QObject
         Clip*                                   removeClip( const QUuid& id );
         void                                    addClip( Clip*, qint64 start );
         void                                    addClip( ClipWorkflow*, qint64 start );
-        qint64                                  getClipPosition( const QUuid& uuid );
+        qint64                                  getClipPosition( const QUuid& uuid ) const;
 
         /**
          *  Returns the output that has been computed in synchrone mode.
@@ -80,7 +78,7 @@ class   TrackWorkflow : public QObject
     private:
         unsigned int                            m_trackId;
 
-        QMap<qint64, CW>                        m_clips;
+        QMap<qint64, ClipWorkflow*>             m_clips;
 
         /**
          *  \brief      The track length in frames.

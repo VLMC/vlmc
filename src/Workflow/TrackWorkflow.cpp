@@ -38,8 +38,8 @@ TrackWorkflow::TrackWorkflow( unsigned int trackId ) :
 
 TrackWorkflow::~TrackWorkflow()
 {
-    QMap<qint64, CW>::iterator       it = m_clips.begin();
-    QMap<qint64, CW>::iterator       end = m_clips.end();
+    QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
 
     while ( it != end )
     {
@@ -76,7 +76,7 @@ void                TrackWorkflow::computeLength()
         m_length = 0;
         return ;
     }
-    QMap<qint64, CW>::iterator it = m_clips.end() - 1;
+    QMap<qint64, ClipWorkflow*>::const_iterator it = m_clips.end() - 1;
     m_length = (it.key() + it.value()->getClip()->getLength() );
 }
 
@@ -85,10 +85,10 @@ qint64              TrackWorkflow::getLength() const
     return m_length;
 }
 
-qint64              TrackWorkflow::getClipPosition( const QUuid& uuid )
+qint64              TrackWorkflow::getClipPosition( const QUuid& uuid ) const
 {
-    QMap<qint64, CW>::iterator     it = m_clips.begin();
-    QMap<qint64, CW>::iterator     end = m_clips.end();
+    QMap<qint64, ClipWorkflow*>::const_iterator     it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::const_iterator     end = m_clips.end();
 
     while ( it != end )
     {
@@ -243,8 +243,8 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
 
 void                    TrackWorkflow::stop()
 {
-    QMap<qint64, CW>::iterator       it = m_clips.begin();
-    QMap<qint64, CW>::iterator       end = m_clips.end();
+    QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
 
     while ( it != end )
     {
@@ -257,11 +257,11 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
 {
     QReadLocker     lock( m_clipsLock );
 
-    QMap<qint64, CW>::iterator      it = m_clips.begin();
-    QMap<qint64, CW>::iterator      end = m_clips.end();
-    static  qint64                  lastFrame = 0;
-    bool                            needRepositioning;
-    bool                            hasRendered = false;
+    QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
+    static  qint64                              lastFrame = 0;
+    bool                                        needRepositioning;
+    bool                                        hasRendered = false;
 
     {
         QMutexLocker    lock( m_forceRepositionningMutex );
@@ -319,9 +319,9 @@ void                TrackWorkflow::pause()
 {
     QReadLocker     lock( m_clipsLock );
 
-    QMap<qint64, CW>::iterator      it = m_clips.begin();
-    QMap<qint64, CW>::iterator      end = m_clips.end();
-    bool                            pauseRequired = false;
+    QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
+    bool                                        pauseRequired = false;
 
     m_nbClipToPause = 0;
     for ( ; it != end; ++it )
@@ -358,8 +358,8 @@ void            TrackWorkflow::moveClip( const QUuid& id, qint64 startingFrame )
 {
     QWriteLocker    lock( m_clipsLock );
 
-    QMap<qint64, CW>::iterator      it = m_clips.begin();
-    QMap<qint64, CW>::iterator      end = m_clips.end();
+    QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
 
     while ( it != end )
     {
@@ -383,8 +383,8 @@ Clip*       TrackWorkflow::removeClip( const QUuid& id )
 {
     QWriteLocker    lock( m_clipsLock );
 
-    QMap<qint64, CW>::iterator       it = m_clips.begin();
-    QMap<qint64, CW>::iterator       end = m_clips.end();
+    QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
 
     while ( it != end )
     {
@@ -439,8 +439,8 @@ void    TrackWorkflow::unpause()
 {
     QReadLocker     lock( m_clipsLock );
 
-    QMap<qint64, CW>::iterator       it = m_clips.begin();
-    QMap<qint64, CW>::iterator       end = m_clips.end();
+    QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
     bool                                        unpauseRequired = false;
 
     m_nbClipToUnpause = 0;
@@ -484,7 +484,7 @@ void    TrackWorkflow::clipWorkflowEndReached( ClipWorkflow* cw )
     //this obviously couldn't happen, since we have a clipworkflow...
     Q_ASSERT ( m_clips.size() != 0 );
 
-    QMap<qint64, CW>::const_iterator   it = m_clips.end() - 1;
+    QMap<qint64, ClipWorkflow*>::const_iterator   it = m_clips.end() - 1;
     //If it ends before the current frame, we reached end.
     if ( it.value() == cw )
         emit trackEndReached( m_trackId );
