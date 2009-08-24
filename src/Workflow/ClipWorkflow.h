@@ -218,7 +218,6 @@ class   ClipWorkflow : public QObject
         void                    renderComplete( ClipWorkflow* );
         void                    paused();
         void                    unpaused();
-        void                    endReached( ClipWorkflow* );
 };
 
 #endif // CLIPWORKFLOW_H
