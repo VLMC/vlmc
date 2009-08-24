@@ -140,6 +140,8 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
             pos = pos * ( cw->getClip()->getEnd() - cw->getClip()->getBegin() ) + cw->getClip()->getBegin();
             cw->setPosition( pos );
         }
+        if ( m_paused == true )
+            clipWorkflowRenderCompleted( cw );
     }
     else if ( cw->getState() == ClipWorkflow::Ready ||
               cw->getState() == ClipWorkflow::Initializing )
