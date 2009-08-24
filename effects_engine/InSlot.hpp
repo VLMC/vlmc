@@ -38,7 +38,6 @@ public:
     {
       GUI,				// OUTPUTS FROM GUI
       DEFAULT,				// WHEN NO OUTPUTS ARE CONNECTED
-      INTERPRETER,			// OUTPUT FROM INTERPRETER
       NORMAL,				// OUTPUT FROM STREAMING 
       NBTYPES
     };					// IT'S SORTED BY PRIORITY
@@ -93,7 +92,7 @@ private:
 // STATIC MEMBERS INTIALIZATION
 
 template<typename T>
-unsigned int  InSlot<T>::m_outNbLimits[] = {InSlot<T>::INFINITE, InSlot<T>::INFINITE, InSlot<T>::ONLYONE,  InSlot<T>::ONLYONE} ; // USELESS BUT JUST FOR CLEANESS
+unsigned int  InSlot<T>::m_outNbLimits[] = {InSlot<T>::INFINITE, InSlot<T>::INFINITE,  InSlot<T>::ONLYONE} ;
 
 /////////////////////////
 //// PUBLICS METHODS ////
@@ -106,7 +105,7 @@ InSlot<T>::InSlot() : m_currentShared( DEFAULT )
 {
   unsigned int 	type;
 
-  m_shared[DEFAULT] = 0; // DEFAULT VALUE SET HERE FOR FORWARD THIS WHEN THERE AREN'T OUTSLOTS CONNECTED
+//   m_shared[DEFAULT] = 0; // DEFAULT VALUE SET HERE FOR FORWARD THIS WHEN THERE AREN'T OUTSLOTS CONNECTED
 
   for (type = static_cast<unsigned int>( InSlot<T>::DEFAULT );
        type < static_cast<unsigned int>( InSlot<T>::NBTYPES );
