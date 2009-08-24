@@ -370,3 +370,10 @@ void        MainWorkflow::setCurrentFrame( qint64 currentFrame )
     emit positionChanged( (float)m_currentFrame / (float)m_length );
 }
 
+void        MainWorkflow::activateTrack( unsigned int trackId )
+{
+    if ( m_tracks[trackId]->getLength() > 0 )
+        m_tracks[trackId].activate();
+    else
+        m_tracks[trackId].deactivate();
+}

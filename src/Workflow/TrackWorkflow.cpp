@@ -295,11 +295,6 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
         qint64          start = it.key();
         ClipWorkflow*   cw = it.value();
         //Is the clip supposed to render now ?
-        if ( needRepositioning == true && it.value().activated() == false )
-        {
-            qDebug() << "Reactivating clipworkflow";
-            it.value().activate();
-        }
         if ( start <= currentFrame && currentFrame <= start + cw->getClip()->getLength() )
         {
             m_nbClipToRender.fetchAndAddAcquire( 1 );
