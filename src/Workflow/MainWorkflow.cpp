@@ -44,6 +44,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     for ( int i = 0; i < trackCount; ++i )
     {
         m_tracks[i].setPtr( new TrackWorkflow( i ) );
+        m_tracks[i].deactivate();
         connect( m_tracks[i], SIGNAL( trackEndReached( unsigned int ) ), this, SLOT( trackEndReached(unsigned int) ) );
         connect( m_tracks[i], SIGNAL( trackPaused() ), this, SLOT( trackPaused() ) );
         connect( m_tracks[i], SIGNAL( trackUnpaused() ), this, SLOT( trackUnpaused() ) );
@@ -76,10 +77,9 @@ void    MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
     Q_ASSERT_X( trackId < m_trackCount, "MainWorkflow::addClip",
                 "The specified trackId isn't valid, for it's higher than the number of tracks");
 
-    //if the track is deactivated, we need to reactivate it :
-    if ( m_tracks[trackId].deactivated() == true )
-        m_tracks[trackId].activate();
     m_tracks[trackId]->addClip( clip, start );
+    //if the track is deactivated, we need to reactivate it :
+    activateTrack( trackId );
     if ( m_tracks[trackId]->getLength() > m_length )
         m_length = m_tracks[trackId]->getLength();
 }
@@ -103,7 +103,9 @@ void    MainWorkflow::startRender()
     m_currentFrame = 0;
     emit frameChanged( 0 );
     for ( unsigned int i = 0; i < m_trackCount; ++i )
-        m_tracks[i].activate();
+    {
+        activateTrack( i );
+    }
     computeLength();
 }
 
@@ -187,7 +189,7 @@ void        MainWorkflow::setPosition( float pos )
     //Since any track can be reactivated, we reactivate all of them, and let them
     //unable themself if required.
     for ( unsigned int i = 0; i < m_trackCount; ++i)
-        m_tracks[i].activate();
+        activateTrack( i );
 
     qint64  frame = static_cast<qint64>( (float)m_length * pos );
     m_currentFrame = frame;
@@ -210,13 +212,18 @@ qint64      MainWorkflow::getClipPosition( const QUuid& uuid, unsigned int track
 
 void        MainWorkflow::trackEndReached( unsigned int trackId )
 {
+    qDebug() << "End of track: deactivating";
     m_tracks[trackId].deactivate();
 
     for ( unsigned int i = 0; i < m_trackCount; ++i)
     {
         if ( m_tracks[i].activated() == true )
+        {
+            qDebug() << "Track" << i << "is still activated";
             return ;
+        }
     }
+    qDebug() << "End of main workflow";
     emit mainWorkflowEndReached();
     m_renderStarted = false;
     m_currentFrame = 0;
@@ -266,14 +273,14 @@ void           MainWorkflow::moveClip( const QUuid& clipUuid, unsigned int oldTr
     {
         //And now, just move the clip.
         m_tracks[newTrack]->moveClip( clipUuid, startingFrame );
-        m_tracks[newTrack].activate();
+        activateTrack( newTrack );
     }
     else
     {
         Clip* clip = m_tracks[oldTrack]->removeClip( clipUuid );
         m_tracks[newTrack]->addClip( clip, startingFrame );
-        m_tracks[oldTrack].activate();
-        m_tracks[newTrack].activate();
+        activateTrack( oldTrack );
+        activateTrack( newTrack );
     }
     computeLength();
     if ( undoRedoCommand == true )
@@ -368,4 +375,13 @@ void        MainWorkflow::setCurrentFrame( qint64 currentFrame )
 {
     m_currentFrame = currentFrame;
     emit positionChanged( (float)m_currentFrame / (float)m_length );
+}
+
+void        MainWorkflow::activateTrack( unsigned int trackId )
+{
+    if ( m_tracks[trackId]->getLength() > 0 )
+    {
+        qDebug()<< "Activating track" << trackId;
+        m_tracks[trackId].activate();
+    }
 }
