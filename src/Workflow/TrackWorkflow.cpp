@@ -63,6 +63,7 @@ void    TrackWorkflow::addClip( ClipWorkflow* cw, qint64 start )
     connect( cw, SIGNAL( renderComplete( ClipWorkflow* ) ), this, SLOT( clipWorkflowRenderCompleted( ClipWorkflow* ) ), Qt::DirectConnection );
     connect( cw, SIGNAL( paused() ), this, SLOT( clipWorkflowPaused() ) );
     connect( cw, SIGNAL( unpaused() ), this, SLOT( clipWorkflowUnpaused() ) );
+    connect( cw, SIGNAL( endReached( ClipWorkflow* ) ), this, SLOT( clipWorkflowEndReached( ClipWorkflow* ) ) );
     m_clips.insert( start, cw );
     computeLength();
 }
@@ -236,17 +237,8 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
     {
 //        qDebug() << "Unexpected ClipWorkflow::State when stopping :" << cw->getState();
         cw->getStateLock()->unlock();
+        return ;
     }
-}
-
-bool                TrackWorkflow::checkEnd( qint64 currentFrame ) const
-{
-    if ( m_clips.size() == 0 )
-        return true;
-    //This is the last video by chronological order :
-    QMap<qint64, ClipWorkflow*>::const_iterator   it = m_clips.end() - 1;
-    //If it ends before the current frame, we reached end.
-    return ( it.value()->getClip()->getLength() + it.key() < currentFrame );
 }
 
 void                    TrackWorkflow::stop()
@@ -271,11 +263,6 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
     bool                                        needRepositioning;
     bool                                        hasRendered = false;
 
-    if ( checkEnd( currentFrame ) == true )
-    {
-        emit trackEndReached( m_trackId );
-        //We continue, as there can be ClipWorkflow that required to be stopped.
-    }
     {
         QMutexLocker    lock( m_forceRepositionningMutex );
         if ( m_forceRepositionning == true )
@@ -481,4 +468,19 @@ void    TrackWorkflow::clipWorkflowUnpaused()
         m_paused = false;
         emit trackUnpaused();
     }
+}
+
+void    TrackWorkflow::clipWorkflowEndReached( ClipWorkflow* cw )
+{
+    //If this clip is the last, we emit the trackEndReached signal, and stop the
+    //clip workflow.
+    cw->stop();
+
+    //this obviously couldn't happen, since we have a clipworkflow...
+    Q_ASSERT ( m_clips.size() != 0 );
+
+    QMap<qint64, ClipWorkflow*>::const_iterator   it = m_clips.end() - 1;
+    //If it ends before the current frame, we reached end.
+    if ( it.value() == cw )
+        emit trackEndReached( m_trackId );
 }

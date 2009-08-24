@@ -210,6 +210,7 @@ void    ClipWorkflow::startRender( bool startInPausedMode )
 void    ClipWorkflow::clipEndReached()
 {
     setState( EndReached );
+    emit endReached( this );
 }
 
 Clip*     ClipWorkflow::getClip()

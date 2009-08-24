@@ -74,7 +74,6 @@ class   TrackWorkflow : public QObject
                                                             qint64 start, bool needRepositioning );
         void                                    preloadClip( ClipWorkflow* cw );
         void                                    stopClipWorkflow( ClipWorkflow* cw );
-        bool                                    checkEnd( qint64 currentFrame ) const;
 
     private:
         unsigned int                            m_trackId;
@@ -107,6 +106,7 @@ class   TrackWorkflow : public QObject
         void                                    clipWorkflowPaused();
         void                                    clipWorkflowUnpaused();
         void                                    clipWorkflowRenderCompleted( ClipWorkflow* );
+        void                                    clipWorkflowEndReached( ClipWorkflow* );
 
     signals:
         void                                    trackEndReached( unsigned int );
