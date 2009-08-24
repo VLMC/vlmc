@@ -235,11 +235,10 @@ void                TrackWorkflow::stopClipWorkflow( CW& cw )
     }
     else
     {
-//        qDebug() << "Unexpected ClipWorkflow::State when stopping :" << cw->getState();
+        qDebug() << "Unexpected ClipWorkflow::State when stopping :" << cw->getState();
         cw->getStateLock()->unlock();
         return ;
     }
-    qDebug() << "Reactivating clip workflow";
     cw.activate();
 }
 
@@ -287,10 +286,7 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
         if ( start <= currentFrame && currentFrame <= start + cw->getClip()->getLength() )
         {
             if ( it.value().activated() == false )
-            {
-                qDebug() << "ClipWorkflow is deactivated. Ignoring it";
                 continue ;
-            }
             m_nbClipToRender.fetchAndAddAcquire( 1 );
             renderClip( cw, currentFrame, start, needRepositioning );
             lastFrame = currentFrame;
@@ -487,7 +483,6 @@ void    TrackWorkflow::clipWorkflowEndReached( ClipWorkflow* cw )
     }
     Q_ASSERT( it != end );
 
-    qDebug() << "Deactivated ClipWorkflow";
     it.value().deactivate();
     //If this clip is the last, we emit the trackEndReached signal, and stop the
     //clip workflow.
@@ -496,7 +491,11 @@ void    TrackWorkflow::clipWorkflowEndReached( ClipWorkflow* cw )
     Q_ASSERT( m_clips.size() != 0 );
 
     QMap<qint64, CW>::const_iterator   last = m_clips.end() - 1;
-    //If it ends before the current frame, we reached end.
+    //If this was the last clip, we reached end.
     if ( last.value() == cw )
         emit trackEndReached( m_trackId );
+    //Else: simulating that the clip render is complete, because the TrackWorkflow
+    //waits for this clip to render.
+    else
+        clipWorkflowRenderCompleted( cw );
 }

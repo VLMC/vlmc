@@ -212,18 +212,13 @@ qint64      MainWorkflow::getClipPosition( const QUuid& uuid, unsigned int track
 
 void        MainWorkflow::trackEndReached( unsigned int trackId )
 {
-    qDebug() << "End of track: deactivating";
     m_tracks[trackId].deactivate();
 
     for ( unsigned int i = 0; i < m_trackCount; ++i)
     {
         if ( m_tracks[i].activated() == true )
-        {
-            qDebug() << "Track" << i << "is still activated";
             return ;
-        }
     }
-    qDebug() << "End of main workflow";
     emit mainWorkflowEndReached();
     m_renderStarted = false;
     m_currentFrame = 0;
@@ -380,8 +375,5 @@ void        MainWorkflow::setCurrentFrame( qint64 currentFrame )
 void        MainWorkflow::activateTrack( unsigned int trackId )
 {
     if ( m_tracks[trackId]->getLength() > 0 )
-    {
-        qDebug()<< "Activating track" << trackId;
         m_tracks[trackId].activate();
-    }
 }
