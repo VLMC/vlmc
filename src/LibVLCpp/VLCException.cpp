@@ -48,7 +48,8 @@ void        Exception::setErrorCallback( Exception::errorCallback handler, void*
 
 const char* Exception::getErrorText() const
 {
-    return libvlc_errmsg();
+//    return libvlc_errmsg();
+    return libvlc_exception_get_message( m_internalPtr );
 }
 
 void        Exception::clear()

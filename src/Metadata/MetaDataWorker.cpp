@@ -29,7 +29,7 @@
 MetaDataWorker::MetaDataWorker( Media* media ) :
         m_currentMedia( media ),
         m_mediaIsPlaying( false),
-        m_lengthHasChanged( false )
+        m_lengthHasChanged( true )
 {
     m_mediaPlayer = new LibVLCpp::MediaPlayer();
 }
@@ -74,7 +74,7 @@ void    MetaDataWorker::computeImageMetaData()
 void    MetaDataWorker::getMetaData()
 {
     m_mediaIsPlaying = false;
-    m_lengthHasChanged = false;
+    m_lengthHasChanged = true;
 
     //In order to wait for the VOUT to be ready:
     while ( m_mediaPlayer->getWidth() == 0 )
