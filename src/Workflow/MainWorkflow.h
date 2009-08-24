@@ -104,7 +104,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
     private:
         void                    computeLength();
-        void                    activateTrack( unsigned int trackId );
 
     private:
         Toggleable<TrackWorkflow*>*     m_tracks;
