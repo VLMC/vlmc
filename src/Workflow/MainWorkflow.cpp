@@ -128,10 +128,7 @@ void                MainWorkflow::getOutput()
                 continue ;
 
             m_nbTracksToRender.fetchAndAddAcquire( 1 );
-            if ( m_tracks[i]->getOutput( m_currentFrame ) != false )
-            {
-                break ;
-            }
+            m_tracks[i]->getOutput( m_currentFrame );
         }
         if ( m_paused == false )
             nextFrame();
@@ -289,6 +286,7 @@ Clip*       MainWorkflow::removeClip( const QUuid& uuid, unsigned int trackId )
     Q_ASSERT( trackId < m_trackCount );
 
     Clip* clip = m_tracks[trackId]->removeClip( uuid );
+    activateTrack( trackId );
     emit clipRemoved( uuid, trackId );
     return clip;
 }
@@ -319,10 +317,12 @@ void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
 
     {
         QMutexLocker    lock( m_highestTrackNumberMutex );
-        if ( m_highestTrackNumber <= trackId )
+
+        unsigned char* buff = m_tracks[trackId]->getSynchroneOutput();
+        if ( m_highestTrackNumber <= trackId && buff != NULL )
         {
             m_highestTrackNumber = trackId;
-            m_synchroneRenderingBuffer = m_tracks[trackId]->getSynchroneOutput();
+            m_synchroneRenderingBuffer = buff;;
         }
     }
     //We check for minus or equal, since we can have 0 frame to compute,
@@ -376,4 +376,6 @@ void        MainWorkflow::activateTrack( unsigned int trackId )
 {
     if ( m_tracks[trackId]->getLength() > 0 )
         m_tracks[trackId].activate();
+    else
+        m_tracks[trackId].deactivate();
 }

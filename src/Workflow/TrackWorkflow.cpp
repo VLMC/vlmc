@@ -63,7 +63,7 @@ void    TrackWorkflow::addClip( ClipWorkflow* cw, qint64 start )
     connect( cw, SIGNAL( renderComplete( ClipWorkflow* ) ), this, SLOT( clipWorkflowRenderCompleted( ClipWorkflow* ) ), Qt::DirectConnection );
     connect( cw, SIGNAL( paused() ), this, SLOT( clipWorkflowPaused() ) );
     connect( cw, SIGNAL( unpaused() ), this, SLOT( clipWorkflowUnpaused() ) );
-    connect( cw, SIGNAL( endReached( ClipWorkflow* ) ), this, SLOT( clipWorkflowEndReached( ClipWorkflow* ) ) );
+    connect( cw, SIGNAL( endReached( ClipWorkflow* ) ), this, SLOT( clipWorkflowEndReached( ClipWorkflow* ) ), Qt::QueuedConnection );
     m_clips.insert( start, cw );
     computeLength();
 }
@@ -283,6 +283,11 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
         qint64          start = it.key();
         ClipWorkflow*   cw = it.value();
         //Is the clip supposed to render now ?
+        if ( needRepositioning == true && it.value().activated() == false )
+        {
+            qDebug() << "Reactivating clipworkflow";
+            it.value().activate();
+        }
         if ( start <= currentFrame && currentFrame <= start + cw->getClip()->getLength() )
         {
             if ( it.value().activated() == false )
@@ -484,10 +489,13 @@ void    TrackWorkflow::clipWorkflowEndReached( ClipWorkflow* cw )
     }
     Q_ASSERT( it != end );
 
+    qDebug() << "Deactivating clip";
+    clipWorkflowRenderCompleted( cw );
+
+    stopClipWorkflow( it.value() );
+    qDebug() << "Stopped clip workflow";
     it.value().deactivate();
-    //If this clip is the last, we emit the trackEndReached signal, and stop the
-    //clip workflow.
-    cw->stop();
+
     //this obviously couldn't happen, since we have a clipworkflow...
     Q_ASSERT( m_clips.size() != 0 );
 
@@ -496,7 +504,5 @@ void    TrackWorkflow::clipWorkflowEndReached( ClipWorkflow* cw )
     if ( last.value() == cw )
         emit trackEndReached( m_trackId );
     //Else: simulating that the clip render is complete, because the TrackWorkflow
-    //waits for this clip to render.
-    else
-        clipWorkflowRenderCompleted( cw );
+    //waits for this clip to render.       
 }

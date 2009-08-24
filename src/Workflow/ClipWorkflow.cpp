@@ -209,6 +209,7 @@ void    ClipWorkflow::startRender( bool startInPausedMode )
 
 void    ClipWorkflow::clipEndReached()
 {
+    qDebug() << "Clip workflow end reached";
     setState( EndReached );
     emit endReached( this );
 }
