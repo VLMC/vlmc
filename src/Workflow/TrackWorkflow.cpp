@@ -485,7 +485,6 @@ void    TrackWorkflow::clipWorkflowEndReached( ClipWorkflow* cw )
     {
         if ( it.value() == cw )
             break ;
-        ++it;
     }
     Q_ASSERT( it != end );
 
