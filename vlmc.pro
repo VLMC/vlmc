@@ -30,7 +30,7 @@ SOURCES += src/main.cpp \
     src/GUI/About.cpp \
     src/GUI/Transcode.cpp \
     src/GUI/Slider.cpp \
-    src/Metadata/MetadataWorker.cpp \
+    src/Metadata/MetaDataWorker.cpp \
     src/Library/Library.cpp \
     src/GUI/GraphicsMovieItem.cpp \
     src/GUI/AbstractGraphicsMediaItem.cpp \
@@ -47,7 +47,7 @@ SOURCES += src/main.cpp \
     src/API/ModuleManager.cpp \
     src/Renderer/WorkflowFileRenderer.cpp \
     src/GUI/UndoStack.cpp \
-    src/Metadata/MetadataManager.cpp \
+    src/Metadata/MetaDataManager.cpp \
     src/GUI/ClipProperty.cpp \
     src/GUI/WorkflowFileRendererDialog.cpp
 HEADERS += src/GUI/MainWindow.h \
@@ -70,7 +70,7 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/About.h \
     src/GUI/Transcode.h \
     src/GUI/Slider.h \
-    src/Metadata/MetadataWorker.h \
+    src/Metadata/MetaDataWorker.h \
     src/Tools/Singleton.hpp \
     src/Library/Library.h \
     src/GUI/AbstractGraphicsMediaItem.h \
@@ -94,7 +94,7 @@ HEADERS += src/GUI/MainWindow.h \
     src/Tools/Pool.hpp \
     src/GUI/UndoStack.h \
     src/Tools/WaitCondition.hpp \
-    src/Metadata/MetadataManager.h \
+    src/Metadata/MetaDataManager.h \
     src/Commands/Commands.hpp \
     src/Tools/QSingleton.hpp \
     src/GUI/ClipProperty.h \
