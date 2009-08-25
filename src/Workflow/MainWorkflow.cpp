@@ -78,7 +78,7 @@ void    MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
 
     //if the track is deactivated, we need to reactivate it :
     if ( m_tracks[trackId].deactivated() == true )
-        m_tracks[trackId].activate();
+        activateTrack( trackId );
     m_tracks[trackId]->addClip( clip, start );
     if ( m_tracks[trackId]->getLength() > m_length )
         m_length = m_tracks[trackId]->getLength();
@@ -103,7 +103,7 @@ void    MainWorkflow::startRender()
     m_currentFrame = 0;
     emit frameChanged( 0 );
     for ( unsigned int i = 0; i < m_trackCount; ++i )
-        m_tracks[i].activate();
+        activateTrack( i );
     computeLength();
 }
 
@@ -184,7 +184,7 @@ void        MainWorkflow::setPosition( float pos )
     //Since any track can be reactivated, we reactivate all of them, and let them
     //unable themself if required.
     for ( unsigned int i = 0; i < m_trackCount; ++i)
-        m_tracks[i].activate();
+        activateTrack( i );
 
     qint64  frame = static_cast<qint64>( (float)m_length * pos );
     m_currentFrame = frame;
@@ -263,14 +263,14 @@ void           MainWorkflow::moveClip( const QUuid& clipUuid, unsigned int oldTr
     {
         //And now, just move the clip.
         m_tracks[newTrack]->moveClip( clipUuid, startingFrame );
-        m_tracks[newTrack].activate();
+        activateTrack( newTrack );
     }
     else
     {
         Clip* clip = m_tracks[oldTrack]->removeClip( clipUuid );
         m_tracks[newTrack]->addClip( clip, startingFrame );
-        m_tracks[oldTrack].activate();
-        m_tracks[newTrack].activate();
+        activateTrack( oldTrack );
+        activateTrack( newTrack );
     }
     computeLength();
     if ( undoRedoCommand == true )
