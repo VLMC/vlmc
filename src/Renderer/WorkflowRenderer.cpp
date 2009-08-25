@@ -131,8 +131,6 @@ void        WorkflowRenderer::stopPreview()
 
 void        WorkflowRenderer::startPreview()
 {
-    char        buff[128];
-
     m_mediaPlayer->setMedia( m_media );
 
     //Workflow part
@@ -151,8 +149,6 @@ void        WorkflowRenderer::startPreview()
     connect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
 
     m_mainWorkflow->startRender();
-    sprintf( buff, ":fake-duration=%lli", m_mainWorkflow->getLength() / FPS * 1000 );
-    m_media->addOption( buff );
     m_mediaPlayer->play();
     m_isRendering = true;
     m_paused = false;

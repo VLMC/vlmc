@@ -61,6 +61,8 @@ unsigned char*    ClipWorkflow::getOutput()
 {
     QMutexLocker    lock( m_renderLock );
 
+    if ( isEndReached() == true )
+        return NULL;
     return m_buffer;
 }
 
@@ -97,11 +99,10 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
         cw->m_renderWaitCond->wake();
         cw->emit renderComplete( cw );
 
-//        qDebug() << ">>>Entering condwait";
         cw->m_waitCond->wait( cw->m_condMutex );
-//        qDebug() << "<<<Leaving condwait";
         cw->m_stateLock->lockForWrite();
-        cw->m_state = Rendering;
+        if ( cw->m_state == Sleeping )
+            cw->m_state = Rendering;
         cw->m_stateLock->unlock();
     }
     else
@@ -270,7 +271,6 @@ void            ClipWorkflow::setState( State state )
 {
     {
         QWriteLocker    lock( m_stateLock );
-//        qDebug() << "Changing from state" << m_state << "to state" << state;
         m_state = state;
     }
     checkSynchronisation( state );
@@ -278,7 +278,6 @@ void            ClipWorkflow::setState( State state )
 
 void            ClipWorkflow::queryStateChange( State newState )
 {
-//    qDebug() << "Querying state change to" << newState;
     QMutexLocker    lock( m_requiredStateLock );
     m_requiredState = newState;
 }
