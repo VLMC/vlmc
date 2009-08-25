@@ -19,9 +19,8 @@ void        WorkflowFileRenderer::run()
     //Media as already been created an mainly initialized by the WorkflowRenderer
     m_media->addOption( ":no-audio" );
     m_media->addOption( ":fake" );
-    sprintf(buffer, ":fake-duration=%lli", m_mainWorkflow->getLength() );
-//    m_media->addOption( buffer );
-
+    sprintf(buffer, ":fake-fps=%i", FPS );
+    m_media->addOption( buffer );
     QString     transcodeStr = "sout=#transcode{vcodec=mp4v,vb=800,acodec=mpga,ab=128" +
                            QString::number( FPS ) + "}"
                                ":standard{access=file,mux=ps,dst=\""
