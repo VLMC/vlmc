@@ -30,11 +30,13 @@ void        WorkflowFileRenderer::run()
 
     m_mediaPlayer->setMedia( m_media );
 
-    connect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SLOT( stop() ) );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( stop() ) );
     connect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( positionChanged( float ) ) );
 
     m_dialog->show();
+
+    m_isRendering = true;
+    m_stopping = false;
 
     m_mainWorkflow->startRender();
     m_mediaPlayer->play();
@@ -42,7 +44,6 @@ void        WorkflowFileRenderer::run()
 
 void    WorkflowFileRenderer::stop()
 {
-    qDebug() << "Stopping file renderer";
     WorkflowRenderer::stop();
     m_dialog->done( 0 );
 }

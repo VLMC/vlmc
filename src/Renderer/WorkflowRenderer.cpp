@@ -29,9 +29,9 @@
 
 WorkflowRenderer::WorkflowRenderer() :
             m_mainWorkflow( MainWorkflow::getInstance() ),
+            m_stopping( false ),
             m_pauseAsked( false ),
-            m_unpauseAsked( false ),
-            m_stopping( false )
+            m_unpauseAsked( false )
 {
     char        buffer[64];
 

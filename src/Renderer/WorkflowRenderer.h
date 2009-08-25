@@ -72,6 +72,8 @@ class   WorkflowRenderer : public GenericRenderer
     protected:
         MainWorkflow*       m_mainWorkflow;
         LibVLCpp::Media*    m_media;
+        bool                m_stopping;
+
     private:
         unsigned char*      m_lastFrame;
         QStack<Actions>     m_actions;
@@ -80,7 +82,6 @@ class   WorkflowRenderer : public GenericRenderer
         bool                m_unpauseAsked;
         QMutex*             m_condMutex;
         QWaitCondition*     m_waitCond;
-        bool                m_stopping;
 
     public slots:
         void                setClip( Clip* ){}
