@@ -33,6 +33,8 @@ namespace LibVLCpp
     class   Exception : public Internal< libvlc_exception_t >
     {
     public:
+        typedef void            (*errorCallback)( const char* msg, void* data );
+
         Exception();
         ~Exception();
 
@@ -44,10 +46,10 @@ namespace LibVLCpp
         static const int        Raised = 1;
         static const int        NotRaised = 0;
 
-        //error handling part :
-        //TODO: have a private error handling in which we could fall back for some specific cases
-        typedef void            (*errorCallback)( const char* msg, void* data );
-        static  void            setErrorCallback( errorCallback, void* data );
+        static void             silentExceptionHandler( const char*, void* )
+        {
+        }
+        static  void            setErrorCallback( errorCallback, void* data = NULL );
 
     private:
         static  errorCallback   m_errorCallback;

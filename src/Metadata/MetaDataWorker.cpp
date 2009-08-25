@@ -77,9 +77,15 @@ void    MetaDataWorker::getMetaData()
     m_lengthHasChanged = true;
 
     //In order to wait for the VOUT to be ready:
+    //Until we have a way of knowing when it is, both getWidth and getHeight method
+    //will trigger exception... so we shut it up.
+    LibVLCpp::Exception::setErrorCallback( LibVLCpp::Exception::silentExceptionHandler );
     while ( m_mediaPlayer->getWidth() == 0 )
         SleepMS( 1 ); //Ugly isn't it :)
+    LibVLCpp::Exception::setErrorCallback( NULL );
+
     m_currentMedia->setLength( m_mediaPlayer->getLength() );
+
     m_currentMedia->setWidth( m_mediaPlayer->getWidth() );
     m_currentMedia->setHeight( m_mediaPlayer->getHeight() );
     m_currentMedia->setFps( static_cast<unsigned int>( m_mediaPlayer->getFps() ) );

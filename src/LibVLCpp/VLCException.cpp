@@ -40,7 +40,7 @@ Exception::~Exception()
     delete m_internalPtr;
 }
 
-void        Exception::setErrorCallback( Exception::errorCallback handler, void* datas )
+void        Exception::setErrorCallback( Exception::errorCallback handler, void* datas /*= NULL*/ )
 {
     Exception::m_datas = datas;
     Exception::m_errorCallback = handler;
