@@ -27,8 +27,6 @@ void        WorkflowFileRenderer::run()
                                ":standard{access=file,mux=ps,dst=\""
                           + m_outputFileName + "\"}";
     m_media->addOption( transcodeStr.toStdString().c_str() );
-    sprintf( buffer, ":fake-duration=%lli", m_mainWorkflow->getLength() / FPS * 1000 );
-    m_media->addOption( buffer );
 
     m_mediaPlayer->setMedia( m_media );
 
