@@ -3,14 +3,11 @@
 
 #include <QtGlobal>
 #include <iostream>
-#include "CopyOnWrite.hpp"
-#include "VideoFrame.h"
+#include "LightVideoFrame.h"
+#include "LightParameter.h"
 #include "InSlot.hpp"
 #include "OutSlot.hpp"
 
-
-typedef	CopyOnWrite<VideoFrame>	LightVideoFrame;
-typedef CopyOnWrite<qreal>	LightParameter;
 
 class	EffectsEngine
 {
