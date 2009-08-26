@@ -40,6 +40,7 @@ Clip::Clip( Clip* creator, float begin, float end ) : m_parent( creator->getPare
 
 Clip::Clip( Media* parent, float begin, float end ) : m_parent( parent ), m_begin( begin ), m_end( end )
 {
+    Q_ASSERT( parent->getInputType() == Media::File || ( begin == .0f && end == .0f ) );
     init();
 }
 
@@ -81,12 +82,20 @@ qint64      Clip::getLengthSecond() const
 
 void        Clip::computeLength()
 {
-    unsigned int   fps = m_parent->getFps();
-    if ( fps < 0.1f )
-        fps = FPS;
-    qint64 nbMs = (qint64)( ( m_end - m_begin ) * (float)m_parent->getLength() );
-    m_lengthSeconds = nbMs / 1000;
-    m_length = (nbMs / 1000) * fps;
+    if ( m_parent->getInputType() == Media::File )
+    {
+        unsigned int   fps = m_parent->getFps();
+        if ( fps < 0.1f )
+            fps = FPS;
+        qint64 nbMs = (qint64)( ( m_end - m_begin ) * (float)m_parent->getLength() );
+        m_lengthSeconds = nbMs / 1000;
+        m_length = (nbMs / 1000) * fps;
+    }
+    else
+    {
+        m_length = 0;
+        m_lengthSeconds = 0;
+    }
 }
 
 const QUuid&    Clip::getUuid() const

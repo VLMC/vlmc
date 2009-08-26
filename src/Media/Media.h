@@ -63,16 +63,20 @@ public:
      *  \enum fType
      *  \brief enum to determine file type
      */
-    enum FileType
+    enum    FileType
     {
         Audio,
         Video,
         Image
     };
+    enum    InputType
+    {
+        File,
+        Stream
+    };
     Media( const QString& filePath );
     virtual ~Media();
 
-    void                        loadMedia( const QString& mrl );
     /**
      *  \brief  This method adds a parameter that will stay constant though the whole life of this media (unless it is explicitely overided), even if it is cloned.
      */
@@ -117,6 +121,8 @@ public:
     static const QString        VideoExtensions;
     static const QString        AudioExtensions;
     static const QString        ImageExtensions;
+    InputType                   getInputType() const;
+    static const QString        streamPrefix;
 
     void                        initAudioData( void* datas, unsigned int* freq, unsigned int* nbChannels, unsigned int* fourCCFormat, unsigned int* frameSize );
     void                        addAudioFrame( void* datas, unsigned char* buffer, size_t buffSize, unsigned int nbSample );
@@ -146,6 +152,7 @@ protected:
     int*                        m_audioSpectrum;
     audioData                   m_audioData;
     FileType                    m_fileType;
+    InputType                   m_inputType;
 
 signals:
     void                        metaDataComputed();

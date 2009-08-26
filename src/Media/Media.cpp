@@ -33,18 +33,33 @@ QPixmap*        Media::defaultSnapshot = NULL;
 const QString   Media::VideoExtensions = "*.mov *.avi *.mkv *.mpg *.mpeg *.wmv *.mp4";
 const QString   Media::ImageExtensions = "*.gif *.png *.jpg";
 const QString   Media::AudioExtensions = "*.mp3 *.oga *.flac *.aac *.wav";
+const QString   Media::streamPrefix = "stream://";
 
 Media::Media( const QString& filePath )
-    : m_vlcMedia( NULL ), m_snapshot( NULL ), m_length( 0 ),
-    m_width( 0 ), m_height( 0 )
+    : m_vlcMedia( NULL ),
+    m_snapshot( NULL ),
+    m_fileInfo( NULL ),
+    m_length( 0 ),
+    m_width( 0 ),
+    m_height( 0 )
 {
     m_uuid = QUuid::createUuid();
-    m_fileInfo = new QFileInfo( filePath );
-    setFileType();
-    if ( m_fileType == Media::Video || m_fileType == Media::Audio )
-        m_mrl = "file:///" + m_fileInfo->absoluteFilePath();
+
+    if ( filePath.startsWith( Media::streamPrefix ) == false )
+    {
+        m_inputType = Media::File;
+        m_fileInfo = new QFileInfo( filePath );
+        setFileType();
+        if ( m_fileType == Media::Video || m_fileType == Media::Audio )
+            m_mrl = "file:///" + m_fileInfo->absoluteFilePath();
+        else
+            m_mrl = "fake:///" + m_fileInfo->absoluteFilePath();
+    }
     else
-        m_mrl = "fake:///" + m_fileInfo->absoluteFilePath();
+    {
+        m_inputType = Media::Stream;
+        m_mrl = filePath.right( filePath.length() - streamPrefix.length() );
+    }
     m_vlcMedia = new LibVLCpp::Media( m_mrl );
 }
 
@@ -54,7 +69,8 @@ Media::~Media()
         delete m_vlcMedia;
     if ( m_snapshot )
         delete m_snapshot;
-    delete m_fileInfo;
+    if ( m_fileInfo )
+        delete m_fileInfo;
 }
 
 void        Media::setFileType()
@@ -68,15 +84,6 @@ void        Media::setFileType()
         m_fileType = Media::Image;
     else
         qDebug() << "What the hell is this extension ? And how did you loaded it ?!";
-}
-
-void        Media::loadMedia( const QString& mrl )
-{
-    if ( m_vlcMedia )
-        delete m_vlcMedia;
-    m_mrl = mrl;
-
-    m_vlcMedia = new LibVLCpp::Media( mrl );
 }
 
 void        Media::flushVolatileParameters()
@@ -206,4 +213,9 @@ void            Media::emitMetaDataComputed()
 {
     emit metaDataComputed();
     emit metaDataComputed( this );
+}
+
+Media::InputType    Media::getInputType() const
+{
+    return m_inputType;
 }
