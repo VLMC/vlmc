@@ -1,7 +1,9 @@
 #ifndef GENERICEFFECT_H_
 #define GENERICEFFECT_H_
 
+#include <QtGlobal>
 #include <QString>
+#include <QHash>
 
 #include "InSlot.hpp"
 #include "OutSlot.hpp"
@@ -13,9 +15,9 @@ class	GenericEffect
  
  // CTOR & DTOR
 
-  Virtual ~GenericEffect();
-  GenericEffect( char const * videoinputs[], quint const nbvideoinputs,
-		 char const * videooutputs[], quint const nbvideooutputs);
+  virtual ~GenericEffect();
+  GenericEffect( char const * videoinputs[], quint32 const nbvideoinputs,
+		 char const * videooutputs[], quint32 const nbvideooutputs);
 
   // RENDER METHOD
 

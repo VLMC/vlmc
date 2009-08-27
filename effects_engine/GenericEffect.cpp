@@ -1,9 +1,9 @@
 #include "GenericEffect.h"
 
-GenericEffect::GenericEffect( char const * videoinputs[], quint const nbvideoinputs,
-			      char const * videooutputs[], quint const nbvideooutputs)
+GenericEffect::GenericEffect( char const * videoinputs[], quint32 const nbvideoinputs,
+			      char const * videooutputs[], quint32 const nbvideooutputs)
 {
-  quint	i;
+  quint32	i;
 
   for (i = 0; i < nbvideoinputs; ++i)
     m_videoInputs[videoinputs[i]];
