@@ -1,6 +1,8 @@
 #ifndef POUETEFFECT_H_
 #define POUETEFFECT_H_
 
+#include "GenericEffect.h"
+
 class	PouetEffect : public GenericEffect
 {
  public:
@@ -15,10 +17,10 @@ class	PouetEffect : public GenericEffect
   void	render(void);
 
  private:
-  static	quint const		m_nbVideoInputs = 42;
-  static	quint const		m_nbVideoOutputs = 42;
-  static	char const *	m_videoInputs[m_nbVideoInputs];
-  static	char const *	m_videoOutputs[m_nbVIdeoOutputs];
+  static	quint32 const		m_nbVideoInputs = 3;
+  static	quint32 const		m_nbVideoOutputs = 3;
+  static	char const * 	m_videoInputsNames[m_nbVideoInputs];//  = {"vin1", "vin2", "vin3"};
+  static	char const *	m_videoOutputsNames[m_nbVideoOutputs];//  = {"vout1", "vout2", "vout3"};
 };
 
 #endif // POUETEFFECT_H_

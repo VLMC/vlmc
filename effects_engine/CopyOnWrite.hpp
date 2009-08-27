@@ -1,4 +1,6 @@
-#include <iostream>
+#ifndef COPYONWRITE_HPP_
+#define COPYONWRITE_HPP_
+
 #include <QtGlobal>
 
 template<typename T>
@@ -104,13 +106,6 @@ CopyOnWrite<T>::operator T const & (void) const
   return ( (m_current->data) );
 };
 
-template<typename T>
-void	CopyOnWrite<T>::dumpInternalPtr(void)
-{
-  std::cout << (void*)m_current << std::endl;
-  return ;
-}
-
 //
 // PRIVATE METHODS
 //
@@ -162,3 +157,5 @@ void		CopyOnWrite<T>::tryDeleteCurrentInstance()
     --(m_current->nbref);
   return ;
 }
+
+#endif // COPYONWRITE_HPP_
