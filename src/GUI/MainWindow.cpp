@@ -36,10 +36,16 @@
 #include "About.h"
 #include "Transcode.h"
 #include "FileBrowser.h"
+<<<<<<< HEAD:src/GUI/MainWindow.cpp
 #include "WorkflowRenderer.h"
 #include "ClipRenderer.h"
 #include "UndoStack.h"
 #include "ClipProperty.h"
+=======
+#include "PreviewWidget.h"
+#include "PreferenceWidget.h"
+#include "ProjectPreferences.h"
+>>>>>>> kinder_preferences:src/gui/MainWindow.cpp
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
@@ -48,6 +54,7 @@ MainWindow::MainWindow( QWidget *parent ) :
     DockWidgetManager::instance( this )->setMainWindow( this );
     initializeDockWidgets();
     createStatusBar();
+    createGlobalPreferences();
 
     // Translation
     connect( this, SIGNAL( translateDockWidgetTitle() ),
@@ -60,6 +67,12 @@ MainWindow::MainWindow( QWidget *parent ) :
              this, SLOT( zoomIn() ) );
     connect( m_timeline->tracksView(), SIGNAL( zoomOut() ),
              this, SLOT( zoomOut() ) );
+
+    //Global Preferences
+    QObject::connect( qApp,
+                      SIGNAL( aboutToQuit() ),
+                      m_globalPreferences,
+                      SLOT( deleteLater() ) );
 }
 
 MainWindow::~MainWindow()
@@ -177,6 +190,25 @@ void MainWindow::initializeDockWidgets( void )
     m_metaDataManager = MetaDataManager::getInstance();
 }
 
+void        MainWindow::createGlobalPreferences()
+{
+    m_globalPreferences = new Settings(  );
+    m_globalPreferences->addWidget("Project",
+                                   new ProjectPreferences,
+                                   "images/vlmc.png",
+                                   "Project");
+    m_globalPreferences->addWidget("test",
+                                   new ProjectPreferences,
+                                   "images/vlmc.png",
+                                   "Truc");
+    ////For debugging purpose
+    //m_globalPreferences->addWidget("Test",
+    //                               new QLabel("This is a test"),
+    //                               "images/vlmc.png",
+    //                               "Test");
+    m_globalPreferences->build();
+}
+
 //Private slots definition
 
 void MainWindow::on_actionQuit_triggered()
@@ -186,7 +218,7 @@ void MainWindow::on_actionQuit_triggered()
 
 void MainWindow::on_actionPreferences_triggered()
 {
-    Preferences::instance()->exec();
+   m_globalPreferences->show();
 }
 
 void MainWindow::on_actionAbout_triggered()

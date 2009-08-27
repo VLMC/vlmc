@@ -28,7 +28,7 @@
 #include <QApplication>
 #include <QSettings>
 #include <QtDebug>
-#include "ui_Preferences.h"
+#include "ui_LanguagePreferences.h"
 
 class Preferences : public QDialog
 {
@@ -43,7 +43,7 @@ protected:
 
 private:
     explicit Preferences( QWidget *parent = 0 );
-    Ui::Preferences m_ui;
+    Ui::LanguagePreferences m_ui;
     static QTranslator* m_currentLang;
     static Preferences* m_instance;
 
