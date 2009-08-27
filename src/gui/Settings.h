@@ -1,5 +1,5 @@
 /*****************************************************************************
- * SimplePreferences.h: generic preferences interface
+ * Settings.h: generic preferences interface
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -35,14 +35,14 @@
 #include "Panel.h"
 #include "PreferenceWidget.h"
 
-class   SimplePreferences : public QWidget
+class   Settings : public QWidget
 {
     Q_OBJECT
-    Q_DISABLE_COPY( SimplePreferences )
+    Q_DISABLE_COPY( Settings )
 
     public:
-        SimplePreferences( QWidget* parent = 0 );
-        ~SimplePreferences();
+        Settings( QWidget* parent = 0 );
+        ~Settings();
         void                addWidget( const QString& name,
                                        PreferenceWidget* pWidget,
                                        const QString& icon,

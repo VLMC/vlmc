@@ -164,7 +164,7 @@ void MainWindow::m_initializeDockWidgets( void )
 
 void        MainWindow::createGlobalPreferences()
 {
-    m_globalPreferences = new SimplePreferences(  );
+    m_globalPreferences = new Settings(  );
     m_globalPreferences->addWidget("Project",
                                    new ProjectPreferences,
                                    "images/vlmc.png",

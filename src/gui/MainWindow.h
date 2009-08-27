@@ -33,7 +33,7 @@
 #include "MetaDataManager.h"
 #include "Timeline.h"
 #include "WorkflowFileRenderer.h"
-#include "SimplePreferences.h"
+#include "Settings.h"
 
 
 class MainWindow : public QMainWindow
@@ -64,7 +64,7 @@ private:
     QSlider*                m_zoomSlider;
     Timeline*               m_timeline;
     WorkflowFileRenderer*   m_renderer;
-    SimplePreferences*      m_globalPreferences;
+    Settings*      m_globalPreferences;
 
 private slots:
     void on_actionFullscreen_triggered( bool checked );

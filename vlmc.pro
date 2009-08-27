@@ -46,7 +46,7 @@ SOURCES += src/main.cpp \
     src/API/Module.cpp \
     src/API/ModuleManager.cpp \
     src/WorkflowFileRenderer.cpp \
-    src/gui/SimplePreferences.cpp \
+    src/gui/Settings.cpp \
     src/gui/Panel.cpp \
     src/gui/PreferenceWidget.cpp \
     src/gui/ProjectPreferences.cpp
@@ -94,7 +94,7 @@ HEADERS += src/gui/MainWindow.h \
     src/WorkflowFileRenderer.h \
     src/vlmc.h \
     src/tools/Pool.hpp \
-    src/gui/SimplePreferences.h \
+    src/gui/Settings.h \
     src/gui/Panel.h \
     src/gui/PreferenceWidget.h \
     src/gui/ProjectPreferences.h

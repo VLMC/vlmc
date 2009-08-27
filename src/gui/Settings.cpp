@@ -1,5 +1,5 @@
 /*****************************************************************************
- * SimplePreferences.cpp: generic preferences interface
+ * Settings.cpp: generic preferences interface
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -30,11 +30,11 @@
 
 
 #include "PreferenceWidget.h"
-#include "SimplePreferences.h"
+#include "Settings.h"
 #include "Panel.h"
 
 
-SimplePreferences::SimplePreferences( QWidget* parent)
+Settings::Settings( QWidget* parent)
     : QWidget(parent),
     m_currentWidget( NULL ),
     m_panel( NULL ),
@@ -49,7 +49,7 @@ SimplePreferences::SimplePreferences( QWidget* parent)
                       m_stackedWidgets, SLOT( setCurrentIndex( int ) ));
 }
 
-SimplePreferences::~SimplePreferences()
+Settings::~Settings()
 {
     delete m_panel;
     delete m_title;
@@ -59,7 +59,7 @@ SimplePreferences::~SimplePreferences()
 
 //TODO : see if the widget MUST have a fixed size, or if the window can dynamicaly
 //adjust to the size of the biggest Widget.
-void        SimplePreferences::addWidget( const QString& name,
+void        Settings::addWidget( const QString& name,
                                           PreferenceWidget* pWidget,
                                           const QString& icon,
                                           const QString& label)
@@ -75,7 +75,7 @@ void        SimplePreferences::addWidget( const QString& name,
     }
 }
 
-void        SimplePreferences::build()
+void        Settings::build()
 {
     if (m_currentWidget == 0)
         qFatal(  "Can't build the preference panel without an added widget"  );
@@ -87,7 +87,7 @@ void        SimplePreferences::build()
 }
 
 
-QVBoxLayout*    SimplePreferences::buildRightHLayout()
+QVBoxLayout*    Settings::buildRightHLayout()
 {
     QVBoxLayout*    layout = new QVBoxLayout;
     QFrame*         titleLine = new QFrame;
@@ -116,12 +116,12 @@ QVBoxLayout*    SimplePreferences::buildRightHLayout()
     return ( layout );
 } 
 
-void    SimplePreferences::save( void )
+void    Settings::save( void )
 {
 }
 
 
-void    SimplePreferences::switchWidget( int widget )
+void    Settings::switchWidget( int widget )
 {
     //TODO : Change the title of the preferences shown
     //Hide the current widget and show the new one.
