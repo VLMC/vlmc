@@ -23,7 +23,7 @@ SOURCES += src/main.cpp \
     src/GUI/TracksScene.cpp \
     src/Renderer/ClipRenderer.cpp \
     src/GUI/TracksRuler.cpp \
-    src/GUI/Preferences.cpp \
+    src/GUI/LanguagePreferences.cpp \
     src/GUI/ListViewMediaItem.cpp \
     src/GUI/MediaListWidget.cpp \
     src/Media/Clip.cpp \
@@ -49,7 +49,11 @@ SOURCES += src/main.cpp \
     src/GUI/UndoStack.cpp \
     src/Metadata/MetaDataManager.cpp \
     src/GUI/ClipProperty.cpp \
-    src/GUI/WorkflowFileRendererDialog.cpp
+    src/GUI/WorkflowFileRendererDialog.cpp \
+    src/GUI/Settings.cpp \
+    src/GUI/Panel.cpp \
+    src/GUI/PreferenceWidget.cpp \
+    src/GUI/ProjectPreferences.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -63,7 +67,7 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/TracksScene.h \
     src/Renderer/ClipRenderer.h \
     src/GUI/TracksRuler.h \
-    src/GUI/Preferences.h \
+    src/GUI/LanguagePreferences.h \
     src/GUI/ListViewMediaItem.h \
     src/Media/Clip.h \
     src/GUI/MediaListWidget.h \
@@ -98,17 +102,20 @@ HEADERS += src/GUI/MainWindow.h \
     src/Commands/Commands.hpp \
     src/Tools/QSingleton.hpp \
     src/GUI/ClipProperty.h \
-    src/GUI/WorkflowFileRendererDialog.h
+    src/GUI/WorkflowFileRendererDialog.h \
+    src/GUI/Settings.h \
+    src/GUI/Panel.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
-    src/GUI/ui/Preferences.ui \
+    src/GUI/ui/LanguagePreferences.ui \
     src/GUI/ui/Timeline.ui \
     src/GUI/ui/LibraryWidget.ui \
     src/GUI/ui/About.ui \
     src/GUI/ui/Transcode.ui \
     src/GUI/ui/FileBrowser.ui \
     src/GUI/ui/WorkflowFileRendererDialog.ui \
-    src/GUI/ui/ClipProperty.ui
+    src/GUI/ui/ClipProperty.ui \
+    src/GUI/ui/ProjectPreferences.ui
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts

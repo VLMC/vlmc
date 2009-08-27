@@ -20,8 +20,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "Preferences.h"
-#include "ui_Preferences.h"
+#include "LanguagePreferences.h"
+#include "ui_LanguagePreferences.h"
 
 QTranslator* Preferences::m_currentLang = NULL;
 Preferences* Preferences::m_instance = NULL;
