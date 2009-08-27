@@ -33,7 +33,7 @@ static bool catchVLCException( libvlc_exception_t *ex )
 {
     if ( libvlc_exception_raised( ex ) )
     {
-        qDebug() << libvlc_errmsg();
+        qDebug() << libvlc_exception_get_message( ex );
         libvlc_exception_clear( ex );
         return (true);
     }

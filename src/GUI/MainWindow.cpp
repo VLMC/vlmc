@@ -36,16 +36,13 @@
 #include "About.h"
 #include "Transcode.h"
 #include "FileBrowser.h"
-<<<<<<< HEAD:src/GUI/MainWindow.cpp
 #include "WorkflowRenderer.h"
 #include "ClipRenderer.h"
 #include "UndoStack.h"
 #include "ClipProperty.h"
-=======
 #include "PreviewWidget.h"
 #include "PreferenceWidget.h"
 #include "ProjectPreferences.h"
->>>>>>> kinder_preferences:src/gui/MainWindow.cpp
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
