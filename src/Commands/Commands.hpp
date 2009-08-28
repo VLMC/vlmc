@@ -56,7 +56,7 @@ namespace Commands
                     m_workflow->removeClip( m_clip->getUuid(), m_trackNumber );
                 }
             private:
-                ::MainWorkflow*   m_workflow;
+                ::MainWorkflow* m_workflow;
                 Clip*           m_clip;
                 unsigned int    m_trackNumber;
                 qint64          m_pos;
@@ -94,6 +94,30 @@ namespace Commands
                 qint64              m_pos;
                 qint64              m_oldPos;
                 bool                m_undoRedoAction;
+        };
+
+        NEW_COMMAND( RemoveClip )
+        {
+            public:
+                RemoveClip( ::MainWorkflow* workflow, Clip* clip, unsigned int trackNumber, qint64 pos ) :
+                        m_workflow( workflow ), m_clip( clip ), m_trackNumber( trackNumber ), m_pos( pos )
+                {
+                    setText( "Remove clip from track" + QString::number( trackNumber ) );
+                }
+                virtual void redo()
+                {
+                    m_workflow->removeClip( m_clip->getUuid(), m_trackNumber );
+                }
+                virtual void undo()
+                {
+                    m_workflow->addClip( m_clip, m_trackNumber, m_pos );
+                }
+
+            private:
+                ::MainWorkflow* m_workflow;
+                Clip*           m_clip;
+                unsigned int    m_trackNumber;
+                qint64          m_pos;
         };
     }
 }

@@ -53,7 +53,13 @@ void TracksScene::keyPressEvent( QKeyEvent* keyEvent )
         // Skip the deletion process
         if ( b == QMessageBox::No ) return;
 
-        //TODO delete the item(s)
+        QList<QGraphicsItem*> items = selectedItems();
+        for (int i = 0; i < items.size(); ++i )
+        {
+            AbstractGraphicsMediaItem* item = qgraphicsitem_cast<AbstractGraphicsMediaItem*>( items.at(i) );
+            if ( !item ) return;
+            tv->removeMediaItem( item );
+        }
     }
 
     QGraphicsScene::keyPressEvent( keyEvent );

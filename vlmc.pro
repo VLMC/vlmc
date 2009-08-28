@@ -104,7 +104,8 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/ClipProperty.h \
     src/GUI/WorkflowFileRendererDialog.h \
     src/GUI/Settings.h \
-    src/GUI/Panel.h
+    src/GUI/Panel.h \
+    src/GUI/GraphicsTrack.hpp
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \

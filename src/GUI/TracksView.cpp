@@ -34,6 +34,7 @@
 #include "GraphicsMovieItem.h"
 #include "GraphicsCursorItem.h"
 #include "Commands.hpp"
+#include "GraphicsTrack.hpp"
 
 TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidget* parent )
         : QGraphicsView( scene, parent ), m_scene( scene ), m_mainWorkflow( mainWorkflow )
@@ -265,6 +266,23 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, qint
         else
             item->setPos( item->pos().x() + 1, 0 );
     }
+}
+
+void TracksView::removeMediaItem( AbstractGraphicsMediaItem* item )
+{
+    GraphicsMovieItem* movieItem = qgraphicsitem_cast<GraphicsMovieItem*>( item );
+    if ( !movieItem )
+    {
+        //TODO add support for audio tracks
+        qWarning( tr( "Action not supported." ).toAscii() );
+        return;
+    }
+
+    Commands::trigger( new Commands::MainWorkflow::RemoveClip( m_mainWorkflow,
+                                                               movieItem->clip(),
+                                                               movieItem->trackNumber(),
+                                                               movieItem->pos().x() ) );
+    delete movieItem;
 }
 
 void TracksView::dragLeaveEvent( QDragLeaveEvent* event )
