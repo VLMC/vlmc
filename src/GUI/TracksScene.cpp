@@ -25,3 +25,36 @@
 TracksScene::TracksScene( QObject* parent ) : QGraphicsScene( parent )
 {
 }
+
+void TracksScene::keyPressEvent( QKeyEvent* keyEvent )
+{
+    TracksView* tv = Timeline::getInstance()->tracksView();
+    if ( !tv ) return;
+
+    if ( keyEvent->modifiers() == Qt::NoModifier &&
+         keyEvent->key() == Qt::Key_Delete &&
+         selectedItems().size() >= 1 )
+    {
+        // Items deletion
+        keyEvent->accept();
+
+        QString message;
+        if ( selectedItems().size() == 1 )
+            message = tr("Confirm the deletion of the region ?");
+        else
+            message = tr("Confirm the deletion of those regions ?");
+
+        QMessageBox::StandardButton b =
+        QMessageBox::warning( tv, "Object deletion",
+                              message,
+                              QMessageBox::Yes | QMessageBox::No,
+                              QMessageBox::No );
+
+        // Skip the deletion process
+        if ( b == QMessageBox::No ) return;
+
+        //TODO delete the item(s)
+    }
+
+    QGraphicsScene::keyPressEvent( keyEvent );
+}

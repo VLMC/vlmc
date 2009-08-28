@@ -24,6 +24,10 @@
 #define TRACKSSCENE_H
 
 #include <QGraphicsScene>
+#include <QMessageBox>
+#include "Timeline.h"
+
+class TracksView;
 
 class TracksScene : public QGraphicsScene
 {
@@ -31,6 +35,10 @@ class TracksScene : public QGraphicsScene
 
 public:
     TracksScene( QObject* parent = 0 );
+    virtual ~TracksScene() { }
+
+protected:
+    virtual void keyPressEvent( QKeyEvent* keyevent );
 };
 
 #endif // TRACKSSCENE_H
