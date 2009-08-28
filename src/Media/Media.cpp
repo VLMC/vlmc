@@ -254,17 +254,17 @@ const QString&      Media::getFileName() const
     return m_fileName;
 }
 
-const QStringList&      Media::getMetaTags() const
+const QStringList&  Media::getMetaTags() const
 {
     return m_metaTags;
 }
 
-void            Media::setMetaTags( const QStringList& tags )
+void                Media::setMetaTags( const QStringList& tags )
 {
     m_metaTags = tags;
 }
 
-bool            Media::matchMetaTag( const QString& tag ) const
+bool                Media::matchMetaTag( const QString& tag ) const
 {
     if ( tag.length() == 0 )
         return true;

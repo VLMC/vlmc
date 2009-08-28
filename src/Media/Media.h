@@ -148,7 +148,6 @@ private:
 
 protected:
     static QPixmap*             defaultSnapshot;
-
     LibVLCpp::Media*            m_vlcMedia;
     QString                     m_mrl;
     QList<QString>              m_volatileParameters;
