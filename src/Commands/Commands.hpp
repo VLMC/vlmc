@@ -24,6 +24,7 @@
 #define COMMANDS_HPP
 
 #include <QUndoCommand>
+#include <QVector>
 #include "UndoStack.h"
 #include "MainWorkflow.h"
 #include "Clip.h"
@@ -39,6 +40,13 @@ namespace Commands
 
     namespace   MainWorkflow
     {
+        struct ClipActionInfo
+        {
+            Clip*   clip;
+            quint32 trackNumber;
+            qint64  pos;
+        };
+
         NEW_COMMAND( AddClip )
         {
             public:
@@ -96,28 +104,28 @@ namespace Commands
                 bool                m_undoRedoAction;
         };
 
-        NEW_COMMAND( RemoveClip )
+        NEW_COMMAND( RemoveClips )
         {
             public:
-                RemoveClip( ::MainWorkflow* workflow, Clip* clip, unsigned int trackNumber, qint64 pos ) :
-                        m_workflow( workflow ), m_clip( clip ), m_trackNumber( trackNumber ), m_pos( pos )
+                RemoveClips( ::MainWorkflow* workflow, const QVector<ClipActionInfo>& clipsInfos ) :
+                        m_workflow( workflow ), m_clips( clipsInfos )
                 {
-                    setText( "Remove clip from track" + QString::number( trackNumber ) );
+                    setText( "Remove clip" );
                 }
                 virtual void redo()
                 {
-                    m_workflow->removeClip( m_clip->getUuid(), m_trackNumber );
+                    for (int i = 0; i < m_clips.size(); ++i )
+                        m_workflow->removeClip( m_clips.at( i ).clip->getUuid(), m_clips.at( i ).trackNumber );
                 }
                 virtual void undo()
                 {
-                    m_workflow->addClip( m_clip, m_trackNumber, m_pos );
+                    for (int i = 0; i < m_clips.size(); ++i )
+                        m_workflow->addClip( m_clips.at( i ).clip, m_clips.at( i ).trackNumber, m_clips.at( i ).pos );
                 }
 
             private:
-                ::MainWorkflow* m_workflow;
-                Clip*           m_clip;
-                unsigned int    m_trackNumber;
-                qint64          m_pos;
+                ::MainWorkflow*             m_workflow;
+                QVector<ClipActionInfo>     m_clips;
         };
     }
 }

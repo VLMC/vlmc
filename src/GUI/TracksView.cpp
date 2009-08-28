@@ -270,19 +270,36 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, qint
 
 void TracksView::removeMediaItem( AbstractGraphicsMediaItem* item )
 {
-    GraphicsMovieItem* movieItem = qgraphicsitem_cast<GraphicsMovieItem*>( item );
-    if ( !movieItem )
+    QList<AbstractGraphicsMediaItem*> items;
+    items.append( item );
+    removeMediaItem( items );
+}
+
+void TracksView::removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items )
+{
+    QVector<Commands::MainWorkflow::ClipActionInfo> clipsinfos;
+
+    for ( int i = 0; i < items.size(); ++i )
     {
-        //TODO add support for audio tracks
-        qWarning( tr( "Action not supported." ).toAscii() );
-        return;
+        GraphicsMovieItem* movieItem = qgraphicsitem_cast<GraphicsMovieItem*>( items.at( i ) );
+        if ( !movieItem )
+        {
+            //TODO add support for audio tracks
+            qWarning( tr( "Action not supported." ).toAscii() );
+            continue;
+        }
+
+        Commands::MainWorkflow::ClipActionInfo ai;
+        ai.clip = movieItem->clip();
+        ai.trackNumber = movieItem->trackNumber();
+        ai.pos = movieItem->pos().x();
+        clipsinfos.append( ai );
+
+        delete movieItem;
     }
 
-    Commands::trigger( new Commands::MainWorkflow::RemoveClip( m_mainWorkflow,
-                                                               movieItem->clip(),
-                                                               movieItem->trackNumber(),
-                                                               movieItem->pos().x() ) );
-    delete movieItem;
+    Commands::trigger( new Commands::MainWorkflow::RemoveClips( m_mainWorkflow,
+                                                                clipsinfos ) );
 }
 
 void TracksView::dragLeaveEvent( QDragLeaveEvent* event )

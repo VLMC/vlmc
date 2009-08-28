@@ -31,6 +31,7 @@
 #include <QWheelEvent>
 #include <QGraphicsSceneDragDropEvent>
 #include <QApplication>
+#include <QVector>
 #include "GraphicsCursorItem.h"
 #include "MainWorkflow.h"
 #include "TrackWorkflow.h"
@@ -55,6 +56,7 @@ public:
     void setScale( double scaleFactor );
     QList<AbstractGraphicsMediaItem*> mediaItems( const QPoint& pos );
     void                    removeMediaItem( AbstractGraphicsMediaItem* item );
+    void                    removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items );
 
 public slots:
     void                    moveMediaItem( const QUuid& uuid, unsigned int track, qint64 time );
