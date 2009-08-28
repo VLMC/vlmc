@@ -24,11 +24,12 @@
 #define TIMELINE_H
 
 #include "ui_Timeline.h"
-#include "TracksView.h"
-#include "TracksScene.h"
 #include "TracksRuler.h"
 #include "Workflow/MainWorkflow.h"
 #include "Workflow/TrackWorkflow.h"
+
+class TracksScene;
+class TracksView;
 
 class Timeline : public QWidget
 {
