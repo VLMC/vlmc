@@ -84,6 +84,7 @@ void        Library::newMediaLoadingAsked( const QString& filePath, const QStrin
 
 bool        Library::mediaAlreadyLoaded( const QString& filePath )
 {
+    //FIXME: Is this necessary ??
     Media*   media;
     foreach ( media, m_medias )
     {

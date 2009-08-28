@@ -92,6 +92,8 @@ public:
     const QPixmap&              getSnapshot() const;
 
     const QFileInfo*            getFileInfo() const;
+    const QString&              getMrl() const;
+    const QString&              getFileName() const;
 
     /**
         \return                 Returns the length of this media (ie the
@@ -158,6 +160,7 @@ protected:
     audioData                   m_audioData;
     FileType                    m_fileType;
     InputType                   m_inputType;
+    QString                     m_fileName;
 
 signals:
     void                        metaDataComputed();

@@ -118,7 +118,6 @@ void                LibraryWidget::removeMedia( const QUuid& uuid )
 
 void    LibraryWidget::newClipLoaded( Clip* clip )
 {
-    //From here, the clip is const.
     addClip( clip );
     m_ui.LibraryTabs->setCurrentIndex( (int) clip->getParent()->getFileType() );
 }
