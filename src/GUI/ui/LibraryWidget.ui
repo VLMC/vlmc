@@ -165,9 +165,6 @@
      <property name="text">
       <string>Remove Media</string>
      </property>
-     <property name="shortcut">
-      <string>Del</string>
-     </property>
     </widget>
    </item>
    <item row="2" column="3">
