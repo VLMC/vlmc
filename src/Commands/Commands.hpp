@@ -24,6 +24,7 @@
 #define COMMANDS_HPP
 
 #include <QUndoCommand>
+#include <QObject>
 #include <QVector>
 #include "UndoStack.h"
 #include "MainWorkflow.h"
@@ -53,7 +54,7 @@ namespace Commands
                 AddClip( ::MainWorkflow* workflow, Clip* clip, unsigned int trackNumber, qint64 pos ) :
                         m_workflow( workflow ), m_clip( clip ), m_trackNumber( trackNumber ), m_pos( pos )
                 {
-                    setText( "Adding clip to track" + QString::number( trackNumber ) );
+                    setText( QObject::tr( "Adding clip to track %1" ).arg( QString::number( trackNumber ) ) );
                 }
                 virtual void    redo()
                 {
@@ -78,7 +79,7 @@ namespace Commands
                     m_workflow( workflow ), m_uuid( uuid ), m_oldTrack( oldTrack ),
                     m_newTrack( newTrack ), m_pos( newPos ), m_oldPos( oldPos )
                 {
-                    setText( "Moving clip" );
+                    setText( QObject::tr( "Moving clip" ) );
                     m_undoRedoAction = false;
                 }
                 virtual void    redo()
@@ -110,7 +111,7 @@ namespace Commands
                 RemoveClips( ::MainWorkflow* workflow, const QVector<ClipActionInfo>& clipsInfos ) :
                         m_workflow( workflow ), m_clips( clipsInfos )
                 {
-                    setText( "Remove clip" );
+                    setText( QObject::tr( "Remove clip" ) );
                 }
                 virtual void redo()
                 {
