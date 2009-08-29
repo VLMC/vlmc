@@ -268,14 +268,32 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, qint
     }
 }
 
-void TracksView::removeMediaItem( AbstractGraphicsMediaItem* item )
+void TracksView::removeMediaItem( const QUuid& uuid, unsigned int track, bool notifyBackend )
+{
+    Q_UNUSED( track );
+    //TODO When a clever API will be done to manage the tracks, we could
+    // use the "track" argument to limit the search into the track instead
+    // of the full scene.
+
+    QList<QGraphicsItem*> sceneItems = m_scene->items();
+
+    for ( int i = 0; i < sceneItems.size(); ++i )
+    {
+        AbstractGraphicsMediaItem* item =
+                dynamic_cast<AbstractGraphicsMediaItem*>( sceneItems.at( i ) );
+        if ( !item || item->uuid() != uuid ) continue;
+        removeMediaItem( item, notifyBackend );
+    }
+}
+
+void TracksView::removeMediaItem( AbstractGraphicsMediaItem* item, bool notifyBackend )
 {
     QList<AbstractGraphicsMediaItem*> items;
     items.append( item );
-    removeMediaItem( items );
+    removeMediaItem( items, notifyBackend );
 }
 
-void TracksView::removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items )
+void TracksView::removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items, bool notifyBackend )
 {
     QVector<Commands::MainWorkflow::ClipActionInfo> clipsinfos;
 
@@ -298,8 +316,9 @@ void TracksView::removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items
         delete movieItem;
     }
 
-    Commands::trigger( new Commands::MainWorkflow::RemoveClips( m_mainWorkflow,
-                                                                clipsinfos ) );
+    if ( notifyBackend )
+        Commands::trigger( new Commands::MainWorkflow::RemoveClips( m_mainWorkflow,
+                                                                    clipsinfos ) );
 }
 
 void TracksView::dragLeaveEvent( QDragLeaveEvent* event )

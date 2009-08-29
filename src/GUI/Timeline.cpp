@@ -60,6 +60,7 @@ Timeline::Timeline( QWidget *parent ) :
     connect( m_tracksView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), m_tracksRuler, SLOT( moveRuler( int ) ) );
     connect( m_tracksView, SIGNAL( durationChanged(int) ), this, SLOT( setDuration(int) ) );
     connect( m_mainWorkflow, SIGNAL( clipMoved(QUuid, uint, qint64 ) ), this, SLOT( actionMoveClip(QUuid,uint,qint64) ) );
+    connect( m_mainWorkflow, SIGNAL( clipRemoved(QUuid,uint) ), this, SLOT( actionRemoveClip(QUuid,uint)) );
 }
 
 Timeline::~Timeline()
@@ -97,4 +98,11 @@ void Timeline::actionMoveClip( const QUuid& uuid, unsigned int track, qint64 tim
     tracksView()->moveMediaItem( uuid, track, time );
     tracksView()->updateDuration();
     tracksRuler()->update();
+}
+
+void Timeline::actionRemoveClip( const QUuid& uuid, unsigned int track )
+{
+    // The signal was triggered by the backend, so we do not have to
+    // notify it again. I guess it would be a very bad idea.
+    tracksView()->removeMediaItem( uuid, track, false );
 }
