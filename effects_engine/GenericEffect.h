@@ -16,9 +16,13 @@ class	GenericEffect
  // CTOR & DTOR
 
   virtual ~GenericEffect();
+
+ protected:
+
   GenericEffect( char const * videoinputs[], quint32 const nbvideoinputs,
 		 char const * videooutputs[], quint32 const nbvideooutputs);
 
+ public:
   // RENDER METHOD
 
   virtual void  render(void) = 0;
@@ -30,6 +34,7 @@ class	GenericEffect
 
  protected:
 
+  //  QString					m_name;
   QHash< QString, InSlot<LightVideoFrame> >	m_videoInputs;
   QHash< QString, OutSlot<LightVideoFrame> >	m_videoOutputs;
 /*   QHash< QString, InSlot<SoundSampleFrame> >	m_soundInputs; */
