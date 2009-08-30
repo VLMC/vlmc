@@ -2,26 +2,23 @@
 
 // CTOR & DTOR
 
-EffectsEngine::EffectsEngine()
+EffectsEngine::EffectsEngine( quint32 nbinputs, quint32 nboutputs )
 {
+   quint32	i;
+
+  for (i = 0; i < nbinputs; ++i)
+    m_videoInputs[i];
+  for (i = 0; i < nboutputs; ++i)
+    m_videoOutputs[i];       
 }
 
 EffectsEngine::~EffectsEngine()
 {
 }
 
-// INITIALIZATION
-
-void	EffectsEngine::init(unsigned int nbinputs, unsigned int nboutputs)
-{
-  std::cout << "init" << std::endl;
-  m_inputsVideoFrames = new OutSlot<LightVideoFrame>[nbinputs];
-  m_outputsVideoFrames = new InSlot<LightVideoFrame>[nboutputs];
-  return ;
-}
 // MAIN METHOD
 
-void	EffectsEngine::doTheMagic(void)
+void	EffectsEngine::doTheMagic( void )
 {
   std::cout << "doTheMagic" << std::endl;
   return ;
@@ -30,28 +27,62 @@ void	EffectsEngine::doTheMagic(void)
 
 // INPUTS & OUTPUTS METHODS
 
-void	EffectsEngine::setClock(Parameter currentframenumber)
+void	EffectsEngine::setClock( Parameter currentframenumber )
 { 
  std::cout << "setClock" << std::endl;
   return ;
 }
 
-void	EffectsEngine::setInputFrame(VideoFrame frame, unsigned int tracknumber)
+void	EffectsEngine::setInputFrame( VideoFrame frame, quint32 tracknumber )
 {
   std::cout << "setInputFrame" << std::endl;
   return ;
 }
 
-LightVideoFrame&	EffectsEngine::getOutputFrame(unsigned int tracknumber) const
+
+// TO REPLACE BY A REF
+
+LightVideoFrame	EffectsEngine::getOutputFrame( quint32 tracknumber ) const
 {
-  return ((LightVideoFrame&)(m_outputsVideoFrames[tracknumber]));
+  return ( m_videoOutputs[tracknumber] );
 }
 
+
 //
-// PRIVATE METHODS
+// PRIVATES METHODS
 //
 
-void		EffectsEngine::initPatch(void)
+
+// START & STOP
+
+void	EffectsEngine::start( void )
+{
+  loadEffects();
+  patchEffects();
+  return ;
+}
+
+void	EffectsEngine::stop( void )
 {
   return ;
 }
+
+// EFFECTS LOADING & UNLOADING
+
+void	EffectsEngine::loadEffects( void )
+{
+  return ;
+}
+
+void	EffectsEngine::unloadEffects( void )
+{
+  return ;
+}
+
+// EFFECTS PATCHING
+
+void	EffectsEngine::patchEffects( void )
+{
+  return ;
+}
+

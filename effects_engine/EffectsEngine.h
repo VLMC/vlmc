@@ -2,12 +2,14 @@
 #define EFFECTSENGINE_H_
 
 #include <QtGlobal>
+#include <QHash>
 #include <iostream>
 #include "LightVideoFrame.h"
 #include "LightParameter.h"
 #include "InSlot.hpp"
 #include "OutSlot.hpp"
-
+#include "GenericEffect.h"
+#include "PouetEffect.h"
 
 class	EffectsEngine
 {
@@ -16,34 +18,42 @@ class	EffectsEngine
 
   // CTOR & DTOR
 
-  EffectsEngine();
+  EffectsEngine( quint32 nbinputs, quint32 nboutputs );
   ~EffectsEngine();
-
-  // INITIALIZATION
-
-  void		init(unsigned int nbinputs, unsigned int nboutputs);
 
   // MAIN METHOD
 
-  void		doTheMagic(void);
+  void		doTheMagic( void );
 
   // INPUTS & OUTPUTS METHODS
 
-  void			setClock(Parameter currentframenumber);
-  void			setInputFrame(VideoFrame frame, unsigned int tracknumber);
-  LightVideoFrame&	getOutputFrame(unsigned int tracknumber) const;
+  void			setClock( Parameter currentframenumber );
+  void			setInputFrame( VideoFrame frame, quint32 tracknumber );
+  LightVideoFrame	getOutputFrame( quint32 tracknumber ) const;
+
+ private:
+  
+  // START & STOP
+
+  void		start( void );
+  void		stop( void );
+
+  // EFFECTS LOADING & UNLOADING
+
+
+  void		loadEffects( void );
+  void		unloadEffects( void );
+
+  // EFFECTS PATCHING
+
+  void		patchEffects( void );
 
  private:
 
-  void			initPatch(void);
-
- private:
-
-  unsigned int		m_nbInputs;
-  unsigned int		m_nbOutputs;
-  OutSlot<LightVideoFrame>*	m_inputsVideoFrames; // It's OutSlots because, it's the Outputs of the workflow, that should be connected to InSlots of effects
-  InSlot<LightVideoFrame>*	m_outputsVideoFrames; // It's InSlots because, it's the Inputs of the effect engine, that should be connected to OutSlots of the renderer
-  OutSlot<LightParameter>	m_inputClock;	 // It's OutSlots because, it's the Outputs of the clock of the workflow, that should be connected to OutSlots
+  QHash< QString, GenericEffect* >		m_effects;
+  QHash< quint32, OutSlot<LightVideoFrame> >	m_videoInputs; // It's OutSlots because, it's the Outputs of the workflow, that should be connected to InSlots of effects
+  QHash< quint32, InSlot<LightVideoFrame> >	m_videoOutputs; // It's InSlots because, it's the Inputs of the effect engine, that should be connected to OutSlots of the renderer
+  OutSlot<LightParameter>			m_clockInput;	 // It's OutSlots because, it's the Outputs of the clock of the workflow, that should be connected to OutSlots
 
 };
 
