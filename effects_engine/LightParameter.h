@@ -1,9 +1,9 @@
 #ifndef LIGHTPARAMETER_H_
 #define LIGHTPARAMETER_H_
 
-#include <QtGlobal>
+#include "Parameter.h"
 #include "CopyOnWrite.hpp"
 
-typedef CopyOnWrite<qreal>	LightParameter;
+typedef CopyOnWrite<Parameter>	LightParameter;
 
 #endif // LIGHTPARAMETER_H_
