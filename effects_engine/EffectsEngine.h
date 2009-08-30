@@ -29,8 +29,8 @@ class	EffectsEngine
 
   // INPUTS & OUTPUTS METHODS
 
-  void			setClock(LightParameter currentframenumber);
-  void			setInputFrame(LightVideoFrame frame, unsigned int tracknumber);
+  void			setClock(Parameter currentframenumber);
+  void			setInputFrame(VideoFrame frame, unsigned int tracknumber);
   LightVideoFrame&	getOutputFrame(unsigned int tracknumber) const;
 
  private:

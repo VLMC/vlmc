@@ -30,13 +30,13 @@ void	EffectsEngine::doTheMagic(void)
 
 // INPUTS & OUTPUTS METHODS
 
-void	EffectsEngine::setClock(LightParameter currentframenumber)
+void	EffectsEngine::setClock(Parameter currentframenumber)
 { 
  std::cout << "setClock" << std::endl;
   return ;
 }
 
-void	EffectsEngine::setInputFrame(LightVideoFrame frame, unsigned int tracknumber)
+void	EffectsEngine::setInputFrame(VideoFrame frame, unsigned int tracknumber)
 {
   std::cout << "setInputFrame" << std::endl;
   return ;
