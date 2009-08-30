@@ -14,14 +14,15 @@ PouetEffect::~PouetEffect()
 {
 }
 
-void	PouetEffect::render(void)
+void	PouetEffect::render( void )
 {
   LightVideoFrame	lol;
   VideoFrame		tmp;
+  quint32		size;
 
   (m_videoInputs["in"]) >> lol;
   tmp = lol;
-  tmp.truncate(3);
+  tmp.truncate( tmp.size() / 2 );
   (m_videoOutputs["out"]) << tmp;
   return ;
 }
