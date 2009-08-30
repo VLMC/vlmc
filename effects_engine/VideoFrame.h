@@ -3,8 +3,9 @@
 
 #include <QByteArray>
 
-class			VideoFrame : public QByteArray
-{
-};
+typedef	QByteArray	VideoFrame;
+/* class			VideoFrame : public QByteArray */
+/* { */
+/* }; */
 
 #endif // FRAME_H_

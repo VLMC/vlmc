@@ -15,3 +15,12 @@ GenericEffect::~GenericEffect()
 {
 }
 
+InSlot<LightVideoFrame>&	GenericEffect::getVideoInput(QString const & name)
+{
+  return (m_videoInputs[name]);
+}
+
+OutSlot<LightVideoFrame>&	GenericEffect::getVideoOutput(QString const & name)
+{
+  return (m_videoOutputs[name]);
+}

@@ -23,7 +23,12 @@ class	GenericEffect
 
   virtual void  render(void) = 0;
 
- private:
+  // CONNECTION METHODS
+
+  InSlot<LightVideoFrame>&	getVideoInput(QString const & name);
+  OutSlot<LightVideoFrame>&	getVideoOutput(QString const & name);
+
+ protected:
 
   QHash< QString, InSlot<LightVideoFrame> >	m_videoInputs;
   QHash< QString, OutSlot<LightVideoFrame> >	m_videoOutputs;
