@@ -1,4 +1,5 @@
 #include "PouetEffect.h"
+#include <iostream>
 
 char const * 	PouetEffect::m_videoInputsNames[] = {"in"};
 char const *	PouetEffect::m_videoOutputsNames[] = {"out"};
@@ -22,8 +23,8 @@ void	PouetEffect::render( void )
 
   (m_videoInputs["in"]) >> lol;
   tmp = lol;
+  std::cout << "PouetEffect input : " << (char const *)(tmp) << std::endl;
   tmp.truncate( tmp.size() / 2 );
   (m_videoOutputs["out"]) << tmp;
   return ;
 }
-
