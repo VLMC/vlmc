@@ -59,6 +59,8 @@ Media::Media( const QString& filePath )
     {
         m_inputType = Media::Stream;
         m_mrl = filePath.right( filePath.length() - streamPrefix.length() );
+        //FIXME:
+        m_fileType = Media::Video;
     }
     m_vlcMedia = new LibVLCpp::Media( m_mrl );
 }
