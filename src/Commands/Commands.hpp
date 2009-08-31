@@ -53,7 +53,7 @@ namespace Commands
         {
             public:
                 AddClip( ::MainWorkflow* workflow, Clip* clip, unsigned int trackNumber, qint64 pos ) :
-                        m_workflow( workflow ), m_trackNumber( trackNumber ), m_pos( pos )
+                        m_workflow( workflow ), m_clip( clip ), m_trackNumber( trackNumber ), m_pos( pos )
                 {
                     setText( QObject::tr( "Adding clip to track %1" ).arg( QString::number( trackNumber ) ) );
                 }
@@ -67,7 +67,8 @@ namespace Commands
                 }
             private:
                 ::MainWorkflow* m_workflow;
-                ClipWorklow*    m_clipWorkflow;
+                Clip*           m_clip;
+                ClipWorkflow*   m_clipWorkflow;
                 unsigned int    m_trackNumber;
                 qint64          m_pos;
         };

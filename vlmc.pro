@@ -5,7 +5,7 @@ TEMPLATE = app
 OBJECTS_DIR = build
 MOC_DIR = build/moc
 UI_DIR = build/ui
-QMAKE_EXT_H = .hpp
+QMAKE_EXT_H = .h .hpp
 INCLUDEPATH = build/moc \
     build/ui
 QT += gui \
