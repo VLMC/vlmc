@@ -34,6 +34,7 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
                 m_rendering( false ),
                 m_initFlag( false )
 {
+    m_uuid = QUuid::createUuid();
     m_stateLock = new QReadWriteLock;
     m_requiredStateLock = new QMutex;
     m_waitCond = new QWaitCondition;
@@ -353,4 +354,9 @@ void        ClipWorkflow::unpausedMediaPlayer()
 {
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( unpausedMediaPlayer() ) );
     emit unpaused();
+}
+
+const QUuid&    ClipWorkflow::getUuid() const
+{
+    return m_uuid;
 }

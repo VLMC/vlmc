@@ -71,7 +71,7 @@ MainWorkflow::~MainWorkflow()
     delete[] blackOutput;
 }
 
-void    MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
+ClipWorkflow*       MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
 {
     Q_ASSERT_X( trackId < m_trackCount, "MainWorkflow::addClip",
                 "The specified trackId isn't valid, for it's higher than the number of tracks");
@@ -79,9 +79,10 @@ void    MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
     //if the track is deactivated, we need to reactivate it :
     if ( m_tracks[trackId].deactivated() == true )
         activateTrack( trackId );
-    m_tracks[trackId]->addClip( clip, start );
+    ClipWorkflow*   cw = m_tracks[trackId]->addClip( clip, start );
     if ( m_tracks[trackId]->getLength() > m_length )
         m_length = m_tracks[trackId]->getLength();
+    return cw;
 }
 
 void            MainWorkflow::computeLength()
