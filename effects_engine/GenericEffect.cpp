@@ -15,12 +15,40 @@ GenericEffect::~GenericEffect()
 {
 }
 
-InSlot<LightVideoFrame>&	GenericEffect::getVideoInput(QString const & name)
+
+// CONNECTIONS BETWEEN GENERICEFFECTS
+
+void				GenericEffect::connectOutput( QString const & outName, GenericEffect* destEffect, QString const & inName)
 {
-  return (m_videoInputs[name]);
+  // THINK TO CHECK IF THE SLOTS EXISTS BY CALLING THE PRIVATES METHODS!!!
+  ( m_videoOutputs[outName] ).connect( destEffect->m_videoInputs[inName] );
+  return ;
 }
 
-OutSlot<LightVideoFrame>&	GenericEffect::getVideoOutput(QString const & name)
+// CONNECTIONS DETWEEN GENERICEFFECT & OUTSLOT/INSLOT
+
+void				GenericEffect::connect( OutSlot<LightVideoFrame> & out, QString const & inName )
 {
-  return (m_videoOutputs[name]);
+  out.connect( m_videoInputs[inName] );
+  return ;
 }
+
+void				GenericEffect::connect( QString const & outName, InSlot<LightVideoFrame> & in )
+{
+  ( m_videoOutputs[outName] ).connect( in );
+  return ;
+}
+
+//
+// PRIVATES METHODS
+//
+
+// InSlot<LightVideoFrame>&	GenericEffect::getStaticVideoInput( QString const & name )
+// {
+//   return ( m_videoInputs[name] );
+// }
+
+// OutSlot<LightVideoFrame>&	GenericEffect::getStaticVideoOutput( QString const & name )
+// {
+//   return ( m_videoOutputs[name] );
+// }
