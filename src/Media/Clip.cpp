@@ -157,5 +157,4 @@ const QUuid&        Clip::getTimelineUuid() const
 void                Clip::setTimelineUuid( const QUuid& uuid )
 {
     m_timelineUuid = uuid;
-    qDebug() << "Setting timeline UUID to" << uuid;
 }
