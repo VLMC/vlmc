@@ -144,7 +144,6 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
     m_dragItem->setHeight( tracksHeight() );
     m_dragItem->setPos( mappedXPos, 0 );
     m_dragItem->setParentItem( m_layout->itemAt( 0 )->graphicsItem() );
-    m_dragItem->oldPosition = mappedXPos;
     moveMediaItem( m_dragItem, event->pos() );
 }
 
@@ -350,6 +349,7 @@ void TracksView::dropEvent( QDropEvent* event )
                                                                 clip,
                                                                 m_dragItem->trackNumber(),
                                                                 (qint64)mappedXPos ) );
+        m_dragItem->oldPosition = mappedXPos;
         m_dragItem = NULL;
     }
 }
