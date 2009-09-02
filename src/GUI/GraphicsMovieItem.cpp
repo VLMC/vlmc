@@ -148,3 +148,8 @@ void GraphicsMovieItem::updateTitle()
     //FIXME there is a small visual refresh bug here
     m_movieTitle->setPlainText( fm.elidedText( text, Qt::ElideRight, width ) );
 }
+
+void    GraphicsMovieItem::setClip( Clip* clip )
+{
+    m_clip = clip;
+}

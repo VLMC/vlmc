@@ -62,7 +62,7 @@ namespace Commands
                 }
                 virtual void    undo()
                 {
-                    m_workflow->removeClip( m_clip->getUuid(), m_trackNumber );
+                    m_workflow->removeClip( m_clip->getTimelineUuid(), m_trackNumber );
                 }
             private:
                 ::MainWorkflow* m_workflow;
@@ -116,7 +116,7 @@ namespace Commands
                 virtual void redo()
                 {
                     for (int i = 0; i < m_clips.size(); ++i )
-                        m_workflow->removeClip( m_clips.at( i ).clip->getUuid(), m_clips.at( i ).trackNumber );
+                        m_workflow->removeClip( m_clips.at( i ).clip->getTimelineUuid(), m_clips.at( i ).trackNumber );
                 }
                 virtual void undo()
                 {

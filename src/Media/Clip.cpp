@@ -44,6 +44,18 @@ Clip::Clip( Media* parent, float begin, float end ) : m_parent( parent ), m_begi
     init();
 }
 
+Clip::Clip( Clip* clip ) : 
+        m_parent( clip->m_parent ),
+        m_begin( clip->m_begin ),
+        m_end( clip->m_end ),
+        m_length( clip->m_length ),
+        m_lengthSeconds( clip->m_lengthSeconds ),
+        m_uuid( clip->m_uuid ),
+        m_metaTags( clip->m_metaTags ),
+        m_notes( clip->m_notes )
+{
+}
+
 Clip::~Clip()
 {
 }
@@ -52,7 +64,6 @@ void        Clip::init()
 {
     m_uuid = QUuid::createUuid();
     computeLength();
-    m_metaTags << "Toto" << "titi" << "tutu";
 }
 
 float       Clip::getBegin() const
@@ -135,4 +146,16 @@ const   QString&    Clip::getNotes() const
 void                Clip::setNotes( const QString& notes )
 {
     m_notes = notes;
+}
+
+const QUuid&        Clip::getTimelineUuid() const
+{
+    Q_ASSERT( m_timelineUuid.isNull() == false );
+    return m_timelineUuid;
+}
+
+void                Clip::setTimelineUuid( const QUuid& uuid )
+{
+    m_timelineUuid = uuid;
+    qDebug() << "Setting timeline UUID to" << uuid;
 }

@@ -39,13 +39,14 @@ public:
     virtual int type() const { return Type; }
     virtual bool expandable() const { return false; }
     virtual bool moveable() const { return true; }
-    virtual const QUuid& uuid() const { return m_clip->getUuid(); }
+    virtual const QUuid& uuid() const { return m_clip->getTimelineUuid(); }
     virtual QRectF boundingRect() const;
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
 
     void setWidth( int width );
     void setHeight( int height );
     Clip* clip() const;
+    void    setClip( Clip* clip );
     //void setAudioSpectrum( QVector<float*> spectrum );
     void paintAudioSpectrum( QPainter* painter );
 

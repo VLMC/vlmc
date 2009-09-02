@@ -144,6 +144,7 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
     m_dragItem->setHeight( tracksHeight() );
     m_dragItem->setPos( mappedXPos, 0 );
     m_dragItem->setParentItem( m_layout->itemAt( 0 )->graphicsItem() );
+    m_dragItem->oldPosition = mappedXPos;
     moveMediaItem( m_dragItem, event->pos() );
 }
 
@@ -343,8 +344,10 @@ void TracksView::dropEvent( QDropEvent* event )
 
         qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
         m_dragItem->oldTrackNumber = m_dragItem->trackNumber();
+        Clip*   clip = new Clip( m_dragItem->clip() );
+        m_dragItem->setClip( clip );
         Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
-                                                                m_dragItem->clip(),
+                                                                clip,
                                                                 m_dragItem->trackNumber(),
                                                                 (qint64)mappedXPos ) );
         m_dragItem = NULL;
@@ -463,8 +466,9 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
             updateDuration();
             if ( m_layout->itemAt( 0 )->graphicsItem()->childItems().count() > 0 )
                 addVideoTrack();
+            qDebug() << "Moving from mouse event. New pos:" << (qint64)movieItem->pos().x() << movieItem->oldPosition;
             Commands::trigger( new Commands::MainWorkflow::MoveClip( m_mainWorkflow,
-                                                                     movieItem->clip()->getUuid(),
+                                                                     movieItem->clip()->getTimelineUuid(),
                                                                      movieItem->oldTrackNumber,
                                                                      movieItem->oldPosition,
                                                                      movieItem->trackNumber(),

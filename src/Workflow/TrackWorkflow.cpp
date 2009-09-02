@@ -91,7 +91,7 @@ qint64              TrackWorkflow::getClipPosition( const QUuid& uuid ) const
 
     while ( it != end )
     {
-        if ( it.value()->getClip()->getUuid() == uuid )
+        if ( it.value()->getClip()->getTimelineUuid() == uuid )
             return it.key();
         ++it;
     }
@@ -374,7 +374,7 @@ void            TrackWorkflow::moveClip( const QUuid& id, qint64 startingFrame )
 
     while ( it != end )
     {
-        if ( it.value()->getClip()->getUuid() == id )
+        if ( it.value()->getClip()->getTimelineUuid() == id )
         {
             ClipWorkflow* cw = it.value();
             m_clips.erase( it );
@@ -399,7 +399,7 @@ Clip*       TrackWorkflow::removeClip( const QUuid& id )
 
     while ( it != end )
     {
-        if ( it.value()->getClip()->getUuid() == id )
+        if ( it.value()->getClip()->getTimelineUuid() == id )
         {
             ClipWorkflow*   cw = it.value();
             Clip*           clip = cw->getClip();
