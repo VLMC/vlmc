@@ -342,7 +342,6 @@ void TracksView::dropEvent( QDropEvent* event )
         event->acceptProposedAction();
 
         qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
-        //FIXME: this line seems useless ?
         m_dragItem->oldTrackNumber = m_dragItem->trackNumber();
         Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
                                                                 m_dragItem->clip(),

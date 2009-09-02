@@ -156,8 +156,6 @@ class   ClipWorkflow : public QObject
 
         LibVLCpp::MediaPlayer*  getMediaPlayer();
 
-        const QUuid&            getUuid() const;
-
     private:
         static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret );
         static void             unlock( ClipWorkflow* clipWorkflow );
@@ -193,8 +191,6 @@ class   ClipWorkflow : public QObject
         WaitCondition*          m_initWaitCond;
         WaitCondition*          m_renderWaitCond;
         WaitCondition*          m_pausingStateWaitCond;
-
-        QUuid                   m_uuid;
 
         /**
          *  While this flag is set to false, we will use the same buffer, to prevent

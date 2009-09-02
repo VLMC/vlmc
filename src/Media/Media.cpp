@@ -44,7 +44,6 @@ Media::Media( const QString& filePath )
     m_height( 0 )
 {
     m_uuid = QUuid::createUuid();
-    qDebug() << "Creating QUuid for media:" << m_uuid;
 
     if ( filePath.startsWith( Media::streamPrefix ) == false )
     {

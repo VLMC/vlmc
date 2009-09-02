@@ -51,11 +51,10 @@ TrackWorkflow::~TrackWorkflow()
     delete m_forceRepositionningMutex;
 }
 
-ClipWorkflow*   TrackWorkflow::addClip( Clip* clip, qint64 start )
+void    TrackWorkflow::addClip( Clip* clip, qint64 start )
 {
     ClipWorkflow* cw = new ClipWorkflow( clip );
     addClip( cw, start );
-    return cw;
 }
 
 void    TrackWorkflow::addClip( ClipWorkflow* cw, qint64 start )
@@ -405,7 +404,6 @@ Clip*       TrackWorkflow::removeClip( const QUuid& id )
             ClipWorkflow*   cw = it.value();
             Clip*           clip = cw->getClip();
             m_clips.erase( it );
-            delete cw;
             computeLength();
             return clip;
         }

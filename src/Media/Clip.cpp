@@ -51,7 +51,6 @@ Clip::~Clip()
 void        Clip::init()
 {
     m_uuid = QUuid::createUuid();
-    qDebug() << "Creating QUuid for clip:" << m_uuid;
     computeLength();
     m_metaTags << "Toto" << "titi" << "tutu";
 }

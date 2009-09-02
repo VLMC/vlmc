@@ -29,7 +29,6 @@
 #include "UndoStack.h"
 #include "MainWorkflow.h"
 #include "Clip.h"
-#include "ClipWorkflow.h"
 
 #define NEW_COMMAND(x)      class   x : public QUndoCommand
 
@@ -59,16 +58,15 @@ namespace Commands
                 }
                 virtual void    redo()
                 {
-                    m_clipWorkflow = m_workflow->addClip( m_clip, m_trackNumber, m_pos );
+                    m_workflow->addClip( m_clip, m_trackNumber, m_pos );
                 }
                 virtual void    undo()
                 {
-                    m_workflow->removeClip( m_clipWorkflow->getUuid(), m_trackNumber );
+                    m_workflow->removeClip( m_clip->getUuid(), m_trackNumber );
                 }
             private:
                 ::MainWorkflow* m_workflow;
                 Clip*           m_clip;
-                ClipWorkflow*   m_clipWorkflow;
                 unsigned int    m_trackNumber;
                 qint64          m_pos;
         };
