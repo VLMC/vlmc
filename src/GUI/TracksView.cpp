@@ -303,7 +303,7 @@ void TracksView::removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items
         if ( !movieItem )
         {
             //TODO add support for audio tracks
-            qWarning( tr( "Action not supported." ).toAscii() );
+            qWarning() << tr( "Action not supported." );
             continue;
         }
 
