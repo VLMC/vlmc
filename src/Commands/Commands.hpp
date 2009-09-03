@@ -157,7 +157,7 @@ namespace Commands
                 float                       m_newBegin;
                 float                       m_newEnd;
                 Clip*                       m_clip;
-        }
+        };
     }
 }
 
