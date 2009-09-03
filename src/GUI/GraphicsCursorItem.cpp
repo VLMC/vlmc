@@ -42,11 +42,6 @@ void GraphicsCursorItem::setCursorPos( qint64 position )
     setPos( position, pos().y() );
 }
 
-void    GraphicsCursorItem::updateCursorPos( qint64 position )
-{
-    setCursorPos( (qint64) position );
-}
-
 void GraphicsCursorItem::setHeight( int height )
 {
     m_boundingRect.setHeight( height );

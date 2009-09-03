@@ -125,7 +125,7 @@ void        WorkflowRenderer::checkActions()
 void        WorkflowRenderer::stopPreview()
 {
     disconnect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
-             Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( updateCursorPos( qint64 ) ) );
+             Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( setCursorPos( qint64 ) ) );
     stop();
 }
 
@@ -135,7 +135,7 @@ void        WorkflowRenderer::startPreview()
 
     //Workflow part
     connect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
-            Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( updateCursorPos( qint64 ) ) );
+            Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( setCursorPos( qint64 ) ) );
     connect( Timeline::getInstance()->tracksView()->tracksCursor(), SIGNAL( cursorPositionChanged( qint64 ) ),
              this, SLOT( timelineCursorChanged(qint64) ) );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ) );
