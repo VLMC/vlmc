@@ -37,7 +37,7 @@ QVariant GraphicsCursorItem::itemChange( GraphicsItemChange change, const QVaria
     return QGraphicsItem::itemChange( change, value );
 }
 
-void GraphicsCursorItem::setCursorPos( int position )
+void GraphicsCursorItem::setCursorPos( qint64 position )
 {
     setPos( position, pos().y() );
 }
