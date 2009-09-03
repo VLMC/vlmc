@@ -4,46 +4,25 @@
 
 int main(void)
 {
-//   GenericEffect*	effect1 = new PouetEffect();
-//   GenericEffect*	effect2 = new PouetEffect();
-//   OutSlot<LightVideoFrame>		in;
-//   InSlot<LightVideoFrame>		out;
-//   VideoFrame				poney( (char const *)( "1234567890" ) );
-//   LightVideoFrame			truc( poney );
-//   LightVideoFrame			truc2;
-  
-
-//   // CONNECTIONS
-
-//   effect1->connect( in, QString( "in" ) );
-
-//   effect1->connectOutput( QString( "out" ), effect2, QString( "in" ) );
-
-//   effect2->connect( QString( "out" ), out );
-
-//   // SEND INPUT
-
-//   in << truc;
-
-//   // RENDER
-
-//   effect1->render();
-//   effect2->render();
-
-//   // RECEIVE OUTPUT
-
-//   out >> truc2;
-
-//   // CONVERSION AND PRINTING TO STDOUT
-
-//   poney = truc2;
-//   char const * result = poney;
-//   std::cout << "result : " << result << std::endl;
+//   quint32	i;
   EffectsEngine		ee;
+  VideoFrame		vf1((quint8*)"123456789", 9);
+  VideoFrame		vf2((quint8*)"ABCDEFGHI", 9);
 
-  ee.setInputFrame("1234567890", 0);
-  ee.setInputFrame("ABCDEFGHIJKL", 1);
+  ee.setInputFrame(vf1, 0);
+  ee.setInputFrame(vf2, 1);
   ee.render();
-  std::cout << "result : " << static_cast<char const *>(ee.getOutputFrame(0)) << std::endl;
+
+  std::cout << "result : " << ee.getOutputFrame(0).rvf.raw << std::endl;
+
+//   VideoFrame		nvf((quint8*)"1234abcdABCD", 12);
+
+//   for ( i = 0; i < nvf.nbpixels; ++i )
+//     {
+//       std::cout << "Pixel[" << i << "].Red = " << nvf.rvf.pixel[i].Red << std::endl;
+//       std::cout << "Pixel[" << i << "].Green = " << nvf.rvf.pixel[i].Green << std::endl;
+//       std::cout << "Pixel[" << i << "].Blue = " << nvf.rvf.pixel[i].Blue << std::endl;
+//     }
+
   return (0);
 }

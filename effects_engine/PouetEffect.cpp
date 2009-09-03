@@ -17,14 +17,20 @@ PouetEffect::~PouetEffect()
 
 void	PouetEffect::render( void )
 {
+  quint32		i;
   LightVideoFrame	lol;
+  LightVideoFrame	lol2;
   VideoFrame		tmp;
   quint32		size;
 
-  (m_videoInputs["in"]) >> lol;
+  ( m_videoInputs["in"] ) >> lol;
   tmp = lol;
-  std::cout << "PouetEffect input : " << (char const *)(tmp) << std::endl;
-  tmp.truncate( tmp.size() / 2 );
-  (m_videoOutputs["out"]) << tmp;
+
+  for ( i = 0; i < tmp.nbpixels; ++i )
+    tmp.rvf.pixel[i].Red = 'W';
+
+
+  lol2 = tmp;
+  (m_videoOutputs["out"]) << lol2;
   return ;
 }
