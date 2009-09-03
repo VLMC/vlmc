@@ -40,7 +40,7 @@ Exception::~Exception()
     delete m_internalPtr;
 }
 
-void        Exception::setErrorCallback( Exception::errorCallback handler, void* datas )
+void        Exception::setErrorCallback( Exception::errorCallback handler, void* datas /*= NULL*/ )
 {
     Exception::m_datas = datas;
     Exception::m_errorCallback = handler;
@@ -48,7 +48,8 @@ void        Exception::setErrorCallback( Exception::errorCallback handler, void*
 
 const char* Exception::getErrorText() const
 {
-    return libvlc_exception_get_message( m_internalPtr );
+    return libvlc_errmsg();
+//    return libvlc_exception_get_message( m_internalPtr );
 }
 
 void        Exception::clear()

@@ -35,6 +35,7 @@ Instance::Instance()
 //        "-vvvvv",
         "--no-skip-frames",
 //        "--intf", "dummy",
+        "--text-renderer", "dummy",
         //"--no-audio",
         //"--plugin-path", VLC_TREE "/modules",
         "--disable-screensaver",

@@ -14,6 +14,15 @@
         <file>images/next_frame.png</file>
         <file>images/previous_frame.png</file>
         <file>images/stop.png</file>
+        <file>images/clear.png</file>
+        <file>images/remove.png</file>
+        <file>images/add.png</file>
+        <file>images/marker_left.png</file>
+        <file>images/marker_right.png</file>
+        <file alias="editcut">images/editcut.png</file>
+        <file alias="mouse">images/mouse.png</file>
+        <file alias="zoomin">images/zoom_in.png</file>
+        <file alias="zoomout">images/zoom_out.png</file>
     </qresource>
     <qresource prefix="/text" >
         <file>AUTHORS</file>

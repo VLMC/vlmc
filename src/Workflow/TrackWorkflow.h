@@ -29,6 +29,7 @@
 #include <QMap>
 #include <QList>
 #include <QReadWriteLock>
+#include <QDomElement>
 
 #include "ClipWorkflow.h"
 
@@ -49,15 +50,17 @@ class   TrackWorkflow : public QObject
         TrackWorkflow( unsigned int trackId );
         ~TrackWorkflow();
 
-        unsigned char*                          getOutput( qint64 currentFrame );
+        bool                                    getOutput( qint64 currentFrame );
         qint64                                  getLength() const;
         void                                    stop();
         void                                    pause();
+        void                                    unpause();
         void                                    moveClip( const QUuid& id, qint64 startingFrame );
         Clip*                                   removeClip( const QUuid& id );
         void                                    addClip( Clip*, qint64 start );
-        void                                    addClip( ClipWorkflow*, qint64 start );
-        void                                    activateOneFrameOnly();
+        qint64                                  getClipPosition( const QUuid& uuid ) const;
+        Clip*                                   getClip( const QUuid& uuid );
+
         /**
          *  Returns the output that has been computed in synchrone mode.
          */
@@ -66,15 +69,21 @@ class   TrackWorkflow : public QObject
         //FIXME: this won't be reliable as soon as we change the fps from the configuration
         static const unsigned int               nbFrameBeforePreload = 60;
 
+        void                                    save( QDomDocument& doc, QDomElement& trackNode ) const;
+        void                                    clear();
+
+        void                                    setFullSpeedRender( bool value );
+
     private:
         void                                    computeLength();
-        unsigned char*                          renderClip( ClipWorkflow* cw, qint64 currentFrame,
-                                                            qint64 start, bool needRepositioning,
-                                                            bool pauseAfterRender );
+        void                                    renderClip( ClipWorkflow* cw, qint64 currentFrame,
+                                                            qint64 start, bool needRepositioning );
         void                                    preloadClip( ClipWorkflow* cw );
         void                                    stopClipWorkflow( ClipWorkflow* cw );
-        void                                    pauseClipWorkflow( ClipWorkflow* cw );
         bool                                    checkEnd( qint64 currentFrame ) const;
+        void                                    addClip( ClipWorkflow*, qint64 start );
+        void                                    adjustClipTime( qint64 currentFrame, qint64 start, ClipWorkflow* cw );
+
 
     private:
         unsigned int                            m_trackId;
@@ -97,19 +106,21 @@ class   TrackWorkflow : public QObject
 
         bool                                    m_paused;
 
-        QAtomicInt                              m_oneFrameOnly;
         QAtomicInt                              m_nbClipToPause;
+        QAtomicInt                              m_nbClipToUnpause;
         QAtomicInt                              m_nbClipToRender;
 
         unsigned char*                          m_synchroneRenderBuffer;
 
     private slots:
         void                                    clipWorkflowPaused();
+        void                                    clipWorkflowUnpaused();
         void                                    clipWorkflowRenderCompleted( ClipWorkflow* );
 
     signals:
         void                                    trackEndReached( unsigned int );
         void                                    trackPaused();
+        void                                    trackUnpaused();
         void                                    renderCompleted( unsigned int );
 };
 
