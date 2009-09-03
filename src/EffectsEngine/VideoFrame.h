@@ -27,7 +27,8 @@ struct	VideoFrame
 {
   ~VideoFrame();
   VideoFrame();
-  VideoFrame(quint8* tocopy, quint32 size);
+  VideoFrame(quint32 nboctets)
+  VideoFrame(quint8* tocopy, quint32 nboctets);
   VideoFrame(VideoFrame const &);
   VideoFrame & operator=(VideoFrame const & tocopy);
   

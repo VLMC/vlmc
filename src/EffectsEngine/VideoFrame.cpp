@@ -13,6 +13,15 @@ VideoFrame::VideoFrame()
   this->nbpixels = 0;
 }
 
+VideoFrame::VideoFrame( quint32 nboctets )
+{
+  quint32	i;
+
+  this->nboctets = nboctets;
+  this->nbpixels = nboctets / Pixel::NbComposantes;
+  this->rvf.raw = new quint8[nboctets];
+}
+
 VideoFrame::VideoFrame( quint8* tocopy, quint32 nboctets )
 {
   quint32	i;
