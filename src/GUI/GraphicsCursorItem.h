@@ -26,7 +26,6 @@ protected:
 private:
     QPen m_pen;
     QRectF m_boundingRect;
-    bool    m_moveRequired;
 
 signals:
     void cursorPositionChanged( qint64 pos );
