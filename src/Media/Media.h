@@ -112,7 +112,7 @@ public:
     int                         getHeight() const;
     void                        setHeight( int height );
 
-    unsigned int                getFps() const;
+    float                       getFps() const;
     void                        setFps( float fps );
 
     const QUuid&                getUuid() const;

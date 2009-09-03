@@ -165,7 +165,7 @@ void                Media::setHeight( int height )
     m_height = height;
 }
 
-unsigned int        Media::getFps() const
+float               Media::getFps() const
 {
     return m_fps;
 }
