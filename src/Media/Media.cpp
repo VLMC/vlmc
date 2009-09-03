@@ -170,7 +170,7 @@ unsigned int        Media::getFps() const
     return m_fps;
 }
 
-void                Media::setFps( unsigned int fps )
+void                Media::setFps( float fps )
 {
     m_fps = fps;
 }

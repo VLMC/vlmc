@@ -88,7 +88,7 @@ void    MetaDataWorker::getMetaData()
 
     m_currentMedia->setWidth( m_mediaPlayer->getWidth() );
     m_currentMedia->setHeight( m_mediaPlayer->getHeight() );
-    m_currentMedia->setFps( static_cast<unsigned int>( m_mediaPlayer->getFps() ) );
+    m_currentMedia->setFps( m_mediaPlayer->getFps() );
 
     //Setting time for snapshot :
     if ( m_currentMedia->getFileType() == Media::Video )
