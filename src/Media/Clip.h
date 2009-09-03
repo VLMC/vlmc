@@ -90,8 +90,7 @@ class   Clip : public QObject
 
             \return     The Clip's Uuid as a QUuid
         */
-
-        const QUuid&        getTimelineUuid() const;
+        const QUuid&        getUuid() const;
 
         const QStringList&  getMetaTags() const;
         void                setMetaTags( const QStringList& tags );
@@ -113,10 +112,9 @@ class   Clip : public QObject
          *  timeline, as a unique object, even if this clip is present more than
          *  once.
          */
-        QUuid       m_timelineUuid;
+        QUuid       m_Uuid;
         QStringList m_metaTags;
         QString     m_notes;
-
 
 };
 

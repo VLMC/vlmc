@@ -39,7 +39,7 @@ public:
     virtual int type() const { return Type; }
     virtual bool expandable() const { return false; }
     virtual bool moveable() const { return true; }
-    virtual const QUuid& uuid() const { return m_clip->getTimelineUuid(); }
+    virtual const QUuid& uuid() const { return m_clip->getUuid(); }
     virtual QRectF boundingRect() const;
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
 

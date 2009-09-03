@@ -467,7 +467,7 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
             if ( m_layout->itemAt( 0 )->graphicsItem()->childItems().count() > 0 )
                 addVideoTrack();
             Commands::trigger( new Commands::MainWorkflow::MoveClip( m_mainWorkflow,
-                                                                     movieItem->clip()->getTimelineUuid(),
+                                                                     movieItem->clip()->getUuid(),
                                                                      movieItem->oldTrackNumber,
                                                                      movieItem->oldPosition,
                                                                      movieItem->trackNumber(),
