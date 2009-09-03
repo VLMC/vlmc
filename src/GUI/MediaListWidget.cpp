@@ -82,7 +82,9 @@ void    MediaListWidget::mouseMoveEvent( QMouseEvent* event )
 
     ListViewMediaItem* item = static_cast<ListViewMediaItem*>( currentItem() );
     QMimeData* mimeData = new QMimeData;
-    mimeData->setData( "vlmc/uuid", item->getClip()->getUuid().toString().toAscii() );
+    //FIXME the second argument is a media UUID instead of a Clip
+    // and this is not logical... but it works.
+    mimeData->setData( "vlmc/uuid", item->getClip()->getParent()->getUuid().toString().toAscii() );
     QDrag* drag = new QDrag( this );
     drag->setMimeData( mimeData );
     const QPixmap& dragPixmap = static_cast<ListViewMediaItem*>( currentItem() )->getClip()->getParent()->getSnapshot();

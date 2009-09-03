@@ -142,7 +142,7 @@ void        ClipRenderer::previousFrame()
 
 void        ClipRenderer::mediaUnloaded( const QUuid& uuid )
 {
-    if ( m_selectedClip != NULL && m_selectedClip->getUuid() == uuid )
+    if ( m_selectedClip != NULL && m_selectedClip->getTimelineUuid() == uuid )
     {
         m_mediaPlayer->stop();
         m_clipLoaded = false;

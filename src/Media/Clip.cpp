@@ -30,40 +30,37 @@
 
 Clip::Clip( Media* parent ) : m_parent( parent ), m_begin( 0.0f ), m_end( 1.0f )
 {
-    init();
+    m_timelineUuid = QUuid::createUuid();
+    computeLength();
 }
 
 Clip::Clip( Clip* creator, float begin, float end ) : m_parent( creator->getParent() ), m_begin( begin ), m_end( end )
 {
-    init();
+    m_timelineUuid = QUuid::createUuid();
+    computeLength();
 }
 
 Clip::Clip( Media* parent, float begin, float end ) : m_parent( parent ), m_begin( begin ), m_end( end )
 {
     Q_ASSERT( parent->getInputType() == Media::File || ( begin == .0f && end == .0f ) );
-    init();
+    m_timelineUuid = QUuid::createUuid();
+    computeLength();
 }
 
-Clip::Clip( Clip* clip ) : 
+Clip::Clip( Clip* clip ) :
         m_parent( clip->m_parent ),
         m_begin( clip->m_begin ),
         m_end( clip->m_end ),
         m_length( clip->m_length ),
         m_lengthSeconds( clip->m_lengthSeconds ),
-        m_uuid( clip->m_uuid ),
         m_metaTags( clip->m_metaTags ),
         m_notes( clip->m_notes )
 {
+    m_timelineUuid = QUuid::createUuid();
 }
 
 Clip::~Clip()
 {
-}
-
-void        Clip::init()
-{
-    m_uuid = QUuid::createUuid();
-    computeLength();
 }
 
 float       Clip::getBegin() const
@@ -109,11 +106,6 @@ void        Clip::computeLength()
     }
 }
 
-const QUuid&    Clip::getUuid() const
-{
-    return m_uuid;
-}
-
 const QStringList&      Clip::getMetaTags() const
 {
     return m_metaTags;
@@ -152,11 +144,6 @@ const QUuid&        Clip::getTimelineUuid() const
 {
     Q_ASSERT( m_timelineUuid.isNull() == false );
     return m_timelineUuid;
-}
-
-void                Clip::setTimelineUuid( const QUuid& uuid )
-{
-    m_timelineUuid = uuid;
 }
 
 void                Clip::setBegin( float begin )

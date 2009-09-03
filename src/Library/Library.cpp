@@ -59,7 +59,7 @@ void        Library::removingMediaAsked( const QUuid& uuid )
 void        Library::metaDataComputed( Media* media )
 {
     Clip* clip = new Clip( media );
-    m_clips[clip->getUuid()] = clip;
+    m_clips[media->getUuid()] = clip;
     emit newClipLoaded( clip );
 }
 

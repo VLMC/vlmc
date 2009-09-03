@@ -90,7 +90,7 @@ class   Clip : public QObject
 
             \return     The Clip's Uuid as a QUuid
         */
-        const QUuid&        getUuid() const;
+
         const QUuid&        getTimelineUuid() const;
 
         const QStringList&  getMetaTags() const;
@@ -100,21 +100,14 @@ class   Clip : public QObject
         const QString&      getNotes() const;
         void                setNotes( const QString& notes );
 
-        void                setTimelineUuid( const QUuid& uuid );
-
     private:
         void        computeLength();
-        void        init();
 
         Media*      m_parent;
         float       m_begin;
         float       m_end;
         qint64      m_length;
         qint64      m_lengthSeconds;
-        /**
-         *  The Clip's UUID. It's used to identify the clip in the library.
-         */
-        QUuid       m_uuid;
         /**
          *  The Clip's timeline UUID. Used to identify the Clip in the
          *  timeline, as a unique object, even if this clip is present more than
