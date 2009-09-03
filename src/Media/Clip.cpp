@@ -158,3 +158,15 @@ void                Clip::setTimelineUuid( const QUuid& uuid )
 {
     m_timelineUuid = uuid;
 }
+
+void                Clip::setBegin( float begin )
+{
+    Q_ASSERT( begin >= .0f );
+    m_begin = begin;
+}
+
+void                Clip::setEnd( float end )
+{
+    Q_ASSERT( end <= 1.0f );
+    m_end = end;
+}

@@ -126,6 +126,38 @@ namespace Commands
                 ::MainWorkflow*             m_workflow;
                 QVector<ClipActionInfo>     m_clips;
         };
+
+        NEW_COMMAND( ResizeClip )
+        {
+            public:
+                ResizeClip( ::MainWorkflow* mainWorkflow, const QUuid& uuid, unsigned int trackId,
+                            float newBegin, float newEnd ) :
+                        m_mainWorkflow( mainWorkflow ),
+                        m_newBegin( newBegin ),
+                        m_newEnd( newEnd )
+                {
+                    m_clip = mainWorkflow->getClip( uuid, trackId );
+                    m_oldBegin = m_clip->getBegin();
+                    m_oldEnd = m_clip->getEnd();
+                }
+                virtual void    redo()
+                {
+                    m_clip->setBegin( m_newBegin );
+                    m_clip->setEnd( m_newEnd );
+                }
+                virtual void    undo()
+                {
+                    m_clip->setBegin( m_oldBegin );
+                    m_clip->setEnd( m_oldEnd );
+                }
+            private:
+                ::MainWorkflow*             m_mainWorkflow;
+                float                       m_oldBegin;
+                float                       m_oldEnd;
+                float                       m_newBegin;
+                float                       m_newEnd;
+                Clip*                       m_clip;
+        }
     }
 }
 

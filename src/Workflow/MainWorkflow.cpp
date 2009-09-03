@@ -380,3 +380,10 @@ void        MainWorkflow::activateTrack( unsigned int trackId )
     else
         m_tracks[trackId].deactivate();
 }
+
+Clip*       MainWorkflow::getClip( const QUuid& uuid, unsigned int trackId )
+{
+    Q_ASSERT( trackId < m_trackCount );
+
+    return m_tracks[trackId]->getClip( uuid );
+}

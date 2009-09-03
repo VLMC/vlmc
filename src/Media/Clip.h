@@ -65,6 +65,9 @@ class   Clip : public QObject
         */
         float           getEnd() const;
 
+        void            setBegin( float begin );
+        void            setEnd( float end );
+
         /**
             \return     Returns the clip length in frame.
         */
