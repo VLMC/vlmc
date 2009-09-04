@@ -5,8 +5,7 @@ TEMPLATE = app
 OBJECTS_DIR = build
 MOC_DIR = build/moc
 UI_DIR = build/ui
-QMAKE_EXT_H = .h \
-    .hpp
+QMAKE_EXT_H = .h .hpp
 INCLUDEPATH = build/moc \
     build/ui
 QT += gui \
@@ -55,10 +54,7 @@ SOURCES += src/main.cpp \
     src/GUI/Settings.cpp \
     src/GUI/Panel.cpp \
     src/GUI/PreferenceWidget.cpp \
-    src/GUI/ProjectPreferences.cpp \
-    src/GUI/VideoProjectPreferences.cpp \
-    src/GUI/AudioProjectPreferences.cpp \
-    src/GUI/VLMCPreferences.cpp
+    src/GUI/ProjectPreferences.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -110,11 +106,7 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/WorkflowFileRendererDialog.h \
     src/GUI/Settings.h \
     src/GUI/Panel.h \
-    src/GUI/GraphicsTrack.hpp \
-    src/GUI/ProjectPreferences.h \
-    src/GUI/VideoProjectPreferences.h \
-    src/GUI/AudioProjectPreferences.h \
-    src/GUI/VLMCPreferences.h
+    src/GUI/GraphicsTrack.hpp
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \
@@ -125,10 +117,7 @@ FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/FileBrowser.ui \
     src/GUI/ui/WorkflowFileRendererDialog.ui \
     src/GUI/ui/ClipProperty.ui \
-    src/GUI/ui/ProjectPreferences.ui \
-    src/GUI/ui/VideoProjectPreferences.ui \
-    src/GUI/ui/AudioProjectPreferences.ui \
-    src/GUI/ui/VLMCPreferences.ui
+    src/GUI/ui/ProjectPreferences.ui
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts

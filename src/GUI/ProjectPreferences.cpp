@@ -16,6 +16,7 @@ ProjectPreferences::ProjectPreferences( QWidget* parent )
 
 ProjectPreferences::~ProjectPreferences() { }
 
+
 bool    ProjectPreferences::load()
 {
     qDebug() << "Loading ProjectPreferences values";

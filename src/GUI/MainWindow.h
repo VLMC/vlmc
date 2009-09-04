@@ -37,6 +37,7 @@
 #include "ListViewMediaItem.h"
 #include "Settings.h"
 
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -60,6 +61,7 @@ private:
     void        createStatusBar();
     void        createGlobalPreferences();
 
+
     Ui::MainWindow          m_ui;
     MetaDataManager*        m_metaDataManager;
     QSlider*                m_zoomSlider;
@@ -67,8 +69,7 @@ private:
     PreviewWidget*          m_clipPreview;
     PreviewWidget*          m_projectPreview;
     WorkflowFileRenderer*   m_renderer;
-    Settings*               m_globalPreferences;
-    Settings*               m_projectPreferences;
+    Settings*      m_globalPreferences;
 
 private slots:
     void on_actionFullscreen_triggered( bool checked );
