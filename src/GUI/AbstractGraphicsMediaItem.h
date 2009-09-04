@@ -63,7 +63,7 @@ protected:
     /**
      * Contains the old trackNumber
      */
-    int oldTrackNumber;
+    unsigned int oldTrackNumber;
     /**
      * Contains the old position
      */
