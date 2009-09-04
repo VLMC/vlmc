@@ -82,6 +82,8 @@ void    MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
     m_tracks[trackId]->addClip( clip, start );
     if ( m_tracks[trackId]->getLength() > m_length )
         m_length = m_tracks[trackId]->getLength();
+
+    emit clipAdded( clip, trackId, start );
 }
 
 void            MainWorkflow::computeLength()

@@ -59,6 +59,7 @@ Timeline::Timeline( QWidget *parent ) :
     setDuration( 0 );
     connect( m_tracksView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), m_tracksRuler, SLOT( moveRuler( int ) ) );
     connect( m_tracksView, SIGNAL( durationChanged(int) ), this, SLOT( setDuration(int) ) );
+    connect( m_mainWorkflow, SIGNAL( clipAdded(Clip*,uint,qint64) ), this, SLOT( actionAddClip(Clip*,uint,qint64) ) );
     connect( m_mainWorkflow, SIGNAL( clipMoved(QUuid, uint, qint64 ) ), this, SLOT( actionMoveClip(QUuid,uint,qint64) ) );
     connect( m_mainWorkflow, SIGNAL( clipRemoved(QUuid,uint) ), this, SLOT( actionRemoveClip(QUuid,uint)) );
 }
@@ -91,6 +92,11 @@ void Timeline::setDuration( int duration )
 {
     m_tracksView->setDuration( duration );
     m_tracksRuler->setDuration( duration );
+}
+
+void Timeline::actionAddClip( Clip* clip, unsigned int track, qint64 start )
+{
+    tracksView()->addMediaItem( clip, track, start );
 }
 
 void Timeline::actionMoveClip( const QUuid& uuid, unsigned int track, qint64 time )

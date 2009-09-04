@@ -127,6 +127,29 @@ void TracksView::addAudioTrack()
     m_cursorLine->setHeight( m_layout->contentsRect().height() );
 }
 
+void TracksView::addMediaItem( Clip* clip, unsigned int track, qint64 start )
+{
+    Q_ASSERT( clip );
+
+    // Is the clip already existing in the timeline ?
+    //TODO: please optimize me!
+    QList<QGraphicsItem*> sceneItems = m_scene->items();
+    for ( int i = 0; i < sceneItems.size(); ++i )
+    {
+        AbstractGraphicsMediaItem* item =
+                dynamic_cast<AbstractGraphicsMediaItem*>( sceneItems.at( i ) );
+        if ( !item || item->uuid() != clip->getUuid() ) continue;
+        // Item already exist: goodbye!
+        return;
+    }
+
+    GraphicsMovieItem* item = new GraphicsMovieItem( clip );
+    item->setWidth( clip->getLength() );
+    item->setHeight( tracksHeight() );
+    item->setParentItem( getTrack( track ) );
+    moveMediaItem( item, track, start );
+}
+
 void TracksView::dragEnterEvent( QDragEnterEvent* event )
 {
     if ( event->mimeData()->hasFormat( "vlmc/uuid" ) )
