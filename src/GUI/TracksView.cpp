@@ -404,22 +404,6 @@ void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
     painter->drawRect( ( int ) r.left(), ( int ) m_separator->y(),
                        ( int ) r.right(),
                        ( int ) m_separator->boundingRect().height() );
-
-    /*QColor base = palette().button().color();
-    QRectF r = rect;
-    r.setWidth( r.width() + 1 );
-
-    painter->setClipRect( r );
-    painter->drawLine( r.left(), 0, r.right(), 0 );
-
-    uint tracks = m_tracksCount;
-    for ( uint i = 0; i < tracks; ++i )
-        painter->drawLine( r.left(), m_tracksHeight * ( i + 1 ), r.right(), m_tracksHeight * ( i + 1 ) );
-
-    int lowerLimit = m_tracksHeight * m_tracksCount + 1;
-    if ( height() > lowerLimit )
-        painter->fillRect( QRectF ( r.left(), lowerLimit, r.width(),
-        height() - lowerLimit ), QBrush( base ) );*/
 }
 
 void TracksView::mouseMoveEvent( QMouseEvent* event )
