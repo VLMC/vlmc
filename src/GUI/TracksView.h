@@ -84,6 +84,7 @@ private:
     void                    addAudioTrack();
     void                    moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position );
     void                    moveMediaItem( AbstractGraphicsMediaItem* item, int track, qint64 time );
+    GraphicsTrack*          getTrack( unsigned int number );
     QGraphicsScene*         m_scene;
     int                     m_tracksHeight;
     unsigned int            m_tracksCount;

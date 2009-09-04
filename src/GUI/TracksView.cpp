@@ -580,3 +580,16 @@ void TracksView::updateDuration()
 
     emit durationChanged( m_projectDuration );
 }
+
+GraphicsTrack* TracksView::getTrack( unsigned int number )
+{
+    for (int i = 0; i < m_layout->count(); ++i )
+    {
+        QGraphicsItem* gi = m_layout->itemAt( i )->graphicsItem();
+        GraphicsTrack* track = qgraphicsitem_cast<GraphicsTrack*>( gi );
+        if ( !track ) continue;
+        if ( track->trackNumber() == number )
+            return track;
+    }
+    return NULL;
+}
