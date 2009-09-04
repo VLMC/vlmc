@@ -226,7 +226,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, qint
     QPointF oldPos = item->pos();
     QGraphicsItem* oldParent = item->parentItem();
     // Check for vertical collisions
-    item->setParentItem( m_layout->itemAt( m_numVideoTrack - track - 1 )->graphicsItem() );
+    item->setParentItem( getTrack( track ) );
     bool continueSearch = true;
     while ( continueSearch )
     {
@@ -249,7 +249,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, qint
                     }
                     track -= 1;
                     Q_ASSERT( m_layout->itemAt( track )->graphicsItem() != NULL );
-                    item->setParentItem( m_layout->itemAt( track )->graphicsItem() );
+                    item->setParentItem( getTrack( track ) );
                 }
                 else if ( currentItem->trackNumber() < track )
                 {
@@ -261,7 +261,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, qint
                     }
                     track += 1;
                     Q_ASSERT( m_layout->itemAt( track )->graphicsItem() != NULL );
-                    item->setParentItem( m_layout->itemAt( track )->graphicsItem() );
+                    item->setParentItem( getTrack( track ) );
                 }
             }
         }
