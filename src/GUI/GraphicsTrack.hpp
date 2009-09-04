@@ -37,12 +37,12 @@ public:
         Video,
         Audio
     };
-    GraphicsTrack( MediaType type, int trackNumber, QGraphicsItem* parent = 0 ) : QGraphicsWidget( parent )
+    GraphicsTrack( MediaType type, quint32 trackNumber, QGraphicsItem* parent = 0 ) : QGraphicsWidget( parent )
     {
         m_type = type;
         m_trackNumber = trackNumber;
     }
-    int trackNumber()
+    quint32 trackNumber()
     {
         return m_trackNumber;
     }
@@ -61,7 +61,7 @@ protected:
 
 private:
     MediaType m_type;
-    int m_trackNumber;
+    quint32 m_trackNumber;
 };
 
 #endif // GRAPHICSTRACK_HPP
