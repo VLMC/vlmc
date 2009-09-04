@@ -13,7 +13,7 @@ class GraphicsCursorItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
 public:
-    GraphicsCursorItem( int height, const QPen& pen );
+    GraphicsCursorItem( const QPen& pen );
     int cursorPos() const { return ( int )pos().x(); }
     virtual QRectF boundingRect() const;
     void setHeight( int height );

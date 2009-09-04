@@ -57,8 +57,7 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
     setContentsMargins( 0, 0, 0, 0 );
     setFrameStyle( QFrame::NoFrame );
 
-    //TODO Remove the GraphicsCursorItem parameter height (not useful anymore)
-    m_cursorLine = new GraphicsCursorItem( 1, QPen( QColor( 220, 30, 30 ) ) );
+    m_cursorLine = new GraphicsCursorItem( QPen( QColor( 220, 30, 30 ) ) );
 
     m_scene->addItem( m_cursorLine );
 
