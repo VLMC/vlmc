@@ -131,6 +131,8 @@ void        WorkflowRenderer::stopPreview()
 
 void        WorkflowRenderer::startPreview()
 {
+    if ( m_mainWorkflow->getLength() <= 0 )
+        return ;
     m_mediaPlayer->setMedia( m_media );
 
     //Workflow part
