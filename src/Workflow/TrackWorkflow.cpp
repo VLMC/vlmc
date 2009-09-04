@@ -98,6 +98,20 @@ qint64              TrackWorkflow::getClipPosition( const QUuid& uuid ) const
     return -1;
 }
 
+Clip*               TrackWorkflow::getClip( const QUuid& uuid )
+{
+    QMap<qint64, ClipWorkflow*>::const_iterator     it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::const_iterator     end = m_clips.end();
+
+    while ( it != end )
+    {
+        if ( it.value()->getClip()->getUuid() == uuid )
+            return it.value()->getClip();
+        ++it;
+    }
+    return NULL;
+}
+
 void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
                                         qint64 start , bool needRepositioning )
 {

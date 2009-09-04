@@ -61,6 +61,8 @@ Media::Media( const QString& filePath )
     {
         m_inputType = Media::Stream;
         m_mrl = filePath.right( filePath.length() - streamPrefix.length() );
+        //FIXME:
+        m_fileType = Media::Video;
     }
     m_vlcMedia = new LibVLCpp::Media( m_mrl );
 
@@ -167,12 +169,12 @@ void                Media::setHeight( int height )
     m_height = height;
 }
 
-unsigned int        Media::getFps() const
+float               Media::getFps() const
 {
     return m_fps;
 }
 
-void                Media::setFps( unsigned int fps )
+void                Media::setFps( float fps )
 {
     m_fps = fps;
 }

@@ -59,6 +59,7 @@ class   TrackWorkflow : public QObject
         void                                    addClip( Clip*, qint64 start );
         void                                    addClip( ClipWorkflow*, qint64 start );
         qint64                                  getClipPosition( const QUuid& uuid ) const;
+        Clip*                                   getClip( const QUuid& uuid );
 
         /**
          *  Returns the output that has been computed in synchrone mode.

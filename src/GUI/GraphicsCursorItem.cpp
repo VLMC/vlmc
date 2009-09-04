@@ -1,8 +1,8 @@
 #include <QtDebug>
 #include "GraphicsCursorItem.h"
 
-GraphicsCursorItem::GraphicsCursorItem( int height, const QPen& pen )
-        : m_pen( pen ), m_moveRequired( false )
+GraphicsCursorItem::GraphicsCursorItem( const QPen& pen )
+        : m_pen( pen )
 {
     setFlags( QGraphicsItem::ItemIgnoresTransformations | QGraphicsItem::ItemIsMovable );
     setCursor( QCursor( Qt::SizeHorCursor ) );
@@ -32,23 +32,14 @@ QVariant GraphicsCursorItem::itemChange( GraphicsItemChange change, const QVaria
     }
     if ( change == ItemPositionHasChanged )
     {
-        if ( m_moveRequired == false )
-            emit cursorPositionChanged( ( qint64 ) pos().x() );
-        else
-            m_moveRequired = false;
+        emit cursorPositionChanged( ( qint64 ) pos().x() );
     }
     return QGraphicsItem::itemChange( change, value );
 }
 
-void GraphicsCursorItem::setCursorPos( int position )
+void GraphicsCursorItem::setCursorPos( qint64 position )
 {
     setPos( position, pos().y() );
-    m_moveRequired = true;
-}
-
-void    GraphicsCursorItem::updateCursorPos( qint64 position )
-{
-    setCursorPos( (qint64) position );
 }
 
 void GraphicsCursorItem::setHeight( int height )

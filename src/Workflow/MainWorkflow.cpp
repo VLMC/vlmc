@@ -82,6 +82,8 @@ void    MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
     m_tracks[trackId]->addClip( clip, start );
     if ( m_tracks[trackId]->getLength() > m_length )
         m_length = m_tracks[trackId]->getLength();
+
+    emit clipAdded( clip, trackId, start );
 }
 
 void            MainWorkflow::computeLength()
@@ -378,4 +380,11 @@ void        MainWorkflow::activateTrack( unsigned int trackId )
         m_tracks[trackId].activate();
     else
         m_tracks[trackId].deactivate();
+}
+
+Clip*       MainWorkflow::getClip( const QUuid& uuid, unsigned int trackId )
+{
+    Q_ASSERT( trackId < m_trackCount );
+
+    return m_tracks[trackId]->getClip( uuid );
 }

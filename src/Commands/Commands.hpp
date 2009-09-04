@@ -24,6 +24,8 @@
 #define COMMANDS_HPP
 
 #include <QUndoCommand>
+#include <QObject>
+#include <QVector>
 #include "UndoStack.h"
 #include "MainWorkflow.h"
 #include "Clip.h"
@@ -39,13 +41,20 @@ namespace Commands
 
     namespace   MainWorkflow
     {
+        struct ClipActionInfo
+        {
+            Clip*   clip;
+            quint32 trackNumber;
+            qint64  pos;
+        };
+
         NEW_COMMAND( AddClip )
         {
             public:
                 AddClip( ::MainWorkflow* workflow, Clip* clip, unsigned int trackNumber, qint64 pos ) :
                         m_workflow( workflow ), m_clip( clip ), m_trackNumber( trackNumber ), m_pos( pos )
                 {
-                    setText( "Adding clip to track" + QString::number( trackNumber ) );
+                    setText( QObject::tr( "Adding clip to track %1" ).arg( QString::number( trackNumber ) ) );
                 }
                 virtual void    redo()
                 {
@@ -56,7 +65,7 @@ namespace Commands
                     m_workflow->removeClip( m_clip->getUuid(), m_trackNumber );
                 }
             private:
-                ::MainWorkflow*   m_workflow;
+                ::MainWorkflow* m_workflow;
                 Clip*           m_clip;
                 unsigned int    m_trackNumber;
                 qint64          m_pos;
@@ -70,18 +79,16 @@ namespace Commands
                     m_workflow( workflow ), m_uuid( uuid ), m_oldTrack( oldTrack ),
                     m_newTrack( newTrack ), m_pos( newPos ), m_oldPos( oldPos )
                 {
-                    setText( "Moving clip" );
+                    setText( QObject::tr( "Moving clip" ) );
                     m_undoRedoAction = false;
                 }
                 virtual void    redo()
                 {
-                    qDebug() << "Moving from track" << m_oldTrack << "to" << m_newTrack << "at pos" << m_pos;
                     m_workflow->moveClip( m_uuid, m_oldTrack, m_newTrack, m_pos, m_undoRedoAction );
                     m_undoRedoAction = true;
                 }
                 virtual void    undo()
                 {
-                    qDebug() << "Moving from track" << m_newTrack << "to" << m_oldTrack << "at pos" << m_oldPos;
                     m_workflow->moveClip( m_uuid, m_newTrack, m_oldTrack, m_oldPos, m_undoRedoAction );
                     m_undoRedoAction = true;
                 }
@@ -94,6 +101,62 @@ namespace Commands
                 qint64              m_pos;
                 qint64              m_oldPos;
                 bool                m_undoRedoAction;
+        };
+
+        NEW_COMMAND( RemoveClips )
+        {
+            public:
+                RemoveClips( ::MainWorkflow* workflow, const QVector<ClipActionInfo>& clipsInfos ) :
+                        m_workflow( workflow ), m_clips( clipsInfos )
+                {
+                    setText( QObject::tr( "Remove clip" ) );
+                }
+                virtual void redo()
+                {
+                    for (int i = 0; i < m_clips.size(); ++i )
+                        m_workflow->removeClip( m_clips.at( i ).clip->getUuid(), m_clips.at( i ).trackNumber );
+                }
+                virtual void undo()
+                {
+                    for (int i = 0; i < m_clips.size(); ++i )
+                        m_workflow->addClip( m_clips.at( i ).clip, m_clips.at( i ).trackNumber, m_clips.at( i ).pos );
+                }
+
+            private:
+                ::MainWorkflow*             m_workflow;
+                QVector<ClipActionInfo>     m_clips;
+        };
+
+        NEW_COMMAND( ResizeClip )
+        {
+            public:
+                ResizeClip( ::MainWorkflow* mainWorkflow, const QUuid& uuid, unsigned int trackId,
+                            float newBegin, float newEnd ) :
+                        m_mainWorkflow( mainWorkflow ),
+                        m_newBegin( newBegin ),
+                        m_newEnd( newEnd )
+                {
+                    m_clip = mainWorkflow->getClip( uuid, trackId );
+                    m_oldBegin = m_clip->getBegin();
+                    m_oldEnd = m_clip->getEnd();
+                }
+                virtual void    redo()
+                {
+                    m_clip->setBegin( m_newBegin );
+                    m_clip->setEnd( m_newEnd );
+                }
+                virtual void    undo()
+                {
+                    m_clip->setBegin( m_oldBegin );
+                    m_clip->setEnd( m_oldEnd );
+                }
+            private:
+                ::MainWorkflow*             m_mainWorkflow;
+                float                       m_oldBegin;
+                float                       m_oldEnd;
+                float                       m_newBegin;
+                float                       m_newEnd;
+                Clip*                       m_clip;
         };
     }
 }

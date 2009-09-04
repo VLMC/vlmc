@@ -31,50 +31,14 @@
 #include <QWheelEvent>
 #include <QGraphicsSceneDragDropEvent>
 #include <QApplication>
+#include <QVector>
 #include "GraphicsCursorItem.h"
 #include "MainWorkflow.h"
 #include "TrackWorkflow.h"
+#include "AbstractGraphicsMediaItem.h"
 
 class GraphicsMovieItem;
-class AbstractGraphicsMediaItem;
-
-class GraphicsTrack : public QGraphicsWidget
-{
-    Q_OBJECT
-
-public:
-    enum { Type = UserType + 2 };
-    enum MediaType
-    {
-        Video,
-        Audio
-    };
-    GraphicsTrack( MediaType type, int trackNumber, QGraphicsItem* parent = 0 ) : QGraphicsWidget( parent )
-    {
-        m_type = type;
-        m_trackNumber = trackNumber;
-    }
-    int trackNumber()
-    {
-        return m_trackNumber;
-    }
-    virtual int type() const { return Type; }
-
-protected:
-    virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* = 0 )
-    {
-        if ( m_type == Video )
-            painter->setBrush( Qt::green );
-        else
-            painter->setBrush( Qt::blue );
-        painter->setPen( Qt::transparent );
-        painter->drawRect( rect() );
-    }
-
-private:
-    MediaType m_type;
-    int m_trackNumber;
-};
+//class AbstractGraphicsMediaItem;
 
 class TracksView : public QGraphicsView
 {
@@ -91,9 +55,13 @@ public:
     GraphicsCursorItem* tracksCursor() const { return m_cursorLine; }
     void setScale( double scaleFactor );
     QList<AbstractGraphicsMediaItem*> mediaItems( const QPoint& pos );
+    void                    removeMediaItem( AbstractGraphicsMediaItem* item, bool notifyBackend = true );
+    void                    removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items, bool notifyBackend = true );
 
 public slots:
+    void                    addMediaItem( Clip* clip, unsigned int track, qint64 start );
     void                    moveMediaItem( const QUuid& uuid, unsigned int track, qint64 time );
+    void                    removeMediaItem( const QUuid& uuid, unsigned int track, bool notifyBackend = true );
 
 protected:
     virtual void            resizeEvent( QResizeEvent* event );
@@ -117,6 +85,7 @@ private:
     void                    addAudioTrack();
     void                    moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position );
     void                    moveMediaItem( AbstractGraphicsMediaItem* item, int track, qint64 time );
+    GraphicsTrack*          getTrack( unsigned int number );
     QGraphicsScene*         m_scene;
     int                     m_tracksHeight;
     unsigned int            m_tracksCount;

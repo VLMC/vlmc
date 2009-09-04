@@ -99,6 +99,15 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    muteTrack( unsigned int trackId );
         void                    unmuteTrack( unsigned int trackId );
 
+        /**
+         * \param   uuid : The clip's uuid.
+         *              Please note that the UUID must be the "timeline uuid"
+         *              and note the clip's uuid, or else nothing would match.
+         *  \param  trackId : the track id
+         *  \returns    The clip that matches the given UUID.
+         */
+        Clip*                   getClip( const QUuid& uuid, unsigned int trackId );
+
     private:
         static MainWorkflow*    m_instance;
 
@@ -147,6 +156,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    mainWorkflowEndReached();
         void                    mainWorkflowPaused();
         void                    mainWorkflowUnpaused();
+        void                    clipAdded( Clip*, unsigned int, qint64 );
         void                    clipRemoved( QUuid, unsigned int );
         void                    clipMoved( QUuid, unsigned int, qint64 );
 };

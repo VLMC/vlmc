@@ -112,8 +112,8 @@ public:
     int                         getHeight() const;
     void                        setHeight( int height );
 
-    unsigned int                getFps() const;
-    void                        setFps( unsigned int fps );
+    float                       getFps() const;
+    void                        setFps( float fps );
 
     const QUuid&                getUuid() const;
 
@@ -151,7 +151,7 @@ protected:
     qint64                      m_length;
     unsigned int                m_width;
     unsigned int                m_height;
-    unsigned int                m_fps;
+    float                       m_fps;
     int*                        m_audioSpectrum;
     audioData                   m_audioData;
     FileType                    m_fileType;

@@ -13,9 +13,8 @@ class GraphicsCursorItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
 public:
-    GraphicsCursorItem( int height, const QPen& pen );
+    GraphicsCursorItem( const QPen& pen );
     int cursorPos() const { return ( int )pos().x(); }
-    void setCursorPos( int position );
     virtual QRectF boundingRect() const;
     void setHeight( int height );
 
@@ -26,13 +25,12 @@ protected:
 private:
     QPen m_pen;
     QRectF m_boundingRect;
-    bool    m_moveRequired;
 
 signals:
     void cursorPositionChanged( qint64 pos );
 
 public slots:
-    void    updateCursorPos( qint64 pos );
+    void setCursorPos( qint64 position );
 };
 
 #endif // GRAPHICSCURSORITEM_H

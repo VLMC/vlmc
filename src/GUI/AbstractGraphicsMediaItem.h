@@ -25,7 +25,10 @@
 
 #include <QGraphicsItem>
 #include <QUuid>
-#include "TracksView.h"
+#include <QCursor>
+#include "GraphicsTrack.hpp"
+
+class TracksView;
 
 class AbstractGraphicsMediaItem : public QObject, public QGraphicsItem
 {

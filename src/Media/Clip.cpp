@@ -30,29 +30,37 @@
 
 Clip::Clip( Media* parent ) : m_parent( parent ), m_begin( 0.0f ), m_end( 1.0f )
 {
-    init();
+    m_Uuid = QUuid::createUuid();
+    computeLength();
 }
 
 Clip::Clip( Clip* creator, float begin, float end ) : m_parent( creator->getParent() ), m_begin( begin ), m_end( end )
 {
-    init();
+    m_Uuid = QUuid::createUuid();
+    computeLength();
 }
 
 Clip::Clip( Media* parent, float begin, float end ) : m_parent( parent ), m_begin( begin ), m_end( end )
 {
     Q_ASSERT( parent->getInputType() == Media::File || ( begin == .0f && end == .0f ) );
-    init();
+    m_Uuid = QUuid::createUuid();
+    computeLength();
+}
+
+Clip::Clip( Clip* clip ) :
+        m_parent( clip->m_parent ),
+        m_begin( clip->m_begin ),
+        m_end( clip->m_end ),
+        m_length( clip->m_length ),
+        m_lengthSeconds( clip->m_lengthSeconds ),
+        m_metaTags( clip->m_metaTags ),
+        m_notes( clip->m_notes )
+{
+    m_Uuid = QUuid::createUuid();
 }
 
 Clip::~Clip()
 {
-}
-
-void        Clip::init()
-{
-    m_uuid = QUuid::createUuid();
-    computeLength();
-    m_metaTags << "Toto" << "titi" << "tutu";
 }
 
 float       Clip::getBegin() const
@@ -98,11 +106,6 @@ void        Clip::computeLength()
     }
 }
 
-const QUuid&    Clip::getUuid() const
-{
-    return m_uuid;
-}
-
 const QStringList&      Clip::getMetaTags() const
 {
     return m_metaTags;
@@ -135,4 +138,22 @@ const   QString&    Clip::getNotes() const
 void                Clip::setNotes( const QString& notes )
 {
     m_notes = notes;
+}
+
+const QUuid&        Clip::getUuid() const
+{
+    Q_ASSERT( m_Uuid.isNull() == false );
+    return m_Uuid;
+}
+
+void                Clip::setBegin( float begin )
+{
+    Q_ASSERT( begin >= .0f );
+    m_begin = begin;
+}
+
+void                Clip::setEnd( float end )
+{
+    Q_ASSERT( end <= 1.0f );
+    m_end = end;
 }

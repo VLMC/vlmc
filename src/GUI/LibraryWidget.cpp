@@ -82,7 +82,7 @@ void                LibraryWidget::removeMedia( const QUuid& uuid )
     ListViewMediaItem* item;
     foreach (item, *m_clips)
     {
-        if ( item->getClip()->getUuid() == uuid )
+        if ( item->getClip()->getParent()->getUuid() == uuid )
         {
             switch( item->getFileType() )
             {

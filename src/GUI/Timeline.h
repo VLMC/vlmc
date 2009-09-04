@@ -46,7 +46,9 @@ public:
 public slots:
     void changeZoom( int factor );
     void setDuration( int duration );
+    void actionAddClip( Clip* clip, unsigned int track, qint64 start );
     void actionMoveClip( const QUuid& uuid, unsigned int track, qint64 time );
+    void actionRemoveClip( const QUuid& uuid, unsigned int track );
 
 protected:
     virtual void changeEvent( QEvent *e );

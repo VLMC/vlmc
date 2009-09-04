@@ -29,7 +29,7 @@
 MetaDataWorker::MetaDataWorker( Media* media ) :
         m_currentMedia( media ),
         m_mediaIsPlaying( false),
-        m_lengthHasChanged( true )
+        m_lengthHasChanged( false )
 {
     m_mediaPlayer = new LibVLCpp::MediaPlayer();
 }
@@ -74,7 +74,7 @@ void    MetaDataWorker::computeImageMetaData()
 void    MetaDataWorker::getMetaData()
 {
     m_mediaIsPlaying = false;
-    m_lengthHasChanged = true;
+    m_lengthHasChanged = false;
 
     //In order to wait for the VOUT to be ready:
     //Until we have a way of knowing when it is, both getWidth and getHeight method
@@ -88,7 +88,7 @@ void    MetaDataWorker::getMetaData()
 
     m_currentMedia->setWidth( m_mediaPlayer->getWidth() );
     m_currentMedia->setHeight( m_mediaPlayer->getHeight() );
-    m_currentMedia->setFps( static_cast<unsigned int>( m_mediaPlayer->getFps() ) );
+    m_currentMedia->setFps( m_mediaPlayer->getFps() );
 
     //Setting time for snapshot :
     if ( m_currentMedia->getFileType() == Media::Video )

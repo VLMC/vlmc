@@ -5,6 +5,7 @@ TEMPLATE = app
 OBJECTS_DIR = build
 MOC_DIR = build/moc
 UI_DIR = build/ui
+QMAKE_EXT_H = .h .hpp
 INCLUDEPATH = build/moc \
     build/ui
 QT += gui \
@@ -104,7 +105,8 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/ClipProperty.h \
     src/GUI/WorkflowFileRendererDialog.h \
     src/GUI/Settings.h \
-    src/GUI/Panel.h
+    src/GUI/Panel.h \
+    src/GUI/GraphicsTrack.hpp
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \

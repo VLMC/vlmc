@@ -34,6 +34,7 @@
 #include "GraphicsMovieItem.h"
 #include "GraphicsCursorItem.h"
 #include "Commands.hpp"
+#include "GraphicsTrack.hpp"
 
 TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidget* parent )
         : QGraphicsView( scene, parent ), m_scene( scene ), m_mainWorkflow( mainWorkflow )
@@ -56,8 +57,7 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
     setContentsMargins( 0, 0, 0, 0 );
     setFrameStyle( QFrame::NoFrame );
 
-    //TODO Remove the GraphicsCursorItem parameter height (not useful anymore)
-    m_cursorLine = new GraphicsCursorItem( 1, QPen( QColor( 220, 30, 30 ) ) );
+    m_cursorLine = new GraphicsCursorItem( QPen( QColor( 220, 30, 30 ) ) );
 
     m_scene->addItem( m_cursorLine );
 
@@ -124,6 +124,29 @@ void TracksView::addAudioTrack()
     //FIXME this should maybe go elsewhere
     setSceneRect( m_layout->contentsRect().adjusted( 0, 0, 100, 100 ) );
     m_cursorLine->setHeight( m_layout->contentsRect().height() );
+}
+
+void TracksView::addMediaItem( Clip* clip, unsigned int track, qint64 start )
+{
+    Q_ASSERT( clip );
+
+    // Is the clip already existing in the timeline ?
+    //TODO: please optimize me!
+    QList<QGraphicsItem*> sceneItems = m_scene->items();
+    for ( int i = 0; i < sceneItems.size(); ++i )
+    {
+        AbstractGraphicsMediaItem* item =
+                dynamic_cast<AbstractGraphicsMediaItem*>( sceneItems.at( i ) );
+        if ( !item || item->uuid() != clip->getUuid() ) continue;
+        // Item already exist: goodbye!
+        return;
+    }
+
+    GraphicsMovieItem* item = new GraphicsMovieItem( clip );
+    item->setWidth( clip->getLength() );
+    item->setHeight( tracksHeight() );
+    item->setParentItem( getTrack( track ) );
+    moveMediaItem( item, track, start );
 }
 
 void TracksView::dragEnterEvent( QDragEnterEvent* event )
@@ -202,7 +225,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, qint
     QPointF oldPos = item->pos();
     QGraphicsItem* oldParent = item->parentItem();
     // Check for vertical collisions
-    item->setParentItem( m_layout->itemAt( m_numVideoTrack - track - 1 )->graphicsItem() );
+    item->setParentItem( getTrack( track ) );
     bool continueSearch = true;
     while ( continueSearch )
     {
@@ -225,7 +248,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, qint
                     }
                     track -= 1;
                     Q_ASSERT( m_layout->itemAt( track )->graphicsItem() != NULL );
-                    item->setParentItem( m_layout->itemAt( track )->graphicsItem() );
+                    item->setParentItem( getTrack( track ) );
                 }
                 else if ( currentItem->trackNumber() < track )
                 {
@@ -237,7 +260,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, qint
                     }
                     track += 1;
                     Q_ASSERT( m_layout->itemAt( track )->graphicsItem() != NULL );
-                    item->setParentItem( m_layout->itemAt( track )->graphicsItem() );
+                    item->setParentItem( getTrack( track ) );
                 }
             }
         }
@@ -267,6 +290,59 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, qint
     }
 }
 
+void TracksView::removeMediaItem( const QUuid& uuid, unsigned int track, bool notifyBackend )
+{
+    Q_UNUSED( track );
+    //TODO When a clever API will be done to manage the tracks, we could
+    // use the "track" argument to limit the search into the track instead
+    // of the full scene.
+
+    QList<QGraphicsItem*> sceneItems = m_scene->items();
+
+    for ( int i = 0; i < sceneItems.size(); ++i )
+    {
+        AbstractGraphicsMediaItem* item =
+                dynamic_cast<AbstractGraphicsMediaItem*>( sceneItems.at( i ) );
+        if ( !item || item->uuid() != uuid ) continue;
+        removeMediaItem( item, notifyBackend );
+    }
+}
+
+void TracksView::removeMediaItem( AbstractGraphicsMediaItem* item, bool notifyBackend )
+{
+    QList<AbstractGraphicsMediaItem*> items;
+    items.append( item );
+    removeMediaItem( items, notifyBackend );
+}
+
+void TracksView::removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items, bool notifyBackend )
+{
+    QVector<Commands::MainWorkflow::ClipActionInfo> clipsinfos;
+
+    for ( int i = 0; i < items.size(); ++i )
+    {
+        GraphicsMovieItem* movieItem = qgraphicsitem_cast<GraphicsMovieItem*>( items.at( i ) );
+        if ( !movieItem )
+        {
+            //TODO add support for audio tracks
+            qWarning() << tr( "Action not supported." );
+            continue;
+        }
+
+        Commands::MainWorkflow::ClipActionInfo ai;
+        ai.clip = movieItem->clip();
+        ai.trackNumber = movieItem->trackNumber();
+        ai.pos = movieItem->pos().x();
+        clipsinfos.append( ai );
+
+        delete movieItem;
+    }
+
+    if ( notifyBackend )
+        Commands::trigger( new Commands::MainWorkflow::RemoveClips( m_mainWorkflow,
+                                                                    clipsinfos ) );
+}
+
 void TracksView::dragLeaveEvent( QDragLeaveEvent* event )
 {
     Q_UNUSED( event )
@@ -289,10 +365,13 @@ void TracksView::dropEvent( QDropEvent* event )
 
         qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
         m_dragItem->oldTrackNumber = m_dragItem->trackNumber();
+        Clip*   clip = new Clip( m_dragItem->clip() );
+        m_dragItem->setClip( clip );
         Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
-                                                                m_dragItem->clip(),
+                                                                clip,
                                                                 m_dragItem->trackNumber(),
                                                                 (qint64)mappedXPos ) );
+        m_dragItem->oldPosition = mappedXPos;
         m_dragItem = NULL;
     }
 }
@@ -325,22 +404,6 @@ void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
     painter->drawRect( ( int ) r.left(), ( int ) m_separator->y(),
                        ( int ) r.right(),
                        ( int ) m_separator->boundingRect().height() );
-
-    /*QColor base = palette().button().color();
-    QRectF r = rect;
-    r.setWidth( r.width() + 1 );
-
-    painter->setClipRect( r );
-    painter->drawLine( r.left(), 0, r.right(), 0 );
-
-    uint tracks = m_tracksCount;
-    for ( uint i = 0; i < tracks; ++i )
-        painter->drawLine( r.left(), m_tracksHeight * ( i + 1 ), r.right(), m_tracksHeight * ( i + 1 ) );
-
-    int lowerLimit = m_tracksHeight * m_tracksCount + 1;
-    if ( height() > lowerLimit )
-        painter->fillRect( QRectF ( r.left(), lowerLimit, r.width(),
-        height() - lowerLimit ), QBrush( base ) );*/
 }
 
 void TracksView::mouseMoveEvent( QMouseEvent* event )
@@ -522,4 +585,17 @@ void TracksView::updateDuration()
     m_layout->setMaximumWidth( m_projectDuration );
 
     emit durationChanged( m_projectDuration );
+}
+
+GraphicsTrack* TracksView::getTrack( unsigned int number )
+{
+    for (int i = 0; i < m_layout->count(); ++i )
+    {
+        QGraphicsItem* gi = m_layout->itemAt( i )->graphicsItem();
+        GraphicsTrack* track = qgraphicsitem_cast<GraphicsTrack*>( gi );
+        if ( !track ) continue;
+        if ( track->trackNumber() == number )
+            return track;
+    }
+    return NULL;
 }
