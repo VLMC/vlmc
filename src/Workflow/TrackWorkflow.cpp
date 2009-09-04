@@ -216,7 +216,6 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
         cw->getStateLock()->unlock();
         return ;
     }
-    qDebug() << "Stopping clip. state:" << cw->getState();
     if ( cw->getState() == ClipWorkflow::Sleeping ||
          cw->getState() == ClipWorkflow::Ready ||
          cw->getState() == ClipWorkflow::EndReached )

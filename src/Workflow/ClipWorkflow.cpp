@@ -73,6 +73,7 @@ void    ClipWorkflow::checkStateChange()
     if ( m_requiredState != ClipWorkflow::None )
     {
         m_state = m_requiredState;
+//        qDebug() << "Applying required state change:" << m_state;
         m_requiredState = ClipWorkflow::None;
         checkSynchronisation( m_state );
     }
@@ -99,9 +100,9 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
         cw->m_renderWaitCond->wake();
         cw->emit renderComplete( cw );
 
-        qDebug() << "Entering cond wait";
+//        qDebug() << "Entering cond wait";
         cw->m_waitCond->wait( cw->m_condMutex );
-        qDebug() << "Leaving condwait";
+//        qDebug() << "Leaving condwait";
         cw->m_stateLock->lockForWrite();
         if ( cw->m_state == Sleeping )
             cw->m_state = Rendering;
@@ -235,7 +236,6 @@ void            ClipWorkflow::stop()
         delete m_vlcMedia;
         m_initFlag = false;
         m_rendering = false;
-        qDebug() << "Clip workflow stopped";
     }
     else
         qDebug() << "ClipWorkflow has already been stopped";
@@ -274,6 +274,7 @@ void            ClipWorkflow::setState( State state )
 {
     {
         QWriteLocker    lock( m_stateLock );
+//        qDebug() << "Setting state to" << state;
         m_state = state;
     }
     checkSynchronisation( state );
