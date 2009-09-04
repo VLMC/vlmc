@@ -146,6 +146,7 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, qint64 start )
     item->setWidth( clip->getLength() );
     item->setHeight( tracksHeight() );
     item->setParentItem( getTrack( track ) );
+    item->oldTrackNumber = track;
     moveMediaItem( item, track, start );
 }
 
@@ -371,7 +372,6 @@ void TracksView::dropEvent( QDropEvent* event )
                                                                 clip,
                                                                 m_dragItem->trackNumber(),
                                                                 (qint64)mappedXPos ) );
-        m_dragItem->oldPosition = mappedXPos;
         m_dragItem = NULL;
     }
 }
