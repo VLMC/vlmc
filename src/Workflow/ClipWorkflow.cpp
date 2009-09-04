@@ -99,7 +99,9 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw )
         cw->m_renderWaitCond->wake();
         cw->emit renderComplete( cw );
 
+        qDebug() << "Entering cond wait";
         cw->m_waitCond->wait( cw->m_condMutex );
+        qDebug() << "Leaving condwait";
         cw->m_stateLock->lockForWrite();
         if ( cw->m_state == Sleeping )
             cw->m_state = Rendering;
@@ -233,6 +235,7 @@ void            ClipWorkflow::stop()
         delete m_vlcMedia;
         m_initFlag = false;
         m_rendering = false;
+        qDebug() << "Clip workflow stopped";
     }
     else
         qDebug() << "ClipWorkflow has already been stopped";
