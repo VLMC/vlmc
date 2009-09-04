@@ -8,8 +8,7 @@ GraphicsCursorItem::GraphicsCursorItem( const QPen& pen )
     setCursor( QCursor( Qt::SizeHorCursor ) );
     setZValue( 100 );
 
-//    int height;
-    m_boundingRect = QRectF( -2, 0, 3, height );
+    m_boundingRect = QRectF( -2, 0, 3, 0 );
 }
 
 QRectF GraphicsCursorItem::boundingRect() const
