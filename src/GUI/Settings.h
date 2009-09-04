@@ -28,8 +28,10 @@
 #include <QHash>
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QDialogButtonBox>
 #include <QButtonGroup>
 #include <QStackedWidget>
+#include <QAbstractButton>
 #include <QVector>
 
 #include "Panel.h"
@@ -60,12 +62,14 @@ class   Settings : public QWidget
         Panel*                      m_panel;
         QLabel*                     m_title;
         QStackedWidget*             m_stackedWidgets;
+        QDialogButtonBox*           m_buttons;
         bool                        m_saved;
 
     public slots:
         void    switchWidget( int widget );
 
     private slots:
+        void    buttonClicked( QAbstractButton* button );
 
     signals:
         void    widgetSwitched( int widget );

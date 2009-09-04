@@ -4,6 +4,7 @@
 GraphicsCursorItem::GraphicsCursorItem( const QPen& pen )
         : m_pen( pen )
 {
+    int height;
     setFlags( QGraphicsItem::ItemIgnoresTransformations | QGraphicsItem::ItemIsMovable );
     setCursor( QCursor( Qt::SizeHorCursor ) );
     setZValue( 100 );

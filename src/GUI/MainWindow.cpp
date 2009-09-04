@@ -255,7 +255,7 @@ void MainWindow::on_actionAbout_triggered()
 
 void MainWindow::on_actionTranscode_File_triggered()
 {
-    Transcode::instance( this )->exec();
+    //Transcode::instance( this )->exec();
 }
 
 void    MainWindow::on_actionRender_triggered()

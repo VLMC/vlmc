@@ -21,12 +21,15 @@
  *****************************************************************************/
 #include <QPushButton>
 #include <QDialogButtonBox>
+#include <QAbstractButton>
 #include <QApplication>
 #include <QSizePolicy>
 #include <QLabel>
 #include <QHash>
 #include <QIcon>
 #include <QLabel>
+
+#include <QtDebug>
 
 
 #include "PreferenceWidget.h"
@@ -91,7 +94,10 @@ QVBoxLayout*    Settings::buildRightHLayout()
 {
     QVBoxLayout*    layout = new QVBoxLayout;
     QFrame*         titleLine = new QFrame;
-    QDialogButtonBox*     buttons = new QDialogButtonBox( this );
+    m_buttons = new QDialogButtonBox( this );
+
+    QObject::connect( m_buttons, SIGNAL( clicked( QAbstractButton* ) ),
+                      this, SLOT( buttonClicked( QAbstractButton* ) ) );
 
     m_title = new QLabel( this );
     titleLine->setFrameShape( QFrame::HLine );
@@ -103,7 +109,7 @@ QVBoxLayout*    Settings::buildRightHLayout()
     labelFont.setFamily( "Verdana" );
     m_title->setFont( labelFont );
 
-    buttons->setStandardButtons( QDialogButtonBox::Ok |
+    m_buttons->setStandardButtons( QDialogButtonBox::Ok |
                                  QDialogButtonBox::Cancel |
                                  QDialogButtonBox::Apply );
 
@@ -112,12 +118,30 @@ QVBoxLayout*    Settings::buildRightHLayout()
     layout->addWidget( m_title );
     layout->addWidget( titleLine );
     layout->addWidget( m_stackedWidgets );
-    layout->addWidget( buttons );
+    layout->addWidget( m_buttons );
     return ( layout );
 } 
 
 void    Settings::save( void )
 {
+}
+
+void    Settings::buttonClicked( QAbstractButton* button )
+{
+    switch ( m_buttons->standardButton( button ) )
+    {
+    case QDialogButtonBox::Ok :
+        qDebug() << "MOK";
+        break;
+    case QDialogButtonBox::Cancel :
+        qDebug() << "Oh NOES";
+        break;
+    case QDialogButtonBox::Apply :
+        qDebug() << "Apply";
+        break;
+    default :
+        break;
+    }
 }
 
 

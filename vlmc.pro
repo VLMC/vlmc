@@ -32,7 +32,7 @@ SOURCES += src/main.cpp \
     src/GUI/MediaListWidget.cpp \
     src/Media/Clip.cpp \
     src/GUI/About.cpp \
-    src/GUI/Transcode.cpp \
+#    src/GUI/Transcode.cpp \
     src/GUI/Slider.cpp \
     src/Metadata/MetaDataWorker.cpp \
     src/Library/Library.cpp \
@@ -81,7 +81,7 @@ HEADERS += src/GUI/MainWindow.h \
     src/Media/Clip.h \
     src/GUI/MediaListWidget.h \
     src/GUI/About.h \
-    src/GUI/Transcode.h \
+#    src/GUI/Transcode.h \
     src/GUI/Slider.h \
     src/Metadata/MetaDataWorker.h \
     src/Tools/Singleton.hpp \
@@ -125,7 +125,7 @@ FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/Timeline.ui \
     src/GUI/ui/LibraryWidget.ui \
     src/GUI/ui/About.ui \
-    src/GUI/ui/Transcode.ui \
+#    src/GUI/ui/Transcode.ui \
     src/GUI/ui/FileBrowser.ui \
     src/GUI/ui/WorkflowFileRendererDialog.ui \
     src/GUI/ui/ClipProperty.ui \
