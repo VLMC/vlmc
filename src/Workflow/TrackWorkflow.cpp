@@ -221,7 +221,10 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
          cw->getState() == ClipWorkflow::EndReached )
     {
         cw->getStateLock()->unlock();
-        cw->queryStateChange( ClipWorkflow::Stopping );
+        {
+            QMutexLocker    lock( cw->getSleepMutex() );
+            cw->queryStateChange( ClipWorkflow::Stopping );
+        }
         cw->wake();
         cw->stop();
     }

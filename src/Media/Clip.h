@@ -99,6 +99,14 @@ class   Clip : public QObject
         const QString&      getNotes() const;
         void                setNotes( const QString& notes );
 
+        /**
+         *  \brief  Split this clip in two parts.
+         *  \param  newEnd  The new end for this Clip. This will be the beginning of the
+         *                  newly created Clip.
+         *  \returns    The remaining part as a new Clip.
+         */
+        Clip*               split( float newEnd );
+
     private:
         void        computeLength();
 
