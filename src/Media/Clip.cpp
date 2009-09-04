@@ -157,3 +157,11 @@ void                Clip::setEnd( float end )
     Q_ASSERT( end <= 1.0f );
     m_end = end;
 }
+
+Clip*               Clip::split( float newEnd )
+{
+    Clip*   newClip = new Clip( this, newEnd, m_end );
+    m_end = newEnd;
+    computeLength();
+    return newClip;
+}
