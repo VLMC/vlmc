@@ -16,7 +16,6 @@ ProjectPreferences::ProjectPreferences( QWidget* parent )
 
 ProjectPreferences::~ProjectPreferences() { }
 
-
 bool    ProjectPreferences::load()
 {
     qDebug() << "Loading ProjectPreferences values";
@@ -26,8 +25,6 @@ bool    ProjectPreferences::load()
 void    ProjectPreferences::save( QSettings& settings )
 {
     settings.beginGroup( "Project" );
-    settings.setValue( "outputFPS", m_ui.outputFPS->text() );
-    settings.setValue( "previewFPS", m_ui.previewFPS->text() );
-    settings.setValue( "trackNb", m_ui.tracksNb->text() );
+    //settings.setValue( "outputFPS", m_ui.outputFPS->text() );
     settings.endGroup();
 }
