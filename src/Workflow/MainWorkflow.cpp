@@ -395,7 +395,78 @@ Clip*       MainWorkflow::getClip( const QUuid& uuid, unsigned int trackId )
 
 void        MainWorkflow::loadProject( const QDomElement& project )
 {
-    Q_ASSERT( 0 );
+    QDomElement elem = project.firstChild().toElement();
+    Q_ASSERT( project.tagName() == "timeline" );
+
+    while ( elem.isNull() == false )
+    {
+        bool    ok;
+
+        Q_ASSERT( elem.tagName() == "track" );
+        unsigned int trackId = elem.attribute( "id" ).toUInt( &ok );
+        qDebug() << "Got track" << trackId;
+        if ( ok == false )
+        {
+            qWarning() << "Invalid track number in project file";
+            return ;
+        }
+        QDomElement clip = elem.firstChild().toElement();
+        while ( clip.isNull() == false )
+        {
+            //Iterate over clip fields:
+            QDomElement clipProperty = clip.firstChild().toElement();
+            QUuid       parent;
+            float       begin;
+            float       end;
+            qint64      startPos;
+
+            while ( clipProperty.isNull() == false )
+            {
+                QString tagName = clipProperty.tagName();
+                bool    ok;
+
+                if ( tagName == "parent" )
+                    parent = QUuid( clipProperty.text() );
+                else if ( tagName == "begin" )
+                {
+                    begin = clipProperty.text().toFloat( &ok );
+                    if ( ok == false )
+                    {
+                        qWarning() << "Invalid clip begin";
+                        return ;
+                    }
+                }
+                else if ( tagName == "end" )
+                {
+                    end = clipProperty.text().toFloat( &ok );
+                    if ( ok == false )
+                    {
+                        qWarning() << "Invalid clip end";
+                        return ;
+                    }
+                }
+                else if ( tagName == "startFrame" )
+                {
+                    startPos = clipProperty.text().toLongLong( &ok );
+                    if ( ok == false )
+                    {
+                        qWarning() << "Invalid clip starting frame";
+                        return ;
+                    }
+                }
+                else
+                    qDebug() << "Unknown field" << clipProperty.tagName();
+
+                clipProperty = clipProperty.nextSibling().toElement();
+            }
+
+            Clip*       c = new Clip( parent, begin, end );
+            m_tracks[trackId]->addClip( c, startPos );
+
+            clip = clip.nextSibling().toElement();
+        }
+        elem = elem.nextSibling().toElement();
+    }
 }
 
 void        MainWorkflow::saveProject( QDomDocument& doc )

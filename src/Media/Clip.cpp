@@ -25,6 +25,7 @@
   */
 
 #include <QtDebug>
+#include "Library.h"
 
 #include "Clip.h"
 
@@ -57,6 +58,17 @@ Clip::Clip( Clip* clip ) :
         m_notes( clip->m_notes )
 {
     m_Uuid = QUuid::createUuid();
+}
+
+Clip::Clip( const QUuid& uuid, float begin, float end ) :
+        m_begin( begin),
+        m_end( 1.0f )
+{
+    Media*  media = Library::getInstance()->getMedia( uuid );
+    Q_ASSERT( media != NULL );
+    m_parent = media;
+    m_Uuid = QUuid::createUuid();
+    computeLength();
 }
 
 Clip::~Clip()

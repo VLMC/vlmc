@@ -47,6 +47,7 @@ class   Clip : public QObject
         Clip( Media* parent, float begin, float end );
         Clip( Clip* creator, float begin, float end );
         Clip( Clip* clip );
+        Clip( const QUuid& uuid, float begin = .0f, float end = 1.0f );
         virtual ~Clip();
 
         /**
