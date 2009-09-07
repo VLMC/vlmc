@@ -74,7 +74,7 @@ public:
         File,
         Stream
     };
-    Media( const QString& filePath );
+    Media( const QString& filePath, const QString& = QString() );
     virtual ~Media();
 
     /**

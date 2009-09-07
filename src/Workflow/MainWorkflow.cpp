@@ -395,8 +395,13 @@ Clip*       MainWorkflow::getClip( const QUuid& uuid, unsigned int trackId )
 
 void        MainWorkflow::loadProject( const QDomElement& project )
 {
+    if ( project.isNull() == true || project.tagName() != "timeline" )
+    {
+        qWarning() << "Invalid timeline node (" << project.tagName() << ')';
+        return ;
+    }
+
     QDomElement elem = project.firstChild().toElement();
-    Q_ASSERT( project.tagName() == "timeline" );
 
     while ( elem.isNull() == false )
     {

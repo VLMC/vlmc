@@ -35,6 +35,7 @@
 #include <QFileInfo>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QDomElement>
 
 #include "Media.h"
 #include "Clip.h"
@@ -63,8 +64,11 @@ private:
     }
 
 public slots:
-    void                    newMediaLoadingAsked( const QString& filePath );
+    void                    newMediaLoadingAsked( const QString& filePath, const QString& uuid = QString() );
     void                    removingMediaAsked( const QUuid& uuid );
+
+    void                    loadProject( const QDomElement& project );
+    void                    saveProject( QDomDocument& doc );
 
 private slots:
     void                    metaDataComputed( Media* );

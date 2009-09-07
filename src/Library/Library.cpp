@@ -63,9 +63,9 @@ void        Library::metaDataComputed( Media* media )
     emit newClipLoaded( clip );
 }
 
-void        Library::newMediaLoadingAsked( const QString& filePath )
+void        Library::newMediaLoadingAsked( const QString& filePath, const QString& uuid )
 {
-    //Is this necessary ??
+    //FIXME: Is this necessary ??
     QMutexLocker locker( &m_mutex );
     Media*   media;
     foreach ( media, m_medias )
@@ -73,8 +73,67 @@ void        Library::newMediaLoadingAsked( const QString& filePath )
         if ( media->getFileInfo()->absoluteFilePath() == filePath )
             return ;
     }
-    media = new Media( filePath );
+    media = new Media( filePath, uuid );
     m_medias[media->getUuid()] = media;
     connect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ), Qt::DirectConnection );
     emit newMediaLoaded( media );
+}
+
+void        Library::loadProject( const QDomElement& medias )
+{
+    if ( medias.isNull() == true || medias.tagName() != "medias" )
+    {
+        qWarning() << "Invalid medias node";
+        return ;
+    }
+
+    QDomElement elem = medias.firstChild().toElement();
+    while ( elem.isNull() == false )
+    {
+        QDomElement mediaProperty = elem.firstChild().toElement();
+        QString     path;
+        QString     uuid;
+
+        while ( mediaProperty.isNull() == false )
+        {
+            QString tagName = mediaProperty.tagName();
+            if ( tagName == "path" )
+                path = mediaProperty.text();
+            else if ( tagName == "uuid" )
+                uuid = mediaProperty.text();
+            else
+                qWarning() << "Unknown field" << tagName;
+            Library::getInstance()->newMediaLoadingAsked( path, uuid );
+            mediaProperty = mediaProperty.nextSibling().toElement();
+        }
+        elem = elem.nextSibling().toElement();
+    }
+}
+
+void        Library::saveProject( QDomDocument& doc )
+{
+    QHash<QUuid, Media*>::iterator          it = m_medias.begin();
+    QHash<QUuid, Media*>::iterator          end = m_medias.end();
+
+    QDomElement medias = doc.createElement( "medias" );
+
+    for ( ; it != end; ++it )
+    {
+        QDomElement media = doc.createElement( "media" );
+
+        medias.appendChild( media );
+        QDomElement mrl = doc.createElement( "path" );
+
+        QDomCharacterData   text = doc.createTextNode( it.value()->getFileInfo()->absoluteFilePath() );
+
+        QDomElement uuid = doc.createElement( "uuid" );
+        QDomCharacterData   text2 = doc.createTextNode( it.value()->getUuid().toString() );
+
+        mrl.appendChild( text );
+        uuid.appendChild( text2 );
+
+        media.appendChild( mrl );
+        media.appendChild( uuid );
+    }
+    doc.appendChild( medias );
 }
