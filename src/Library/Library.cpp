@@ -103,9 +103,9 @@ void        Library::loadProject( const QDomElement& medias )
                 uuid = mediaProperty.text();
             else
                 qWarning() << "Unknown field" << tagName;
-            Library::getInstance()->newMediaLoadingAsked( path, uuid );
             mediaProperty = mediaProperty.nextSibling().toElement();
         }
+        newMediaLoadingAsked( path, uuid );
         elem = elem.nextSibling().toElement();
     }
 }

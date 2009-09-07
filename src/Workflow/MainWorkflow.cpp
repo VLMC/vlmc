@@ -71,12 +71,11 @@ MainWorkflow::~MainWorkflow()
     delete[] blackOutput;
 }
 
-void    MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
+void        MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
 {
     Q_ASSERT_X( trackId < m_trackCount, "MainWorkflow::addClip",
                 "The specified trackId isn't valid, for it's higher than the number of tracks");
 
-    
     m_tracks[trackId]->addClip( clip, start );
     //if the track is deactivated, we need to reactivate it.
     if ( m_tracks[trackId].deactivated() == true )
@@ -409,7 +408,6 @@ void        MainWorkflow::loadProject( const QDomElement& project )
 
         Q_ASSERT( elem.tagName() == "track" );
         unsigned int trackId = elem.attribute( "id" ).toUInt( &ok );
-        qDebug() << "Got track" << trackId;
         if ( ok == false )
         {
             qWarning() << "Invalid track number in project file";
@@ -466,12 +464,13 @@ void        MainWorkflow::loadProject( const QDomElement& project )
             }
 
             Clip*       c = new Clip( parent, begin, end );
-            m_tracks[trackId]->addClip( c, startPos );
+            addClip( c, trackId, startPos );
 
             clip = clip.nextSibling().toElement();
         }
         elem = elem.nextSibling().toElement();
     }
+    qDebug() << "Workflow length:" << getLength();
 }
 
 void        MainWorkflow::saveProject( QDomDocument& doc )
