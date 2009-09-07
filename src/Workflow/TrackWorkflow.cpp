@@ -502,3 +502,47 @@ void    TrackWorkflow::clipWorkflowUnpaused()
         emit trackUnpaused();
     }
 }
+
+void    TrackWorkflow::save( QDomDocument& doc, QDomElement& trackNode ) const
+{
+    QReadLocker     lock( m_clipsLock );
+
+    QMap<qint64, ClipWorkflow*>::const_iterator     it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::const_iterator     end = m_clips.end();
+
+    for ( ; it != end ; ++it )
+    {
+        QDomElement     clipNode = doc.createElement( "clip" );
+
+        {
+            QDomElement     parent = doc.createElement( "parent" );
+
+            QDomCharacterData   text = doc.createTextNode( it.value()->getClip()->getParent()->getUuid().toString() );
+            parent.appendChild( text );
+            clipNode.appendChild( parent );
+        }
+        {
+            QDomElement     startFrame = doc.createElement( "startFrame" );
+
+            QDomCharacterData   text = doc.createTextNode( QString::number( it.key() ) );
+            startFrame.appendChild( text );
+            clipNode.appendChild( startFrame );
+        }
+        {
+            QDomElement     begin = doc.createElement( "begin" );
+
+            QDomCharacterData   text = doc.createTextNode( QString::number( it.value()->getClip()->getBegin() ) );
+            begin.appendChild( text );
+            clipNode.appendChild( begin );
+        }
+        {
+            QDomElement     end = doc.createElement( "end" );
+
+            QDomCharacterData   text = doc.createTextNode( QString::number( it.value()->getClip()->getEnd() ) );
+            end.appendChild( text );
+            clipNode.appendChild( end );
+        }
+        trackNode.appendChild( clipNode );
+    }
+}
+

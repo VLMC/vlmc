@@ -10,7 +10,8 @@ INCLUDEPATH = build/moc \
     build/ui
 QT += gui \
     network \
-    svg
+    svg \
+    xml
 SOURCES += src/main.cpp \
     src/GUI/MainWindow.cpp \
     src/GUI/LibraryWidget.cpp \

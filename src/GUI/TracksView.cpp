@@ -366,10 +366,9 @@ void TracksView::dropEvent( QDropEvent* event )
 
         qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
         m_dragItem->oldTrackNumber = m_dragItem->trackNumber();
-        Clip*   clip = new Clip( m_dragItem->clip() );
-        m_dragItem->setClip( clip );
+
         Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
-                                                                clip,
+                                                                m_dragItem->clip(),
                                                                 m_dragItem->trackNumber(),
                                                                 (qint64)mappedXPos ) );
         m_dragItem = NULL;

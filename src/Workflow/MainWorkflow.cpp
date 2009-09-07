@@ -392,3 +392,26 @@ Clip*       MainWorkflow::getClip( const QUuid& uuid, unsigned int trackId )
 
     return m_tracks[trackId]->getClip( uuid );
 }
+
+void        MainWorkflow::loadProject( const QDomElement& project )
+{
+    Q_ASSERT( 0 );
+}
+
+void        MainWorkflow::saveProject( QDomDocument& doc )
+{
+    QDomElement project = doc.createElement( "timeline" );
+    for ( unsigned int i = 0; i < m_trackCount; ++i )
+    {
+        if ( m_tracks[i]->getLength() > 0 )
+        {
+            QDomElement     trackNode = doc.createElement( "track" );
+
+            trackNode.setAttribute( "id", i );
+
+            m_tracks[i]->save( doc, trackNode );
+            project.appendChild( trackNode );
+        }
+    }
+    doc.appendChild( project );
+}

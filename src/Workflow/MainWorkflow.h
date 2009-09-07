@@ -27,6 +27,7 @@
 #include <QObject>
 #include <QReadWriteLock>
 #include <QMutex>
+#include <QDomElement>
 
 #include "Toggleable.hpp"
 #include "TrackWorkflow.h"
@@ -142,6 +143,10 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                            trackPaused();
         void                            trackUnpaused();
         void                            tracksRenderCompleted( unsigned int trackId );
+
+    public slots:
+        void                            loadProject( const QDomElement& project );
+        void                            saveProject( QDomDocument& doc );
 
     signals:
         /**

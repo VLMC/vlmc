@@ -29,6 +29,7 @@
 #include <QMap>
 #include <QList>
 #include <QReadWriteLock>
+#include <QDomElement>
 
 #include "ClipWorkflow.h"
 
@@ -68,6 +69,8 @@ class   TrackWorkflow : public QObject
 
         //FIXME: this won't be reliable as soon as we change the fps from the configuration
         static const unsigned int               nbFrameBeforePreload = 60;
+
+        void                                    save( QDomDocument& doc, QDomElement& trackNode ) const;
 
     private:
         void                                    computeLength();
