@@ -24,8 +24,6 @@
 #define TRACKSSCENE_H
 
 #include <QGraphicsScene>
-#include <QMessageBox>
-#include "Timeline.h"
 
 class TracksView;
 

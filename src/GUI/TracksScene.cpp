@@ -20,7 +20,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QMessageBox>
 #include "TracksScene.h"
+#include "Commands.h"
+#include "GraphicsMovieItem.h"
+#include "Timeline.h"
 
 TracksScene::TracksScene( QObject* parent ) : QGraphicsScene( parent )
 {
@@ -53,13 +57,23 @@ void TracksScene::keyPressEvent( QKeyEvent* keyEvent )
         // Skip the deletion process
         if ( b == QMessageBox::No ) return;
 
+        QVector<Commands::MainWorkflow::ClipActionInfo> clipsinfos;
+
         QList<QGraphicsItem*> items = selectedItems();
         for (int i = 0; i < items.size(); ++i )
         {
-            AbstractGraphicsMediaItem* item = qgraphicsitem_cast<AbstractGraphicsMediaItem*>( items.at(i) );
+            GraphicsMovieItem* item = qgraphicsitem_cast<GraphicsMovieItem*>( items.at(i) );
             if ( !item ) return;
-            tv->removeMediaItem( item );
+
+            Commands::MainWorkflow::ClipActionInfo ai;
+            ai.clip = item->clip();
+            ai.trackNumber = item->trackNumber();
+            ai.pos = item->pos().x();
+            clipsinfos.append( ai );
         }
+
+        Commands::trigger( new Commands::MainWorkflow::RemoveClips( tv->m_mainWorkflow,
+                                                                    clipsinfos ) );
     }
 
     QGraphicsScene::keyPressEvent( keyEvent );

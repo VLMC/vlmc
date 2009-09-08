@@ -38,7 +38,7 @@
 #include "AbstractGraphicsMediaItem.h"
 
 class GraphicsMovieItem;
-//class AbstractGraphicsMediaItem;
+class TracksScene;
 
 class TracksView : public QGraphicsView
 {
@@ -111,6 +111,7 @@ signals:
     void                    durationChanged( int duration );
 
 friend class Timeline;
+friend class TracksScene;
 };
 
 #endif // TRACKSVIEW_H

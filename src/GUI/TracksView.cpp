@@ -326,8 +326,6 @@ void TracksView::removeMediaItem( AbstractGraphicsMediaItem* item, bool notifyBa
 
 void TracksView::removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items, bool notifyBackend )
 {
-    QVector<Commands::MainWorkflow::ClipActionInfo> clipsinfos;
-
     for ( int i = 0; i < items.size(); ++i )
     {
         GraphicsMovieItem* movieItem = qgraphicsitem_cast<GraphicsMovieItem*>( items.at( i ) );
@@ -338,18 +336,8 @@ void TracksView::removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items
             continue;
         }
 
-        Commands::MainWorkflow::ClipActionInfo ai;
-        ai.clip = movieItem->clip();
-        ai.trackNumber = movieItem->trackNumber();
-        ai.pos = movieItem->pos().x();
-        clipsinfos.append( ai );
-
         delete movieItem;
     }
-
-    if ( notifyBackend )
-        Commands::trigger( new Commands::MainWorkflow::RemoveClips( m_mainWorkflow,
-                                                                    clipsinfos ) );
 }
 
 void TracksView::dragLeaveEvent( QDragLeaveEvent* event )
