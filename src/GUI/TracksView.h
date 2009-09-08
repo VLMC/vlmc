@@ -55,13 +55,13 @@ public:
     GraphicsCursorItem* tracksCursor() const { return m_cursorLine; }
     void setScale( double scaleFactor );
     QList<AbstractGraphicsMediaItem*> mediaItems( const QPoint& pos );
-    void                    removeMediaItem( AbstractGraphicsMediaItem* item, bool notifyBackend = true );
-    void                    removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items, bool notifyBackend = true );
+    void                    removeMediaItem( AbstractGraphicsMediaItem* item );
+    void                    removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items );
 
 public slots:
     void                    addMediaItem( Clip* clip, unsigned int track, qint64 start );
     void                    moveMediaItem( const QUuid& uuid, unsigned int track, qint64 time );
-    void                    removeMediaItem( const QUuid& uuid, unsigned int track, bool notifyBackend = true );
+    void                    removeMediaItem( const QUuid& uuid, unsigned int track );
 
 protected:
     virtual void            resizeEvent( QResizeEvent* event );

@@ -108,7 +108,5 @@ void Timeline::actionMoveClip( const QUuid& uuid, unsigned int track, qint64 tim
 
 void Timeline::actionRemoveClip( const QUuid& uuid, unsigned int track )
 {
-    // The signal was triggered by the backend, so we do not have to
-    // notify it again. I guess it would be a very bad idea.
-    tracksView()->removeMediaItem( uuid, track, false );
+    tracksView()->removeMediaItem( uuid, track );
 }

@@ -299,7 +299,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, qint
     }
 }
 
-void TracksView::removeMediaItem( const QUuid& uuid, unsigned int track, bool notifyBackend )
+void TracksView::removeMediaItem( const QUuid& uuid, unsigned int track )
 {
     Q_UNUSED( track );
     //TODO When a clever API will be done to manage the tracks, we could
@@ -313,18 +313,18 @@ void TracksView::removeMediaItem( const QUuid& uuid, unsigned int track, bool no
         AbstractGraphicsMediaItem* item =
                 dynamic_cast<AbstractGraphicsMediaItem*>( sceneItems.at( i ) );
         if ( !item || item->uuid() != uuid ) continue;
-        removeMediaItem( item, notifyBackend );
+        removeMediaItem( item );
     }
 }
 
-void TracksView::removeMediaItem( AbstractGraphicsMediaItem* item, bool notifyBackend )
+void TracksView::removeMediaItem( AbstractGraphicsMediaItem* item )
 {
     QList<AbstractGraphicsMediaItem*> items;
     items.append( item );
-    removeMediaItem( items, notifyBackend );
+    removeMediaItem( items );
 }
 
-void TracksView::removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items, bool notifyBackend )
+void TracksView::removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items )
 {
     for ( int i = 0; i < items.size(); ++i )
     {
