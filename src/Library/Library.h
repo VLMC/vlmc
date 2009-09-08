@@ -62,6 +62,7 @@ private:
             return NULL;
         return *it;
     }
+    QAtomicInt              m_nbMediasToLoad;
 
 public slots:
     void                    newMediaLoadingAsked( const QString& filePath, const QString& uuid = QString() );
@@ -77,6 +78,7 @@ signals:
     void                    newClipLoaded( Clip* );
     void                    newMediaLoaded( Media* );
     void                    mediaRemoved( const QUuid& );
+    void                    projectLoaded();
 
     friend class            Singleton<Library>;
 };

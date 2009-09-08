@@ -31,6 +31,7 @@
 
 Library::Library()
 {
+    m_nbMediasToLoad = -1;
 }
 
 Media*          Library::getMedia( const QUuid& uuid )
@@ -61,6 +62,12 @@ void        Library::metaDataComputed( Media* media )
     Clip* clip = new Clip( media );
     m_clips[media->getUuid()] = clip;
     emit newClipLoaded( clip );
+    if ( m_nbMediasToLoad >= 0 )
+    {
+        m_nbMediasToLoad.fetchAndAddAcquire( -1 );
+        if ( m_nbMediasToLoad <= 0 )
+            emit projectLoaded();
+    }
 }
 
 void        Library::newMediaLoadingAsked( const QString& filePath, const QString& uuid )
@@ -88,6 +95,7 @@ void        Library::loadProject( const QDomElement& medias )
     }
 
     QDomElement elem = medias.firstChild().toElement();
+    m_nbMediasToLoad = 0;
     while ( elem.isNull() == false )
     {
         QDomElement mediaProperty = elem.firstChild().toElement();
@@ -105,6 +113,7 @@ void        Library::loadProject( const QDomElement& medias )
                 qWarning() << "Unknown field" << tagName;
             mediaProperty = mediaProperty.nextSibling().toElement();
         }
+        m_nbMediasToLoad.fetchAndAddAcquire( 1 );
         newMediaLoadingAsked( path, uuid );
         elem = elem.nextSibling().toElement();
     }
