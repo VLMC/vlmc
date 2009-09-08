@@ -5,7 +5,8 @@ TEMPLATE = app
 OBJECTS_DIR = build
 MOC_DIR = build/moc
 UI_DIR = build/ui
-QMAKE_EXT_H = .h .hpp
+QMAKE_EXT_H = .h \
+    .hpp
 INCLUDEPATH = build/moc \
     build/ui
 QT += gui \
@@ -55,7 +56,8 @@ SOURCES += src/main.cpp \
     src/GUI/Settings.cpp \
     src/GUI/Panel.cpp \
     src/GUI/PreferenceWidget.cpp \
-    src/GUI/ProjectPreferences.cpp
+    src/GUI/ProjectPreferences.cpp \
+    src/Commands/Commands.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -101,13 +103,13 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/UndoStack.h \
     src/Tools/WaitCondition.hpp \
     src/Metadata/MetaDataManager.h \
-    src/Commands/Commands.hpp \
     src/Tools/QSingleton.hpp \
     src/GUI/ClipProperty.h \
     src/GUI/WorkflowFileRendererDialog.h \
     src/GUI/Settings.h \
     src/GUI/Panel.h \
-    src/GUI/GraphicsTrack.hpp
+    src/GUI/GraphicsTrack.hpp \
+    src/Commands/Commands.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \

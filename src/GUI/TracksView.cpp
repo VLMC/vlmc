@@ -33,7 +33,7 @@
 #include "Library.h"
 #include "GraphicsMovieItem.h"
 #include "GraphicsCursorItem.h"
-#include "Commands.hpp"
+#include "Commands.h"
 #include "GraphicsTrack.hpp"
 
 TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidget* parent )
