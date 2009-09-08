@@ -499,4 +499,5 @@ void        MainWorkflow::clear()
         m_tracks[i]->clear();
     }
     m_length = 0;
+    emit cleared();
 }

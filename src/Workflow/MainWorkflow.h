@@ -166,6 +166,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    clipAdded( Clip*, unsigned int, qint64 );
         void                    clipRemoved( QUuid, unsigned int );
         void                    clipMoved( QUuid, unsigned int, qint64 );
+        void                    cleared();
 };
 
 #endif // MAINWORKFLOW_H
