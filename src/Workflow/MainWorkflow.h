@@ -109,6 +109,8 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          */
         Clip*                   getClip( const QUuid& uuid, unsigned int trackId );
 
+        void                    clear();
+
     private:
         static MainWorkflow*    m_instance;
 

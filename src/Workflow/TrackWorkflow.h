@@ -70,6 +70,7 @@ class   TrackWorkflow : public QObject
         static const unsigned int               nbFrameBeforePreload = 60;
 
         void                                    save( QDomDocument& doc, QDomElement& trackNode ) const;
+        void                                    clear();
 
     private:
         void                                    computeLength();

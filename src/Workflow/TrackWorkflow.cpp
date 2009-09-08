@@ -547,3 +547,18 @@ void    TrackWorkflow::save( QDomDocument& doc, QDomElement& trackNode ) const
     }
 }
 
+void    TrackWorkflow::clear()
+{
+    QWriteLocker    lock( m_clipsLock );
+    QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
+
+    for ( ; it != end; ++it )
+    {
+        ClipWorkflow*   cw = it.value();
+        delete cw->getClip();
+        delete cw;
+    }
+    m_clips.clear();
+    m_length = 0;
+}

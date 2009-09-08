@@ -400,6 +400,8 @@ void        MainWorkflow::loadProject( const QDomElement& project )
         return ;
     }
 
+    clear();
+
     QDomElement elem = project.firstChild().toElement();
 
     while ( elem.isNull() == false )
@@ -488,4 +490,13 @@ void        MainWorkflow::saveProject( QDomDocument& doc )
         }
     }
     doc.appendChild( project );
+}
+
+void        MainWorkflow::clear()
+{
+    for ( unsigned int i = 0; i < m_trackCount; ++i )
+    {
+        m_tracks[i]->clear();
+    }
+    m_length = 0;
 }
