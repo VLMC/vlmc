@@ -131,7 +131,7 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, qint64 start )
     Q_ASSERT( clip );
 
     //nasty temporary fix:
-    if ( track > m_numVideoTrack )
+    if ( track > (quint32)m_numVideoTrack )
     {
         unsigned int nbTrackToAdd = track - m_numVideoTrack;
         for ( unsigned int i = 0; i < nbTrackToAdd; ++i )

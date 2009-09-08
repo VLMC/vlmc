@@ -64,6 +64,7 @@ Clip::Clip( const QUuid& uuid, float begin, float end ) :
         m_begin( begin),
         m_end( 1.0f )
 {
+    Q_UNUSED( end );
     Media*  media = Library::getInstance()->getMedia( uuid );
     Q_ASSERT( media != NULL );
     m_parent = media;
