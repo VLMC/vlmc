@@ -470,7 +470,6 @@ void        MainWorkflow::loadProject( const QDomElement& project )
         }
         elem = elem.nextSibling().toElement();
     }
-    qDebug() << "Workflow length:" << getLength();
 }
 
 void        MainWorkflow::saveProject( QDomDocument& doc )

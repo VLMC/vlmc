@@ -66,7 +66,9 @@ void        Library::metaDataComputed( Media* media )
     {
         m_nbMediasToLoad.fetchAndAddAcquire( -1 );
         if ( m_nbMediasToLoad <= 0 )
+        {
             emit projectLoaded();
+        }
     }
 }
 
