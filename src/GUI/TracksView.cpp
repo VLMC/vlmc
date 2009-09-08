@@ -130,6 +130,14 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, qint64 start )
 {
     Q_ASSERT( clip );
 
+    //nasty temporary fix:
+    if ( track > m_numVideoTrack )
+    {
+        unsigned int nbTrackToAdd = track - m_numVideoTrack;
+        for ( unsigned int i = 0; i < nbTrackToAdd; ++i )
+            addVideoTrack();
+    }
+
     // Is the clip already existing in the timeline ?
     //TODO: please optimize me!
     QList<QGraphicsItem*> sceneItems = m_scene->items();
