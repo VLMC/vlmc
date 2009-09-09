@@ -126,6 +126,36 @@ void TracksView::addAudioTrack()
     m_cursorLine->setHeight( m_layout->contentsRect().height() );
 }
 
+void TracksView::clear()
+{
+    QList<QGraphicsLayoutItem*> clearlist;
+
+    // Collect the list of tracks
+    for ( int i = 0; i < m_layout->count(); ++i )
+    {
+        QGraphicsLayoutItem* li = m_layout->itemAt( i );
+        QGraphicsItem* gi = li->graphicsItem();
+        GraphicsTrack* track = qgraphicsitem_cast<GraphicsTrack*>( gi );
+        if ( !track ) continue;
+        clearlist.append( li );
+    }
+
+    // Remove collected tracks
+    for ( int i = 0; i < clearlist.size(); ++i )
+    {
+        m_layout->removeItem( clearlist.at( i ) );
+        delete clearlist.at( i );
+    }
+
+    m_numAudioTrack = 0;
+    m_numVideoTrack = 0;
+
+    addVideoTrack();
+    addAudioTrack();
+
+    updateDuration();
+}
+
 void TracksView::addMediaItem( Clip* clip, unsigned int track, qint64 start )
 {
     Q_ASSERT( clip );
