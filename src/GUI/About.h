@@ -23,6 +23,7 @@
 #ifndef ABOUT_H
 #define ABOUT_H
 
+#include <QApplication>
 #include <QPlainTextEdit>
 #include "ui_About.h"
 

@@ -2,6 +2,7 @@ TARGET = vlmc
 DESTDIR = bin
 CONFIG += debug
 TEMPLATE = app
+VERSION = 0.0.1
 OBJECTS_DIR = build
 MOC_DIR = build/moc
 UI_DIR = build/ui
@@ -142,5 +143,6 @@ INCLUDEPATH += src/LibVLCpp \
 LIBS = -L/usr/local/lib \
     -lvlc
 SUBDIRS += modules
+DEFINES += VLMC_VERSION="$$VERSION"
 CODECFORTR = UTF-8
 include(locale.pri)

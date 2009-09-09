@@ -29,6 +29,13 @@
 #include <QApplication>
 #include "MainWindow.h"
 
+#ifndef VLMC_VERSION
+#define VLMC_VERSION Unknown
+#endif
+
+#define EXPAND(x) #x
+#define STRINGIFY(x) EXPAND(x)
+
 /**
  *  VLMC Entry point
  *  \brief this is the VLMC entry point
@@ -42,6 +49,7 @@ int main( int argc, char **argv )
     app.setApplicationName( "vlmc" );
     app.setOrganizationName( "vlmc" );
     app.setOrganizationDomain( "vlmc.org" );
+    app.setApplicationVersion( STRINGIFY(VLMC_VERSION) );
     QSettings::setDefaultFormat( QSettings::IniFormat );
     Preferences::changeLang( QSettings().value( "Lang" ).toString() );
 

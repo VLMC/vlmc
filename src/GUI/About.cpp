@@ -36,6 +36,9 @@ About::About( QWidget *parent ) :
     setText( ":/text/AUTHORS", m_ui.plainTextEditAuthors );
     setText( ":/text/TRANSLATORS", m_ui.plainTextEditTranslators );
     setText( ":/text/COPYING", m_ui.plainTextEditLicense );
+    m_ui.labelVersion->setText(
+            m_ui.labelVersion->text().arg( qApp->applicationVersion() )
+            );
     connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( deleteLater() ) );
 }
 
