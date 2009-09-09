@@ -62,6 +62,7 @@ Timeline::Timeline( QWidget *parent ) :
     connect( m_mainWorkflow, SIGNAL( clipAdded(Clip*,uint,qint64) ), this, SLOT( actionAddClip(Clip*,uint,qint64) ) );
     connect( m_mainWorkflow, SIGNAL( clipMoved(QUuid, uint, qint64 ) ), this, SLOT( actionMoveClip(QUuid,uint,qint64) ) );
     connect( m_mainWorkflow, SIGNAL( clipRemoved(QUuid,uint) ), this, SLOT( actionRemoveClip(QUuid,uint)) );
+    connect( m_mainWorkflow, SIGNAL( cleared() ), tracksView(), SLOT( clear() ) );
 }
 
 Timeline::~Timeline()
