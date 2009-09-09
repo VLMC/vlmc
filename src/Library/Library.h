@@ -51,9 +51,10 @@ public:
 
 private:
     Library();
+    bool                    mediaAlreadyLoaded( const QString& filePath );
+
     QHash<QUuid, Media*>    m_medias;
     QHash<QUuid, Clip*>     m_clips;
-    QMutex                  m_mutex;
     template <typename T>
     T                       getElementByUuid( const QHash<QUuid, T>& container , const QUuid& uuid )
     {

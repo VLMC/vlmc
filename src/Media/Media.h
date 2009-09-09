@@ -116,6 +116,7 @@ public:
     void                        setFps( float fps );
 
     const QUuid&                getUuid() const;
+    void                        setUuid( const QUuid& uuid );
 
     FileType                    getFileType() const;
     static const QString        VideoExtensions;

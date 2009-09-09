@@ -46,7 +46,6 @@ Clip*           Library::getClip( const QUuid& uuid )
 
 void        Library::removingMediaAsked( const QUuid& uuid )
 {
-    QMutexLocker locker( &m_mutex );
     QHash<QUuid, Media*>::iterator   it = m_medias.find( uuid );
     if ( it == m_medias.end() )
         return ;
@@ -74,18 +73,24 @@ void        Library::metaDataComputed( Media* media )
 
 void        Library::newMediaLoadingAsked( const QString& filePath, const QString& uuid )
 {
-    //FIXME: Is this necessary ??
-    QMutexLocker locker( &m_mutex );
     Media*   media;
-    foreach ( media, m_medias )
-    {
-        if ( media->getFileInfo()->absoluteFilePath() == filePath )
-            return ;
-    }
+    if ( mediaAlreadyLoaded( filePath ) == true )
+        return ;
     media = new Media( filePath, uuid );
     m_medias[media->getUuid()] = media;
     connect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ), Qt::DirectConnection );
     emit newMediaLoaded( media );
+}
+
+bool        Library::mediaAlreadyLoaded( const QString& filePath )
+{
+    Media*   media;
+    foreach ( media, m_medias )
+    {
+        if ( media->getFileInfo()->absoluteFilePath() == filePath )
+            return true;
+    }
+    return false;
 }
 
 void        Library::loadProject( const QDomElement& medias )
@@ -115,8 +120,31 @@ void        Library::loadProject( const QDomElement& medias )
                 qWarning() << "Unknown field" << tagName;
             mediaProperty = mediaProperty.nextSibling().toElement();
         }
-        m_nbMediasToLoad.fetchAndAddAcquire( 1 );
-        newMediaLoadingAsked( path, uuid );
+        //FIXME: This is verry redondant...
+        if ( mediaAlreadyLoaded( path ) == true )
+        {
+            Media*   media;
+            QHash<QUuid, Media*>::iterator   it = m_medias.begin();
+            QHash<QUuid, Media*>::iterator   end = m_medias.end();
+
+            for ( ; it != end; ++it )
+            {
+                if ( it.value()->getFileInfo()->absoluteFilePath() == path )
+                {
+                    media = it.value();
+                    media->setUuid( QUuid( uuid ) );
+                    m_medias.erase( it );
+                    m_medias[media->getUuid()] = media;
+                    break ;
+                }
+            }
+        }
+        else
+        {
+            m_nbMediasToLoad.fetchAndAddAcquire( 1 );
+            newMediaLoadingAsked( path, uuid );
+        }
+
         elem = elem.nextSibling().toElement();
     }
 }

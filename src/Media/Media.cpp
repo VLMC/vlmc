@@ -224,3 +224,8 @@ Media::InputType    Media::getInputType() const
 {
     return m_inputType;
 }
+
+void                Media::setUuid( const QUuid& uuid )
+{
+    m_uuid = uuid;
+}
