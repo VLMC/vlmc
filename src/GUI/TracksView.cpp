@@ -160,13 +160,17 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, qint64 start )
 {
     Q_ASSERT( clip );
 
-    //nasty temporary fix:
+    // If there is not enough tracks to insert
+    // the clip do it now.
     if ( track > (quint32)m_numVideoTrack )
     {
         unsigned int nbTrackToAdd = track - m_numVideoTrack;
         for ( unsigned int i = 0; i < nbTrackToAdd; ++i )
             addVideoTrack();
     }
+    // Add the empty upper track
+    if ( track + 1 == m_numVideoTrack )
+        addVideoTrack();
 
     // Is the clip already existing in the timeline ?
     //TODO: please optimize me!
@@ -186,6 +190,8 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, qint64 start )
     item->setParentItem( getTrack( track ) );
     item->oldTrackNumber = track;
     moveMediaItem( item, track, start );
+
+    updateDuration();
 }
 
 void TracksView::dragEnterEvent( QDragEnterEvent* event )
