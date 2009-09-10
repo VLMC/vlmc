@@ -63,13 +63,23 @@ void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     gradient.setColorAt( 0, QColor::fromRgb( 32, 52, 142  ) );
     gradient.setColorAt( 1, QColor::fromRgb( 43, 69, 181  ) );
 
-    if ( isSelected() )
-        painter->setPen( QPen( Qt::yellow ) );
-    else
-        painter->setPen( QPen( Qt::NoPen ) );
-
+    painter->setPen( Qt::NoPen );
     painter->setBrush( QBrush( gradient ) );
     painter->drawRect( boundingRect() );
+
+    if ( isSelected() )
+    {
+        setZValue( Z_SELECTED );
+        painter->setPen( Qt::yellow );
+    }
+    else
+    {
+        setZValue( Z_NOT_SELECTED );
+        painter->setPen( Qt::NoPen );
+    }
+
+    painter->setBrush( Qt::NoBrush );
+    painter->drawRect( boundingRect().adjusted( 0, 0, 0, -1 ) );
 
     paintAudioSpectrum( painter );
     updateTitle();

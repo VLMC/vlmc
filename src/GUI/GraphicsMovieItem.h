@@ -28,6 +28,9 @@
 #include "Clip.h"
 #include "TracksView.h"
 
+#define Z_SELECTED 4
+#define Z_NOT_SELECTED 3
+
 class GraphicsMovieItem : public AbstractGraphicsMediaItem
 {
     Q_OBJECT
