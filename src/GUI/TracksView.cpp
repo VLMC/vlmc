@@ -260,11 +260,9 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position
     moveMediaItem( item, track->trackNumber(), (qint64)time);
 }
 
-void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, qint64 time )
+void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, qint64 time )
 {
-    if ( track < 0 )
-        track = 0;
-    else if ( track > m_numVideoTrack - 1)
+    if ( track > m_numVideoTrack - 1)
         track = m_numVideoTrack - 1;
 
     QPointF oldPos = item->pos();

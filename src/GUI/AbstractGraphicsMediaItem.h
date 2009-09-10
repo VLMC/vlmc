@@ -51,7 +51,7 @@ public:
     virtual const QUuid& uuid() const = 0;
 
     /// Return the current track of the item
-    int trackNumber();
+    quint32 trackNumber();
 
 protected:
     /**

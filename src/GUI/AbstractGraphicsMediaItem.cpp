@@ -43,7 +43,7 @@ void AbstractGraphicsMediaItem::mouseReleaseEvent( QGraphicsSceneMouseEvent* )
     setCursor( Qt::OpenHandCursor );
 }
 
-int AbstractGraphicsMediaItem::trackNumber()
+quint32 AbstractGraphicsMediaItem::trackNumber()
 {
     if ( parentItem() )
     {

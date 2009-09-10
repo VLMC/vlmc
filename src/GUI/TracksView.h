@@ -85,7 +85,7 @@ private:
     void                    addVideoTrack();
     void                    addAudioTrack();
     void                    moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position );
-    void                    moveMediaItem( AbstractGraphicsMediaItem* item, int track, qint64 time );
+    void                    moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, qint64 time );
     GraphicsTrack*          getTrack( unsigned int number );
     QGraphicsScene*         m_scene;
     int                     m_tracksHeight;
@@ -94,8 +94,8 @@ private:
     int                     m_fps;
     GraphicsCursorItem*     m_cursorLine;
     QGraphicsLinearLayout*  m_layout;
-    int                     m_numVideoTrack;
-    int                     m_numAudioTrack;
+    quint32                 m_numVideoTrack;
+    quint32                 m_numAudioTrack;
     MainWorkflow*           m_mainWorkflow;
     GraphicsMovieItem*      m_dragItem;
     QGraphicsWidget*        m_separator;
