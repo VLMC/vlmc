@@ -47,6 +47,7 @@ private:
     GenericRenderer*        m_renderer;
     bool                    m_endReached;
     bool                    m_previewStopped;
+    QPalette                m_videoPalette;
 
 protected:
     virtual void    changeEvent( QEvent *e );

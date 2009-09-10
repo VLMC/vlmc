@@ -43,6 +43,12 @@ PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent 
     m_ui->seekSlider->setSingleStep( 2 );
     m_ui->seekSlider->setFocusPolicy( Qt::NoFocus );
 
+    // Prepare and set the black background
+    m_ui->renderWidget->setAutoFillBackground( true );
+    m_videoPalette = m_ui->renderWidget->palette();
+    m_videoPalette.setColor( QPalette::Window, QColor( Qt::black ) );
+    m_ui->renderWidget->setPalette( m_videoPalette );
+
     setAcceptDrops( false );
 
     connect( m_ui->seekSlider, SIGNAL( sliderPressed() ),       this,   SLOT( seekSliderPressed() ) );
@@ -145,11 +151,17 @@ void    PreviewWidget::videoStopped()
 {
     m_ui->pushButtonPlay->setIcon( QIcon( ":/images/play" ) );
     m_ui->seekSlider->setValue( 0 );
+
+    // Set the black background
+    m_ui->renderWidget->setPalette( m_videoPalette );
 }
 
 void    PreviewWidget::videoPlaying()
 {
     m_ui->pushButtonPlay->setIcon( QIcon( ":/images/pause" ) );
+
+    // Remove the black background
+    m_ui->renderWidget->setPalette( QPalette() );
 }
 
 void    PreviewWidget::endReached()
@@ -158,6 +170,9 @@ void    PreviewWidget::endReached()
 
     m_ui->pushButtonPlay->setIcon( QIcon( ":/images/play" ) );
     m_ui->seekSlider->setValue( 0 );
+
+    // Set the black background
+    m_ui->renderWidget->setPalette( m_videoPalette );
 }
 
 void        PreviewWidget::on_pushButtonNextFrame_clicked()
