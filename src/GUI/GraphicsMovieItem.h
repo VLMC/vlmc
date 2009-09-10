@@ -54,12 +54,11 @@ public:
     void paintAudioSpectrum( QPainter* painter );
 
 private:
-    void                updateTitle();
+    void                paintTitle( QPainter* painter );
     Clip*               m_clip;
     int                 m_width;
     int                 m_height;
     QVector<float*>     m_audioSpectrum;
-    QGraphicsTextItem*  m_movieTitle;
 };
 
 #endif // GRAPHICSMOVIEITEM_H

@@ -38,14 +38,6 @@ GraphicsMovieItem::GraphicsMovieItem( Clip* clip ) : m_clip( clip ), m_width( 0 
                      .arg( clip->getParent()->getFileInfo()->fileName() )
                      .arg( length.toString("hh:mm:ss.zzz") ) );
     setToolTip( tooltip );
-
-    m_movieTitle = new QGraphicsTextItem( this, scene() );
-    m_movieTitle->setFlag( QGraphicsItem::ItemIgnoresTransformations );
-    QFont titleFont = m_movieTitle->font();
-    titleFont.setPointSize( 8 );
-    m_movieTitle->setFont( titleFont );
-
-    updateTitle();
 }
 
 GraphicsMovieItem::~GraphicsMovieItem()
@@ -81,10 +73,14 @@ void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     painter->setBrush( Qt::NoBrush );
     painter->drawRect( boundingRect().adjusted( 0, 0, 0, -1 ) );
 
-    paintAudioSpectrum( painter );
-    updateTitle();
-}
+    painter->save();
+    paintTitle( painter );
+    painter->restore();
 
+    painter->save();
+    paintAudioSpectrum( painter );
+    painter->restore();
+}
 
 void GraphicsMovieItem::setWidth( int width )
 {
@@ -145,16 +141,27 @@ Clip* GraphicsMovieItem::clip() const
     return m_clip;
 }
 
-void GraphicsMovieItem::updateTitle()
+void GraphicsMovieItem::paintTitle( QPainter* painter )
 {
-    QFontMetrics fm( m_movieTitle->font() );
+    // Disable the matrix transformations
+    painter->setWorldMatrixEnabled( false );
+
+    // Setup the font
+    QFont f = painter->font();
+    f.setPointSize( 8 );
+    painter->setFont( f );
+
+    // Initiate the font metrics calculation
+    QFontMetrics fm( painter->font() );
     QString text = m_clip->getParent()->getFileInfo()->fileName();
 
-    static int lastWidth = 0;
-    int width = Timeline::getInstance()->tracksView()->mapFromScene( boundingRect() ).boundingRect().width();
-    if ( lastWidth == width ) return;
+    // Get the transformations required to map the text on the viewport
+    QTransform viewPortTransform = Timeline::getInstance()->tracksView()->viewportTransform();
+    // Do the transformation
+    QRectF mapped = deviceTransform( viewPortTransform ).mapRect( boundingRect() );
+    // Create an inner rect
+    mapped.adjust( 2, 2, -2, -2 );
 
-    lastWidth = width;
-    //FIXME there is a small visual refresh bug here
-    m_movieTitle->setPlainText( fm.elidedText( text, Qt::ElideRight, width ) );
+    painter->setPen( Qt::white );
+    painter->drawText( mapped, Qt::AlignVCenter, fm.elidedText( text, Qt::ElideRight, mapped.width() ) );
 }
