@@ -1,5 +1,5 @@
 /*****************************************************************************
- * ProjectPreferences.h: VLMC project preferences class
+ * VLMCPreferences.cpp: VLMC preferences class
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,25 +20,28 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef PROJECTPREFERENCES_H
-#define PROJECTPREFERENCES_H
+#include "VLMCPreferences.h"
 
-#include <QSettings>
-#include <QWidget>
+#include "QDebug"
 
-#include "ui_ProjectPreferences.h"
-#include "PreferenceWidget.h"
-
-class   ProjectPreferences : public QWidget, public PreferenceWidget
+VLMCPreferences::VLMCPreferences(QWidget *parent) :
+    QWidget(parent)
 {
-    //Q_OBJECT
-    public:
-        ProjectPreferences( QWidget* parent = 0 );
-        ~ProjectPreferences();
-        bool    load();
-        void    save( QSettings& settings );
-    private:
-        Ui::ProjectPreferences  m_ui;
-};
+    this->setWidget( this );
+    m_ui.setupUi(this);
+}
 
-#endif
+VLMCPreferences::~VLMCPreferences() { }
+
+bool    VLMCPreferences::load()
+{
+    qDebug() << "Loading VLMCPreferences values";
+    return true;
+}
+
+void    VLMCPreferences::save( QSettings& settings )
+{
+    settings.beginGroup( "Project" );
+    //settings.setValue( "outputFPS", m_ui.outputFPS->text() );
+    settings.endGroup();
+}

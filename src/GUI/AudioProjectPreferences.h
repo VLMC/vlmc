@@ -1,5 +1,5 @@
 /*****************************************************************************
- * ProjectPreferences.h: VLMC project preferences class
+ * AudioProjectPreferences.h: VLMC Audio project preferences class
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,25 +20,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef PROJECTPREFERENCES_H
-#define PROJECTPREFERENCES_H
+#ifndef AUDIOPROJECTPREFERENCES_H
+#define AUDIOPROJECTPREFERENCES_H
 
-#include <QSettings>
 #include <QWidget>
-
-#include "ui_ProjectPreferences.h"
+#include <QSettings>
 #include "PreferenceWidget.h"
+#include "ui_AudioProjectPreferences.h"
 
-class   ProjectPreferences : public QWidget, public PreferenceWidget
+class AudioProjectPreferences : public QWidget, public PreferenceWidget
 {
     //Q_OBJECT
     public:
-        ProjectPreferences( QWidget* parent = 0 );
-        ~ProjectPreferences();
+        AudioProjectPreferences(QWidget *parent = 0);
+        ~AudioProjectPreferences();
         bool    load();
         void    save( QSettings& settings );
     private:
-        Ui::ProjectPreferences  m_ui;
+        Ui::AudioProjectPreferences m_ui;
 };
 
-#endif
+#endif // AUDIOPROJECTPREFERENCES_H

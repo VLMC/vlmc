@@ -69,7 +69,8 @@ private:
     PreviewWidget*          m_clipPreview;
     PreviewWidget*          m_projectPreview;
     WorkflowFileRenderer*   m_renderer;
-    Settings*      m_globalPreferences;
+    Settings*               m_globalPreferences;
+    Settings*               m_projectPreferences;
 
 private slots:
     void on_actionFullscreen_triggered( bool checked );

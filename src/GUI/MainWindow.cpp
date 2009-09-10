@@ -43,6 +43,9 @@
 #include "PreviewWidget.h"
 #include "PreferenceWidget.h"
 #include "ProjectPreferences.h"
+#include "AudioProjectPreferences.h"
+#include "VideoProjectPreferences.h"
+#include "VLMCPreferences.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
@@ -190,14 +193,10 @@ void MainWindow::initializeDockWidgets( void )
 void        MainWindow::createGlobalPreferences()
 {
     m_globalPreferences = new Settings(  );
-    m_globalPreferences->addWidget("Project",
-                                   new ProjectPreferences,
-                                   "images/vlmc.png",
-                                   "Project");
-    m_globalPreferences->addWidget("test",
-                                   new ProjectPreferences,
-                                   "images/vlmc.png",
-                                   "Truc");
+    m_globalPreferences->addWidget("VLMC",
+                                   new VLMCPreferences,
+                                   "../images/vlmc.png",
+                                   "VLMC settings");
     ////For debugging purpose
     //m_globalPreferences->addWidget("Test",
     //                               new QLabel("This is a test"),
@@ -253,6 +252,21 @@ void MainWindow::on_actionNew_Project_triggered()
 {
     //TODO : clear the library, the timeline, and show the configuration box
     //of the newly created project
+    m_projectPreferences = new Settings(  );
+    m_projectPreferences->addWidget("Project",
+                                   new ProjectPreferences,
+                                   "../images/vlmc.png",
+                                   "Project settings");
+    m_projectPreferences->addWidget("Video",
+                                   new VideoProjectPreferences,
+                                   "../images/scalable/video.svg",
+                                   "Video settings");
+    m_projectPreferences->addWidget("Audio",
+                                   new AudioProjectPreferences,
+                                   "../images/scalable/audio.svg",
+                                   "Audio settings");
+    m_projectPreferences->build();
+    m_projectPreferences->show();
 }
 
 void MainWindow::on_actionOpen_Project_triggered()

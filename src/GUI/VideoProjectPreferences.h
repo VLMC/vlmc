@@ -1,5 +1,5 @@
 /*****************************************************************************
- * ProjectPreferences.h: VLMC project preferences class
+ * VideoProjectPreferences.h: VLMC video project preferences class
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,25 +20,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef PROJECTPREFERENCES_H
-#define PROJECTPREFERENCES_H
+#ifndef VIDEOPROJECTPREFERENCES_H
+#define VIDEOPROJECTPREFERENCES_H
 
-#include <QSettings>
 #include <QWidget>
-
-#include "ui_ProjectPreferences.h"
+#include <QSettings>
 #include "PreferenceWidget.h"
+#include "ui_VideoProjectPreferences.h"
 
-class   ProjectPreferences : public QWidget, public PreferenceWidget
+class VideoProjectPreferences : public QWidget, public PreferenceWidget
 {
     //Q_OBJECT
     public:
-        ProjectPreferences( QWidget* parent = 0 );
-        ~ProjectPreferences();
+        VideoProjectPreferences(QWidget *parent = 0);
+        ~VideoProjectPreferences();
         bool    load();
         void    save( QSettings& settings );
     private:
-        Ui::ProjectPreferences  m_ui;
+        Ui::VideoProjectPreferences m_ui;
 };
 
-#endif
+#endif // VIDEOPROJECTPREFERENCES_H

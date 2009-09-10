@@ -58,7 +58,10 @@ SOURCES += src/main.cpp \
     src/GUI/Panel.cpp \
     src/GUI/PreferenceWidget.cpp \
     src/GUI/ProjectPreferences.cpp \
-    src/Commands/Commands.cpp
+    src/Commands/Commands.cpp \
+    src/GUI/AudioProjectPreferences.cpp \
+    src/GUI/VLMCPreferences.cpp \
+    src/GUI/VideoProjectPreferences.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -110,7 +113,10 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/Settings.h \
     src/GUI/Panel.h \
     src/GUI/GraphicsTrack.hpp \
-    src/Commands/Commands.h
+    src/Commands/Commands.h \
+    src/GUI/VLMCPreferences.h \
+    src/GUI/AudioProjectPreferences.h \
+    src/GUI/VideoProjectPreferences.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \
@@ -121,7 +127,10 @@ FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/FileBrowser.ui \
     src/GUI/ui/WorkflowFileRendererDialog.ui \
     src/GUI/ui/ClipProperty.ui \
-    src/GUI/ui/ProjectPreferences.ui
+    src/GUI/ui/ProjectPreferences.ui \
+    src/GUI/ui/VLMCPreferences.ui \
+    src/GUI/ui/VideoProjectPreferences.ui \
+    src/GUI/ui/AudioProjectPreferences.ui
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts
