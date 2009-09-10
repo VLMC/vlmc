@@ -316,22 +316,41 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, int track, qint
     qint64 mappedXPos = qMax( time, (qint64)0 );
     item->setPos( mappedXPos, 0 );
 
-    while ( item->pos().x() != oldPos.x() )
+    AbstractGraphicsMediaItem* hItem = NULL;
+    QList<QGraphicsItem*> collide = item->collidingItems();
+    for ( int i = 0; i < collide.count(); ++i )
     {
-        bool emptyPlace = true;
-        QList<QGraphicsItem*> colliding = item->collidingItems( Qt::IntersectsItemShape );
-        for ( int i = 0; i < colliding.size(); ++i )
-        {
-            AbstractGraphicsMediaItem* currentItem = dynamic_cast<AbstractGraphicsMediaItem*>( colliding.at( i ) );
-            if ( currentItem ) emptyPlace = false;
-        }
+        hItem = dynamic_cast<AbstractGraphicsMediaItem*>( collide.at( i ) );
+        if ( hItem ) break;
+    }
 
-        if ( emptyPlace ) break;
-
-        if ( item->pos().x() > oldPos.x() )
-            item->setPos( item->pos().x() - 1, 0 );
+    if ( hItem )
+    {
+        qreal newpos;
+        // Evaluate a possible solution
+        if ( item->pos().x() > hItem->pos().x() )
+            newpos = hItem->pos().x() + hItem->boundingRect().width();
         else
-            item->setPos( item->pos().x() + 1, 0 );
+            newpos = hItem->pos().x() - item->boundingRect().width();
+
+        if ( newpos < 0 || newpos == hItem->pos().x() )
+            item->setPos( oldPos ); // Fail
+        else
+        {
+            // A solution may be found
+            item->setPos( newpos, 0 );
+            QList<QGraphicsItem*> collideAgain = item->collidingItems();
+            for ( int i = 0; i < collideAgain.count(); ++i )
+            {
+                AbstractGraphicsMediaItem* currentItem =
+                        dynamic_cast<AbstractGraphicsMediaItem*>( collideAgain.at( i ) );
+                if ( currentItem )
+                {
+                    item->setPos( oldPos ); // Fail
+                    break;
+                }
+            }
+        }
     }
 }
 
