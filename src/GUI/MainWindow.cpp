@@ -43,6 +43,7 @@
 #include "PreviewWidget.h"
 #include "PreferenceWidget.h"
 #include "ProjectPreferences.h"
+#include "ProjectManager.h"
 #include "AudioProjectPreferences.h"
 #include "VideoProjectPreferences.h"
 #include "VLMCPreferences.h"
@@ -137,6 +138,21 @@ void        MainWindow::setupLibrary()
              m_clipPreview->getGenericRenderer(), SLOT( mediaUnloaded( QUuid ) ) );
     connect( libraryWidget->getVideoListWidget(), SIGNAL( itemDoubleClicked( QListWidgetItem* ) ),
              this, SLOT( mediaListItemDoubleClicked( QListWidgetItem* ) ) );
+}
+
+void    MainWindow::on_actionLoad_Project_triggered()
+{
+    QString outputFileName =
+            QFileDialog::getSaveFileName( NULL, "Enter the output file name",
+                                          QString(), "VLMC project file(*.vlmc)" );
+    if ( outputFileName.length() == 0 )
+        return ;
+    else
+    {
+        //Project manager will destroy itself.
+        ProjectManager* pm = new ProjectManager( outputFileName );
+        pm->loadProject();
+    }
 }
 
 void MainWindow::createStatusBar()

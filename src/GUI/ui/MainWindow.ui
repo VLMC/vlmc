@@ -27,7 +27,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -36,6 +36,7 @@
     </property>
     <addaction name="actionNew_Project"/>
     <addaction name="actionOpen_Project"/>
+    <addaction name="actionLoad_Project"/>
     <addaction name="actionTranscode_File"/>
     <addaction name="actionRender"/>
     <addaction name="actionQuit"/>
@@ -163,6 +164,11 @@
   <action name="actionRender">
    <property name="text">
     <string>Render</string>
+   </property>
+  </action>
+  <action name="actionLoad_Project">
+   <property name="text">
+    <string>Load Project</string>
    </property>
   </action>
  </widget>
