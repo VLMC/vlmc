@@ -148,7 +148,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
     public slots:
         void                            loadProject( const QDomElement& project );
-        void                            saveProject( QDomDocument& doc );
+        void                            saveProject( QDomDocument& doc, QDomElement& rootNode );
 
     signals:
         /**

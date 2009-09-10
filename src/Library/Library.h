@@ -70,7 +70,7 @@ public slots:
     void                    removingMediaAsked( const QUuid& uuid );
 
     void                    loadProject( const QDomElement& project );
-    void                    saveProject( QDomDocument& doc );
+    void                    saveProject( QDomDocument& doc, QDomElement& rootNode );
 
 private slots:
     void                    metaDataComputed( Media* );

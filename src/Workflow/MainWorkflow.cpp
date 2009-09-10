@@ -474,7 +474,7 @@ void        MainWorkflow::loadProject( const QDomElement& project )
     }
 }
 
-void        MainWorkflow::saveProject( QDomDocument& doc )
+void        MainWorkflow::saveProject( QDomDocument& doc, QDomElement& rootNode )
 {
     QDomElement project = doc.createElement( "timeline" );
     for ( unsigned int i = 0; i < m_trackCount; ++i )
@@ -489,7 +489,7 @@ void        MainWorkflow::saveProject( QDomDocument& doc )
             project.appendChild( trackNode );
         }
     }
-    doc.appendChild( project );
+    rootNode.appendChild( project );
 }
 
 void        MainWorkflow::clear()

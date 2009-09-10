@@ -81,8 +81,8 @@ private slots:
     void on_actionTranscode_File_triggered();
     void on_actionRender_triggered();
     void on_actionNew_Project_triggered();
-    void on_actionOpen_Project_triggered();
     void on_actionLoad_Project_triggered();
+    void on_actionSave_triggered();
     void mediaListItemDoubleClicked( QListWidgetItem* );
 
 signals:

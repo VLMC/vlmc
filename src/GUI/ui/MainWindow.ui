@@ -35,8 +35,8 @@
      <string>File</string>
     </property>
     <addaction name="actionNew_Project"/>
-    <addaction name="actionOpen_Project"/>
     <addaction name="actionLoad_Project"/>
+    <addaction name="actionSave"/>
     <addaction name="actionTranscode_File"/>
     <addaction name="actionRender"/>
     <addaction name="actionQuit"/>
@@ -169,6 +169,11 @@
   <action name="actionLoad_Project">
    <property name="text">
     <string>Load Project</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
    </property>
   </action>
  </widget>

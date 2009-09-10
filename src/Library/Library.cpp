@@ -149,7 +149,7 @@ void        Library::loadProject( const QDomElement& medias )
     }
 }
 
-void        Library::saveProject( QDomDocument& doc )
+void        Library::saveProject( QDomDocument& doc, QDomElement& rootNode )
 {
     QHash<QUuid, Media*>::iterator          it = m_medias.begin();
     QHash<QUuid, Media*>::iterator          end = m_medias.end();
@@ -174,5 +174,5 @@ void        Library::saveProject( QDomDocument& doc )
         media.appendChild( mrl );
         media.appendChild( uuid );
     }
-    doc.appendChild( medias );
+    rootNode.appendChild( medias );
 }

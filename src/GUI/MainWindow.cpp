@@ -140,6 +140,21 @@ void        MainWindow::setupLibrary()
              this, SLOT( mediaListItemDoubleClicked( QListWidgetItem* ) ) );
 }
 
+void    MainWindow::on_actionSave_triggered()
+{
+    QString outputFileName =
+            QFileDialog::getSaveFileName( NULL, "Enter the output file name",
+                                          QString(), "VLMC project file(*.vlmc)" );
+    if ( outputFileName.length() == 0 )
+        return ;
+    else
+    {
+        //Project manager will destroy itself.
+        ProjectManager* pm = new ProjectManager( outputFileName );
+        pm->saveProject();
+    }
+}
+
 void    MainWindow::on_actionLoad_Project_triggered()
 {
     QString outputFileName =
@@ -252,7 +267,7 @@ void    MainWindow::on_actionRender_triggered()
     }
     QString outputFileName =
             QFileDialog::getSaveFileName( NULL, "Enter the output file name",
-                                          QString(), "Videos(*.avi *.mpg)" );
+                                          QDir::currentPath(), "Videos(*.avi *.mpg)" );
     if ( outputFileName.length() == 0 )
         return ;
     else
@@ -283,13 +298,6 @@ void MainWindow::on_actionNew_Project_triggered()
                                    "Audio settings");
     m_projectPreferences->build();
     m_projectPreferences->show();
-}
-
-void MainWindow::on_actionOpen_Project_triggered()
-{
-    QString path = QFileDialog::getOpenFileName( this, tr( "Choose a project to open" ),
-                                                 QDir::currentPath(),
-                                                 tr( "VideoLAN Movie Creator file (*.vlmc)" ) );
 }
 
 void MainWindow::zoomIn()
