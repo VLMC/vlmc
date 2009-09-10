@@ -41,6 +41,7 @@ public:
     {
         m_type = type;
         m_trackNumber = trackNumber;
+        setZValue( 1 );
     }
     quint32 trackNumber()
     {
@@ -51,12 +52,17 @@ public:
 protected:
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* = 0 )
     {
+        /*
+        Debugging of tracks.
+        Do not remove this block.
+
         if ( m_type == Video )
             painter->setBrush( Qt::green );
         else
             painter->setBrush( Qt::blue );
         painter->setPen( Qt::transparent );
         painter->drawRect( rect() );
+        */
     }
 
 private:

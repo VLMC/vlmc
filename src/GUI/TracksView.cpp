@@ -444,12 +444,27 @@ void TracksView::resizeEvent( QResizeEvent* event )
 
 void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
 {
+    // Draw the tracks separators
+    painter->setPen( QPen( QColor( 72, 72, 72 ) ) );
+    QList<QGraphicsItem*> gi = items( 0, 0, 1, sceneRect().height() );
+    for ( int i = 0; i < gi.count(); ++i )
+    {
+        GraphicsTrack* track = qgraphicsitem_cast<GraphicsTrack*>( gi.at( i ) );
+        if ( !track ) continue;
+        if ( track->trackNumber() == 0 ) continue;
+
+        QRectF trackRect = track->mapRectToScene( track->boundingRect() );
+        painter->drawLine( trackRect.left(), trackRect.bottom(), rect.right(), trackRect.bottom() );
+    }
+
+    // Audio/Video separator
     QRectF r = rect;
     r.setWidth( r.width() + 1 );
 
+    painter->setWorldMatrixEnabled( false );
     painter->setBrush( QBrush( palette().dark().color(), Qt::Dense3Pattern ) );
     painter->setPen( Qt::transparent );
-    painter->drawRect( ( int ) r.left(), ( int ) m_separator->y(),
+    painter->drawRect( ( int ) r.left(), ( int ) m_separator->y() + 2, //FIXME this is a hack
                        ( int ) r.right(),
                        ( int ) m_separator->boundingRect().height() );
 }
