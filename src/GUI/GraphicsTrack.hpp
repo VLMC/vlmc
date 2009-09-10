@@ -52,6 +52,7 @@ public:
 protected:
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* = 0 )
     {
+        Q_UNUSED( painter );
         /*
         Debugging of tracks.
         Do not remove this block.
