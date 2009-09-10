@@ -53,8 +53,11 @@ public:
     //void setAudioSpectrum( QVector<float*> spectrum );
     void paintAudioSpectrum( QPainter* painter );
 
-private:
+protected:
+    void                paintRect( QPainter* painter );
     void                paintTitle( QPainter* painter );
+
+private:
     Clip*               m_clip;
     int                 m_width;
     int                 m_height;

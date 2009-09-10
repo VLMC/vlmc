@@ -51,27 +51,9 @@ QRectF GraphicsMovieItem::boundingRect() const
 
 void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* )
 {
-    QLinearGradient gradient( 0, 0, m_width, m_height );
-    gradient.setColorAt( 0, QColor::fromRgb( 32, 52, 142  ) );
-    gradient.setColorAt( 1, QColor::fromRgb( 43, 69, 181  ) );
-
-    painter->setPen( Qt::NoPen );
-    painter->setBrush( QBrush( gradient ) );
-    painter->drawRect( boundingRect() );
-
-    if ( isSelected() )
-    {
-        setZValue( Z_SELECTED );
-        painter->setPen( Qt::yellow );
-    }
-    else
-    {
-        setZValue( Z_NOT_SELECTED );
-        painter->setPen( Qt::NoPen );
-    }
-
-    painter->setBrush( Qt::NoBrush );
-    painter->drawRect( boundingRect().adjusted( 0, 0, 0, -1 ) );
+    painter->save();
+    paintRect( painter );
+    painter->restore();
 
     painter->save();
     paintTitle( painter );
@@ -139,6 +121,43 @@ void GraphicsMovieItem::paintAudioSpectrum( QPainter* painter )
 Clip* GraphicsMovieItem::clip() const
 {
     return m_clip;
+}
+
+void GraphicsMovieItem::paintRect( QPainter* painter )
+{
+    // Disable the matrix transformations
+    painter->setWorldMatrixEnabled( false );
+
+    painter->setRenderHint( QPainter::Antialiasing );
+
+    // Get the transformations required to map the text on the viewport
+    QTransform viewPortTransform = Timeline::getInstance()->tracksView()->viewportTransform();
+    // Do the transformation
+    QRectF mapped = deviceTransform( viewPortTransform ).mapRect( boundingRect() );
+
+    QLinearGradient gradient( mapped.topLeft(), mapped.bottomLeft() );
+    gradient.setColorAt( 0, QColor::fromRgb( 78, 78, 78 ) );
+    gradient.setColorAt( 0.4, QColor::fromRgb( 72, 72, 72 ) );
+    gradient.setColorAt( 0.4, QColor::fromRgb( 50, 50, 50 ) );
+    gradient.setColorAt( 1, QColor::fromRgb( 45, 45, 45 ) );
+
+    painter->setPen( Qt::NoPen );
+    painter->setBrush( QBrush( gradient ) );
+    painter->drawRoundedRect( mapped, 5, 5 );
+
+    if ( isSelected() )
+    {
+        setZValue( Z_SELECTED );
+        painter->setPen( Qt::yellow );
+    }
+    else
+    {
+        setZValue( Z_NOT_SELECTED );
+        painter->setPen( Qt::NoPen );
+    }
+
+    painter->setBrush( Qt::NoBrush );
+    painter->drawRoundedRect( mapped.adjusted( 0, 0, 0, -1 ), 5, 5 );
 }
 
 void GraphicsMovieItem::paintTitle( QPainter* painter )
