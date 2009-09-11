@@ -47,6 +47,7 @@
 #include "AudioProjectPreferences.h"
 #include "VideoProjectPreferences.h"
 #include "VLMCPreferences.h"
+#include "Import.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
@@ -298,6 +299,12 @@ void MainWindow::on_actionNew_Project_triggered()
                                    "Audio settings");
     m_projectPreferences->build();
     m_projectPreferences->show();
+}
+
+void    MainWindow::on_actionImport_triggered()
+{
+    Import* import = new Import( );
+    import->exec();
 }
 
 void MainWindow::zoomIn()

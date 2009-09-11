@@ -31,8 +31,7 @@ SOURCES += src/main.cpp \
     src/GUI/ListViewMediaItem.cpp \
     src/GUI/MediaListWidget.cpp \
     src/Media/Clip.cpp \
-    src/GUI/About.cpp \
-#    src/GUI/Transcode.cpp \
+    src/GUI/About.cpp \ # src/GUI/Transcode.cpp \
     src/GUI/Slider.cpp \
     src/Metadata/MetaDataWorker.cpp \
     src/Library/Library.cpp \
@@ -62,7 +61,8 @@ SOURCES += src/main.cpp \
     src/GUI/AudioProjectPreferences.cpp \
     src/GUI/VLMCPreferences.cpp \
     src/GUI/VideoProjectPreferences.cpp \
-    src/Project/ProjectManager.cpp
+    src/Project/ProjectManager.cpp \
+    src/GUI/Import.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -80,8 +80,7 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/ListViewMediaItem.h \
     src/Media/Clip.h \
     src/GUI/MediaListWidget.h \
-    src/GUI/About.h \
-#    src/GUI/Transcode.h \
+    src/GUI/About.h \ # src/GUI/Transcode.h \
     src/GUI/Slider.h \
     src/Metadata/MetaDataWorker.h \
     src/Tools/Singleton.hpp \
@@ -118,21 +117,22 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/VLMCPreferences.h \
     src/GUI/AudioProjectPreferences.h \
     src/GUI/VideoProjectPreferences.h \
-    src/Project/ProjectManager.h
+    src/Project/ProjectManager.h \
+    src/GUI/Import.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \
     src/GUI/ui/Timeline.ui \
     src/GUI/ui/LibraryWidget.ui \
-    src/GUI/ui/About.ui \
-#    src/GUI/ui/Transcode.ui \
+    src/GUI/ui/About.ui \ # src/GUI/ui/Transcode.ui \
     src/GUI/ui/FileBrowser.ui \
     src/GUI/ui/WorkflowFileRendererDialog.ui \
     src/GUI/ui/ClipProperty.ui \
     src/GUI/ui/ProjectPreferences.ui \
     src/GUI/ui/VLMCPreferences.ui \
     src/GUI/ui/VideoProjectPreferences.ui \
-    src/GUI/ui/AudioProjectPreferences.ui
+    src/GUI/ui/AudioProjectPreferences.ui \
+    src/GUI/ui/Import.ui
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts
