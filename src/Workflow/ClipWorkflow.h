@@ -56,7 +56,6 @@ class   ClipWorkflow : public QObject
             Stopping,       //7
             EndReached,     //8
         };
-       int                     debugId;
 
         ClipWorkflow( Clip* clip );
         virtual ~ClipWorkflow();
