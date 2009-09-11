@@ -5,26 +5,27 @@
 #include "ClipRenderer.h"
 
 Import::Import(QWidget *parent) :
-    QDialog(parent), ui(new Ui::Import)
+    QDialog( parent ), m_ui( new Ui::Import )
 {
-    ui->setupUi(this);
-    ui->FileBrowserWidget = new FileBrowser(this);
-    ui->PreviewWidget = new PreviewWidget( new ClipRenderer, this );
+    m_ui->setupUi( this );
+    m_ui->FileBrowserWidget = new FileBrowser( m_ui->FileBrowserWidget );
+    m_ui->PreviewWidget = new PreviewWidget( new ClipRenderer, m_ui->PreviewWidget );
 }
 
 Import::~Import()
 {
-    delete ui;
+    delete m_ui;
 }
 
-void Import::changeEvent(QEvent *e)
+void Import::changeEvent( QEvent *e )
 {
-    QDialog::changeEvent(e);
-    switch (e->type()) {
-    case QEvent::LanguageChange:
-        ui->retranslateUi(this);
-        break;
-    default:
-        break;
+    QDialog::changeEvent( e );
+    switch ( e->type() )
+    {
+        case QEvent::LanguageChange:
+            m_ui->retranslateUi( this );
+            break;
+        default:
+            break;
     }
 }
