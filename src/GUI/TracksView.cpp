@@ -461,12 +461,14 @@ void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
     QRectF r = rect;
     r.setWidth( r.width() + 1 );
 
+    m_separator->setVisible( false );
     painter->setWorldMatrixEnabled( false );
     painter->setBrush( QBrush( palette().dark().color(), Qt::Dense3Pattern ) );
     painter->setPen( Qt::transparent );
-    painter->drawRect( ( int ) r.left(), ( int ) m_separator->y() + 2, //FIXME this is a hack
-                       ( int ) r.right(),
-                       ( int ) m_separator->boundingRect().height() );
+    painter->drawRect( 0,
+                       (int) m_separator->y(),
+                       (int) r.right(),
+                       (int) m_separator->boundingRect().height() );
 }
 
 void TracksView::mouseMoveEvent( QMouseEvent* event )
