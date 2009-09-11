@@ -480,6 +480,7 @@ void TracksView::mouseMoveEvent( QMouseEvent* event )
         // The move action is obviously executed
         m_actionMoveExecuted = true;
 
+        m_actionItem->setOpacity( 0.6 );
         if ( m_actionRelativeX < 0 )
             m_actionRelativeX = event->pos().x() - mapFromScene( m_actionItem->pos() ).x();
         moveMediaItem( m_actionItem, QPoint( event->pos().x() - m_actionRelativeX, event->pos().y() ) );
@@ -531,6 +532,8 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
 {
     if ( m_actionMove && m_actionMoveExecuted )
     {
+        m_actionItem->setOpacity( 1.0 );
+
         GraphicsMovieItem* movieItem = qgraphicsitem_cast<GraphicsMovieItem*>( m_actionItem );
         if ( movieItem )
         {
