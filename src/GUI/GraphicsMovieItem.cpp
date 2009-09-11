@@ -49,14 +49,14 @@ QRectF GraphicsMovieItem::boundingRect() const
     return QRectF( 0, 0, m_width, m_height );
 }
 
-void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* )
+void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* )
 {
     painter->save();
-    paintRect( painter );
+    paintRect( painter, option );
     painter->restore();
 
     painter->save();
-    paintTitle( painter );
+    paintTitle( painter, option );
     painter->restore();
 
     painter->save();
@@ -123,8 +123,11 @@ Clip* GraphicsMovieItem::clip() const
     return m_clip;
 }
 
-void GraphicsMovieItem::paintRect( QPainter* painter )
+void GraphicsMovieItem::paintRect( QPainter* painter, const QStyleOptionGraphicsItem* option )
 {
+    QRectF drawRect;
+    bool drawRound;
+
     // Disable the matrix transformations
     painter->setWorldMatrixEnabled( false );
 
@@ -132,8 +135,27 @@ void GraphicsMovieItem::paintRect( QPainter* painter )
 
     // Get the transformations required to map the text on the viewport
     QTransform viewPortTransform = Timeline::getInstance()->tracksView()->viewportTransform();
+
+    // Determine if a drawing optimization can be used
+    if ( option->exposedRect.left() > ROUNDED_RECT_RADIUS &&
+         option->exposedRect.right() < boundingRect().right() - ROUNDED_RECT_RADIUS )
+    {
+        // Optimized: paint only the exposed (horizontal) area
+        drawRect = QRectF( option->exposedRect.left(),
+                           boundingRect().top(),
+                           option->exposedRect.right(),
+                           boundingRect().bottom() );
+        drawRound = false;
+    }
+    else
+    {
+        // Unoptimized: the item must be fully repaint
+        drawRect = boundingRect();
+        drawRound = true;
+    }
+
     // Do the transformation
-    QRectF mapped = deviceTransform( viewPortTransform ).mapRect( boundingRect() );
+    QRectF mapped = deviceTransform( viewPortTransform ).mapRect( drawRect );
 
     QLinearGradient gradient( mapped.topLeft(), mapped.bottomLeft() );
     gradient.setColorAt( 0, QColor::fromRgb( 78, 78, 78 ) );
@@ -143,25 +165,31 @@ void GraphicsMovieItem::paintRect( QPainter* painter )
 
     painter->setPen( Qt::NoPen );
     painter->setBrush( QBrush( gradient ) );
-    painter->drawRoundedRect( mapped, 5, 5 );
+
+    if ( drawRound )
+        painter->drawRoundedRect( mapped, ROUNDED_RECT_RADIUS, ROUNDED_RECT_RADIUS );
+    else
+        painter->drawRect( mapped );
 
     if ( isSelected() )
     {
         setZValue( Z_SELECTED );
         painter->setPen( Qt::yellow );
+        painter->setBrush( Qt::NoBrush );
+        mapped.adjust( 0, 0, 0, -1 );
+        if ( drawRound )
+            painter->drawRoundedRect( mapped, ROUNDED_RECT_RADIUS, ROUNDED_RECT_RADIUS );
+        else
+            painter->drawRect( mapped );
     }
     else
-    {
         setZValue( Z_NOT_SELECTED );
-        painter->setPen( Qt::NoPen );
-    }
-
-    painter->setBrush( Qt::NoBrush );
-    painter->drawRoundedRect( mapped.adjusted( 0, 0, 0, -1 ), 5, 5 );
 }
 
-void GraphicsMovieItem::paintTitle( QPainter* painter )
+void GraphicsMovieItem::paintTitle( QPainter* painter, const QStyleOptionGraphicsItem* option )
 {
+    Q_UNUSED( option );
+
     // Disable the matrix transformations
     painter->setWorldMatrixEnabled( false );
 

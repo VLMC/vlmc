@@ -31,6 +31,8 @@
 #define Z_SELECTED 4
 #define Z_NOT_SELECTED 3
 
+#define ROUNDED_RECT_RADIUS 5
+
 class GraphicsMovieItem : public AbstractGraphicsMediaItem
 {
     Q_OBJECT
@@ -54,8 +56,8 @@ public:
     void paintAudioSpectrum( QPainter* painter );
 
 protected:
-    void                paintRect( QPainter* painter );
-    void                paintTitle( QPainter* painter );
+    void                paintRect( QPainter* painter, const QStyleOptionGraphicsItem* option );
+    void                paintTitle( QPainter* painter, const QStyleOptionGraphicsItem* option );
 
 private:
     Clip*               m_clip;
