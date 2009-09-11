@@ -191,6 +191,7 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, qint64 start )
     item->oldTrackNumber = track;
     connect( item, SIGNAL( split(GraphicsMovieItem*,qint64) ),
              this, SLOT( split(GraphicsMovieItem*,qint64) ) );
+    item->oldPosition = start;
     moveMediaItem( item, track, start );
 
     updateDuration();
@@ -415,6 +416,7 @@ void TracksView::dropEvent( QDropEvent* event )
 
         qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
         m_dragItem->oldTrackNumber = m_dragItem->trackNumber();
+        m_dragItem->oldPosition = (qint64)mappedXPos;
 
         Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
                                                                 m_dragItem->clip(),
