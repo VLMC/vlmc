@@ -38,6 +38,7 @@ GraphicsMovieItem::GraphicsMovieItem( Clip* clip ) : m_clip( clip ), m_width( 0 
                      .arg( clip->getParent()->getFileInfo()->fileName() )
                      .arg( length.toString("hh:mm:ss.zzz") ) );
     setToolTip( tooltip );
+    setAcceptHoverEvents( true );
 }
 
 GraphicsMovieItem::~GraphicsMovieItem()
@@ -211,4 +212,29 @@ void GraphicsMovieItem::paintTitle( QPainter* painter, const QStyleOptionGraphic
 
     painter->setPen( Qt::white );
     painter->drawText( mapped, Qt::AlignVCenter, fm.elidedText( text, Qt::ElideRight, mapped.width() ) );
+}
+
+void GraphicsMovieItem::hoverEnterEvent( QGraphicsSceneHoverEvent* event )
+{
+    TracksView* tv = Timeline::getInstance()->tracksView();
+    if ( tv )
+    {
+        switch ( tv->tool() )
+        {
+            case TOOL_DEFAULT:
+            resetCursor();
+            break;
+
+            case TOOL_CUT:
+            setCursor( QCursor( QPixmap( ":/images/editcut" ) ) );
+            break;
+        }
+    }
+
+    AbstractGraphicsMediaItem::hoverEnterEvent( event );
+}
+
+void GraphicsMovieItem::hoverLeaveEvent( QGraphicsSceneHoverEvent* event )
+{
+    AbstractGraphicsMediaItem::hoverLeaveEvent( event );
 }

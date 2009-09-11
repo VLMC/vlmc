@@ -23,6 +23,7 @@
 #ifndef TIMELINE_H
 #define TIMELINE_H
 
+#include "vlmc.h"
 #include "ui_Timeline.h"
 #include "TracksRuler.h"
 #include "Workflow/MainWorkflow.h"
@@ -46,6 +47,7 @@ public:
 public slots:
     void changeZoom( int factor );
     void setDuration( int duration );
+    void setTool( ToolButtons button );
     void actionAddClip( Clip* clip, unsigned int track, qint64 start );
     void actionMoveClip( const QUuid& uuid, unsigned int track, qint64 time );
     void actionRemoveClip( const QUuid& uuid, unsigned int track );

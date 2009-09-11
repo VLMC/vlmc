@@ -58,6 +58,8 @@ public:
 protected:
     void                paintRect( QPainter* painter, const QStyleOptionGraphicsItem* option );
     void                paintTitle( QPainter* painter, const QStyleOptionGraphicsItem* option );
+    virtual void        hoverEnterEvent( QGraphicsSceneHoverEvent* event );
+    virtual void        hoverLeaveEvent( QGraphicsSceneHoverEvent* event );
 
 private:
     Clip*               m_clip;

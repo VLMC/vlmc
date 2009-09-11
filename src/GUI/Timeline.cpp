@@ -95,6 +95,11 @@ void Timeline::setDuration( int duration )
     m_tracksRuler->setDuration( duration );
 }
 
+void Timeline::setTool( ToolButtons button )
+{
+    tracksView()->setTool( button );
+}
+
 void Timeline::actionAddClip( Clip* clip, unsigned int track, qint64 start )
 {
     tracksView()->addMediaItem( clip, track, start );

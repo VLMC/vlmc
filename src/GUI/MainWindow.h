@@ -25,7 +25,10 @@
 
 #include <QApplication>
 #include <QSlider>
+#include <QToolButton>
+#include <QButtonGroup>
 
+#include "vlmc.h"
 #include "ui_MainWindow.h"
 
 #include "DockWidgetManager.h"
@@ -36,7 +39,6 @@
 #include "PreviewWidget.h"
 #include "ListViewMediaItem.h"
 #include "Settings.h"
-
 
 class MainWindow : public QMainWindow
 {
@@ -84,9 +86,11 @@ private slots:
     void on_actionLoad_Project_triggered();
     void on_actionSave_triggered();
     void mediaListItemDoubleClicked( QListWidgetItem* );
+    void toolButtonClicked( int id );
 
 signals:
     void translateDockWidgetTitle();
+    void toolChanged( ToolButtons );
 
 };
 

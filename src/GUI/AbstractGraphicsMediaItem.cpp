@@ -25,7 +25,7 @@
 AbstractGraphicsMediaItem::AbstractGraphicsMediaItem() :
         oldTrackNumber( -1 ), oldPosition( -1 ), m_tracksView( NULL )
 {
-    setCursor( Qt::OpenHandCursor );
+    resetCursor();
 }
 
 TracksView* AbstractGraphicsMediaItem::tracksView()
@@ -52,4 +52,9 @@ quint32 AbstractGraphicsMediaItem::trackNumber()
             return graphicsTrack->trackNumber();
     }
     return -1;
+}
+
+void AbstractGraphicsMediaItem::resetCursor()
+{
+    setCursor( Qt::OpenHandCursor );
 }

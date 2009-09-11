@@ -53,6 +53,9 @@ public:
     /// Return the current track of the item
     quint32 trackNumber();
 
+    /// Reset the cursor to its default value
+    void resetCursor();
+
 protected:
     /**
      * Returns the current tracksView for the item,

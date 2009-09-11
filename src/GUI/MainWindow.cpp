@@ -68,6 +68,8 @@ MainWindow::MainWindow( QWidget *parent ) :
              this, SLOT( zoomIn() ) );
     connect( m_timeline->tracksView(), SIGNAL( zoomOut() ),
              this, SLOT( zoomOut() ) );
+    connect( this, SIGNAL( toolChanged( ToolButtons ) ),
+             m_timeline, SLOT( setTool( ToolButtons ) ) );
 
     //Global Preferences
     QObject::connect( qApp,
@@ -172,6 +174,41 @@ void    MainWindow::on_actionLoad_Project_triggered()
 
 void MainWindow::createStatusBar()
 {
+    // Mouse (default) tool
+    QToolButton* mouseTool = new QToolButton( this );
+    mouseTool->setCheckable( true );
+    mouseTool->setIcon( QIcon( ":/images/mouse" ) );
+    m_ui.statusbar->addPermanentWidget( mouseTool );
+
+    // Cut/Split tool
+    QToolButton* splitTool = new QToolButton( this );
+    splitTool->setCheckable( true );
+    splitTool->setIcon( QIcon( ":/images/editcut" ) );
+    m_ui.statusbar->addPermanentWidget( splitTool );
+
+    // Group the two previous buttons
+    QButtonGroup* toolButtonGroup = new QButtonGroup( this );
+    toolButtonGroup->addButton( mouseTool, TOOL_DEFAULT);
+    toolButtonGroup->addButton( splitTool, TOOL_CUT );
+    toolButtonGroup->setExclusive( true );
+    mouseTool->setChecked( true );
+
+    connect( toolButtonGroup, SIGNAL( buttonClicked( int ) ),
+             this, SLOT( toolButtonClicked( int ) ) );
+
+    // Spacer
+    QWidget* spacer = new QWidget( this );
+    spacer->setFixedWidth( 20 );
+    m_ui.statusbar->addPermanentWidget( spacer );
+
+    // Zoom IN
+    QToolButton* zoomInButton = new QToolButton( this );
+    zoomInButton->setIcon( QIcon( ":/images/zoomin" ) );
+    m_ui.statusbar->addPermanentWidget( zoomInButton );
+    connect( zoomInButton, SIGNAL( clicked() ),
+             this, SLOT( zoomIn() ) );
+
+    // Zoom slider
     m_zoomSlider = new QSlider( this );
     m_zoomSlider->setOrientation( Qt::Horizontal );
     m_zoomSlider->setTickInterval( 1 );
@@ -182,6 +219,13 @@ void MainWindow::createStatusBar()
     m_zoomSlider->setValue( 10 );
     m_zoomSlider->setFixedWidth( 80 );
     m_ui.statusbar->addPermanentWidget( m_zoomSlider );
+
+    // Zoom Out
+    QToolButton* zoomOutButton = new QToolButton( this );
+    zoomOutButton->setIcon( QIcon( ":/images/zoomout" ) );
+    m_ui.statusbar->addPermanentWidget( zoomOutButton );
+    connect( zoomOutButton, SIGNAL( clicked() ),
+             this, SLOT( zoomOut() ) );
 }
 
 void MainWindow::initializeDockWidgets( void )
@@ -328,4 +372,9 @@ void    MainWindow::mediaListItemDoubleClicked( QListWidgetItem* qItem )
     ListViewMediaItem* item = static_cast<ListViewMediaItem*>( qItem );
     ClipProperty* mp = new ClipProperty( item->getClip(), this );
     mp->show();
+}
+
+void MainWindow::toolButtonClicked( int id )
+{
+    emit toolChanged( (ToolButtons)id );
 }

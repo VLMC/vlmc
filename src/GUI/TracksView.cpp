@@ -51,6 +51,7 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
     m_actionMove = false;
     m_actionRelativeX = -1;
     m_actionItem = NULL;
+    m_tool = TOOL_DEFAULT;
 
     setMouseTracking( true );
     setAcceptDrops( true );
@@ -435,6 +436,11 @@ void TracksView::setDuration( int duration )
             setSceneRect( 0, 0, ( duration + 300 ), sceneRect().height() );
     }
     m_projectDuration = duration;
+}
+
+void TracksView::setTool( ToolButtons button )
+{
+    m_tool = button;
 }
 
 void TracksView::resizeEvent( QResizeEvent* event )
