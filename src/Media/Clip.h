@@ -125,6 +125,8 @@ class   Clip : public QObject
         QStringList m_metaTags;
         QString     m_notes;
 
+    signals:
+        void        lengthUpdated();
 };
 
 #endif //CLIP_H__

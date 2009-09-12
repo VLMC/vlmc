@@ -162,13 +162,19 @@ const QUuid&        Clip::getUuid() const
 void                Clip::setBegin( float begin )
 {
     Q_ASSERT( begin >= .0f );
+    if ( begin == m_begin ) return;
     m_begin = begin;
+    computeLength();
+    emit lengthUpdated();
 }
 
 void                Clip::setEnd( float end )
 {
     Q_ASSERT( end <= 1.0f );
+    if ( end == m_end ) return;
     m_end = end;
+    computeLength();
+    emit lengthUpdated();
 }
 
 Clip*               Clip::split( float newEnd )
@@ -176,5 +182,6 @@ Clip*               Clip::split( float newEnd )
     Clip*   newClip = new Clip( this, newEnd, m_end );
     m_end = newEnd;
     computeLength();
+    emit lengthUpdated();
     return newClip;
 }
