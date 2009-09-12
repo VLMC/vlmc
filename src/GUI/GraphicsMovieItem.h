@@ -51,7 +51,6 @@ public:
     void setWidth( int width );
     void setHeight( int height );
     Clip* clip() const;
-    void    setClip( Clip* clip );
     //void setAudioSpectrum( QVector<float*> spectrum );
     void paintAudioSpectrum( QPainter* painter );
 
@@ -60,6 +59,9 @@ protected:
     void                paintTitle( QPainter* painter, const QStyleOptionGraphicsItem* option );
     virtual void        hoverEnterEvent( QGraphicsSceneHoverEvent* event );
     virtual void        hoverLeaveEvent( QGraphicsSceneHoverEvent* event );
+
+private slots:
+    void                adjustLength();
 
 private:
     Clip*               m_clip;

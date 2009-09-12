@@ -186,7 +186,6 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, qint64 start )
     }
 
     GraphicsMovieItem* item = new GraphicsMovieItem( clip );
-    item->setWidth( clip->getLength() );
     item->setHeight( tracksHeight() );
     item->setParentItem( getTrack( track ) );
     item->oldTrackNumber = track;
@@ -208,7 +207,6 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
 
     if ( m_dragItem ) delete m_dragItem;
     m_dragItem = new GraphicsMovieItem( clip );
-    m_dragItem->setWidth( ( int ) ( clip->getLength() ) );
     m_dragItem->setHeight( tracksHeight() );
     m_dragItem->setPos( mappedXPos, 0 );
     m_dragItem->setParentItem( m_layout->itemAt( 0 )->graphicsItem() );

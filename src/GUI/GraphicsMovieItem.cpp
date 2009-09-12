@@ -39,6 +39,11 @@ GraphicsMovieItem::GraphicsMovieItem( Clip* clip ) : m_clip( clip ), m_width( 0 
                      .arg( length.toString("hh:mm:ss.zzz") ) );
     setToolTip( tooltip );
     setAcceptHoverEvents( true );
+
+    // Adjust the width
+    setWidth( clip->getLength() );
+    // Automatically adjust future changes
+    connect( clip, SIGNAL( lengthUpdated() ), this, SLOT( adjustLength() ) );
 }
 
 GraphicsMovieItem::~GraphicsMovieItem()
@@ -73,6 +78,13 @@ void GraphicsMovieItem::setWidth( int width )
 void GraphicsMovieItem::setHeight( int height )
 {
     m_height = height;
+}
+
+void GraphicsMovieItem::adjustLength()
+{
+    //FIXME implement clip expanding.
+    Q_ASSERT( m_clip->getLength() <= m_width );
+    setWidth( m_clip->getLength() );
 }
 
 void GraphicsMovieItem::paintAudioSpectrum( QPainter* painter )
