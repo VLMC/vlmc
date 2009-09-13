@@ -27,6 +27,7 @@
 #include <QFileDialog>
 #include <QSlider>
 #include <QUndoView>
+#include <QMessageBox>
 
 #include "MainWindow.h"
 #include "MediaListWidget.h"
@@ -303,8 +304,10 @@ void MainWindow::on_actionAbout_triggered()
     About::instance()->exec();
 }
 
-void MainWindow::on_actionTranscode_File_triggered()
+void MainWindow::on_actionTranscode_triggered()
 {
+    QMessageBox::information( this, tr( "Sorry" ),
+                              tr( "This feature is currently disabled." ) );
     //Transcode::instance( this )->exec();
 }
 

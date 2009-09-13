@@ -37,7 +37,6 @@
     <addaction name="actionNew_Project"/>
     <addaction name="actionLoad_Project"/>
     <addaction name="actionSave"/>
-    <addaction name="actionTranscode_File"/>
     <addaction name="actionRender"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -65,6 +64,7 @@
     <property name="title">
      <string>Tools</string>
     </property>
+    <addaction name="actionTranscode"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
@@ -135,9 +135,9 @@
     <string>Project preview</string>
    </property>
   </action>
-  <action name="actionTranscode_File">
+  <action name="actionTranscode">
    <property name="text">
-    <string>Transcode File</string>
+    <string>Transcode</string>
    </property>
   </action>
   <action name="actionNew_Project">
