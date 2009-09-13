@@ -60,7 +60,7 @@ MainWindow::MainWindow( QWidget *parent ) :
     createStatusBar();
     createGlobalPreferences();
 
-    // Translation
+    // Translations
     connect( this, SIGNAL( translateDockWidgetTitle() ),
              DockWidgetManager::instance(), SLOT( transLateWidgetTitle() ) );
 
@@ -73,12 +73,6 @@ MainWindow::MainWindow( QWidget *parent ) :
              this, SLOT( zoomOut() ) );
     connect( this, SIGNAL( toolChanged( ToolButtons ) ),
              m_timeline, SLOT( setTool( ToolButtons ) ) );
-
-    //Global Preferences
-    QObject::connect( qApp,
-                      SIGNAL( aboutToQuit() ),
-                      m_globalPreferences,
-                      SLOT( deleteLater() ) );
 }
 
 MainWindow::~MainWindow()
@@ -276,16 +270,11 @@ void MainWindow::initializeDockWidgets( void )
 
 void        MainWindow::createGlobalPreferences()
 {
-    m_globalPreferences = new Settings(  );
+    m_globalPreferences = new Settings( this );
     m_globalPreferences->addWidget("VLMC",
                                    new VLMCPreferences,
                                    "../images/vlmc.png",
                                    "VLMC settings");
-    ////For debugging purpose
-    //m_globalPreferences->addWidget("Test",
-    //                               new QLabel("This is a test"),
-    //                               "images/vlmc.png",
-    //                               "Test");
     m_globalPreferences->build();
 }
 

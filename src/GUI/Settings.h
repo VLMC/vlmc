@@ -23,7 +23,7 @@
 #ifndef SIMPLEPREFERENCES_H
 #define SIMPLEPREFERENCES_H
 
-#include <QWidget>
+#include <QDialog>
 #include <QString>
 #include <QHash>
 #include <QLabel>
@@ -37,13 +37,13 @@
 #include "Panel.h"
 #include "PreferenceWidget.h"
 
-class   Settings : public QWidget
+class   Settings : public QDialog
 {
     Q_OBJECT
     Q_DISABLE_COPY( Settings )
 
     public:
-        Settings( QWidget* parent = 0 );
+        Settings( QWidget* parent = 0, Qt::WindowFlags f = 0 );
         ~Settings();
         void                addWidget( const QString& name,
                                        PreferenceWidget* pWidget,

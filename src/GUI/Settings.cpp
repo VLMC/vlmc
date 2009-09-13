@@ -37,8 +37,8 @@
 #include "Panel.h"
 
 
-Settings::Settings( QWidget* parent)
-    : QWidget(parent),
+Settings::Settings( QWidget* parent, Qt::WindowFlags f )
+    : QDialog( parent, f ),
     m_currentWidget( NULL ),
     m_panel( NULL ),
     m_title( NULL ),
@@ -120,7 +120,7 @@ QVBoxLayout*    Settings::buildRightHLayout()
     layout->addWidget( m_stackedWidgets );
     layout->addWidget( m_buttons );
     return ( layout );
-} 
+}
 
 void    Settings::save( void )
 {
@@ -149,7 +149,7 @@ void    Settings::switchWidget( int widget )
 {
     //TODO : Change the title of the preferences shown
     //Hide the current widget and show the new one.
-    
+
     if ( !m_widgets.contains( widget ) )
         return ;
     m_title->setText( m_widgets.value( widget ) );
