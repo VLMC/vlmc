@@ -111,6 +111,7 @@ void        Clip::computeLength()
         qint64 nbMs = (qint64)( ( m_end - m_begin ) * (float)m_parent->getLength() );
         m_lengthSeconds = nbMs / 1000;
         m_length = (nbMs / 1000) * fps;
+        emit lengthUpdated();
     }
     else
     {
@@ -183,7 +184,6 @@ Clip*               Clip::split( float newEnd )
     Clip*   newClip = new Clip( this, newEnd, m_end );
     m_end = newEnd;
     computeLength();
-    emit lengthUpdated();
     return newClip;
 }
 
