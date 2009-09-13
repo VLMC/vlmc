@@ -111,7 +111,8 @@ void        MainWindow::setupLibrary()
                                   tr( "Media Library" ),
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
-                                  Qt::LeftDockWidgetArea );
+                                  Qt::LeftDockWidgetArea,
+                                  m_ui.actionMedia_library );
 
     //Connecting GUI and Frontend :
     connect( libraryWidget,
@@ -236,31 +237,36 @@ void MainWindow::initializeDockWidgets( void )
     setCentralWidget( m_timeline );
 
     DockWidgetManager *dockManager = DockWidgetManager::instance();
+
     dockManager->addDockedWidget( new FileBrowser( this ),
                                   tr( "FileBrowser" ),
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
-                                  Qt::TopDockWidgetArea);
+                                  Qt::TopDockWidgetArea,
+                                  m_ui.actionFile_browser );
 
     m_clipPreview = new PreviewWidget( new ClipRenderer, this );
     dockManager->addDockedWidget( m_clipPreview,
                                   tr( "Clip Preview" ),
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
-                                  Qt::TopDockWidgetArea );
+                                  Qt::TopDockWidgetArea,
+                                  m_ui.actionClip_preview );
 
     m_projectPreview = new PreviewWidget( new WorkflowRenderer(), this );
     dockManager->addDockedWidget( m_projectPreview,
                                   tr( "Project Preview" ),
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
-                                  Qt::TopDockWidgetArea );
+                                  Qt::TopDockWidgetArea,
+                                  m_ui.actionProject_preview );
 
     dockManager->addDockedWidget( UndoStack::getInstance( this ),
                                   tr( "History" ),
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
-                                  Qt::LeftDockWidgetArea );
+                                  Qt::LeftDockWidgetArea,
+                                  m_ui.actionUndoRedo );
     setupLibrary();
     m_metaDataManager = MetaDataManager::getInstance();
 }
