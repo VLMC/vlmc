@@ -53,9 +53,6 @@ public:
     /// Return the current track of the item
     quint32 trackNumber();
 
-    /// Reset the cursor to its default value
-    void resetCursor();
-
 protected:
     /**
      * Returns the current tracksView for the item,
@@ -71,9 +68,6 @@ protected:
      * Contains the old position
      */
     qint64 oldPosition;
-
-    virtual void mousePressEvent( QGraphicsSceneMouseEvent* event );
-    virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
 
 private:
     /// This pointer will be set when inserted in the tracksView.

@@ -83,7 +83,8 @@ void GraphicsMovieItem::setHeight( int height )
 void GraphicsMovieItem::adjustLength()
 {
     //FIXME implement clip expanding.
-    Q_ASSERT( m_clip->getLength() <= m_width );
+    Q_ASSERT_X( m_clip->getLength() <= m_width, "adjustLength", "Clip expanding not supported!" );
+    prepareGeometryChange();
     setWidth( m_clip->getLength() );
 }
 
@@ -234,7 +235,7 @@ void GraphicsMovieItem::hoverEnterEvent( QGraphicsSceneHoverEvent* event )
         switch ( tv->tool() )
         {
             case TOOL_DEFAULT:
-            resetCursor();
+            setCursor( Qt::OpenHandCursor );
             break;
 
             case TOOL_CUT:
@@ -249,4 +250,21 @@ void GraphicsMovieItem::hoverEnterEvent( QGraphicsSceneHoverEvent* event )
 void GraphicsMovieItem::hoverLeaveEvent( QGraphicsSceneHoverEvent* event )
 {
     AbstractGraphicsMediaItem::hoverLeaveEvent( event );
+}
+
+void GraphicsMovieItem::mousePressEvent( QGraphicsSceneMouseEvent* event )
+{
+    TracksView* tv = Timeline::getInstance()->tracksView();
+    if ( tv->tool() == TOOL_DEFAULT )
+        setCursor( Qt::ClosedHandCursor );
+    else
+        emit split( this, qRound64( event->pos().x() ) );
+}
+
+void GraphicsMovieItem::mouseReleaseEvent( QGraphicsSceneMouseEvent*  event )
+{
+    Q_UNUSED( event );
+    TracksView* tv = Timeline::getInstance()->tracksView();
+    if ( tv->tool() == TOOL_DEFAULT )
+        setCursor( Qt::OpenHandCursor );
 }

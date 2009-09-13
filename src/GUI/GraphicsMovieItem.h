@@ -59,6 +59,8 @@ protected:
     void                paintTitle( QPainter* painter, const QStyleOptionGraphicsItem* option );
     virtual void        hoverEnterEvent( QGraphicsSceneHoverEvent* event );
     virtual void        hoverLeaveEvent( QGraphicsSceneHoverEvent* event );
+    virtual void        mousePressEvent( QGraphicsSceneMouseEvent* event );
+    virtual void        mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
 
 private slots:
     void                adjustLength();
@@ -68,6 +70,9 @@ private:
     int                 m_width;
     int                 m_height;
     QVector<float*>     m_audioSpectrum;
+
+signals:
+    void                split( GraphicsMovieItem* self, qint64 frame );
 };
 
 #endif // GRAPHICSMOVIEITEM_H

@@ -189,6 +189,8 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, qint64 start )
     item->setHeight( tracksHeight() );
     item->setParentItem( getTrack( track ) );
     item->oldTrackNumber = track;
+    connect( item, SIGNAL( split(GraphicsMovieItem*,qint64) ),
+             this, SLOT( split(GraphicsMovieItem*,qint64) ) );
     moveMediaItem( item, track, start );
 
     updateDuration();
@@ -203,13 +205,12 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
     Clip* clip = Library::getInstance()->getClip( uuid );
     if ( !clip ) return;
 
-    qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
-
     if ( m_dragItem ) delete m_dragItem;
     m_dragItem = new GraphicsMovieItem( clip );
     m_dragItem->setHeight( tracksHeight() );
-    m_dragItem->setPos( mappedXPos, 0 );
     m_dragItem->setParentItem( m_layout->itemAt( 0 )->graphicsItem() );
+    connect( m_dragItem, SIGNAL( split(GraphicsMovieItem*,qint64) ),
+             this, SLOT( split(GraphicsMovieItem*,qint64) ) );
     moveMediaItem( m_dragItem, event->pos() );
 }
 
@@ -439,6 +440,8 @@ void TracksView::setDuration( int duration )
 void TracksView::setTool( ToolButtons button )
 {
     m_tool = button;
+    if ( m_tool == TOOL_CUT )
+        scene()->clearSelection();
 }
 
 void TracksView::resizeEvent( QResizeEvent* event )
@@ -500,9 +503,11 @@ void TracksView::mousePressEvent( QMouseEvent* event )
     if ( event->modifiers() == Qt::ControlModifier && mediaCollisionList.count() == 0 )
     {
         setDragMode( QGraphicsView::ScrollHandDrag );
+        event->accept();
     }
     else if ( event->modifiers() == Qt::NoModifier &&
          event->button() == Qt::LeftButton &&
+         tool() == TOOL_DEFAULT &&
          mediaCollisionList.count() == 1 )
     {
         AbstractGraphicsMediaItem* item = mediaCollisionList.at( 0 );
@@ -514,19 +519,23 @@ void TracksView::mousePressEvent( QMouseEvent* event )
         }
         scene()->clearSelection();
         item->setSelected( true );
+        event->accept();
     }
     else if ( event->modifiers() == Qt::ControlModifier &&
               event->button() == Qt::LeftButton &&
+              tool() == TOOL_DEFAULT &&
               mediaCollisionList.count() == 1 )
     {
         AbstractGraphicsMediaItem* item = mediaCollisionList.at( 0 );
         item->setSelected( !item->isSelected() );
+        event->accept();
     }
     else if ( event->modifiers() & Qt::ShiftModifier && mediaCollisionList.count() == 0 )
     {
         setDragMode( QGraphicsView::RubberBandDrag );
         if ( !event->modifiers() & Qt::ControlModifier )
             scene()->clearSelection();
+        event->accept();
     }
 
     QGraphicsView::mousePressEvent( event );
@@ -670,4 +679,17 @@ GraphicsTrack* TracksView::getTrack( unsigned int number )
             return track;
     }
     return NULL;
+}
+
+void TracksView::split( GraphicsMovieItem* item, qint64 frame )
+{
+    Q_ASSERT( item );
+    Clip* newclip = item->clip()->split( frame );
+    Q_ASSERT( newclip );
+
+    addMediaItem( newclip, item->trackNumber(), item->pos().x() + frame );
+    Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
+                                                            newclip,
+                                                            item->trackNumber(),
+                                                            item->pos().x() + frame ) );
 }

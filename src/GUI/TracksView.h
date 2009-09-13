@@ -82,6 +82,7 @@ protected:
 private slots:
     void                    ensureCursorVisible();
     void                    updateDuration();
+    void                    split( GraphicsMovieItem* item, qint64 frame );
 
 private:
     void                    createLayout();

@@ -104,9 +104,16 @@ class   Clip : public QObject
          *  \brief  Split this clip in two parts.
          *  \param  newEnd  The new end for this Clip. This will be the beginning of the
          *                  newly created Clip.
-         *  \returns    The remaining part as a new Clip.
+         *  \returns A new Clip starting at newEnd.
          */
         Clip*               split( float newEnd );
+
+        /**
+         * \brief Split this clip in two parts (provided for compatibility)
+         * \param newEnd The new end for this clip (provided for compatibility)
+         * \returns A new Clip starting at endFrame.
+         */
+        Clip*               split( qint64 endFrame );
 
     private:
         void        computeLength();

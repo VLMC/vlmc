@@ -179,9 +179,18 @@ void                Clip::setEnd( float end )
 
 Clip*               Clip::split( float newEnd )
 {
+    Q_ASSERT( newEnd != m_end );
     Clip*   newClip = new Clip( this, newEnd, m_end );
     m_end = newEnd;
     computeLength();
     emit lengthUpdated();
     return newClip;
+}
+
+Clip*               Clip::split( qint64 endFrame )
+{
+    //FIXME the conversion *breaks* clip spliting
+    //But we don't have any other choice for now, VLC only support float positions!
+    float newEnd = (float) endFrame / m_length;
+    return split( newEnd );
 }
