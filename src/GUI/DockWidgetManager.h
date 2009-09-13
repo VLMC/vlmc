@@ -39,11 +39,12 @@ class DockWidgetManager : public QObject
     public:
         static DockWidgetManager *instance( QObject *parent = 0 );
         void setMainWindow( MainWindow *mainWin );
-        void addDockedWidget( QWidget *widget,
+        QDockWidget* addDockedWidget( QWidget *widget,
                               const QString &qs_name,
                               Qt::DockWidgetAreas areas,
                               QDockWidget::DockWidgetFeature features,
-                              Qt::DockWidgetArea startArea );
+                              Qt::DockWidgetArea startArea,
+                              QAction* action = 0 );
 
     protected:
         //virtual void changeEvent( QEvent *e );
