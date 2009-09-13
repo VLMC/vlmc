@@ -40,6 +40,7 @@ Media::Media( const QString& filePath, const QString& uuid )
     m_snapshot( NULL ),
     m_fileInfo( NULL ),
     m_length( 0 ),
+    m_nbFrames( 0 ),
     m_width( 0 ),
     m_height( 0 )
 {
@@ -228,4 +229,14 @@ Media::InputType    Media::getInputType() const
 void                Media::setUuid( const QUuid& uuid )
 {
     m_uuid = uuid;
+}
+
+void                Media::setNbFrames( qint64 nbFrames )
+{
+    m_nbFrames = nbFrames;
+}
+
+qint64              Media::getnbFrames() const
+{
+    return m_nbFrames;
 }

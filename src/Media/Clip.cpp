@@ -191,6 +191,6 @@ Clip*               Clip::split( qint64 endFrame )
 {
     //FIXME the conversion *breaks* clip spliting
     //But we don't have any other choice for now, VLC only support float positions!
-    float newEnd = (float) endFrame / m_length;
+    float newEnd = (float) endFrame / m_parent->getnbFrames();
     return split( newEnd );
 }
