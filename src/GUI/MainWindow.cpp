@@ -28,6 +28,8 @@
 #include <QSlider>
 #include <QUndoView>
 #include <QMessageBox>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include "MainWindow.h"
 #include "MediaListWidget.h"
@@ -351,6 +353,11 @@ void MainWindow::on_actionNew_Project_triggered()
                                    "Audio settings");
     m_projectPreferences->build();
     m_projectPreferences->show();
+}
+
+void MainWindow::on_actionHelp_triggered()
+{
+    QDesktopServices::openUrl( QUrl( "http://vlmc.org" ) );
 }
 
 void MainWindow::zoomIn()

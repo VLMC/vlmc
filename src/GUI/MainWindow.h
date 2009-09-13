@@ -85,6 +85,7 @@ private slots:
     void on_actionNew_Project_triggered();
     void on_actionLoad_Project_triggered();
     void on_actionSave_triggered();
+    void on_actionHelp_triggered();
     void mediaListItemDoubleClicked( QListWidgetItem* );
     void toolButtonClicked( int id );
 
