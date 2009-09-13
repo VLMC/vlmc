@@ -44,7 +44,7 @@ class   Settings : public QDialog
 
     public:
         Settings( QWidget* parent = 0, Qt::WindowFlags f = 0 );
-        ~Settings();
+        virtual ~Settings();
         void                addWidget( const QString& name,
                                        PreferenceWidget* pWidget,
                                        const QString& icon,

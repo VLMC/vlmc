@@ -34,7 +34,7 @@ class   ProjectPreferences : public QWidget, public PreferenceWidget
     //Q_OBJECT
     public:
         ProjectPreferences( QWidget* parent = 0 );
-        ~ProjectPreferences();
+        virtual ~ProjectPreferences();
         bool    load();
         void    save( QSettings& settings );
     private:
