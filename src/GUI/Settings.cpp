@@ -83,7 +83,7 @@ void        Settings::build()
 
 QVBoxLayout*    Settings::buildRightHLayout()
 {
-    QVBoxLayout* layout = new QVBoxLayout( this );
+    QVBoxLayout* layout = new QVBoxLayout;
     QFrame* titleLine = new QFrame( this );
     m_buttons = new QDialogButtonBox( this );
 
