@@ -74,11 +74,13 @@ void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
 void GraphicsMovieItem::setWidth( int width )
 {
+    prepareGeometryChange();
     m_width = width;
 }
 
 void GraphicsMovieItem::setHeight( int height )
 {
+    prepareGeometryChange();
     m_height = height;
 }
 

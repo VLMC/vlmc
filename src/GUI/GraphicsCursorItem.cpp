@@ -44,6 +44,6 @@ void GraphicsCursorItem::setCursorPos( qint64 position )
 
 void GraphicsCursorItem::setHeight( int height )
 {
+    prepareGeometryChange();
     m_boundingRect.setHeight( height );
-    update();
 }
