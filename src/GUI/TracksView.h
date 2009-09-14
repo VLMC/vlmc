@@ -51,8 +51,8 @@ public:
     int duration() const { return m_projectDuration; }
     int tracksHeight() const { return m_tracksHeight; }
     unsigned int tracksCount() const { return m_tracksCount; }
-    void setCursorPos( int pos );
-    int cursorPos();
+    void setCursorPos( qint64 pos );
+    qint64 cursorPos();
     GraphicsCursorItem* tracksCursor() const { return m_cursorLine; }
     void setScale( double scaleFactor );
     QList<AbstractGraphicsMediaItem*> mediaItems( const QPoint& pos );
