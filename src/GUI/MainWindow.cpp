@@ -360,9 +360,9 @@ void MainWindow::on_actionFullscreen_triggered( bool checked )
         showNormal();
 }
 
-void MainWindow::registerWidgetInViewMenu( QDockWidget* widget )
+void MainWindow::registerWidgetInWindowMenu( QDockWidget* widget )
 {
-    m_ui.menuView->addAction( widget->toggleViewAction() );
+    m_ui.menuWindow->addAction( widget->toggleViewAction() );
 }
 
 void    MainWindow::mediaListItemDoubleClicked( QListWidgetItem* qItem )

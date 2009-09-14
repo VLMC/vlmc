@@ -70,8 +70,6 @@
     <property name="title">
      <string>Window</string>
     </property>
-    <addaction name="actionMedia_Library"/>
-    <addaction name="actionPreview"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">

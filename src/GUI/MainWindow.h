@@ -48,7 +48,7 @@ class MainWindow : public QMainWindow
 public:
 
     explicit MainWindow( QWidget *parent = 0 );
-    void registerWidgetInViewMenu( QDockWidget* widget );
+    void registerWidgetInWindowMenu( QDockWidget* widget );
     ~MainWindow();
 
 public slots:
