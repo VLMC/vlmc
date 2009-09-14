@@ -37,6 +37,7 @@ public:
         Video,
         Audio
     };
+
     GraphicsTrack( MediaType type, quint32 trackNumber, QGraphicsItem* parent = 0 ) : QGraphicsWidget( parent )
     {
         m_type = type;
@@ -46,10 +47,23 @@ public:
         setContentsMargins( 0, 0, 0, 0 );
         setZValue( 1 );
     }
+
+    void setHeight( int height )
+    {
+        setPreferredHeight( height );
+        updateGeometry();
+    }
+
+    int height()
+    {
+        return preferredHeight();
+    }
+
     quint32 trackNumber()
     {
         return m_trackNumber;
     }
+
     virtual int type() const { return Type; }
 
 protected:
