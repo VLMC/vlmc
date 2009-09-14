@@ -116,7 +116,7 @@ public:
     float                       getFps() const;
     void                        setFps( float fps );
 
-    qint64                      getnbFrames() const;
+    qint64                      getNbFrames() const;
 
     const QUuid&                getUuid() const;
     void                        setUuid( const QUuid& uuid );

@@ -236,7 +236,7 @@ void                Media::setNbFrames( qint64 nbFrames )
     m_nbFrames = nbFrames;
 }
 
-qint64              Media::getnbFrames() const
+qint64              Media::getNbFrames() const
 {
     return m_nbFrames;
 }

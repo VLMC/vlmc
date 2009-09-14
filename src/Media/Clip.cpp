@@ -29,7 +29,7 @@
 
 #include "Clip.h"
 
-Clip::Clip( Media* parent ) : m_parent( parent ), m_begin( 0 ), m_end( -1 )
+Clip::Clip( Media* parent ) : m_parent( parent ), m_begin( 0 ), m_end( parent->getNbFrames() )
 {
     m_Uuid = QUuid::createUuid();
     computeLength();
@@ -43,7 +43,7 @@ Clip::Clip( Clip* creator, qint64 begin, qint64 end ) : m_parent( creator->getPa
 
 Clip::Clip( Media* parent, qint64 begin, qint64 end ) : m_parent( parent ), m_begin( begin ), m_end( end )
 {
-    Q_ASSERT( parent->getInputType() == Media::File || ( begin == 0 && end == -1 ) );
+    Q_ASSERT( parent->getInputType() == Media::File || ( begin == 0 && end == m_parent->getNbFrames() ) );
     m_Uuid = QUuid::createUuid();
     computeLength();
 }
@@ -105,19 +105,11 @@ void        Clip::computeLength()
 {
     if ( m_parent->getInputType() == Media::File )
     {
-        if ( m_end == -1 )
-        {
-            m_lengthSeconds = m_parent->getLength() / 1000;
-            m_length = m_parent->getnbFrames();
-        }
-        else
-        {
-            unsigned int   fps = m_parent->getFps();
-            if ( fps < 0.1f )
-                fps = FPS;
-            m_lengthSeconds = ( m_end - m_begin ) / 1000;
-            m_length = m_lengthSeconds * fps;
-        }
+        unsigned int   fps = m_parent->getFps();
+        if ( fps < 0.1f )
+            fps = FPS;
+        m_length = m_end - m_begin;
+        m_lengthSeconds = m_length * fps;
         emit lengthUpdated();
     }
     else
@@ -178,7 +170,6 @@ void                Clip::setBegin( qint64 begin )
 
 void                Clip::setEnd( qint64 end )
 {
-    Q_ASSERT( end <= 1.0f );
     if ( end == m_end ) return;
     m_end = end;
     computeLength();
@@ -198,6 +189,6 @@ Clip*               Clip::split( qint64 endFrame )
 {
     //FIXME the conversion *breaks* clip spliting
     //But we don't have any other choice for now, VLC only support float positions!
-    float newEnd = (float) endFrame / m_parent->getnbFrames();
+    float newEnd = (float) endFrame / m_parent->getNbFrames();
     return split( newEnd );
 }
