@@ -93,7 +93,7 @@ Media*      Clip::getParent()
 
 qint64      Clip::getLength() const
 {
-    return m_length / 1000 * m_parent->getFps();
+    return m_length;
 }
 
 qint64      Clip::getLengthSecond() const
@@ -125,6 +125,7 @@ void        Clip::computeLength()
         m_length = 0;
         m_lengthSeconds = 0;
     }
+    qDebug() << "Length ==" << m_length << "and in seconds:" << m_lengthSeconds;
 }
 
 const QStringList&      Clip::getMetaTags() const

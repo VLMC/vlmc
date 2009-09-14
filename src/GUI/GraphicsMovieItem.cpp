@@ -42,6 +42,7 @@ GraphicsMovieItem::GraphicsMovieItem( Clip* clip ) : m_clip( clip ), m_width( 0 
 
     // Adjust the width
     setWidth( clip->getLength() );
+    qDebug() << "ClipLength in frames:" << clip->getLength();
     // Automatically adjust future changes
     connect( clip, SIGNAL( lengthUpdated() ), this, SLOT( adjustLength() ) );
 }
