@@ -4,7 +4,7 @@
 #include "CopyOnWrite.hpp"
 #include "VideoFrame.h"
 
-typedef	CopyOnWrite<VideoFrame>	LightVideoFrame;
-
+//typedef	CopyOnWrite<VideoFrame>	LightVideoFrame;
+typedef	VideoFrame	LightVideoFrame;
 
 #endif // LIGHTVIDEOFRAME_H_
