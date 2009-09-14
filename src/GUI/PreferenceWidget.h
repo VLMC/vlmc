@@ -27,10 +27,10 @@
 #include <QSettings>
 #include <QWidget>
 
-class   PreferenceWidget
+class   PreferenceWidget : public QWidget
 {
     public:
-        PreferenceWidget( QWidget* widget = 0 );
+        PreferenceWidget( QWidget* parent = 0 );
         virtual ~PreferenceWidget() {}
 
         virtual bool    load() = 0;

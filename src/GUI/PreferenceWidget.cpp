@@ -25,8 +25,8 @@
 #include "PreferenceWidget.h"
 
 
-PreferenceWidget::PreferenceWidget( QWidget* widget )
-    : m_widget( widget )
+PreferenceWidget::PreferenceWidget( QWidget* parent )
+    : QWidget( parent )
 {
 }
 

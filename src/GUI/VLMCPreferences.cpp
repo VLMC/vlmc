@@ -24,10 +24,10 @@
 
 #include "QDebug"
 
-VLMCPreferences::VLMCPreferences(QWidget *parent) :
-    QWidget(parent)
+VLMCPreferences::VLMCPreferences( QWidget *parent )
+        : PreferenceWidget( parent )
 {
-    this->setWidget( this );
+    setWidget( this );
     m_ui.setupUi(this);
 }
 

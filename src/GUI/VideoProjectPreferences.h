@@ -28,11 +28,11 @@
 #include "PreferenceWidget.h"
 #include "ui_VideoProjectPreferences.h"
 
-class VideoProjectPreferences : public QWidget, public PreferenceWidget
+class VideoProjectPreferences : public PreferenceWidget
 {
     //Q_OBJECT
     public:
-        VideoProjectPreferences(QWidget *parent = 0);
+        VideoProjectPreferences( QWidget *parent = 0 );
         ~VideoProjectPreferences();
         bool    load();
         void    save( QSettings& settings );

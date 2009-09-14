@@ -29,7 +29,7 @@
 #include "ui_ProjectPreferences.h"
 #include "PreferenceWidget.h"
 
-class   ProjectPreferences : public QWidget, public PreferenceWidget
+class   ProjectPreferences : public PreferenceWidget
 {
     //Q_OBJECT
     public:

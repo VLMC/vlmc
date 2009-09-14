@@ -24,10 +24,10 @@
 
 #include "QDebug"
 
-VideoProjectPreferences::VideoProjectPreferences(QWidget *parent) :
-    QWidget(parent)
+VideoProjectPreferences::VideoProjectPreferences( QWidget *parent )
+        : PreferenceWidget( parent )
 {
-    this->setWidget( this );
+    setWidget( this );
     m_ui.setupUi( this );
 }
 

@@ -28,7 +28,7 @@
 #include "PreferenceWidget.h"
 #include "ui_VLMCPreferences.h"
 
-class VLMCPreferences : public QWidget, public PreferenceWidget
+class VLMCPreferences : public PreferenceWidget
 {
     //Q_OBJECT
     public:

@@ -24,10 +24,10 @@
 
 #include "QDebug"
 
-AudioProjectPreferences::AudioProjectPreferences( QWidget *parent ) :
-    QWidget( parent )
+AudioProjectPreferences::AudioProjectPreferences( QWidget *parent )
+        : PreferenceWidget( parent )
 {
-    this->setWidget( this );
+    setWidget( this );
     m_ui.setupUi( this );
 }
 
