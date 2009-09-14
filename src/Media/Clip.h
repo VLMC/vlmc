@@ -44,52 +44,39 @@ class   Clip : public QObject
 
     public:
         Clip( Media* parent );
-        Clip( Media* parent, float begin, float end );
-        Clip( Clip* creator, float begin, float end );
+        Clip( Media* parent, qint64 begin, qint64 end );
+        Clip( Clip* creator, qint64 begin, qint64 end );
         Clip( Clip* clip );
-        Clip( const QUuid& uuid, float begin = .0f, float end = 1.0f );
+        Clip( const QUuid& uuid, qint64 begin = 0, qint64 end = -1 );
         virtual ~Clip();
 
+        qint64              getBegin() const;
+        qint64              getEnd() const;
+
+        void                setBegin( qint64 begin );
+        void                setEnd( qint64 end );
+
         /**
-          \brief    Returns the clip starting point. This value will be in
-                    vlc positition units (0 to 1)
-          \return   A value between 0 and 1, where 0 is the real Media begin,
-                    and 1 the real Media end.
+            \return         Returns the clip length in frame.
         */
-        float           getBegin() const;
+        qint64              getLength() const;
 
         /**
-          \brief    Returns the clip ending point. This value will be in
-                    vlc positition units (0 to 1)
-          \return   A value between 0 and 1, where 0 is the real Media end,
-                    and 1 the real Media end.
+            \return         Returns the clip length in seconds.
         */
-        float           getEnd() const;
-
-        void            setBegin( float begin );
-        void            setEnd( float end );
+        qint64              getLengthSecond() const;
 
         /**
-            \return     Returns the clip length in frame.
-        */
-        qint64          getLength() const;
-
-        /**
-            \return     Returns the clip length in seconds.
-        */
-        qint64          getLengthSecond() const;
-
-        /**
-            \return     Returns the Media that the clip was basep uppon.
+            \return         Returns the Media that the clip was basep uppon.
 
         */
-        Media*          getParent();
+        Media*              getParent();
 
         /**
-            \brief      Returns an unique Uuid for this clip (which is NOT the
-                        parent's Uuid).
+            \brief          Returns an unique Uuid for this clip (which is NOT the
+                            parent's Uuid).
 
-            \return     The Clip's Uuid as a QUuid
+            \return         The Clip's Uuid as a QUuid
         */
         const QUuid&        getUuid() const;
 
@@ -119,9 +106,24 @@ class   Clip : public QObject
         void        computeLength();
 
         Media*      m_parent;
-        float       m_begin;
-        float       m_end;
+        /**
+         *  \brief  This represents the beginning of the Clip in frames, from the
+         *          beginning of the parent Media.
+         */
+        qint64      m_begin;
+        /**
+         *  \brief  This represents the end of the Clip in frames, from the
+         *          beginning of the parent Media.
+         */
+        qint64      m_end;
+
+        /**
+         *  \brief  The length in frames
+         */
         qint64      m_length;
+        /**
+         *  \brief  The length in seconds (Be carreful, VLC uses MILLIseconds)
+         */
         qint64      m_lengthSeconds;
         /**
          *  The Clip's timeline UUID. Used to identify the Clip in the

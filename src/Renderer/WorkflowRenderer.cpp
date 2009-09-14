@@ -80,12 +80,15 @@ void*   WorkflowRenderer::lock( void* datas )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
+    qDebug() << "WorkflowRenderer::lock";
     if ( self->m_stopping == false )
     {
+        qDebug() << "WorkflowRenderer::lock -> rendering";
         void* ret = self->m_mainWorkflow->getSynchroneOutput();
         self->m_lastFrame = static_cast<unsigned char*>( ret );
         return ret;
     }
+    qDebug() << "WorkflowRenderer::endOfLock";
     return self->m_lastFrame;
 }
 
@@ -242,13 +245,16 @@ void        WorkflowRenderer::internalPlayPause( bool forcePause )
 
 void        WorkflowRenderer::stop()
 {
+    qDebug() << "Stopping workflowrenderer";
     m_isRendering = false;
     m_paused = false;
     m_pauseAsked = false;
     m_unpauseAsked = false;
     m_stopping = true;
     m_mainWorkflow->cancelSynchronisation();
+    qDebug() << "Stopping media player";
     m_mediaPlayer->stop();
+    qDebug() << "Media player stopped";
     m_mainWorkflow->stop();
 }
 
@@ -258,6 +264,7 @@ void        WorkflowRenderer::stop()
 
 void        WorkflowRenderer::__endReached()
 {
+    qDebug() << "Stopping rendering";
     stopPreview();
     emit endReached();
 }

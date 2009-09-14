@@ -238,7 +238,10 @@ void            MainWorkflow::stop()
     for (unsigned int i = 0; i < m_trackCount; ++i)
     {
         if ( m_tracks[i].activated() == true )
+        {
             m_tracks[i]->stop();
+            qDebug() << "Stopping track";
+        }
     }
     m_currentFrame = 0;
     emit frameChanged( 0 );
@@ -421,8 +424,8 @@ void        MainWorkflow::loadProject( const QDomElement& project )
             //Iterate over clip fields:
             QDomElement clipProperty = clip.firstChild().toElement();
             QUuid       parent;
-            float       begin;
-            float       end;
+            qint64      begin;
+            qint64      end;
             qint64      startPos;
 
             while ( clipProperty.isNull() == false )
@@ -434,7 +437,7 @@ void        MainWorkflow::loadProject( const QDomElement& project )
                     parent = QUuid( clipProperty.text() );
                 else if ( tagName == "begin" )
                 {
-                    begin = clipProperty.text().toFloat( &ok );
+                    begin = clipProperty.text().toLongLong( &ok );
                     if ( ok == false )
                     {
                         qWarning() << "Invalid clip begin";
@@ -443,7 +446,7 @@ void        MainWorkflow::loadProject( const QDomElement& project )
                 }
                 else if ( tagName == "end" )
                 {
-                    end = clipProperty.text().toFloat( &ok );
+                    end = clipProperty.text().toLongLong( &ok );
                     if ( ok == false )
                     {
                         qWarning() << "Invalid clip end";

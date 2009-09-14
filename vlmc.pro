@@ -152,6 +152,7 @@ INCLUDEPATH += src/LibVLCpp \
 # QMAKE_CFLAGS+=-pg
 # QMAKE_CXXFLAGS+=-pg
 # QMAKE_LFLAGS+=-pg
+# QMAKE_CXXFLAGS += -W -Wall -Wold-style-cast
 LIBS = -L/usr/local/lib \
     -lvlc
 SUBDIRS += modules
