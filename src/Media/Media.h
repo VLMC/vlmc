@@ -105,6 +105,7 @@ public:
                                 you'll just have to blame yourself !
     */
     void                        setLength( qint64 length );
+    void                        setNbFrames( qint64 nbFrames );
 
     int                         getWidth() const;
     void                        setWidth( int width );
@@ -114,6 +115,8 @@ public:
 
     float                       getFps() const;
     void                        setFps( float fps );
+
+    qint64                      getnbFrames() const;
 
     const QUuid&                getUuid() const;
     void                        setUuid( const QUuid& uuid );
@@ -147,6 +150,7 @@ protected:
     QUuid                       m_uuid;
     QFileInfo*                  m_fileInfo;
     qint64                      m_length;
+    qint64                      m_nbFrames;
     unsigned int                m_width;
     unsigned int                m_height;
     float                       m_fps;

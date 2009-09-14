@@ -62,7 +62,7 @@ Clip::Clip( Clip* clip ) :
 
 Clip::Clip( const QUuid& uuid, float begin, float end ) :
         m_begin( begin),
-        m_end( 1.0f )
+        m_end( end )
 {
     Q_UNUSED( end );
     Media*  media = Library::getInstance()->getMedia( uuid );
@@ -111,6 +111,7 @@ void        Clip::computeLength()
         qint64 nbMs = (qint64)( ( m_end - m_begin ) * (float)m_parent->getLength() );
         m_lengthSeconds = nbMs / 1000;
         m_length = (nbMs / 1000) * fps;
+        emit lengthUpdated();
     }
     else
     {
@@ -183,7 +184,6 @@ Clip*               Clip::split( float newEnd )
     Clip*   newClip = new Clip( this, newEnd, m_end );
     m_end = newEnd;
     computeLength();
-    emit lengthUpdated();
     return newClip;
 }
 
@@ -191,6 +191,6 @@ Clip*               Clip::split( qint64 endFrame )
 {
     //FIXME the conversion *breaks* clip spliting
     //But we don't have any other choice for now, VLC only support float positions!
-    float newEnd = (float) endFrame / m_length;
+    float newEnd = (float) endFrame / m_parent->getnbFrames();
     return split( newEnd );
 }
