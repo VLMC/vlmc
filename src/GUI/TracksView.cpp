@@ -104,10 +104,8 @@ void TracksView::addVideoTrack()
     track->setPreferredHeight( m_tracksHeight );
     track->setContentsMargins( 0, 0, 0, 0 );
     m_layout->insertItem( 0, track );
-    QApplication::processEvents(); //FIXME This is a bit hackish
     m_numVideoTrack++;
     m_scene->invalidate();
-    //FIXME this should maybe go elsewhere
     setSceneRect( m_layout->contentsRect().adjusted( 0, 0, 100, 100 ) );
     m_cursorLine->setHeight( m_layout->contentsRect().height() );
 }
@@ -119,10 +117,8 @@ void TracksView::addAudioTrack()
     track->setPreferredHeight( m_tracksHeight );
     track->setContentsMargins( 0, 0, 0, 0 );
     m_layout->insertItem( 1000, track );
-    QApplication::processEvents(); //FIXME This is a bit hackish
     m_numAudioTrack++;
     m_scene->invalidate();
-    //FIXME this should maybe go elsewhere
     setSceneRect( m_layout->contentsRect().adjusted( 0, 0, 100, 100 ) );
     m_cursorLine->setHeight( m_layout->contentsRect().height() );
 }
