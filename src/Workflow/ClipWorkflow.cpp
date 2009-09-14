@@ -248,9 +248,9 @@ void            ClipWorkflow::stop()
         qDebug() << "ClipWorkflow has already been stopped";
 }
 
-void            ClipWorkflow::setPosition( float pos )
+void            ClipWorkflow::setTime( qint64 time )
 {
-    m_mediaPlayer->setPosition( pos );
+    m_mediaPlayer->setTime( time );
 }
 
 bool            ClipWorkflow::isRendering() const

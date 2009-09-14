@@ -125,7 +125,6 @@ void        Clip::computeLength()
         m_length = 0;
         m_lengthSeconds = 0;
     }
-    qDebug() << "Length ==" << m_length << "and in seconds:" << m_lengthSeconds;
 }
 
 const QStringList&      Clip::getMetaTags() const

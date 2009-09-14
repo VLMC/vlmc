@@ -136,9 +136,7 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
 
         if ( needRepositioning == true )
         {
-            float   pos = ( (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) );
-            pos = pos * ( cw->getClip()->getEnd() - cw->getClip()->getBegin() ) + cw->getClip()->getBegin();
-            cw->setPosition( pos );
+            adjustClipTime( currentFrame, start, cw );
         }
         QMutexLocker    lock( cw->getSleepMutex() );
         cw->wake();
@@ -150,9 +148,7 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
         cw->startRender( m_paused );
         if ( start != currentFrame ) //Clip was not started as its real begining
         {
-            float   pos = ( (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) );
-            pos = pos * ( cw->getClip()->getEnd() - cw->getClip()->getBegin() ) + cw->getClip()->getBegin();
-            cw->setPosition( pos );
+            adjustClipTime( currentFrame, start, cw );
         }
         if ( m_paused == true )
             clipWorkflowRenderCompleted( cw );
@@ -167,9 +163,7 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
 
         if ( needRepositioning == true )
         {
-            float   pos = ( (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) );
-            pos = pos * ( cw->getClip()->getEnd() - cw->getClip()->getBegin() ) + cw->getClip()->getBegin();
-            cw->setPosition( pos );
+            adjustClipTime( currentFrame, start, cw );
         }
     }
     else if ( cw->getState() == ClipWorkflow::EndReached )
@@ -183,8 +177,7 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
         cw->getStateLock()->unlock();
         if ( needRepositioning == true )
         {
-            float   pos = ( (float)( currentFrame - start ) / (float)(cw->getClip()->getLength()) );
-            cw->setPosition( pos );
+            adjustClipTime( currentFrame, start, cw );
         }
         clipWorkflowRenderCompleted( cw );
     }
@@ -561,4 +554,11 @@ void    TrackWorkflow::clear()
     }
     m_clips.clear();
     m_length = 0;
+}
+
+void    TrackWorkflow::adjustClipTime( qint64 currentFrame, qint64 start, ClipWorkflow* cw )
+{
+    qint64  nbMs = ( currentFrame - start ) / cw->getClip()->getParent()->getFps() * 1000;
+    qint64  startFrame = cw->getClip()->getBegin() + nbMs;
+    cw->setTime( startFrame );
 }

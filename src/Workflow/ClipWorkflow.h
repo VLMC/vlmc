@@ -119,7 +119,7 @@ class   ClipWorkflow : public QObject
         */
         void                    stop();
         void                    pause();
-        void                    setPosition( float pos );
+        void                    setTime( qint64 time );
 
         /**
          *  This method must be used to change the state of the ClipWorkflow

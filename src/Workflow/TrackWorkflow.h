@@ -80,6 +80,7 @@ class   TrackWorkflow : public QObject
         void                                    stopClipWorkflow( ClipWorkflow* cw );
         bool                                    checkEnd( qint64 currentFrame ) const;
         void                                    addClip( ClipWorkflow*, qint64 start );
+        void                                    adjustClipTime( qint64 currentFrame, qint64 start, ClipWorkflow* cw );
 
 
     private:
