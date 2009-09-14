@@ -65,9 +65,11 @@ void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     paintTitle( painter, option );
     painter->restore();
 
+    /* buggy code
     painter->save();
     paintAudioSpectrum( painter );
     painter->restore();
+    */
 }
 
 void GraphicsMovieItem::setWidth( int width )
