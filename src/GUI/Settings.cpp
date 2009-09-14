@@ -59,13 +59,13 @@ void        Settings::addWidget( const QString& name,
                                  const QString& icon,
                                  const QString& label )
 {
-    m_stackedWidgets->addWidget( pWidget->widget() );
+    m_stackedWidgets->addWidget( pWidget );
 
-    int idx = m_stackedWidgets->indexOf( pWidget->widget() );
+    int idx = m_stackedWidgets->indexOf( pWidget );
     m_widgets.insert( idx, name );
     m_panel->addButton( label, icon, idx );
     if ( !m_currentWidget )
-        m_currentWidget = pWidget->widget();
+        m_currentWidget = pWidget;
 }
 
 void        Settings::build()

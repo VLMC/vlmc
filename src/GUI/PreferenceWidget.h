@@ -35,12 +35,6 @@ class   PreferenceWidget : public QWidget
 
         virtual bool    load() = 0;
         virtual void    save( QSettings& settings ) = 0;
-
-        QWidget*        widget() const;
-        void            setWidget( QWidget* widget );
-
-    private:
-        QWidget*        m_widget;
 };
 
 #endif

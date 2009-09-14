@@ -27,7 +27,6 @@
 AudioProjectPreferences::AudioProjectPreferences( QWidget *parent )
         : PreferenceWidget( parent )
 {
-    setWidget( this );
     m_ui.setupUi( this );
 }
 

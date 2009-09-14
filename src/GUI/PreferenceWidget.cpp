@@ -29,14 +29,3 @@ PreferenceWidget::PreferenceWidget( QWidget* parent )
     : QWidget( parent )
 {
 }
-
-QWidget*    PreferenceWidget::widget() const
-{
-    return ( m_widget );
-}
-
-void        PreferenceWidget::setWidget( QWidget* widget )
-{
-    m_widget = widget;
-    return ;
-}
