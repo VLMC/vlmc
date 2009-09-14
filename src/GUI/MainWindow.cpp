@@ -37,7 +37,6 @@
 #include "Library.h"
 #include "Timeline.h"
 #include "About.h"
-#include "Transcode.h"
 #include "FileBrowser.h"
 #include "WorkflowRenderer.h"
 #include "ClipRenderer.h"
