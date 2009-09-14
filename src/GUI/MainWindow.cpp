@@ -341,7 +341,7 @@ void MainWindow::on_actionNew_Project_triggered()
                                    "../images/scalable/audio.svg",
                                    "Audio settings");
     m_projectPreferences->build();
-    m_projectPreferences->show();
+    m_projectPreferences->exec();
 }
 
 void MainWindow::on_actionHelp_triggered()
