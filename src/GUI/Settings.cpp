@@ -28,9 +28,7 @@
 #include <QHash>
 #include <QIcon>
 #include <QLabel>
-
 #include <QtDebug>
-
 
 #include "PreferenceWidget.h"
 #include "Settings.h"
@@ -39,10 +37,7 @@
 
 Settings::Settings( QWidget* parent, Qt::WindowFlags f )
     : QDialog( parent, f ),
-    m_currentWidget( NULL ),
-    m_panel( NULL ),
-    m_title( NULL ),
-    m_stackedWidgets( 0 )
+    m_currentWidget( NULL )
 {
     m_panel = new Panel( this );
     m_stackedWidgets = new QStackedWidget( this );
@@ -54,35 +49,31 @@ Settings::Settings( QWidget* parent, Qt::WindowFlags f )
 
 Settings::~Settings()
 {
-    delete m_panel;
-    delete m_title;
-    delete m_stackedWidgets;
 }
 
 
 //TODO : see if the widget MUST have a fixed size, or if the window can dynamicaly
 //adjust to the size of the biggest Widget.
 void        Settings::addWidget( const QString& name,
-                                          PreferenceWidget* pWidget,
-                                          const QString& icon,
-                                          const QString& label)
+                                 PreferenceWidget* pWidget,
+                                 const QString& icon,
+                                 const QString& label )
 {
     m_stackedWidgets->addWidget( pWidget->widget() );
 
     int idx = m_stackedWidgets->indexOf( pWidget->widget() );
     m_widgets.insert( idx, name );
     m_panel->addButton( label, icon, idx );
-    if (m_currentWidget == 0)
-    {
+    if ( !m_currentWidget )
         m_currentWidget = pWidget->widget();
-    }
 }
 
 void        Settings::build()
 {
-    if (m_currentWidget == 0)
-        qFatal(  "Can't build the preference panel without an added widget"  );
-    QHBoxLayout*        hLayout = new QHBoxLayout( this );
+    if ( !m_currentWidget )
+        qFatal( "Can't build the preference panel without having a widget" );
+
+    QHBoxLayout* hLayout = new QHBoxLayout( this );
     setLayout( hLayout );
     //TODO : change the size of the widgets to make it look cleaner
     hLayout->addWidget( m_panel );
@@ -92,8 +83,8 @@ void        Settings::build()
 
 QVBoxLayout*    Settings::buildRightHLayout()
 {
-    QVBoxLayout*    layout = new QVBoxLayout;
-    QFrame*         titleLine = new QFrame;
+    QVBoxLayout* layout = new QVBoxLayout( this );
+    QFrame* titleLine = new QFrame( this );
     m_buttons = new QDialogButtonBox( this );
 
     QObject::connect( m_buttons, SIGNAL( clicked( QAbstractButton* ) ),
@@ -103,15 +94,15 @@ QVBoxLayout*    Settings::buildRightHLayout()
     titleLine->setFrameShape( QFrame::HLine );
     titleLine->setFrameShadow( QFrame::Sunken );
 
-    QFont   labelFont = QApplication::font(this);
+    QFont   labelFont = QApplication::font( this );
 
     labelFont.setPointSize( labelFont.pointSize() + 6 );
     labelFont.setFamily( "Verdana" );
     m_title->setFont( labelFont );
 
     m_buttons->setStandardButtons( QDialogButtonBox::Ok |
-                                 QDialogButtonBox::Cancel |
-                                 QDialogButtonBox::Apply );
+                                   QDialogButtonBox::Cancel |
+                                   QDialogButtonBox::Apply );
 
     QString title( m_widgets.value( m_stackedWidgets->indexOf( m_currentWidget ) ) );
     m_title->setText( title );
@@ -144,7 +135,6 @@ void    Settings::buttonClicked( QAbstractButton* button )
     }
 }
 
-
 void    Settings::switchWidget( int widget )
 {
     //TODO : Change the title of the preferences shown
@@ -155,4 +145,3 @@ void    Settings::switchWidget( int widget )
     m_title->setText( m_widgets.value( widget ) );
     emit widgetSwitched( widget );
 }
-

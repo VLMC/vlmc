@@ -26,7 +26,7 @@
 
 
 PreferenceWidget::PreferenceWidget( QWidget* widget )
-    : m_widget(widget)
+    : m_widget( widget )
 {
 }
 

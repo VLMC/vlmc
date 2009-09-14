@@ -32,7 +32,7 @@
 ProjectPreferences::ProjectPreferences( QWidget* parent )
     : QWidget( parent )
 {
-    this->setWidget( this );
+    setWidget( this );
     m_ui.setupUi( this );
 }
 
