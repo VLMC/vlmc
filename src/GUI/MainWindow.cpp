@@ -272,7 +272,7 @@ void        MainWindow::createGlobalPreferences()
 {
     m_globalPreferences = new Settings( this );
     m_globalPreferences->addWidget("VLMC",
-                                   new VLMCPreferences,
+                                   new VLMCPreferences( m_globalPreferences ),
                                    "../images/vlmc.png",
                                    "VLMC settings");
     m_globalPreferences->build();
