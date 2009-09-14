@@ -29,10 +29,10 @@ DockWidgetManager *DockWidgetManager::m_instance = 0;
 
 DockWidgetManager *DockWidgetManager::instance( QObject *parent )
 {
-    if ( !m_instance )
+    if (m_instance == 0)
         m_instance = new DockWidgetManager( parent );
 
-    return m_instance;
+    return (m_instance);
 }
 
 void DockWidgetManager::setMainWindow( MainWindow *mainWin )
@@ -40,15 +40,14 @@ void DockWidgetManager::setMainWindow( MainWindow *mainWin )
     m_mainWin = mainWin;
 }
 
-QDockWidget* DockWidgetManager::addDockedWidget( QWidget *widget,
+void DockWidgetManager::addDockedWidget( QWidget *widget,
                                        const QString &qs_name,
                                        Qt::DockWidgetAreas areas,
                                        QDockWidget::DockWidgetFeature features,
-                                       Qt::DockWidgetArea startArea,
-                                       QAction* action )
+                                       Qt::DockWidgetArea startArea)
 {
     if ( m_dockWidgets.contains( qs_name ) )
-        return NULL;
+        return ;
 
     QDockWidget* dock = new QDockWidget( tr( qs_name.toStdString().c_str() ), m_mainWin );
 
@@ -59,17 +58,6 @@ QDockWidget* DockWidgetManager::addDockedWidget( QWidget *widget,
     m_mainWin->addDockWidget( startArea, dock );
     m_mainWin->registerWidgetInViewMenu( dock );
     widget->show();
-
-    if ( action )
-    {
-        // Link the dock visibility with the menu
-        connect( action, SIGNAL( toggled(bool) ),
-                 dock, SLOT( setVisible(bool) ) );
-        connect( dock, SIGNAL( visibilityChanged(bool) ),
-                 action, SLOT( setChecked(bool) ) );
-    }
-
-    return dock;
 }
 
 

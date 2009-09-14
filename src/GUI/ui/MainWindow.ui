@@ -27,7 +27,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -70,11 +70,8 @@
     <property name="title">
      <string>Window</string>
     </property>
-    <addaction name="actionFile_browser"/>
-    <addaction name="actionMedia_library"/>
-    <addaction name="actionProject_preview"/>
-    <addaction name="actionClip_preview"/>
-    <addaction name="actionUndoRedo"/>
+    <addaction name="actionMedia_Library"/>
+    <addaction name="actionPreview"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -116,15 +113,15 @@
     <string>Preferences</string>
    </property>
   </action>
-  <action name="actionMedia_library">
+  <action name="actionMedia_Library">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Media library</string>
+    <string>Media Library</string>
    </property>
   </action>
-  <action name="actionProject_preview">
+  <action name="actionPreview">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -132,7 +129,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Project preview</string>
+    <string>Preview</string>
    </property>
   </action>
   <action name="actionTranscode">
@@ -180,30 +177,6 @@
   <action name="actionSave">
    <property name="text">
     <string>Save</string>
-   </property>
-  </action>
-  <action name="actionFile_browser">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>File browser</string>
-   </property>
-  </action>
-  <action name="actionClip_preview">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Clip preview</string>
-   </property>
-  </action>
-  <action name="actionUndoRedo">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Undo/Redo</string>
    </property>
   </action>
  </widget>
