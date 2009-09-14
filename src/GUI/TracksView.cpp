@@ -100,9 +100,7 @@ void TracksView::createLayout()
 void TracksView::addVideoTrack()
 {
     GraphicsTrack* track = new GraphicsTrack( GraphicsTrack::Video, m_numVideoTrack );
-    track->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     track->setPreferredHeight( m_tracksHeight );
-    track->setContentsMargins( 0, 0, 0, 0 );
     m_layout->insertItem( 0, track );
     m_numVideoTrack++;
     m_scene->invalidate();
@@ -113,9 +111,7 @@ void TracksView::addVideoTrack()
 void TracksView::addAudioTrack()
 {
     GraphicsTrack* track = new GraphicsTrack( GraphicsTrack::Audio, 0 );
-    track->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     track->setPreferredHeight( m_tracksHeight );
-    track->setContentsMargins( 0, 0, 0, 0 );
     m_layout->insertItem( 1000, track );
     m_numAudioTrack++;
     m_scene->invalidate();

@@ -41,6 +41,9 @@ public:
     {
         m_type = type;
         m_trackNumber = trackNumber;
+
+        setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+        setContentsMargins( 0, 0, 0, 0 );
         setZValue( 1 );
     }
     quint32 trackNumber()
