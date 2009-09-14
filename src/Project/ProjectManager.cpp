@@ -26,12 +26,11 @@
 
 ProjectManager::ProjectManager( const QString& filePath )
 {
-    m_projectFile = new QFile( filePath );
+    m_projectFile = new QFile( filePath, this );
 }
 
 ProjectManager::~ProjectManager()
 {
-    delete m_projectFile;
 }
 
 void    ProjectManager::loadTimeline()
