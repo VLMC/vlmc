@@ -102,6 +102,7 @@ void TracksView::addVideoTrack()
     GraphicsTrack* track = new GraphicsTrack( GraphicsTrack::Video, m_numVideoTrack );
     track->setHeight( m_tracksHeight );
     m_layout->insertItem( 0, track );
+    m_layout->activate();
     setSceneRect( m_layout->contentsRect().adjusted( 0, 0, 100, 100 ) );
     m_cursorLine->setHeight( m_layout->contentsRect().height() );
     m_scene->invalidate(); // Redraw the background
@@ -113,6 +114,7 @@ void TracksView::addAudioTrack()
     GraphicsTrack* track = new GraphicsTrack( GraphicsTrack::Audio, 0 );
     track->setHeight( m_tracksHeight );
     m_layout->insertItem( 1000, track );
+    m_layout->activate();
     setSceneRect( m_layout->contentsRect().adjusted( 0, 0, 100, 100 ) );
     m_cursorLine->setHeight( m_layout->contentsRect().height() );
     m_scene->invalidate(); // Redraw the background

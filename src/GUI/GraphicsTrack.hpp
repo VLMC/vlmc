@@ -51,6 +51,7 @@ public:
     void setHeight( int height )
     {
         setPreferredHeight( height );
+        adjustSize();
         updateGeometry();
     }
 
