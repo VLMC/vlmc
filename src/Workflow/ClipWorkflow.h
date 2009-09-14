@@ -156,8 +156,8 @@ class   ClipWorkflow : public QObject
         LibVLCpp::MediaPlayer*  getMediaPlayer();
 
     private:
-        static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret );
-        static void             unlock( ClipWorkflow* clipWorkflow );
+        static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret, int size );
+        static void             unlock( ClipWorkflow* clipWorkflow, void* buffer, int width, int height, int bpp, int size );
         void                    setVmem();
         void                    setState( State state );
         void                    checkSynchronisation( State newState );

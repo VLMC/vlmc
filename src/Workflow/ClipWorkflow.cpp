@@ -79,14 +79,20 @@ void    ClipWorkflow::checkStateChange()
     }
 }
 
-void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret )
+void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret, int size )
 {
+    Q_UNUSED( size );
     cw->m_renderLock->lock();
     *pp_ret = cw->m_buffer;
 }
 
-void    ClipWorkflow::unlock( ClipWorkflow* cw )
+void    ClipWorkflow::unlock( ClipWorkflow* cw, void* buffer, int width, int height, int bpp, int size )
 {
+    Q_UNUSED( buffer );
+    Q_UNUSED( width );
+    Q_UNUSED( height );
+    Q_UNUSED( bpp );
+    Q_UNUSED( size );
     cw->m_renderLock->unlock();
     cw->m_stateLock->lockForWrite();
 
@@ -118,20 +124,21 @@ void    ClipWorkflow::setVmem()
     char        buffer[32];
 
     m_vlcMedia->addOption( ":no-audio" );
-    m_vlcMedia->addOption( ":vout=vmem" );
+    m_vlcMedia->addOption( ":sout=#transcode{}:smem" );
     m_vlcMedia->setDataCtx( this );
     m_vlcMedia->setLockCallback( reinterpret_cast<LibVLCpp::Media::lockCallback>( &ClipWorkflow::lock ) );
     m_vlcMedia->setUnlockCallback( reinterpret_cast<LibVLCpp::Media::unlockCallback>( &ClipWorkflow::unlock ) );
-    m_vlcMedia->addOption( ":vmem-chroma=RV24" );
+    m_vlcMedia->addOption( ":sout-transcode-vcodec=RV24" );
+    m_vlcMedia->addOption( ":sout-transcode-acodec=s16l" );
 
-    sprintf( buffer, ":vmem-width=%i", VIDEOWIDTH );
+    sprintf( buffer, ":sout-transcode-width=%i", VIDEOWIDTH );
     m_vlcMedia->addOption( buffer );
 
-    sprintf( buffer, ":vmem-height=%i", VIDEOHEIGHT );
+    sprintf( buffer, ":sout-transcode-height=%i", VIDEOHEIGHT );
     m_vlcMedia->addOption( buffer );
 
-    sprintf( buffer, "vmem-pitch=%i", VIDEOWIDTH * 3 );
-    m_vlcMedia->addOption( buffer );
+    //sprintf( buffer, "sout-smem-video-pitch=%i", VIDEOWIDTH * 3 );
+    //m_vlcMedia->addOption( buffer );
 }
 
 void    ClipWorkflow::initialize()
