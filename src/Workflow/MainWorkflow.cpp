@@ -238,10 +238,7 @@ void            MainWorkflow::stop()
     for (unsigned int i = 0; i < m_trackCount; ++i)
     {
         if ( m_tracks[i].activated() == true )
-        {
             m_tracks[i]->stop();
-            qDebug() << "Stopping track";
-        }
     }
     m_currentFrame = 0;
     emit frameChanged( 0 );

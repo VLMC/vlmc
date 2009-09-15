@@ -207,7 +207,7 @@ void    ClipWorkflow::startRender( bool startInPausedMode )
     if ( isReady() == false )
     {
         QMutexLocker    lock( m_initWaitCond->getMutex() );
-        m_initWaitCond->wait();
+        m_initWaitCond->waitLocked();
     }
 
     if ( startInPausedMode == false )
@@ -346,7 +346,10 @@ void        ClipWorkflow::waitForCompleteRender( bool dontCheckRenderStarted /*=
 void        ClipWorkflow::waitForCompleteInit()
 {
     if ( isReady() == false )
-        m_initWaitCond->wait();
+    {
+        QMutexLocker    lock( m_initWaitCond->getMutex() );
+        m_initWaitCond->waitLocked();
+    }
 }
 
 QMutex*     ClipWorkflow::getSleepMutex()
