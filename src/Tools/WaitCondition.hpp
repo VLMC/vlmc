@@ -44,6 +44,10 @@ class   WaitCondition
             QMutexLocker    lock( m_mutex );
             m_waitCond->wait( m_mutex );
         }
+        void            waitLocked()
+        {
+            m_waitCond->wait( m_mutex );
+        }
         void            wake()
         {
             m_waitCond->wakeAll();

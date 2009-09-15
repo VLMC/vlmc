@@ -205,7 +205,10 @@ ClipWorkflow::State     ClipWorkflow::getState() const
 void    ClipWorkflow::startRender( bool startInPausedMode )
 {
     if ( isReady() == false )
+    {
+        QMutexLocker    lock( m_initWaitCond->getMutex() );
         m_initWaitCond->wait();
+    }
 
     if ( startInPausedMode == false )
     {
@@ -270,8 +273,11 @@ void            ClipWorkflow::checkSynchronisation( State newState )
     switch ( newState )
     {
         case Ready:
+        {
+            QMutexLocker    lock( m_initWaitCond->getMutex() );
             m_initWaitCond->wake();
             break ;
+        }
         default:
             break ;
     }
