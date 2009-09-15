@@ -32,7 +32,8 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
                 m_state( ClipWorkflow::Stopped ),
                 m_requiredState( ClipWorkflow::None ),
                 m_rendering( false ),
-                m_initFlag( false )
+                m_initFlag( false ),
+                m_fullSpeedRender( false )
 {
     m_stateLock = new QReadWriteLock;
     m_requiredStateLock = new QMutex;
@@ -84,6 +85,7 @@ void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret, int size )
     Q_UNUSED( size );
     cw->m_renderLock->lock();
     *pp_ret = cw->m_buffer;
+//    qDebug() << "ClipWorkflow::lock";
 }
 
 void    ClipWorkflow::unlock( ClipWorkflow* cw, void* buffer, int width, int height, int bpp, int size )
@@ -116,6 +118,7 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw, void* buffer, int width, int hei
     }
     else
         cw->m_stateLock->unlock();
+//    qDebug() << "ClipWorkflow::unlock";
     cw->checkStateChange();
 }
 
@@ -130,6 +133,11 @@ void    ClipWorkflow::setVmem()
     m_vlcMedia->setUnlockCallback( reinterpret_cast<LibVLCpp::Media::unlockCallback>( &ClipWorkflow::unlock ) );
     m_vlcMedia->addOption( ":sout-transcode-vcodec=RV24" );
     m_vlcMedia->addOption( ":sout-transcode-acodec=s16l" );
+
+    if ( m_fullSpeedRender == true )
+        m_vlcMedia->addOption( ":sout-sync" );
+    else
+        m_vlcMedia->addOption( ":no-sout-sync" );
 
     sprintf( buffer, ":sout-transcode-width=%i", VIDEOWIDTH );
     m_vlcMedia->addOption( buffer );
@@ -373,4 +381,9 @@ void        ClipWorkflow::unpausedMediaPlayer()
 {
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( unpausedMediaPlayer() ) );
     emit unpaused();
+}
+
+void        ClipWorkflow::setFullSpeedRender( bool value )
+{
+    m_fullSpeedRender = value;
 }

@@ -72,6 +72,8 @@ class   TrackWorkflow : public QObject
         void                                    save( QDomDocument& doc, QDomElement& trackNode ) const;
         void                                    clear();
 
+        void                                    setFullSpeedRender( bool value );
+
     private:
         void                                    computeLength();
         void                                    renderClip( ClipWorkflow* cw, qint64 currentFrame,

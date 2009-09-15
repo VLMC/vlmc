@@ -501,3 +501,9 @@ void        MainWorkflow::clear()
     m_length = 0;
     emit cleared();
 }
+
+void        MainWorkflow::setFullSpeedRender( bool value )
+{
+    for ( unsigned int i = 0; i < m_trackCount; ++i )
+        m_tracks[i]->setFullSpeedRender( value );
+}

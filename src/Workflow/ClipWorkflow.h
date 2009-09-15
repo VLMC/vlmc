@@ -155,6 +155,8 @@ class   ClipWorkflow : public QObject
 
         LibVLCpp::MediaPlayer*  getMediaPlayer();
 
+        void                    setFullSpeedRender( bool value );
+
     private:
         static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret, int size );
         static void             unlock( ClipWorkflow* clipWorkflow, void* buffer, int width, int height, int bpp, int size );
@@ -195,13 +197,15 @@ class   ClipWorkflow : public QObject
          *  While this flag is set to false, we will use the same buffer, to prevent
          *  having X buffers with the same picture (when media player is paused mainly)
          */
-        bool                                    m_rendering;
+        bool                    m_rendering;
         /**
          *  This flag is here to avoid multiple connection to the mediaPlayer* slots.
          *  It's essentially a nasty hack due to the multiples calls to lock/unlock when
          *  the render is started, and that cannot really be avoided...
          */
-        bool                                    m_initFlag;
+        bool                    m_initFlag;
+
+        bool                    m_fullSpeedRender;
 
     private slots:
         void                    pauseAfterPlaybackStarted();

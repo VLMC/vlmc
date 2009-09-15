@@ -37,6 +37,7 @@ void        WorkflowFileRenderer::run()
     m_isRendering = true;
     m_stopping = false;
 
+    m_mainWorkflow->setFullSpeedRender( true );
     m_mainWorkflow->startRender();
     m_mediaPlayer->play();
 }

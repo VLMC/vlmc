@@ -111,6 +111,8 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
         void                    clear();
 
+        void                    setFullSpeedRender( bool value );
+
     private:
         static MainWorkflow*    m_instance;
 

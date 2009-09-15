@@ -150,6 +150,7 @@ void        WorkflowRenderer::startPreview()
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
     connect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
 
+    m_mainWorkflow->setFullSpeedRender( false );
     m_mainWorkflow->startRender();
     m_mediaPlayer->play();
     m_isRendering = true;

@@ -562,3 +562,15 @@ void    TrackWorkflow::adjustClipTime( qint64 currentFrame, qint64 start, ClipWo
     qint64  startFrame = cw->getClip()->getBegin() + nbMs;
     cw->setTime( startFrame );
 }
+
+void        TrackWorkflow::setFullSpeedRender( bool value )
+{
+    QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
+
+    while ( it != end )
+    {
+        it.value()->setFullSpeedRender( value );
+        ++it;
+    }
+}
