@@ -1,20 +1,28 @@
 #include "Import.h"
 #include "ui_Import.h"
-#include "FileBrowser.h"
-#include "PreviewWidget.h"
 #include "ClipRenderer.h"
 
 Import::Import(QWidget *parent) :
     QDialog( parent ), m_ui( new Ui::Import )
 {
     m_ui->setupUi( this );
-    m_ui->FileBrowserWidget = new FileBrowser( m_ui->FileBrowserWidget );
-    m_ui->PreviewWidget = new PreviewWidget( new ClipRenderer, m_ui->PreviewWidget );
+    m_importBrowser = new ImportBrowser( m_ui->ImportBrowserWidget );
+    m_previewWidget = new PreviewWidget( new ClipRenderer, m_ui->PreviewWidget );
+
+    m_ui->ImportBrowserWidget = m_importBrowser;
+    m_ui->PreviewWidget = m_previewWidget;
+
+    connect( m_importBrowser, SIGNAL( mediaSelected( QFileInfo ) ), this, SLOT( setUIMetaData( QFileInfo ) ) );
 }
 
 Import::~Import()
 {
     delete m_ui;
+}
+
+void    Import::setUIMetaData( QFileInfo fileInfos )
+{
+    m_ui->nameValueLabel->setText( fileInfos.fileName() );
 }
 
 void Import::changeEvent( QEvent *e )

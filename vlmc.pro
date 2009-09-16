@@ -62,7 +62,9 @@ SOURCES += src/main.cpp \
     src/GUI/VLMCPreferences.cpp \
     src/GUI/VideoProjectPreferences.cpp \
     src/Project/ProjectManager.cpp \
-    src/GUI/Import.cpp
+    src/GUI/Import.cpp \
+    src/GUI/ImportBrowser.cpp \
+    src/GUI/FileInfoListModel.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -118,7 +120,9 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/AudioProjectPreferences.h \
     src/GUI/VideoProjectPreferences.h \
     src/Project/ProjectManager.h \
-    src/GUI/Import.h
+    src/GUI/Import.h \
+    src/GUI/ImportBrowser.h \
+    src/GUI/FileInfoListModel.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \
@@ -132,7 +136,8 @@ FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/VLMCPreferences.ui \
     src/GUI/ui/VideoProjectPreferences.ui \
     src/GUI/ui/AudioProjectPreferences.ui \
-    src/GUI/ui/Import.ui
+    src/GUI/ui/Import.ui \
+    src/GUI/ui/ImportBrowser.ui
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts

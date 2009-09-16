@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>871</width>
-    <height>493</height>
+    <height>528</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -21,7 +21,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0" rowspan="2">
-    <widget class="QWidget" name="FileBrowserWidget" native="true">
+    <widget class="QWidget" name="ImportBrowserWidget" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>83</horstretch>
@@ -44,7 +44,6 @@
        <height>340</height>
       </size>
      </property>
-     <zorder>MediaPropertiesGroupBox</zorder>
     </widget>
    </item>
    <item row="1" column="1">

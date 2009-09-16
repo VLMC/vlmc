@@ -2,6 +2,8 @@
 #define IMPORT_H
 
 #include <QDialog>
+#include "PreviewWidget.h"
+#include "ImportBrowser.h"
 
 namespace Ui
 {
@@ -19,7 +21,12 @@ protected:
     void changeEvent( QEvent *e );
 
 private:
-    Ui::Import *m_ui;
+    Ui::Import*     m_ui;
+    PreviewWidget*  m_previewWidget;
+    ImportBrowser*  m_importBrowser;
+
+private slots:
+    void    setUIMetaData( QFileInfo fileInfos );
 };
 
 #endif // IMPORT_H
