@@ -39,6 +39,7 @@ class ImportBrowser : public QWidget
 public:    
     ImportBrowser( QWidget* parent = NULL );
     virtual ~ImportBrowser();
+    QFileInfoList   getMediaInfoList() { return m_mediaInfoList; }
 private:
     void                    TreeViewBrowserDirectoryChanged( QModelIndex& index );
     void                    updateFsWatcher( const QString& newPath );
@@ -59,7 +60,7 @@ private slots:
     void on_listViewBrowser_clicked( QModelIndex index );
 
 signals:
-    void mediaSelected( QFileInfo fileInfos );
+    void    mediaSelected( QFileInfo fileInfos );
 };
 
 #endif /* !IMPORTBROWSER_H */

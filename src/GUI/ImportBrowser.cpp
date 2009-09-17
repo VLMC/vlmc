@@ -101,7 +101,10 @@ void ImportBrowser::on_pushButtonBackward_clicked()
     model->setFileInfoList( m_mediaInfoList );
 
     if ( m_mediaInfoList.isEmpty() )
+    {
         m_ui.pushButtonBackward->setEnabled( false );
+        m_currentAddedModelIndex = QModelIndex();
+    }
 }
 
 void ImportBrowser::on_pushButtonForward_clicked()

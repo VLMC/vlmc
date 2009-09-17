@@ -4,6 +4,9 @@
 #include <QDialog>
 #include "PreviewWidget.h"
 #include "ImportBrowser.h"
+#include "Clip.h"
+#include "Media.h"
+#include "MetaDataWorker.h"
 
 namespace Ui
 {
@@ -21,12 +24,19 @@ protected:
     void changeEvent( QEvent *e );
 
 private:
-    Ui::Import*     m_ui;
-    PreviewWidget*  m_previewWidget;
-    ImportBrowser*  m_importBrowser;
+    Ui::Import*         m_ui;
+    PreviewWidget*      m_previewWidget;
+    ImportBrowser*      m_importBrowser;
+    Media*              m_currentMedia;
+    Clip*               m_currentClip;
+    MetaDataWorker*     m_metaDataWorker;
 
 private slots:
+    void    accept();
     void    setUIMetaData( QFileInfo fileInfos );
+
+signals:
+    void    mediaSelected( Clip* clip );
 };
 
 #endif // IMPORT_H
