@@ -442,7 +442,7 @@ void        TrackWorkflow::clipWorkflowRenderCompleted( ClipWorkflow* cw )
     }
 }
 
-unsigned char*  TrackWorkflow::getSynchroneOutput()
+VideoFrame*     TrackWorkflow::getSynchroneOutput()
 {
     return m_synchroneRenderBuffer;
 }

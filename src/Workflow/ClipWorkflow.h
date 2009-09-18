@@ -31,12 +31,13 @@
 
 #include <QReadWriteLock>
 #include <QMutex>
-#include "WaitCondition.hpp"
 #include <QObject>
 #include <QQueue>
 
 #include "Clip.h"
+#include "WaitCondition.hpp"
 #include "VLCMediaPlayer.h"
+#include "LightVideoFrame.h"
 
 class   ClipWorkflow : public QObject
 {
@@ -60,12 +61,7 @@ class   ClipWorkflow : public QObject
         ClipWorkflow( Clip* clip );
         virtual ~ClipWorkflow();
 
-        /**
-         *  This method returns the current frame. It locks the renderMutex,
-         *  therefore, you can call this method blindly, without taking care
-         *  of the rendering process advancement.
-         */
-        unsigned char*          getOutput();
+        VideoFrame*             getOutput();
         void                    initialize();
         /**
          *  Return true ONLY if the state is equal to Ready.
@@ -176,8 +172,10 @@ class   ClipWorkflow : public QObject
          */
         LibVLCpp::Media*        m_vlcMedia;
 
-        unsigned char*          m_buffer;
         QMutex*                 m_renderLock;
+//        unsigned char*          m_buffer;
+        VideoFrame*             m_frame;
+        //unsigned char*          m_backBuffer;
 
         LibVLCpp::MediaPlayer*  m_mediaPlayer;
 

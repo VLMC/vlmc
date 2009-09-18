@@ -25,7 +25,7 @@
 
 #include "MainWorkflow.h"
 
-unsigned char*  MainWorkflow::blackOutput = NULL;
+VideoFrame*     MainWorkflow::blackOutput = NULL;
 MainWorkflow*   MainWorkflow::m_instance = NULL;
 
 MainWorkflow::MainWorkflow( int trackCount ) :
@@ -37,8 +37,8 @@ MainWorkflow::MainWorkflow( int trackCount ) :
                 "MainWorkflow constructor", "Can't have more than one MainWorkflow instance" );
     m_instance = this;
 
-    MainWorkflow::blackOutput = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 3];
-    memset( MainWorkflow::blackOutput, 0, VIDEOHEIGHT * VIDEOWIDTH * 3 );
+    MainWorkflow::blackOutput = new VideoFrame( VIDEOHEIGHT * VIDEOWIDTH * 3 );
+    memset( MainWorkflow::blackOutput->rvf.raw, 0, VIDEOHEIGHT * VIDEOWIDTH * 3 );
 
     m_tracks = new Toggleable<TrackWorkflow*>[trackCount];
     for ( int i = 0; i < trackCount; ++i )
@@ -68,7 +68,7 @@ MainWorkflow::~MainWorkflow()
     for (unsigned int i = 0; i < m_trackCount; ++i)
         delete m_tracks[i];
     delete[] m_tracks;
-    delete[] blackOutput;
+    delete blackOutput;
 }
 
 void        MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
@@ -322,7 +322,7 @@ void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
     {
         QMutexLocker    lock( m_highestTrackNumberMutex );
 
-        unsigned char* buff = m_tracks[trackId]->getSynchroneOutput();
+        VideoFrame*     buff = m_tracks[trackId]->getSynchroneOutput();
         if ( m_highestTrackNumber <= trackId && buff != NULL )
         {
             m_highestTrackNumber = trackId;
@@ -341,7 +341,7 @@ void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
     }
 }
 
-unsigned char*  MainWorkflow::getSynchroneOutput()
+VideoFrame*  MainWorkflow::getSynchroneOutput()
 {
     m_synchroneRenderWaitConditionMutex->lock();
     getOutput();

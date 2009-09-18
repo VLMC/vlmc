@@ -25,6 +25,7 @@
 #include "vlmc.h"
 #include "ClipWorkflow.h"
 #include "Pool.hpp"
+#include "VideoFrame.h"
 
 ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
                 m_clip( clip ),
@@ -35,6 +36,8 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
                 m_initFlag( false ),
                 m_fullSpeedRender( false )
 {
+    m_frame = new VideoFrame( VIDEOHEIGHT * VIDEOWIDTH * 4 );
+//    m_backBuffer = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
     m_stateLock = new QReadWriteLock;
     m_requiredStateLock = new QMutex;
     m_waitCond = new QWaitCondition;
@@ -43,7 +46,6 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
     m_renderWaitCond = new WaitCondition;
     m_pausingStateWaitCond = new WaitCondition;
     m_renderLock = new QMutex;
-    m_buffer = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
 }
 
 ClipWorkflow::~ClipWorkflow()
@@ -55,16 +57,16 @@ ClipWorkflow::~ClipWorkflow()
     delete m_waitCond;
     delete m_requiredStateLock;
     delete m_stateLock;
-    delete[] m_buffer;
+    delete m_frame;
 }
 
-unsigned char*    ClipWorkflow::getOutput()
+VideoFrame*         ClipWorkflow::getOutput()
 {
     QMutexLocker    lock( m_renderLock );
 
     if ( isEndReached() == true )
         return NULL;
-    return m_buffer;
+    return m_frame;
 }
 
 void    ClipWorkflow::checkStateChange()
@@ -84,7 +86,7 @@ void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret, int size )
 {
     Q_UNUSED( size );
     cw->m_renderLock->lock();
-    *pp_ret = cw->m_buffer;
+    *pp_ret = cw->m_frame->rvf.raw;
 //    qDebug() << "ClipWorkflow::lock";
 }
 
