@@ -37,7 +37,6 @@ Import::Import(QWidget *parent) :
     m_ui->PreviewWidget = m_previewWidget;
 
     connect( m_importBrowser, SIGNAL( mediaSelected( QFileInfo ) ), this, SLOT( getMetaData( QFileInfo ) ) );
-    connect( this, SIGNAL( mediaSelected( Clip* ) ), m_previewWidget->getGenericRenderer(), SLOT( setClip( Clip* ) ) );
 }
 
 Import::~Import()
@@ -64,6 +63,8 @@ void    Import::setUIMetaData()
 {
     m_currentClip = new Clip( m_currentMedia );
 
+    connect( this, SIGNAL( mediaSelected( Clip* ) ), m_previewWidget->getGenericRenderer(), SLOT( setClip( Clip* ) ) );
+
     //Duration
     QTime   duration;
     duration = duration.addSecs( m_currentClip->getLengthSecond() );
@@ -78,6 +79,8 @@ void    Import::setUIMetaData()
     m_ui->fpsValueLabel->setText( QString::number( m_currentClip->getParent()->getFps() ) );
 
     emit mediaSelected( m_currentClip );
+
+    disconnect( this, SIGNAL( mediaSelected( Clip* ) ), m_previewWidget->getGenericRenderer(), SLOT( setClip( Clip* ) ) );
 }
 
 void    Import::accept()

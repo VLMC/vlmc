@@ -115,11 +115,13 @@ void ImportBrowser::on_pushButtonForward_clicked()
 {
     FileInfoListModel* model = static_cast<FileInfoListModel*>( m_ImportListModel );
 
-    if ( !m_FilesModel->isDir( m_ui.treeViewBrowser->selectionModel()->currentIndex() ) )
+    if ( !m_FilesModel->isDir( m_ui.treeViewBrowser->selectionModel()->currentIndex() ) &&
+        !m_mediaInfoList.contains( m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex() ) ) )
         m_mediaInfoList << m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex() );
     else
         for( int i = 0; i < m_FilesModel->rowCount( m_ui.treeViewBrowser->selectionModel()->currentIndex() ); i++)
-            m_mediaInfoList << m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex().child( i, 0 ) );
+            if ( !m_mediaInfoList.contains( m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex().child( i, 0 ) ) ) )
+                m_mediaInfoList << m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex().child( i, 0 ) );
     model->setFileInfoList( m_mediaInfoList );
     m_ui.pushButtonBackward->setEnabled( true );
 }
