@@ -2,6 +2,7 @@
 #include "ui_Import.h"
 #include "ClipRenderer.h"
 #include "Library.h"
+#include "QTime"
 
 Import::Import(QWidget *parent) :
     QDialog( parent ), m_ui( new Ui::Import )
@@ -13,7 +14,7 @@ Import::Import(QWidget *parent) :
     m_ui->ImportBrowserWidget = m_importBrowser;
     m_ui->PreviewWidget = m_previewWidget;
 
-    connect( m_importBrowser, SIGNAL( mediaSelected( QFileInfo ) ), this, SLOT( setUIMetaData( QFileInfo ) ) );
+    connect( m_importBrowser, SIGNAL( mediaSelected( QFileInfo ) ), this, SLOT( getMetaData( QFileInfo ) ) );
     connect( this, SIGNAL( mediaSelected( Clip* ) ), m_previewWidget->getGenericRenderer(), SLOT( setClip( Clip* ) ) );
 }
 
@@ -27,24 +28,33 @@ Import::~Import()
     delete m_previewWidget;
 }
 
-void    Import::setUIMetaData( QFileInfo fileInfos )
+void    Import::getMetaData( QFileInfo fileInfos )
 {
     m_ui->nameValueLabel->setText( fileInfos.fileName() );
     m_currentMedia = new Media( fileInfos.filePath(), fileInfos.fileName() );
 
     m_metaDataWorker = new MetaDataWorker( m_currentMedia );
+    connect( m_metaDataWorker, SIGNAL( finished() ), this, SLOT( setUIMetaData() ) );
     m_metaDataWorker->start();
+}
 
-    QVariant fps( m_currentMedia->getFps() );
-    QVariant height( m_currentMedia->getHeight() );
-    QVariant width( m_currentMedia->getWidth() );
-    QVariant length( m_currentMedia->getLength() );
-
-    m_ui->fpsValueLabel->setText( fps.toString() );
-    m_ui->durationValueLabel->setText( height.toString() );
-    m_ui->resolutionValueLabel->setText( length.toString() + "x" + width.toString() );
-
+void    Import::setUIMetaData()
+{
     m_currentClip = new Clip( m_currentMedia );
+
+    //Duration
+    QTime   duration;
+    duration = duration.addSecs( m_currentClip->getLengthSecond() );
+    m_ui->durationValueLabel->setText( duration.toString( "hh:mm:ss" ) );
+    //Filename || title
+    m_ui->nameValueLabel->setText( m_currentClip->getParent()->getFileInfo()->fileName() );
+    setWindowTitle( m_currentClip->getParent()->getFileInfo()->fileName() + " " + tr( "properties" ) );
+    //Resolution
+    m_ui->resolutionValueLabel->setText( QString::number( m_currentClip->getParent()->getWidth() )
+                                       + " x " + QString::number( m_currentClip->getParent()->getHeight() ) );
+    //FPS
+    m_ui->fpsValueLabel->setText( QString::number( m_currentClip->getParent()->getFps() ) );
+
     emit mediaSelected( m_currentClip );
 }
 

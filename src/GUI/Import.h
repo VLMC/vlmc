@@ -33,7 +33,8 @@ private:
 
 private slots:
     void    accept();
-    void    setUIMetaData( QFileInfo fileInfos );
+    void    getMetaData( QFileInfo fileInfos );
+    void    setUIMetaData();
 
 signals:
     void    mediaSelected( Clip* clip );
