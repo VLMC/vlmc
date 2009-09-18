@@ -67,6 +67,12 @@ SOURCES += src/main.cpp \
     src/Workflow/VideoClipWorkflow.cpp \
     src/Workflow/TrackHandler.cpp \
     src/Workflow/AudioClipWorkflow.cpp
+    src/EffectsEngine/EffectsEngine.cpp \
+    src/EffectsEngine/VideoFrame.cpp \
+    src/EffectsEngine/GenericEffect.cpp \
+    src/EffectsEngine/PouetEffect.cpp \
+    src/EffectsEngine/MixerEffect.cpp
+
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -126,6 +132,18 @@ HEADERS += src/GUI/MainWindow.h \
     src/Workflow/VideoClipWorkflow.h \
     src/Workflow/TrackHandler.h \
     src/Workflow/AudioClipWorkflow.h
+    src/EffectsEngine/EffectsEngine.h \
+    src/EffectsEngine/InSlot.hpp \
+    src/EffectsEngine/OutSlot.hpp \
+    src/EffectsEngine/VideoFrame.h \
+    src/EffectsEngine/Parameter.h \
+    src/EffectsEngine/CopyOnWrite.hpp \
+    src/EffectsEngine/LightVideoFrame.h \
+    src/EffectsEngine/LightParameter.h \
+    src/EffectsEngine/GenericEffect.h \
+    src/EffectsEngine/PouetEffect.h \
+    src/EffectsEngine/MixerEffect.h
+
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \
