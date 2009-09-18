@@ -42,7 +42,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
     public:
         struct      OutputBuffers
         {
-            unsigned char*      video;
+            VideoFrame*         video;
             unsigned char*      audio;
         };
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start, TrackWorkflow::TrackType type );

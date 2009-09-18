@@ -107,7 +107,7 @@ void*   WorkflowRenderer::lock( void* datas )
         void* ret = self->m_mainWorkflow->getSynchroneOutput();
         self->m_lastFrame = static_cast<MainWorkflow::OutputBuffers*>( ret );
     }
-    return self->m_lastFrame->video;
+    return self->m_lastFrame->video->rvf.raw;
 }
 
 void    WorkflowRenderer::unlock( void* datas )
