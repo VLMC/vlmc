@@ -82,11 +82,10 @@ void*   WorkflowRenderer::lock( void* datas )
 
     if ( self->m_stopping == false )
     {
-        void* ret = self->m_mainWorkflow->getSynchroneOutput();
-        self->m_lastFrame = static_cast<unsigned char*>( ret );
-        return ret;
+        VideoFrame* ret = self->m_mainWorkflow->getSynchroneOutput();
+        self->m_lastFrame = ret;
     }
-    return self->m_lastFrame;
+    return self->m_lastFrame->rvf.raw;
 }
 
 void    WorkflowRenderer::unlock( void* datas )
