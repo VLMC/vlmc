@@ -8,8 +8,9 @@ MOC_DIR = build/moc
 UI_DIR = build/ui
 QMAKE_EXT_H = .h \
     .hpp
-INCLUDEPATH = build/moc \
-    build/ui
+INCLUDEPATH += build/moc \
+    build/ui \
+    $$[VLMC_ADDITIONAL_INCLUDEPATH]
 QT += gui \
     network \
     svg \
@@ -153,8 +154,9 @@ INCLUDEPATH += src/LibVLCpp \
 # QMAKE_CXXFLAGS+=-pg
 # QMAKE_LFLAGS+=-pg
 # QMAKE_CXXFLAGS += -W -Wall -Wold-style-cast
-LIBS = -L/usr/local/lib \
-    -lvlc
+LIBS += -L/usr/local/lib \
+    -lvlc \
+    $$[VLMC_ADDITIONAL_LIBS]
 SUBDIRS += modules
 DEFINES += VLMC_VERSION="$$VERSION"
 CODECFORTR = UTF-8
