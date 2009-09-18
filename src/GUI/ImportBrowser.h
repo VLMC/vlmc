@@ -49,14 +49,13 @@ private:
     QAbstractItemModel*     m_ImportListModel;
     QFileSystemWatcher*     m_fsWatcher;
     QString                 m_currentlyWatchedDir;
-    QModelIndex             m_currentModelIndex;
-    QModelIndex             m_currentAddedModelIndex;
     QFileInfoList           m_mediaInfoList;
 
 private slots:
     void on_pushButtonForward_clicked();
     void on_pushButtonBackward_clicked();
     void on_treeViewBrowser_clicked( QModelIndex index );
+    void on_treeViewBrowser_doubleClicked( QModelIndex index);
     void on_listViewBrowser_clicked( QModelIndex index );
 
 signals:

@@ -35,8 +35,11 @@ ImportBrowser::ImportBrowser( QWidget* parent ) : QWidget( parent )
     m_ImportListModel = new FileInfoListModel();
 
     QStringList filters;
-    filters << "*.mp3" << "*.oga" << "*.flac" << "*.aac" << "*.wav";
+    //Video
     filters << "*.mov" << "*.avi" << "*.mkv" << "*.mpg" << "*.mpeg" << "*.wmv" << "*.mp4";
+    //Audio
+    filters << "*.mp3" << "*.oga" << "*.flac" << "*.aac" << "*.wav";
+    //Picture
     filters << "*.gif" << "*.png" << "*.jpg";
 
     m_FilesModel->setFilter( QDir::AllDirs | QDir::Files | QDir::Readable | QDir::NoDotAndDotDot );
@@ -46,6 +49,7 @@ ImportBrowser::ImportBrowser( QWidget* parent ) : QWidget( parent )
 
     m_ui.listViewBrowser->setModel( m_ImportListModel );
     m_ui.listViewBrowser->setRootIndex( QModelIndex() );
+    m_ui.listViewBrowser->setMouseTracking( false );
 
     m_ui.treeViewBrowser->setModel( m_FilesModel );
     m_ui.treeViewBrowser->setRootIndex( m_FilesModel->index( QDir::rootPath() ) );
@@ -81,8 +85,6 @@ void ImportBrowser::TreeViewBrowserDirectoryChanged( QModelIndex& index )
 
 void ImportBrowser::on_listViewBrowser_clicked( QModelIndex index )
 {
-    m_currentAddedModelIndex = index;
-
     FileInfoListModel* model = static_cast<FileInfoListModel*>( m_ImportListModel );
     emit mediaSelected( model->fileInfo( index ) );
 }
@@ -90,27 +92,34 @@ void ImportBrowser::on_listViewBrowser_clicked( QModelIndex index )
 void ImportBrowser::on_treeViewBrowser_clicked( QModelIndex index )
 {
     TreeViewBrowserDirectoryChanged( index );
-    m_currentModelIndex = index;
     m_ui.pushButtonForward->setEnabled( true );
+}
+
+void ImportBrowser::on_treeViewBrowser_doubleClicked( QModelIndex index)
+{
+    if ( !m_FilesModel->isDir( index ) )
+        on_pushButtonForward_clicked();
 }
 
 void ImportBrowser::on_pushButtonBackward_clicked()
 {
     FileInfoListModel* model = static_cast<FileInfoListModel*>( m_ImportListModel );
-    m_mediaInfoList.removeOne( model->fileInfo( m_currentAddedModelIndex ) );
+    m_mediaInfoList.removeOne( model->fileInfo( m_ui.listViewBrowser->selectionModel()->currentIndex() ) );
     model->setFileInfoList( m_mediaInfoList );
 
     if ( m_mediaInfoList.isEmpty() )
-    {
         m_ui.pushButtonBackward->setEnabled( false );
-        m_currentAddedModelIndex = QModelIndex();
-    }
 }
 
 void ImportBrowser::on_pushButtonForward_clicked()
 {
     FileInfoListModel* model = static_cast<FileInfoListModel*>( m_ImportListModel );
-    m_mediaInfoList << m_FilesModel->fileInfo( m_currentModelIndex );
+
+    if ( !m_FilesModel->isDir( m_ui.treeViewBrowser->selectionModel()->currentIndex() ) )
+        m_mediaInfoList << m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex() );
+    else
+        for( int i = 0; i < m_FilesModel->rowCount( m_ui.treeViewBrowser->selectionModel()->currentIndex() ); i++)
+            m_mediaInfoList << m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex().child( i, 0 ) );
     model->setFileInfoList( m_mediaInfoList );
     m_ui.pushButtonBackward->setEnabled( true );
 }
