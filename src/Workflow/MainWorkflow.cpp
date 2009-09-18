@@ -289,6 +289,7 @@ Clip*       MainWorkflow::removeClip( const QUuid& uuid, unsigned int trackId )
     Q_ASSERT( trackId < m_trackCount );
 
     Clip* clip = m_tracks[trackId]->removeClip( uuid );
+    computeLength();
     activateTrack( trackId );
     emit clipRemoved( uuid, trackId );
     return clip;
