@@ -23,14 +23,16 @@ void	PouetEffect::render( void )
   VideoFrame		tmp;
   quint32		size;
 
-  ( m_videoInputs["in"] ) >> lol;
-  tmp = lol;
+  m_videoOutputs["out"] << m_videoInputs["in"];
 
-  for ( i = 0; i < tmp.nbpixels; ++i )
-    tmp.rvf.pixel[i].Red = 'W';
-
-
-  lol2 = tmp;
-  (m_videoOutputs["out"]) << lol2;
+//  ( m_videoInputs["in"] ) >> lol;
+//  tmp = lol;
+//
+//  for ( i = 0; i < tmp.nbpixels; ++i )
+//    tmp.rvf.pixel[i].Red = 'W';
+//
+//
+//  lol2 = tmp;
+//  (m_videoOutputs["out"]) << lol2;
   return ;
 }

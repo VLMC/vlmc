@@ -53,6 +53,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
         connect( m_tracks[i], SIGNAL( allTracksRenderCompleted() ), this, SLOT( tracksRenderCompleted() ) );
     }
     m_outputBuffers = new OutputBuffers;
+    m_effectEngine = new EffectsEngine;
 }
 
 MainWorkflow::~MainWorkflow()
@@ -60,6 +61,7 @@ MainWorkflow::~MainWorkflow()
     //FIXME: this is probably useless, since already done by the renderer
     stop();
 
+    delete m_effectEngine;
     delete m_synchroneRenderWaitConditionMutex;
     delete m_synchroneRenderWaitCondition;
     delete m_renderMutex;
@@ -100,10 +102,10 @@ void    MainWorkflow::startRender()
     computeLength();
 }
 
-void                MainWorkflow::getOutput()
+void                    MainWorkflow::getOutput()
 {
-    QReadLocker     lock( m_renderStartedLock );
-    QMutexLocker    lock2( m_renderMutex );
+    QReadLocker         lock( m_renderStartedLock );
+    QMutexLocker        lock2( m_renderMutex );
 
     if ( m_renderStarted == true )
     {

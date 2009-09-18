@@ -34,6 +34,8 @@
 #include "TrackWorkflow.h"
 #include "TrackHandler.h"
 #include "Clip.h"
+#include "VideoFrame.h"
+#include "EffectsEngine.h"
 
 class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 {
@@ -138,6 +140,8 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         OutputBuffers*                  m_outputBuffers;
 
     friend class    Singleton<MainWorkflow>;
+
+        EffectsEngine*                  m_effectEngine;
 
     private slots:
         void                            tracksPaused();

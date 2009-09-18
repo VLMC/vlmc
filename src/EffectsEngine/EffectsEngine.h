@@ -30,7 +30,7 @@ class	EffectsEngine
   // INPUTS & OUTPUTS METHODS
 
 /*   void			setClock( Parameter currentframenumber ); */
-  void				setInputFrame( VideoFrame frame, quint32 tracknumber );
+  void				setInputFrame( VideoFrame& frame, quint32 tracknumber );
   VideoFrame const &		getOutputFrame( quint32 tracknumber ) const;
 
  private:
