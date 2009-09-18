@@ -21,8 +21,7 @@ void        WorkflowFileRenderer::run()
     m_media->addOption( ":fake" );
     sprintf(buffer, ":fake-fps=%i", FPS );
     m_media->addOption( buffer );
-    QString     transcodeStr = ":sout=#transcode{vcodec=mp4v,vb=800,acodec=mpga,ab=128" +
-                           QString::number( FPS ) + "}"
+    QString     transcodeStr = ":sout=#transcode{vcodec=mp4v,vb=800,acodec=mpga,ab=128,no-hurry-up}"
                                ":standard{access=file,mux=ps,dst=\""
                           + m_outputFileName + "\"}";
     m_media->addOption( transcodeStr.toStdString().c_str() );
