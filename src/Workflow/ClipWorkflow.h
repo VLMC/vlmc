@@ -31,12 +31,13 @@
 
 #include <QReadWriteLock>
 #include <QMutex>
-#include "WaitCondition.hpp"
 #include <QObject>
 #include <QQueue>
 
 #include "Clip.h"
+#include "WaitCondition.hpp"
 #include "VLCMediaPlayer.h"
+#include "LightVideoFrame.h"
 
 class   ClipWorkflow : public QObject
 {
