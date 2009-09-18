@@ -43,7 +43,7 @@ void	EffectsEngine::render( void )
 //   return ;
 // }
 
-void	EffectsEngine::setInputFrame( VideoFrame frame, quint32 tracknumber )
+void	EffectsEngine::setInputFrame( VideoFrame& frame, quint32 tracknumber )
 {
   m_videoInputs[tracknumber] = frame;
   return ;

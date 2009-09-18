@@ -33,6 +33,7 @@
 #include "TrackWorkflow.h"
 #include "Singleton.hpp"
 #include "VideoFrame.h"
+#include "EffectsEngine.h"
 
 class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 {
@@ -45,7 +46,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start );
         void                    startRender();
         void                    getOutput();
-        VideoFrame*             getSynchroneOutput();
+        const VideoFrame*       getSynchroneOutput();
 
         /**
          *  \brief              Set the workflow position
@@ -136,12 +137,12 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         QAtomicInt                      m_nbTracksToPause;
         QAtomicInt                      m_nbTracksToUnpause;
         QAtomicInt                      m_nbTracksToRender;
-        QMutex*                         m_highestTrackNumberMutex;
-        unsigned int                    m_highestTrackNumber;
-        VideoFrame*                     m_synchroneRenderingBuffer;
+        const VideoFrame*               m_synchroneRenderingBuffer;
         QWaitCondition*                 m_synchroneRenderWaitCondition;
         QMutex*                         m_synchroneRenderWaitConditionMutex;
         bool                            m_paused;
+
+        EffectsEngine*                  m_effectEngine;
 
     private slots:
         void                            trackEndReached( unsigned int trackId );

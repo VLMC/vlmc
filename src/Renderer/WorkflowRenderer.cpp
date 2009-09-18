@@ -82,9 +82,10 @@ void*   WorkflowRenderer::lock( void* datas )
 
     if ( self->m_stopping == false )
     {
-        VideoFrame* ret = self->m_mainWorkflow->getSynchroneOutput();
+        const VideoFrame* ret = self->m_mainWorkflow->getSynchroneOutput();
         self->m_lastFrame = ret;
     }
+    //A kitten just died here too :'(
     return self->m_lastFrame->rvf.raw;
 }
 

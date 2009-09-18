@@ -1,5 +1,6 @@
 #include "MixerEffect.h"
-#include <iostream>
+#include <QtDebug>
+
 char const *	MixerEffect::m_videoInputsNames[] =
   {
     "track0",
@@ -83,9 +84,20 @@ MixerEffect::~MixerEffect()
 void	MixerEffect::render( void )
 {
   LightVideoFrame	tmp;
+  QHash< QString, InSlot<LightVideoFrame> >::iterator   it = m_videoInputs.begin();
+  QHash< QString, InSlot<LightVideoFrame> >::iterator   end = m_videoInputs.end();
 
-  std::cout << "MixerEffect" << std::endl;
-  (m_videoInputs["track0"]) >> tmp;
-  (m_videoOutputs["out"]) << tmp;
+  qDebug() << "MixerEffect";
+
+  while ( it != end )
+  {
+      const VideoFrame&   lvf = static_cast<VideoFrame>( static_cast<LightVideoFrame>( ( it.value() ) ) );
+      if ( lvf.rvf.raw != NULL )
+      {
+          m_videoOutputs["out"] << it.value();
+      }
+      ++it;
+  }
+  qDebug() << "Endof MixerEffect";
   return ;
 }

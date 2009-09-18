@@ -51,18 +51,18 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     }
     m_renderStartedLock = new QReadWriteLock;
     m_renderMutex = new QMutex;
-    m_highestTrackNumberMutex = new QMutex;
     m_synchroneRenderWaitCondition = new QWaitCondition;
     m_synchroneRenderWaitConditionMutex = new QMutex;
+    m_effectEngine = new EffectsEngine;
 }
 
 MainWorkflow::~MainWorkflow()
 {
     stop();
 
+    delete m_effectEngine;
     delete m_synchroneRenderWaitConditionMutex;
     delete m_synchroneRenderWaitCondition;
-    delete m_highestTrackNumberMutex;
     delete m_renderMutex;
     delete m_renderStartedLock;
     for (unsigned int i = 0; i < m_trackCount; ++i)
@@ -112,15 +112,11 @@ void    MainWorkflow::startRender()
     computeLength();
 }
 
-void                MainWorkflow::getOutput()
+void                    MainWorkflow::getOutput()
 {
-    QReadLocker     lock( m_renderStartedLock );
-    QMutexLocker    lock2( m_renderMutex );
+    QReadLocker         lock( m_renderStartedLock );
+    QMutexLocker        lock2( m_renderMutex );
 
-    {
-        QMutexLocker    lockHighestTrackNumber( m_highestTrackNumberMutex );
-        m_highestTrackNumber = 0;
-    }
     m_nbTracksToRender = 0;
     m_synchroneRenderingBuffer = NULL;
     if ( m_renderStarted == true )
@@ -128,7 +124,10 @@ void                MainWorkflow::getOutput()
         for ( unsigned int i = 0; i < m_trackCount; ++i )
         {
             if ( m_tracks[i].activated() == false )
+            {
+                m_effectEngine->setInputFrame( *MainWorkflow::blackOutput, i );
                 continue ;
+            }
 
             m_nbTracksToRender.fetchAndAddAcquire( 1 );
             m_tracks[i]->getOutput( m_currentFrame );
@@ -320,14 +319,11 @@ void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
     m_nbTracksToRender.fetchAndAddAcquire( -1 );
 
     {
-        QMutexLocker    lock( m_highestTrackNumberMutex );
-
         VideoFrame*     buff = m_tracks[trackId]->getSynchroneOutput();
-        if ( m_highestTrackNumber <= trackId && buff != NULL )
-        {
-            m_highestTrackNumber = trackId;
-            m_synchroneRenderingBuffer = buff;;
-        }
+        if ( buff == NULL )
+            m_effectEngine->setInputFrame( *MainWorkflow::blackOutput, trackId );
+        else
+            m_effectEngine->setInputFrame( *buff, trackId );
     }
     //We check for minus or equal, since we can have 0 frame to compute,
     //therefore, m_nbTracksToRender will be equal to -1
@@ -337,11 +333,14 @@ void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
         {
             QMutexLocker    lock( m_synchroneRenderWaitConditionMutex );
         }
+        m_effectEngine->render();
+        //FIXME: This is uggly.... god probably just killed a kitten :(
+        m_synchroneRenderingBuffer = &( m_effectEngine->getOutputFrame( 0 ) );
         m_synchroneRenderWaitCondition->wakeAll();
     }
 }
 
-VideoFrame*  MainWorkflow::getSynchroneOutput()
+const VideoFrame*  MainWorkflow::getSynchroneOutput()
 {
     m_synchroneRenderWaitConditionMutex->lock();
     getOutput();
