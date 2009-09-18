@@ -172,6 +172,7 @@ INCLUDEPATH += src/LibVLCpp \
     src/Media \
     src/Project \
     src/Configuration \
+    src/EffectsEngine \
     src
 
 # QMAKE_CFLAGS+=-pg
