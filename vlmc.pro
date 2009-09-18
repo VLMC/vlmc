@@ -63,7 +63,13 @@ SOURCES += src/main.cpp \
     src/GUI/AudioProjectPreferences.cpp \
     src/GUI/VLMCPreferences.cpp \
     src/GUI/VideoProjectPreferences.cpp \
-    src/Project/ProjectManager.cpp
+    src/Project/ProjectManager.cpp \
+    src/EffectsEngine/EffectsEngine.cpp \
+    src/EffectsEngine/VideoFrame.cpp \
+    src/EffectsEngine/GenericEffect.cpp \
+    src/EffectsEngine/PouetEffect.cpp \
+    src/EffectsEngine/MixerEffect.cpp
+
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -119,7 +125,19 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/VLMCPreferences.h \
     src/GUI/AudioProjectPreferences.h \
     src/GUI/VideoProjectPreferences.h \
-    src/Project/ProjectManager.h
+    src/Project/ProjectManager.h \
+    src/EffectsEngine/EffectsEngine.h \
+    src/EffectsEngine/InSlot.hpp \
+    src/EffectsEngine/OutSlot.hpp \
+    src/EffectsEngine/VideoFrame.h \
+    src/EffectsEngine/Parameter.h \
+    src/EffectsEngine/CopyOnWrite.hpp \
+    src/EffectsEngine/LightVideoFrame.h \
+    src/EffectsEngine/LightParameter.h \
+    src/EffectsEngine/GenericEffect.h \
+    src/EffectsEngine/PouetEffect.h \
+    src/EffectsEngine/MixerEffect.h
+
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \
