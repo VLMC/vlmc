@@ -79,7 +79,7 @@ MainWindow::~MainWindow()
     if ( m_renderer )
         delete m_renderer;
     MetaDataManager::destroyInstance();
-    LibVLCpp::Instance::kill();
+    LibVLCpp::Instance::destroyInstance();
 }
 
 void MainWindow::changeEvent( QEvent *e )

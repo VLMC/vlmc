@@ -41,6 +41,7 @@ namespace LibVLCpp
             operator T*() { return m_internalPtr; }
         protected:
             Internal() : m_internalPtr( NULL ) {}
+            ~Internal(){}
 
             T*                  m_internalPtr;
     };
