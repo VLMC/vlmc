@@ -49,11 +49,13 @@ void        Library::removingMediaAsked( const QUuid& uuid )
     QHash<QUuid, Media*>::iterator   it = m_medias.find( uuid );
     if ( it == m_medias.end() )
         return ;
+    Media*  media = it.value();
     emit mediaRemoved( uuid );
     //TODO: this is obviously a memleak, but at the moment, the library depends on the clip to work,
     //and won't be abble to remove the ListViewMediaItem without it.
     //delete *it;
     m_medias.erase( it );
+    delete media;
 }
 
 void        Library::metaDataComputed( Media* media )

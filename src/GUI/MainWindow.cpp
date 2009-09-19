@@ -128,7 +128,7 @@ void        MainWindow::setupLibrary()
     connect( library,
              SIGNAL( mediaRemoved( const QUuid& ) ),
              libraryWidget,
-             SLOT( mediaRemoved( const QUuid& ) ) );
+             SLOT( mediaRemoved( const QUuid& ) ), Qt::DirectConnection );
 
     connect( libraryWidget->getVideoListWidget(), SIGNAL( selectedClipChanged( Clip* ) ),
               m_clipPreview->getGenericRenderer(), SLOT( setClip( Clip* ) ) );
