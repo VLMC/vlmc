@@ -18,6 +18,7 @@ void        WorkflowFileRenderer::run()
 
     //Media as already been created an mainly initialized by the WorkflowRenderer
     m_media->addOption( ":no-audio" );
+    m_media->addOption( "no-sout-audio" );
     m_media->addOption( ":fake" );
     sprintf(buffer, ":fake-fps=%i", FPS );
     m_media->addOption( buffer );
