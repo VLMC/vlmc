@@ -127,6 +127,7 @@ void    ClipWorkflow::setVmem()
     char        buffer[32];
 
     m_vlcMedia->addOption( ":no-audio" );
+    m_vlcMedia->addOption( ":no-sout-audio" );
     m_vlcMedia->addOption( ":sout=#transcode{}:smem" );
     m_vlcMedia->setDataCtx( this );
     m_vlcMedia->setLockCallback( reinterpret_cast<LibVLCpp::Media::lockCallback>( &ClipWorkflow::lock ) );
