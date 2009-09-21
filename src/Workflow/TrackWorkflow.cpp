@@ -144,9 +144,13 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
     }
     else if ( cw->getState() == ClipWorkflow::Stopped )
     {
+        qDebug() << "Unlocking state lock";
         cw->getStateLock()->unlock();
+        qDebug() << "Initializing";
         cw->initialize();
+        qDebug() << "Calling start render";
         cw->startRender( m_paused );
+        qDebug() << "Start render done !";
         if ( start != currentFrame ) //Clip was not started as its real begining
         {
             adjustClipTime( currentFrame, start, cw );

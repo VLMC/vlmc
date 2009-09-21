@@ -180,6 +180,7 @@ Clip*               Clip::split( qint64 endFrame )
 {
     Q_ASSERT( endFrame != m_end );
     Clip*   newClip = new Clip( this, endFrame, m_end );
+    qDebug() << "Created new clip. begin:" << newClip->m_begin << "end:" << newClip->m_end;
     m_end = endFrame;
     computeLength();
     return newClip;
