@@ -95,7 +95,6 @@ void    ClipWorkflow::pauseAfterPlaybackStarted()
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( pauseAfterPlaybackStarted() ) );
     connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( initializedMediaPlayer() ), Qt::DirectConnection );
 
-    qDebug() << "Media player position changed";
     m_mediaPlayer->pause();
 }
 
