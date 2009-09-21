@@ -153,6 +153,7 @@ qint64                          MediaPlayer::getTime()
 
 void                            MediaPlayer::setTime( qint64 time )
 {
+    qDebug() << "Setting time:" << time;
     libvlc_media_player_set_time( m_internalPtr, time, m_ex );
     CheckVlcppException( m_ex );
 }
