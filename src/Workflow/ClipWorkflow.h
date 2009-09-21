@@ -208,7 +208,7 @@ class   ClipWorkflow : public QObject
     private slots:
         void                    pauseAfterPlaybackStarted();
         void                    initializedMediaPlayer();
-        void                    setPositionAfterPlayback();
+//        void                    setPositionAfterPlayback();
         void                    pausedMediaPlayer();
         void                    unpausedMediaPlayer();
 

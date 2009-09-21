@@ -164,29 +164,27 @@ void    ClipWorkflow::initialize()
     m_mediaPlayer->setMedia( m_vlcMedia );
     qDebug() << "Associating media to media player";
 
-    connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPositionAfterPlayback() ), Qt::DirectConnection );
+    connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( pauseAfterPlaybackStarted() ), Qt::DirectConnection );
     connect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( clipEndReached() ), Qt::DirectConnection );
     qDebug() << "Starting playback";
     m_mediaPlayer->play();
 }
 
 //FIXME: this step is probably useless, due to modification in the TrackWorkflow
-void    ClipWorkflow::setPositionAfterPlayback()
-{
-    disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPositionAfterPlayback() ) );
-    connect( m_mediaPlayer, SIGNAL( timeChanged() ), this, SLOT( pauseAfterPlaybackStarted() ), Qt::DirectConnection );
-
-    m_mediaPlayer->setTime( m_clip->getBegin() );
-}
+//void    ClipWorkflow::setPositionAfterPlayback()
+//{
+//    disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPositionAfterPlayback() ) );
+//    connect( m_mediaPlayer, SIGNAL( timeChanged() ), this, SLOT( pauseAfterPlaybackStarted() ), Qt::DirectConnection );
+//
+//    m_mediaPlayer->setTime( m_clip->getBegin() );
+//}
 
 void    ClipWorkflow::pauseAfterPlaybackStarted()
 {
-    disconnect( m_mediaPlayer, SIGNAL( timeChanged() ), this, SLOT( pauseAfterPlaybackStarted() ) );
-    //FIXME: it seems that this signal is never connected :o
+//    disconnect( m_mediaPlayer, SIGNAL( timeChanged() ), this, SLOT( pauseAfterPlaybackStarted() ) );
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( pauseAfterPlaybackStarted() ) );
     connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( initializedMediaPlayer() ), Qt::DirectConnection );
 
-    qDebug() << "Media player position changed";
     m_mediaPlayer->pause();
 }
 
