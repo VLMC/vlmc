@@ -180,13 +180,13 @@ void TracksRuler::mouseMoveEvent( QMouseEvent* event )
     }
 }
 
-void TracksRuler::moveRuler( int pos )
+void        TracksRuler::moveRuler( int pos )
 {
     m_offset = pos;
     update();
 }
 
-QString TracksRuler::getTimeCode( int frames ) const
+QString     TracksRuler::getTimeCode( int frames ) const
 {
     int seconds = frames / m_fps;
     frames = frames % m_fps;
