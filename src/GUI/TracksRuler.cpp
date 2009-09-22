@@ -94,8 +94,13 @@ void TracksRuler::setDuration( int duration )
 {
     int oldDuration = m_duration;
     m_duration = duration;
-    update( ( int ) ( qMin( oldDuration, m_duration ) * m_factor - 1 - m_offset ), 0,
-            ( int ) ( qAbs( oldDuration - m_duration ) * m_factor + 2 ), height() );
+
+    //FIXME The optimized update() version cause wrong values to be shown in
+    //the ruler. I don't understand what's happening here.
+
+    /*update( ( int ) ( qMin( oldDuration, m_duration ) * m_factor - 1 - m_offset ), 0,
+            ( int ) ( qAbs( oldDuration - m_duration ) * m_factor + 2 ), height() );*/
+    update();
 }
 
 void TracksRuler::paintEvent( QPaintEvent* e )
