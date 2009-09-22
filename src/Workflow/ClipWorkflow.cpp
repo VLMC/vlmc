@@ -76,7 +76,7 @@ void    ClipWorkflow::checkStateChange()
     if ( m_requiredState != ClipWorkflow::None )
     {
         m_state = m_requiredState;
-        qDebug() << '[' << (void*)this << "] Applying required state change:" << m_state;
+//        qDebug() << '[' << (void*)this << "] Applying required state change:" << m_state;
         m_requiredState = ClipWorkflow::None;
         checkSynchronisation( m_state );
     }
@@ -112,7 +112,7 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw, void* buffer, int width, int hei
             cw->m_renderWaitCond->wake();
         }
         cw->emit renderComplete( cw );
-        qDebug() << "Emmiting render completed";
+//        qDebug() << "Emmiting render completed";
 
 //        qDebug() << "Entering cond wait";
         cw->m_waitCond->wait( cw->m_condMutex );
@@ -124,7 +124,7 @@ void    ClipWorkflow::unlock( ClipWorkflow* cw, void* buffer, int width, int hei
     }
     else
         cw->m_stateLock->unlock();
-    qDebug() << '[' << (void*)cw << "] ClipWorkflow::unlock";
+//    qDebug() << '[' << (void*)cw << "] ClipWorkflow::unlock";
     cw->checkStateChange();
 }
 
@@ -220,15 +220,15 @@ void    ClipWorkflow::startRender( bool startInPausedMode )
 {
     if ( isReady() == false )
     {
-        qDebug() << "Waiting for clipworkflow to be ready";
+//        qDebug() << "Waiting for clipworkflow to be ready";
         QMutexLocker    lock( m_initWaitCond->getMutex() );
         m_initWaitCond->waitLocked();
     }
-    qDebug() << "ClipWorkflow is ready";
+//    qDebug() << "ClipWorkflow is ready";
     if ( startInPausedMode == false )
     {
         m_mediaPlayer->play();
-        qDebug() << "Setting state: Rendering";
+//        qDebug() << "Setting state: Rendering";
         setState( Rendering );
     }
     else
@@ -255,7 +255,7 @@ void            ClipWorkflow::stop()
         m_mediaPlayer->stop();
         Pool<LibVLCpp::MediaPlayer>::getInstance()->release( m_mediaPlayer );
         disconnect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( clipEndReached() ) );
-        qDebug() << "Setting media player to NULL";
+//        qDebug() << "Setting media player to NULL";
         m_mediaPlayer = NULL;
         setState( Stopped );
         QMutexLocker    lock( m_requiredStateLock );
@@ -263,7 +263,7 @@ void            ClipWorkflow::stop()
         delete m_vlcMedia;
         m_initFlag = false;
         m_rendering = false;
-        qDebug() << "Clipworkflow stopped";
+//        qDebug() << "Clipworkflow stopped";
     }
     else
         qDebug() << "ClipWorkflow has already been stopped";
@@ -305,7 +305,7 @@ void            ClipWorkflow::setState( State state )
 {
     {
         QWriteLocker    lock( m_stateLock );
-        qDebug() << '[' << (void*)this << "] Setting state to" << state;
+//        qDebug() << '[' << (void*)this << "] Setting state to" << state;
         m_state = state;
     }
     checkSynchronisation( state );
