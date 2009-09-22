@@ -463,9 +463,17 @@ void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
     QRectF r = rect;
     r.setWidth( r.width() + 1 );
 
-    m_separator->setVisible( false );
     painter->setWorldMatrixEnabled( false );
-    painter->setBrush( QBrush( palette().dark().color(), Qt::Dense3Pattern ) );
+
+    QLinearGradient g( 0, m_separator->y(), 0, m_separator->y() + m_separator->boundingRect().height() );
+    QColor base = palette().window().color();
+    QColor end = palette().dark().color();
+    g.setColorAt( 0, end );
+    g.setColorAt( 0.1, base );
+    g.setColorAt( 0.9, base );
+    g.setColorAt( 1.0, end );
+
+    painter->setBrush( QBrush( g ) );
     painter->setPen( Qt::transparent );
     painter->drawRect( 0,
                        (int) m_separator->y(),
