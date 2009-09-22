@@ -255,7 +255,6 @@ void            ClipWorkflow::stop()
         m_mediaPlayer->stop();
         disconnect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( clipEndReached() ) );
         Pool<LibVLCpp::MediaPlayer>::getInstance()->release( m_mediaPlayer );
-
 //        qDebug() << "Setting media player to NULL";
         m_mediaPlayer = NULL;
         setState( Stopped );
