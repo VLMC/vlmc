@@ -313,11 +313,12 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
         qint64          start = it.key();
         ClipWorkflow*   cw = it.value();
         //Is the clip supposed to render now ?
+//        qDebug() << "Start:" << start << "Current Frame:" << currentFrame;
         if ( start <= currentFrame && currentFrame <= start + cw->getClip()->getLength() )
         {
+            qDebug() << "Adding a clip to render";
             m_nbClipToRender.fetchAndAddAcquire( 1 );
             renderClip( cw, currentFrame, start, needRepositioning );
-            lastFrame = currentFrame;
             hasRendered = true;
         }
         //Is it about to be rendered ?
@@ -338,6 +339,7 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
     {
         clipWorkflowRenderCompleted( NULL );
     }
+    lastFrame = currentFrame;
     return hasRendered;
 }
 
