@@ -34,12 +34,14 @@ class       Pool : public Singleton< Pool<T> >
 public:
     T*      get()
     {
+        QMutexLocker    lock( m_mutex );
         if ( m_pool.size() == 0 )
             return new T;
         return m_pool.dequeue();
     }
     void    release( T* toRelease )
     {
+        QMutexLocker    lock( m_mutex );
         m_pool.enqueue( toRelease );
     }
 private:
@@ -54,6 +56,7 @@ private:
             T*  ptr = m_pool.dequeue();
             delete ptr;
         }
+        delete m_mutex;
     }
     QQueue<T*>  m_pool;
     QMutex*     m_mutex;
