@@ -57,6 +57,7 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
     setAcceptDrops( true );
     setContentsMargins( 0, 0, 0, 0 );
     setFrameStyle( QFrame::NoFrame );
+    setAlignment( Qt::AlignLeft | Qt::AlignTop );
 
     m_cursorLine = new GraphicsCursorItem( QPen( QColor( 220, 30, 30 ) ) );
 
@@ -103,7 +104,6 @@ void TracksView::addVideoTrack()
     track->setHeight( m_tracksHeight );
     m_layout->insertItem( 0, track );
     m_layout->activate();
-    setSceneRect( m_layout->contentsRect().adjusted( 0, 0, 100, 100 ) );
     m_cursorLine->setHeight( m_layout->contentsRect().height() );
     m_scene->invalidate(); // Redraw the background
     m_numVideoTrack++;
@@ -115,7 +115,6 @@ void TracksView::addAudioTrack()
     track->setHeight( m_tracksHeight );
     m_layout->insertItem( 1000, track );
     m_layout->activate();
-    setSceneRect( m_layout->contentsRect().adjusted( 0, 0, 100, 100 ) );
     m_cursorLine->setHeight( m_layout->contentsRect().height() );
     m_scene->invalidate(); // Redraw the background
     m_numAudioTrack++;
@@ -660,6 +659,8 @@ void TracksView::updateDuration()
     // PreferredWidth not working ?
     m_layout->setMinimumWidth( m_projectDuration );
     m_layout->setMaximumWidth( m_projectDuration );
+
+    setSceneRect( m_layout->contentsRect() );
 
     emit durationChanged( m_projectDuration );
 }
