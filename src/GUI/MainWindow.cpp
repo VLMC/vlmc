@@ -30,6 +30,7 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QSettings>
 
 #include "MainWindow.h"
 #include "MediaListWidget.h"
@@ -72,10 +73,23 @@ MainWindow::MainWindow( QWidget *parent ) :
              this, SLOT( zoomOut() ) );
     connect( this, SIGNAL( toolChanged( ToolButtons ) ),
              m_timeline, SLOT( setTool( ToolButtons ) ) );
+
+    QSettings s;
+    // Restore the geometry
+    restoreGeometry( s.value( "MainWindowGeometry" ).toByteArray() );
+    // Restore the layout
+    restoreState( s.value( "MainWindowState" ).toByteArray() );
 }
 
 MainWindow::~MainWindow()
 {
+    QSettings s;
+    // Save the current geometry
+    s.setValue( "MainWindowGeometry", saveGeometry() );
+    // Save the current layout
+    s.setValue( "MainWindowState", saveState() );
+    s.sync();
+
     if ( m_renderer )
         delete m_renderer;
     MetaDataManager::destroyInstance();
