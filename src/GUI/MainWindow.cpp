@@ -359,22 +359,22 @@ void MainWindow::on_actionNew_Project_triggered()
     m_projectPreferences->exec();
 }
 
-void MainWindow::on_actionHelp_triggered()
+void    MainWindow::on_actionHelp_triggered()
 {
     QDesktopServices::openUrl( QUrl( "http://vlmc.org" ) );
 }
 
-void MainWindow::zoomIn()
+void    MainWindow::zoomIn()
 {
     m_zoomSlider->setValue( m_zoomSlider->value() - 1 );
 }
 
-void MainWindow::zoomOut()
+void    MainWindow::zoomOut()
 {
     m_zoomSlider->setValue( m_zoomSlider->value() + 1 );
 }
 
-void MainWindow::on_actionFullscreen_triggered( bool checked )
+void    MainWindow::on_actionFullscreen_triggered( bool checked )
 {
     if ( checked )
         showFullScreen();
@@ -382,7 +382,7 @@ void MainWindow::on_actionFullscreen_triggered( bool checked )
         showNormal();
 }
 
-void MainWindow::registerWidgetInWindowMenu( QDockWidget* widget )
+void    MainWindow::registerWidgetInWindowMenu( QDockWidget* widget )
 {
     m_ui.menuWindow->addAction( widget->toggleViewAction() );
 }
@@ -394,7 +394,7 @@ void    MainWindow::mediaListItemDoubleClicked( QListWidgetItem* qItem )
     mp->show();
 }
 
-void MainWindow::toolButtonClicked( int id )
+void    MainWindow::toolButtonClicked( int id )
 {
     emit toolChanged( (ToolButtons)id );
 }
