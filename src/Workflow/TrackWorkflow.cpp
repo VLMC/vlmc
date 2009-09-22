@@ -322,6 +322,7 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
 //        qDebug() << "Start:" << start << "Current Frame:" << currentFrame;
         if ( start <= currentFrame && currentFrame <= start + cw->getClip()->getLength() )
         {
+            qDebug() << "Adding a clip to render";
             m_nbClipToRender.fetchAndAddAcquire( 1 );
             renderClip( cw, currentFrame, start, needRepositioning );
             hasRendered = true;

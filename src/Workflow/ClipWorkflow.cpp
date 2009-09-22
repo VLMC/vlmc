@@ -73,20 +73,17 @@ void    ClipWorkflow::checkStateChange()
 
 void    ClipWorkflow::initialize( bool preloading /*= false*/ )
 {
-    qDebug() << "Setting state to initializing";
     setState( Initializing );
     m_vlcMedia = new LibVLCpp::Media( "file://" + m_clip->getParent()->getFileInfo()->absoluteFilePath() );
     initVlcOutput();
     m_mediaPlayer = Pool<LibVLCpp::MediaPlayer>::getInstance()->get();
     m_mediaPlayer->setMedia( m_vlcMedia );
-    qDebug() << "Associating media to media player";
 
     if ( preloading == true )
         connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( pauseAfterPlaybackStarted() ), Qt::DirectConnection );
     else
         connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( loadingComplete() ), Qt::DirectConnection );
     connect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( clipEndReached() ), Qt::DirectConnection );
-    qDebug() << "Starting playback";
     m_mediaPlayer->play();
 }
 
@@ -113,7 +110,6 @@ void    ClipWorkflow::initializedMediaPlayer()
 bool    ClipWorkflow::isReady() const
 {
     QReadLocker lock( m_stateLock );
-    qDebug() << "State when calling isReady:" << m_state;
     return m_state == ClipWorkflow::Ready;
 }
 
@@ -136,18 +132,15 @@ ClipWorkflow::State     ClipWorkflow::getState() const
 
 void    ClipWorkflow::startRender( bool startInPausedMode )
 {
-    qDebug() << "Start in paused mode?:" << startInPausedMode;
     if ( isReady() == false )
     {
 //        qDebug() << "Waiting for clipworkflow to be ready";
         QMutexLocker    lock( m_initWaitCond->getMutex() );
-        qDebug() << "Waiting for init clipworkflow";
         m_initWaitCond->waitLocked();
     }
 //    qDebug() << "ClipWorkflow is ready";
     if ( startInPausedMode == false )
     {
-        qDebug() << "Starting playback again";
         m_mediaPlayer->play();
 //        qDebug() << "Setting state: Rendering";
         setState( Rendering );
