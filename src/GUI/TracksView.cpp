@@ -373,6 +373,7 @@ void TracksView::removeMediaItem( AbstractGraphicsMediaItem* item )
 
 void TracksView::removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items )
 {
+    bool needUpdate = false;
     for ( int i = 0; i < items.size(); ++i )
     {
         GraphicsMovieItem* movieItem = qgraphicsitem_cast<GraphicsMovieItem*>( items.at( i ) );
@@ -384,7 +385,10 @@ void TracksView::removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items
         }
 
         delete movieItem;
+        needUpdate = true;
     }
+
+    if ( needUpdate ) updateDuration();
 }
 
 void TracksView::dragLeaveEvent( QDragLeaveEvent* event )
