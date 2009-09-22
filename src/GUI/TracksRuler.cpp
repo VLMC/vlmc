@@ -95,6 +95,7 @@ void TracksRuler::setDuration( int duration )
     int oldDuration = m_duration;
     m_duration = duration;
 
+    Q_UNUSED( oldDuration );
     //FIXME The optimized update() version cause wrong values to be shown in
     //the ruler. I don't understand what's happening here.
 
