@@ -151,11 +151,11 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
     }
     else if ( cw->getState() == ClipWorkflow::Stopped )
     {
-        qDebug() << "Unlocking state lock";
+//        qDebug() << "Unlocking state lock";
         cw->getStateLock()->unlock();
-        qDebug() << "Initializing";
+//        qDebug() << "Initializing";
         cw->initialize();
-        qDebug() << "Calling start render";
+//        qDebug() << "Calling start render";
         cw->startRender( m_paused );
         if ( start != currentFrame || cw->getClip()->getBegin() != 0 ) //Clip was not started as its real begining
         {
@@ -322,7 +322,6 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
 //        qDebug() << "Start:" << start << "Current Frame:" << currentFrame;
         if ( start <= currentFrame && currentFrame <= start + cw->getClip()->getLength() )
         {
-            qDebug() << "Adding a clip to render";
             m_nbClipToRender.fetchAndAddAcquire( 1 );
             renderClip( cw, currentFrame, start, needRepositioning );
             hasRendered = true;
