@@ -85,15 +85,15 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
     switch ( event->type )
     {
     case libvlc_MediaPlayerPlaying:
-        qDebug() << "Media player playing";
+//        qDebug() << "Media player playing";
         self->emit playing();
         break;
     case libvlc_MediaPlayerPaused:
-        qDebug() << "Media player paused";
+//        qDebug() << "Media player paused";
         self->emit paused();
         break;
     case libvlc_MediaPlayerStopped:
-        qDebug() << "Media player stopped";
+//        qDebug() << "Media player stopped";
         self->emit stopped();
         break;
     case libvlc_MediaPlayerEndReached:
@@ -153,7 +153,6 @@ qint64                          MediaPlayer::getTime()
 
 void                            MediaPlayer::setTime( qint64 time )
 {
-    qDebug() << "Setting time:" << time;
     libvlc_media_player_set_time( m_internalPtr, time, m_ex );
     CheckVlcppException( m_ex );
 }

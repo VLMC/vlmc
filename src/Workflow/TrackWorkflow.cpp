@@ -117,7 +117,7 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
 {
     cw->getStateLock()->lockForRead();
 
-    qDebug() << "Rendering clip" << cw << "state:" << cw->getState();
+//    qDebug() << "Rendering clip" << cw << "state:" << cw->getState();
     if ( cw->getState() == ClipWorkflow::Rendering )
     {
         //The rendering state meens... whell it means that the frame is
@@ -144,13 +144,13 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
     }
     else if ( cw->getState() == ClipWorkflow::Stopped )
     {
-        qDebug() << "Unlocking state lock";
+//        qDebug() << "Unlocking state lock";
         cw->getStateLock()->unlock();
-        qDebug() << "Initializing";
+//        qDebug() << "Initializing";
         cw->initialize();
-        qDebug() << "Calling start render";
+//        qDebug() << "Calling start render";
         cw->startRender( m_paused );
-        qDebug() << "Start render done !";
+//        qDebug() << "Start render done !";
         if ( start != currentFrame ) //Clip was not started as its real begining
         {
             adjustClipTime( currentFrame, start, cw );
@@ -316,7 +316,6 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
 //        qDebug() << "Start:" << start << "Current Frame:" << currentFrame;
         if ( start <= currentFrame && currentFrame <= start + cw->getClip()->getLength() )
         {
-            qDebug() << "Adding a clip to render";
             m_nbClipToRender.fetchAndAddAcquire( 1 );
             renderClip( cw, currentFrame, start, needRepositioning );
             hasRendered = true;
