@@ -199,6 +199,9 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
     Clip* clip = Library::getInstance()->getClip( uuid );
     if ( !clip ) return;
 
+    //FIXME: this leaks, but at least we have independant clips.
+    clip = new Clip( clip );
+
     if ( m_dragItem ) delete m_dragItem;
     m_dragItem = new GraphicsMovieItem( clip );
     m_dragItem->setHeight( tracksHeight() );
