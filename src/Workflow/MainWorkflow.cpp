@@ -381,3 +381,4 @@ int         MainWorkflow::getTrackCount( TrackWorkflow::TrackType trackType ) co
 {
     return m_tracks[trackType]->getTrackCount();
 }
+
