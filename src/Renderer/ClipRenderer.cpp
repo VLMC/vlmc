@@ -208,3 +208,4 @@ void        ClipRenderer::__endReached()
     m_isRendering = false;
     emit endReached();
 }
+
