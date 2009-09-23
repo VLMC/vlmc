@@ -122,13 +122,6 @@ void        WorkflowRenderer::checkActions()
     }
 }
 
-void        WorkflowRenderer::stopPreview()
-{
-    disconnect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
-             Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( setCursorPos( qint64 ) ) );
-    stop();
-}
-
 void        WorkflowRenderer::startPreview()
 {
     if ( m_mainWorkflow->getLength() <= 0 )
@@ -259,7 +252,7 @@ void        WorkflowRenderer::stop()
 
 void        WorkflowRenderer::__endReached()
 {
-    stopPreview();
+    stop();
     emit endReached();
 }
 

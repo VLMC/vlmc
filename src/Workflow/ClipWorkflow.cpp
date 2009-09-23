@@ -138,6 +138,7 @@ void    ClipWorkflow::setVmem()
     m_vlcMedia->setUnlockCallback( reinterpret_cast<LibVLCpp::Media::unlockCallback>( &ClipWorkflow::unlock ) );
     m_vlcMedia->addOption( ":sout-transcode-vcodec=RV24" );
     m_vlcMedia->addOption( ":sout-transcode-acodec=s16l" );
+//    m_vlcMedia->addOption( ":no-sout-keep" );
 
     if ( m_fullSpeedRender == true )
         m_vlcMedia->addOption( ":sout-sync" );
@@ -251,8 +252,9 @@ void            ClipWorkflow::stop()
     if ( m_mediaPlayer )
     {
         m_mediaPlayer->stop();
-        Pool<LibVLCpp::MediaPlayer>::getInstance()->release( m_mediaPlayer );
         disconnect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( clipEndReached() ) );
+        Pool<LibVLCpp::MediaPlayer>::getInstance()->release( m_mediaPlayer );
+
 //        qDebug() << "Setting media player to NULL";
         m_mediaPlayer = NULL;
         setState( Stopped );
