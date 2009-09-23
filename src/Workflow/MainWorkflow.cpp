@@ -54,6 +54,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     }
     m_outputBuffers = new OutputBuffers;
     m_effectEngine = new EffectsEngine;
+    m_nbTracksToRenderMutex = new QMutex;
 }
 
 MainWorkflow::~MainWorkflow()
@@ -62,6 +63,7 @@ MainWorkflow::~MainWorkflow()
     stop();
 
     delete m_effectEngine;
+    delete m_nbTracksToRenderMutex;
     delete m_synchroneRenderWaitConditionMutex;
     delete m_synchroneRenderWaitCondition;
     delete m_renderMutex;
