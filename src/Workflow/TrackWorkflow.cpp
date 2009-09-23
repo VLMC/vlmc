@@ -117,7 +117,7 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
 {
     cw->getStateLock()->lockForRead();
 
-//    qDebug() << "Rendering clip" << cw << "state:" << cw->getState();
+    qDebug() << "Rendering clip" << cw << "state:" << cw->getState();
     if ( cw->getState() == ClipWorkflow::Rendering )
     {
         //The rendering state meens... whell it means that the frame is
@@ -423,6 +423,28 @@ Clip*       TrackWorkflow::removeClip( const QUuid& id )
             computeLength();
             delete cw;
             return clip;
+        }
+        ++it;
+    }
+    return NULL;
+}
+
+ClipWorkflow*       TrackWorkflow::removeClipWorkflow( const QUuid& id )
+{
+    QWriteLocker    lock( m_clipsLock );
+
+    QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
+
+    while ( it != end )
+    {
+        if ( it.value()->getClip()->getUuid() == id )
+        {
+            ClipWorkflow*   cw = it.value();
+            m_clips.erase( it );
+            computeLength();
+            return cw;
+
         }
         ++it;
     }

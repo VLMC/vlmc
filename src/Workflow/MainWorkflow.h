@@ -136,8 +136,11 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         QMutex*                         m_renderMutex;
         QAtomicInt                      m_nbTracksToPause;
         QAtomicInt                      m_nbTracksToUnpause;
-        QAtomicInt                      m_nbTracksToRender;
         const VideoFrame*               m_synchroneRenderingBuffer;
+        unsigned int                    m_nbTracksToRender;
+        QMutex*                         m_nbTracksToRenderMutex;
+        QMutex*                         m_highestTrackNumberMutex;
+        unsigned int                    m_highestTrackNumber;
         QWaitCondition*                 m_synchroneRenderWaitCondition;
         QMutex*                         m_synchroneRenderWaitConditionMutex;
         bool                            m_paused;

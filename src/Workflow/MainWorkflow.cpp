@@ -54,6 +54,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     m_synchroneRenderWaitCondition = new QWaitCondition;
     m_synchroneRenderWaitConditionMutex = new QMutex;
     m_effectEngine = new EffectsEngine;
+    m_nbTracksToRenderMutex = new QMutex;
 }
 
 MainWorkflow::~MainWorkflow()
@@ -61,6 +62,7 @@ MainWorkflow::~MainWorkflow()
     stop();
 
     delete m_effectEngine;
+    delete m_nbTracksToRenderMutex;
     delete m_synchroneRenderWaitConditionMutex;
     delete m_synchroneRenderWaitCondition;
     delete m_renderMutex;
@@ -121,6 +123,7 @@ void                    MainWorkflow::getOutput()
     m_synchroneRenderingBuffer = NULL;
     if ( m_renderStarted == true )
     {
+        QMutexLocker    lockNbTracks( m_nbTracksToRenderMutex );
         for ( unsigned int i = 0; i < m_trackCount; ++i )
         {
             if ( m_tracks[i].activated() == false )
@@ -129,7 +132,7 @@ void                    MainWorkflow::getOutput()
                 continue ;
             }
 
-            m_nbTracksToRender.fetchAndAddAcquire( 1 );
+            ++m_nbTracksToRender;
             m_tracks[i]->getOutput( m_currentFrame );
         }
         if ( m_paused == false )
@@ -271,8 +274,8 @@ void           MainWorkflow::moveClip( const QUuid& clipUuid, unsigned int oldTr
     }
     else
     {
-        Clip* clip = m_tracks[oldTrack]->removeClip( clipUuid );
-        m_tracks[newTrack]->addClip( clip, startingFrame );
+        ClipWorkflow* cw = m_tracks[oldTrack]->removeClipWorkflow( clipUuid );
+        m_tracks[newTrack]->addClip( cw, startingFrame );
         activateTrack( oldTrack );
         activateTrack( newTrack );
     }
@@ -316,7 +319,8 @@ void        MainWorkflow::trackUnpaused()
 
 void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
 {
-    m_nbTracksToRender.fetchAndAddAcquire( -1 );
+    QMutexLocker    lockNbTracks( m_nbTracksToRenderMutex );
+    --m_nbTracksToRender;
 
     {
         VideoFrame*     buff = m_tracks[trackId]->getSynchroneOutput();
