@@ -65,7 +65,7 @@ void    ClipWorkflow::checkStateChange()
     if ( m_requiredState != ClipWorkflow::None )
     {
         m_state = m_requiredState;
-        qDebug() << '[' << (void*)this << "] Applying required state change:" << m_state;
+//        qDebug() << '[' << (void*)this << "] Applying required state change:" << m_state;
         m_requiredState = ClipWorkflow::None;
         checkSynchronisation( m_state );
     }
@@ -219,7 +219,7 @@ void            ClipWorkflow::setState( State state )
 {
     {
         QWriteLocker    lock( m_stateLock );
-        qDebug() << '[' << (void*)this << "] Setting state to" << state;
+//        qDebug() << '[' << (void*)this << "] Setting state to" << state;
         m_state = state;
     }
     checkSynchronisation( state );

@@ -207,9 +207,9 @@ MainWorkflow::OutputBuffers*  MainWorkflow::getSynchroneOutput()
 {
     m_synchroneRenderWaitConditionMutex->lock();
     getOutput();
-    qDebug() << "Waiting for sync output";
+//    qDebug() << "Waiting for sync output";
     m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
-    qDebug() << "Got it";
+//    qDebug() << "Got it";
     m_synchroneRenderWaitConditionMutex->unlock();
     m_outputBuffers->video = m_tracks[TrackWorkflow::Video]->getSynchroneOutput();
     m_outputBuffers->audio = m_tracks[TrackWorkflow::Audio]->getSynchroneOutput();
@@ -381,4 +381,3 @@ int         MainWorkflow::getTrackCount( TrackWorkflow::TrackType trackType ) co
 {
     return m_tracks[trackType]->getTrackCount();
 }
-
