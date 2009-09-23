@@ -136,9 +136,7 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
         cw->getStateLock()->unlock();
 
         if ( needRepositioning == true )
-        {
             adjustClipTime( currentFrame, start, cw );
-        }
         QMutexLocker    lock( cw->getSleepMutex() );
         cw->wake();
     }
@@ -615,4 +613,10 @@ void    TrackWorkflow::disconnectClipWorkflow( ClipWorkflow* cw )
     disconnect( cw, SIGNAL( renderComplete( ClipWorkflow* ) ), this, SLOT( clipWorkflowRenderCompleted( ClipWorkflow* ) ) );
     disconnect( cw, SIGNAL( paused() ), this, SLOT( clipWorkflowPaused() ) );
     disconnect( cw, SIGNAL( unpaused() ), this, SLOT( clipWorkflowUnpaused() ) );
+}
+
+void    TrackWorkflow::forceRepositionning()
+{
+    QMutexLocker    lock( m_forceRepositionningMutex );
+    m_forceRepositionning = true;
 }
