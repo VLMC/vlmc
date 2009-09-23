@@ -117,7 +117,7 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
 {
     cw->getStateLock()->lockForRead();
 
-    qDebug() << "Rendering clip" << cw << "state:" << cw->getState();
+//    qDebug() << "Rendering clip" << cw << "state:" << cw->getState();
     if ( cw->getState() == ClipWorkflow::Rendering )
     {
         //The rendering state meens... whell it means that the frame is
@@ -453,7 +453,7 @@ ClipWorkflow*       TrackWorkflow::removeClipWorkflow( const QUuid& id )
 
 void        TrackWorkflow::clipWorkflowRenderCompleted( ClipWorkflow* cw )
 {
-    qDebug() << "Clip [" << QObject::sender() << "] render is completed on track" << m_trackId;
+//    qDebug() << "Clip [" << QObject::sender() << "] render is completed on track" << m_trackId;
     if ( cw != NULL )
     {
         m_synchroneRenderBuffer = cw->getOutput();
@@ -467,11 +467,11 @@ void        TrackWorkflow::clipWorkflowRenderCompleted( ClipWorkflow* cw )
     //or equal to 0
     if ( m_nbClipToRender <= 0 )
     {
-        qDebug() << "Track render completed";
+//        qDebug() << "Track render completed";
         emit renderCompleted( m_trackId );
     }
-    else
-        qDebug() << "Track render not completed yet";
+//    else
+//s        qDebug() << "Track render not completed yet";
 }
 
 VideoFrame*     TrackWorkflow::getSynchroneOutput()

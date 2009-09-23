@@ -325,7 +325,7 @@ void        MainWorkflow::trackUnpaused()
 
 void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
 {
-    qDebug() << "tracksRenderCompleted";
+//    qDebug() << "tracksRenderCompleted";
     QMutexLocker    lockNbTracks( m_nbTracksToRenderMutex );
     --m_nbTracksToRender;
 
@@ -340,7 +340,7 @@ void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
     //therefore, m_nbTracksToRender will be equal to -1
     if ( m_nbTracksToRender <= 0 )
     {
-        qDebug() << "main workflow render completed";
+//        qDebug() << "main workflow render completed";
         //Just a synchronisation barriere
         {
             QMutexLocker    lock( m_synchroneRenderWaitConditionMutex );
@@ -356,9 +356,9 @@ const VideoFrame*  MainWorkflow::getSynchroneOutput()
 {
     m_synchroneRenderWaitConditionMutex->lock();
     getOutput();
-    qDebug() << "Waiting for sync output";
+//    qDebug() << "Waiting for sync output";
     m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
-    qDebug() << "Got it";
+//    qDebug() << "Got it";
     m_synchroneRenderWaitConditionMutex->unlock();
     if ( m_synchroneRenderingBuffer == NULL )
         return MainWorkflow::blackOutput;
