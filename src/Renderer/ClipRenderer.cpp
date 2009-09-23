@@ -65,7 +65,7 @@ void        ClipRenderer::startPreview()
     m_mediaPlayer->setMedia( m_vlcMedia );
 
     m_mediaPlayer->play();
-    m_mediaPlayer->setPosition( m_selectedClip->getBegin() );
+    m_mediaPlayer->setPosition( m_selectedClip->getBegin() / m_selectedClip->getLength() );
     m_clipLoaded = true;
     m_isRendering = true;
     m_paused = false;
@@ -76,7 +76,9 @@ void        ClipRenderer::setPosition( float newPos )
 {
     if ( m_clipLoaded == false || m_isRendering == false )
         return ;
-    float   pos = newPos * ( m_selectedClip->getEnd() - m_selectedClip->getBegin() ) + m_selectedClip->getBegin();
+    float   begin = m_selectedClip->getBegin() / m_selectedClip->getLength();
+    float   end = m_selectedClip->getEnd() / m_selectedClip->getEnd();
+    float   pos = newPos * ( end - begin ) + begin;
     m_mediaPlayer->setPosition( pos );
 }
 
@@ -113,7 +115,7 @@ void        ClipRenderer::togglePlayPause( bool forcePause )
         if ( m_isRendering == false )
         {
             m_mediaPlayer->play();
-            m_mediaPlayer->setPosition( m_selectedClip->getBegin() );
+            m_mediaPlayer->setPosition( m_selectedClip->getBegin() / m_selectedClip->getLength() );
             m_isRendering = true;
         }
         else
@@ -126,8 +128,7 @@ void        ClipRenderer::nextFrame()
 {
     if ( m_isRendering == true && m_paused == true )
     {
-        qint64   interval =  static_cast<qint64>( (1.0f / m_mediaPlayer->getFps()) * 1000.0f );
-        m_mediaPlayer->setTime( m_mediaPlayer->getTime() + interval );
+        m_mediaPlayer->nextFrame();
     }
 }
 
@@ -174,8 +175,11 @@ void        ClipRenderer::__positionChanged()
 {
     if ( m_clipLoaded == false)
         return ;
-    float pos = ( m_mediaPlayer->getPosition() - m_selectedClip->getBegin() ) /
-                ( m_selectedClip->getEnd() - m_selectedClip->getBegin() );
+    
+    float   begin = m_selectedClip->getBegin() / m_selectedClip->getLength();
+    float   end = m_selectedClip->getEnd() / m_selectedClip->getEnd();
+    float pos = ( m_mediaPlayer->getPosition() - begin ) /
+                ( end - begin );
     emit positionChanged( pos );
 }
 

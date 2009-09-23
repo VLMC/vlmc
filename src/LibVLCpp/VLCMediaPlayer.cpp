@@ -246,3 +246,9 @@ float                               MediaPlayer::getFps()
     CheckVlcppException( m_ex );
     return fps;
 }
+
+void                                MediaPlayer::nextFrame()
+{
+    libvlc_media_player_next_frame( m_internalPtr, m_ex );
+    CheckVlcppException( m_ex );
+}

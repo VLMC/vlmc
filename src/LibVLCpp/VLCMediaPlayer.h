@@ -58,6 +58,7 @@ namespace   LibVLCpp
         int                                 getWidth();
         int                                 getHeight();
         float                               getFps();
+        void                                nextFrame();
 
     private:
         static void                         callbacks( const libvlc_event_t* event, void* self );
