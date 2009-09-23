@@ -45,11 +45,8 @@ class   WorkflowRenderer : public GenericRenderer
         WorkflowRenderer();
         ~WorkflowRenderer();
 
-        void                stopPreview();
-
         /**
             \brief          Set the preview position
-
             \param          newPos : The new position in vlc position (between
                                         0 and 1)
         */

@@ -196,7 +196,6 @@ void        MainWorkflow::setPosition( float pos )
     qint64  frame = static_cast<qint64>( (float)m_length * pos );
     m_currentFrame = frame;
     emit frameChanged( frame );
-//    cancelSynchronisation();
     //Do not emit a signal for the RenderWidget, since it's the one that triggered that call...
 }
 

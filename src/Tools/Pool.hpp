@@ -47,7 +47,7 @@ public:
     {
         QMutexLocker    lock( m_mutex );
         toRelease->~T();
-        m_pool.enqueue( toRelease );
+        m_pool.enqueue( reinterpret_cast<uint8_t*>( toRelease ) );
     }
 private:
     Pool()
@@ -60,7 +60,7 @@ private:
     {
         while ( m_pool.size() != 0 )
         {
-            T*  ptr = m_pool.dequeue();
+            uint8_t*  ptr = m_pool.dequeue();
             delete ptr;
         }
         delete m_mutex;
