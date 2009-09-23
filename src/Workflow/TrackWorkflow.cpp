@@ -421,6 +421,7 @@ Clip*       TrackWorkflow::removeClip( const QUuid& id )
             Clip*           clip = cw->getClip();
             m_clips.erase( it );
             computeLength();
+            disconnectClipWorkflow( cw );
             delete cw;
             return clip;
         }
@@ -441,6 +442,7 @@ ClipWorkflow*       TrackWorkflow::removeClipWorkflow( const QUuid& id )
         if ( it.value()->getClip()->getUuid() == id )
         {
             ClipWorkflow*   cw = it.value();
+            disconnectClipWorkflow( cw );
             m_clips.erase( it );
             computeLength();
             return cw;
@@ -453,6 +455,7 @@ ClipWorkflow*       TrackWorkflow::removeClipWorkflow( const QUuid& id )
 
 void        TrackWorkflow::clipWorkflowRenderCompleted( ClipWorkflow* cw )
 {
+    qDebug() << "Clip [" << QObject::sender() << "] render is completed on track" << m_trackId;
     if ( cw != NULL )
     {
         m_synchroneRenderBuffer = cw->getOutput();
@@ -466,8 +469,11 @@ void        TrackWorkflow::clipWorkflowRenderCompleted( ClipWorkflow* cw )
     //or equal to 0
     if ( m_nbClipToRender <= 0 )
     {
+        qDebug() << "Track render completed";
         emit renderCompleted( m_trackId );
     }
+    else
+        qDebug() << "Track render not completed yet";
 }
 
 unsigned char*  TrackWorkflow::getSynchroneOutput()
@@ -602,4 +608,11 @@ void        TrackWorkflow::setFullSpeedRender( bool value )
         it.value()->setFullSpeedRender( value );
         ++it;
     }
+}
+
+void    TrackWorkflow::disconnectClipWorkflow( ClipWorkflow* cw )
+{
+    disconnect( cw, SIGNAL( renderComplete( ClipWorkflow* ) ), this, SLOT( clipWorkflowRenderCompleted( ClipWorkflow* ) ) );
+    disconnect( cw, SIGNAL( paused() ), this, SLOT( clipWorkflowPaused() ) );
+    disconnect( cw, SIGNAL( unpaused() ), this, SLOT( clipWorkflowUnpaused() ) );
 }
