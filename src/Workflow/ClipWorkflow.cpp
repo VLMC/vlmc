@@ -311,3 +311,4 @@ void        ClipWorkflow::setFullSpeedRender( bool value )
 {
     m_fullSpeedRender = value;
 }
+
