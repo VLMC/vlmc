@@ -76,6 +76,7 @@ class   TrackWorkflow : public QObject
         void                                    clear();
 
         void                                    setFullSpeedRender( bool value );
+        void                                    forceRepositionning();
 
     private:
         void                                    computeLength();
