@@ -96,11 +96,6 @@ void    PreviewWidget::seekSliderPressed()
 
 void    PreviewWidget::seekSliderMoved( int )
 {
-    if ( m_renderer->isRendering() == false )
-    {
-        m_ui->seekSlider->setValue( 0 );
-        return ;
-    }
     if ( m_ui->seekSlider->value() == m_ui->seekSlider->maximum() )
     {
         m_endReached = true;
