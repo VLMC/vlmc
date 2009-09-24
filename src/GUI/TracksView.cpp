@@ -96,6 +96,11 @@ void TracksView::createLayout()
     addAudioTrack();
 
     m_scene->addItem( container );
+
+    // Hack: make sure the tracks type appears correctly
+    m_layout->setMinimumWidth( 2000 );
+    m_layout->setMaximumWidth( 2000 );
+    setSceneRect( m_layout->contentsRect() );
 }
 
 void TracksView::addVideoTrack()
@@ -455,15 +460,18 @@ void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
 {
     // Draw the tracks separators
     painter->setPen( QPen( QColor( 72, 72, 72 ) ) );
-    QList<QGraphicsItem*> gi = items( 0, 0, 1, sceneRect().height() );
-    for ( int i = 0; i < gi.count(); ++i )
+    for ( int i = 0; i < m_layout->count(); ++i )
     {
-        GraphicsTrack* track = qgraphicsitem_cast<GraphicsTrack*>( gi.at( i ) );
+        QGraphicsItem* gi = m_layout->itemAt( i )->graphicsItem();
+        if ( !gi ) continue;
+        GraphicsTrack* track = qgraphicsitem_cast<GraphicsTrack*>( gi );
         if ( !track ) continue;
-        if ( track->trackNumber() == 0 ) continue;
 
         QRectF trackRect = track->mapRectToScene( track->boundingRect() );
-        painter->drawLine( trackRect.left(), trackRect.bottom(), rect.right(), trackRect.bottom() );
+        if ( track->type() == GraphicsTrack::Video )
+            painter->drawLine( trackRect.left(), trackRect.top(), rect.right(), trackRect.top() );
+        else
+            painter->drawLine( trackRect.left(), trackRect.bottom(), rect.right(), trackRect.bottom() );
     }
 
     // Audio/Video separator
@@ -670,6 +678,9 @@ void TracksView::updateDuration()
     }
 
     m_projectDuration = projectDuration;
+
+    // Hack: make sure the tracks type appears correctly
+    m_projectDuration = qMax( m_projectDuration, 2000 );
 
     // PreferredWidth not working ?
     m_layout->setMinimumWidth( m_projectDuration );

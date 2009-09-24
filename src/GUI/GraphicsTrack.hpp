@@ -25,6 +25,7 @@
 
 #include <QGraphicsWidget>
 #include <QPainter>
+#include <QDebug>
 
 class GraphicsTrack : public QGraphicsWidget
 {
@@ -70,18 +71,31 @@ public:
 protected:
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* = 0 )
     {
-        Q_UNUSED( painter );
-        /*
-        Debugging of tracks.
-        Do not remove this block.
+        painter->setMatrixEnabled( false );
 
-        if ( m_type == Video )
-            painter->setBrush( Qt::green );
-        else
-            painter->setBrush( Qt::blue );
-        painter->setPen( Qt::transparent );
-        painter->drawRect( rect() );
-        */
+        if ( m_trackNumber == 0 )
+        {
+            QString text;
+            switch ( m_type )
+            {
+            case Video:
+                text = tr( "Video" );
+                break;
+            case Audio:
+                text = tr( "Audio" );
+                break;
+            }
+
+            QRectF mapped = mapRectToScene( boundingRect() ).adjusted( 10, 1, 0, 0 );
+            QFont textFont;
+            textFont.setItalic( true );
+            textFont.setBold( true );
+            textFont.setPixelSize( mapped.height() + 12 );
+
+            painter->setPen( QPen( palette().window().color().lighter( 125 ) ) );
+            painter->setFont( textFont );
+            painter->drawText( mapped, Qt::AlignVCenter, text );
+        }
     }
 
 private:
