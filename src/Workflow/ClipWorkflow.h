@@ -69,6 +69,7 @@ class   ClipWorkflow : public QObject
         virtual void*           getOutput() = 0;
         virtual void            initVlcOutput() = 0;
         void                    initialize( bool preloading = false );
+
         /**
          *  Return true ONLY if the state is equal to Ready.
          *  If the state is Rendering, EndReached or anything else, this will
