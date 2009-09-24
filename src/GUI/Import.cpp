@@ -85,8 +85,9 @@ void    Import::setUIMetaData()
 
 void    Import::accept()
 {
+    //FIXME: When media are stored as Media*, replace newMediaLoadingAsked by addMedia
     for(int i = 0; i < m_importBrowser->getMediaInfoList().count(); i++ )
-        Library::getInstance()->newMediaLoadingAsked( m_importBrowser->getMediaInfoList()[i].filePath(), m_importBrowser->getMediaInfoList()[i].fileName() );
+        Library::getInstance()->newMediaLoadingAsked( m_importBrowser->getMediaInfoList()[i].filePath() );
     done(Accepted);
 }
 
