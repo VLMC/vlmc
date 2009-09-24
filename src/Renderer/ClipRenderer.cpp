@@ -98,6 +98,7 @@ void        ClipRenderer::togglePlayPause( bool forcePause )
 {
     if ( m_clipLoaded == false )
     {
+        emit positionChanged( 0 );
         startPreview();
         return ;
     }
