@@ -29,6 +29,7 @@ unsigned char*  MainWorkflow::blackOutput = NULL;
 MainWorkflow*   MainWorkflow::m_instance = NULL;
 
 MainWorkflow::MainWorkflow( int trackCount ) :
+        m_currentFrame( 0 ),
         m_length( 0 ),
         m_trackCount( trackCount ),
         m_renderStarted( false )
@@ -59,6 +60,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
 
 MainWorkflow::~MainWorkflow()
 {
+    //FIXME: this is probably useless, since already done by the renderer
     stop();
 
     delete m_nbTracksToRenderMutex;
@@ -107,8 +109,6 @@ void    MainWorkflow::startRender()
 {
     m_renderStarted = true;
     m_paused = false;
-    m_currentFrame = 0;
-    emit frameChanged( 0 );
     for ( unsigned int i = 0; i < m_trackCount; ++i )
         activateTrack( i );
     computeLength();
@@ -222,10 +222,6 @@ void        MainWorkflow::trackEndReached( unsigned int trackId )
             return ;
     }
     emit mainWorkflowEndReached();
-    m_renderStarted = false;
-    m_currentFrame = 0;
-    emit frameChanged( 0 );
-    emit positionChanged( 0 );
 }
 
 unsigned int    MainWorkflow::getTrackCount() const
@@ -245,6 +241,7 @@ void            MainWorkflow::stop()
     }
     m_currentFrame = 0;
     emit frameChanged( 0 );
+    emit positionChanged( 0 );
 }
 
 MainWorkflow*   MainWorkflow::getInstance()
