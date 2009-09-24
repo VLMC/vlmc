@@ -24,20 +24,21 @@
 
 #include "QDebug"
 
-AudioProjectPreferences::AudioProjectPreferences( QWidget *parent )
-        : PreferenceWidget( parent )
+	AudioProjectPreferences::AudioProjectPreferences( QWidget *parent )
+: PreferenceWidget( parent )
 {
-    m_ui.setupUi( this );
+	m_ui.setupUi( this );
 }
 
 AudioProjectPreferences::~AudioProjectPreferences() { }
 
 bool    AudioProjectPreferences::load()
 {
-    qDebug() << "Loading AudioProjectPreferences values";
-    return true;
+	qDebug() << "Loading AudioProjectPreferences values";
+	return true;
 }
 
 void    AudioProjectPreferences::save( QHash<QString, QVariant>& settings )
 {
+	settings.insert( "AudioSampleRate", m_ui.SampleRate->value() );
 }

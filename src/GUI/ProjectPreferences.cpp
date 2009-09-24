@@ -29,20 +29,22 @@
 #include "PreferenceWidget.h"
 
 
-ProjectPreferences::ProjectPreferences( QWidget* parent )
-    : PreferenceWidget( parent )
+	ProjectPreferences::ProjectPreferences( QWidget* parent )
+: PreferenceWidget( parent )
 {
-    m_ui.setupUi( this );
+	m_ui.setupUi( this );
 }
 
 ProjectPreferences::~ProjectPreferences() { }
 
 bool    ProjectPreferences::load()
 {
-    qDebug() << "Loading ProjectPreferences values";
-    return true;
+	qDebug() << "Loading ProjectPreferences values";
+	return true;
 }
 
 void    ProjectPreferences::save( QHash<QString, QVariant>& settings )
 {
+	settings.insert( "ProjectName", QVariant( m_ui.ProjectNameLineEdit->text() ) );
+	settings.insert( "ProjectDirectory", QVariant( m_ui.ProjectDirectoryLineEdit->text() ) );
 }
