@@ -61,8 +61,13 @@ class   ClipWorkflow : public QObject
         ClipWorkflow( Clip* clip );
         virtual ~ClipWorkflow();
 
+        /**
+         *  This method returns the current frame. It locks the renderMutex,
+         *  therefore, you can call this method blindly, without taking care
+         *  of the rendering process advancement.
+         */
         VideoFrame*             getOutput();
-        void                    initialize();
+        void                    initialize( bool preloading = false );
         /**
          *  Return true ONLY if the state is equal to Ready.
          *  If the state is Rendering, EndReached or anything else, this will
@@ -206,9 +211,15 @@ class   ClipWorkflow : public QObject
         bool                    m_fullSpeedRender;
 
     private slots:
+        /**
+         *  \brief  This slot is used when preloading, to pause the mediaplayer once fully loaded.
+         */
         void                    pauseAfterPlaybackStarted();
+        /**
+         *  \brief  When preloading, this slot is used to mark that the media player has been paused again.
+         */
         void                    initializedMediaPlayer();
-//        void                    setPositionAfterPlayback();
+        void                    loadingComplete();
         void                    pausedMediaPlayer();
         void                    unpausedMediaPlayer();
 
