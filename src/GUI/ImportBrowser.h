@@ -39,7 +39,7 @@ class ImportBrowser : public QWidget
 public:    
     ImportBrowser( QWidget* parent = NULL );
     virtual ~ImportBrowser();
-    QFileInfoList   getMediaInfoList() { return m_mediaInfoList; }
+    const QFileInfoList&    getMediaInfoList() const { return m_mediaInfoList; }
 private:
     void                    TreeViewBrowserDirectoryChanged( QModelIndex& index );
     void                    updateFsWatcher( const QString& newPath );
