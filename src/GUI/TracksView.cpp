@@ -680,11 +680,11 @@ void TracksView::updateDuration()
     m_projectDuration = projectDuration;
 
     // Hack: make sure the tracks type appears correctly
-    m_projectDuration = qMax( m_projectDuration, 2000 );
+    int minimumWidth = qMax( m_projectDuration, 2000 );
 
     // PreferredWidth not working ?
-    m_layout->setMinimumWidth( m_projectDuration );
-    m_layout->setMaximumWidth( m_projectDuration );
+    m_layout->setMinimumWidth( minimumWidth );
+    m_layout->setMaximumWidth( minimumWidth );
 
     setSceneRect( m_layout->contentsRect() );
 
