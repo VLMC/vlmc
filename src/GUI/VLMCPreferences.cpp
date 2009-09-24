@@ -38,9 +38,6 @@ bool    VLMCPreferences::load()
     return true;
 }
 
-void    VLMCPreferences::save( QSettings& settings )
+void    VLMCPreferences::save( QHash<QString, QVariant>& settings )
 {
-    settings.beginGroup( "Project" );
-    //settings.setValue( "outputFPS", m_ui.outputFPS->text() );
-    settings.endGroup();
 }

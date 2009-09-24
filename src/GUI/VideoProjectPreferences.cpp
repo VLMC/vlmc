@@ -38,9 +38,6 @@ bool    VideoProjectPreferences::load()
     return true;
 }
 
-void    VideoProjectPreferences::save( QSettings& settings )
+void    VideoProjectPreferences::save( QHash<QString, QVariant>& settings )
 {
-    settings.beginGroup( "Project" );
-    //settings.setValue( "outputFPS", m_ui.outputFPS->text() );
-    settings.endGroup();
 }

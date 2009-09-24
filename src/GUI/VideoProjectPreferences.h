@@ -35,7 +35,7 @@ class VideoProjectPreferences : public PreferenceWidget
         VideoProjectPreferences( QWidget *parent = 0 );
         ~VideoProjectPreferences();
         bool    load();
-        void    save( QSettings& settings );
+        void    save( QHash<QString, QVariant>& settings );
     private:
         Ui::VideoProjectPreferences m_ui;
 };

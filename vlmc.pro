@@ -63,7 +63,8 @@ SOURCES += src/main.cpp \
     src/GUI/AudioProjectPreferences.cpp \
     src/GUI/VLMCPreferences.cpp \
     src/GUI/VideoProjectPreferences.cpp \
-    src/Project/ProjectManager.cpp
+    src/Project/ProjectManager.cpp \
+    src/Configuration/SettingsManager.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -119,7 +120,8 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/VLMCPreferences.h \
     src/GUI/AudioProjectPreferences.h \
     src/GUI/VideoProjectPreferences.h \
-    src/Project/ProjectManager.h
+    src/Project/ProjectManager.h \
+    src/Configuration/SettingsManager.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \
@@ -148,6 +150,7 @@ INCLUDEPATH += src/LibVLCpp \
     src/Library \
     src/Media \
     src/Project \
+    src/Configuration \
     src
 
 # QMAKE_CFLAGS+=-pg

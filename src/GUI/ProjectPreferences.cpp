@@ -43,9 +43,6 @@ bool    ProjectPreferences::load()
     return true;
 }
 
-void    ProjectPreferences::save( QSettings& settings )
+void    ProjectPreferences::save( QHash<QString, QVariant>& settings )
 {
-    settings.beginGroup( "Project" );
-    //settings.setValue( "outputFPS", m_ui.outputFPS->text() );
-    settings.endGroup();
 }

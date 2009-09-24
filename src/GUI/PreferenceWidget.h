@@ -24,8 +24,11 @@
 #ifndef PREFERENCEWIDGET_H
 #define PREFERENCEWIDGET_H
 
-#include <QSettings>
+#include <QHash>
+#include <QVariant>
+#include <QString>
 #include <QWidget>
+#include <QVariant>
 
 class   PreferenceWidget : public QWidget
 {
@@ -34,7 +37,7 @@ class   PreferenceWidget : public QWidget
         virtual ~PreferenceWidget() {}
 
         virtual bool    load() = 0;
-        virtual void    save( QSettings& settings ) = 0;
+        virtual void    save( QHash<QString, QVariant>& settings ) = 0;
 };
 
 #endif

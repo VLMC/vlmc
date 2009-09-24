@@ -38,9 +38,6 @@ bool    AudioProjectPreferences::load()
     return true;
 }
 
-void    AudioProjectPreferences::save( QSettings& settings )
+void    AudioProjectPreferences::save( QHash<QString, QVariant>& settings )
 {
-    settings.beginGroup( "Project" );
-    //settings.setValue( "outputFPS", m_ui.outputFPS->text() );
-    settings.endGroup();
 }

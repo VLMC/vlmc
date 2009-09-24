@@ -65,6 +65,8 @@ class   Settings : public QDialog
         QDialogButtonBox*           m_buttons;
         bool                        m_saved;
 
+	int			    m_settingsNumber;
+
     public slots:
         void    switchWidget( int widget );
 
