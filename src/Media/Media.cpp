@@ -41,7 +41,8 @@ Media::Media( const QString& filePath, const QString& uuid )
     m_fileInfo( NULL ),
     m_length( 0 ),
     m_width( 0 ),
-    m_height( 0 )
+    m_height( 0 ),
+    m_metadataParsed( false )
 {
     if ( uuid.length() == 0 )
         m_uuid = QUuid::createUuid();
@@ -216,7 +217,7 @@ void                Media::addAudioFrame( void* datas, unsigned char* buffer, si
 
 void            Media::emitMetaDataComputed()
 {
-    emit metaDataComputed();
+    m_metadataParsed = true;
     emit metaDataComputed( this );
 }
 
@@ -228,4 +229,9 @@ Media::InputType    Media::getInputType() const
 void                Media::setUuid( const QUuid& uuid )
 {
     m_uuid = uuid;
+}
+
+bool                Media::hasMetadata() const
+{
+    return m_metadataParsed;
 }

@@ -36,6 +36,9 @@ MetaDataManager::~MetaDataManager()
 
 void        MetaDataManager::newMediaLoaded( Media* media )
 {
-    MetaDataWorker* w = new MetaDataWorker( media );
-    w->start();
+    if ( media->hasMetadata() == false )
+    {
+        MetaDataWorker* w = new MetaDataWorker( media );
+        w->start();
+    }
 }

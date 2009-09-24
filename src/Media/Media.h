@@ -134,6 +134,8 @@ public:
 
     void                        emitMetaDataComputed();
 
+    bool                        hasMetadata() const;
+
 private:
     void                        setFileType();
 
@@ -154,9 +156,9 @@ protected:
     audioData                   m_audioData;
     FileType                    m_fileType;
     InputType                   m_inputType;
+    bool                        m_metadataParsed;
 
 signals:
-    void                        metaDataComputed();
     void                        metaDataComputed( Media* );
 };
 

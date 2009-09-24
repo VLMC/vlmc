@@ -82,6 +82,12 @@ void        Library::newMediaLoadingAsked( const QString& filePath, const QStrin
     emit newMediaLoaded( media );
 }
 
+void        Library::addMedia( Media* media )
+{
+    m_medias[media->getUuid()] = media;
+    metaDataComputed( media );
+}
+
 bool        Library::mediaAlreadyLoaded( const QString& filePath )
 {
     Media*   media;
