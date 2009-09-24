@@ -155,7 +155,7 @@ void    ClipWorkflow::setVmem()
     //m_vlcMedia->addOption( buffer );
 }
 
-void    ClipWorkflow::initialize()
+void    ClipWorkflow::initialize( bool preloading /*= false*/ )
 {
     setState( Initializing );
     m_vlcMedia = new LibVLCpp::Media( "file://" + m_clip->getParent()->getFileInfo()->absoluteFilePath() );
@@ -163,27 +163,26 @@ void    ClipWorkflow::initialize()
     m_mediaPlayer = Pool<LibVLCpp::MediaPlayer>::getInstance()->get();
     m_mediaPlayer->setMedia( m_vlcMedia );
 
-    connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( pauseAfterPlaybackStarted() ), Qt::DirectConnection );
+    if ( preloading == true )
+        connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( pauseAfterPlaybackStarted() ), Qt::DirectConnection );
+    else
+        connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( loadingComplete() ), Qt::DirectConnection );
     connect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( clipEndReached() ), Qt::DirectConnection );
     m_mediaPlayer->play();
 }
 
-//FIXME: this step is probably useless, due to modification in the TrackWorkflow
-//void    ClipWorkflow::setPositionAfterPlayback()
-//{
-//    disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( setPositionAfterPlayback() ) );
-//    connect( m_mediaPlayer, SIGNAL( timeChanged() ), this, SLOT( pauseAfterPlaybackStarted() ), Qt::DirectConnection );
-//
-//    m_mediaPlayer->setTime( m_clip->getBegin() );
-//}
-
 void    ClipWorkflow::pauseAfterPlaybackStarted()
 {
-//    disconnect( m_mediaPlayer, SIGNAL( timeChanged() ), this, SLOT( pauseAfterPlaybackStarted() ) );
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( pauseAfterPlaybackStarted() ) );
     connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( initializedMediaPlayer() ), Qt::DirectConnection );
 
     m_mediaPlayer->pause();
+}
+
+void    ClipWorkflow::loadingComplete()
+{
+    disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( loadingComplete() ) );
+    setState( Ready );
 }
 
 void    ClipWorkflow::initializedMediaPlayer()

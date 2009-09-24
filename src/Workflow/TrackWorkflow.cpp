@@ -142,13 +142,9 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
     }
     else if ( cw->getState() == ClipWorkflow::Stopped )
     {
-//        qDebug() << "Unlocking state lock";
         cw->getStateLock()->unlock();
-//        qDebug() << "Initializing";
         cw->initialize();
-//        qDebug() << "Calling start render";
         cw->startRender( m_paused );
-//        qDebug() << "Start render done !";
         if ( start != currentFrame ) //Clip was not started as its real begining
         {
             adjustClipTime( currentFrame, start, cw );
@@ -197,7 +193,7 @@ void                TrackWorkflow::preloadClip( ClipWorkflow* cw )
     if ( cw->getState() == ClipWorkflow::Stopped )
     {
         cw->getStateLock()->unlock();
-        cw->initialize();
+        cw->initialize( true );
         return ;
     }
     cw->getStateLock()->unlock();
@@ -290,7 +286,7 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
     if ( checkEnd( currentFrame ) == true )
     {
         emit trackEndReached( m_trackId );
-        //We continue, as there can be ClipWorkflow that required to be stopped.
+        //We continue, as there can be ClipWorkflow that requires to be stopped.
     }
     {
         QMutexLocker    lock( m_forceRepositionningMutex );

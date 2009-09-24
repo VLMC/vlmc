@@ -66,7 +66,7 @@ class   ClipWorkflow : public QObject
          *  of the rendering process advancement.
          */
         unsigned char*          getOutput();
-        void                    initialize();
+        void                    initialize( bool preloading = false );
         /**
          *  Return true ONLY if the state is equal to Ready.
          *  If the state is Rendering, EndReached or anything else, this will
@@ -208,9 +208,15 @@ class   ClipWorkflow : public QObject
         bool                    m_fullSpeedRender;
 
     private slots:
+        /**
+         *  \brief  This slot is used when preloading, to pause the mediaplayer once fully loaded.
+         */
         void                    pauseAfterPlaybackStarted();
+        /**
+         *  \brief  When preloading, this slot is used to mark that the media player has been paused again.
+         */
         void                    initializedMediaPlayer();
-//        void                    setPositionAfterPlayback();
+        void                    loadingComplete();
         void                    pausedMediaPlayer();
         void                    unpausedMediaPlayer();
 
