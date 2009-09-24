@@ -225,6 +225,7 @@ void        MainWorkflow::trackEndReached( unsigned int trackId )
     m_renderStarted = false;
     m_currentFrame = 0;
     emit frameChanged( 0 );
+    emit positionChanged( 0 );
 }
 
 unsigned int    MainWorkflow::getTrackCount() const
