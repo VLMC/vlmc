@@ -133,6 +133,8 @@ bool            Clip::matchMetaTag( const QString& tag ) const
 {
     if ( tag.length() == 0 )
         return true;
+    if ( m_parent->matchMetaTag( tag ) == true )
+        return true;
     QString metaTag;
     foreach ( metaTag, m_metaTags )
     {
@@ -140,7 +142,6 @@ bool            Clip::matchMetaTag( const QString& tag ) const
             return true;
     }
     return false;
-//    m_metaTags.contains( tag, Qt::CaseInsensitive );
 }
 
 const   QString&    Clip::getNotes() const
@@ -180,7 +181,6 @@ Clip*               Clip::split( qint64 endFrame )
 {
     Q_ASSERT( endFrame != m_end );
     Clip*   newClip = new Clip( this, endFrame, m_end );
-    qDebug() << "Created new clip. begin:" << newClip->m_begin << "end:" << newClip->m_end;
     m_end = endFrame;
     computeLength();
     return newClip;
