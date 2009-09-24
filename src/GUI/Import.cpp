@@ -55,7 +55,7 @@ void    Import::getMetaData( QFileInfo fileInfos )
     m_currentMedia = new Media( fileInfos.filePath(), fileInfos.fileName() );
 
     m_metaDataWorker = new MetaDataWorker( m_currentMedia );
-    connect( m_metaDataWorker, SIGNAL( finished() ), this, SLOT( setUIMetaData() ) );
+    connect( m_metaDataWorker, SIGNAL( destroyed() ), this, SLOT( setUIMetaData() ) );
     m_metaDataWorker->start();
 }
 
