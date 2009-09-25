@@ -345,9 +345,7 @@ void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
         {
             QMutexLocker    lock( m_synchroneRenderWaitConditionMutex );
         }
-        m_effectEngine->render();
         //FIXME: This is uggly.... god probably just killed a kitten :(
-        m_synchroneRenderingBuffer = &( m_effectEngine->getOutputFrame( 0 ) );
         m_synchroneRenderWaitCondition->wakeAll();
     }
 }
@@ -359,6 +357,8 @@ const VideoFrame*  MainWorkflow::getSynchroneOutput()
 //    qDebug() << "Waiting for sync output";
     m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
 //    qDebug() << "Got it";
+    m_effectEngine->render();
+    m_synchroneRenderingBuffer = &( m_effectEngine->getOutputFrame( 0 ) );
     m_synchroneRenderWaitConditionMutex->unlock();
     if ( m_synchroneRenderingBuffer == NULL )
         return MainWorkflow::blackOutput;
