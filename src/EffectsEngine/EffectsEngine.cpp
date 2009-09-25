@@ -1,3 +1,4 @@
+#include <QtDebug>
 #include "EffectsEngine.h"
 
 // CTOR & DTOR
@@ -7,6 +8,7 @@ EffectsEngine::EffectsEngine( void//  quint32 nbinputs, quint32 nboutputs
 {
    quint32	i;
 
+   m_inputLock = new QReadWriteLock;
   for (i = 0; i < 64; ++i)
     m_videoInputs[i];
   for (i = 0; i < 1; ++i)
@@ -22,16 +24,17 @@ EffectsEngine::EffectsEngine( void//  quint32 nbinputs, quint32 nboutputs
 
 EffectsEngine::~EffectsEngine()
 {
-  stop();
+    stop();
+    delete m_inputLock;
 }
 
 // MAIN METHOD
 
 void	EffectsEngine::render( void )
 {
-  ( m_effects[0] )->render();
-  ( m_effects[1] )->render();
-  return ;
+    ( m_effects[0] )->render();
+    ( m_effects[1] )->render();
+    return ;
 }
 
 
@@ -45,8 +48,10 @@ void	EffectsEngine::render( void )
 
 void	EffectsEngine::setInputFrame( VideoFrame& frame, quint32 tracknumber )
 {
-  m_videoInputs[tracknumber] = frame;
-  return ;
+    QWriteLocker    lock( m_inputLock );
+
+    m_videoInputs[tracknumber] = frame;
+    return ;
 }
 
 // TO REPLACE BY A REF
@@ -95,16 +100,17 @@ void	EffectsEngine::unloadEffects( void )
 
 void	EffectsEngine::patchEffects( void )
 {
-  quint32	i;
-  QString	tmp;
+    quint32	i;
+    QString	tmp;
 
-  for ( i = 0; i < 64; ++i )
-    {
-      tmp = "track" + QString::number(i);
-      ( m_effects[0] )->connect( m_videoInputs[i], tmp );
+    QReadLocker lock( m_inputLock );
+    for ( i = 0; i < 64; ++i )
+    {   
+        tmp = "track" + QString::number(i);
+        ( m_effects[0] )->connect( m_videoInputs[i], tmp );
     }
-  ( m_effects[0] )->connectOutput( QString( "out" ) , m_effects[1], QString( "in" ) );
-  ( m_effects[1] )->connect( QString( "out" ), m_videoOutputs[0] );
-  return ;
+    ( m_effects[0] )->connectOutput( QString( "out" ) , m_effects[1], QString( "in" ) );
+    ( m_effects[1] )->connect( QString( "out" ), m_videoOutputs[0] );
+    return ;
 }
 
