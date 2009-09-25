@@ -210,6 +210,8 @@ MainWorkflow::OutputBuffers*  MainWorkflow::getSynchroneOutput()
 //    qDebug() << "Waiting for sync output";
     m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
 //    qDebug() << "Got it";
+    m_effectEngine->render();
+    m_synchroneRenderingBuffer = &( m_effectEngine->getOutputFrame( 0 ) );
     m_synchroneRenderWaitConditionMutex->unlock();
     m_outputBuffers->video = m_tracks[TrackWorkflow::Video]->getSynchroneOutput();
     m_outputBuffers->audio = m_tracks[TrackWorkflow::Audio]->getSynchroneOutput();
