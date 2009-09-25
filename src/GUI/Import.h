@@ -29,6 +29,7 @@
 #include "Clip.h"
 #include "Media.h"
 #include "MetaDataWorker.h"
+#include "TagWidget.h"
 
 namespace Ui
 {
@@ -52,6 +53,7 @@ private:
     Media*              m_currentMedia;
     Clip*               m_currentClip;
     MetaDataWorker*     m_metaDataWorker;
+    TagWidget*          m_tagWidget;
 
 private slots:
     void    accept();
@@ -60,6 +62,7 @@ private slots:
 
 signals:
     void    mediaSelected( Clip* clip );
+    void    mediaSelected( Media* media );
 };
 
 #endif // IMPORT_H

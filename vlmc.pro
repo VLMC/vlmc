@@ -8,8 +8,9 @@ MOC_DIR = build/moc
 UI_DIR = build/ui
 QMAKE_EXT_H = .h \
     .hpp
-INCLUDEPATH = build/moc \
-    build/ui
+INCLUDEPATH += build/moc \
+    build/ui \
+    $$[VLMC_ADDITIONAL_INCLUDEPATH]
 QT += gui \
     network \
     svg \
@@ -64,7 +65,9 @@ SOURCES += src/main.cpp \
     src/Project/ProjectManager.cpp \
     src/GUI/Import.cpp \
     src/GUI/ImportBrowser.cpp \
-    src/GUI/FileInfoListModel.cpp
+    src/GUI/FileInfoListModel.cpp \
+    src/Configuration/SettingsManager.cpp \
+    src/GUI/TagWidget.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -122,7 +125,9 @@ HEADERS += src/GUI/MainWindow.h \
     src/Project/ProjectManager.h \
     src/GUI/Import.h \
     src/GUI/ImportBrowser.h \
-    src/GUI/FileInfoListModel.h
+    src/GUI/FileInfoListModel.h \
+    src/Configuration/SettingsManager.h \
+    src/GUI/TagWidget.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \
@@ -137,7 +142,8 @@ FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/VideoProjectPreferences.ui \
     src/GUI/ui/AudioProjectPreferences.ui \
     src/GUI/ui/Import.ui \
-    src/GUI/ui/ImportBrowser.ui
+    src/GUI/ui/ImportBrowser.ui \
+    src/GUI/ui/TagWidget.ui
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts
@@ -152,13 +158,16 @@ INCLUDEPATH += src/LibVLCpp \
     src/Library \
     src/Media \
     src/Project \
+    src/Configuration \
     src
 
 # QMAKE_CFLAGS+=-pg
 # QMAKE_CXXFLAGS+=-pg
 # QMAKE_LFLAGS+=-pg
-LIBS = -L/usr/local/lib \
-    -lvlc
+# QMAKE_CXXFLAGS += -W -Wall -Wold-style-cast
+LIBS += -L/usr/local/lib \
+    -lvlc \
+    $$[VLMC_ADDITIONAL_LIBS]
 SUBDIRS += modules
 DEFINES += VLMC_VERSION="$$VERSION"
 CODECFORTR = UTF-8

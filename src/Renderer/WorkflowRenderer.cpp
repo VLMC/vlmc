@@ -56,6 +56,15 @@ WorkflowRenderer::WorkflowRenderer() :
 
     m_condMutex = new QMutex;
     m_waitCond = new QWaitCondition;
+
+        //Workflow part
+    connect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
+            Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( setCursorPos( qint64 ) ), Qt::QueuedConnection );
+    connect( Timeline::getInstance()->tracksView()->tracksCursor(), SIGNAL( cursorPositionChanged( qint64 ) ),
+             this, SLOT( timelineCursorChanged(qint64) ) );
+    connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ) );
+    connect( m_mainWorkflow, SIGNAL( mainWorkflowUnpaused() ), this, SLOT( mainWorkflowUnpaused() ) );
+
 }
 
 
@@ -122,26 +131,11 @@ void        WorkflowRenderer::checkActions()
     }
 }
 
-void        WorkflowRenderer::stopPreview()
-{
-    disconnect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
-             Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( setCursorPos( qint64 ) ) );
-    stop();
-}
-
 void        WorkflowRenderer::startPreview()
 {
     if ( m_mainWorkflow->getLength() <= 0 )
         return ;
     m_mediaPlayer->setMedia( m_media );
-
-    //Workflow part
-    connect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
-            Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( setCursorPos( qint64 ) ) );
-    connect( Timeline::getInstance()->tracksView()->tracksCursor(), SIGNAL( cursorPositionChanged( qint64 ) ),
-             this, SLOT( timelineCursorChanged(qint64) ) );
-    connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ) );
-    connect( m_mainWorkflow, SIGNAL( mainWorkflowUnpaused() ), this, SLOT( mainWorkflowUnpaused() ) );
 
     //Media player part: to update PreviewWidget
     connect( m_mediaPlayer, SIGNAL( playing() ),    this,   SLOT( __videoPlaying() ), Qt::DirectConnection );
@@ -150,6 +144,7 @@ void        WorkflowRenderer::startPreview()
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
     connect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
 
+    m_mainWorkflow->setFullSpeedRender( false );
     m_mainWorkflow->startRender();
     m_mediaPlayer->play();
     m_isRendering = true;
@@ -258,7 +253,7 @@ void        WorkflowRenderer::stop()
 
 void        WorkflowRenderer::__endReached()
 {
-    stopPreview();
+    stop();
     emit endReached();
 }
 

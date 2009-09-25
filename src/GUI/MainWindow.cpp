@@ -27,6 +27,10 @@
 #include <QFileDialog>
 #include <QSlider>
 #include <QUndoView>
+#include <QMessageBox>
+#include <QDesktopServices>
+#include <QUrl>
+#include <QSettings>
 
 #include "MainWindow.h"
 #include "MediaListWidget.h"
@@ -34,7 +38,6 @@
 #include "Library.h"
 #include "Timeline.h"
 #include "About.h"
-#include "Transcode.h"
 #include "FileBrowser.h"
 #include "WorkflowRenderer.h"
 #include "ClipRenderer.h"
@@ -58,7 +61,7 @@ MainWindow::MainWindow( QWidget *parent ) :
     createStatusBar();
     createGlobalPreferences();
 
-    // Translation
+    // Translations
     connect( this, SIGNAL( translateDockWidgetTitle() ),
              DockWidgetManager::instance(), SLOT( transLateWidgetTitle() ) );
 
@@ -69,20 +72,29 @@ MainWindow::MainWindow( QWidget *parent ) :
              this, SLOT( zoomIn() ) );
     connect( m_timeline->tracksView(), SIGNAL( zoomOut() ),
              this, SLOT( zoomOut() ) );
+    connect( this, SIGNAL( toolChanged( ToolButtons ) ),
+             m_timeline, SLOT( setTool( ToolButtons ) ) );
 
-    //Global Preferences
-    QObject::connect( qApp,
-                      SIGNAL( aboutToQuit() ),
-                      m_globalPreferences,
-                      SLOT( deleteLater() ) );
+    QSettings s;
+    // Restore the geometry
+    restoreGeometry( s.value( "MainWindowGeometry" ).toByteArray() );
+    // Restore the layout
+    restoreState( s.value( "MainWindowState" ).toByteArray() );
 }
 
 MainWindow::~MainWindow()
 {
+    QSettings s;
+    // Save the current geometry
+    s.setValue( "MainWindowGeometry", saveGeometry() );
+    // Save the current layout
+    s.setValue( "MainWindowState", saveState() );
+    s.sync();
+
     if ( m_renderer )
         delete m_renderer;
     MetaDataManager::destroyInstance();
-    LibVLCpp::Instance::kill();
+    LibVLCpp::Instance::destroyInstance();
 }
 
 void MainWindow::changeEvent( QEvent *e )
@@ -131,7 +143,7 @@ void        MainWindow::setupLibrary()
     connect( library,
              SIGNAL( mediaRemoved( const QUuid& ) ),
              libraryWidget,
-             SLOT( mediaRemoved( const QUuid& ) ) );
+             SLOT( mediaRemoved( const QUuid& ) ), Qt::DirectConnection );
 
     connect( libraryWidget->getVideoListWidget(), SIGNAL( selectedClipChanged( Clip* ) ),
               m_clipPreview->getGenericRenderer(), SLOT( setClip( Clip* ) ) );
@@ -173,6 +185,41 @@ void    MainWindow::on_actionLoad_Project_triggered()
 
 void MainWindow::createStatusBar()
 {
+    // Mouse (default) tool
+    QToolButton* mouseTool = new QToolButton( this );
+    mouseTool->setCheckable( true );
+    mouseTool->setIcon( QIcon( ":/images/mouse" ) );
+    m_ui.statusbar->addPermanentWidget( mouseTool );
+
+    // Cut/Split tool
+    QToolButton* splitTool = new QToolButton( this );
+    splitTool->setCheckable( true );
+    splitTool->setIcon( QIcon( ":/images/editcut" ) );
+    m_ui.statusbar->addPermanentWidget( splitTool );
+
+    // Group the two previous buttons
+    QButtonGroup* toolButtonGroup = new QButtonGroup( this );
+    toolButtonGroup->addButton( mouseTool, TOOL_DEFAULT);
+    toolButtonGroup->addButton( splitTool, TOOL_CUT );
+    toolButtonGroup->setExclusive( true );
+    mouseTool->setChecked( true );
+
+    connect( toolButtonGroup, SIGNAL( buttonClicked( int ) ),
+             this, SLOT( toolButtonClicked( int ) ) );
+
+    // Spacer
+    QWidget* spacer = new QWidget( this );
+    spacer->setFixedWidth( 20 );
+    m_ui.statusbar->addPermanentWidget( spacer );
+
+    // Zoom IN
+    QToolButton* zoomInButton = new QToolButton( this );
+    zoomInButton->setIcon( QIcon( ":/images/zoomin" ) );
+    m_ui.statusbar->addPermanentWidget( zoomInButton );
+    connect( zoomInButton, SIGNAL( clicked() ),
+             this, SLOT( zoomIn() ) );
+
+    // Zoom slider
     m_zoomSlider = new QSlider( this );
     m_zoomSlider->setOrientation( Qt::Horizontal );
     m_zoomSlider->setTickInterval( 1 );
@@ -183,6 +230,13 @@ void MainWindow::createStatusBar()
     m_zoomSlider->setValue( 10 );
     m_zoomSlider->setFixedWidth( 80 );
     m_ui.statusbar->addPermanentWidget( m_zoomSlider );
+
+    // Zoom Out
+    QToolButton* zoomOutButton = new QToolButton( this );
+    zoomOutButton->setIcon( QIcon( ":/images/zoomout" ) );
+    m_ui.statusbar->addPermanentWidget( zoomOutButton );
+    connect( zoomOutButton, SIGNAL( clicked() ),
+             this, SLOT( zoomOut() ) );
 }
 
 void MainWindow::initializeDockWidgets( void )
@@ -224,16 +278,11 @@ void MainWindow::initializeDockWidgets( void )
 
 void        MainWindow::createGlobalPreferences()
 {
-    m_globalPreferences = new Settings(  );
+    m_globalPreferences = new Settings( this );
     m_globalPreferences->addWidget("VLMC",
-                                   new VLMCPreferences,
+                                   new VLMCPreferences( m_globalPreferences ),
                                    "../images/vlmc.png",
                                    "VLMC settings");
-    ////For debugging purpose
-    //m_globalPreferences->addWidget("Test",
-    //                               new QLabel("This is a test"),
-    //                               "images/vlmc.png",
-    //                               "Test");
     m_globalPreferences->build();
 }
 
@@ -254,8 +303,10 @@ void MainWindow::on_actionAbout_triggered()
     About::instance()->exec();
 }
 
-void MainWindow::on_actionTranscode_File_triggered()
+void MainWindow::on_actionTranscode_triggered()
 {
+    QMessageBox::information( this, tr( "Sorry" ),
+                              tr( "This feature is currently disabled." ) );
     //Transcode::instance( this )->exec();
 }
 
@@ -298,7 +349,12 @@ void MainWindow::on_actionNew_Project_triggered()
                                    "../images/scalable/audio.svg",
                                    "Audio settings");
     m_projectPreferences->build();
-    m_projectPreferences->show();
+    m_projectPreferences->exec();
+}
+
+void MainWindow::on_actionHelp_triggered()
+{
+    QDesktopServices::openUrl( QUrl( "http://vlmc.org" ) );
 }
 
 void    MainWindow::on_actionImport_triggered()
@@ -325,9 +381,9 @@ void MainWindow::on_actionFullscreen_triggered( bool checked )
         showNormal();
 }
 
-void MainWindow::registerWidgetInViewMenu( QDockWidget* widget )
+void MainWindow::registerWidgetInWindowMenu( QDockWidget* widget )
 {
-    m_ui.menuView->addAction( widget->toggleViewAction() );
+    m_ui.menuWindow->addAction( widget->toggleViewAction() );
 }
 
 void    MainWindow::mediaListItemDoubleClicked( QListWidgetItem* qItem )
@@ -335,4 +391,9 @@ void    MainWindow::mediaListItemDoubleClicked( QListWidgetItem* qItem )
     ListViewMediaItem* item = static_cast<ListViewMediaItem*>( qItem );
     ClipProperty* mp = new ClipProperty( item->getClip(), this );
     mp->show();
+}
+
+void MainWindow::toolButtonClicked( int id )
+{
+    emit toolChanged( (ToolButtons)id );
 }

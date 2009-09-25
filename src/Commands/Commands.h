@@ -93,15 +93,15 @@ namespace Commands
         {
             public:
                 ResizeClip( ::MainWorkflow* mainWorkflow, const QUuid& uuid, unsigned int trackId,
-                            float newBegin, float newEnd );
+                            qint64 newBegin, qint64 newEnd );
                 virtual void    redo();
                 virtual void    undo();
             private:
                 ::MainWorkflow*             m_mainWorkflow;
-                float                       m_oldBegin;
-                float                       m_oldEnd;
-                float                       m_newBegin;
-                float                       m_newEnd;
+                qint64                      m_oldBegin;
+                qint64                      m_oldEnd;
+                qint64                      m_newBegin;
+                qint64                      m_newEnd;
                 Clip*                       m_clip;
         };
     }

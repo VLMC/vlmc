@@ -32,6 +32,7 @@
 #include <QGraphicsSceneDragDropEvent>
 #include <QApplication>
 #include <QVector>
+#include "vlmc.h"
 #include "GraphicsCursorItem.h"
 #include "MainWorkflow.h"
 #include "TrackWorkflow.h"
@@ -50,13 +51,15 @@ public:
     int duration() const { return m_projectDuration; }
     int tracksHeight() const { return m_tracksHeight; }
     unsigned int tracksCount() const { return m_tracksCount; }
-    void setCursorPos( int pos );
-    int cursorPos();
+    void setCursorPos( qint64 pos );
+    qint64 cursorPos();
     GraphicsCursorItem* tracksCursor() const { return m_cursorLine; }
     void setScale( double scaleFactor );
     QList<AbstractGraphicsMediaItem*> mediaItems( const QPoint& pos );
     void                    removeMediaItem( AbstractGraphicsMediaItem* item );
     void                    removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items );
+    void                    setTool( ToolButtons button );
+    ToolButtons             tool() { return m_tool; }
 
 public slots:
     void                    clear();
@@ -79,6 +82,7 @@ protected:
 private slots:
     void                    ensureCursorVisible();
     void                    updateDuration();
+    void                    split( GraphicsMovieItem* item, qint64 frame );
 
 private:
     void                    createLayout();
@@ -99,6 +103,7 @@ private:
     MainWorkflow*           m_mainWorkflow;
     GraphicsMovieItem*      m_dragItem;
     QGraphicsWidget*        m_separator;
+    ToolButtons             m_tool;
 
     // Mouse actions on Medias
     bool                    m_actionMove;

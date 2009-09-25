@@ -24,23 +24,20 @@
 #ifndef PREFERENCEWIDGET_H
 #define PREFERENCEWIDGET_H
 
-#include <QSettings>
+#include <QHash>
+#include <QVariant>
+#include <QString>
 #include <QWidget>
+#include <QVariant>
 
-class   PreferenceWidget
+class   PreferenceWidget : public QWidget
 {
     public:
-        PreferenceWidget( QWidget* widget = 0 );
+        PreferenceWidget( QWidget* parent = 0 );
         virtual ~PreferenceWidget() {}
 
         virtual bool    load() = 0;
-        virtual void    save( QSettings& settings ) = 0;
-
-        QWidget*        widget() const;
-        void            setWidget( QWidget* widget );
-
-    private:
-        QWidget*        m_widget;
+        virtual void    save( QHash<QString, QVariant>& settings ) = 0;
 };
 
 #endif

@@ -29,21 +29,21 @@
 
 #include "Clip.h"
 
-Clip::Clip( Media* parent ) : m_parent( parent ), m_begin( 0.0f ), m_end( 1.0f )
+Clip::Clip( Media* parent ) : m_parent( parent ), m_begin( 0 ), m_end( parent->getNbFrames() )
 {
     m_Uuid = QUuid::createUuid();
     computeLength();
 }
 
-Clip::Clip( Clip* creator, float begin, float end ) : m_parent( creator->getParent() ), m_begin( begin ), m_end( end )
+Clip::Clip( Clip* creator, qint64 begin, qint64 end ) : m_parent( creator->getParent() ), m_begin( begin ), m_end( end )
 {
     m_Uuid = QUuid::createUuid();
     computeLength();
 }
 
-Clip::Clip( Media* parent, float begin, float end ) : m_parent( parent ), m_begin( begin ), m_end( end )
+Clip::Clip( Media* parent, qint64 begin, qint64 end ) : m_parent( parent ), m_begin( begin ), m_end( end )
 {
-    Q_ASSERT( parent->getInputType() == Media::File || ( begin == .0f && end == .0f ) );
+    Q_ASSERT( parent->getInputType() == Media::File || ( begin == 0 && end == m_parent->getNbFrames() ) );
     m_Uuid = QUuid::createUuid();
     computeLength();
 }
@@ -60,9 +60,9 @@ Clip::Clip( Clip* clip ) :
     m_Uuid = QUuid::createUuid();
 }
 
-Clip::Clip( const QUuid& uuid, float begin, float end ) :
+Clip::Clip( const QUuid& uuid, qint64 begin, qint64 end ) :
         m_begin( begin),
-        m_end( 1.0f )
+        m_end( end )
 {
     Q_UNUSED( end );
     Media*  media = Library::getInstance()->getMedia( uuid );
@@ -76,12 +76,12 @@ Clip::~Clip()
 {
 }
 
-float       Clip::getBegin() const
+qint64      Clip::getBegin() const
 {
     return m_begin;
 }
 
-float       Clip::getEnd() const
+qint64      Clip::getEnd() const
 {
     return m_end;
 }
@@ -108,9 +108,9 @@ void        Clip::computeLength()
         unsigned int   fps = m_parent->getFps();
         if ( fps < 0.1f )
             fps = FPS;
-        qint64 nbMs = (qint64)( ( m_end - m_begin ) * (float)m_parent->getLength() );
-        m_lengthSeconds = nbMs / 1000;
-        m_length = (nbMs / 1000) * fps;
+        m_length = m_end - m_begin;
+        m_lengthSeconds = m_length * fps;
+        emit lengthUpdated();
     }
     else
     {
@@ -133,6 +133,8 @@ bool            Clip::matchMetaTag( const QString& tag ) const
 {
     if ( tag.length() == 0 )
         return true;
+    if ( m_parent->matchMetaTag( tag ) == true )
+        return true;
     QString metaTag;
     foreach ( metaTag, m_metaTags )
     {
@@ -140,7 +142,6 @@ bool            Clip::matchMetaTag( const QString& tag ) const
             return true;
     }
     return false;
-//    m_metaTags.contains( tag, Qt::CaseInsensitive );
 }
 
 const   QString&    Clip::getNotes() const
@@ -159,22 +160,28 @@ const QUuid&        Clip::getUuid() const
     return m_Uuid;
 }
 
-void                Clip::setBegin( float begin )
+void                Clip::setBegin( qint64 begin )
 {
     Q_ASSERT( begin >= .0f );
+    if ( begin == m_begin ) return;
     m_begin = begin;
+    computeLength();
+    emit lengthUpdated();
 }
 
-void                Clip::setEnd( float end )
+void                Clip::setEnd( qint64 end )
 {
-    Q_ASSERT( end <= 1.0f );
+    if ( end == m_end ) return;
     m_end = end;
+    computeLength();
+    emit lengthUpdated();
 }
 
-Clip*               Clip::split( float newEnd )
+Clip*               Clip::split( qint64 endFrame )
 {
-    Clip*   newClip = new Clip( this, newEnd, m_end );
-    m_end = newEnd;
+    Q_ASSERT( endFrame != m_end );
+    Clip*   newClip = new Clip( this, endFrame, m_end );
+    m_end = endFrame;
     computeLength();
     return newClip;
 }

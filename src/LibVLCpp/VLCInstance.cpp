@@ -26,8 +26,6 @@
 
 using namespace LibVLCpp;
 
-Instance*   Instance::m_singleton = NULL;
-
 Instance::Instance()
 {
     char const *argv[] =
@@ -47,8 +45,7 @@ Instance::Instance()
     CheckVlcppException(m_ex);
 }
 
-Instance::Instance( int argc, const char** argv )
+Instance::~Instance()
 {
-    m_internalPtr = libvlc_new( argc, argv, m_ex );
-    CheckVlcppException(m_ex);
+    libvlc_release( m_internalPtr );
 }

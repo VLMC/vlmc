@@ -28,14 +28,14 @@
 #include "PreferenceWidget.h"
 #include "ui_VLMCPreferences.h"
 
-class VLMCPreferences : public QWidget, public PreferenceWidget
+class VLMCPreferences : public PreferenceWidget
 {
     //Q_OBJECT
     public:
-        VLMCPreferences(QWidget *parent = 0);
+        VLMCPreferences( QWidget *parent = 0 );
         ~VLMCPreferences();
         bool    load();
-        void    save( QSettings& settings );
+        void    save( QHash<QString, QVariant>& settings );
     private:
         Ui::VLMCPreferences m_ui;
 };

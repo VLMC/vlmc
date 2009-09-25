@@ -89,6 +89,12 @@ void    MetaDataWorker::getMetaData()
     m_currentMedia->setWidth( m_mediaPlayer->getWidth() );
     m_currentMedia->setHeight( m_mediaPlayer->getHeight() );
     m_currentMedia->setFps( m_mediaPlayer->getFps() );
+    if ( m_currentMedia->getFps() == .0f )
+    {
+        qWarning() << "Invalid FPS for media:" << m_currentMedia->getFileInfo()->absoluteFilePath();
+        m_currentMedia->setFps( FPS );
+    }
+    m_currentMedia->setNbFrames( m_currentMedia->getLength() / 1000 * m_currentMedia->getFps() );
 
     //Setting time for snapshot :
     if ( m_currentMedia->getFileType() == Media::Video )

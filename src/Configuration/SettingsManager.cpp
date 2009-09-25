@@ -1,10 +1,9 @@
 /*****************************************************************************
- * vlmc.h : contains the definition for every macro and prototypes used
- *          used program wide.
+ * SettingsManager.cpp * : Backend settings manager
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
+ * Authors: Clement CHAVANCE <kinder@vlmc.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,25 +20,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef VLMC_H
-#define VLMC_H
+#include <QHash>
 
-#include <QtGlobal>
+#include "SettingsManager.h"
 
-#ifdef Q_OS_WIN
-#include <Windows.h>
-#endif
-
-#ifdef Q_OS_UNIX
-#define SleepMS( x ) usleep( (x) * 1000 )
-#else
-#define SleepMS( x ) Sleep( x )
-#endif
-
-enum ToolButtons
+int   SettingsManager::createNewSettings()
 {
-    TOOL_DEFAULT,
-    TOOL_CUT,
-};
+	this->m_settings.append(new SettingsContainer());
+	return this->m_settings.size() - 1;
+}
 
-#endif // VLMC_H
+	SettingsManager::SettingsManager( QObject* parent )
+: QObject( parent )
+{
+}
+
+SettingsManager::~SettingsManager()
+{
+}
+
+void  SettingsManager::saveSettings( QDomDocument& xmlfile, int index )
+{
+	Q_UNUSED( xmlfile )
+		SettingsContainer* settings = m_settings[index];
+	settings->lock.lockForRead();
+
+	//SAVE SETTINGS TO DomDocument
+	settings->lock.unlock();
+}

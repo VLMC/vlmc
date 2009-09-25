@@ -24,10 +24,9 @@
 
 #include "QDebug"
 
-VLMCPreferences::VLMCPreferences(QWidget *parent) :
-    QWidget(parent)
+VLMCPreferences::VLMCPreferences( QWidget *parent )
+        : PreferenceWidget( parent )
 {
-    this->setWidget( this );
     m_ui.setupUi(this);
 }
 
@@ -39,9 +38,9 @@ bool    VLMCPreferences::load()
     return true;
 }
 
-void    VLMCPreferences::save( QSettings& settings )
+void    VLMCPreferences::save( QHash<QString, QVariant>& settings )
 {
-    settings.beginGroup( "Project" );
-    //settings.setValue( "outputFPS", m_ui.outputFPS->text() );
-    settings.endGroup();
+    settings.insert( "VLMCOutPutFPS", QVariant( m_ui.outputFPS->text() ) );
+    settings.insert( "VLMCPreviewFPS", QVariant( m_ui.previewFPS->text() ) );
+    settings.insert( "VLMCTracksNb", QVariant( m_ui.tracksNb->text() ) );
 }

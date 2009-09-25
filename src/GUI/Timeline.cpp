@@ -42,7 +42,6 @@ Timeline::Timeline( QWidget *parent ) :
     m_tracksView = new TracksView( m_tracksScene, m_mainWorkflow, m_ui.tracksFrame );
     m_tracksView->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_tracksView->scale(1, 1);
-    m_tracksView->setAlignment( Qt::AlignLeft | Qt::AlignTop );
 
     QHBoxLayout* tracksViewLayout = new QHBoxLayout();
     tracksViewLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -93,6 +92,11 @@ void Timeline::setDuration( int duration )
 {
     m_tracksView->setDuration( duration );
     m_tracksRuler->setDuration( duration );
+}
+
+void Timeline::setTool( ToolButtons button )
+{
+    tracksView()->setTool( button );
 }
 
 void Timeline::actionAddClip( Clip* clip, unsigned int track, qint64 start )

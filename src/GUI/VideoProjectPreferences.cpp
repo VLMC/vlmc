@@ -24,24 +24,23 @@
 
 #include "QDebug"
 
-VideoProjectPreferences::VideoProjectPreferences(QWidget *parent) :
-    QWidget(parent)
+VideoProjectPreferences::VideoProjectPreferences( QWidget *parent )
+	: PreferenceWidget( parent )
 {
-    this->setWidget( this );
-    m_ui.setupUi( this );
+	m_ui.setupUi( this );
 }
 
 VideoProjectPreferences::~VideoProjectPreferences() { }
 
 bool    VideoProjectPreferences::load()
 {
-    qDebug() << "Loading VideoProjectPreferences values";
-    return true;
+	qDebug() << "Loading VideoProjectPreferences values";
+	return true;
 }
 
-void    VideoProjectPreferences::save( QSettings& settings )
+void    VideoProjectPreferences::save( QHash<QString, QVariant>& settings )
 {
-    settings.beginGroup( "Project" );
-    //settings.setValue( "outputFPS", m_ui.outputFPS->text() );
-    settings.endGroup();
+	settings.insert( "VideoProjectFPS", QVariant( m_ui.FPSSpinBox->value() ) );
+	settings.insert( "VideoProjectHeight", QVariant( m_ui.HeightSpinBox->value() ) );
+	settings.insert( "VideoProjectWidth", QVariant( m_ui.WidthSpinBox->value() ));
 }

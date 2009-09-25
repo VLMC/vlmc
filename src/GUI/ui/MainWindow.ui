@@ -55,6 +55,9 @@
     <addaction name="actionFullscreen"/>
    </widget>
    <widget class="QMenu" name="menuEffets">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>Effects</string>
     </property>
@@ -63,13 +66,12 @@
     <property name="title">
      <string>Tools</string>
     </property>
+    <addaction name="actionTranscode"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
      <string>Window</string>
     </property>
-    <addaction name="actionMedia_Library"/>
-    <addaction name="actionPreview"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -130,9 +132,9 @@
     <string>Preview</string>
    </property>
   </action>
-  <action name="actionTranscode_File">
+  <action name="actionTranscode">
    <property name="text">
-    <string>Transcode File</string>
+    <string>Transcode</string>
    </property>
   </action>
   <action name="actionNew_Project">

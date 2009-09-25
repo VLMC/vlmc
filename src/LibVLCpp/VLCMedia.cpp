@@ -47,14 +47,14 @@ void                    Media::addOption( const char* opt )
 void                    Media::setLockCallback( Media::lockCallback callback )
 {
     char    param[64];
-    sprintf( param, ":vmem-lock=%lld", (qint64)(intptr_t)callback );
+    sprintf( param, ":sout-smem-video-prerender-callback=%lld", (qint64)(intptr_t)callback );
     addOption(param);
 }
 
 void                    Media::setUnlockCallback( Media::unlockCallback callback )
 {
     char    param[64];
-    sprintf( param, ":vmem-unlock=%lld", (qint64)(intptr_t)callback );
+    sprintf( param, ":sout-smem-video-postrender-callback=%lld", (qint64)(intptr_t)callback );
     addOption( param );
 }
 
@@ -62,7 +62,7 @@ void                    Media::setDataCtx( void* dataCtx )
 {
     char    param[64];
 
-    sprintf( param, ":vmem-data=%lld", (qint64)(intptr_t)dataCtx );
+    sprintf( param, ":sout-smem-video-data=%lld", (qint64)(intptr_t)dataCtx );
     addOption( param );
 }
 

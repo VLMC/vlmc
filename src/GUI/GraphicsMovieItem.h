@@ -51,19 +51,28 @@ public:
     void setWidth( int width );
     void setHeight( int height );
     Clip* clip() const;
-    void    setClip( Clip* clip );
     //void setAudioSpectrum( QVector<float*> spectrum );
     void paintAudioSpectrum( QPainter* painter );
 
 protected:
     void                paintRect( QPainter* painter, const QStyleOptionGraphicsItem* option );
     void                paintTitle( QPainter* painter, const QStyleOptionGraphicsItem* option );
+    virtual void        hoverEnterEvent( QGraphicsSceneHoverEvent* event );
+    virtual void        hoverLeaveEvent( QGraphicsSceneHoverEvent* event );
+    virtual void        mousePressEvent( QGraphicsSceneMouseEvent* event );
+    virtual void        mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
+
+private slots:
+    void                adjustLength();
 
 private:
     Clip*               m_clip;
     int                 m_width;
     int                 m_height;
     QVector<float*>     m_audioSpectrum;
+
+signals:
+    void                split( GraphicsMovieItem* self, qint64 frame );
 };
 
 #endif // GRAPHICSMOVIEITEM_H

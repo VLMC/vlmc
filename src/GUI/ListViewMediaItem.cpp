@@ -34,7 +34,7 @@ ListViewMediaItem::ListViewMediaItem( Clip* clip, Media::FileType fType, QListWi
 
     setIcon( QIcon( ":/images/images/vlmc.png") );
 
-    m_truncatedName = clip->getParent()->getFileInfo()->baseName();
+    m_truncatedName = clip->getParent()->getFileName();
     if ( m_truncatedName.length() > MAX_NAME_LENGTH )
     {
         m_truncatedName.truncate( MAX_NAME_LENGTH - 3 );
@@ -46,7 +46,7 @@ ListViewMediaItem::ListViewMediaItem( Clip* clip, Media::FileType fType, QListWi
     QTime   length;
     length = length.addSecs( m_clip->getLengthSecond() );
 
-    setToolTip( "Filename: " + m_clip->getParent()->getFileInfo()->fileName() + "\n" +
+    setToolTip( "Filename: " + clip->getParent()->getFileName() + "\n" +
                 "Length: " + length.toString() );
 }
 

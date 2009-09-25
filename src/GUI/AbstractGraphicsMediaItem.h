@@ -69,9 +69,6 @@ protected:
      */
     qint64 oldPosition;
 
-    virtual void mousePressEvent( QGraphicsSceneMouseEvent* event );
-    virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
-
 private:
     /// This pointer will be set when inserted in the tracksView.
     TracksView* m_tracksView;

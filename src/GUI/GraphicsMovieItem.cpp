@@ -35,9 +35,15 @@ GraphicsMovieItem::GraphicsMovieItem( Clip* clip ) : m_clip( clip ), m_width( 0 
     QTime length = QTime().addMSecs( clip->getParent()->getLength() );
     QString tooltip( tr( "<p style='white-space:pre'><b>Name:</b> %1"
                      "<br><b>Length:</b> %2" )
-                     .arg( clip->getParent()->getFileInfo()->fileName() )
+                     .arg( clip->getParent()->getFileName() )
                      .arg( length.toString("hh:mm:ss.zzz") ) );
     setToolTip( tooltip );
+    setAcceptHoverEvents( true );
+
+    // Adjust the width
+    setWidth( clip->getLength() );
+    // Automatically adjust future changes
+    connect( clip, SIGNAL( lengthUpdated() ), this, SLOT( adjustLength() ) );
 }
 
 GraphicsMovieItem::~GraphicsMovieItem()
@@ -59,19 +65,31 @@ void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     paintTitle( painter, option );
     painter->restore();
 
+    /* buggy code
     painter->save();
     paintAudioSpectrum( painter );
     painter->restore();
+    */
 }
 
 void GraphicsMovieItem::setWidth( int width )
 {
+    prepareGeometryChange();
     m_width = width;
 }
 
 void GraphicsMovieItem::setHeight( int height )
 {
+    prepareGeometryChange();
     m_height = height;
+}
+
+void GraphicsMovieItem::adjustLength()
+{
+    //FIXME implement clip expanding.
+    Q_ASSERT_X( m_clip->getLength() <= m_width, "adjustLength", "Clip expanding not supported!" );
+    prepareGeometryChange();
+    setWidth( m_clip->getLength() );
 }
 
 void GraphicsMovieItem::paintAudioSpectrum( QPainter* painter )
@@ -200,7 +218,7 @@ void GraphicsMovieItem::paintTitle( QPainter* painter, const QStyleOptionGraphic
 
     // Initiate the font metrics calculation
     QFontMetrics fm( painter->font() );
-    QString text = m_clip->getParent()->getFileInfo()->fileName();
+    QString text = m_clip->getParent()->getFileName();
 
     // Get the transformations required to map the text on the viewport
     QTransform viewPortTransform = Timeline::getInstance()->tracksView()->viewportTransform();
@@ -211,4 +229,46 @@ void GraphicsMovieItem::paintTitle( QPainter* painter, const QStyleOptionGraphic
 
     painter->setPen( Qt::white );
     painter->drawText( mapped, Qt::AlignVCenter, fm.elidedText( text, Qt::ElideRight, mapped.width() ) );
+}
+
+void GraphicsMovieItem::hoverEnterEvent( QGraphicsSceneHoverEvent* event )
+{
+    TracksView* tv = Timeline::getInstance()->tracksView();
+    if ( tv )
+    {
+        switch ( tv->tool() )
+        {
+            case TOOL_DEFAULT:
+            setCursor( Qt::OpenHandCursor );
+            break;
+
+            case TOOL_CUT:
+            setCursor( QCursor( QPixmap( ":/images/editcut" ) ) );
+            break;
+        }
+    }
+
+    AbstractGraphicsMediaItem::hoverEnterEvent( event );
+}
+
+void GraphicsMovieItem::hoverLeaveEvent( QGraphicsSceneHoverEvent* event )
+{
+    AbstractGraphicsMediaItem::hoverLeaveEvent( event );
+}
+
+void GraphicsMovieItem::mousePressEvent( QGraphicsSceneMouseEvent* event )
+{
+    TracksView* tv = Timeline::getInstance()->tracksView();
+    if ( tv->tool() == TOOL_DEFAULT )
+        setCursor( Qt::ClosedHandCursor );
+    else
+        emit split( this, qRound64( event->pos().x() ) );
+}
+
+void GraphicsMovieItem::mouseReleaseEvent( QGraphicsSceneMouseEvent*  event )
+{
+    Q_UNUSED( event );
+    TracksView* tv = Timeline::getInstance()->tracksView();
+    if ( tv->tool() == TOOL_DEFAULT )
+        setCursor( Qt::OpenHandCursor );
 }

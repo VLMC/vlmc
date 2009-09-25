@@ -86,7 +86,7 @@ void Commands::MainWorkflow::RemoveClips::undo()
 }
 
 Commands::MainWorkflow::ResizeClip::ResizeClip( ::MainWorkflow* mainWorkflow, const QUuid& uuid, unsigned int trackId,
-            float newBegin, float newEnd ) :
+            qint64 newBegin, qint64 newEnd ) :
     m_mainWorkflow( mainWorkflow ),
     m_newBegin( newBegin ),
     m_newEnd( newEnd )

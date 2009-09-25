@@ -1,5 +1,6 @@
 /*****************************************************************************
- * AudioProjectPreferences.cpp: VLMC Audio project preferences class
+ * TagWidget.h : Widget for tagging media
+ *                     Render preview
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,25 +21,44 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "AudioProjectPreferences.h"
+#ifndef TAGWIDGET_H
+#define TAGWIDGET_H
 
-#include "QDebug"
+#include <QWidget>
+#include <QStringList>
+#include <QFileInfo>
+#include <QCompleter>
+#include "Clip.h"
 
-	AudioProjectPreferences::AudioProjectPreferences( QWidget *parent )
-: PreferenceWidget( parent )
+namespace Ui
 {
-	m_ui.setupUi( this );
+    class TagWidget;
 }
 
-AudioProjectPreferences::~AudioProjectPreferences() { }
-
-bool    AudioProjectPreferences::load()
+class TagWidget : public QWidget
 {
-	qDebug() << "Loading AudioProjectPreferences values";
-	return true;
-}
+    Q_OBJECT
+    public:
+        TagWidget( QWidget *parent = 0, int nbButton = 0, QStringList tagList = QStringList() );
+        ~TagWidget();
+        void    setNbButton( int nbButton ) { m_nbButton = nbButton; }
+        void    setTagList( QStringList tagList ) { m_defaultTagList = tagList; }
 
-void    AudioProjectPreferences::save( QHash<QString, QVariant>& settings )
-{
-	settings.insert( "AudioSampleRate", m_ui.SampleRate->value() );
-}
+    protected:
+        void    changeEvent( QEvent *e );
+        void    setTagTextEdit();
+
+    private:
+        Ui::TagWidget*  m_ui;
+        int             m_nbButton;
+        QStringList     m_defaultTagList;
+        QWidgetList     m_buttonList;
+        Media*          m_currentMedia;
+        QCompleter*     m_completer;
+
+    public slots:
+        void    mediaSelected( Media* media );
+        void    tagAdded();
+};
+
+#endif // TAGWIDGET_H

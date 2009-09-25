@@ -28,14 +28,14 @@
 #include "PreferenceWidget.h"
 #include "ui_AudioProjectPreferences.h"
 
-class AudioProjectPreferences : public QWidget, public PreferenceWidget
+class AudioProjectPreferences : public PreferenceWidget
 {
     //Q_OBJECT
     public:
-        AudioProjectPreferences(QWidget *parent = 0);
+        AudioProjectPreferences( QWidget *parent = 0 );
         ~AudioProjectPreferences();
         bool    load();
-        void    save( QSettings& settings );
+        void    save( QHash<QString, QVariant>& settings );
     private:
         Ui::AudioProjectPreferences m_ui;
 };

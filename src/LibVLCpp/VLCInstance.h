@@ -26,37 +26,22 @@
 #include "vlc/vlc.h"
 #include "VLCpp.hpp"
 #include "VLCException.h"
+#include "Singleton.hpp"
 
 namespace LibVLCpp
 {
-    class   Instance : public Internal< libvlc_instance_t >
+    class   Instance : public Internal< libvlc_instance_t >,
+                        public Singleton<Instance>
     {
     private:
         Instance();
         Instance( int argc, const char** argv );
 
+        ~Instance();
+
     private:
         Exception           m_ex;
-        static Instance*    m_singleton;
-
-    public:
-
-        static Instance*    getInstance()
-        {
-            if (NULL == m_singleton)
-                m_singleton =  new Instance();
-
-            return m_singleton;
-        }
-
-        static void kill()
-        {
-            if ( m_singleton != NULL )
-            {
-                delete m_singleton;
-                m_singleton = NULL;
-            }
-        }
+        friend class    Singleton<Instance>;
     };
 }
 

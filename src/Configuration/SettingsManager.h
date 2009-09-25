@@ -1,10 +1,9 @@
 /*****************************************************************************
- * vlmc.h : contains the definition for every macro and prototypes used
- *          used program wide.
+ * SettingsManager.h: Backend settings manager
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
+ * Authors: Clement CHAVANCE <kinder@vlmc.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,25 +20,46 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef VLMC_H
-#define VLMC_H
+#ifndef SETTINGSMANAGER_H
+#define SETTINGSMANAGER_H
 
-#include <QtGlobal>
+#include <QObject>
+#include <QVector>
+#include <QHash>
+#include <QReadWriteLock>
+#include <QString>
+#include <QVariant>
+#include <QDomDocument>
 
-#ifdef Q_OS_WIN
-#include <Windows.h>
-#endif
+#include "QSingleton.hpp"
 
-#ifdef Q_OS_UNIX
-#define SleepMS( x ) usleep( (x) * 1000 )
-#else
-#define SleepMS( x ) Sleep( x )
-#endif
-
-enum ToolButtons
+struct	SettingsContainer
 {
-    TOOL_DEFAULT,
-    TOOL_CUT,
+	QReadWriteLock  lock;
+	QHash<QString, QVariant>  settings;
 };
 
-#endif // VLMC_H
+class   SettingsManager : public QObject, public QSingleton<SettingsManager>
+{
+	//Q_OBJECT
+	//
+	friend class QSingleton<SettingsManager>;
+	public:
+	int	  createNewSettings();
+
+	void	setValues( QHash<QString, QVariant>, int index );
+	void	setValue( const QString& key, QVariant& value, int index );
+	QVariant&	getValue( const QString& key );
+	private:
+	SettingsManager( QObject* parent = 0 );
+	~SettingsManager();
+
+	QVector<SettingsContainer*>	  m_settings;
+
+	public slots:
+		void    saveSettings( QDomDocument& xmlfile, int index );
+};
+
+
+#endif
+

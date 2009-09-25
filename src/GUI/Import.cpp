@@ -32,9 +32,11 @@ Import::Import(QWidget *parent) :
     m_ui->setupUi( this );
     m_importBrowser = new ImportBrowser( m_ui->ImportBrowserWidget );
     m_previewWidget = new PreviewWidget( new ClipRenderer, m_ui->PreviewWidget );
+    m_tagWidget = new TagWidget( m_ui->TagWidget, 6 );
 
     m_ui->ImportBrowserWidget = m_importBrowser;
     m_ui->PreviewWidget = m_previewWidget;
+    m_ui->TagWidget = m_tagWidget;
 
     connect( m_importBrowser, SIGNAL( mediaSelected( QFileInfo ) ), this, SLOT( getMetaData( QFileInfo ) ) );
 }
@@ -47,6 +49,7 @@ Import::~Import()
     delete m_metaDataWorker;
     delete m_importBrowser;
     delete m_previewWidget;
+    delete m_tagWidget;
 }
 
 void    Import::getMetaData( QFileInfo fileInfos )
@@ -64,6 +67,8 @@ void    Import::setUIMetaData()
     m_currentClip = new Clip( m_currentMedia );
 
     connect( this, SIGNAL( mediaSelected( Clip* ) ), m_previewWidget->getGenericRenderer(), SLOT( setClip( Clip* ) ) );
+    connect( this, SIGNAL( mediaSelected( Media* ) ), m_tagWidget, SLOT( mediaSelected( Media* ) ) );
+    emit mediaSelected( m_currentMedia );
 
     //Duration
     QTime   duration;

@@ -40,6 +40,7 @@ Media::Media( const QString& filePath, const QString& uuid )
     m_snapshot( NULL ),
     m_fileInfo( NULL ),
     m_length( 0 ),
+    m_nbFrames( 0 ),
     m_width( 0 ),
     m_height( 0 ),
     m_metadataParsed( false )
@@ -53,6 +54,7 @@ Media::Media( const QString& filePath, const QString& uuid )
     {
         m_inputType = Media::File;
         m_fileInfo = new QFileInfo( filePath );
+        m_fileName = m_fileInfo->fileName();
         setFileType();
         if ( m_fileType == Media::Video || m_fileType == Media::Audio )
             m_mrl = "file:///" + m_fileInfo->absoluteFilePath();
@@ -65,6 +67,8 @@ Media::Media( const QString& filePath, const QString& uuid )
         m_mrl = filePath.right( filePath.length() - streamPrefix.length() );
         //FIXME:
         m_fileType = Media::Video;
+        m_fileName = m_mrl;
+        qDebug() << "Loading a stream";
     }
     m_vlcMedia = new LibVLCpp::Media( m_mrl );
 }
@@ -234,4 +238,47 @@ void                Media::setUuid( const QUuid& uuid )
 bool                Media::hasMetadata() const
 {
     return m_metadataParsed;
+}
+
+void                Media::setNbFrames( qint64 nbFrames )
+{
+    m_nbFrames = nbFrames;
+}
+
+qint64              Media::getNbFrames() const
+{
+    return m_nbFrames;
+}
+
+const QString&      Media::getMrl() const
+{
+    return m_mrl;
+}
+
+const QString&      Media::getFileName() const
+{
+    return m_fileName;
+}
+
+const QStringList&      Media::getMetaTags() const
+{
+    return m_metaTags;
+}
+
+void            Media::setMetaTags( const QStringList& tags )
+{
+    m_metaTags = tags;
+}
+
+bool            Media::matchMetaTag( const QString& tag ) const
+{
+    if ( tag.length() == 0 )
+        return true;
+    QString metaTag;
+    foreach ( metaTag, m_metaTags )
+    {
+        if ( metaTag.startsWith( tag, Qt::CaseInsensitive ) == true )
+            return true;
+    }
+    return false;
 }

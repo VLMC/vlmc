@@ -92,6 +92,8 @@ public:
     const QPixmap&              getSnapshot() const;
 
     const QFileInfo*            getFileInfo() const;
+    const QString&              getMrl() const;
+    const QString&              getFileName() const;
 
     /**
         \return                 Returns the length of this media (ie the
@@ -105,6 +107,7 @@ public:
                                 you'll just have to blame yourself !
     */
     void                        setLength( qint64 length );
+    void                        setNbFrames( qint64 nbFrames );
 
     int                         getWidth() const;
     void                        setWidth( int width );
@@ -114,6 +117,8 @@ public:
 
     float                       getFps() const;
     void                        setFps( float fps );
+
+    qint64                      getNbFrames() const;
 
     const QUuid&                getUuid() const;
     void                        setUuid( const QUuid& uuid );
@@ -132,6 +137,10 @@ public:
     QVector<int*>               getAudioFrameList() { return m_audioData.frameList; }
     unsigned int                getAudioNbSample() { return m_audioData.nbSample; }
 
+    const QStringList&          getMetaTags() const;
+    void                        setMetaTags( const QStringList& tags );
+    bool                        matchMetaTag( const QString& tag ) const;
+
     void                        emitMetaDataComputed();
 
     bool                        hasMetadata() const;
@@ -149,6 +158,7 @@ protected:
     QUuid                       m_uuid;
     QFileInfo*                  m_fileInfo;
     qint64                      m_length;
+    qint64                      m_nbFrames;
     unsigned int                m_width;
     unsigned int                m_height;
     float                       m_fps;
@@ -157,6 +167,8 @@ protected:
     FileType                    m_fileType;
     InputType                   m_inputType;
     bool                        m_metadataParsed;
+    QString                     m_fileName;
+    QStringList                 m_metaTags;
 
 signals:
     void                        metaDataComputed( Media* );

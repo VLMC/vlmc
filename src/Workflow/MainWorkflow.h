@@ -111,6 +111,8 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
         void                    clear();
 
+        void                    setFullSpeedRender( bool value );
+
     private:
         static MainWorkflow*    m_instance;
 
@@ -132,7 +134,8 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         QMutex*                         m_renderMutex;
         QAtomicInt                      m_nbTracksToPause;
         QAtomicInt                      m_nbTracksToUnpause;
-        QAtomicInt                      m_nbTracksToRender;
+        unsigned int                    m_nbTracksToRender;
+        QMutex*                         m_nbTracksToRenderMutex;
         QMutex*                         m_highestTrackNumberMutex;
         unsigned int                    m_highestTrackNumber;
         unsigned char*                  m_synchroneRenderingBuffer;
