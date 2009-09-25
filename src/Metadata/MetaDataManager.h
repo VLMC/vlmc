@@ -36,7 +36,7 @@ class       MetaDataManager : public QObject, public Singleton<MetaDataManager>
 
     friend class        Singleton<MetaDataManager>;
     public slots:
-        void            newMediaLoaded( Media* );
+        void            metadataRequired( Media* );
 
     private:
         MetaDataManager();

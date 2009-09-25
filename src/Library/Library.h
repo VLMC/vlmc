@@ -77,6 +77,7 @@ private slots:
 
 signals:
     void                    newClipLoaded( Clip* );
+    void                    metadataRequired( Media* );
     void                    newMediaLoaded( Media* );
     void                    mediaRemoved( const QUuid& );
     void                    projectLoaded();

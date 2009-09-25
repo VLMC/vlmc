@@ -50,6 +50,7 @@
 #include "AudioProjectPreferences.h"
 #include "VideoProjectPreferences.h"
 #include "VLMCPreferences.h"
+#include "MediaLibraryWidget.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
@@ -116,12 +117,19 @@ void        MainWindow::setupLibrary()
 
     //GUI part :
     LibraryWidget* libraryWidget = new LibraryWidget( this );
+    MediaLibraryWidget* mediaLibraryWidget = new MediaLibraryWidget( this );
 
     DockWidgetManager::instance()->addDockedWidget( libraryWidget,
-                                  tr( "Media Library" ),
+                                  tr( "Old Media Library" ),
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::LeftDockWidgetArea );
+
+    DockWidgetManager::instance()->addDockedWidget( mediaLibraryWidget,
+                                                    tr( "Media Library" ),
+                                                    Qt::AllDockWidgetAreas,
+                                                    QDockWidget::AllDockWidgetFeatures,
+                                                    Qt::LeftDockWidgetArea );
 
     //Connecting GUI and Frontend :
     connect( libraryWidget,
