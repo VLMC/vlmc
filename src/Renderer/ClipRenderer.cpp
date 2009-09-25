@@ -43,6 +43,8 @@ ClipRenderer::ClipRenderer() :
 
 ClipRenderer::~ClipRenderer()
 {
+    if ( m_vlcMedia )
+        delete m_vlcMedia;
     stop();
 }
 
