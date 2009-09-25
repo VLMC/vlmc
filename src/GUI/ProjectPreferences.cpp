@@ -29,7 +29,7 @@
 #include "PreferenceWidget.h"
 
 
-	ProjectPreferences::ProjectPreferences( QWidget* parent )
+  ProjectPreferences::ProjectPreferences( QWidget* parent )
 : PreferenceWidget( parent )
 {
 	m_ui.setupUi( this );

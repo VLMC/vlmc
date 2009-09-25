@@ -35,29 +35,29 @@
 
 struct	SettingsContainer
 {
-  QReadWriteLock  lock;
-  QHash<QString, QVariant>  settings;
+	QReadWriteLock  lock;
+	QHash<QString, QVariant>  settings;
 };
 
 class   SettingsManager : public QObject, public QSingleton<SettingsManager>
 {
-    //Q_OBJECT
-    //
-    friend class QSingleton<SettingsManager>;
-  public:
-    int	  createNewSettings();
+	//Q_OBJECT
+	//
+	friend class QSingleton<SettingsManager>;
+	public:
+	int	  createNewSettings();
 
-    void	setValues( QHash<QString, QVariant>, int index );
-    void	setValue( const QString& key, QVariant& value, int index );
-    QVariant&	getValue( const QString& key );
-  private:
-    SettingsManager( QObject* parent = 0 );
-    ~SettingsManager();
+	void	setValues( QHash<QString, QVariant>, int index );
+	void	setValue( const QString& key, QVariant& value, int index );
+	QVariant&	getValue( const QString& key );
+	private:
+	SettingsManager( QObject* parent = 0 );
+	~SettingsManager();
 
-    QVector<SettingsContainer*>	  m_settings;
+	QVector<SettingsContainer*>	  m_settings;
 
-  public slots:
-    void    saveSettings( QDomDocument& xmlfile, int index );
+	public slots:
+		void    saveSettings( QDomDocument& xmlfile, int index );
 };
 
 

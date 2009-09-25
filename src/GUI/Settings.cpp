@@ -69,6 +69,7 @@ void        Settings::addWidget( const QString& name,
 
     int idx = m_stackedWidgets->indexOf( pWidget );
     m_widgets.insert( idx, name );
+    m_pWidgets.push_back( pWidget );
     m_panel->addButton( label, icon, idx );
     if ( !m_currentWidget )
         m_currentWidget = pWidget;
@@ -144,12 +145,14 @@ void    Settings::buttonClicked( QAbstractButton* button )
     }
     if ( save == true )
     {
+      qDebug() << "Saving Preferences";
       //Save Settings
       QHash<QString, QVariant>	sett;
       PreferenceWidget*		widg;
 
       foreach( widg, m_pWidgets )
 	widg->save( sett );
+      qDebug() << sett;
     }
     if ( hide == true )
     {

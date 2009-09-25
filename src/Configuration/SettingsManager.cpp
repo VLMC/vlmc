@@ -26,12 +26,12 @@
 
 int   SettingsManager::createNewSettings()
 {
-  this->m_settings.append(new SettingsContainer());
-  return this->m_settings.size() - 1;
+	this->m_settings.append(new SettingsContainer());
+	return this->m_settings.size() - 1;
 }
 
-SettingsManager::SettingsManager( QObject* parent )
-  : QObject( parent )
+	SettingsManager::SettingsManager( QObject* parent )
+: QObject( parent )
 {
 }
 
@@ -41,9 +41,10 @@ SettingsManager::~SettingsManager()
 
 void  SettingsManager::saveSettings( QDomDocument& xmlfile, int index )
 {
-  SettingsContainer* settings = m_settings[index];
-  settings->lock.lockForRead();
+	Q_UNUSED( xmlfile )
+		SettingsContainer* settings = m_settings[index];
+	settings->lock.lockForRead();
 
-  //SAVE SETTINGS TO DomDocument
-  settings->lock.unlock();
+	//SAVE SETTINGS TO DomDocument
+	settings->lock.unlock();
 }
