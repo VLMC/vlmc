@@ -83,7 +83,7 @@ MixerEffect::~MixerEffect()
 
 void	MixerEffect::render( void )
 {
-  LightVideoFrame	tmp;
+  quint32	i;
   QHash< QString, InSlot<LightVideoFrame> >::iterator   it = m_videoInputs.begin();
   QHash< QString, InSlot<LightVideoFrame> >::iterator   end = m_videoInputs.end();
 
@@ -94,6 +94,14 @@ void	MixerEffect::render( void )
       const VideoFrame&   lvf = static_cast<VideoFrame>( static_cast<LightVideoFrame>( ( it.value() ) ) );
       if ( lvf.rvf.raw != NULL )
       {
+// 	qDebug() << "PONEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEY";
+// 	for ( i = 0; i < lvf.nboctets; ++i )
+// 	  {
+// 	    qDebug() << "DUMP MIXER"
+// 		     << "lvf.rvf.raw[" << i << "] = "
+// 		     << lvf.rvf.raw[i];
+// 	  }
+
           m_videoOutputs["out"] << it.value();
       }
       ++it;
