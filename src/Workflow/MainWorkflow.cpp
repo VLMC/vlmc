@@ -30,15 +30,17 @@
 //FIXME: remove this !
 #include "ClipWorkflow.h"
 
-unsigned char*  MainWorkflow::blackOutput = NULL;
+VideoFrame*     MainWorkflow::nullOutput = NULL;
+VideoFrame*     MainWorkflow::blackOutput = NULL;
 
 MainWorkflow::MainWorkflow( int trackCount ) :
         m_currentFrame( 0 ),
         m_length( 0 ),
         m_renderStarted( false )
 {
-    MainWorkflow::blackOutput = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 3];
-    memset( MainWorkflow::blackOutput, 0, VIDEOHEIGHT * VIDEOWIDTH * 3 );
+    MainWorkflow::nullOutput = new VideoFrame();
+    MainWorkflow::blackOutput = new VideoFrame( VIDEOWIDTH * VIDEOHEIGHT * 3 );
+    memset(MainWorkflow::blackOutput->rvf.raw, 0, (VIDEOWIDTH * VIDEOHEIGHT * 3) );
 
     m_renderStartedLock = new QReadWriteLock;
     m_renderMutex = new QMutex;
@@ -68,10 +70,11 @@ MainWorkflow::~MainWorkflow()
     delete m_synchroneRenderWaitCondition;
     delete m_renderMutex;
     delete m_renderStartedLock;
-    delete[] blackOutput;
     for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
         delete m_tracks[i];
     delete[] m_tracks;
+    delete nullOutput;
+    delete blackOutput;
 }
 
 void            MainWorkflow::addClip( Clip* clip, unsigned int trackId,

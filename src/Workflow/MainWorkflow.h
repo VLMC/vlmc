@@ -124,6 +124,9 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    activateTrack( unsigned int trackId );
 
     private:
+        static VideoFrame*              nullOutput;
+        static VideoFrame*              blackOutput;
+
         qint64                          m_currentFrame;
         qint64                          m_length;
         /**
