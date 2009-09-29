@@ -15,8 +15,6 @@ VideoFrame::VideoFrame()
 
 VideoFrame::VideoFrame( quint32 nboctets )
 {
-  quint32	i;
-
   this->nboctets = nboctets;
   this->nbpixels = nboctets / Pixel::NbComposantes;
   this->rvf.raw = new quint8[nboctets];
@@ -79,12 +77,21 @@ VideoFrame & VideoFrame::operator=( VideoFrame const & tocopy )
 
 VideoFrame::VideoFrame( VideoFrame const & tocopy )
 {
-  quint32	i;
+  if (tocopy.rvf.raw != NULL)
+    {
+      quint32	i;
 
-  this->nboctets = tocopy.nboctets;
-  this->nbpixels = tocopy.nboctets / Pixel::NbComposantes;
-  this->rvf.raw = new quint8[tocopy.nboctets];
+      this->nboctets = tocopy.nboctets;
+      this->nbpixels = tocopy.nboctets / Pixel::NbComposantes;
+      this->rvf.raw = new quint8[tocopy.nboctets];
 
-  for ( i = 0; i < this->nboctets; ++i )
-    this->rvf.raw[i] = tocopy.rvf.raw[i];
+      for ( i = 0; i < this->nboctets; ++i )
+	this->rvf.raw[i] = tocopy.rvf.raw[i];
+    }
+  else
+    {
+      this->nboctets = 0;
+      this->nbpixels = 0;
+      this->rvf.raw = NULL;
+    }
 }

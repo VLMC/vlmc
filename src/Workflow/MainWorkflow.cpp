@@ -38,8 +38,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
                 "MainWorkflow constructor", "Can't have more than one MainWorkflow instance" );
     m_instance = this;
 
-    MainWorkflow::blackOutput = new VideoFrame( VIDEOHEIGHT * VIDEOWIDTH * 3 );
-    memset( MainWorkflow::blackOutput->rvf.raw, 0, VIDEOHEIGHT * VIDEOWIDTH * 3 );
+    MainWorkflow::blackOutput = new VideoFrame();
 
     m_tracks = new Toggleable<TrackWorkflow*>[trackCount];
     for ( int i = 0; i < trackCount; ++i )
