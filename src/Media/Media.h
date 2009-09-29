@@ -137,6 +137,10 @@ public:
     QVector<int*>               getAudioFrameList() { return m_audioData.frameList; }
     unsigned int                getAudioNbSample() { return m_audioData.nbSample; }
 
+    const QStringList&          getMetaTags() const;
+    void                        setMetaTags( const QStringList& tags );
+    bool                        matchMetaTag( const QString& tag ) const;
+
     void                        emitMetaDataComputed();
 
 private:
@@ -161,6 +165,7 @@ protected:
     FileType                    m_fileType;
     InputType                   m_inputType;
     QString                     m_fileName;
+    QStringList                 m_metaTags;
 
 signals:
     void                        metaDataComputed();

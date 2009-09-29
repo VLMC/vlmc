@@ -68,7 +68,6 @@ class   ClipWorkflow : public QObject
          */
         VideoFrame*             getOutput();
         void                    initialize( bool preloading = false );
-
         /**
          *  Return true ONLY if the state is equal to Ready.
          *  If the state is Rendering, EndReached or anything else, this will

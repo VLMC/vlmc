@@ -36,7 +36,7 @@ class   ProjectPreferences : public PreferenceWidget
         ProjectPreferences( QWidget* parent = 0 );
         virtual ~ProjectPreferences();
         bool    load();
-        void    save( QSettings& settings );
+        void    save( QHash<QString, QVariant>& settings );
     private:
         Ui::ProjectPreferences  m_ui;
 };

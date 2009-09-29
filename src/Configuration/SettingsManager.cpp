@@ -1,6 +1,5 @@
 /*****************************************************************************
- * PreferenceWidget.h: Abstract class that will be used to save load / preferences
- * values.
+ * SettingsManager.cpp * : Backend settings manager
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -21,23 +20,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef PREFERENCEWIDGET_H
-#define PREFERENCEWIDGET_H
-
 #include <QHash>
-#include <QVariant>
-#include <QString>
-#include <QWidget>
-#include <QVariant>
 
-class   PreferenceWidget : public QWidget
+#include "SettingsManager.h"
+
+int   SettingsManager::createNewSettings()
 {
-    public:
-        PreferenceWidget( QWidget* parent = 0 );
-        virtual ~PreferenceWidget() {}
+	this->m_settings.append(new SettingsContainer());
+	return this->m_settings.size() - 1;
+}
 
-        virtual bool    load() = 0;
-        virtual void    save( QHash<QString, QVariant>& settings ) = 0;
-};
+	SettingsManager::SettingsManager( QObject* parent )
+: QObject( parent )
+{
+}
 
-#endif
+SettingsManager::~SettingsManager()
+{
+}
+
+void  SettingsManager::saveSettings( QDomDocument& xmlfile, int index )
+{
+	Q_UNUSED( xmlfile )
+		SettingsContainer* settings = m_settings[index];
+	settings->lock.lockForRead();
+
+	//SAVE SETTINGS TO DomDocument
+	settings->lock.unlock();
+}

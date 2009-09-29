@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>200</width>
-    <height>33</height>
+    <height>46</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,7 +22,7 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QSpinBox" name="spinBox"/>
+    <widget class="QSpinBox" name="SampleRate"/>
    </item>
   </layout>
  </widget>

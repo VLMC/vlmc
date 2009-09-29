@@ -1,6 +1,5 @@
 /*****************************************************************************
- * PreferenceWidget.h: Abstract class that will be used to save load / preferences
- * values.
+ * SettingsManager.h: Backend settings manager
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -21,23 +20,46 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef PREFERENCEWIDGET_H
-#define PREFERENCEWIDGET_H
+#ifndef SETTINGSMANAGER_H
+#define SETTINGSMANAGER_H
 
+#include <QObject>
+#include <QVector>
 #include <QHash>
-#include <QVariant>
+#include <QReadWriteLock>
 #include <QString>
-#include <QWidget>
 #include <QVariant>
+#include <QDomDocument>
 
-class   PreferenceWidget : public QWidget
+#include "QSingleton.hpp"
+
+struct	SettingsContainer
 {
-    public:
-        PreferenceWidget( QWidget* parent = 0 );
-        virtual ~PreferenceWidget() {}
-
-        virtual bool    load() = 0;
-        virtual void    save( QHash<QString, QVariant>& settings ) = 0;
+	QReadWriteLock  lock;
+	QHash<QString, QVariant>  settings;
 };
 
+class   SettingsManager : public QObject, public QSingleton<SettingsManager>
+{
+	//Q_OBJECT
+	//
+	friend class QSingleton<SettingsManager>;
+	public:
+	int	  createNewSettings();
+
+	void	setValues( QHash<QString, QVariant>, int index );
+	void	setValue( const QString& key, QVariant& value, int index );
+	QVariant&	getValue( const QString& key );
+	private:
+	SettingsManager( QObject* parent = 0 );
+	~SettingsManager();
+
+	QVector<SettingsContainer*>	  m_settings;
+
+	public slots:
+		void    saveSettings( QDomDocument& xmlfile, int index );
+};
+
+
 #endif
+

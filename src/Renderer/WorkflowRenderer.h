@@ -81,7 +81,8 @@ class   WorkflowRenderer : public GenericRenderer
         QWaitCondition*     m_waitCond;
 
     public slots:
-        void                setClip( Clip* ){}
+        virtual void        setClip( Clip* ){}
+        virtual void        setMedia( Media* ) {}
         void                mediaUnloaded( const QUuid& ) {}
         void                timelineCursorChanged( qint64 newFrame );
 

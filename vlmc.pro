@@ -68,8 +68,8 @@ SOURCES += src/main.cpp \
     src/EffectsEngine/VideoFrame.cpp \
     src/EffectsEngine/GenericEffect.cpp \
     src/EffectsEngine/PouetEffect.cpp \
-    src/EffectsEngine/MixerEffect.cpp
-
+    src/EffectsEngine/MixerEffect.cpp \
+    src/Configuration/SettingsManager.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -136,8 +136,8 @@ HEADERS += src/GUI/MainWindow.h \
     src/EffectsEngine/LightParameter.h \
     src/EffectsEngine/GenericEffect.h \
     src/EffectsEngine/PouetEffect.h \
-    src/EffectsEngine/MixerEffect.h
-
+    src/EffectsEngine/MixerEffect.h \
+    src/Configuration/SettingsManager.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \
@@ -167,6 +167,7 @@ INCLUDEPATH += src/LibVLCpp \
     src/Media \
     src/Project \
     src/EffectsEngine \
+    src/Configuration \
     src
 
 # QMAKE_CFLAGS+=-pg

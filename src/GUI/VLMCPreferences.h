@@ -35,7 +35,7 @@ class VLMCPreferences : public PreferenceWidget
         VLMCPreferences( QWidget *parent = 0 );
         ~VLMCPreferences();
         bool    load();
-        void    save( QSettings& settings );
+        void    save( QHash<QString, QVariant>& settings );
     private:
         Ui::VLMCPreferences m_ui;
 };

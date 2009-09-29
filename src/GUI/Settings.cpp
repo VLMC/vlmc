@@ -29,8 +29,10 @@
 #include <QIcon>
 #include <QLabel>
 #include <QtDebug>
+#include <QVariant>
 
 #include "PreferenceWidget.h"
+#include "SettingsManager.h"
 #include "Settings.h"
 #include "Panel.h"
 
@@ -41,10 +43,14 @@ Settings::Settings( QWidget* parent, Qt::WindowFlags f )
 {
     m_panel = new Panel( this );
     m_stackedWidgets = new QStackedWidget( this );
-    connect( m_panel, SIGNAL( changePanel( int ) ),
+    connect( m_panel,
+	     SIGNAL( changePanel( int ) ),
              SLOT( switchWidget( int ) ) );
-    QObject::connect( this, SIGNAL( widgetSwitched( int ) ),
-                      m_stackedWidgets, SLOT( setCurrentIndex( int ) ));
+    QObject::connect( this,
+		      SIGNAL( widgetSwitched( int ) ),
+                      m_stackedWidgets,
+		      SLOT( setCurrentIndex( int ) ));
+    m_settingsNumber = SettingsManager::getInstance()->createNewSettings();
 }
 
 Settings::~Settings()
@@ -63,6 +69,7 @@ void        Settings::addWidget( const QString& name,
 
     int idx = m_stackedWidgets->indexOf( pWidget );
     m_widgets.insert( idx, name );
+    m_pWidgets.push_back( pWidget );
     m_panel->addButton( label, icon, idx );
     if ( !m_currentWidget )
         m_currentWidget = pWidget;
@@ -119,19 +126,37 @@ void    Settings::save( void )
 
 void    Settings::buttonClicked( QAbstractButton* button )
 {
+    bool  save = false;
+    bool  hide = false ;
     switch ( m_buttons->standardButton( button ) )
     {
     case QDialogButtonBox::Ok :
-        qDebug() << "MOK";
+	save = true;
+	hide = true;
         break;
     case QDialogButtonBox::Cancel :
-        qDebug() << "Oh NOES";
+	hide = true;
         break;
     case QDialogButtonBox::Apply :
-        qDebug() << "Apply";
+	save = true;
         break;
     default :
         break;
+    }
+    if ( save == true )
+    {
+      qDebug() << "Saving Preferences";
+      //Save Settings
+      QHash<QString, QVariant>	sett;
+      PreferenceWidget*		widg;
+
+      foreach( widg, m_pWidgets )
+	widg->save( sett );
+      qDebug() << sett;
+    }
+    if ( hide == true )
+    {
+      setVisible( false );
     }
 }
 

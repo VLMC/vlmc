@@ -51,7 +51,9 @@ private:
 private:
     bool                    m_clipLoaded;
     LibVLCpp::Media*        m_vlcMedia;
-    Clip*                   m_selectedClip;
+    Media*                  m_selectedMedia;
+    qint64                  m_begin;
+    qint64                  m_end;
     /**
      *  \brief  This flags is used to know if a new media has been selected in the
      * library. If so, we must relaunch the render if the play button is clicked again.
@@ -60,6 +62,7 @@ private:
 
 public slots:
     virtual void            setClip( Clip* clip );
+    virtual void            setMedia( Media* media );
     virtual void            mediaUnloaded( const QUuid& );
 
     void                    __positionChanged();

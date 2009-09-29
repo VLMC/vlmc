@@ -29,7 +29,9 @@ ClipRenderer::ClipRenderer() :
     GenericRenderer(),
     m_clipLoaded( false ),
     m_vlcMedia( NULL ),
-    m_selectedClip( NULL ),
+    m_selectedMedia( NULL ),
+    m_begin( 0 ),
+    m_end( -1 ),
     m_mediaChanged( false )
 {
     connect( m_mediaPlayer,     SIGNAL( stopped() ),            this,   SLOT( __videoStopped() ) );
@@ -41,12 +43,27 @@ ClipRenderer::ClipRenderer() :
 
 ClipRenderer::~ClipRenderer()
 {
+    if ( m_vlcMedia )
+        delete m_vlcMedia;
     stop();
+}
+
+void        ClipRenderer::setMedia( Media* media )
+{
+    m_selectedMedia = media;
+    m_begin = 0;
+    m_end = media->getNbFrames();
+    if ( m_isRendering == true )
+        m_mediaChanged = true;
+    else
+        m_clipLoaded = false;
 }
 
 void        ClipRenderer::setClip( Clip* clip )
 {
-    m_selectedClip = clip;
+    m_selectedMedia = clip->getParent();
+    m_begin = clip->getBegin();
+    m_end = clip->getEnd();
     if ( m_isRendering == true )
         m_mediaChanged = true;
     else
@@ -55,17 +72,17 @@ void        ClipRenderer::setClip( Clip* clip )
 
 void        ClipRenderer::startPreview()
 {
-    if ( m_selectedClip == NULL )
+    if ( m_selectedMedia == NULL )
         return ;
     //If an old media is found, we delete it, and disconnect
     if ( m_vlcMedia != NULL )
         delete m_vlcMedia;
-    m_vlcMedia = new LibVLCpp::Media( m_selectedClip->getParent()->getFileInfo()->absoluteFilePath() );
+    m_vlcMedia = new LibVLCpp::Media( m_selectedMedia->getFileInfo()->absoluteFilePath() );
 
     m_mediaPlayer->setMedia( m_vlcMedia );
 
     m_mediaPlayer->play();
-    m_mediaPlayer->setPosition( m_selectedClip->getBegin() / m_selectedClip->getLength() );
+    m_mediaPlayer->setPosition( m_begin / m_end );
     m_clipLoaded = true;
     m_isRendering = true;
     m_paused = false;
@@ -76,8 +93,8 @@ void        ClipRenderer::setPosition( float newPos )
 {
     if ( m_clipLoaded == false || m_isRendering == false )
         return ;
-    float   begin = m_selectedClip->getBegin() / m_selectedClip->getLength();
-    float   end = m_selectedClip->getEnd() / m_selectedClip->getEnd();
+    float   begin = m_begin / ( m_end - m_begin );
+    float   end = m_end / ( m_end - m_begin );
     float   pos = newPos * ( end - begin ) + begin;
     m_mediaPlayer->setPosition( pos );
 }
@@ -98,6 +115,7 @@ void        ClipRenderer::togglePlayPause( bool forcePause )
 {
     if ( m_clipLoaded == false )
     {
+        emit positionChanged( 0 );
         startPreview();
         return ;
     }
@@ -115,7 +133,7 @@ void        ClipRenderer::togglePlayPause( bool forcePause )
         if ( m_isRendering == false )
         {
             m_mediaPlayer->play();
-            m_mediaPlayer->setPosition( m_selectedClip->getBegin() / m_selectedClip->getLength() );
+            m_mediaPlayer->setPosition( m_begin / ( m_end - m_begin ) );
             m_isRendering = true;
         }
         else
@@ -141,13 +159,14 @@ void        ClipRenderer::previousFrame()
     }
 }
 
+//FIXME: this won't work with clips !
 void        ClipRenderer::mediaUnloaded( const QUuid& uuid )
 {
-    if ( m_selectedClip != NULL && m_selectedClip->getUuid() == uuid )
+    if ( m_selectedMedia != NULL && m_selectedMedia->getUuid() == uuid )
     {
         m_mediaPlayer->stop();
         m_clipLoaded = false;
-        m_selectedClip = NULL;
+        m_selectedMedia = NULL;
         m_isRendering = false;
         m_paused = false;
     }
@@ -176,8 +195,8 @@ void        ClipRenderer::__positionChanged()
     if ( m_clipLoaded == false)
         return ;
     
-    float   begin = m_selectedClip->getBegin() / m_selectedClip->getLength();
-    float   end = m_selectedClip->getEnd() / m_selectedClip->getEnd();
+    float   begin = m_begin / ( m_end - m_begin );
+    float   end = m_end / ( m_end - m_begin );
     float pos = ( m_mediaPlayer->getPosition() - begin ) /
                 ( end - begin );
     emit positionChanged( pos );
