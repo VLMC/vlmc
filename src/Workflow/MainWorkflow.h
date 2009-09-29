@@ -82,6 +82,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    pause();
         void                    unpause();
 
+        static VideoFrame*      nullOutput;
         static VideoFrame*      blackOutput;
         void                    nextFrame();
         void                    previousFrame();
