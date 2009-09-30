@@ -32,7 +32,7 @@ void        WorkflowFileRenderer::run()
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( stop() ) );
     connect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( positionChanged( float ) ) );
 
-    m_dialog->show();
+    m_dialog->exec();
 
     m_isRendering = true;
     m_stopping = false;
