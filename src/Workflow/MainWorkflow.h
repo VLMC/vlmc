@@ -80,7 +80,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    pause();
         void                    unpause();
 
-        static unsigned char*   blackOutput;
         void                    nextFrame();
         void                    previousFrame();
 
@@ -115,6 +114,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
     private:
         static MainWorkflow*    m_instance;
+        static unsigned char*   blackOutput;
 
     private:
         void                    computeLength();

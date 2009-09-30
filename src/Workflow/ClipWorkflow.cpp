@@ -153,6 +153,9 @@ void    ClipWorkflow::setVmem()
     sprintf( buffer, ":sout-transcode-height=%i", VIDEOHEIGHT );
     m_vlcMedia->addOption( buffer );
 
+    sprintf( buffer, ":sout-transcode-fps=%f", (float)FPS );
+    m_vlcMedia->addOption( buffer );
+
     //sprintf( buffer, "sout-smem-video-pitch=%i", VIDEOWIDTH * 3 );
     //m_vlcMedia->addOption( buffer );
 }

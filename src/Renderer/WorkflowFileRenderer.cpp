@@ -29,6 +29,9 @@ void        WorkflowFileRenderer::run()
                           + m_outputFileName + "\"}";
     m_media->addOption( transcodeStr.toStdString().c_str() );
 
+    sprintf( buffer, ":sout-transcode-fps=%f", (float)FPS );
+    m_media->addOption( buffer );
+
     m_mediaPlayer->setMedia( m_media );
 
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( stop() ) );
