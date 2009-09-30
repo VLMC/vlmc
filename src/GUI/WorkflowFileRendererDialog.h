@@ -36,6 +36,8 @@ public:
     void    setProgressBarValue( int val );
 private:
     Ui::WorkflowFileRendererDialog      m_ui;
+
+    friend class    WorkflowFileRenderer;
 };
 
 #endif // WORKFLOWFILERENDERERDIALOG_H
