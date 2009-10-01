@@ -4,25 +4,17 @@
 
 int main(void)
 {
-//   quint32	i;
-  EffectsEngine		ee;
-  VideoFrame		vf1((quint8*)"123456789", 9);
-  VideoFrame		vf2((quint8*)"ABCDEFGHI", 9);
+  quint32	i;
+  LightVideoFrame	f;
+  QHash<int, OutSlot<LightVideoFrame> >	qh;
+  InSlot<LightVideoFrame>		in;
 
-  ee.setInputFrame(vf1, 0);
-  ee.setInputFrame(vf2, 1);
-  ee.render();
-
-  std::cout << "result : " << ee.getOutputFrame(0).rvf.raw << std::endl;
-
-//   VideoFrame		nvf((quint8*)"1234abcdABCD", 12);
-
-//   for ( i = 0; i < nvf.nbpixels; ++i )
-//     {
-//       std::cout << "Pixel[" << i << "].Red = " << nvf.rvf.pixel[i].Red << std::endl;
-//       std::cout << "Pixel[" << i << "].Green = " << nvf.rvf.pixel[i].Green << std::endl;
-//       std::cout << "Pixel[" << i << "].Blue = " << nvf.rvf.pixel[i].Blue << std::endl;
-//     }
-
+  for (i = 0; i < 30; ++i)
+    {
+      qh[i];
+    }
+  qh[0].connect(in);
+//   qh[0] << f;
+//   qh[1] = f;
   return (0);
 }

@@ -93,8 +93,8 @@ void	MixerEffect::render( void )
       const VideoFrame&   lvf = static_cast<VideoFrame>( static_cast<LightVideoFrame>( ( it.value() ) ) );
       if ( lvf.rvf.raw != NULL )
       {
-          m_videoOutputs["out"] << lvf;
-	  return ;
+	m_videoOutputs["out"] << lvf;
+	return ;
       }
       ++it;
   }
