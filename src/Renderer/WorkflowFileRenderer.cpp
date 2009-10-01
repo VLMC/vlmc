@@ -4,8 +4,10 @@ WorkflowFileRenderer::WorkflowFileRenderer( const QString& outputFileName ) :
         m_outputFileName( outputFileName )
 {
     m_dialog = new WorkflowFileRendererDialog;
+    m_dialog->setModal( true );
     m_dialog->setOutputFileName( outputFileName );
     m_mediaPlayer = new LibVLCpp::MediaPlayer;
+    connect( m_dialog->m_ui.cancelButton, SIGNAL( clicked() ), this, SLOT( cancelButtonClicked() ) );
 }
 
 WorkflowFileRenderer::~WorkflowFileRenderer()
@@ -26,6 +28,9 @@ void        WorkflowFileRenderer::run()
                                ":standard{access=file,mux=ps,dst=\""
                           + m_outputFileName + "\"}";
     m_media->addOption( transcodeStr.toStdString().c_str() );
+
+    sprintf( buffer, ":sout-transcode-fps=%f", (float)FPS );
+    m_media->addOption( buffer );
 
     m_mediaPlayer->setMedia( m_media );
 
@@ -53,7 +58,7 @@ void    WorkflowFileRenderer::positionChanged( float newPos )
     m_dialog->setProgressBarValue( static_cast<int>( newPos * 100 ) );
 }
 
-void    WorkflowFileRenderer::on_cancelButton_clicked()
+void    WorkflowFileRenderer::cancelButtonClicked()
 {
     stop();
 }

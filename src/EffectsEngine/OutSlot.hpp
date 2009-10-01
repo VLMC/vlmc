@@ -82,9 +82,6 @@ private:
 template<typename T>
 OutSlot<T>::OutSlot() : m_type( InSlot<T>::NORMAL ), m_connectedTo( NULL ), m_pipe( &m_junk )
 {
-  qDebug() << "HAYA : " << this->m_pipe;
-  qDebug() << "HAYA : " << &(this->m_junk)
-	   << "\n" ;
 }
 
 template<typename T>
@@ -92,19 +89,11 @@ OutSlot<T>::OutSlot(OutSlot<T> const & tocopy) : m_type( tocopy.m_type ),
 						 m_connectedTo( NULL ),
 						 m_pipe( &m_junk )
 {
-  qDebug() << "copy ctor";
-  qDebug() << "m_pipe : " << this->m_pipe;
-  qDebug() << "&m_junk : " << &(this->m_junk)
-	   << "\n" ;
 }
 
 template<typename T>
 OutSlot<T>&	OutSlot<T>::operator=(OutSlot<T> const & tocopy)
 {
-  qDebug() << "HAIE GALLE sur OutSlot";
-  qDebug() << "m_pipe : " << this->m_pipe;
-  qDebug() << "&m_junk : " << &(this->m_junk)
-	   << "\n" ;
   m_type = tocopy.m_type;
   m_connectedTo = NULL;
   m_pipe = &m_junk;
@@ -120,10 +109,6 @@ OutSlot<T>::~OutSlot()
 template<typename T>
 OutSlot<T>&	OutSlot<T>::operator=( T const & val )
 {
-  qDebug() << "HAIE GALLE sur type T";
-  qDebug() << "m_pipe : " << this->m_pipe;
-  qDebug() << "&m_junk : " << &(this->m_junk)
-	   << "\n" ;
   (*m_pipe) = val;
   return ( *this );
 }
@@ -131,10 +116,6 @@ OutSlot<T>&	OutSlot<T>::operator=( T const & val )
 template<typename T>
 OutSlot<T>&	OutSlot<T>::operator<<( T const & val )
 {
-  qDebug() << "CHEUVEU ROND";
-  qDebug() << "m_pipe : " << this->m_pipe;
-  qDebug() << "&m_junk : " << &(this->m_junk)
-	   << "\n" ;
   (*m_pipe) = val;
   return (*this);
 }
@@ -150,10 +131,6 @@ bool	OutSlot<T>::connect( InSlot<T>& toconnect )
     {
       return ( false );
     }
-  qDebug() << "CONNECT";
-  qDebug() << "m_pipe : " << this->m_pipe;
-  qDebug() << "&m_junk : " << &(this->m_junk)
-	   << "\n" ;
   return ( true );
 }
 

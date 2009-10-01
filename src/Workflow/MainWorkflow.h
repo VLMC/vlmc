@@ -118,6 +118,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
     private:
         static MainWorkflow*    m_instance;
+        static unsigned char*   blackOutput;
 
     private:
         void                    computeLength();
