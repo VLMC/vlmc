@@ -15,21 +15,21 @@ PouetEffect::~PouetEffect()
 {
 }
 
-void	PouetEffect::render( void )
+void    PouetEffect::render( void )
 {
   static qint32		nbp = -1;
   quint32		i;
   LightVideoFrame	tmp;
-
+  
   ( m_videoInputs["in"] ) >> tmp;
- if (tmp.rvf.raw != NULL)
-   {
-     for ( i = 0; i < tmp.nbpixels; ++i )
-       {
-	 tmp.rvf.pixel[i].Red = 0;
-	 tmp.rvf.pixel[i].Blue = 0;
-       }
-     (m_videoOutputs["out"]) << tmp;
-   }
+  if (tmp.rvf.raw != NULL)
+  {
+    for ( i = 0; i < tmp.nbpixels; ++i )
+    {
+      tmp.rvf.pixel[i].Red = 0;
+      tmp.rvf.pixel[i].Blue = 0;
+    }
+    (m_videoOutputs["out"]) << tmp;
+  }
   return ;
 }

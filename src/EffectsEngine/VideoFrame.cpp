@@ -1,4 +1,5 @@
 #include "VideoFrame.h"
+#include <QtDebug>
 
 VideoFrame::~VideoFrame()
 {
@@ -49,23 +50,31 @@ VideoFrame & VideoFrame::operator=( VideoFrame const & tocopy )
     }
   else
     {
+      qDebug() << __LINE__;
       if ( tocopy.rvf.raw != NULL )
 	{
+	  qDebug() << __LINE__;
 	  if ( this->nboctets != tocopy.nboctets )
 	    {
+	      qDebug() << __LINE__ << "\n"
+		       << "this pixels = " << this->nbpixels
+		       << "tocopy pixels = " << tocopy.nbpixels;
 	      delete [] this->rvf.raw;
 	      this->rvf.raw = new quint8[tocopy.nboctets];
 	      this->nboctets = tocopy.nboctets;
 	      this->nbpixels = tocopy.nboctets / Pixel::NbComposantes;
+	      qDebug() << __LINE__;
 	    }
 	  quint32	i;
 	  
+	  qDebug() << __LINE__;
 	  for ( i = 0; i < this->nboctets; ++i )
 	    this->rvf.raw[i] = tocopy.rvf.raw[i];
+	  qDebug() << __LINE__;
 	}
       else
 	{
-	  delete [] this->rvf.raw;
+ 	  delete [] this->rvf.raw;
 	  this->rvf.raw = NULL;
 	  this->nboctets = 0;
 	  this->nbpixels = 0;

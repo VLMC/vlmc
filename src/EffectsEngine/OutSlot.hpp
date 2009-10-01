@@ -25,6 +25,7 @@
 #define OUTSLOT_HPP_
 
 #include "InSlot.hpp"
+#include <QtDebug>
 
 template<typename T>
 class   OutSlot
@@ -37,6 +38,8 @@ public:
   // CTOR & DTOR
 
   OutSlot();
+  OutSlot(OutSlot const &);
+  OutSlot&	operator=(OutSlot const &);
   ~OutSlot();
 
   // STREAMING
@@ -66,9 +69,8 @@ private:
 
   typename InSlot<T>::OUTTYPE	m_type;
   InSlot<T>*		m_connectedTo;
-  T*			m_pipe;
   T			m_junk;
-
+  T*			m_pipe;
 };
 
 /////////////////////////
@@ -80,6 +82,32 @@ private:
 template<typename T>
 OutSlot<T>::OutSlot() : m_type( InSlot<T>::NORMAL ), m_connectedTo( NULL ), m_pipe( &m_junk )
 {
+  qDebug() << "HAYA : " << this->m_pipe;
+  qDebug() << "HAYA : " << &(this->m_junk)
+	   << "\n" ;
+}
+
+template<typename T>
+OutSlot<T>::OutSlot(OutSlot<T> const & tocopy) : m_type( tocopy.m_type ),
+						 m_connectedTo( NULL ),
+						 m_pipe( &m_junk )
+{
+  qDebug() << "copy ctor";
+  qDebug() << "m_pipe : " << this->m_pipe;
+  qDebug() << "&m_junk : " << &(this->m_junk)
+	   << "\n" ;
+}
+
+template<typename T>
+OutSlot<T>&	OutSlot<T>::operator=(OutSlot<T> const & tocopy)
+{
+  qDebug() << "HAIE GALLE sur OutSlot";
+  qDebug() << "m_pipe : " << this->m_pipe;
+  qDebug() << "&m_junk : " << &(this->m_junk)
+	   << "\n" ;
+  m_type = tocopy.m_type;
+  m_connectedTo = NULL;
+  m_pipe = &m_junk;
 }
 
 template<typename T>
@@ -92,6 +120,10 @@ OutSlot<T>::~OutSlot()
 template<typename T>
 OutSlot<T>&	OutSlot<T>::operator=( T const & val )
 {
+  qDebug() << "HAIE GALLE sur type T";
+  qDebug() << "m_pipe : " << this->m_pipe;
+  qDebug() << "&m_junk : " << &(this->m_junk)
+	   << "\n" ;
   (*m_pipe) = val;
   return ( *this );
 }
@@ -99,6 +131,10 @@ OutSlot<T>&	OutSlot<T>::operator=( T const & val )
 template<typename T>
 OutSlot<T>&	OutSlot<T>::operator<<( T const & val )
 {
+  qDebug() << "CHEUVEU ROND";
+  qDebug() << "m_pipe : " << this->m_pipe;
+  qDebug() << "&m_junk : " << &(this->m_junk)
+	   << "\n" ;
   (*m_pipe) = val;
   return (*this);
 }
@@ -111,7 +147,13 @@ bool	OutSlot<T>::connect( InSlot<T>& toconnect )
   if ( m_connectedTo != NULL )
       return ( false );
   if ( toconnect.connect( (*this) ) == false)
+    {
       return ( false );
+    }
+  qDebug() << "CONNECT";
+  qDebug() << "m_pipe : " << this->m_pipe;
+  qDebug() << "&m_junk : " << &(this->m_junk)
+	   << "\n" ;
   return ( true );
 }
 

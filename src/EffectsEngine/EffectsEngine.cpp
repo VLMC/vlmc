@@ -107,10 +107,10 @@ void	EffectsEngine::patchEffects( void )
     for ( i = 0; i < 64; ++i )
     {   
         tmp = "track" + QString::number(i);
-        ( m_effects[0] )->connect( m_videoInputs[i], tmp );
+        m_effects[0]->connect( m_videoInputs[i], tmp );
     }
-    ( m_effects[0] )->connectOutput( QString( "out" ) , m_effects[1], QString( "in" ) );
-    ( m_effects[1] )->connect( QString( "out" ), m_videoOutputs[0] );
+    m_effects[0]->connectOutput( QString( "out" ) , m_effects[1], QString( "in" ) );
+    m_effects[1]->connect( QString( "out" ), m_videoOutputs[0] );
     return ;
 }
 
