@@ -2,94 +2,6 @@
 // #include "GenericEffect.h"
 // #include "PouetEffect.h"
 
-#include <QSharedDataPointer>
-#include <QSharedData>
-#include <QDebug>
-
-// class EmployeeData : public QSharedData
-// {
-// public:
-//   EmployeeData() : id(-1) { name.clear(); }
-//   EmployeeData(const EmployeeData &other)
-//     : QSharedData(other), id(other.id), name(other.name) { }
-//   ~EmployeeData() { }
-
-//   int id;
-//   QString name;
-// };
-
-// class Employee
-// {
-// public:
-//   Employee() { d = new EmployeeData; }
-//   Employee(int id, QString name) {
-//     d = new EmployeeData;
-//     setId(id);
-//     setName(name);
-//   }
-//    Employee(const Employee &other)
-//      : d (other.d)
-//   {
-//   }
-  
-  
-//   void setId(int id) { d->id = id; }
-//   void setName(QString name) { d->name = name; }
-  
-//   int id() const { return d->id; }
-//   QString name() const { return d->name; }
-  
-// private:
-//   QSharedDataPointer<EmployeeData> d;
-// };
-
-//
-//
-//
-//
-//
-
-// union	PPixel
-// {
-//   enum
-//     {
-//       NbComposantes = 3
-//     };
-//   struct
-//   {
-//     quint8	Red;
-//     quint8	Green;
-//     quint8	Blue;
-//   }		composantes;
-//   quint32	raw : NbComposantes * 8;
-// };
-
-// struct	PVideoFrame
-// {
-// //   ~VideoFrame();
-// //   VideoFrame();
-
-//   //  VideoFrame(quint32 nboctets);
-//   //  VideoFrame(quint8* tocopy, quint32 nboctets);
-
-// //   VideoFrame(VideoFrame const &);
-// //   VideoFrame & operator=(VideoFrame const & tocopy);
-  
-//   union
-//   {
-//     PPixel*	pixels;
-//     quint8*	octets;
-//   }		frame;
-//   quint32	nbpixels;
-//   quint32	nboctets;
-// };
-
-
-//
-//
-//
-//
-//
 
 struct	Pixel
 {
@@ -216,7 +128,7 @@ public:
     m_videoFrame->frame.octets = new quint8[nboctets];
   };
 
-  LightVideoFrame(quint8* tocopy, quint32 nboctets)
+  LightVideoFrame(quint8 const * tocopy, quint32 nboctets)
   {
     quint32	i;
 
@@ -261,8 +173,10 @@ private:
 
 int main(void)
 {
-  LightVideoFrame	vf(100);
+  LightVideoFrame	vf((const quint8*)("JAIMELESPONEYS"), 15);
 
-  qDebug() << vf->nbpixels;
+  std::cout << (const char*)vf->frame.octets << '\n'
+	    << vf->nbpixels << std::endl;
+
   return (0);
 }
