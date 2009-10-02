@@ -34,65 +34,82 @@ Import::Import(QWidget *parent) :
     m_previewWidget = new PreviewWidget( new ClipRenderer, m_ui->PreviewWidget );
     m_tagWidget = new TagWidget( m_ui->TagWidget, 6 );
 
-    m_ui->ImportBrowserWidget = m_importBrowser;
-    m_ui->PreviewWidget = m_previewWidget;
-    m_ui->TagWidget = m_tagWidget;
+    connect( m_importBrowser, SIGNAL( mediaAdded( QFileInfo ) ), this, SLOT( addMedia( QFileInfo ) ) );
+    connect( m_importBrowser, SIGNAL( mediaRemoved( QFileInfo ) ), this, SLOT( removeMedia( QFileInfo ) ) );
+    connect( m_importBrowser, SIGNAL( mediaSelected( QFileInfo ) ), this, SLOT( selectCurrentMedia( QFileInfo ) ) );
 
-    connect( m_importBrowser, SIGNAL( mediaSelected( QFileInfo ) ), this, SLOT( getMetaData( QFileInfo ) ) );
+    connect( this, SIGNAL( mediaSelected( Media* ) ), m_previewWidget->getGenericRenderer(), SLOT( setMedia( Media* ) ) );
+    connect( this, SIGNAL( mediaSelected( Media* ) ), m_tagWidget, SLOT( mediaSelected( Media* ) ) );
 }
 
 Import::~Import()
 {
     delete m_ui;
     delete m_currentMedia;
-    delete m_currentClip;
     delete m_metaDataWorker;
     delete m_importBrowser;
     delete m_previewWidget;
     delete m_tagWidget;
 }
 
-void    Import::getMetaData( QFileInfo fileInfos )
+void    Import::addMedia( QFileInfo fileInfos )
 {
     m_ui->nameValueLabel->setText( fileInfos.fileName() );
-    m_currentMedia = new Media( fileInfos.filePath(), fileInfos.fileName() );
+    m_currentMedia = new Media( fileInfos.filePath() );
+    m_mediaList.append( m_currentMedia );
 
     m_metaDataWorker = new MetaDataWorker( m_currentMedia );
-    connect( m_metaDataWorker, SIGNAL( destroyed() ), this, SLOT( setUIMetaData() ) );
     m_metaDataWorker->start();
+}
+
+void    Import::removeMedia( QFileInfo fileInfos )
+{
+    for ( int i = 0; i < m_mediaList.count(); i++ )
+    {
+        if ( fileInfos == *m_mediaList[i]->getFileInfo() )
+        {
+            m_mediaList.removeAt( i );
+            m_currentMedia = NULL;
+            break;
+        }
+    }
+}
+
+void    Import::selectCurrentMedia( QFileInfo fileInfos )
+{
+    for ( int i = 0; i < m_mediaList.count(); i++ )
+    {
+        if ( fileInfos == *m_mediaList[i]->getFileInfo() )
+        {
+            m_currentMedia = m_mediaList[i];
+            // TODO: stop the media player to stop before sending the mediaSelected signal
+            emit mediaSelected( m_currentMedia );
+            setUIMetaData();
+            break;
+        }
+    }
 }
 
 void    Import::setUIMetaData()
 {
-    m_currentClip = new Clip( m_currentMedia );
-
-    connect( this, SIGNAL( mediaSelected( Clip* ) ), m_previewWidget->getGenericRenderer(), SLOT( setClip( Clip* ) ) );
-    connect( this, SIGNAL( mediaSelected( Media* ) ), m_tagWidget, SLOT( mediaSelected( Media* ) ) );
-    emit mediaSelected( m_currentMedia );
-
     //Duration
     QTime   duration;
-    duration = duration.addSecs( m_currentClip->getLengthSecond() );
+    duration = duration.addSecs( m_currentMedia->getLength() );
     m_ui->durationValueLabel->setText( duration.toString( "hh:mm:ss" ) );
     //Filename || title
-    m_ui->nameValueLabel->setText( m_currentClip->getParent()->getFileInfo()->fileName() );
-    setWindowTitle( m_currentClip->getParent()->getFileInfo()->fileName() + " " + tr( "properties" ) );
+    m_ui->nameValueLabel->setText( m_currentMedia->getFileInfo()->fileName() );
+    setWindowTitle( m_currentMedia->getFileInfo()->fileName() + " " + tr( "properties" ) );
     //Resolution
-    m_ui->resolutionValueLabel->setText( QString::number( m_currentClip->getParent()->getWidth() )
-                                       + " x " + QString::number( m_currentClip->getParent()->getHeight() ) );
+    m_ui->resolutionValueLabel->setText( QString::number( m_currentMedia->getWidth() )
+                                       + " x " + QString::number( m_currentMedia->getHeight() ) );
     //FPS
-    m_ui->fpsValueLabel->setText( QString::number( m_currentClip->getParent()->getFps() ) );
-
-    emit mediaSelected( m_currentClip );
-
-    disconnect( this, SIGNAL( mediaSelected( Clip* ) ), m_previewWidget->getGenericRenderer(), SLOT( setClip( Clip* ) ) );
+    m_ui->fpsValueLabel->setText( QString::number( m_currentMedia->getFps() ) );
 }
 
 void    Import::accept()
 {
-    //FIXME: When media are stored as Media*, replace newMediaLoadingAsked by addMedia
-    for(int i = 0; i < m_importBrowser->getMediaInfoList().count(); i++ )
-        Library::getInstance()->newMediaLoadingAsked( m_importBrowser->getMediaInfoList()[i].filePath() );
+    for ( int i = 0; i < m_mediaList.count(); i++ )
+        Library::getInstance()->addMedia( m_mediaList[i] );
     done(Accepted);
 }
 

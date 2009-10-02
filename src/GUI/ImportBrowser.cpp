@@ -105,6 +105,7 @@ void ImportBrowser::on_pushButtonBackward_clicked()
 {
     FileInfoListModel* model = static_cast<FileInfoListModel*>( m_ImportListModel );
     m_mediaInfoList.removeOne( model->fileInfo( m_ui.listViewBrowser->selectionModel()->currentIndex() ) );
+    emit mediaRemoved( model->fileInfo( m_ui.listViewBrowser->selectionModel()->currentIndex() ) );
     model->setFileInfoList( m_mediaInfoList );
 
     if ( m_mediaInfoList.isEmpty() )
@@ -117,11 +118,17 @@ void ImportBrowser::on_pushButtonForward_clicked()
 
     if ( !m_FilesModel->isDir( m_ui.treeViewBrowser->selectionModel()->currentIndex() ) &&
         !m_mediaInfoList.contains( m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex() ) ) )
+    {
         m_mediaInfoList << m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex() );
+        emit mediaAdded( m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex() ) );
+    }
     else
         for( int i = 0; i < m_FilesModel->rowCount( m_ui.treeViewBrowser->selectionModel()->currentIndex() ); i++)
             if ( !m_mediaInfoList.contains( m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex().child( i, 0 ) ) ) )
+            {
                 m_mediaInfoList << m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex().child( i, 0 ) );
+                emit mediaAdded( m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex().child( i, 0 ) ) );
+            }
     model->setFileInfoList( m_mediaInfoList );
     m_ui.pushButtonBackward->setEnabled( true );
 }

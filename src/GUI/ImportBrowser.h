@@ -60,6 +60,8 @@ private slots:
 
 signals:
     void    mediaSelected( QFileInfo fileInfos );
+    void    mediaAdded( QFileInfo fileInfos );
+    void    mediaRemoved( QFileInfo fileInfos );
 };
 
 #endif /* !IMPORTBROWSER_H */

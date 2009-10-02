@@ -68,9 +68,6 @@ void        ClipRenderer::setClip( Clip* clip )
         m_mediaChanged = true;
     else
         m_clipLoaded = false;
-        
-    if ( m_mediaPlayer->isPlaying() )
-        stop();
 }
 
 void        ClipRenderer::startPreview()
