@@ -1,5 +1,7 @@
 #include "MediaCellView.h"
 #include "ui_MediaCellView.h"
+#include "Library.h"
+#include "ClipProperty.h"
 
 MediaCellView::MediaCellView( const QUuid& uuid, QWidget *parent ) :
         QWidget( parent ), m_ui( new Ui::MediaCellView ), m_uuid( uuid )
@@ -44,4 +46,14 @@ QString  MediaCellView::title() const
 const QUuid&    MediaCellView::uuid() const
 {
     return m_uuid;
+}
+
+void            MediaCellView::mouseDoubleClickEvent( QMouseEvent* event )
+{
+    if ( event->buttons() | Qt::LeftButton == Qt::LeftButton )
+    {
+        ClipProperty* mp = new ClipProperty( Library::getInstance()->getClip( m_uuid ), this );
+        mp->setModal( true );
+        mp->show();
+    }
 }

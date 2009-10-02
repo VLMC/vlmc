@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QUuid>
+#include <QMouseEvent>
 
 namespace Ui
 {
@@ -28,6 +29,9 @@ protected:
 private:
     Ui::MediaCellView   *m_ui;
     const QUuid         m_uuid;
+
+protected:
+    void        mouseDoubleClickEvent( QMouseEvent* );
 };
 
 #endif // MEDIACELLVIEW_H
