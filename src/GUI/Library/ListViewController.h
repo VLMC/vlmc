@@ -53,6 +53,7 @@ private:
     QWidget*                    m_container;
     QVBoxLayout*                m_layout;
     StackViewController*        m_nav;
+    QUuid*                      m_currentUuid;
 
 public slots:
     void            cellSelected( const QUuid& );
