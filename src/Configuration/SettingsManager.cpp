@@ -118,4 +118,3 @@ void  SettingsManager::loadSettings( const QDomElement& settings )
     m_lock.unlock();
     emit settingsLoaded();
 }
-
