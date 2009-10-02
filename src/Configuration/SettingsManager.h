@@ -56,8 +56,8 @@ class   SettingsManager : public QObject, public QSingleton<SettingsManager>
 
     signals:
         void    settingsLoaded();
-};
 
+};
 
 #endif
 
