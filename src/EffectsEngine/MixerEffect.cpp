@@ -83,15 +83,14 @@ MixerEffect::~MixerEffect()
 
 void	MixerEffect::render( void )
 {
-  quint32	i;
   QHash< QString, InSlot<LightVideoFrame> >::iterator   it = m_videoInputs.begin();
   QHash< QString, InSlot<LightVideoFrame> >::iterator   end = m_videoInputs.end();
 
 
   while ( it != end )
   {
-      const VideoFrame&   lvf = static_cast<VideoFrame>( static_cast<LightVideoFrame>( ( it.value() ) ) );
-      if ( lvf.rvf.raw != NULL )
+      const LightVideoFrame&   lvf = it.value();
+      if ( lvf->frame.octets != NULL )
       {
 	m_videoOutputs["out"] << lvf;
 	return ;

@@ -32,7 +32,7 @@
 #include "Toggleable.hpp"
 #include "TrackWorkflow.h"
 #include "Singleton.hpp"
-#include "VideoFrame.h"
+#include "LightVideoFrame.h"
 #include "EffectsEngine.h"
 
 class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
@@ -46,7 +46,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start );
         void                    startRender();
         void                    getOutput();
-        const VideoFrame*       getSynchroneOutput();
+        const LightVideoFrame*  getSynchroneOutput();
 
         /**
          *  \brief              Set the workflow position
@@ -82,8 +82,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    pause();
         void                    unpause();
 
-        static VideoFrame*      nullOutput;
-        static VideoFrame*      blackOutput;
         void                    nextFrame();
         void                    previousFrame();
 
@@ -118,7 +116,8 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
     private:
         static MainWorkflow*    m_instance;
-        static unsigned char*   blackOutput;
+        static LightVideoFrame* nullOutput;
+        static LightVideoFrame* blackOutput;
 
     private:
         void                    computeLength();
@@ -138,7 +137,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         QMutex*                         m_renderMutex;
         QAtomicInt                      m_nbTracksToPause;
         QAtomicInt                      m_nbTracksToUnpause;
-        const VideoFrame*               m_synchroneRenderingBuffer;
+        const LightVideoFrame*          m_synchroneRenderingBuffer;
         unsigned int                    m_nbTracksToRender;
         QMutex*                         m_nbTracksToRenderMutex;
         QMutex*                         m_highestTrackNumberMutex;

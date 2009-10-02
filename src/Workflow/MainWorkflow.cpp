@@ -25,8 +25,8 @@
 
 #include "MainWorkflow.h"
 
-VideoFrame*     MainWorkflow::nullOutput = NULL;
-VideoFrame*     MainWorkflow::blackOutput = NULL;
+LightVideoFrame*     MainWorkflow::nullOutput = NULL;
+LightVideoFrame*     MainWorkflow::blackOutput = NULL;
 MainWorkflow*   MainWorkflow::m_instance = NULL;
 
 MainWorkflow::MainWorkflow( int trackCount ) :
@@ -39,9 +39,9 @@ MainWorkflow::MainWorkflow( int trackCount ) :
                 "MainWorkflow constructor", "Can't have more than one MainWorkflow instance" );
     m_instance = this;
 
-    MainWorkflow::nullOutput = new VideoFrame();
-    MainWorkflow::blackOutput = new VideoFrame( VIDEOWIDTH * VIDEOHEIGHT * 3 );
-    memset(MainWorkflow::blackOutput->rvf.raw, 0, (VIDEOWIDTH * VIDEOHEIGHT * 3) );
+    MainWorkflow::nullOutput = new LightVideoFrame();
+    MainWorkflow::blackOutput = new LightVideoFrame( VIDEOWIDTH * VIDEOHEIGHT * Pixel::NbComposantes );
+    memset( (*MainWorkflow::blackOutput)->frame.octets, 0, ( VIDEOWIDTH * VIDEOHEIGHT * Pixel::NbComposantes ) );
 
     m_tracks = new Toggleable<TrackWorkflow*>[trackCount];
     for ( int i = 0; i < trackCount; ++i )
@@ -330,7 +330,7 @@ void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
     --m_nbTracksToRender;
 
     {
-        VideoFrame*     buff = m_tracks[trackId]->getSynchroneOutput();
+        LightVideoFrame*     buff = m_tracks[trackId]->getSynchroneOutput();
         if ( buff == NULL )
             m_effectEngine->setInputFrame( *MainWorkflow::nullOutput, trackId );
         else
@@ -350,7 +350,7 @@ void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
     }
 }
 
-const VideoFrame*  MainWorkflow::getSynchroneOutput()
+const LightVideoFrame*  MainWorkflow::getSynchroneOutput()
 {
     m_synchroneRenderWaitConditionMutex->lock();
     getOutput();
@@ -361,7 +361,7 @@ const VideoFrame*  MainWorkflow::getSynchroneOutput()
     m_synchroneRenderingBuffer = &( m_effectEngine->getOutputFrame( 0 ) );
     m_synchroneRenderWaitConditionMutex->unlock();
 
-    if ( m_synchroneRenderingBuffer->rvf.raw == NULL )
+    if ( (*m_synchroneRenderingBuffer)->frame.octets == NULL )
         return MainWorkflow::blackOutput;
 
     return m_synchroneRenderingBuffer;

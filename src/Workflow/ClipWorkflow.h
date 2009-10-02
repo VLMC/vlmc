@@ -66,7 +66,7 @@ class   ClipWorkflow : public QObject
          *  therefore, you can call this method blindly, without taking care
          *  of the rendering process advancement.
          */
-        VideoFrame*             getOutput();
+        LightVideoFrame*        getOutput();
         void                    initialize( bool preloading = false );
         /**
          *  Return true ONLY if the state is equal to Ready.
@@ -179,7 +179,7 @@ class   ClipWorkflow : public QObject
 
         QMutex*                 m_renderLock;
 //        unsigned char*          m_buffer;
-        VideoFrame*             m_frame;
+        LightVideoFrame*        m_frame;
         //unsigned char*          m_backBuffer;
 
         LibVLCpp::MediaPlayer*  m_mediaPlayer;

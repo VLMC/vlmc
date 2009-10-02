@@ -25,7 +25,7 @@
 #include "vlmc.h"
 #include "ClipWorkflow.h"
 #include "Pool.hpp"
-#include "VideoFrame.h"
+#include "LightVideoFrame.h"
 
 ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
                 m_clip( clip ),
@@ -36,7 +36,7 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
                 m_initFlag( false ),
                 m_fullSpeedRender( false )
 {
-    m_frame = new VideoFrame( VIDEOHEIGHT * VIDEOWIDTH * 4 );
+    m_frame = new LightVideoFrame( VIDEOHEIGHT * VIDEOWIDTH * 4 );
 //    m_backBuffer = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
     m_stateLock = new QReadWriteLock;
     m_requiredStateLock = new QMutex;
@@ -60,7 +60,7 @@ ClipWorkflow::~ClipWorkflow()
     delete m_frame;
 }
 
-VideoFrame*         ClipWorkflow::getOutput()
+LightVideoFrame*        ClipWorkflow::getOutput()
 {
     QMutexLocker    lock( m_renderLock );
 
@@ -86,7 +86,7 @@ void    ClipWorkflow::lock( ClipWorkflow* cw, void** pp_ret, int size )
 {
     Q_UNUSED( size );
     cw->m_renderLock->lock();
-    *pp_ret = cw->m_frame->rvf.raw;
+    *pp_ret = (*(cw->m_frame))->frame.octets;
 //    qDebug() << '[' << (void*)cw << "] ClipWorkflow::lock";
 }
 

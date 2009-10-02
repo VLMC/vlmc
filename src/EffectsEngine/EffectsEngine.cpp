@@ -46,7 +46,7 @@ void	EffectsEngine::render( void )
 //   return ;
 // }
 
-void	EffectsEngine::setInputFrame( VideoFrame& frame, quint32 tracknumber )
+void	EffectsEngine::setInputFrame( LightVideoFrame& frame, quint32 tracknumber )
 {
     QWriteLocker    lock( m_inputLock );
 
@@ -56,9 +56,9 @@ void	EffectsEngine::setInputFrame( VideoFrame& frame, quint32 tracknumber )
 
 // TO REPLACE BY A REF
 
-VideoFrame const &	EffectsEngine::getOutputFrame( quint32 tracknumber ) const
+LightVideoFrame const &	EffectsEngine::getOutputFrame( quint32 tracknumber ) const
 {
-  return ( ( VideoFrame const & )( ( LightVideoFrame const & ) (m_videoOutputs[tracknumber] ) ) );
+  return m_videoOutputs[tracknumber];
 }
 
 //

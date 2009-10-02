@@ -32,7 +32,7 @@
 #include <QDomElement>
 
 #include "ClipWorkflow.h"
-#include "VideoFrame.h"
+#include "LightVideoFrame.h"
 
 //TODO: REMOVE THIS
 #ifndef FPS
@@ -67,7 +67,7 @@ class   TrackWorkflow : public QObject
         /**
          *  Returns the output that has been computed in synchrone mode.
          */
-        VideoFrame*                             getSynchroneOutput();
+        LightVideoFrame*                        getSynchroneOutput();
 
         //FIXME: this won't be reliable as soon as we change the fps from the configuration
         static const unsigned int               nbFrameBeforePreload = 60;
@@ -114,7 +114,7 @@ class   TrackWorkflow : public QObject
         QAtomicInt                              m_nbClipToUnpause;
         QAtomicInt                              m_nbClipToRender;
 
-        VideoFrame*                             m_synchroneRenderBuffer;
+        LightVideoFrame*                        m_synchroneRenderBuffer;
 
     private slots:
         void                                    clipWorkflowPaused();

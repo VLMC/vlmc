@@ -51,48 +51,49 @@ LightVideoFrame::LightVideoFrame(LightVideoFrame const & tocopy) : m_videoFrame(
 
 LightVideoFrame&	LightVideoFrame::operator=(LightVideoFrame const & tocopy)
 {
-  if ( m_videoFrame->frame.octets == NULL )
-    {
-      if ( tocopy.m_videoFrame->frame.octets != NULL )
-	{
-	  m_videoFrame->frame.octets = new quint8[tocopy.m_videoFrame->nboctets];
-	  m_videoFrame->nboctets = tocopy.m_videoFrame->nboctets;
-	  m_videoFrame->nbpixels = tocopy.m_videoFrame->nboctets / Pixel::NbComposantes;
-	  quint32	i;
-	
-	  for ( i = 0; i < m_videoFrame->nboctets; ++i )
-	    m_videoFrame->frame.octets[i] = tocopy.m_videoFrame->frame.octets[i];
-	}
-    }
-  else
-    {
-      if ( tocopy.m_videoFrame->frame.octets != NULL )
-	{
-	  if ( m_videoFrame->nboctets != tocopy.m_videoFrame->nboctets )
-	    {
-	      qDebug() << __LINE__ << "\n"
-		       << "this pixels = " << m_videoFrame->nbpixels
-		       << "tocopy.m_videoFrame pixels = " << tocopy.m_videoFrame->nbpixels;
-	      delete [] m_videoFrame->frame.octets;
-	      m_videoFrame->frame.octets = new quint8[tocopy.m_videoFrame->nboctets];
-	      m_videoFrame->nboctets = tocopy.m_videoFrame->nboctets;
-	      m_videoFrame->nbpixels = tocopy.m_videoFrame->nboctets / Pixel::NbComposantes;
-	    }
-	  quint32	i;
-	  
-	  for ( i = 0; i < m_videoFrame->nboctets; ++i )
-	    m_videoFrame->frame.octets[i] = tocopy.m_videoFrame->frame.octets[i];
-	}
-      else
-	{
-	  delete [] m_videoFrame->frame.octets;
-	  m_videoFrame->frame.octets = NULL;
-	  m_videoFrame->nboctets = 0;
-	  m_videoFrame->nbpixels = 0;
-	}
-    }
-    
-  return ( *this );
+//  if ( m_videoFrame->frame.octets == NULL )
+//    {
+//      if ( tocopy.m_videoFrame->frame.octets != NULL )
+//	{
+//	  m_videoFrame->frame.octets = new quint8[tocopy.m_videoFrame->nboctets];
+//	  m_videoFrame->nboctets = tocopy.m_videoFrame->nboctets;
+//	  m_videoFrame->nbpixels = tocopy.m_videoFrame->nboctets / Pixel::NbComposantes;
+//	  quint32	i;
+//
+//	  for ( i = 0; i < m_videoFrame->nboctets; ++i )
+//	    m_videoFrame->frame.octets[i] = tocopy.m_videoFrame->frame.octets[i];
+//	}
+//    }
+//  else
+//    {
+//      if ( tocopy.m_videoFrame->frame.octets != NULL )
+//	{
+//	  if ( m_videoFrame->nboctets != tocopy.m_videoFrame->nboctets )
+//	    {
+//	      qDebug() << __LINE__ << "\n"
+//		       << "this pixels = " << m_videoFrame->nbpixels
+//		       << "tocopy.m_videoFrame pixels = " << tocopy.m_videoFrame->nbpixels;
+//	      delete [] m_videoFrame->frame.octets;
+//	      m_videoFrame->frame.octets = new quint8[tocopy.m_videoFrame->nboctets];
+//	      m_videoFrame->nboctets = tocopy.m_videoFrame->nboctets;
+//	      m_videoFrame->nbpixels = tocopy.m_videoFrame->nboctets / Pixel::NbComposantes;
+//	    }
+//	  quint32	i;
+//
+//	  for ( i = 0; i < m_videoFrame->nboctets; ++i )
+//	    m_videoFrame->frame.octets[i] = tocopy.m_videoFrame->frame.octets[i];
+//	}
+//      else
+//	{
+//	  delete [] m_videoFrame->frame.octets;
+//	  m_videoFrame->frame.octets = NULL;
+//	  m_videoFrame->nboctets = 0;
+//	  m_videoFrame->nbpixels = 0;
+//	}
+//    }
+//
+    m_videoFrame = tocopy.m_videoFrame;
+    return ( *this );
 };
 
 LightVideoFrame::LightVideoFrame(quint32 nboctets)
