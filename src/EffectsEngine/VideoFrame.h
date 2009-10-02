@@ -1,10 +1,9 @@
 #ifndef VIDEOFRAME_H_
 #define VIDEOFRAME_H_
 
-#include	<QtGlobal>
-// #include <QByteArray>
-
-// typedef	QByteArray	VideoFrame;
+#include <QSharedDataPointer>
+#include <QSharedData>
+#include <QDebug>
 
 struct	Pixel
 {
@@ -19,22 +18,41 @@ struct	Pixel
 
 union	RawVideoFrame
 {
-  Pixel*	pixel;
-  quint8*	raw;
+  Pixel*	pixels;
+  quint8*	octets;
 };
 
-struct	VideoFrame
+struct	VideoFrame : public QSharedData
 {
   ~VideoFrame();
   VideoFrame();
-  VideoFrame(quint32 nboctets);
-  VideoFrame(quint8* tocopy, quint32 nboctets);
-  VideoFrame(VideoFrame const &);
-  VideoFrame & operator=(VideoFrame const & tocopy);
-  
-  RawVideoFrame	rvf;
+  VideoFrame(VideoFrame const & tocopy);
+
+  RawVideoFrame	frame;
   quint32	nbpixels;
   quint32	nboctets;
+};
+
+class	LightVideoFrame
+{
+public:
+
+  LightVideoFrame();
+  LightVideoFrame(LightVideoFrame const & tocopy);
+  LightVideoFrame(quint32 nboctets);
+  LightVideoFrame(quint8 const * tocopy, quint32 nboctets);
+  ~LightVideoFrame();
+
+  LightVideoFrame&	operator=(LightVideoFrame const & tocopy);
+  VideoFrame const * operator->(void) const;
+  VideoFrame const & operator*(void) const;
+  VideoFrame* operator->(void);
+  VideoFrame& operator*(void);
+  
+private:
+
+  QSharedDataPointer<VideoFrame>	m_videoFrame;
+
 };
 
 #endif // VIDEOFRAME_H_
