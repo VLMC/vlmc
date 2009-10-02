@@ -8,7 +8,7 @@ FileInfoListModel::FileInfoListModel(const QFileInfoList& fileInfoList, QObject*
         : QAbstractListModel( parent ), m_fileInfoList( fileInfoList )
 { }
 
-int FileInfoListModel::rowCount( const QModelIndex& parent ) const
+int FileInfoListModel::rowCount( const QModelIndex& ) const
 {
     return m_fileInfoList.count();
 }
