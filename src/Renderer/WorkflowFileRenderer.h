@@ -48,7 +48,7 @@ private:
 private slots:
     void                        stop();
     void                        positionChanged( float newPos );
-    void                        on_cancelButton_clicked();
+    void                        cancelButtonClicked();
 };
 
 #endif // WORKFLOWFILERENDERER_H

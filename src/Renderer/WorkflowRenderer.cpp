@@ -53,6 +53,7 @@ WorkflowRenderer::WorkflowRenderer() :
     m_media->addOption( buffer );
     sprintf( buffer, ":height=%i", VIDEOHEIGHT );
     m_media->addOption( buffer );
+    m_media->addOption( ":no-audio" );
 
     m_condMutex = new QMutex;
     m_waitCond = new QWaitCondition;

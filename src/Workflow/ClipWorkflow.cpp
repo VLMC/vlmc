@@ -141,14 +141,19 @@ void    ClipWorkflow::setVmem()
 //    m_vlcMedia->addOption( ":no-sout-keep" );
 
     if ( m_fullSpeedRender == true )
-        m_vlcMedia->addOption( ":sout-sync" );
+    {
+        m_vlcMedia->addOption( ":no-sout-smem-time-sync" );
+    }
     else
-        m_vlcMedia->addOption( ":no-sout-sync" );
+        m_vlcMedia->addOption( ":sout-smem-time-sync" );
 
     sprintf( buffer, ":sout-transcode-width=%i", VIDEOWIDTH );
     m_vlcMedia->addOption( buffer );
 
     sprintf( buffer, ":sout-transcode-height=%i", VIDEOHEIGHT );
+    m_vlcMedia->addOption( buffer );
+
+    sprintf( buffer, ":sout-transcode-fps=%f", (float)FPS );
     m_vlcMedia->addOption( buffer );
 
     //sprintf( buffer, "sout-smem-video-pitch=%i", VIDEOWIDTH * 3 );
