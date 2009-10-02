@@ -46,9 +46,9 @@ class   Settings : public QDialog
         Settings( QWidget* parent = 0, Qt::WindowFlags f = 0 );
         virtual ~Settings();
         void                addWidget( const QString& name,
-                                       PreferenceWidget* pWidget,
-                                       const QString& icon,
-                                       const QString& label );
+                                        PreferenceWidget* pWidget,
+                                        const QString& icon,
+                                        const QString& label );
         void                build();
 
     private:
@@ -64,8 +64,6 @@ class   Settings : public QDialog
         QStackedWidget*             m_stackedWidgets;
         QDialogButtonBox*           m_buttons;
         bool                        m_saved;
-
-	int			    m_settingsNumber;
 
     public slots:
         void    switchWidget( int widget );

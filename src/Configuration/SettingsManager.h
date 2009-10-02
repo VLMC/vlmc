@@ -33,31 +33,26 @@
 
 #include "QSingleton.hpp"
 
-struct	SettingsContainer
-{
-	QReadWriteLock  lock;
-	QHash<QString, QVariant>  settings;
-};
 
 class   SettingsManager : public QObject, public QSingleton<SettingsManager>
 {
-	//Q_OBJECT
-	//
-	friend class QSingleton<SettingsManager>;
-	public:
-	int	  createNewSettings();
+    Q_OBJECT
 
-	void	setValues( QHash<QString, QVariant>, int index );
-	void	setValue( const QString& key, QVariant& value, int index );
-	QVariant&	getValue( const QString& key );
-	private:
-	SettingsManager( QObject* parent = 0 );
-	~SettingsManager();
+    friend class QSingleton<SettingsManager>;
+    public:
 
-	QVector<SettingsContainer*>	  m_settings;
+        void	setValues( QHash<QString, QVariant> );
+        void	setValue( const QString& key, QVariant& value );
+        QVariant&	getValue( const QString& key );
+    private:
+        SettingsManager( QObject* parent = 0 );
+        ~SettingsManager();
 
-	public slots:
-		void    saveSettings( QDomDocument& xmlfile, int index );
+        QHash<QString, QVariant>    m_data;
+        QReadWriteLock              m_lock;
+
+    public slots:
+        void    saveSettings( QDomDocument& xmlfile, QDomElement& root );
 };
 
 
