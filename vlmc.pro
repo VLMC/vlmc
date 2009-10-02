@@ -68,7 +68,7 @@ SOURCES += src/main.cpp \
     src/Workflow/TrackHandler.cpp \
     src/Workflow/AudioClipWorkflow.cpp \
     src/EffectsEngine/EffectsEngine.cpp \
-    src/EffectsEngine/VideoFrame.cpp \
+    src/EffectsEngine/LightVideoFrame.cpp \
     src/EffectsEngine/GenericEffect.cpp \
     src/EffectsEngine/PouetEffect.cpp \
     src/EffectsEngine/MixerEffect.cpp
@@ -135,7 +135,6 @@ HEADERS += src/GUI/MainWindow.h \
     src/EffectsEngine/EffectsEngine.h \
     src/EffectsEngine/InSlot.hpp \
     src/EffectsEngine/OutSlot.hpp \
-    src/EffectsEngine/VideoFrame.h \
     src/EffectsEngine/Parameter.h \
     src/EffectsEngine/CopyOnWrite.hpp \
     src/EffectsEngine/LightVideoFrame.h \
