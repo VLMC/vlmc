@@ -50,8 +50,8 @@
        </property>
        <property name="baseSize">
         <size>
-         <width>32</width>
-         <height>32</height>
+         <width>48</width>
+         <height>48</height>
         </size>
        </property>
        <property name="text">
