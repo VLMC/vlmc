@@ -20,11 +20,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "ListViewController.h"
-
-
-#include "MediaCellView.h"
 #include <QPushButton>
+
+#include "ListViewController.h"
+#include "MediaCellView.h"
+#include "Library.h"
 
 ListViewController::ListViewController( StackViewController* nav ) : m_nav( nav )
 {
@@ -60,4 +60,9 @@ QWidget*            ListViewController::view() const
 void                ListViewController::addCell( QWidget* cell )
 {
     m_layout->addWidget( cell );
+}
+
+void                ListViewController::cellSelected( const QUuid& uuid )
+{
+    emit selectedClipChanged( Library::getInstance()->getClip( uuid ) );
 }

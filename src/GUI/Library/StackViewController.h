@@ -19,10 +19,10 @@ public:
     StackViewController( QWidget* parent = 0 );
     ~StackViewController();
 
-    void        pushViewController( ViewController* viewController,
-                                    bool animated = false );
-
-    void        popViewController( bool animated = false );
+    void                    pushViewController( ViewController* viewController,
+                                                bool animated = false );
+    void                    popViewController( bool animated = false );
+    const ViewController*   getCurrentViewController() const;
 
 private:
     StackViewNavController*     m_nav;

@@ -131,7 +131,8 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/Library/ListViewController.h \
     src/GUI/Library/MediaCellView.h \
     src/GUI/Library/MediaLibraryWidget.h \
-    src/GUI/Library/MediaListViewController.h
+    src/GUI/Library/MediaListViewController.h \
+    src/GUI/Library/ViewController.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \

@@ -27,15 +27,19 @@
 #include <QListView>
 #include <QAbstractItemModel>
 #include <QScrollArea>
+#include <QUuid>
 
 #include "ViewController.h"
 #include "StackViewController.h"
+#include "Clip.h"
 
 
 class ListViewController : public ViewController
 {
+    Q_OBJECT
 
 public:
+    ListViewController() {}
     ListViewController( StackViewController* nav );
     ~ListViewController();
 
@@ -49,6 +53,12 @@ private:
     QWidget*                    m_container;
     QVBoxLayout*                m_layout;
     StackViewController*        m_nav;
+
+public slots:
+    void            cellSelected( const QUuid& );
+
+signals:
+    void            selectedClipChanged( Clip* );
 };
 
 #endif // LISTVIEWCONTROLLER_H

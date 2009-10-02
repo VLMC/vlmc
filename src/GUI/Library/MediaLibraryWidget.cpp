@@ -2,13 +2,18 @@
 
 MediaLibraryWidget::MediaLibraryWidget( QWidget* parent ) : QWidget( parent )
 {
-    StackViewController* nav = new StackViewController( this );
-    MediaListViewController* list = new MediaListViewController( nav );
+    m_nav = new StackViewController( this );
+    MediaListViewController* list = new MediaListViewController( m_nav );
 
-    nav->pushViewController( list );
+    m_nav->pushViewController( list );
 }
 
 MediaLibraryWidget::~MediaLibraryWidget()
 {
 
+}
+
+const ViewController*       MediaLibraryWidget::getCurrentViewController()
+{
+    return m_nav->getCurrentViewController();
 }

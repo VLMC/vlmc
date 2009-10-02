@@ -1,12 +1,14 @@
 #ifndef VIEWCONTROLLER_H
 #define VIEWCONTROLLER_H
 
-#include <QWidget>
+#include <QObject>
 
-class ViewController
+class ViewController : public QObject
 {
+    Q_OBJECT
+
 public:
-    ViewController() {}
+    //ViewController() {}
     virtual ~ViewController() {}
 
 

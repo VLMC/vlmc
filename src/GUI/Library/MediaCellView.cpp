@@ -7,6 +7,7 @@ MediaCellView::MediaCellView( const QUuid& uuid, QWidget *parent ) :
         QWidget( parent ), m_ui( new Ui::MediaCellView ), m_uuid( uuid )
 {
     m_ui->setupUi( this );
+    setFocusPolicy( Qt::ClickFocus );
 }
 
 MediaCellView::~MediaCellView()
@@ -50,10 +51,18 @@ const QUuid&    MediaCellView::uuid() const
 
 void            MediaCellView::mouseDoubleClickEvent( QMouseEvent* event )
 {
-    if ( event->buttons() | Qt::LeftButton == Qt::LeftButton )
+    if ( ( event->buttons() | Qt::LeftButton ) == Qt::LeftButton )
     {
         ClipProperty* mp = new ClipProperty( Library::getInstance()->getClip( m_uuid ), this );
         mp->setModal( true );
         mp->show();
+    }
+}
+
+void            MediaCellView::mousePressEvent( QMouseEvent* event )
+{
+    if ( ( event->buttons() | Qt::LeftButton ) == Qt::LeftButton )
+    {
+        emit cellSelected( m_uuid );
     }
 }

@@ -32,6 +32,12 @@ private:
 
 protected:
     void        mouseDoubleClickEvent( QMouseEvent* );
+    void        mousePressEvent( QMouseEvent* );
+
+signals:
+    void        cellSelected( const QUuid& uuid );
+
+
 };
 
 #endif // MEDIACELLVIEW_H

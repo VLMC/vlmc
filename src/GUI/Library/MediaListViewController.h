@@ -7,13 +7,16 @@
 #include "Library.h"
 #include "Media.h"
 
-class MediaListViewController : public QObject, public ListViewController
+class MediaListViewController : public ListViewController
 {
     Q_OBJECT
 
 public:
     MediaListViewController( StackViewController* nav );
     virtual ~MediaListViewController();
+
+private:
+    StackViewController*    m_nav;
 
 public slots:
     void        newMediaLoaded( Media* );

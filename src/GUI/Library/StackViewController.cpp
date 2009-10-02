@@ -74,3 +74,8 @@ void        StackViewController::previous()
 {
     popViewController();
 }
+
+const ViewController*   StackViewController::getCurrentViewController() const
+{
+    return m_current;
+}
