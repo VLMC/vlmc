@@ -44,15 +44,14 @@ class   SettingsManager : public QObject, public QSingleton<SettingsManager>
         void	          setValues( QHash<QString, QVariant> );
         void	          setValue( const QString& key, QVariant& value );
         const QVariant	  getValue( const QString& key ) const;
+        void    saveSettings( QDomDocument& xmlfile, QDomElement& root );
+        void    loadSettings( const QDomElement& settings );
     private:
         SettingsManager( QObject* parent = 0 );
         ~SettingsManager();
 
         QHash<QString, QVariant>    m_data;
-        QReadWriteLock              m_lock;
-
-    public slots:
-        void    saveSettings( QDomDocument& xmlfile, QDomElement& root );
+        mutable QReadWriteLock              m_lock;
 };
 
 
