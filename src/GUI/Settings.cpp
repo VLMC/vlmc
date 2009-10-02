@@ -152,6 +152,7 @@ void    Settings::buttonClicked( QAbstractButton* button )
         foreach( widg, m_pWidgets )
             widg->save( sett );
         qDebug() << sett;
+        SettingsManager::getInstance()->setValues( sett );
     }
     if ( hide == true )
     {
