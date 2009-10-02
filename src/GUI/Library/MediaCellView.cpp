@@ -39,6 +39,11 @@ void            MediaCellView::setThumbnail( const QPixmap& pixmap )
     m_ui->thumbnail->setPixmap( pixmap );
 }
 
+const QPixmap*  MediaCellView::getThumbnail() const
+{
+    return m_ui->thumbnail->pixmap();
+}
+
 QString  MediaCellView::title() const
 {
     return m_ui->title->text();
@@ -61,8 +66,31 @@ void            MediaCellView::mouseDoubleClickEvent( QMouseEvent* event )
 
 void            MediaCellView::mousePressEvent( QMouseEvent* event )
 {
+    QWidget::mousePressEvent( event );
+
     if ( ( event->buttons() | Qt::LeftButton ) == Qt::LeftButton )
     {
+        m_dragStartPos = event->pos();
         emit cellSelected( m_uuid );
     }
+}
+
+void    MediaCellView::mouseMoveEvent( QMouseEvent* event )
+{
+    if ( ( event->buttons() | Qt::LeftButton ) != Qt::LeftButton )
+         return;
+
+    if ( ( event->pos() - m_dragStartPos ).manhattanLength()
+          < QApplication::startDragDistance() )
+        return;
+
+    QMimeData* mimeData = new QMimeData;
+    //FIXME the second argument is a media UUID instead of a Clip
+    // and this is not logical... but it works.
+    mimeData->setData( "vlmc/uuid", m_uuid.toString().toAscii() );
+    QDrag* drag = new QDrag( this );
+    drag->setMimeData( mimeData );
+
+    drag->setPixmap( Library::getInstance()->getClip( m_uuid )->getParent()->getSnapshot().scaled( 100, 100, Qt::KeepAspectRatio ) );
+    drag->exec( Qt::CopyAction | Qt::MoveAction, Qt::CopyAction );
 }

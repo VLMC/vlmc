@@ -20,6 +20,7 @@ public:
 
     void            setTitle( const QString& title );
     void            setThumbnail( const QPixmap& pixmap );
+    const QPixmap*  getThumbnail() const;
     QString         title() const;
     const QUuid&    uuid() const;
 
@@ -29,10 +30,12 @@ protected:
 private:
     Ui::MediaCellView   *m_ui;
     const QUuid         m_uuid;
+    QPoint              m_dragStartPos;
 
 protected:
     void        mouseDoubleClickEvent( QMouseEvent* );
     void        mousePressEvent( QMouseEvent* );
+    void        mouseMoveEvent( QMouseEvent* );
 
 signals:
     void        cellSelected( const QUuid& uuid );
