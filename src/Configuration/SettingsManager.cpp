@@ -25,12 +25,6 @@
 
 #include "SettingsManager.h"
 
-int   SettingsManager::createNewSettings()
-{
-    this->m_settings.append(new SettingsContainer());
-    return this->m_settings.size() - 1;
-}
-
 SettingsManager::SettingsManager( QObject* parent )
     : QObject( parent )
 {
@@ -40,6 +34,38 @@ SettingsManager::~SettingsManager()
 {
 }
 
+void  SettingsManager::setValues( QHash<QString, QVariant> values )
+{
+    QHash<QString, QVariant>::iterator  it = values.begin();
+    QHash<QString, QVariant>::iterator  end = values.end();
+
+    for ( ; it != end; ++it  )
+        m_data.insert( it.key(), it.value() );
+    return ;
+}
+
+void  SettingsManager::setValue( const QString& key, QVariant& value )
+{
+    m_data.insert( key, value );
+    return ;
+}
+
+const QVariant   SettingsManager::getValue( const QString& key ) const
+{
+    return m_data[key];
+}
+
 void  SettingsManager::saveSettings( QDomDocument& xmlfile, QDomElement& root )
 {
+    m_lock.lockForRead();
+
+    //SAVE SETTINGS TO DomDocument
+    QHash<QString, QVariant>::iterator  it = m_data.begin();
+    QHash<QString, QVariant>::iterator  end = m_data.end();
+    QDomElement settingsNode = xmlfile.createElement( "settings" );
+    for ( ; it != end; ++it )
+        settingsNode.setAttribute( it.key(), it.value().toString() );
+    m_lock.unlock();
+
+    root.appendChild( settingsNode );
 }

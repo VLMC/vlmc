@@ -41,9 +41,9 @@ class   SettingsManager : public QObject, public QSingleton<SettingsManager>
     friend class QSingleton<SettingsManager>;
     public:
 
-        void	setValues( QHash<QString, QVariant> );
-        void	setValue( const QString& key, QVariant& value );
-        QVariant&	getValue( const QString& key );
+        void	          setValues( QHash<QString, QVariant> );
+        void	          setValue( const QString& key, QVariant& value );
+        const QVariant	  getValue( const QString& key ) const;
     private:
         SettingsManager( QObject* parent = 0 );
         ~SettingsManager();
