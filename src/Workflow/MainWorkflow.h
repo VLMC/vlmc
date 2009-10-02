@@ -34,7 +34,7 @@
 #include "TrackWorkflow.h"
 #include "TrackHandler.h"
 #include "Clip.h"
-#include "VideoFrame.h"
+#include "LightVideoFrame.h"
 #include "EffectsEngine.h"
 
 class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
@@ -124,8 +124,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    activateTrack( unsigned int trackId );
 
     private:
-        static VideoFrame*              nullOutput;
-        static VideoFrame*              blackOutput;
+        static unsigned char* blackOutput;
 
         qint64                          m_currentFrame;
         qint64                          m_length;

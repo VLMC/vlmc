@@ -30,17 +30,15 @@
 //FIXME: remove this !
 #include "ClipWorkflow.h"
 
-VideoFrame*     MainWorkflow::nullOutput = NULL;
-VideoFrame*     MainWorkflow::blackOutput = NULL;
+unsigned char* MainWorkflow::blackOutput = NULL;
 
 MainWorkflow::MainWorkflow( int trackCount ) :
         m_currentFrame( 0 ),
         m_length( 0 ),
         m_renderStarted( false )
 {
-    MainWorkflow::nullOutput = new VideoFrame();
-    MainWorkflow::blackOutput = new VideoFrame( VIDEOWIDTH * VIDEOHEIGHT * 3 );
-    memset(MainWorkflow::blackOutput->rvf.raw, 0, (VIDEOWIDTH * VIDEOHEIGHT * 3) );
+    MainWorkflow::blackOutput = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 3];
+    memset( MainWorkflow::blackOutput, 0, VIDEOHEIGHT * VIDEOWIDTH * 3 );
 
     m_renderStartedLock = new QReadWriteLock;
     m_renderMutex = new QMutex;
@@ -206,7 +204,48 @@ Clip*       MainWorkflow::removeClip( const QUuid& uuid, unsigned int trackId, T
     return m_tracks[trackType]->removeClip( uuid, trackId );
 }
 
+<<<<<<< HEAD:src/Workflow/MainWorkflow.cpp
 MainWorkflow::OutputBuffers*  MainWorkflow::getSynchroneOutput()
+=======
+void        MainWorkflow::trackUnpaused()
+{
+    m_nbTracksToUnpause.fetchAndAddAcquire( -1 );
+    if ( m_nbTracksToUnpause <= 0 )
+    {
+        m_paused = false;
+        emit mainWorkflowUnpaused();
+    }
+}
+
+void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
+{
+//    qDebug() << "tracksRenderCompleted";
+    QMutexLocker    lockNbTracks( m_nbTracksToRenderMutex );
+    --m_nbTracksToRender;
+
+    {
+        LightVideoFrame*     buff = m_tracks[trackId]->getSynchroneOutput();
+        if ( buff == NULL )
+            m_effectEngine->setInputFrame( *MainWorkflow::nullOutput, trackId );
+        else
+            m_effectEngine->setInputFrame( *buff, trackId );
+    }
+    //We check for minus or equal, since we can have 0 frame to compute,
+    //therefore, m_nbTracksToRender will be equal to -1
+    if ( m_nbTracksToRender <= 0 )
+    {
+//        qDebug() << "main workflow render completed";
+        //Just a synchronisation barriere
+        {
+            QMutexLocker    lock( m_synchroneRenderWaitConditionMutex );
+        }
+        //FIXME: This is uggly.... god probably just killed a kitten :(
+        m_synchroneRenderWaitCondition->wakeAll();
+    }
+}
+
+const LightVideoFrame*  MainWorkflow::getSynchroneOutput()
+>>>>>>> Merge new version with Workflow:src/Workflow/MainWorkflow.cpp
 {
     m_synchroneRenderWaitConditionMutex->lock();
     getOutput();
@@ -216,9 +255,17 @@ MainWorkflow::OutputBuffers*  MainWorkflow::getSynchroneOutput()
     m_effectEngine->render();
     m_synchroneRenderingBuffer = &( m_effectEngine->getOutputFrame( 0 ) );
     m_synchroneRenderWaitConditionMutex->unlock();
+<<<<<<< HEAD:src/Workflow/MainWorkflow.cpp
     m_outputBuffers->video = m_tracks[TrackWorkflow::Video]->getSynchroneOutput();
     m_outputBuffers->audio = m_tracks[TrackWorkflow::Audio]->getSynchroneOutput();
     return m_outputBuffers;
+=======
+
+    if ( (*m_synchroneRenderingBuffer)->frame.octets == NULL )
+        return MainWorkflow::blackOutput;
+
+    return m_synchroneRenderingBuffer;
+>>>>>>> Merge new version with Workflow:src/Workflow/MainWorkflow.cpp
 }
 
 void        MainWorkflow::cancelSynchronisation()
