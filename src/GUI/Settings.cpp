@@ -66,9 +66,9 @@ void        Settings::addWidget( const QString& name,
 {
     m_stackedWidgets->addWidget( pWidget );
     QObject::connect( SettingsManager::getInstance(),
-                        SIGNAL( settingsLoaded() ),
+                        SIGNAL( settingsLoaded( const QHash<QString, QVariant>& ) ),
                         this,
-                        SLOT( loadSettings() ) );
+                        SLOT( loadSettings( const QHash<QString, QVariant>& ) ) );
 
     int idx = m_stackedWidgets->indexOf( pWidget );
     m_widgets.insert( idx, name );
@@ -175,6 +175,6 @@ void    Settings::switchWidget( int widget )
     emit widgetSwitched( widget );
 }
 
-void    Settings::loadSettings()
+void    Settings::loadSettings( const QHash<QString, QVariant>& sett )
 {
 }

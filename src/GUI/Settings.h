@@ -67,7 +67,7 @@ class   Settings : public QDialog
 
     public slots:
         void    switchWidget( int widget );
-        void    loadSettings();
+        void    loadSettings( const QHash<QString, QVariant>& );
 
     private slots:
         void    buttonClicked( QAbstractButton* button );
