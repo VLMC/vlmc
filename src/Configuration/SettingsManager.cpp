@@ -76,11 +76,9 @@ void  SettingsManager::saveSettings( QDomDocument& xmlfile, QDomElement& root )
     QDomElement settingsNode = xmlfile.createElement( "settings" );
     for ( ; it != end; ++it )
     {
-        //DEBUG
-        {
-            qDebug() << it.key() << "val" << it.value().toString();
-        }
-        settingsNode.setAttribute( it.key(), it.value().toString() );
+        QDomElement elem = xmlfile.createElement( it.key() );
+        elem.setAttribute( "value", it.value().toString() );
+        settingsNode.appendChild( elem );
     }
     m_lock.unlock();
 
@@ -114,9 +112,10 @@ void  SettingsManager::loadSettings( const QDomElement& settings )
             qWarning() << "Invalid number of attributes for" << list.at( idx ).nodeName();
             return ;
         }
-        m_data.insert( attrMap.item( 0 ).nodeName(),
+        m_data.insert( list.at( idx ).toElement().tagName(),
                 QVariant( attrMap.item( 0 ).nodeValue() ));
     }
     m_lock.unlock();
-    //TODO : notify the widget that values have been loaded
+    emit settingsLoaded( m_data );
 }
+

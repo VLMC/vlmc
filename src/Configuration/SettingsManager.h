@@ -37,6 +37,7 @@
 class   SettingsManager : public QObject, public QSingleton<SettingsManager>
 {
     Q_OBJECT
+    Q_DISABLE_COPY( SettingsManager )
 
     friend class QSingleton<SettingsManager>;
     public:
@@ -52,6 +53,9 @@ class   SettingsManager : public QObject, public QSingleton<SettingsManager>
 
         QHash<QString, QVariant>    m_data;
         mutable QReadWriteLock              m_lock;
+
+    signals:
+        void    settingsLoaded( const QHash<QString, QVariant>& settings );
 };
 
 
