@@ -4,6 +4,9 @@
 #include <QSharedDataPointer>
 #include <QSharedData>
 #include <QDebug>
+#include <qmutex.h>
+#include <QWriteLocker>
+#include <QReadLocker>
 
 struct	Pixel
 {
@@ -52,7 +55,6 @@ public:
 private:
 
   QSharedDataPointer<VideoFrame>	m_videoFrame;
-
 };
 
 #endif // VIDEOFRAME_H_

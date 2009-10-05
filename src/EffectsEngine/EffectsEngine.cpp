@@ -3,8 +3,7 @@
 
 // CTOR & DTOR
 
-EffectsEngine::EffectsEngine( void//  quint32 nbinputs, quint32 nboutputs 
-			      )
+EffectsEngine::EffectsEngine( void )
 {
    quint32	i;
 
@@ -14,12 +13,6 @@ EffectsEngine::EffectsEngine( void//  quint32 nbinputs, quint32 nboutputs
   for (i = 0; i < 1; ++i)
     m_videoOutputs[i];       
   start();
-//    quint32	i;
-
-//   for (i = 0; i < nbinputs; ++i)
-//     m_videoInputs[i];
-//   for (i = 0; i < nboutputs; ++i)
-//     m_videoOutputs[i];       
 }
 
 EffectsEngine::~EffectsEngine()
