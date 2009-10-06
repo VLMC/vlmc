@@ -1,0 +1,25 @@
+
+================= GenericEffect =================
+
+-rajouter le mode conteneur, avec donc la generation des Out/InSlot necessaire pour proxyfier les infos,
+ et le getter pour savoir s'il est en mode conteneur ou pas
+-rendre la classe thread-safe
+-rajouter les commandes suivantes (create, delete, connect, disconnect, set)
+-rajouter le chainage pere fils avec les methode pour set et get le pere
+-rajouter l'interpreteur et l'encodeur
+-remplacer les qhash par des tableau statique
+-rajouter les connection dynamique avec une liste
+-rajouter le semaphore pour savoir si le render peut commencer
+-remplacer la virtuelle pure render par une virtuelle implemante vide
+-remplacer tout les connect etrange par 
+
+================= EffectsEngine =================
+
+-rajouter une methode activate & desactivate
+-rajouter le patch sous forme de GenericEffect conteneur
+-rendre la classe thread-safe
+
+================= InSlot & OutSlot =================
+
+-rajouter un getter pour savoir un out/inslot est connecte
+-rajoute la deconnection a la destruction

@@ -104,8 +104,6 @@ LightVideoFrame&	LightVideoFrame::operator=(LightVideoFrame const & tocopy)
   //
   //
 
-
-  
   m_videoFrame.detach();
   m_videoFrame = tocopy.m_videoFrame;
   return ( *this );
