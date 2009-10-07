@@ -18,8 +18,10 @@
 -rajouter une methode activate & desactivate
 -rajouter le patch sous forme de GenericEffect conteneur
 -rendre la classe thread-safe
+-les simplifiers en virant la gestion de priorite pour la deporter ailleurs
 
 ================= InSlot & OutSlot =================
 
 -rajouter un getter pour savoir un out/inslot est connecte
+-rajouter un getter pour recuper l'InSlot/OutSlot auquel l'OutSlot/InSlot est connecte
 -rajoute la deconnection a la destruction
