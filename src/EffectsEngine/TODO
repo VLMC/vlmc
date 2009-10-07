@@ -25,3 +25,5 @@
 -rajouter un getter pour savoir un out/inslot est connecte
 -rajouter un getter pour recuper l'InSlot/OutSlot auquel l'OutSlot/InSlot est connecte
 -rajoute la deconnection a la destruction
+-rajouter le using dans le template pour forcer le type sur lequel on template a posseder
+la methode get default value
