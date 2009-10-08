@@ -8,11 +8,11 @@ EffectsEngine::EffectsEngine( void )
    quint32	i;
 
    m_inputLock = new QReadWriteLock;
-  for (i = 0; i < 64; ++i)
-    m_videoInputs[i];
-  for (i = 0; i < 1; ++i)
-    m_videoOutputs[i];       
-  start();
+   for (i = 0; i < 64; ++i)
+     m_videoInputs[i];
+   for (i = 0; i < 1; ++i)
+     m_videoOutputs[i];       
+   start();
 }
 
 EffectsEngine::~EffectsEngine()
@@ -25,11 +25,25 @@ EffectsEngine::~EffectsEngine()
 
 void	EffectsEngine::render( void )
 {
-    ( m_effects[0] )->render();
-    ( m_effects[1] )->render();
-    return ;
+  QWriteLocker    lock( m_inputLock );
+  ( m_effects[0] )->render();
+  ( m_effects[1] )->render();
+  return ;
 }
 
+// BYPASSING
+
+void		EffectsEngine::enable( void )
+{
+  QWriteLocker    lock( m_inputLock );
+  reinterpret_cast<PouetEffect*>(m_effects[1])->enable(); // YES, I KNOW, IT'S HUGLY, BUT IT'S TEMPORARY
+}
+
+void		EffectsEngine::disable( void )
+{
+  QWriteLocker    lock( m_inputLock );
+  reinterpret_cast<PouetEffect*>(m_effects[1])->disable(); // YES, I KNOW, IT'S HUGLY, BUT IT'S TEMPORARY (second time)
+}
 
 // INPUTS & OUTPUTS METHODS
 
@@ -106,4 +120,3 @@ void	EffectsEngine::patchEffects( void )
     m_effects[1]->connect( QString( "out" ), m_videoOutputs[0] );
     return ;
 }
-
