@@ -31,6 +31,7 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QSettings>
+#include <QStringList>
 
 #include "MainWindow.h"
 #include "MediaListWidget.h"
@@ -162,6 +163,13 @@ void    MainWindow::on_actionSave_triggered()
     else
     {
         //Project manager will destroy itself.
+        QStringList list = outputFileName.split( "." );
+        if ( list.at( list.size() - 1 ) != "vlmc" )
+        {
+            list.append( "vlmc" );
+            outputFileName = list.join(".");
+        }
+
         ProjectManager* pm = new ProjectManager( outputFileName );
         pm->saveProject();
     }
