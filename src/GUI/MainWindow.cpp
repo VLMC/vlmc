@@ -170,7 +170,7 @@ void    MainWindow::on_actionSave_triggered()
 void    MainWindow::on_actionLoad_Project_triggered()
 {
     QString outputFileName =
-            QFileDialog::getSaveFileName( NULL, "Enter the output file name",
+            QFileDialog::getOpenFileName( NULL, "Enter the output file name",
                                           QString(), "VLMC project file(*.vlmc)" );
     if ( outputFileName.length() == 0 )
         return ;
