@@ -43,6 +43,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         MainWorkflow( int trackCount );
         ~MainWorkflow();
 
+        EffectsEngine*          getEffectsEngine( void );
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start );
         void                    startRender();
         void                    getOutput();

@@ -57,9 +57,6 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     m_synchroneRenderWaitCondition = new QWaitCondition;
     m_synchroneRenderWaitConditionMutex = new QMutex;
     m_effectEngine = new EffectsEngine;
-
-    m_effectEngine->disable();
-
     m_nbTracksToRenderMutex = new QMutex;
 }
 
@@ -79,6 +76,11 @@ MainWorkflow::~MainWorkflow()
     delete[] m_tracks;
     delete nullOutput;
     delete blackOutput;
+}
+
+EffectsEngine*          MainWorkflow::getEffectsEngine(void)
+{
+    return ( m_effectEngine );
 }
 
 void        MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )

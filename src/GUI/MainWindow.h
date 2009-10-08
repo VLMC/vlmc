@@ -39,6 +39,8 @@
 #include "PreviewWidget.h"
 #include "ListViewMediaItem.h"
 #include "Settings.h"
+#include "EffectsEngine.h"
+#include "MainWorkflow.h"
 
 class MainWindow : public QMainWindow
 {
@@ -76,6 +78,7 @@ private:
     Settings*               m_projectPreferences;
 
 private slots:
+    void on_actionBypass_effects_engine_toggled(bool );
     void on_actionFullscreen_triggered( bool checked );
     void on_actionQuit_triggered();
     void on_actionAbout_triggered();
