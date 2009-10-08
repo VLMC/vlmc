@@ -15,9 +15,12 @@ class	PouetEffect : public GenericEffect
   // RENDER METHOD
 
   void	render( void );
+  void	enable( void );
+  void	disable( void );
 
  private:
 
+  bool					m_enabled;
   static	quint32 const		m_nbVideoInputs = 1;
   static	quint32 const		m_nbVideoOutputs = 1;
   static	char const * 	m_videoInputsNames[m_nbVideoInputs];

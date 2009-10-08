@@ -57,6 +57,9 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     m_synchroneRenderWaitCondition = new QWaitCondition;
     m_synchroneRenderWaitConditionMutex = new QMutex;
     m_effectEngine = new EffectsEngine;
+
+    m_effectEngine->disable();
+
     m_nbTracksToRenderMutex = new QMutex;
 }
 

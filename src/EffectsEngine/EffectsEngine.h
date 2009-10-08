@@ -29,6 +29,11 @@ class	EffectsEngine
 
   void		render( void );
 
+  // BYPASSING
+
+  void		enable( void );
+  void		disable( void );
+
   // INPUTS & OUTPUTS METHODS
 
 /*   void			setClock( Parameter currentframenumber ); */
@@ -51,6 +56,7 @@ class	EffectsEngine
   // EFFECTS PATCHING
 
   void		patchEffects( void );
+
 
  private:
 
