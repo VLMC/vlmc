@@ -27,7 +27,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -54,11 +54,12 @@
    </widget>
    <widget class="QMenu" name="menuEffets">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="title">
      <string>Effects</string>
     </property>
+    <addaction name="actionBypass_effects_engine"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -175,6 +176,17 @@
   <action name="actionSave">
    <property name="text">
     <string>Save</string>
+   </property>
+  </action>
+  <action name="actionBypass_effects_engine">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Enable effects engine</string>
    </property>
   </action>
  </widget>

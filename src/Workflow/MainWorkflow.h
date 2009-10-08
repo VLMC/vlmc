@@ -48,6 +48,8 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
             unsigned char*      audio;
         };
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start, TrackWorkflow::TrackType type );
+
+        EffectsEngine*          getEffectsEngine( void );
         void                    startRender();
         void                    getOutput();
         OutputBuffers*          getSynchroneOutput();
