@@ -47,6 +47,8 @@ class TagWidget : public QWidget
     protected:
         void    changeEvent( QEvent *e );
         void    setTagTextEdit();
+        void    setButtonList( QStringList tagList );
+        bool    isButtonExist();
 
     private:
         Ui::TagWidget*  m_ui;
@@ -54,11 +56,11 @@ class TagWidget : public QWidget
         QStringList     m_defaultTagList;
         QWidgetList     m_buttonList;
         Media*          m_currentMedia;
-        QCompleter*     m_completer;
 
     public slots:
         void    mediaSelected( Media* media );
-        void    tagAdded();
+        void    buttonTagClicked();
+        void    setMetaTags();
 };
 
 #endif // TAGWIDGET_H
