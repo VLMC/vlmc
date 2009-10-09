@@ -1,5 +1,7 @@
 #include "MediaListViewController.h"
 
+#include <QDebug>
+
 MediaListViewController::MediaListViewController( StackViewController* nav ) :
         ListViewController( nav ), m_nav( nav )
 {
@@ -21,4 +23,14 @@ void        MediaListViewController::newMediaLoaded( Media* media )
     cell->setThumbnail( media->getSnapshot() );
     cell->setTitle( media->getFileName() );
     addCell(cell);
+}
+
+void        MediaListViewController::dragEnterEvent( QDragEnterEvent* event )
+{
+    qDebug() << "Drag enter";
+}
+
+void        MediaListViewController::dropEvent( QDropEvent* event )
+{
+    qDebug() << "Drop";
 }

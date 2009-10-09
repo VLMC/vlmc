@@ -36,9 +36,12 @@ ListViewController::ListViewController( StackViewController* nav ) : m_nav( nav 
 
     m_layout->setAlignment( Qt::AlignTop );
     m_layout->setSpacing( 0 );
+    m_layout->setContentsMargins( 0, 0, 0, 0 );
     m_container->setLayout( m_layout );
     m_scrollArea->setWidget( m_container );
     m_scrollArea->setWidgetResizable( true );
+    m_scrollArea->setAcceptDrops( true );
+
 }
 
 ListViewController::~ListViewController()

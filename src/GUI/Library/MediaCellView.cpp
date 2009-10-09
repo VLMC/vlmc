@@ -58,7 +58,7 @@ void            MediaCellView::setTitle( const QString& title )
 void            MediaCellView::setThumbnail( const QPixmap& pixmap )
 {
     m_ui->thumbnail->setScaledContents( false );
-    m_ui->thumbnail->setPixmap( pixmap.scaled( 48, 48, Qt::KeepAspectRatio ) );
+    m_ui->thumbnail->setPixmap( pixmap.scaled( 64, 64, Qt::KeepAspectRatio ) );
 }
 
 const QPixmap*  MediaCellView::getThumbnail() const
