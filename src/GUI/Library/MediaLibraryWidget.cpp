@@ -32,7 +32,7 @@ MediaLibraryWidget::MediaLibraryWidget( QWidget* parent ) : QWidget( parent )
 
 MediaLibraryWidget::~MediaLibraryWidget()
 {
-
+    delete m_nav;
 }
 
 const ViewController*       MediaLibraryWidget::getCurrentViewController()

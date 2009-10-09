@@ -18,10 +18,6 @@ public:
 private:
     StackViewController*    m_nav;
 
-protected:
-    virtual void                        dragEnterEvent( QDragEnterEvent* event );
-    virtual void                        dropEvent( QDropEvent* event );
-
 public slots:
     void        newMediaLoaded( Media* );
 };

@@ -25,12 +25,3 @@ void        MediaListViewController::newMediaLoaded( Media* media )
     addCell(cell);
 }
 
-void        MediaListViewController::dragEnterEvent( QDragEnterEvent* event )
-{
-    qDebug() << "Drag enter";
-}
-
-void        MediaListViewController::dropEvent( QDropEvent* event )
-{
-    qDebug() << "Drop";
-}
