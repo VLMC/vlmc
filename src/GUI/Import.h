@@ -27,8 +27,8 @@
 #include "PreviewWidget.h"
 #include "ImportBrowser.h"
 #include "Media.h"
-#include "MetaDataWorker.h"
 #include "TagWidget.h"
+#include "ImportMediaCellView.h"
 
 namespace Ui
 {
@@ -41,7 +41,6 @@ class Import : public QDialog
     public:
         Import( QWidget *parent = 0 );
         ~Import();
-        void    setUIMetaData();
 
     protected:
         void changeEvent( QEvent *e );
@@ -50,19 +49,17 @@ class Import : public QDialog
         Ui::Import*         m_ui;
         PreviewWidget*      m_previewWidget;
         ImportBrowser*      m_importBrowser;
-        Media*              m_currentMedia;
-        MetaDataWorker*     m_metaDataWorker;
         TagWidget*          m_tagWidget;
-        QList<Media*>       m_mediaList;
+        QHash<QUuid, Media*> m_mediaList;
 
     private slots:
         void    accept();
-        void    addMedia( QFileInfo fileInfos );
-        void    selectCurrentMedia( QFileInfo fileInfos );
-        void    removeMedia( QFileInfo fileInfos );
+        void    addMedia( Media* media, ImportMediaCellView* cell );
+        void    removeMedia( QUuid Uuid );
+        void    setUIMetaData( QUuid Uuid );
 
     signals:
-        void    mediaSelected( Media* media );
+        void    mediaSelected( Media* );
 };
 
 #endif // IMPORT_H

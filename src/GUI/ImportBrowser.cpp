@@ -32,7 +32,9 @@ ImportBrowser::ImportBrowser( QWidget* parent ) : QWidget( parent )
 {
     m_ui.setupUi( this );
     m_FilesModel = new QDirModel();
-    m_ImportListModel = new FileInfoListModel();
+    m_nav = new StackViewController( m_ui.MediaListWidget );
+    m_mediaList = new ImportMediaListController( m_nav );
+    m_nav->pushViewController( m_mediaList );
 
     QStringList filters;
     //Video
@@ -46,10 +48,6 @@ ImportBrowser::ImportBrowser( QWidget* parent ) : QWidget( parent )
     m_FilesModel->sort( 2, Qt::AscendingOrder );
     m_FilesModel->sort( 0, Qt::AscendingOrder );
     m_FilesModel->setNameFilters( filters );
-
-    m_ui.listViewBrowser->setModel( m_ImportListModel );
-    m_ui.listViewBrowser->setRootIndex( QModelIndex() );
-    m_ui.listViewBrowser->setMouseTracking( false );
 
     m_ui.treeViewBrowser->setModel( m_FilesModel );
     m_ui.treeViewBrowser->setRootIndex( m_FilesModel->index( QDir::rootPath() ) );
@@ -71,7 +69,6 @@ ImportBrowser::~ImportBrowser()
 {
     delete m_fsWatcher;
     delete m_FilesModel;
-    delete m_ImportListModel;
 }
 
 void ImportBrowser::TreeViewBrowserDirectoryChanged( QModelIndex& index )
@@ -79,14 +76,7 @@ void ImportBrowser::TreeViewBrowserDirectoryChanged( QModelIndex& index )
     if ( m_FilesModel->isDir( index ) )
     {
         updateFsWatcher( m_FilesModel->filePath( index ) );
-        m_ui.listViewBrowser->setRootIndex( m_FilesModel->index( m_FilesModel->filePath( index ) ) );
     }
-}
-
-void ImportBrowser::on_listViewBrowser_clicked( QModelIndex index )
-{
-    FileInfoListModel* model = static_cast<FileInfoListModel*>( m_ImportListModel );
-    emit mediaSelected( model->fileInfo( index ) );
 }
 
 void ImportBrowser::on_treeViewBrowser_clicked( QModelIndex index )
@@ -103,33 +93,45 @@ void ImportBrowser::on_treeViewBrowser_doubleClicked( QModelIndex index)
 
 void ImportBrowser::on_pushButtonBackward_clicked()
 {
-    FileInfoListModel* model = static_cast<FileInfoListModel*>( m_ImportListModel );
-    m_mediaInfoList.removeOne( model->fileInfo( m_ui.listViewBrowser->selectionModel()->currentIndex() ) );
-    emit mediaRemoved( model->fileInfo( m_ui.listViewBrowser->selectionModel()->currentIndex() ) );
-    model->setFileInfoList( m_mediaInfoList );
+    //emit mediaRemoved( m_currentCellSelected );
 
-    if ( m_mediaInfoList.isEmpty() )
+    if ( m_mediaList->getMediaCellList()->isEmpty() )
         m_ui.pushButtonBackward->setEnabled( false );
 }
 
 void ImportBrowser::on_pushButtonForward_clicked()
 {
-    FileInfoListModel* model = static_cast<FileInfoListModel*>( m_ImportListModel );
-
-    if ( !m_FilesModel->isDir( m_ui.treeViewBrowser->selectionModel()->currentIndex() ) &&
-        !m_mediaInfoList.contains( m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex() ) ) )
+    if ( !m_FilesModel->isDir( m_ui.treeViewBrowser->selectionModel()->currentIndex() ) )
     {
-        m_mediaInfoList << m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex() );
-        emit mediaAdded( m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex() ) );
+        Media* media = new Media( m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex() ).filePath() );
+        if ( !m_mediaList->getMediaCellList()->contains( media->getUuid() ) )
+        {
+            m_mediaList->addMedia( media );
+            emit mediaAdded( media, m_mediaList->getCell( media->getUuid() ) );
+
+            connect( media, SIGNAL( metaDataComputed( Media* ) ), m_mediaList, SLOT( metaDataComputed( Media* ) ), Qt::DirectConnection );
+            m_metaDataWorker = new MetaDataWorker( media );
+            m_metaDataWorker->start();
+        }
+        else
+            delete media;
     }
     else
         for( int i = 0; i < m_FilesModel->rowCount( m_ui.treeViewBrowser->selectionModel()->currentIndex() ); i++)
-            if ( !m_mediaInfoList.contains( m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex().child( i, 0 ) ) ) )
             {
-                m_mediaInfoList << m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex().child( i, 0 ) );
-                emit mediaAdded( m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex().child( i, 0 ) ) );
+                Media* media = new Media( m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex().child( i, 0 ) ).filePath() );
+                if ( !m_mediaList->getMediaCellList()->contains( media->getUuid() ) )
+                {
+                    m_mediaList->addMedia( media );
+                    emit mediaAdded( media, m_mediaList->getCell( media->getUuid() ) );
+
+                    connect( media, SIGNAL( metaDataComputed( Media* ) ), m_mediaList, SLOT( metaDataComputed( Media* ) ), Qt::DirectConnection );
+                    m_metaDataWorker = new MetaDataWorker( media );
+                    m_metaDataWorker->start();
+                }
+                else
+                    delete media;
             }
-    model->setFileInfoList( m_mediaInfoList );
     m_ui.pushButtonBackward->setEnabled( true );
 }
 

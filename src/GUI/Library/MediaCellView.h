@@ -1,9 +1,9 @@
 /*****************************************************************************
- * MetaDataManager.h: Launch the metadata threads
+ * MediaCellView.h
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
+ * Authors: Thomas Boquet <thomas.boquet@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,27 +20,49 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#ifndef MEDIACELLVIEW_H
+#define MEDIACELLVIEW_H
 
-#ifndef METADATAMANAGER_H
-#define METADATAMANAGER_H
+#include <QWidget>
+#include <QUuid>
+#include <QMouseEvent>
 
-#include <QObject>
+namespace Ui
+{
+    class MediaCellView;
+}
 
-#include "Media.h"
-#include "Singleton.hpp"
-
-class       MetaDataManager : public QObject, public Singleton<MetaDataManager>
+class MediaCellView : public QWidget
 {
     Q_OBJECT
-    Q_DISABLE_COPY( MetaDataManager );
 
-    friend class        Singleton<MetaDataManager>;
-    public slots:
-        void            metadataRequired( Media* );
+public:
+    MediaCellView( const QUuid& uuid, QWidget *parent = 0 );
+    ~MediaCellView();
 
-    private:
-        MetaDataManager();
-        ~MetaDataManager();
+    void            setTitle( const QString& title );
+    void            setThumbnail( const QPixmap& pixmap );
+    const QPixmap*  getThumbnail() const;
+    QString         title() const;
+    const QUuid&    uuid() const;
+
+protected:
+    void changeEvent( QEvent *e );
+
+private:
+    Ui::MediaCellView   *m_ui;
+    const QUuid         m_uuid;
+    QPoint              m_dragStartPos;
+
+protected:
+    void        mouseDoubleClickEvent( QMouseEvent* );
+    void        mousePressEvent( QMouseEvent* );
+    void        mouseMoveEvent( QMouseEvent* );
+
+signals:
+    void        cellSelected( const QUuid& uuid );
+
+
 };
 
-#endif // METADATAMANAGER_H
+#endif // MEDIACELLVIEW_H

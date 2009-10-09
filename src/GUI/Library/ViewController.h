@@ -1,9 +1,9 @@
 /*****************************************************************************
- * MetaDataManager.h: Launch the metadata threads
+ * ViewController.h
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
+ * Authors: Thomas Boquet <thomas.boquet@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,27 +20,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-
-#ifndef METADATAMANAGER_H
-#define METADATAMANAGER_H
+#ifndef VIEWCONTROLLER_H
+#define VIEWCONTROLLER_H
 
 #include <QObject>
 
-#include "Media.h"
-#include "Singleton.hpp"
-
-class       MetaDataManager : public QObject, public Singleton<MetaDataManager>
+class ViewController : public QObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY( MetaDataManager );
 
-    friend class        Singleton<MetaDataManager>;
-    public slots:
-        void            metadataRequired( Media* );
+public:
+    //ViewController() {}
+    virtual ~ViewController() {}
 
-    private:
-        MetaDataManager();
-        ~MetaDataManager();
+
+    virtual QWidget*            view() const = 0;
+    virtual const QString       &title() const = 0;
 };
 
-#endif // METADATAMANAGER_H
+#endif // VIEWCONTROLLER_H

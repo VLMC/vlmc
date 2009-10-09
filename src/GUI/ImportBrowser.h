@@ -32,6 +32,9 @@
 #include <QFileSystemWatcher>
 #include "ui_ImportBrowser.h"
 #include <QStringListModel>
+#include "StackViewController.h"
+#include "ImportMediaListController.h"
+#include "MetaDataWorker.h"
 
 class ImportBrowser : public QWidget
 {
@@ -39,28 +42,29 @@ class ImportBrowser : public QWidget
 public:    
     ImportBrowser( QWidget* parent = NULL );
     virtual ~ImportBrowser();
-    const QFileInfoList&    getMediaInfoList() const { return m_mediaInfoList; }
+
 private:
-    void                    TreeViewBrowserDirectoryChanged( QModelIndex& index );
-    void                    updateFsWatcher( const QString& newPath );
+    void    TreeViewBrowserDirectoryChanged( QModelIndex& index );
+    void    updateFsWatcher( const QString& newPath );
+
 private:
-    Ui::ImportBrowser       m_ui;
-    QDirModel*              m_FilesModel;
-    QAbstractItemModel*     m_ImportListModel;
-    QFileSystemWatcher*     m_fsWatcher;
-    QString                 m_currentlyWatchedDir;
-    QFileInfoList           m_mediaInfoList;
+    Ui::ImportBrowser           m_ui;
+    QDirModel*                  m_FilesModel;
+    QFileSystemWatcher*         m_fsWatcher;
+    QString                     m_currentlyWatchedDir;
+    MetaDataWorker*             m_metaDataWorker;
+    StackViewController*        m_nav;
+    ImportMediaListController*  m_mediaList;
 
 private slots:
     void on_pushButtonForward_clicked();
     void on_pushButtonBackward_clicked();
     void on_treeViewBrowser_clicked( QModelIndex index );
     void on_treeViewBrowser_doubleClicked( QModelIndex index);
-    void on_listViewBrowser_clicked( QModelIndex index );
 
 signals:
     void    mediaSelected( QFileInfo fileInfos );
-    void    mediaAdded( QFileInfo fileInfos );
+    void    mediaAdded( Media* media, ImportMediaCellView* );
     void    mediaRemoved( QFileInfo fileInfos );
 };
 

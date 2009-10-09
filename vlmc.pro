@@ -32,7 +32,7 @@ SOURCES += src/main.cpp \
     src/GUI/ListViewMediaItem.cpp \
     src/GUI/MediaListWidget.cpp \
     src/Media/Clip.cpp \
-    src/GUI/About.cpp \ # src/GUI/Transcode.cpp \
+    src/GUI/About.cpp \
     src/GUI/Slider.cpp \
     src/Metadata/MetaDataWorker.cpp \
     src/Library/Library.cpp \
@@ -67,7 +67,15 @@ SOURCES += src/main.cpp \
     src/GUI/ImportBrowser.cpp \
     src/GUI/FileInfoListModel.cpp \
     src/Configuration/SettingsManager.cpp \
-    src/GUI/TagWidget.cpp
+    src/GUI/TagWidget.cpp \
+    src/GUI/Library/StackViewController.cpp \
+    src/GUI/Library/StackViewNavController.cpp \
+    src/GUI/Library/ListViewController.cpp \
+    src/GUI/Library/MediaCellView.cpp \
+    src/GUI/Library/MediaLibraryWidget.cpp \
+    src/GUI/Library/MediaListViewController.cpp \
+    src/GUI/ImportMediaListController.cpp \
+    src/GUI/ImportMediaCellView.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -85,7 +93,7 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/ListViewMediaItem.h \
     src/Media/Clip.h \
     src/GUI/MediaListWidget.h \
-    src/GUI/About.h \ # src/GUI/Transcode.h \
+    src/GUI/About.h \
     src/GUI/Slider.h \
     src/Metadata/MetaDataWorker.h \
     src/Tools/Singleton.hpp \
@@ -127,13 +135,22 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/ImportBrowser.h \
     src/GUI/FileInfoListModel.h \
     src/Configuration/SettingsManager.h \
-    src/GUI/TagWidget.h
+    src/GUI/TagWidget.h \
+    src/GUI/Library/StackViewController.h \
+    src/GUI/Library/StackViewNavController.h \
+    src/GUI/Library/ListViewController.h \
+    src/GUI/Library/MediaCellView.h \
+    src/GUI/Library/MediaLibraryWidget.h \
+    src/GUI/Library/MediaListViewController.h \
+    src/GUI/Library/ViewController.h \
+    src/GUI/ImportMediaListController.h \
+    src/GUI/ImportMediaCellView.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \
     src/GUI/ui/Timeline.ui \
     src/GUI/ui/LibraryWidget.ui \
-    src/GUI/ui/About.ui \ # src/GUI/ui/Transcode.ui \
+    src/GUI/ui/About.ui \
     src/GUI/ui/FileBrowser.ui \
     src/GUI/ui/WorkflowFileRendererDialog.ui \
     src/GUI/ui/ClipProperty.ui \
@@ -143,13 +160,16 @@ FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/AudioProjectPreferences.ui \
     src/GUI/ui/Import.ui \
     src/GUI/ui/ImportBrowser.ui \
-    src/GUI/ui/TagWidget.ui
+    src/GUI/ui/TagWidget.ui \
+    src/GUI/Library/ui/StackViewNavController.ui \
+    src/GUI/Library/ui/MediaCellView.ui
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts
 RESOURCES += ressources.qrc
 INCLUDEPATH += src/LibVLCpp \
     src/GUI \
+    src/GUI/Library \
     src/Tools \
     src/Renderer \
     src/Metadata \

@@ -34,9 +34,8 @@ Import::Import(QWidget *parent) :
     m_previewWidget = new PreviewWidget( new ClipRenderer, m_ui->PreviewWidget );
     m_tagWidget = new TagWidget( m_ui->TagWidget, 6 );
 
-    connect( m_importBrowser, SIGNAL( mediaAdded( QFileInfo ) ), this, SLOT( addMedia( QFileInfo ) ) );
-    connect( m_importBrowser, SIGNAL( mediaRemoved( QFileInfo ) ), this, SLOT( removeMedia( QFileInfo ) ) );
-    connect( m_importBrowser, SIGNAL( mediaSelected( QFileInfo ) ), this, SLOT( selectCurrentMedia( QFileInfo ) ) );
+    connect( m_importBrowser, SIGNAL( mediaAdded( Media*, ImportMediaCellView* ) ), this, SLOT( addMedia( Media*, ImportMediaCellView* ) ) );
+    //connect( m_importBrowser, SIGNAL( mediaRemoved( Media* ) ), this, SLOT( removeMedia( Media* ) ) );
 
     connect( this, SIGNAL( mediaSelected( Media* ) ), m_previewWidget->getGenericRenderer(), SLOT( setMedia( Media* ) ) );
     connect( this, SIGNAL( mediaSelected( Media* ) ), m_tagWidget, SLOT( mediaSelected( Media* ) ) );
@@ -45,71 +44,48 @@ Import::Import(QWidget *parent) :
 Import::~Import()
 {
     delete m_ui;
-    delete m_currentMedia;
-    delete m_metaDataWorker;
     delete m_importBrowser;
     delete m_previewWidget;
     delete m_tagWidget;
 }
 
-void    Import::addMedia( QFileInfo fileInfos )
+void    Import::addMedia( Media* media, ImportMediaCellView* cell )
 {
-    m_ui->nameValueLabel->setText( fileInfos.fileName() );
-    m_currentMedia = new Media( fileInfos.filePath() );
-    m_mediaList.append( m_currentMedia );
-
-    m_metaDataWorker = new MetaDataWorker( m_currentMedia );
-    m_metaDataWorker->start();
+    m_mediaList.insert( media->getUuid(), media );
+    connect( cell, SIGNAL( mediaSelected( QUuid ) ), this, SLOT( setUIMetaData( QUuid ) ) );
 }
 
-void    Import::removeMedia( QFileInfo fileInfos )
+void    Import::removeMedia( QUuid Uuid )
 {
-    for ( int i = 0; i < m_mediaList.count(); i++ )
-    {
-        if ( fileInfos == *m_mediaList[i]->getFileInfo() )
-        {
-            m_mediaList.removeAt( i );
-            m_currentMedia = NULL;
-            break;
-        }
-    }
+    m_mediaList.remove( Uuid );
 }
 
-void    Import::selectCurrentMedia( QFileInfo fileInfos )
-{
-    for ( int i = 0; i < m_mediaList.count(); i++ )
-    {
-        if ( fileInfos == *m_mediaList[i]->getFileInfo() )
-        {
-            m_currentMedia = m_mediaList[i];
-            // TODO: stop the media player to stop before sending the mediaSelected signal
-            emit mediaSelected( m_currentMedia );
-            setUIMetaData();
-            break;
-        }
-    }
-}
-
-void    Import::setUIMetaData()
+void    Import::setUIMetaData( QUuid Uuid )
 {
     //Duration
     QTime   duration;
-    duration = duration.addSecs( m_currentMedia->getLength() );
+    duration = duration.addSecs( m_mediaList[Uuid]->getLength() );
     m_ui->durationValueLabel->setText( duration.toString( "hh:mm:ss" ) );
     //Filename || title
-    m_ui->nameValueLabel->setText( m_currentMedia->getFileInfo()->fileName() );
-    setWindowTitle( m_currentMedia->getFileInfo()->fileName() + " " + tr( "properties" ) );
+    m_ui->nameValueLabel->setText( m_mediaList[Uuid]->getFileInfo()->fileName() );
+    setWindowTitle( m_mediaList[Uuid]->getFileInfo()->fileName() + " " + tr( "properties" ) );
     //Resolution
-    m_ui->resolutionValueLabel->setText( QString::number( m_currentMedia->getWidth() )
-                                       + " x " + QString::number( m_currentMedia->getHeight() ) );
+    m_ui->resolutionValueLabel->setText( QString::number( m_mediaList[Uuid]->getWidth() )
+                                       + " x " + QString::number( m_mediaList[Uuid]->getHeight() ) );
     //FPS
-    m_ui->fpsValueLabel->setText( QString::number( m_currentMedia->getFps() ) );
+    m_ui->fpsValueLabel->setText( QString::number( m_mediaList[Uuid]->getFps() ) );
+
+    emit mediaSelected( m_mediaList[Uuid] );
 }
 
 void    Import::accept()
 {
-    for ( int i = 0; i < m_mediaList.count(); i++ )
-        Library::getInstance()->addMedia( m_mediaList[i] );
+    QHashIterator<QUuid, Media*> iterator( m_mediaList );
+    while ( iterator.hasNext() )
+    {
+        iterator.next();
+        Library::getInstance()->addMedia( iterator.value() );
+    }
     done(Accepted);
 }
 

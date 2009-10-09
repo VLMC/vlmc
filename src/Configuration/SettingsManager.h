@@ -52,7 +52,7 @@ class   SettingsManager : public QObject, public QSingleton<SettingsManager>
 	QVariant&	getValue( const QString& key );
 	private:
 	SettingsManager( QObject* parent = 0 );
-	~SettingsManager();
+        ~SettingsManager();
 
 	QVector<SettingsContainer*>	  m_settings;
 

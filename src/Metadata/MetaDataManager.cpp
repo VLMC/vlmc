@@ -27,14 +27,14 @@
 
 MetaDataManager::MetaDataManager()
 {
-    connect( Library::getInstance(), SIGNAL( newMediaLoaded( Media* ) ), this, SLOT( newMediaLoaded( Media* ) ) );
+    connect( Library::getInstance(), SIGNAL( metadataRequired( Media* ) ), this, SLOT( metadataRequired( Media* ) ) );
 }
 
 MetaDataManager::~MetaDataManager()
 {
 }
 
-void        MetaDataManager::newMediaLoaded( Media* media )
+void        MetaDataManager::metadataRequired( Media* media )
 {
     if ( media->hasMetadata() == false )
     {
