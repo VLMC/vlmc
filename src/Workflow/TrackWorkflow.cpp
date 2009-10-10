@@ -26,12 +26,13 @@
 #include "TrackWorkflow.h"
 #include "VideoClipWorkflow.h"
 
-TrackWorkflow::TrackWorkflow( unsigned int trackId ) :
+TrackWorkflow::TrackWorkflow( unsigned int trackId, TrackWorkflow::TrackType type  ) :
         m_trackId( trackId ),
         m_length( 0 ),
         m_forceRepositionning( false ),
         m_paused( false ),
-        m_synchroneRenderBuffer( NULL )
+        m_synchroneRenderBuffer( NULL ),
+        m_trackType( type )
 {
     m_forceRepositionningMutex = new QMutex;
     m_clipsLock = new QReadWriteLock;
@@ -54,7 +55,9 @@ TrackWorkflow::~TrackWorkflow()
 
 void    TrackWorkflow::addClip( Clip* clip, qint64 start )
 {
-    ClipWorkflow* cw = new VideoClipWorkflow( clip );
+    ClipWorkflow* cw;
+    if ( m_trackType == TrackWorkflow::Video )
+        cw = new VideoClipWorkflow( clip );
     addClip( cw, start );
 }
 

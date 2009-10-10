@@ -47,7 +47,12 @@ class   TrackWorkflow : public QObject
     Q_OBJECT
 
     public:
-        TrackWorkflow( unsigned int trackId );
+        enum    TrackType
+        {
+            Video,
+            Audio,
+        };
+        TrackWorkflow( unsigned int trackId, TrackType type );
         ~TrackWorkflow();
 
         bool                                    getOutput( qint64 currentFrame );
@@ -114,6 +119,8 @@ class   TrackWorkflow : public QObject
         QAtomicInt                              m_nbClipToRender;
 
         unsigned char*                          m_synchroneRenderBuffer;
+
+        TrackType                               m_trackType;
 
     private slots:
         void                                    clipWorkflowPaused();

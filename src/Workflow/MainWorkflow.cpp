@@ -44,7 +44,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     m_tracks = new Toggleable<TrackWorkflow*>[trackCount];
     for ( int i = 0; i < trackCount; ++i )
     {
-        m_tracks[i].setPtr( new TrackWorkflow( i ) );
+        m_tracks[i].setPtr( new TrackWorkflow( i, TrackWorkflow::Video ) );
         connect( m_tracks[i], SIGNAL( trackEndReached( unsigned int ) ), this, SLOT( trackEndReached(unsigned int) ) );
         connect( m_tracks[i], SIGNAL( trackPaused() ), this, SLOT( trackPaused() ) );
         connect( m_tracks[i], SIGNAL( trackUnpaused() ), this, SLOT( trackUnpaused() ) );
