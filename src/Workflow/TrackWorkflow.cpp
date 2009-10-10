@@ -24,6 +24,7 @@
 
 #include "vlmc.h"
 #include "TrackWorkflow.h"
+#include "VideoClipWorkflow.h"
 
 TrackWorkflow::TrackWorkflow( unsigned int trackId ) :
         m_trackId( trackId ),
@@ -53,7 +54,7 @@ TrackWorkflow::~TrackWorkflow()
 
 void    TrackWorkflow::addClip( Clip* clip, qint64 start )
 {
-    ClipWorkflow* cw = new ClipWorkflow( clip );
+    ClipWorkflow* cw = new VideoClipWorkflow( clip );
     addClip( cw, start );
 }
 
@@ -452,7 +453,7 @@ void        TrackWorkflow::clipWorkflowRenderCompleted( ClipWorkflow* cw )
 //    qDebug() << "Clip [" << QObject::sender() << "] render is completed on track" << m_trackId;
     if ( cw != NULL )
     {
-        m_synchroneRenderBuffer = cw->getOutput();
+        m_synchroneRenderBuffer = reinterpret_cast<unsigned char*>( cw->getOutput() );
     }
     else
     {

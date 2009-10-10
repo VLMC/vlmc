@@ -30,10 +30,14 @@ class   VideoClipWorkflow : public ClipWorkflow
 {
     public:
         VideoClipWorkflow( Clip* clip );
+        ~VideoClipWorkflow();
         void*                   getLockCallback();
         void*                   getUnlockCallback();
+        virtual void*           getOutput();
 
     private:
+        unsigned char*          m_buffer;
+        void                    initVlcOutput();
         static void             lock( VideoClipWorkflow* clipWorkflow, void** pp_ret, int size );
         static void             unlock( VideoClipWorkflow* clipWorkflow, void* buffer, int width, int height, int bpp, int size );
 };
