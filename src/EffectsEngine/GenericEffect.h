@@ -49,15 +49,15 @@ class	GenericEffect
 
 /*   void				connectDynOutToStatIn( GenericEffect* destinationeffect, QString const & inslotname ); */
 /*   void				connectDynOutToDynIn( GenericEffect* destinationeffect ); */
-  void					connectOutput( QString const & outName, GenericEffect* destEffect, QString const & inName );
+  void					connectOutput( quint32 outIndex, GenericEffect* destEffect, quint32 inIndex );
 /*   void				connectStatOutToDynIn( QString const & outslotname, GenericEffect* destinationeffect ); */
 
   //
   // CONNECTIONS BETWEEN GENERICEFFECT & OUTSLOTS/INSLOTS
   //
 
-  void					connect( OutSlot<LightVideoFrame> & out, QString const & inName );
-  void					connect( QString const & outName, InSlot<LightVideoFrame> & in);
+  void					connect( OutSlot<LightVideoFrame> & out, quint32 inIndex );
+  void					connect( quint32 outIndex, InSlot<LightVideoFrame> & in);
 
  private:
 
@@ -78,8 +78,8 @@ class	GenericEffect
  protected:
 
   //  QString					m_name;
-  QHash< QString, InSlot<LightVideoFrame> >	m_videoInputs;
-  QHash< QString, OutSlot<LightVideoFrame> >	m_videoOutputs;
+  InSlot<LightVideoFrame>*			m_videoInputs;
+  OutSlot<LightVideoFrame>*			m_videoOutputs;
 /*   QHash< QString, InSlot<SoundSampleFrame> >	m_soundInputs; */
 /*   QHash< QString, OutSlot<SoundSampleFrame> >m_soundOutputs; */
 /*   QHash< QString, InSlot<LightVideoFrame> >	m_controlInputs; */
