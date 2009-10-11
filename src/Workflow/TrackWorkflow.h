@@ -51,6 +51,7 @@ class   TrackWorkflow : public QObject
         {
             Video,
             Audio,
+            NbType
         };
         TrackWorkflow( unsigned int trackId, TrackType type );
         ~TrackWorkflow();
