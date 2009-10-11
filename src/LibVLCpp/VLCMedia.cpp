@@ -61,14 +61,14 @@ void                    Media::setVideoUnlockCallback( void* callback )
 void                    Media::setAudioLockCallback( void* callback )
 {
     char    param[64];
-    sprintf( param, ":sout-smem-video-prerender-callback=%lld", (qint64)(intptr_t)callback );
+    sprintf( param, ":sout-smem-audio-prerender-callback=%lld", (qint64)(intptr_t)callback );
     addOption(param);
 }
 
 void                    Media::setAudioUnlockCallback( void* callback )
 {
     char    param[64];
-    sprintf( param, ":sout-smem-video-postrender-callback=%lld", (qint64)(intptr_t)callback );
+    sprintf( param, ":sout-smem-audio-postrender-callback=%lld", (qint64)(intptr_t)callback );
     addOption( param );
 }
 

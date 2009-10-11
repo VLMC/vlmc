@@ -25,6 +25,7 @@
 #include "vlmc.h"
 #include "TrackWorkflow.h"
 #include "VideoClipWorkflow.h"
+#include "AudioClipWorkflow.h"
 
 TrackWorkflow::TrackWorkflow( unsigned int trackId, TrackWorkflow::TrackType type  ) :
         m_trackId( trackId ),
@@ -55,9 +56,13 @@ TrackWorkflow::~TrackWorkflow()
 
 void    TrackWorkflow::addClip( Clip* clip, qint64 start )
 {
+    if ( m_trackType == Audio )
+        start = 0;
     ClipWorkflow* cw;
     if ( m_trackType == TrackWorkflow::Video )
         cw = new VideoClipWorkflow( clip );
+    else
+        cw = new AudioClipWorkflow( clip );
     addClip( cw, start );
 }
 
@@ -121,7 +126,7 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
 {
     cw->getStateLock()->lockForRead();
 
-//    qDebug() << "Rendering clip" << cw << "state:" << cw->getState();
+//    qDebug() << "Rendering clip" << cw << "state:" << cw->getState() << "Type:" << m_trackType;
     if ( cw->getState() == ClipWorkflow::Rendering )
     {
         //The rendering state meens... whell it means that the frame is

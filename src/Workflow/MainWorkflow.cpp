@@ -47,8 +47,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     m_tracks = new TrackHandler*[2];
     for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
     {
-        //FIXME after refactoring
-        TrackWorkflow::TrackType trackType = (i == 0 ? TrackWorkflow::Video : TrackWorkflow::Video );
+        TrackWorkflow::TrackType trackType = (i == 0 ? TrackWorkflow::Video : TrackWorkflow::Audio );
         m_tracks[i] = new TrackHandler( trackCount, trackType );
         connect( m_tracks[i], SIGNAL( tracksPaused() ), this, SLOT( tracksPaused() ) );
         connect( m_tracks[i], SIGNAL( allTracksRenderCompleted() ), this, SLOT( tracksRenderCompleted() ) );

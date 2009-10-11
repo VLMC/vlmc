@@ -50,7 +50,7 @@ class   TrackWorkflow : public QObject
         enum    TrackType
         {
             Video,
-//            Audio,
+            Audio,
             NbType
         };
         TrackWorkflow( unsigned int trackId, TrackType type );

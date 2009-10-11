@@ -65,7 +65,8 @@ SOURCES += src/main.cpp \
     src/Project/ProjectManager.cpp \
     src/Configuration/SettingsManager.cpp \
     src/Workflow/VideoClipWorkflow.cpp \
-    src/Workflow/TrackHandler.cpp
+    src/Workflow/TrackHandler.cpp \
+    src/Workflow/AudioClipWorkflow.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -123,7 +124,8 @@ HEADERS += src/GUI/MainWindow.h \
     src/Project/ProjectManager.h \
     src/Configuration/SettingsManager.h \
     src/Workflow/VideoClipWorkflow.h \
-    src/Workflow/TrackHandler.h
+    src/Workflow/TrackHandler.h \
+    src/Workflow/AudioClipWorkflow.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \

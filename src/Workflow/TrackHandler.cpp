@@ -30,7 +30,7 @@ TrackHandler::TrackHandler( unsigned int nbTracks, TrackWorkflow::TrackType trac
     m_tracks = new Toggleable<TrackWorkflow*>[nbTracks];
     for ( unsigned int i = 0; i < nbTracks; ++i )
     {
-        m_tracks[i].setPtr( new TrackWorkflow( i, TrackWorkflow::Video ) );
+        m_tracks[i].setPtr( new TrackWorkflow( i, trackType ) );
         connect( m_tracks[i], SIGNAL( trackEndReached( unsigned int ) ), this, SLOT( trackEndReached(unsigned int) ) );
         connect( m_tracks[i], SIGNAL( trackPaused() ), this, SLOT( trackPaused() ) );
         connect( m_tracks[i], SIGNAL( trackUnpaused() ), this, SLOT( trackUnpaused() ) );
@@ -105,7 +105,6 @@ void        TrackHandler::getOutput( qint64 currentFrame )
     {
         if ( m_tracks[i].activated() == false )
             continue ;
-
         ++m_nbTracksToRender;
         m_tracks[i]->getOutput( currentFrame );
     }
