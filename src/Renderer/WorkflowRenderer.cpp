@@ -93,10 +93,9 @@ void*   WorkflowRenderer::lock( void* datas )
     if ( self->m_stopping == false )
     {
         void* ret = self->m_mainWorkflow->getSynchroneOutput();
-        self->m_lastFrame = static_cast<unsigned char*>( ret );
-        return ret;
+        self->m_lastFrame = static_cast<MainWorkflow::OutputBuffers*>( ret );
     }
-    return self->m_lastFrame;
+    return self->m_lastFrame->video;
 }
 
 void    WorkflowRenderer::unlock( void* datas )

@@ -48,9 +48,9 @@ public slots:
     void changeZoom( int factor );
     void setDuration( int duration );
     void setTool( ToolButtons button );
-    void actionAddClip( Clip* clip, unsigned int track, qint64 start );
-    void actionMoveClip( const QUuid& uuid, unsigned int track, qint64 time );
-    void actionRemoveClip( const QUuid& uuid, unsigned int track );
+    void actionAddClip( Clip* clip, unsigned int track, qint64 start, TrackWorkflow::TrackType );
+    void actionMoveClip( const QUuid& uuid, unsigned int track, qint64 time, TrackWorkflow::TrackType );
+    void actionRemoveClip( const QUuid& uuid, unsigned int track, TrackWorkflow::TrackType );
 
 protected:
     virtual void changeEvent( QEvent *e );

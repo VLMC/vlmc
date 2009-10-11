@@ -47,7 +47,8 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     m_tracks = new TrackHandler*[2];
     for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
     {
-        TrackWorkflow::TrackType trackType = (i == 0 ? TrackWorkflow::Video : TrackWorkflow::Audio );
+        //FIXME after refactoring
+        TrackWorkflow::TrackType trackType = (i == 0 ? TrackWorkflow::Video : TrackWorkflow::Video );
         m_tracks[i] = new TrackHandler( trackCount, trackType );
         connect( m_tracks[i], SIGNAL( tracksPaused() ), this, SLOT( tracksPaused() ) );
         connect( m_tracks[i], SIGNAL( allTracksRenderCompleted() ), this, SLOT( tracksRenderCompleted() ) );
@@ -65,8 +66,8 @@ MainWorkflow::~MainWorkflow()
     delete m_renderMutex;
     delete m_renderStartedLock;
     delete[] blackOutput;
-    delete m_tracks[0];
-    delete m_tracks[1];
+    for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
+        delete m_tracks[i];
     delete[] m_tracks;
 }
 
@@ -207,6 +208,7 @@ MainWorkflow::OutputBuffers*  MainWorkflow::getSynchroneOutput()
     m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
 //    qDebug() << "Got it";
     m_synchroneRenderWaitConditionMutex->unlock();
+    m_outputBuffers->video = m_tracks[TrackWorkflow::Video]->getSynchroneOutput();
     return m_outputBuffers;
 }
 
