@@ -161,8 +161,8 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    mainWorkflowPaused();
         void                    mainWorkflowUnpaused();
         void                    clipAdded( Clip*, unsigned int, qint64, TrackWorkflow::TrackType );
-        void                    clipRemoved( QUuid, unsigned int );
-        void                    clipMoved( QUuid, unsigned int, qint64 );
+        void                    clipRemoved( QUuid, unsigned int, TrackWorkflow::TrackType );
+        void                    clipMoved( QUuid, unsigned int, qint64, TrackWorkflow::TrackType );
         void                    cleared();
 };
 

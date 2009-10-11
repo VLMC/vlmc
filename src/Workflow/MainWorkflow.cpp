@@ -50,6 +50,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
         TrackWorkflow::TrackType trackType = (i == 0 ? TrackWorkflow::Video : TrackWorkflow::Audio );
         m_tracks[i] = new TrackHandler( trackCount, trackType );
         connect( m_tracks[i], SIGNAL( tracksPaused() ), this, SLOT( tracksPaused() ) );
+        connect( m_tracks[i], SIGNAL( allTracksRenderCompleted() ), this, SLOT( tracksRenderCompleted() ) );
     }
     m_outputBuffers = new OutputBuffers;
 }
@@ -184,12 +185,17 @@ void           MainWorkflow::moveClip( const QUuid& clipUuid, unsigned int oldTr
                                        unsigned int newTrack, qint64 startingFrame,
                                        TrackWorkflow::TrackType trackType, bool undoRedoCommand /*= false*/ )
 {
-    m_tracks[trackType]->moveClip( clipUuid, oldTrack, newTrack, startingFrame, undoRedoCommand );
+    m_tracks[trackType]->moveClip( clipUuid, oldTrack, newTrack, startingFrame );
     computeLength();
+    if ( undoRedoCommand == true )
+    {
+        emit clipMoved( clipUuid, newTrack, startingFrame, trackType );
+    }
 }
 
 Clip*       MainWorkflow::removeClip( const QUuid& uuid, unsigned int trackId, TrackWorkflow::TrackType trackType )
 {
+    emit clipRemoved( uuid, trackId, trackType );
     return m_tracks[trackType]->removeClip( uuid, trackId );
 }
 

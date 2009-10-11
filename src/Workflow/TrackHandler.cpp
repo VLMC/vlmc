@@ -168,7 +168,7 @@ void        TrackHandler::stop()
 }
 
 void        TrackHandler::moveClip(const QUuid& clipUuid, unsigned int oldTrack,
-                                       unsigned int newTrack, qint64 startingFrame, bool undoRedoCommand /*= false*/ )
+                                       unsigned int newTrack, qint64 startingFrame )
 {
      Q_ASSERT( newTrack < m_trackCount && oldTrack < m_trackCount );
 
@@ -192,12 +192,6 @@ void        TrackHandler::moveClip(const QUuid& clipUuid, unsigned int oldTrack,
         activateTrack( newTrack );
     }
     computeLength();
-    if ( undoRedoCommand == true )
-    {
-        //TODO
-        //FIXME
-        //emit clipMoved( clipUuid, newTrack, startingFrame );
-    }
 }
 
 Clip*       TrackHandler::removeClip( const QUuid& uuid, unsigned int trackId )
@@ -207,8 +201,6 @@ Clip*       TrackHandler::removeClip( const QUuid& uuid, unsigned int trackId )
     Clip* clip = m_tracks[trackId]->removeClip( uuid );
     computeLength();
     activateTrack( trackId );
-    //FIXME
-    //emit clipRemoved( uuid, trackId );
     return clip;
 }
 
