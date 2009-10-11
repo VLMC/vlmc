@@ -39,7 +39,7 @@ WorkflowRenderer::WorkflowRenderer() :
     m_media = new LibVLCpp::Media( "fake://" );
 
     sprintf( buffer, ":invmem-width=%i", VIDEOWIDTH );
-    m_media->addOption( ":codec=invmem" );
+    m_media->addOption( ":codec=invmem,inamem" );
     m_media->addOption( buffer );
     sprintf( buffer, ":invmem-height=%i", VIDEOHEIGHT );
     m_media->addOption( buffer );
@@ -53,7 +53,11 @@ WorkflowRenderer::WorkflowRenderer() :
     m_media->addOption( buffer );
     sprintf( buffer, ":height=%i", VIDEOHEIGHT );
     m_media->addOption( buffer );
-    m_media->addOption( ":no-audio" );
+
+    sprintf( buffer, ":inamem-data=%lld", (qint64)this );
+    m_media->addOption( buffer );
+    sprintf( buffer, ":inamem-callback=%lld", (qint64)WorkflowRenderer::lock );
+    m_media->addOption( buffer );
 
     m_condMutex = new QMutex;
     m_waitCond = new QWaitCondition;
@@ -84,6 +88,14 @@ WorkflowRenderer::~WorkflowRenderer()
     delete m_media;
     delete m_condMutex;
     delete m_waitCond;
+}
+
+void*   WorkflowRenderer::lockAudio( void* datas )
+{
+    WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
+
+    qDebug() << "Injecting audio data";
+    return self->m_lastFrame->audio;
 }
 
 void*   WorkflowRenderer::lock( void* datas )

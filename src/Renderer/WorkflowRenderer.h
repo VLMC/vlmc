@@ -57,6 +57,7 @@ class   WorkflowRenderer : public GenericRenderer
         virtual void        previousFrame();
 
         static void*        lock( void* datas );
+        static void*        lockAudio( void* datas );
         static void         unlock( void* datas );
 
     private:
