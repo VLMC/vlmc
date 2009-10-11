@@ -37,15 +37,16 @@ namespace LibVLCpp
     class   Media : public Internal< libvlc_media_t >
     {
     public:
-        typedef void    (*lockCallback)( void* dataCtx, void **pp_ret );
-        typedef void    (*unlockCallback)( void* dataCtx );
 
         Media( const QString& filename );
         ~Media();
         void                addOption( const char* opt );
-        void                setLockCallback( Media::lockCallback );
-        void                setUnlockCallback( Media::unlockCallback );
-        void                setDataCtx( void* dataCtx );
+        void                setVideoLockCallback( void* );
+        void                setVideoUnlockCallback( void* );
+        void                setAudioLockCallback( void* );
+        void                setAudioUnlockCallback( void* );
+        void                setVideoDataCtx( void* dataCtx );
+        void                setAudioDataCtx( void* dataCtx );
         void                outputInVmem();
         void                outputInWindow();
         void                setPixelBuffer( uchar* buffer );

@@ -39,9 +39,9 @@ void            VideoClipWorkflow::initVlcOutput()
     m_vlcMedia->addOption( ":no-audio" );
     m_vlcMedia->addOption( ":no-sout-audio" );
     m_vlcMedia->addOption( ":sout=#transcode{}:smem" );
-    m_vlcMedia->setDataCtx( this );
-    m_vlcMedia->setLockCallback( reinterpret_cast<LibVLCpp::Media::lockCallback>( getLockCallback() ) );
-    m_vlcMedia->setUnlockCallback( reinterpret_cast<LibVLCpp::Media::unlockCallback>( getUnlockCallback() ) );
+    m_vlcMedia->setVideoDataCtx( this );
+    m_vlcMedia->setVideoLockCallback( reinterpret_cast<void*>( getLockCallback() ) );
+    m_vlcMedia->setVideoUnlockCallback( reinterpret_cast<void*>( getUnlockCallback() ) );
     m_vlcMedia->addOption( ":sout-transcode-vcodec=RV24" );
     m_vlcMedia->addOption( ":sout-transcode-acodec=s16l" );
 //    m_vlcMedia->addOption( ":no-sout-keep" );
