@@ -364,3 +364,8 @@ void        MainWorkflow::tracksRenderCompleted()
     }
     m_synchroneRenderWaitCondition->wakeAll();
 }
+
+int         MainWorkflow::getTrackCount( TrackWorkflow::TrackType trackType ) const
+{
+    return m_tracks[trackType]->getTrackCount();
+}

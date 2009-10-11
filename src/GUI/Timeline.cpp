@@ -36,7 +36,7 @@ Timeline::Timeline( QWidget *parent ) :
     m_instance = this;
     m_ui.setupUi( this );
 
-    m_mainWorkflow = new MainWorkflow( MAX_TRACKS );
+    m_mainWorkflow = MainWorkflow::getInstance();
 
     m_tracksScene = new TracksScene( this );
     m_tracksView = new TracksView( m_tracksScene, m_mainWorkflow, m_ui.tracksFrame );
@@ -66,7 +66,7 @@ Timeline::Timeline( QWidget *parent ) :
 
 Timeline::~Timeline()
 {
-    delete m_mainWorkflow;
+    MainWorkflow::destroyInstance();
 }
 
 void Timeline::changeEvent( QEvent *e )

@@ -110,12 +110,13 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    clear();
 
         void                    setFullSpeedRender( bool value );
+        int                     getTrackCount( TrackWorkflow::TrackType trackType ) const;
 
     private:
         static unsigned char*   blackOutput;
 
     private:
-        MainWorkflow( int trackCount );
+        MainWorkflow( int trackCount = 64 );
         ~MainWorkflow();
         void                    computeLength();
         void                    activateTrack( unsigned int trackId );

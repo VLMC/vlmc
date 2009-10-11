@@ -44,12 +44,13 @@ namespace Commands
             Clip*   clip;
             quint32 trackNumber;
             qint64  pos;
+            TrackWorkflow::TrackType    trackType;
         };
 
         NEW_COMMAND( AddClip )
         {
             public:
-                AddClip( ::MainWorkflow* workflow, Clip* clip, unsigned int trackNumber, qint64 pos );
+                AddClip( ::MainWorkflow* workflow, Clip* clip, unsigned int trackNumber, qint64 pos, TrackWorkflow::TrackType trackType );
                 virtual void    redo();
                 virtual void    undo();
             private:
@@ -57,13 +58,15 @@ namespace Commands
                 Clip*           m_clip;
                 unsigned int    m_trackNumber;
                 qint64          m_pos;
+                TrackWorkflow::TrackType    m_trackType;
         };
 
         NEW_COMMAND( MoveClip )
         {
             public:
                 MoveClip( ::MainWorkflow* workflow, const QUuid& uuid,
-                        unsigned int oldTrack, qint64 oldPos, unsigned int newTrack, qint64 newPos );
+                        unsigned int oldTrack, qint64 oldPos, unsigned int newTrack,
+                        qint64 newPos, TrackWorkflow::TrackType trackType );
                 virtual void    redo();
                 virtual void    undo();
 
@@ -75,6 +78,7 @@ namespace Commands
                 qint64              m_pos;
                 qint64              m_oldPos;
                 bool                m_undoRedoAction;
+                TrackWorkflow::TrackType    m_trackType;
         };
 
         NEW_COMMAND( RemoveClips )
@@ -93,7 +97,8 @@ namespace Commands
         {
             public:
                 ResizeClip( ::MainWorkflow* mainWorkflow, const QUuid& uuid, unsigned int trackId,
-                            qint64 newBegin, qint64 newEnd );
+                            qint64 newBegin, qint64 newEnd,
+                            TrackWorkflow::TrackType trackType );
                 virtual void    redo();
                 virtual void    undo();
             private:
@@ -103,6 +108,7 @@ namespace Commands
                 qint64                      m_newBegin;
                 qint64                      m_newEnd;
                 Clip*                       m_clip;
+                TrackWorkflow::TrackType    m_trackType;
         };
     }
 }
