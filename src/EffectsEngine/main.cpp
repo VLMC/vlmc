@@ -24,8 +24,10 @@
 #ifndef OUTSLOT_HPP_
 #define OUTSLOT_HPP_
 
-#include "InSlot.hpp"
-#include <QtDebug>
+#include <cstdlib>
+
+//#include "InSlot.hpp"
+template<typename T> class InSlot;
 
 template<typename T>
 class   OutSlot
@@ -51,15 +53,14 @@ public:
 
   bool		connect( InSlot<T>& );
   bool		disconnect( void );
-  void		setType( typename InSlot<T>::OUTTYPE type );
 
+  // GETTING INFOS
 
-
+  InSlot<T>*	getInSlotPtr( void );
 private:
 
   // OTHERS
 
-  typename InSlot<T>::OUTTYPE		getType( void ) const;
   void			setPipe( T* shared );
   void			resetPipe( void );
   void			setInSlotPtr( InSlot<T>* );
@@ -67,8 +68,7 @@ private:
 
 private:
 
-  typename InSlot<T>::OUTTYPE	m_type;
-  InSlot<T>*		m_connectedTo;
+  InSlot<T>*		m_InSlotPtr;
   T			m_junk;
   T*			m_pipe;
 };
@@ -80,28 +80,31 @@ private:
 // CTOR & DTOR
 
 template<typename T>
-OutSlot<T>::OutSlot() : m_type( InSlot<T>::NORMAL ), m_connectedTo( NULL ), m_pipe( &m_junk )
+OutSlot<T>::OutSlot()
 {
+  resetInSlotPtr();
+  resetPipe();
 }
 
 template<typename T>
-OutSlot<T>::OutSlot(OutSlot<T> const & tocopy) : m_type( tocopy.m_type ),
-						 m_connectedTo( NULL ),
-						 m_pipe( &m_junk )
+OutSlot<T>::OutSlot(OutSlot<T> const & tocopy)
 {
+  resetInSlotPtr();
+  resetPipe();
 }
 
 template<typename T>
 OutSlot<T>&	OutSlot<T>::operator=(OutSlot<T> const & tocopy)
 {
-  m_type = tocopy.m_type;
-  m_connectedTo = NULL;
-  m_pipe = &m_junk;
+  resetInSlotPtr();
+  resetPipe();
 }
 
 template<typename T>
 OutSlot<T>::~OutSlot()
 {
+  if ( m_InSlotPtr != NULL )
+    m_InSlotPtr->disconnect();
 }
 
 // WRITING METHODS
@@ -125,30 +128,28 @@ OutSlot<T>&	OutSlot<T>::operator<<( T const & val )
 template<typename T>
 bool	OutSlot<T>::connect( InSlot<T>& toconnect )
 {
-  if ( m_connectedTo != NULL )
+  if ( m_InSlotPtr != NULL )
       return ( false );
   if ( toconnect.connect( (*this) ) == false)
-    {
-      return ( false );
-    }
+    return ( false );
   return ( true );
 }
 
 template<typename T>
 bool	OutSlot<T>::disconnect( void )
 {
-  if ( m_connectedTo == NULL)
+  if ( m_InSlotPtr == NULL)
       return ( false );
-  if ( m_connectedTo->disconnect( (*this) ) == false)
-      return ( false );
+  m_InSlotPtr->disconnect();
   return ( true );
 }
 
+// GETTING INFOS
+
 template<typename T>
-void	OutSlot<T>::setType( typename InSlot<T>::OUTTYPE type )
+InSlot<T>*	OutSlot<T>::getInSlotPtr( void )
 {
-  m_type = type;
-  return ;
+  return ( m_InSlotPtr );
 }
 
 //////////////////////////
@@ -156,12 +157,6 @@ void	OutSlot<T>::setType( typename InSlot<T>::OUTTYPE type )
 //////////////////////////
 
 // OTHERS
-
-template<typename T>
-typename InSlot<T>::OUTTYPE	OutSlot<T>::getType( void ) const
-{
-  return ( m_type );
-}
 
 template<typename T>
 void	OutSlot<T>::setPipe( T* shared )
@@ -180,14 +175,14 @@ void	OutSlot<T>::resetPipe( void )
 template<typename T>
 void	OutSlot<T>::setInSlotPtr( InSlot<T>* ptr )
 {
-  m_connectedTo = ptr;
+  m_InSlotPtr = ptr;
   return ;
 }
 
 template<typename T>
 void	OutSlot<T>::resetInSlotPtr( void )
 {
-  m_connectedTo = NULL;
+  m_InSlotPtr = NULL;
   return ;
 }
 
@@ -220,9 +215,8 @@ void	OutSlot<T>::resetInSlotPtr( void )
 #ifndef INSLOT_HPP_
 #define INSLOT_HPP_
 
-#include <cstdlib>
+//#include <cstdlib>
 
-template<typename T> class OutSlot;
 
 template<typename T>
 class	InSlot
@@ -240,24 +234,35 @@ public:
 
   // STREAMING
 
-  InSlot<T>&	operator>>( T & );
-                operator T const & () const;
+  InSlot<T> const&	operator>>( T & ) const;
+			operator T const & () const;
 
   // GETTING INFOS
 
-  
+  OutSlot<T>*		getOutSlotPtr( void );
+
 private:
 
   // CONNECTION & DISCONNECTION
 
   bool	connect( OutSlot<T>& );
-  bool	disconnect( OutSlot<T>& );
+  bool	disconnect( void );
+
+  void	setOutSlotPtr( OutSlot<T>* ptr);
+  void	resetOutSlotPtr( void );
+  void	setCurrentSharedToDefault( void );
+  void	setCurrentSharedToShared( void );
 
 private:
+
   static T			m_defaultValue;
+  OutSlot<T>*			m_OutSlotPtr;
   T				m_shared;		
   T*				m_currentShared;
 };
+
+template<typename T>
+T			InSlot<T>::m_defaultValue = 0;
 
 /////////////////////////
 //// PUBLICS METHODS ////
@@ -266,28 +271,54 @@ private:
 // CTOR & DTOR
 
 template<typename T>
-InSlot<T>::InSlot() : m_currentShared( &m_defaultValue )
+InSlot<T>::InSlot()
 {
+  resetOutSlotPtr();
+  setCurrentSharedToDefault();
+}
+
+template<typename T>
+InSlot<T>::InSlot(InSlot const & tocopy)
+{
+  resetOutSlotPtr();
+  setCurrentSharedToDefault();  
+}
+
+template<typename T>
+InSlot<T>&		InSlot<T>::operator=(InSlot const & tocopy)
+{
+  resetOutSlotPtr();
+  setCurrentSharedToDefault();
 }
 
 template<typename T>
 InSlot<T>::~InSlot()
 {
+  if ( m_OutSlotPtr != NULL)
+    disconnect();
 }
 
 // READING METHODS
 
 template<typename T>
-InSlot<T>&	InSlot<T>::operator>>( T& val )
+InSlot<T> const &	InSlot<T>::operator>>( T& val ) const
 {
-  val = m_shared[m_currentShared];
+  val = *m_currentShared;
   return ( (*this) );
 }
 
 template<typename T>
 InSlot<T>::operator T const & () const
 {
-  return ( m_shared[m_currentShared] );
+  return ( *m_currentShared );
+}
+
+// GETTING INFOS
+
+template<typename T>
+OutSlot<T>*	InSlot<T>::getOutSlotPtr( void )
+{
+  return ( m_OutSlotPtr );
 }
 
 //////////////////////////
@@ -304,18 +335,12 @@ InSlot<T>::operator T const & () const
 template<typename T>
 bool	InSlot<T>::connect( OutSlot<T>& toconnect )
 {
-  OUTTYPE	type;
-
-  type = toconnect.getType();
-  if ( m_outNbLimits[type] != InSlot<T>::INFINITE)
-    if ( m_nbOutByType[type] >= m_outNbLimits[type] )
-	return ( false );
-  ++(m_nbOutByType[type]);
-
-  toconnect.setPipe( &m_shared[type] );
+  if ( m_OutSlotPtr != NULL )
+    return ( false );
+  toconnect.setPipe( &m_shared );
   toconnect.setInSlotPtr( this );
-
-  switchCurrentShared();
+  setOutSlotPtr( &toconnect );
+  setCurrentSharedToShared();
   return ( true );
 }
 
@@ -325,38 +350,67 @@ bool	InSlot<T>::connect( OutSlot<T>& toconnect )
 // So, the OutSlot can be connected and the m_currentShared must be updated
 
 template<typename T>
-bool	InSlot<T>::disconnect( OutSlot<T>& todisconnect )
+bool	InSlot<T>::disconnect( void )
 {
-  OUTTYPE	type;
-
-  type = todisconnect.getType();
-  --(m_nbOutByType[type]);
-
-  todisconnect.resetPipe();
-  todisconnect.resetInSlotPtr();
-
-  switchCurrentShared();
+  if (m_OutSlotPtr == NULL)
+    return ( false );
+  m_OutSlotPtr->resetPipe();
+  m_OutSlotPtr->resetInSlotPtr();
+  resetOutSlotPtr();
+  setCurrentSharedToDefault();
   return ( true );
 }
 
 template<typename T>
-void	InSlot<T>::switchCurrentShared( void )
+void	InSlot<T>::setOutSlotPtr( OutSlot<T>* ptr)
 {
-  unsigned int	priority;
+  m_OutSlotPtr = ptr;
+  return ;
+}
 
-  for ( priority = InSlot<T>::HIGHER; priority > InSlot<T>::LOWER; --priority )
-    {
-      if ( m_nbOutByType[priority] )
-	break;
-    }
-  m_currentShared = static_cast< typename InSlot<T>::OUTTYPE >( priority );
-  m_shared[m_currentShared] = m_shared[DEFAULT];
+template<typename T>
+void	InSlot<T>::resetOutSlotPtr( void )
+{
+  m_OutSlotPtr = NULL;
+  return ;
+}
+
+template<typename T>
+void	InSlot<T>::setCurrentSharedToDefault( void )
+{
+  m_currentShared = &m_defaultValue;
+  return ;
+}
+
+template<typename T>
+void	InSlot<T>::setCurrentSharedToShared( void )
+{
+  m_currentShared = &m_shared;
   return ;
 }
 
 #endif // INSLOT_HPP_
 
+#include <iostream>
+
 int main(void)
 {
+  OutSlot<int>	out;
+  InSlot<int>	in;
+
+  out << 42;
+  std::cout << in << std::endl;
+
+  if ( out.connect(in) == true )
+    std::cout << "out connected to in" << std::endl;
+  else
+    std::cout << "out failed to connect to in" << std::endl;
+  out << 42;
+  std::cout << in << std::endl;
+  if ( out.disconnect() == true )
+    std::cout << "out disconnected to in" << std::endl;
+  else
+    std::cout << "out failed to disconnect to in" << std::endl;
+  std::cout << in << std::endl;
   return (0);
 }
