@@ -8,16 +8,16 @@ EffectsEngine::EffectsEngine( void )
    quint32	i;
 
    m_inputLock = new QReadWriteLock;
-   for (i = 0; i < 64; ++i)
-     m_videoInputs[i];
-   for (i = 0; i < 1; ++i)
-     m_videoOutputs[i];       
+   m_videoInputs = new OutSlot<LightVideoFrame>[64];
+   m_videoOutputs = new InSlot<LightVideoFrame>[64];       
    start();
 }
 
 EffectsEngine::~EffectsEngine()
 {
     stop();
+    delete [] m_videoInputs;
+    delete [] m_videoOutputs;
     delete m_inputLock;
 }
 
@@ -65,7 +65,7 @@ void	EffectsEngine::setInputFrame( LightVideoFrame& frame, quint32 tracknumber )
 
 LightVideoFrame const &	EffectsEngine::getOutputFrame( quint32 tracknumber ) const
 {
-  return m_videoOutputs[tracknumber];
+  return ( m_videoOutputs[tracknumber] );
 }
 
 //

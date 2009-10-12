@@ -22,6 +22,10 @@
 
 ================= InSlot & OutSlot =================
 
+!!!! voir si il faut permettre une seule lecture et une seule ecriture avec une methode pour
+reset ou pas (ce qui permettrais au passage de savoir le status d'un InSlot (pret a la lecture ou non))
+
+
  OK -les simplifiers en virant la gestion de priorite pour la deporter ailleurs
  OK -rajouter un getter pour savoir un out/inslot est connecte
  OK -rajouter un getter pour recuper l'InSlot/OutSlot auquel l'OutSlot/InSlot est connecte

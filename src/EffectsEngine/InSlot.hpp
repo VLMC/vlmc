@@ -24,38 +24,14 @@
 #ifndef INSLOT_HPP_
 #define INSLOT_HPP_
 
-#include <cstdlib>
+#include <QDebug>
 
 template<typename T> class OutSlot;
+
 
 template<typename T>
 class	InSlot
 {
-
-public:
-
-  enum	OUTTYPE				// DEFINTION OF MANY OUTPUTS TYPES
-    {
-      GUI,				// OUTPUTS FROM GUI
-      DEFAULT,				// WHEN NO OUTPUTS ARE CONNECTED
-      NORMAL,				// OUTPUT FROM STREAMING 
-      NBTYPES
-    };					// IT'S SORTED BY PRIORITY
-
-private:
-
-  enum	PRIORITY
-    {
-      LOWER = DEFAULT,
-      HIGHER = ( NBTYPES - 1 )
-    };
-
-  enum	CONSTANTS
-    {
-      INFINITE = 0,
-      ONLYONE = 1
-    };
-
   friend class OutSlot<T>;
 
 public:
@@ -63,36 +39,41 @@ public:
   // CTOR & DTOR
 
   InSlot();
+  InSlot( InSlot const & );
+  InSlot&	operator=( InSlot const & );
   ~InSlot();
 
   // STREAMING
 
-  InSlot<T>&	operator>>( T & );
-                operator T const & () const;
+  InSlot<T> const&	operator>>( T & ) const;
+			operator T const & () const;
+
+  // GETTING INFOS
+
+  OutSlot<T>*		getOutSlotPtr( void );
 
 private:
 
   // CONNECTION & DISCONNECTION
 
   bool	connect( OutSlot<T>& );
-  bool	disconnect( OutSlot<T>& );
+  bool	disconnect( void );
 
-  // OTHERS
-
-  void	switchCurrentShared( void );
+  void	setOutSlotPtr( OutSlot<T>* ptr);
+  void	resetOutSlotPtr( void );
+  void	setCurrentSharedToDefault( void );
+  void	setCurrentSharedToShared( void );
 
 private:
-  T			m_shared[NBTYPES];
-  unsigned int		m_nbOutByType[NBTYPES];
-  static unsigned int	m_outNbLimits[NBTYPES];
-  OUTTYPE		m_currentShared;
+
+  static T			m_defaultValue;
+  OutSlot<T>*			m_OutSlotPtr;
+  T				m_shared;		
+  T*				m_currentShared;
 };
 
-
-// STATIC MEMBERS INTIALIZATION
-
 template<typename T>
-unsigned int  InSlot<T>::m_outNbLimits[] = {InSlot<T>::INFINITE, InSlot<T>::INFINITE,  InSlot<T>::ONLYONE} ;
+T			InSlot<T>::m_defaultValue = 0;
 
 /////////////////////////
 //// PUBLICS METHODS ////
@@ -101,36 +82,55 @@ unsigned int  InSlot<T>::m_outNbLimits[] = {InSlot<T>::INFINITE, InSlot<T>::INFI
 // CTOR & DTOR
 
 template<typename T>
-InSlot<T>::InSlot() : m_currentShared( DEFAULT )
+InSlot<T>::InSlot()
 {
-  unsigned int 	type;
+  resetOutSlotPtr();
+  setCurrentSharedToDefault();
+}
 
-//   m_shared[DEFAULT] = 0; // DEFAULT VALUE SET HERE FOR FORWARD THIS WHEN THERE AREN'T OUTSLOTS CONNECTED
+template<typename T>
+InSlot<T>::InSlot(InSlot const &)
+{
+  resetOutSlotPtr();
+  setCurrentSharedToDefault();  
+}
 
-  for (type = static_cast<unsigned int>( InSlot<T>::DEFAULT );
-       type < static_cast<unsigned int>( InSlot<T>::NBTYPES );
-       ++type)
-    m_nbOutByType[type] = 0;
+template<typename T>
+InSlot<T>&		InSlot<T>::operator=(InSlot const &)
+{
+  resetOutSlotPtr();
+  setCurrentSharedToDefault();
 }
 
 template<typename T>
 InSlot<T>::~InSlot()
 {
+  qDebug() << "destruction d'InSlot";
+  if ( m_OutSlotPtr != NULL)
+    disconnect();
 }
 
 // READING METHODS
 
 template<typename T>
-InSlot<T>&	InSlot<T>::operator>>( T& val )
+InSlot<T> const &	InSlot<T>::operator>>( T& val ) const
 {
-  val = m_shared[m_currentShared];
+  val = *m_currentShared;
   return ( (*this) );
 }
 
 template<typename T>
 InSlot<T>::operator T const & () const
 {
-  return ( m_shared[m_currentShared] );
+  return ( *m_currentShared );
+}
+
+// GETTING INFOS
+
+template<typename T>
+OutSlot<T>*	InSlot<T>::getOutSlotPtr( void )
+{
+  return ( m_OutSlotPtr );
 }
 
 //////////////////////////
@@ -147,18 +147,12 @@ InSlot<T>::operator T const & () const
 template<typename T>
 bool	InSlot<T>::connect( OutSlot<T>& toconnect )
 {
-  OUTTYPE	type;
-
-  type = toconnect.getType();
-  if ( m_outNbLimits[type] != InSlot<T>::INFINITE)
-    if ( m_nbOutByType[type] >= m_outNbLimits[type] )
-	return ( false );
-  ++(m_nbOutByType[type]);
-
-  toconnect.setPipe( &m_shared[type] );
+  if ( m_OutSlotPtr != NULL )
+    return ( false );
+  toconnect.setPipe( &m_shared );
   toconnect.setInSlotPtr( this );
-
-  switchCurrentShared();
+  setOutSlotPtr( &toconnect );
+  setCurrentSharedToShared();
   return ( true );
 }
 
@@ -168,32 +162,42 @@ bool	InSlot<T>::connect( OutSlot<T>& toconnect )
 // So, the OutSlot can be connected and the m_currentShared must be updated
 
 template<typename T>
-bool	InSlot<T>::disconnect( OutSlot<T>& todisconnect )
+bool	InSlot<T>::disconnect( void )
 {
-  OUTTYPE	type;
-
-  type = todisconnect.getType();
-  --(m_nbOutByType[type]);
-
-  todisconnect.resetPipe();
-  todisconnect.resetInSlotPtr();
-
-  switchCurrentShared();
+  if (m_OutSlotPtr == NULL)
+    return ( false );
+  m_OutSlotPtr->resetPipe();
+  m_OutSlotPtr->resetInSlotPtr();
+  resetOutSlotPtr();
+  setCurrentSharedToDefault();
   return ( true );
 }
 
 template<typename T>
-void	InSlot<T>::switchCurrentShared( void )
+void	InSlot<T>::setOutSlotPtr( OutSlot<T>* ptr)
 {
-  unsigned int	priority;
+  m_OutSlotPtr = ptr;
+  return ;
+}
 
-  for ( priority = InSlot<T>::HIGHER; priority > InSlot<T>::LOWER; --priority )
-    {
-      if ( m_nbOutByType[priority] )
-	break;
-    }
-  m_currentShared = static_cast< typename InSlot<T>::OUTTYPE >( priority );
-  m_shared[m_currentShared] = m_shared[DEFAULT];
+template<typename T>
+void	InSlot<T>::resetOutSlotPtr( void )
+{
+  m_OutSlotPtr = NULL;
+  return ;
+}
+
+template<typename T>
+void	InSlot<T>::setCurrentSharedToDefault( void )
+{
+  m_currentShared = &m_defaultValue;
+  return ;
+}
+
+template<typename T>
+void	InSlot<T>::setCurrentSharedToShared( void )
+{
+  m_currentShared = &m_shared;
   return ;
 }
 
