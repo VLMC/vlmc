@@ -6,7 +6,7 @@
 -rendre la classe thread-safe
 -rajouter les commandes suivantes (create, delete, connect, disconnect, set)
 -rajouter le chainage pere fils avec les methode pour set et get le pere
--rajouter l'interpreteur et l'encodeur
+ OK -rajouter l'interpreteur et l'encodeur
 -remplacer les qhash par des tableau statique
 -rajouter les connection dynamique avec une liste
 -rajouter le semaphore pour savoir si le render peut commencer
@@ -15,15 +15,20 @@
 
 ================= EffectsEngine =================
 
--rajouter une methode activate & desactivate
+-remplacer les QHash par des tableaux statiques
+  OK -rajouter une methode activate & desactivate
 -rajouter le patch sous forme de GenericEffect conteneur
 -rendre la classe thread-safe
--les simplifiers en virant la gestion de priorite pour la deporter ailleurs
 
 ================= InSlot & OutSlot =================
 
--rajouter un getter pour savoir un out/inslot est connecte
--rajouter un getter pour recuper l'InSlot/OutSlot auquel l'OutSlot/InSlot est connecte
--rajoute la deconnection a la destruction
--rajouter le using dans le template pour forcer le type sur lequel on template a posseder
+ OK -les simplifiers en virant la gestion de priorite pour la deporter ailleurs
+ OK -rajouter un getter pour savoir un out/inslot est connecte
+ OK -rajouter un getter pour recuper l'InSlot/OutSlot auquel l'OutSlot/InSlot est connecte
+ OK -rajoute la deconnection a la destruction
+
+(-rajouter les constructeur par copy et operateur = en private pour empecher leur utilisation)
+
+
+truc que en fait je ferais pas -> -rajouter le using dans le template pour forcer le type sur lequel on template a posseder
 la methode get default value
