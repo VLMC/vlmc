@@ -25,7 +25,8 @@
 #define OUTSLOT_HPP_
 
 #include "InSlot.hpp"
-#include <QtDebug>
+#include <QDebug>
+
 
 template<typename T>
 class   OutSlot
@@ -51,15 +52,14 @@ public:
 
   bool		connect( InSlot<T>& );
   bool		disconnect( void );
-  void		setType( typename InSlot<T>::OUTTYPE type );
 
+  // GETTING INFOS
 
-
+  InSlot<T>*	getInSlotPtr( void );
 private:
 
   // OTHERS
 
-  typename InSlot<T>::OUTTYPE		getType( void ) const;
   void			setPipe( T* shared );
   void			resetPipe( void );
   void			setInSlotPtr( InSlot<T>* );
@@ -67,8 +67,7 @@ private:
 
 private:
 
-  typename InSlot<T>::OUTTYPE	m_type;
-  InSlot<T>*		m_connectedTo;
+  InSlot<T>*		m_InSlotPtr;
   T			m_junk;
   T*			m_pipe;
 };
@@ -80,39 +79,32 @@ private:
 // CTOR & DTOR
 
 template<typename T>
-OutSlot<T>::OutSlot() : m_type( InSlot<T>::NORMAL ), m_connectedTo( NULL ), m_pipe( &m_junk )
+OutSlot<T>::OutSlot()
 {
-  qDebug() << "HAYA : " << this->m_pipe;
-  qDebug() << "HAYA : " << &(this->m_junk)
-	   << "\n" ;
+  resetInSlotPtr();
+  resetPipe();
 }
 
 template<typename T>
-OutSlot<T>::OutSlot(OutSlot<T> const & tocopy) : m_type( tocopy.m_type ),
-						 m_connectedTo( NULL ),
-						 m_pipe( &m_junk )
+OutSlot<T>::OutSlot(OutSlot<T> const & tocopy)
 {
-  qDebug() << "copy ctor";
-  qDebug() << "m_pipe : " << this->m_pipe;
-  qDebug() << "&m_junk : " << &(this->m_junk)
-	   << "\n" ;
+  resetInSlotPtr();
+  resetPipe();
 }
 
 template<typename T>
 OutSlot<T>&	OutSlot<T>::operator=(OutSlot<T> const & tocopy)
 {
-  qDebug() << "HAIE GALLE sur OutSlot";
-  qDebug() << "m_pipe : " << this->m_pipe;
-  qDebug() << "&m_junk : " << &(this->m_junk)
-	   << "\n" ;
-  m_type = tocopy.m_type;
-  m_connectedTo = NULL;
-  m_pipe = &m_junk;
+  resetInSlotPtr();
+  resetPipe();
 }
 
 template<typename T>
 OutSlot<T>::~OutSlot()
 {
+  qDebug() << "destruction d'OutSlot";
+  if ( m_InSlotPtr != NULL )
+    m_InSlotPtr->disconnect();
 }
 
 // WRITING METHODS
@@ -144,34 +136,28 @@ OutSlot<T>&	OutSlot<T>::operator<<( T const & val )
 template<typename T>
 bool	OutSlot<T>::connect( InSlot<T>& toconnect )
 {
-  if ( m_connectedTo != NULL )
+  if ( m_InSlotPtr != NULL )
       return ( false );
   if ( toconnect.connect( (*this) ) == false)
-    {
-      return ( false );
-    }
-  qDebug() << "CONNECT";
-  qDebug() << "m_pipe : " << this->m_pipe;
-  qDebug() << "&m_junk : " << &(this->m_junk)
-	   << "\n" ;
+    return ( false );
   return ( true );
 }
 
 template<typename T>
 bool	OutSlot<T>::disconnect( void )
 {
-  if ( m_connectedTo == NULL)
+  if ( m_InSlotPtr == NULL)
       return ( false );
-  if ( m_connectedTo->disconnect( (*this) ) == false)
-      return ( false );
+  m_InSlotPtr->disconnect();
   return ( true );
 }
 
+// GETTING INFOS
+
 template<typename T>
-void	OutSlot<T>::setType( typename InSlot<T>::OUTTYPE type )
+InSlot<T>*	OutSlot<T>::getInSlotPtr( void )
 {
-  m_type = type;
-  return ;
+  return ( m_InSlotPtr );
 }
 
 //////////////////////////
@@ -179,12 +165,6 @@ void	OutSlot<T>::setType( typename InSlot<T>::OUTTYPE type )
 //////////////////////////
 
 // OTHERS
-
-template<typename T>
-typename InSlot<T>::OUTTYPE	OutSlot<T>::getType( void ) const
-{
-  return ( m_type );
-}
 
 template<typename T>
 void	OutSlot<T>::setPipe( T* shared )
@@ -203,14 +183,14 @@ void	OutSlot<T>::resetPipe( void )
 template<typename T>
 void	OutSlot<T>::setInSlotPtr( InSlot<T>* ptr )
 {
-  m_connectedTo = ptr;
+  m_InSlotPtr = ptr;
   return ;
 }
 
 template<typename T>
 void	OutSlot<T>::resetInSlotPtr( void )
 {
-  m_connectedTo = NULL;
+  m_InSlotPtr = NULL;
   return ;
 }
 

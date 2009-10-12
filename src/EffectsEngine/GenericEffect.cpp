@@ -9,8 +9,8 @@ GenericEffect::GenericEffect( char const * videoinputs[], quint32 const nbvideoi
 
 GenericEffect::~GenericEffect()
 {
-  delete m_videoInputs;
-  delete m_videoOutputs;
+  delete [] m_videoInputs;
+  delete [] m_videoOutputs;
 }
 
 
