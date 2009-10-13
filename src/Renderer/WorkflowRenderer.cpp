@@ -62,6 +62,8 @@ WorkflowRenderer::WorkflowRenderer() :
     m_condMutex = new QMutex;
     m_waitCond = new QWaitCondition;
 
+    m_renderFrame = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes];
+   
         //Workflow part
     connect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
             Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( setCursorPos( qint64 ) ), Qt::QueuedConnection );
@@ -162,7 +164,6 @@ void        WorkflowRenderer::startPreview()
     m_isRendering = true;
     m_paused = false;
     m_stopping = false;
-    m_lastFrame = NULL;
 }
 
 void        WorkflowRenderer::setPosition( float newPos )
