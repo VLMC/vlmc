@@ -58,6 +58,8 @@ WorkflowRenderer::WorkflowRenderer() :
     m_condMutex = new QMutex;
     m_waitCond = new QWaitCondition;
 
+    m_renderFrame = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes];
+   
         //Workflow part
     connect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
             Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( setCursorPos( qint64 ) ), Qt::QueuedConnection );
@@ -93,10 +95,9 @@ void*   WorkflowRenderer::lock( void* datas )
     if ( self->m_stopping == false )
     {
         const LightVideoFrame* ret = self->m_mainWorkflow->getSynchroneOutput();
-        self->m_lastFrame = ret;
+	memcpy( self->m_renderFrame, (*ret)->frame.octets, (*ret)->nboctets );
     }
-    //A kitten just died here too :'(
-    return (*(self->m_lastFrame))->frame.octets;
+    return (self->m_renderFrame);
 }
 
 void    WorkflowRenderer::unlock( void* datas )
@@ -151,7 +152,6 @@ void        WorkflowRenderer::startPreview()
     m_isRendering = true;
     m_paused = false;
     m_stopping = false;
-    m_lastFrame = NULL;
 }
 
 void        WorkflowRenderer::setPosition( float newPos )
