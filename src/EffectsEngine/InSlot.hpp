@@ -105,7 +105,6 @@ InSlot<T>&		InSlot<T>::operator=(InSlot const &)
 template<typename T>
 InSlot<T>::~InSlot()
 {
-  qDebug() << "destruction d'InSlot";
   if ( m_OutSlotPtr != NULL)
     disconnect();
 }
