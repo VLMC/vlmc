@@ -107,3 +107,4 @@ uchar*                  Media::getPixelBuffer()
 {
     return m_pixelBuffer;
 }
+
