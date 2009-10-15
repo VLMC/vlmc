@@ -27,6 +27,7 @@
 #include "ui_ProjectPreferences.h"
 #include "ProjectPreferences.h"
 #include "PreferenceWidget.h"
+#include "SettingsManager.h"
 
 
   ProjectPreferences::ProjectPreferences( QWidget* parent )
@@ -37,14 +38,17 @@
 
 ProjectPreferences::~ProjectPreferences() { }
 
-bool    ProjectPreferences::load()
+void    ProjectPreferences::load()
 {
-	qDebug() << "Loading ProjectPreferences values";
-	return true;
+    QString  Name = SettingsManager::getInstance()->getValue( "ProjectName" ).toString();
+    QString  Dir = SettingsManager::getInstance()->getValue( "ProjectDirectory" ).toString();
+
+    m_ui.ProjectNameLineEdit->setText( Name );
+    m_ui.ProjectDirectoryLineEdit->setText( Dir );
 }
 
 void    ProjectPreferences::save( QHash<QString, QVariant>& settings )
 {
-	settings.insert( "ProjectName", QVariant( m_ui.ProjectNameLineEdit->text() ) );
-	settings.insert( "ProjectDirectory", QVariant( m_ui.ProjectDirectoryLineEdit->text() ) );
+    settings.insert( "ProjectName", QVariant( m_ui.ProjectNameLineEdit->text() ) );
+    settings.insert( "ProjectDirectory", QVariant( m_ui.ProjectDirectoryLineEdit->text() ) );
 }

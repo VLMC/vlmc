@@ -21,6 +21,7 @@
  *****************************************************************************/
 
 #include "VLMCPreferences.h"
+#include "SettingsManager.h"
 
 #include "QDebug"
 
@@ -32,10 +33,16 @@ VLMCPreferences::VLMCPreferences( QWidget *parent )
 
 VLMCPreferences::~VLMCPreferences() { }
 
-bool    VLMCPreferences::load()
+void    VLMCPreferences::load()
 {
-    qDebug() << "Loading VLMCPreferences values";
-    return true;
+    QString  outputFPS = SettingsManager::getInstance()->getValue( "VLMCOutPutFPS" ).toString();
+    QString  previewFPS = SettingsManager::getInstance()->getValue( "VLMCPreviewFPS" ).toString();
+    QString  tracksNb = SettingsManager::getInstance()->getValue( "VLMCTracksNb" ).toString();
+
+    m_ui.outputFPS->setText( outputFPS );
+    m_ui.previewFPS->setText( previewFPS );
+    m_ui.tracksNb->setText( tracksNb );
+
 }
 
 void    VLMCPreferences::save( QHash<QString, QVariant>& settings )

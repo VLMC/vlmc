@@ -21,26 +21,33 @@
  *****************************************************************************/
 
 #include "VideoProjectPreferences.h"
+#include "SettingsManager.h"
 
 #include "QDebug"
 
 VideoProjectPreferences::VideoProjectPreferences( QWidget *parent )
-	: PreferenceWidget( parent )
+    : PreferenceWidget( parent )
 {
 	m_ui.setupUi( this );
 }
 
 VideoProjectPreferences::~VideoProjectPreferences() { }
 
-bool    VideoProjectPreferences::load()
+void    VideoProjectPreferences::load()
 {
-	qDebug() << "Loading VideoProjectPreferences values";
-	return true;
+    int projectFps = SettingsManager::getInstance()->getValue( "VideoProjectFPS" ).toInt();
+    int projectHeight = SettingsManager::getInstance()->getValue( "VideoProjectHeight" ).toInt();
+    int projectWidth = SettingsManager::getInstance()->getValue( "VideoProjectWidth" ).toInt();
+
+    m_ui.FPSSpinBox->setValue( projectFps );
+    m_ui.HeightSpinBox->setValue( projectHeight );
+    m_ui.WidthSpinBox->setValue( projectWidth );
 }
 
 void    VideoProjectPreferences::save( QHash<QString, QVariant>& settings )
 {
-	settings.insert( "VideoProjectFPS", QVariant( m_ui.FPSSpinBox->value() ) );
-	settings.insert( "VideoProjectHeight", QVariant( m_ui.HeightSpinBox->value() ) );
-	settings.insert( "VideoProjectWidth", QVariant( m_ui.WidthSpinBox->value() ));
+    settings.insert( "VideoProjectFPS", QVariant( m_ui.FPSSpinBox->value() ) );
+    settings.insert( "VideoProjectHeight", QVariant( m_ui.HeightSpinBox->value() ) );
+    settings.insert( "VideoProjectWidth", QVariant( m_ui.WidthSpinBox->value() ));
+    return ;
 }
