@@ -42,6 +42,9 @@ class ImportBrowser : public QWidget
 public:    
     ImportBrowser( QWidget* parent = NULL );
     virtual ~ImportBrowser();
+    ImportMediaListController* getMediaListView() { return m_mediaList; }
+    ImportMediaListController* getClipListView() { return m_clipList; }
+    StackViewController*       getStackViewController() { return m_nav; }
 
 private:
     void    TreeViewBrowserDirectoryChanged( QModelIndex& index );
@@ -55,6 +58,7 @@ private:
     MetaDataWorker*             m_metaDataWorker;
     StackViewController*        m_nav;
     ImportMediaListController*  m_mediaList;
+    ImportMediaListController*  m_clipList;
 
 private slots:
     void on_pushButtonForward_clicked();
@@ -65,7 +69,7 @@ private slots:
 signals:
     void    mediaSelected( QFileInfo fileInfos );
     void    mediaAdded( Media* media, ImportMediaCellView* );
-    void    mediaRemoved( QFileInfo fileInfos );
+    void    mediaRemoved();
 };
 
 #endif /* !IMPORTBROWSER_H */

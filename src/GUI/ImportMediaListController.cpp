@@ -32,3 +32,46 @@ ImportMediaCellView* ImportMediaListController::getCell( QUuid uuid ) const
 {
     return m_mediaCellList->value( uuid );
 }
+
+void    ImportMediaListController::removeMedia( const QUuid& uuid )
+{
+    removeCell( m_mediaCellList->value( uuid ) );
+    m_mediaCellList->remove( uuid );
+}
+
+void    ImportMediaListController::addClip( Clip* clip )
+{
+    ImportMediaCellView* cell = new ImportMediaCellView( clip->getUuid() );
+
+    cell->setTitle( clip->getParent()->getFileName() + " " + m_mediaCellList->size() + 1 );
+    cell->setThumbnail( clip->getParent()->getSnapshot() );
+    addCell( cell );
+
+    m_mediaCellList->insert( clip->getUuid(), cell );
+}
+
+void    ImportMediaListController::removeClip( const QUuid& uuid )
+{
+    removeCell( m_mediaCellList->value( uuid ) );
+    m_mediaCellList->remove( uuid );
+}
+
+void    ImportMediaListController::cleanAll()
+{
+    QUuid uuid;
+    MediaCellView* cell;
+    foreach( uuid, m_mediaCellList->keys() )
+    {
+        cell = m_mediaCellList->value( uuid );
+        m_layout->removeWidget( cell );
+        delete cell;
+    }
+    m_mediaCellList->clear();
+}
+
+void    ImportMediaListController::addClipsFromMedia( Media* media )
+{
+    QUuid uuid;
+    foreach( uuid, media->clips()->keys() )
+        addClip( media->clips()->value( uuid ) );
+}

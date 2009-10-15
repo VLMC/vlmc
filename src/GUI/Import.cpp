@@ -35,10 +35,11 @@ Import::Import(QWidget *parent) :
     m_tagWidget = new TagWidget( m_ui->TagWidget, 6 );
 
     connect( m_importBrowser, SIGNAL( mediaAdded( Media*, ImportMediaCellView* ) ), this, SLOT( addMedia( Media*, ImportMediaCellView* ) ) );
-    //connect( m_importBrowser, SIGNAL( mediaRemoved( Media* ) ), this, SLOT( removeMedia( Media* ) ) );
+    connect( m_importBrowser, SIGNAL( mediaRemoved() ), this, SLOT( removeMedia() ) );
 
     connect( this, SIGNAL( mediaSelected( Media* ) ), m_previewWidget->getGenericRenderer(), SLOT( setMedia( Media* ) ) );
     connect( this, SIGNAL( mediaSelected( Media* ) ), m_tagWidget, SLOT( mediaSelected( Media* ) ) );
+
 }
 
 Import::~Import()
@@ -53,29 +54,33 @@ void    Import::addMedia( Media* media, ImportMediaCellView* cell )
 {
     m_mediaList.insert( media->getUuid(), media );
     connect( cell, SIGNAL( mediaSelected( QUuid ) ), this, SLOT( setUIMetaData( QUuid ) ) );
+    connect( cell->nextButton(), SIGNAL( clicked( QWidget*,QMouseEvent* ) ), this, SLOT( clipViewRequested( QWidget*,QMouseEvent* ) ) );
 }
 
-void    Import::removeMedia( QUuid Uuid )
+void    Import::removeMedia()
 {
-    m_mediaList.remove( Uuid );
+    m_mediaList.remove( m_currentUuid );
+    m_importBrowser->getMediaListView()->removeMedia( m_currentUuid );
 }
 
-void    Import::setUIMetaData( QUuid Uuid )
+void    Import::setUIMetaData( QUuid uuid )
 {
+    m_currentUuid = uuid;
+
     //Duration
     QTime   duration;
-    duration = duration.addSecs( m_mediaList[Uuid]->getLength() );
+    duration = duration.addSecs( m_mediaList[uuid]->getLength() );
     m_ui->durationValueLabel->setText( duration.toString( "hh:mm:ss" ) );
     //Filename || title
-    m_ui->nameValueLabel->setText( m_mediaList[Uuid]->getFileInfo()->fileName() );
-    setWindowTitle( m_mediaList[Uuid]->getFileInfo()->fileName() + " " + tr( "properties" ) );
+    m_ui->nameValueLabel->setText( m_mediaList[uuid]->getFileInfo()->fileName() );
+    setWindowTitle( m_mediaList[uuid]->getFileInfo()->fileName() + " " + tr( "properties" ) );
     //Resolution
-    m_ui->resolutionValueLabel->setText( QString::number( m_mediaList[Uuid]->getWidth() )
-                                       + " x " + QString::number( m_mediaList[Uuid]->getHeight() ) );
+    m_ui->resolutionValueLabel->setText( QString::number( m_mediaList[uuid]->getWidth() )
+                                       + " x " + QString::number( m_mediaList[uuid]->getHeight() ) );
     //FPS
-    m_ui->fpsValueLabel->setText( QString::number( m_mediaList[Uuid]->getFps() ) );
+    m_ui->fpsValueLabel->setText( QString::number( m_mediaList[uuid]->getFps() ) );
 
-    emit mediaSelected( m_mediaList[Uuid] );
+    emit mediaSelected( m_mediaList[uuid] );
 }
 
 void    Import::accept()
@@ -100,4 +105,15 @@ void Import::changeEvent( QEvent *e )
         default:
             break;
     }
+}
+
+void    Import::clipViewRequested( QWidget* sender, QMouseEvent* ev )
+{
+    MediaCellView* cell = qobject_cast<MediaCellView*>(sender->parent());
+    if ( cell == NULL )
+        return;
+    m_importBrowser->getClipListView()->cleanAll();
+    Media* media = m_mediaList[cell->uuid()];
+    m_importBrowser->getClipListView()->addClipsFromMedia( media );
+    m_importBrowser->getStackViewController()->pushViewController( m_importBrowser->getClipListView() );
 }

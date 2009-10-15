@@ -32,8 +32,9 @@ ImportBrowser::ImportBrowser( QWidget* parent ) : QWidget( parent )
 {
     m_ui.setupUi( this );
     m_FilesModel = new QDirModel();
-    m_nav = new StackViewController( m_ui.MediaListWidget );
+    m_nav = new StackViewController( m_ui.MediaListWidget, false );
     m_mediaList = new ImportMediaListController( m_nav );
+    m_clipList = new ImportMediaListController( m_nav );
     m_nav->pushViewController( m_mediaList );
 
     QStringList filters;
@@ -93,8 +94,7 @@ void ImportBrowser::on_treeViewBrowser_doubleClicked( QModelIndex index)
 
 void ImportBrowser::on_pushButtonBackward_clicked()
 {
-    //emit mediaRemoved( m_currentCellSelected );
-
+    emit mediaRemoved();
     if ( m_mediaList->getMediaCellList()->isEmpty() )
         m_ui.pushButtonBackward->setEnabled( false );
 }

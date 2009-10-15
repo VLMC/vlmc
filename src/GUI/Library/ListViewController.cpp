@@ -69,6 +69,12 @@ void                ListViewController::addCell( QWidget* cell )
     m_layout->addWidget( cell );
 }
 
+void            ListViewController::removeCell( QWidget* cell )
+{
+    m_layout->removeWidget( cell );
+    delete cell;
+}
+
 void                ListViewController::cellSelected( const QUuid& uuid )
 {
     if ( m_currentUuid == 0 || *m_currentUuid != uuid )

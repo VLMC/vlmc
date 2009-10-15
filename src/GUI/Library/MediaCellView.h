@@ -26,6 +26,7 @@
 #include <QWidget>
 #include <QUuid>
 #include <QMouseEvent>
+#include "ClickableLabel.h"
 
 namespace Ui
 {
@@ -40,17 +41,18 @@ public:
     MediaCellView( const QUuid& uuid, QWidget *parent = 0 );
     ~MediaCellView();
 
-    void            setTitle( const QString& title );
-    void            setThumbnail( const QPixmap& pixmap );
-    const QPixmap*  getThumbnail() const;
-    QString         title() const;
-    const QUuid&    uuid() const;
+    void                    setTitle( const QString& title );
+    void                    setThumbnail( const QPixmap& pixmap );
+    const QPixmap*          getThumbnail() const;
+    QString                 title() const;
+    const QUuid&            uuid() const;
+    const ClickableLabel*   nextButton() const;
 
 protected:
     void changeEvent( QEvent *e );
 
 private:
-    Ui::MediaCellView   *m_ui;
+    Ui::MediaCellView*  m_ui;
     const QUuid         m_uuid;
     QPoint              m_dragStartPos;
 
@@ -61,6 +63,7 @@ protected:
 
 signals:
     void        cellSelected( const QUuid& uuid );
+    void        arrowClicked( const QUuid& uuid );
 
 
 };

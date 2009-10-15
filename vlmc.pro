@@ -75,7 +75,8 @@ SOURCES += src/main.cpp \
     src/GUI/Library/MediaLibraryWidget.cpp \
     src/GUI/Library/MediaListViewController.cpp \
     src/GUI/ImportMediaListController.cpp \
-    src/GUI/ImportMediaCellView.cpp
+    src/GUI/ImportMediaCellView.cpp \
+    src/GUI/ClickableLabel.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -144,7 +145,8 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/Library/MediaListViewController.h \
     src/GUI/Library/ViewController.h \
     src/GUI/ImportMediaListController.h \
-    src/GUI/ImportMediaCellView.h
+    src/GUI/ImportMediaCellView.h \
+    src/GUI/ClickableLabel.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \

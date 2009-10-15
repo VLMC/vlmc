@@ -21,21 +21,30 @@
  *****************************************************************************/
 
 #include "StackViewController.h"
+#include "Import.h"
 
-StackViewController::StackViewController( QWidget* parent ) :
+StackViewController::StackViewController( QWidget* parent, bool enableImport ) :
         QWidget( parent ), m_current( 0 )
 {
     m_nav     = new StackViewNavController( this );
-    m_footer  = new QLabel( "Footer" );
+
     m_layout  = new QVBoxLayout;
+
     m_controllerStack = new QStack<ViewController*>();
 
-    m_footer->setAlignment( Qt::AlignCenter );
-    QObject::connect( m_nav->previousButton(), SIGNAL( clicked() ),
+    connect( m_nav->previousButton(), SIGNAL( clicked() ),
                      this, SLOT( previous() ) );
 
+
+
     m_layout->addWidget( m_nav );
-    m_layout->addWidget( m_footer );
+
+    if ( enableImport )
+    {
+        m_importButton = new QPushButton( "Import", parent );
+        m_layout->addWidget( m_importButton );
+        connect( m_importButton, SIGNAL( clicked() ), this, SLOT( displayImportMenu() ) );
+    }
 
     parent->setLayout( m_layout );
 }
@@ -43,7 +52,7 @@ StackViewController::StackViewController( QWidget* parent ) :
 StackViewController::~StackViewController()
 {
     delete m_nav;
-    delete m_footer;
+    delete m_importButton;
     delete m_layout;
     delete m_controllerStack;
 }
@@ -100,4 +109,10 @@ void        StackViewController::previous()
 const ViewController*   StackViewController::getCurrentViewController() const
 {
     return m_current;
+}
+
+void    StackViewController::displayImportMenu()
+{
+    Import* import = new Import( );
+    import->exec();
 }

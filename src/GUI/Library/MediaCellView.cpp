@@ -116,3 +116,8 @@ void    MediaCellView::mouseMoveEvent( QMouseEvent* event )
     drag->setPixmap( Library::getInstance()->getClip( m_uuid )->getParent()->getSnapshot().scaled( 100, 100, Qt::KeepAspectRatio ) );
     drag->exec( Qt::CopyAction | Qt::MoveAction, Qt::CopyAction );
 }
+
+const ClickableLabel*   MediaCellView::nextButton() const
+{
+    return m_ui->arrow;
+}

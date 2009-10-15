@@ -282,3 +282,13 @@ bool            Media::matchMetaTag( const QString& tag ) const
     }
     return false;
 }
+
+void            Media::addClip( Clip* clip )
+{
+    m_clips.insert( clip->getUuid(), clip );
+}
+
+void            Media::removeClip( const QUuid& uuid )
+{
+    m_clips.remove( uuid );
+}

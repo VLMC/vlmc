@@ -51,12 +51,14 @@ class Import : public QDialog
         ImportBrowser*      m_importBrowser;
         TagWidget*          m_tagWidget;
         QHash<QUuid, Media*> m_mediaList;
+        QUuid               m_currentUuid;
 
     private slots:
         void    accept();
         void    addMedia( Media* media, ImportMediaCellView* cell );
-        void    removeMedia( QUuid Uuid );
-        void    setUIMetaData( QUuid Uuid );
+        void    removeMedia();
+        void    setUIMetaData( QUuid uuid );
+        void    clipViewRequested( QWidget* sender, QMouseEvent* ev );
 
     signals:
         void    mediaSelected( Media* );

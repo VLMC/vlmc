@@ -13,6 +13,7 @@ class ImportMediaCellView : public MediaCellView
     protected:
         void    mouseDoubleClickEvent( QMouseEvent* );
         void    mousePressEvent( QMouseEvent* );
+        void    mouseMoveEvent( QMouseEvent* );
 
     signals:
         void    mediaSelected( QUuid );

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>274</width>
-    <height>81</height>
+    <height>69</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -199,7 +199,7 @@
       </layout>
      </item>
      <item>
-      <widget class="QLabel" name="arrow">
+      <widget class="ClickableLabel" name="arrow">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
          <horstretch>0</horstretch>
@@ -210,7 +210,7 @@
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>../../../../../../../Pictures/arrowRight.png</pixmap>
+        <pixmap resource="../../../../ressources.qrc">:/images/images/marker_left.png</pixmap>
        </property>
       </widget>
      </item>
@@ -225,6 +225,15 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <customwidgets>
+  <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header>ClickableLabel.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../../../../ressources.qrc"/>
+ </resources>
  <connections/>
 </ui>

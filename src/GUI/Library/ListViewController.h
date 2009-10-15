@@ -46,12 +46,16 @@ public:
     QWidget*        view() const;
     const QString&  title() const;
     void            addCell( QWidget* cell );
+    void            removeCell( QWidget* cell );
+
+protected:
+    QVBoxLayout*                m_layout;
 
 private:
     QString*                    m_title;
     QScrollArea*                m_scrollArea;
     QWidget*                    m_container;
-    QVBoxLayout*                m_layout;
+
     StackViewController*        m_nav;
     QUuid*                      m_currentUuid;
 
