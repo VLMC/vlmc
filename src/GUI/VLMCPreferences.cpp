@@ -35,6 +35,7 @@ VLMCPreferences::~VLMCPreferences() { }
 
 void    VLMCPreferences::load()
 {
+    qDebug() << "Loading Prefs : VLMC";
     QString  outputFPS = SettingsManager::getInstance()->getValue( "VLMCOutPutFPS" ).toString();
     QString  previewFPS = SettingsManager::getInstance()->getValue( "VLMCPreviewFPS" ).toString();
     QString  tracksNb = SettingsManager::getInstance()->getValue( "VLMCTracksNb" ).toString();

@@ -19,6 +19,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
 #include <QPushButton>
 #include <QDialogButtonBox>
 #include <QAbstractButton>
@@ -43,13 +44,17 @@ Settings::Settings( QWidget* parent, Qt::WindowFlags f )
 {
     m_panel = new Panel( this );
     m_stackedWidgets = new QStackedWidget( this );
-    connect( m_panel,
+    QObject::connect( m_panel,
             SIGNAL( changePanel( int ) ),
             SLOT( switchWidget( int ) ) );
     QObject::connect( this,
             SIGNAL( widgetSwitched( int ) ),
             m_stackedWidgets,
             SLOT( setCurrentIndex( int ) ));
+    QObject::connect( SettingsManager::getInstance(),
+                        SIGNAL( settingsLoaded() ),
+                        this,
+                        SLOT( load() ) );
 }
 
 Settings::~Settings()
@@ -64,6 +69,7 @@ void        Settings::addWidget( const QString& name,
         const QString& icon,
         const QString& label )
 {
+    qDebug() << "calling SettingsManager::addWidget()";
     m_stackedWidgets->addWidget( pWidget );
     QObject::connect( SettingsManager::getInstance(),
                         SIGNAL( settingsLoaded( const QHash<QString, QVariant>& ) ),
@@ -177,4 +183,8 @@ void    Settings::switchWidget( int widget )
 
 void    Settings::loadSettings( const QHash<QString, QVariant>& sett )
 {
+    qDebug() << "Pwid size :" << m_pWidgets.size();
+    PreferenceWidget*   pwidg;
+    foreach( pwidg, m_pWidgets )
+        pwidg->load();
 }
