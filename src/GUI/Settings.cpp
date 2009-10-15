@@ -43,13 +43,17 @@ Settings::Settings( QWidget* parent, Qt::WindowFlags f )
 {
     m_panel = new Panel( this );
     m_stackedWidgets = new QStackedWidget( this );
-    connect( m_panel,
+    QObject::connect( m_panel,
             SIGNAL( changePanel( int ) ),
             SLOT( switchWidget( int ) ) );
     QObject::connect( this,
             SIGNAL( widgetSwitched( int ) ),
             m_stackedWidgets,
             SLOT( setCurrentIndex( int ) ));
+    QObject::connect( SettingsManager::getInstance(),
+                        SIGNAL( settingsLoaded() ),
+                        this,
+                        SLOT( load() ) );
 }
 
 Settings::~Settings()
@@ -64,11 +68,8 @@ void        Settings::addWidget( const QString& name,
         const QString& icon,
         const QString& label )
 {
+    qDebug() << "calling SettingsManager::addWidget()";
     m_stackedWidgets->addWidget( pWidget );
-    QObject::connect( SettingsManager::getInstance(),
-                        SIGNAL( settingsLoaded() ),
-                        this,
-                        SLOT( loadSettings() ) );
 
     int idx = m_stackedWidgets->indexOf( pWidget );
     m_widgets.insert( idx, name );
@@ -175,6 +176,10 @@ void    Settings::switchWidget( int widget )
     emit widgetSwitched( widget );
 }
 
-void    Settings::loadSettings()
+void    Settings::load()
 {
+    qDebug() << "Pwid size :" << m_pWidgets.size();
+    PreferenceWidget*   pwidg;
+    foreach( pwidg, m_pWidgets )
+        pwidg->load();
 }

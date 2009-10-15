@@ -35,6 +35,7 @@ VideoProjectPreferences::~VideoProjectPreferences() { }
 
 void    VideoProjectPreferences::load()
 {
+    qDebug() << "Loading Prefs : VideoProject";
     int projectFps = SettingsManager::getInstance()->getValue( "VideoProjectFPS" ).toInt();
     int projectHeight = SettingsManager::getInstance()->getValue( "VideoProjectHeight" ).toInt();
     int projectWidth = SettingsManager::getInstance()->getValue( "VideoProjectWidth" ).toInt();

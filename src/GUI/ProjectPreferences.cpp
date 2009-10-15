@@ -40,6 +40,7 @@ ProjectPreferences::~ProjectPreferences() { }
 
 void    ProjectPreferences::load()
 {
+    qDebug() << "Loading preferences : Project";
     QString  Name = SettingsManager::getInstance()->getValue( "ProjectName" ).toString();
     QString  Dir = SettingsManager::getInstance()->getValue( "ProjectDirectory" ).toString();
 
