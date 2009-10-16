@@ -138,10 +138,7 @@ HEADERS += src/GUI/MainWindow.h \
     src/EffectsEngine/EffectsEngine.h \
     src/EffectsEngine/InSlot.hpp \
     src/EffectsEngine/OutSlot.hpp \
-    src/EffectsEngine/Parameter.h \
-    src/EffectsEngine/CopyOnWrite.hpp \
     src/EffectsEngine/LightVideoFrame.h \
-    src/EffectsEngine/LightParameter.h \
     src/EffectsEngine/GenericEffect.h \
     src/EffectsEngine/PouetEffect.h \
     src/EffectsEngine/MixerEffect.h \
