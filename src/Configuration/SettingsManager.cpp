@@ -93,6 +93,7 @@ void  SettingsManager::saveSettings( QDomDocument& xmlfile, QDomElement& root )
 
 void  SettingsManager::loadSettings( const QDomElement& settings )
 {
+    qDebug() << "Loading settings";
     if ( settings.isNull() == true || settings.tagName() != "settings" )
     {
         qWarning() << "Invalid settings node";
@@ -116,6 +117,6 @@ void  SettingsManager::loadSettings( const QDomElement& settings )
                 QVariant( attrMap.item( 0 ).nodeValue() ));
     }
     m_lock.unlock();
-    emit settingsLoaded( m_data );
+    emit settingsLoaded();
 }
 

@@ -51,11 +51,11 @@ class   SettingsManager : public QObject, public QSingleton<SettingsManager>
         SettingsManager( QObject* parent = 0 );
         ~SettingsManager();
 
-        QHash<QString, QVariant>    m_data;
+        QHash<QString, QVariant>            m_data;
         mutable QReadWriteLock              m_lock;
 
     signals:
-        void    settingsLoaded( const QHash<QString, QVariant>& settings );
+        void    settingsLoaded();
 };
 
 
