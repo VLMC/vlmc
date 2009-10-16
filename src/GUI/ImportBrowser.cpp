@@ -36,6 +36,7 @@ ImportBrowser::ImportBrowser( QWidget* parent ) : QWidget( parent )
     m_mediaList = new ImportMediaListController( m_nav );
     m_clipList = new ImportMediaListController( m_nav );
     m_nav->pushViewController( m_mediaList );
+    
 
     QStringList filters;
     //Video
@@ -119,7 +120,10 @@ void ImportBrowser::on_pushButtonForward_clicked()
     else
         for( int i = 0; i < m_FilesModel->rowCount( m_ui.treeViewBrowser->selectionModel()->currentIndex() ); i++)
             {
-                Media* media = new Media( m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex().child( i, 0 ) ).filePath() );
+                QFileInfo info = m_FilesModel->fileInfo( m_ui.treeViewBrowser->selectionModel()->currentIndex().child( i, 0 ) );
+                if ( info.isDir() )
+                    continue ;
+                Media* media = new Media( info.filePath() );
                 if ( !m_mediaList->getMediaCellList()->contains( media->getUuid() ) )
                 {
                     m_mediaList->addMedia( media );

@@ -63,7 +63,7 @@ private:
     void        setupLibrary();
     void        createStatusBar();
     void        createGlobalPreferences();
-
+    void        createProjectPreferences();
 
     Ui::MainWindow          m_ui;
     MetaDataManager*        m_metaDataManager;
@@ -87,6 +87,7 @@ private slots:
     void on_actionSave_triggered();
     void on_actionImport_triggered();
     void on_actionHelp_triggered();
+    void on_actionProject_Preferences_triggered();
     void mediaListItemDoubleClicked( QListWidgetItem* );
     void toolButtonClicked( int id );
 

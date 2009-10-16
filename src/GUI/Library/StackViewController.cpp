@@ -21,7 +21,7 @@
  *****************************************************************************/
 
 #include "StackViewController.h"
-#include "Import.h"
+#include "ImportController.h"
 
 StackViewController::StackViewController( QWidget* parent, bool enableImport ) :
         QWidget( parent ), m_current( 0 )
@@ -113,6 +113,6 @@ const ViewController*   StackViewController::getCurrentViewController() const
 
 void    StackViewController::displayImportMenu()
 {
-    Import* import = new Import( );
+    ImportController* import = new ImportController( );
     import->exec();
 }

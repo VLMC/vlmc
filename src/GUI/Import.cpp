@@ -73,6 +73,7 @@ void    Import::setUIMetaData( QUuid uuid )
     m_ui->durationValueLabel->setText( duration.toString( "hh:mm:ss" ) );
     //Filename || title
     m_ui->nameValueLabel->setText( m_mediaList[uuid]->getFileInfo()->fileName() );
+    m_ui->nameValueLabel->setWordWrap( true );
     setWindowTitle( m_mediaList[uuid]->getFileInfo()->fileName() + " " + tr( "properties" ) );
     //Resolution
     m_ui->resolutionValueLabel->setText( QString::number( m_mediaList[uuid]->getWidth() )
@@ -110,10 +111,16 @@ void Import::changeEvent( QEvent *e )
 void    Import::clipViewRequested( QWidget* sender, QMouseEvent* ev )
 {
     MediaCellView* cell = qobject_cast<MediaCellView*>(sender->parent());
+    ImportMediaListController* clipListView = m_importBrowser->getClipListView();
+
     if ( cell == NULL )
         return;
-    m_importBrowser->getClipListView()->cleanAll();
+    clipListView->cleanAll();
     Media* media = m_mediaList[cell->uuid()];
+
+    delete clipListView;
+    clipListView = new ImportMediaListController(m_importBrowser->getStackViewController());
+
     m_importBrowser->getClipListView()->addClipsFromMedia( media );
     m_importBrowser->getStackViewController()->pushViewController( m_importBrowser->getClipListView() );
 }

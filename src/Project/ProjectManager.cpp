@@ -23,6 +23,7 @@
 #include "ProjectManager.h"
 #include "Library.h"
 #include "MainWorkflow.h"
+#include "SettingsManager.h"
 
 ProjectManager::ProjectManager( const QString& filePath )
 {
@@ -51,6 +52,7 @@ void    ProjectManager::loadProject()
 
     connect( Library::getInstance(), SIGNAL( projectLoaded() ), this, SLOT( loadTimeline() ) );
     Library::getInstance()->loadProject( root.firstChildElement( "medias" ) );
+    SettingsManager::getInstance()->loadSettings( root.firstChildElement( "settings" ) );
 }
 
 void    ProjectManager::saveProject()
@@ -66,6 +68,7 @@ void    ProjectManager::saveProject()
 
     Library::getInstance()->saveProject( doc, rootNode );
     MainWorkflow::getInstance()->saveProject( doc, rootNode );
+    SettingsManager::getInstance()->saveSettings( doc, rootNode );
 
     doc.appendChild( rootNode );
 

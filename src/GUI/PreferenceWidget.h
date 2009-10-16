@@ -36,7 +36,7 @@ class   PreferenceWidget : public QWidget
         PreferenceWidget( QWidget* parent = 0 );
         virtual ~PreferenceWidget() {}
 
-        virtual bool    load() = 0;
+        virtual void    load() = 0;
         virtual void    save( QHash<QString, QVariant>& settings ) = 0;
 };
 

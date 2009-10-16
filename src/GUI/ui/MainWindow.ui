@@ -27,7 +27,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>23</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -47,6 +47,7 @@
      <string>Edit</string>
     </property>
     <addaction name="actionPreferences"/>
+    <addaction name="actionProject_Preferences"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -182,6 +183,11 @@
   <action name="actionImport">
    <property name="text">
     <string>Import</string>
+   </property>
+  </action>
+  <action name="actionProject_Preferences">
+   <property name="text">
+    <string>Project Preferences</string>
    </property>
   </action>
  </widget>

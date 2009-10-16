@@ -38,19 +38,22 @@
 
 
 Settings::Settings( QWidget* parent, Qt::WindowFlags f )
-    : QDialog( parent, f ),
+: QDialog( parent, f ),
     m_currentWidget( NULL )
 {
     m_panel = new Panel( this );
     m_stackedWidgets = new QStackedWidget( this );
-    connect( m_panel,
-	     SIGNAL( changePanel( int ) ),
-             SLOT( switchWidget( int ) ) );
+    QObject::connect( m_panel,
+            SIGNAL( changePanel( int ) ),
+            SLOT( switchWidget( int ) ) );
     QObject::connect( this,
-		      SIGNAL( widgetSwitched( int ) ),
-                      m_stackedWidgets,
-		      SLOT( setCurrentIndex( int ) ));
-    m_settingsNumber = SettingsManager::getInstance()->createNewSettings();
+            SIGNAL( widgetSwitched( int ) ),
+            m_stackedWidgets,
+            SLOT( setCurrentIndex( int ) ));
+    QObject::connect( SettingsManager::getInstance(),
+                        SIGNAL( settingsLoaded() ),
+                        this,
+                        SLOT( load() ) );
 }
 
 Settings::~Settings()
@@ -61,10 +64,11 @@ Settings::~Settings()
 //TODO : see if the widget MUST have a fixed size, or if the window can dynamicaly
 //adjust to the size of the biggest Widget.
 void        Settings::addWidget( const QString& name,
-                                 PreferenceWidget* pWidget,
-                                 const QString& icon,
-                                 const QString& label )
+        PreferenceWidget* pWidget,
+        const QString& icon,
+        const QString& label )
 {
+    qDebug() << "calling SettingsManager::addWidget()";
     m_stackedWidgets->addWidget( pWidget );
 
     int idx = m_stackedWidgets->indexOf( pWidget );
@@ -95,7 +99,7 @@ QVBoxLayout*    Settings::buildRightHLayout()
     m_buttons = new QDialogButtonBox( this );
 
     QObject::connect( m_buttons, SIGNAL( clicked( QAbstractButton* ) ),
-                      this, SLOT( buttonClicked( QAbstractButton* ) ) );
+            this, SLOT( buttonClicked( QAbstractButton* ) ) );
 
     m_title = new QLabel( this );
     titleLine->setFrameShape( QFrame::HLine );
@@ -108,8 +112,8 @@ QVBoxLayout*    Settings::buildRightHLayout()
     m_title->setFont( labelFont );
 
     m_buttons->setStandardButtons( QDialogButtonBox::Ok |
-                                   QDialogButtonBox::Cancel |
-                                   QDialogButtonBox::Apply );
+            QDialogButtonBox::Cancel |
+            QDialogButtonBox::Apply );
 
     QString title( m_widgets.value( m_stackedWidgets->indexOf( m_currentWidget ) ) );
     m_title->setText( title );
@@ -130,33 +134,34 @@ void    Settings::buttonClicked( QAbstractButton* button )
     bool  hide = false ;
     switch ( m_buttons->standardButton( button ) )
     {
-    case QDialogButtonBox::Ok :
-	save = true;
-	hide = true;
-        break;
-    case QDialogButtonBox::Cancel :
-	hide = true;
-        break;
-    case QDialogButtonBox::Apply :
-	save = true;
-        break;
-    default :
-        break;
+        case QDialogButtonBox::Ok :
+            save = true;
+            hide = true;
+            break;
+        case QDialogButtonBox::Cancel :
+            hide = true;
+            break;
+        case QDialogButtonBox::Apply :
+            save = true;
+            break;
+        default :
+            break;
     }
     if ( save == true )
     {
-      qDebug() << "Saving Preferences";
-      //Save Settings
-      QHash<QString, QVariant>	sett;
-      PreferenceWidget*		widg;
+        qDebug() << "Saving Preferences";
+        //Save Settings
+        QHash<QString, QVariant>	sett;
+        PreferenceWidget*		widg;
 
-      foreach( widg, m_pWidgets )
-	widg->save( sett );
-      qDebug() << sett;
+        foreach( widg, m_pWidgets )
+            widg->save( sett );
+        qDebug() << sett;
+        SettingsManager::getInstance()->setValues( sett );
     }
     if ( hide == true )
     {
-      setVisible( false );
+        setVisible( false );
     }
 }
 
@@ -169,4 +174,12 @@ void    Settings::switchWidget( int widget )
         return ;
     m_title->setText( m_widgets.value( widget ) );
     emit widgetSwitched( widget );
+}
+
+void    Settings::load()
+{
+    qDebug() << "Pwid size :" << m_pWidgets.size();
+    PreferenceWidget*   pwidg;
+    foreach( pwidg, m_pWidgets )
+        pwidg->load();
 }

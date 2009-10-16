@@ -21,6 +21,7 @@
  *****************************************************************************/
 
 #include "AudioProjectPreferences.h"
+#include "SettingsManager.h"
 
 #include "QDebug"
 
@@ -32,13 +33,17 @@
 
 AudioProjectPreferences::~AudioProjectPreferences() { }
 
-bool    AudioProjectPreferences::load()
+void    AudioProjectPreferences::load()
 {
-	qDebug() << "Loading AudioProjectPreferences values";
-	return true;
+    qDebug() << "Loading preferences : Audio";
+    int sampleRate = SettingsManager::getInstance()->getValue( "AudioSampleRate" ).toInt();
+    m_ui.SampleRate->setValue( sampleRate );
+
+    return ;
 }
 
 void    AudioProjectPreferences::save( QHash<QString, QVariant>& settings )
 {
-	settings.insert( "AudioSampleRate", m_ui.SampleRate->value() );
+    settings.insert( "AudioSampleRate", m_ui.SampleRate->value() );
+    return ;
 }
