@@ -1,16 +1,16 @@
-#ifndef POUETEFFECT_H_
-#define POUETEFFECT_H_
+#ifndef GREENFILTEREFFECT_H_
+#define GREENFILTEREFFECT_H_
 
 #include "GenericEffect.h"
 
-class	PouetEffect : public GenericEffect
+class	GreenFilterEffect : public GenericEffect
 {
  public:
 
   // CTOR & DTOR
 
-  PouetEffect();
-  ~PouetEffect();
+  GreenFilterEffect();
+  ~GreenFilterEffect();
 
   // RENDER METHOD
 
@@ -27,4 +27,4 @@ class	PouetEffect : public GenericEffect
   static	char const *	m_videoOutputsNames[m_nbVideoOutputs];
 };
 
-#endif // POUETEFFECT_H_
+#endif // GREENFILTEREFFECT_H_

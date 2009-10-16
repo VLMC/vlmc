@@ -67,7 +67,7 @@ SOURCES += src/main.cpp \
     src/EffectsEngine/EffectsEngine.cpp \
     src/EffectsEngine/LightVideoFrame.cpp \
     src/EffectsEngine/GenericEffect.cpp \
-    src/EffectsEngine/PouetEffect.cpp \
+    src/EffectsEngine/GreenFilterEffect.cpp \
     src/EffectsEngine/MixerEffect.cpp \
     src/Configuration/SettingsManager.cpp
 HEADERS += src/GUI/MainWindow.h \
@@ -134,7 +134,7 @@ HEADERS += src/GUI/MainWindow.h \
     src/EffectsEngine/LightVideoFrame.h \
     src/EffectsEngine/LightParameter.h \
     src/EffectsEngine/GenericEffect.h \
-    src/EffectsEngine/PouetEffect.h \
+    src/EffectsEngine/GreenFilterEffect.h \
     src/EffectsEngine/MixerEffect.h \
     src/Configuration/SettingsManager.h
 FORMS += src/GUI/ui/MainWindow.ui \
