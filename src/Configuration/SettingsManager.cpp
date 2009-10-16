@@ -117,6 +117,6 @@ void  SettingsManager::loadSettings( const QDomElement& settings )
                 QVariant( attrMap.item( 0 ).nodeValue() ));
     }
     m_lock.unlock();
-    emit settingsLoaded( m_data );
+    emit settingsLoaded();
 }
 

@@ -55,7 +55,7 @@ class   SettingsManager : public QObject, public QSingleton<SettingsManager>
         mutable QReadWriteLock              m_lock;
 
     signals:
-        void    settingsLoaded( const QHash<QString, QVariant>& settings );
+        void    settingsLoaded();
 };
 
 #endif
