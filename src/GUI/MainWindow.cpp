@@ -31,6 +31,7 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QSettings>
+#include <QStringList>
 
 #include "MainWindow.h"
 #include "MediaListWidget.h"
@@ -59,6 +60,7 @@ MainWindow::MainWindow( QWidget *parent ) :
     initializeDockWidgets();
     createStatusBar();
     createGlobalPreferences();
+    createProjectPreferences();
 
     // Translations
     connect( this, SIGNAL( translateDockWidgetTitle() ),
@@ -162,6 +164,13 @@ void    MainWindow::on_actionSave_triggered()
     else
     {
         //Project manager will destroy itself.
+        QStringList list = outputFileName.split( "." );
+        if ( list.at( list.size() - 1 ) != "vlmc" )
+        {
+            list.append( "vlmc" );
+            outputFileName = list.join(".");
+        }
+
         ProjectManager* pm = new ProjectManager( outputFileName );
         pm->saveProject();
     }
@@ -170,7 +179,7 @@ void    MainWindow::on_actionSave_triggered()
 void    MainWindow::on_actionLoad_Project_triggered()
 {
     QString outputFileName =
-            QFileDialog::getSaveFileName( NULL, "Enter the output file name",
+            QFileDialog::getOpenFileName( NULL, "Enter the output file name",
                                           QString(), "VLMC project file(*.vlmc)" );
     if ( outputFileName.length() == 0 )
         return ;
@@ -285,6 +294,24 @@ void        MainWindow::createGlobalPreferences()
     m_globalPreferences->build();
 }
 
+void	    MainWindow::createProjectPreferences()
+{
+    m_projectPreferences = new Settings(  );
+    m_projectPreferences->addWidget("Project",
+                                   new ProjectPreferences,
+                                   "../images/vlmc.png",
+                                   "Project settings");
+    m_projectPreferences->addWidget("Video",
+                                   new VideoProjectPreferences,
+                                   "../images/scalable/video.svg",
+                                   "Video settings");
+    m_projectPreferences->addWidget("Audio",
+                                   new AudioProjectPreferences,
+                                   "../images/scalable/audio.svg",
+                                   "Audio settings");
+    m_projectPreferences->build();
+}
+
 //Private slots definition
 
 void MainWindow::on_actionQuit_triggered()
@@ -334,21 +361,8 @@ void MainWindow::on_actionNew_Project_triggered()
 {
     //TODO : clear the library, the timeline, and show the configuration box
     //of the newly created project
-    m_projectPreferences = new Settings(  );
-    m_projectPreferences->addWidget("Project",
-                                   new ProjectPreferences,
-                                   "../images/vlmc.png",
-                                   "Project settings");
-    m_projectPreferences->addWidget("Video",
-                                   new VideoProjectPreferences,
-                                   "../images/scalable/video.svg",
-                                   "Video settings");
-    m_projectPreferences->addWidget("Audio",
-                                   new AudioProjectPreferences,
-                                   "../images/scalable/audio.svg",
-                                   "Audio settings");
-    m_projectPreferences->build();
-    m_projectPreferences->exec();
+
+    m_projectPreferences->show();
 }
 
 void MainWindow::on_actionHelp_triggered()
@@ -401,4 +415,9 @@ void MainWindow::on_actionBypass_effects_engine_toggled(bool toggled)
     else
        ee->disable();
     return ;
+}
+
+void MainWindow::on_actionProject_Preferences_triggered()
+{
+  m_projectPreferences->show();
 }
