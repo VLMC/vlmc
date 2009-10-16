@@ -36,13 +36,13 @@ void	EffectsEngine::render( void )
 void		EffectsEngine::enable( void )
 {
   QWriteLocker    lock( m_inputLock );
-  reinterpret_cast<PouetEffect*>(m_effects[1])->enable(); // YES, I KNOW, IT'S HUGLY, BUT IT'S TEMPORARY
+  reinterpret_cast<GreenFilterEffect*>(m_effects[1])->enable(); // YES, I KNOW, IT'S HUGLY, BUT IT'S TEMPORARY
 }
 
 void		EffectsEngine::disable( void )
 {
   QWriteLocker    lock( m_inputLock );
-  reinterpret_cast<PouetEffect*>(m_effects[1])->disable(); // YES, I KNOW, IT'S HUGLY, BUT IT'S TEMPORARY (second time)
+  reinterpret_cast<GreenFilterEffect*>(m_effects[1])->disable(); // YES, I KNOW, IT'S HUGLY, BUT IT'S TEMPORARY (second time)
 }
 
 // INPUTS & OUTPUTS METHODS
@@ -92,7 +92,7 @@ void	EffectsEngine::stop( void )
 void	EffectsEngine::loadEffects( void )
 {
   m_effects[0] = new MixerEffect();
-  m_effects[1] = new PouetEffect();
+  m_effects[1] = new GreenFilterEffect();
   return ;
 }
 

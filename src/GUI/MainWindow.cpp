@@ -419,5 +419,5 @@ void MainWindow::on_actionBypass_effects_engine_toggled(bool toggled)
 }
 void MainWindow::on_actionProject_Preferences_triggered()
 {
-  m_projectPreferences->show();
+    m_projectPreferences->show();
 }

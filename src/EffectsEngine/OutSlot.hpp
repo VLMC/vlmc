@@ -102,7 +102,6 @@ OutSlot<T>&	OutSlot<T>::operator=(OutSlot<T> const & tocopy)
 template<typename T>
 OutSlot<T>::~OutSlot()
 {
-  qDebug() << "destruction d'OutSlot";
   if ( m_InSlotPtr != NULL )
     m_InSlotPtr->disconnect();
 }

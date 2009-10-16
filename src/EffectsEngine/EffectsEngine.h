@@ -7,11 +7,10 @@
 #include <QReadWriteLock>
 
 #include "LightVideoFrame.h"
-#include "LightParameter.h"
 #include "InSlot.hpp"
 #include "OutSlot.hpp"
 #include "GenericEffect.h"
-#include "PouetEffect.h"
+#include "GreenFilterEffect.h"
 #include "MixerEffect.h"
 
 class	EffectsEngine
