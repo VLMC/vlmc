@@ -68,7 +68,6 @@ void        Settings::addWidget( const QString& name,
         const QString& icon,
         const QString& label )
 {
-    qDebug() << "calling SettingsManager::addWidget()";
     m_stackedWidgets->addWidget( pWidget );
 
     int idx = m_stackedWidgets->indexOf( pWidget );
@@ -149,14 +148,12 @@ void    Settings::buttonClicked( QAbstractButton* button )
     }
     if ( save == true )
     {
-        qDebug() << "Saving Preferences";
         //Save Settings
         QHash<QString, QVariant>	sett;
         PreferenceWidget*		widg;
 
         foreach( widg, m_pWidgets )
             widg->save( sett );
-        qDebug() << sett;
         SettingsManager::getInstance()->setValues( sett );
     }
     if ( hide == true )
@@ -178,7 +175,6 @@ void    Settings::switchWidget( int widget )
 
 void    Settings::load()
 {
-    qDebug() << "Pwid size :" << m_pWidgets.size();
     PreferenceWidget*   pwidg;
     foreach( pwidg, m_pWidgets )
         pwidg->load();
