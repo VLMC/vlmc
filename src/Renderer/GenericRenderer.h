@@ -25,6 +25,7 @@
 
 #include <QObject>
 #include <QWidget>
+#include <QLabel>
 
 #include "Clip.h"
 #include "VLCMediaPlayer.h"
@@ -49,6 +50,10 @@ public:
     virtual void                    setRenderWidget( QWidget* renderWidget )
     {
         m_mediaPlayer->setDrawable( renderWidget->winId() );
+    }
+    virtual void                    setPreviewLabel( QLabel* previewLabel )
+    {
+        m_previewLabel = previewLabel;
     }
     virtual void                    togglePlayPause( bool forcePause = false ) = 0;
     virtual void                    nextFrame() = 0;
@@ -78,6 +83,8 @@ protected:
      *  \brief Will be equal to true if a render has been started, even if it paused.
      */
     bool                            m_isRendering;
+
+    QLabel*                         m_previewLabel;
 
 
 public slots:
