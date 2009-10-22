@@ -17,6 +17,7 @@ public:
     ~ImportModel();
 
     const Media*    getMedia( const QUuid& mediaId ) const;
+    const QHash<QUuid, Media*>*    getMedias() const;
     const Clip*     getClip( const QUuid& mediaId, const QUuid& clipId ) const;
     void            cutMedia( const QUuid& mediaId, int frame );
     void            cutClip( const QUuid& mediaId, const QUuid& clipId, int frame );

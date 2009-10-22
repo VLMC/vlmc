@@ -1,6 +1,7 @@
 #include "ImportController.h"
 #include "ui_ImportController.h"
 #include "ClipRenderer.h"
+#include "Library.h"
 
 ImportController::ImportController(QWidget *parent) :
     QDialog(parent),
@@ -73,8 +74,8 @@ void ImportController::changeEvent( QEvent *e )
 
 void        ImportController::newMediaLoaded( Media* media )
 {
-    Q_UNUSED( media );
     qDebug() << media->getFileName();
+    m_mediaListController->addMedia( media );
 }
 
 void        ImportController::updateMediaRequested( Media* media )
@@ -102,4 +103,15 @@ void    ImportController::treeViewDoubleClicked( const QModelIndex& index )
 {
     if ( !m_filesModel->isDir( index ) )
         forwardButtonClicked();
+}
+
+void    ImportController::accept()
+{
+    QUuid id;
+    foreach( id, m_model->getMedias()->keys() )
+    {
+        Media* media = m_model->getMedias()->value( id );
+        Library::getInstance()->addMedia( media );
+    }
+    done( Accepted );
 }

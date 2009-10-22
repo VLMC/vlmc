@@ -41,6 +41,7 @@ private:
 public slots:
     void        newMediaLoaded( Media* media );
     void        updateMediaRequested( Media* media );
+    void        accept();
 
 private slots:
     void forwardButtonClicked();

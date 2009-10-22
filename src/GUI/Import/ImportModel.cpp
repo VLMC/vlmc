@@ -21,6 +21,11 @@ const Media*    ImportModel::getMedia( const QUuid& mediaId ) const
     return m_medias->value( mediaId );
 }
 
+const QHash<QUuid, Media*>*    ImportModel::getMedias() const
+{
+    return m_medias;
+}
+
 const Clip*     ImportModel::getClip( const QUuid& mediaId, const QUuid& clipId ) const
 {
     Media* media =  m_medias->value( mediaId );
