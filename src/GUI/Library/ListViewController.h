@@ -57,13 +57,6 @@ private:
     QWidget*                    m_container;
 
     StackViewController*        m_nav;
-    QUuid*                      m_currentUuid;
-
-public slots:
-    void            cellSelected( const QUuid& );
-
-signals:
-    void            selectedClipChanged( Clip* );
 };
 
 #endif // LISTVIEWCONTROLLER_H

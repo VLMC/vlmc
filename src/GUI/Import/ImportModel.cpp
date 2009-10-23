@@ -1,3 +1,26 @@
+/*****************************************************************************
+ * ImportModel.cpp
+ *****************************************************************************
+ * Copyright (C) 2008-2009 the VLMC team
+ *
+ * Authors: Geoffroy Lacarriere <geoffroylaca@gmail.com>
+ *          Thomas Boquet <thomas.boquet@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ *****************************************************************************/
+
 #include <QDebug>
 #include <QDir>
 
@@ -16,17 +39,12 @@ ImportModel::~ImportModel()
         delete m_medias->value( id );
 }
 
-const Media*    ImportModel::getMedia( const QUuid& mediaId ) const
+Media*    ImportModel::getMedia( const QUuid& mediaId ) const
 {
     return m_medias->value( mediaId );
 }
 
-const QHash<QUuid, Media*>*    ImportModel::getMedias() const
-{
-    return m_medias;
-}
-
-const Clip*     ImportModel::getClip( const QUuid& mediaId, const QUuid& clipId ) const
+Clip*     ImportModel::getClip( const QUuid& mediaId, const QUuid& clipId ) const
 {
     Media* media =  m_medias->value( mediaId );
 
@@ -51,7 +69,6 @@ void            ImportModel::cutClip( const QUuid& mediaId, const QUuid& clipId,
 
 void            ImportModel::metaDataComputed( Media* media )
 {
-    qDebug() << "Meta computed";
     emit newMediaLoaded( media );
 }
 
@@ -60,8 +77,6 @@ void            ImportModel::loadMedia( Media* media )
     if ( !m_medias->contains( media->getUuid() ) )
     {
         m_medias->insert( media->getUuid(), media );
-        //emit mediaAdded( media, m_mediaList->getCell( media->getUuid() ) );
-
         connect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ) );
         m_metaDataWorker = new MetaDataWorker( media );
         m_metaDataWorker->start();
@@ -82,13 +97,11 @@ void            ImportModel::loadFile( const QFileInfo& fileInfo )
     else
     {
         QDir dir = QDir( fileInfo.filePath() );
-        for( int i = 0; i < dir.count() ; i++)
+        for( uint i = 0; i < dir.count() ; i++)
         {
             QFileInfo info = QFileInfo(dir.filePath( dir[i] ) );
-            //qDebug() << info.filePath();
             if ( info.isDir() )
                 continue ;
-            //qDebug() << "not a dir [" << info.fileName() << "]";
             media = new Media( info.filePath() );
             loadMedia( media );
         }

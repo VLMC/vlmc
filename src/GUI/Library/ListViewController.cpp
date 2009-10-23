@@ -26,8 +26,7 @@
 #include "MediaCellView.h"
 #include "Library.h"
 
-ListViewController::ListViewController( StackViewController* nav ) : m_nav( nav ),
-    m_currentUuid( 0 )
+ListViewController::ListViewController( StackViewController* nav ) : m_nav( nav )
 {
     m_title      = new QString( "Media List" );
     m_scrollArea = new QScrollArea();
@@ -73,15 +72,4 @@ void            ListViewController::removeCell( QWidget* cell )
 {
     m_layout->removeWidget( cell );
     delete cell;
-}
-
-void                ListViewController::cellSelected( const QUuid& uuid )
-{
-    if ( m_currentUuid == 0 || *m_currentUuid != uuid )
-    {
-        if ( m_currentUuid != 0 )
-            delete m_currentUuid;
-        m_currentUuid = new QUuid( uuid );
-        emit selectedClipChanged( Library::getInstance()->getClip( uuid ) );
-    }
 }

@@ -33,7 +33,7 @@ void    ImportMediaCellView::mouseDoubleClickEvent( QMouseEvent* )
 
 void    ImportMediaCellView::mousePressEvent( QMouseEvent* )
 {
-    emit mediaSelected( uuid() );
+    emit cellSelected( uuid() );
 }
 
 void    ImportMediaCellView::mouseMoveEvent( QMouseEvent* )

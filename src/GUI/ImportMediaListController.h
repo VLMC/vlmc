@@ -16,7 +16,7 @@ class ImportMediaListController : public ListViewController
         ~ImportMediaListController();
         void    addMedia( Media* media );
         void    removeMedia( const QUuid& uuid );
-        void    addClip( Clip* media );
+        void    addClip( Clip* clip );
         void    removeClip( const QUuid& uuid );
         void    cleanAll();
         void    addClipsFromMedia( Media* media );
@@ -25,11 +25,17 @@ class ImportMediaListController : public ListViewController
         ImportMediaCellView* getCell( QUuid uuid ) const;
 
     private:
-        StackViewController*            m_nav;
-        QHash<QUuid, ImportMediaCellView*>*   m_mediaCellList;
+        StackViewController*                m_nav;
+        QHash<QUuid, ImportMediaCellView*>* m_mediaCellList;
 
     public slots:
         void    metaDataComputed( Media* media );
+        void    clipSelection( const QUuid& uuid );
+        void    mediaSelection( const QUuid& uuid );
+
+    signals:
+        void    mediaSelected( const QUuid& uuid );
+        void    clipSelected( const QUuid& uuid );
 };
 
 #endif // IMPORTMEDIALISTCONTROLLER_H

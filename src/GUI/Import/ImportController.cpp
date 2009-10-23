@@ -1,3 +1,27 @@
+/*****************************************************************************
+ * ImportController.cpp
+ *****************************************************************************
+ * Copyright (C) 2008-2009 the VLMC team
+ *
+ * Authors: Geoffroy Lacarriere <geoffroylaca@gmail.com>
+ *          Thomas Boquet <thomas.boquet@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ *****************************************************************************/
+
+#include <QTime>
 #include "ImportController.h"
 #include "ui_ImportController.h"
 #include "ClipRenderer.h"
@@ -50,6 +74,9 @@ ImportController::ImportController(QWidget *parent) :
     connect( m_ui->forwardButton, SIGNAL( clicked() ), this, SLOT( forwardButtonClicked() ) );
 
     connect( m_model, SIGNAL( newMediaLoaded( Media* ) ), this, SLOT( newMediaLoaded( Media* ) ) );
+
+    connect( this, SIGNAL( mediaSelected( Media* ) ), m_preview->getGenericRenderer(), SLOT( setMedia( Media* ) ) );
+    connect( this, SIGNAL( mediaSelected( Media* ) ), m_tag, SLOT( mediaSelected( Media* ) ) );
 }
 
 ImportController::~ImportController()
@@ -63,29 +90,58 @@ ImportController::~ImportController()
 void ImportController::changeEvent( QEvent *e )
 {
     QDialog::changeEvent( e );
-    switch ( e->type() ) {
-    case QEvent::LanguageChange:
-        m_ui->retranslateUi( this );
-        break;
-    default:
-        break;
+    switch ( e->type() )
+    {
+        case QEvent::LanguageChange:
+            m_ui->retranslateUi( this );
+            break;
+        default:
+            break;
     }
 }
 
 void        ImportController::newMediaLoaded( Media* media )
 {
-    qDebug() << media->getFileName();
     m_mediaListController->addMedia( media );
+    connect( m_mediaListController, SIGNAL( mediaSelected( QUuid ) ), this, SLOT( mediaSelection( QUuid ) ) );
+}
+
+void        ImportController::mediaSelection( const QUuid& uuid )
+{
+    updateMediaRequested( m_model->getMedia( uuid ) );
+}
+
+void        ImportController::clipSelection( const QUuid& uuid )
+{
+    Q_UNUSED( uuid );
 }
 
 void        ImportController::updateMediaRequested( Media* media )
 {
-    Q_UNUSED( media );
+    setUIMetaData( media );
+    emit mediaSelected( media );
 }
+void    ImportController::setUIMetaData( Media* media )
+{
+    //Duration
+    QTime   duration;
+    duration = duration.addSecs( media->getLength() );
+    m_ui->durationValueLabel->setText( duration.toString( "hh:mm:ss" ) );
+    //Filename || title
+    m_ui->nameValueLabel->setText( media->getFileInfo()->fileName() );
+    m_ui->nameValueLabel->setWordWrap( true );
+    setWindowTitle( media->getFileInfo()->fileName() + " " + tr( "properties" ) );
+    //Resolution
+    m_ui->resolutionValueLabel->setText( QString::number( media->getWidth() )
+                                       + " x " + QString::number( media->getHeight() ) );
+    //FPS
+    m_ui->fpsValueLabel->setText( QString::number( media->getFps() ) );
+}
+
 
 void    ImportController::forwardButtonClicked()
 {
-    m_model->loadFile(m_filesModel->fileInfo( m_ui->treeView->selectionModel()->currentIndex() ).filePath());
+    m_model->loadFile( m_filesModel->fileInfo( m_ui->treeView->selectionModel()->currentIndex() ).filePath() );
 }
 
 void    ImportController::treeViewClicked( const QModelIndex& index )

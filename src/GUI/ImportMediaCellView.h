@@ -14,9 +14,6 @@ class ImportMediaCellView : public MediaCellView
         void    mouseDoubleClickEvent( QMouseEvent* );
         void    mousePressEvent( QMouseEvent* );
         void    mouseMoveEvent( QMouseEvent* );
-
-    signals:
-        void    mediaSelected( QUuid );
 };
 
 #endif // IMPORTMEDIACELLVIEW_H
