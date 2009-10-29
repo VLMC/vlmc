@@ -216,5 +216,7 @@ void        ClipRenderer::__endReached()
 {
     m_mediaPlayer->stop();
     m_isRendering = false;
+    if ( m_mediaChanged == true )
+        m_clipLoaded = false;
     emit endReached();
 }
