@@ -63,6 +63,7 @@ class ImportController : public QDialog
         QDirModel*                  m_filesModel;
         QFileSystemWatcher*         m_fsWatcher;
         QString                     m_currentlyWatchedDir;
+        QUuid                       m_currentUuid;
 
     public slots:
         void        newMediaLoaded( Media* media );
@@ -70,6 +71,8 @@ class ImportController : public QDialog
         void        accept();
         void        mediaSelection( const QUuid& uuid );
         void        clipSelection( const QUuid& uuid );
+        void        mediaDeletion( const QUuid& uuid );
+        void        clipDeletion( const QUuid& uuid );
 
     private slots:
         void        forwardButtonClicked();

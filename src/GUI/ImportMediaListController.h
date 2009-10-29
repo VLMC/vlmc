@@ -32,10 +32,14 @@ class ImportMediaListController : public ListViewController
         void    metaDataComputed( Media* media );
         void    clipSelection( const QUuid& uuid );
         void    mediaSelection( const QUuid& uuid );
+        void    clipDeletion( const QUuid& uuid );
+        void    mediaDeletion( const QUuid& uuid );
 
     signals:
         void    mediaSelected( const QUuid& uuid );
         void    clipSelected( const QUuid& uuid );
+        void    mediaDeleted( const QUuid& uuid );
+        void    clipDeleted( const QUuid& uuid );
 };
 
 #endif // IMPORTMEDIALISTCONTROLLER_H

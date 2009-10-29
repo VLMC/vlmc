@@ -199,20 +199,34 @@
       </layout>
      </item>
      <item>
-      <widget class="ClickableLabel" name="arrow">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap resource="../../../../ressources.qrc">:/images/images/marker_left.png</pixmap>
-       </property>
-      </widget>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="ClickableLabel" name="delLabel">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="../../../../ressources.qrc">:/images/images/clear.png</pixmap>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="ClickableLabel" name="arrow">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="../../../../ressources.qrc">:/images/images/marker_left.png</pixmap>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>

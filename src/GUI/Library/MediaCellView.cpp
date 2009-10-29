@@ -24,12 +24,15 @@
 #include "ui_MediaCellView.h"
 #include "Library.h"
 #include "ClipProperty.h"
+#include <QDebug>
 
 MediaCellView::MediaCellView( const QUuid& uuid, QWidget *parent ) :
         QWidget( parent ), m_ui( new Ui::MediaCellView ), m_uuid( uuid )
 {
     m_ui->setupUi( this );
     setFocusPolicy( Qt::ClickFocus );
+    setAutoFillBackground( true );
+    connect( m_ui->delLabel, SIGNAL( clicked( QWidget*, QMouseEvent* ) ), this, SLOT( deleteButtonClicked( QWidget*, QMouseEvent* ) ) );
 }
 
 MediaCellView::~MediaCellView()
@@ -120,4 +123,14 @@ void    MediaCellView::mouseMoveEvent( QMouseEvent* event )
 const ClickableLabel*   MediaCellView::nextButton() const
 {
     return m_ui->arrow;
+}
+
+const ClickableLabel*   MediaCellView::deleteButton() const
+{
+    return m_ui->delLabel;
+}
+
+void        MediaCellView::deleteButtonClicked( QWidget*, QMouseEvent* )
+{
+    emit cellDeleted( uuid() );
 }

@@ -1,5 +1,4 @@
 #include "ImportMediaListController.h"
-
 #include <QDebug>
 
 ImportMediaListController::ImportMediaListController( StackViewController* nav ) : ListViewController( nav ), m_nav( nav )
@@ -16,6 +15,7 @@ void    ImportMediaListController::addMedia( Media* media )
 {
     ImportMediaCellView* cell = new ImportMediaCellView( media->getUuid() );
     connect( cell, SIGNAL( cellSelected( const QUuid& ) ), this, SLOT( mediaSelection( const QUuid& ) ) );
+    connect( cell, SIGNAL( cellDeleted( const QUuid& ) ), this, SLOT( mediaDeletion( const QUuid& ) ) );
 
     cell->setTitle( media->getFileName() );
     cell->setThumbnail( media->getSnapshot() );
@@ -44,6 +44,7 @@ void    ImportMediaListController::addClip( Clip* clip )
 {
     ImportMediaCellView* cell = new ImportMediaCellView( clip->getUuid() );
     connect( cell, SIGNAL( cellSelected( const QUuid& ) ), this, SLOT( clipSelection( const QUuid& ) ) );
+    connect( cell, SIGNAL( cellDeleted( const QUuid& ) ), this, SLOT( clipDeletion( const QUuid& ) ) );
 
     cell->setTitle( clip->getParent()->getFileName() + " " + m_mediaCellList->size() + 1 );
     cell->setThumbnail( clip->getParent()->getSnapshot() );
@@ -86,4 +87,14 @@ void    ImportMediaListController::mediaSelection( const QUuid& uuid )
 void    ImportMediaListController::clipSelection( const QUuid& uuid )
 {
     emit clipSelected( uuid );
+}
+
+void    ImportMediaListController::clipDeletion( const QUuid& uuid )
+{
+    emit clipDeleted( uuid );
+}
+
+void    ImportMediaListController::mediaDeletion( const QUuid& uuid )
+{
+    emit mediaDeleted( uuid );
 }

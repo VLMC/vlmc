@@ -26,6 +26,7 @@
 #include "ui_ImportController.h"
 #include "ClipRenderer.h"
 #include "Library.h"
+#include "QPalette"
 
 ImportController::ImportController(QWidget *parent) :
     QDialog(parent),
@@ -74,9 +75,13 @@ ImportController::ImportController(QWidget *parent) :
     connect( m_ui->forwardButton, SIGNAL( clicked() ), this, SLOT( forwardButtonClicked() ) );
 
     connect( m_model, SIGNAL( newMediaLoaded( Media* ) ), this, SLOT( newMediaLoaded( Media* ) ) );
+    connect( m_model, SIGNAL( updateMediaRequested( Media* ) ), this, SLOT( updateMediaRequested( Media* ) ) );
 
     connect( this, SIGNAL( mediaSelected( Media* ) ), m_preview->getGenericRenderer(), SLOT( setMedia( Media* ) ) );
     connect( this, SIGNAL( mediaSelected( Media* ) ), m_tag, SLOT( mediaSelected( Media* ) ) );
+
+    connect( m_mediaListController, SIGNAL( mediaSelected( QUuid ) ), this, SLOT( mediaSelection( QUuid ) ) );
+    connect( m_mediaListController, SIGNAL( mediaDeleted( QUuid ) ), this, SLOT( mediaDeletion( QUuid ) ) );
 }
 
 ImportController::~ImportController()
@@ -103,12 +108,19 @@ void ImportController::changeEvent( QEvent *e )
 void        ImportController::newMediaLoaded( Media* media )
 {
     m_mediaListController->addMedia( media );
-    connect( m_mediaListController, SIGNAL( mediaSelected( QUuid ) ), this, SLOT( mediaSelection( QUuid ) ) );
 }
 
 void        ImportController::mediaSelection( const QUuid& uuid )
 {
-    updateMediaRequested( m_model->getMedia( uuid ) );
+    if ( !m_currentUuid.isNull() )
+        m_mediaListController->getCell( m_currentUuid )->setPalette( palette() );
+    QPalette p = m_mediaListController->getCell( uuid )->palette();
+    p.setColor( QPalette::Window, QColor( Qt::darkBlue ) );
+    m_mediaListController->getCell( uuid )->setPalette( p );
+
+    setUIMetaData( m_model->getMedia( uuid ) );
+    emit mediaSelected( m_model->getMedia( uuid ) );
+    m_currentUuid = uuid;
 }
 
 void        ImportController::clipSelection( const QUuid& uuid )
@@ -118,24 +130,33 @@ void        ImportController::clipSelection( const QUuid& uuid )
 
 void        ImportController::updateMediaRequested( Media* media )
 {
-    setUIMetaData( media );
-    emit mediaSelected( media );
+    m_mediaListController->getCell( media->getUuid() )->setThumbnail( media->getSnapshot() );
 }
 void    ImportController::setUIMetaData( Media* media )
 {
-    //Duration
-    QTime   duration;
-    duration = duration.addSecs( media->getLength() );
-    m_ui->durationValueLabel->setText( duration.toString( "hh:mm:ss" ) );
-    //Filename || title
-    m_ui->nameValueLabel->setText( media->getFileInfo()->fileName() );
-    m_ui->nameValueLabel->setWordWrap( true );
-    setWindowTitle( media->getFileInfo()->fileName() + " " + tr( "properties" ) );
-    //Resolution
-    m_ui->resolutionValueLabel->setText( QString::number( media->getWidth() )
-                                       + " x " + QString::number( media->getHeight() ) );
-    //FPS
-    m_ui->fpsValueLabel->setText( QString::number( media->getFps() ) );
+    if ( media != NULL )
+    {
+        //Duration
+        QTime   duration;
+        duration = duration.addSecs( media->getLength() );
+        m_ui->durationValueLabel->setText( duration.toString( "hh:mm:ss" ) );
+        //Filename || title
+        m_ui->nameValueLabel->setText( media->getFileInfo()->fileName() );
+        m_ui->nameValueLabel->setWordWrap( true );
+        setWindowTitle( media->getFileInfo()->fileName() + " " + tr( "properties" ) );
+        //Resolution
+        m_ui->resolutionValueLabel->setText( QString::number( media->getWidth() )
+                                           + " x " + QString::number( media->getHeight() ) );
+        //FPS
+        m_ui->fpsValueLabel->setText( QString::number( media->getFps() ) );
+    }
+    else
+    {
+            m_ui->durationValueLabel->setText( "--:--:--" );
+            m_ui->nameValueLabel->setText( "none" );
+            m_ui->resolutionValueLabel->setText( "-- x --" );
+            m_ui->fpsValueLabel->setText( "--" );
+    }
 }
 
 
@@ -170,4 +191,17 @@ void    ImportController::accept()
         Library::getInstance()->addMedia( media );
     }
     done( Accepted );
+}
+
+void        ImportController::mediaDeletion( const QUuid& uuid )
+{
+    m_mediaListController->removeMedia( uuid );
+    m_model->getMedias()->remove( uuid );
+    if ( uuid == m_currentUuid )
+        setUIMetaData( NULL );
+}
+
+void        ImportController::clipDeletion( const QUuid& uuid )
+{
+
 }

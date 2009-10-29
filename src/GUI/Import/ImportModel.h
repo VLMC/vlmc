@@ -46,7 +46,7 @@ public:
     void            loadFile( const QFileInfo& fileInfo );
     void            removeMedia( const QUuid& mediaId );
     void            removeClip( const QUuid& mediaId, const QUuid& clipId );
-    const QHash<QUuid, Media*>*    getMedias() const { return m_medias; }
+    QHash<QUuid, Media*>*    getMedias() const { return m_medias; }
 
 signals:
     void            newMediaLoaded( Media* media );

@@ -69,7 +69,7 @@ void            ImportModel::cutClip( const QUuid& mediaId, const QUuid& clipId,
 
 void            ImportModel::metaDataComputed( Media* media )
 {
-    emit newMediaLoaded( media );
+    emit updateMediaRequested( media );
 }
 
 void            ImportModel::loadMedia( Media* media )
@@ -77,6 +77,7 @@ void            ImportModel::loadMedia( Media* media )
     if ( !m_medias->contains( media->getUuid() ) )
     {
         m_medias->insert( media->getUuid(), media );
+        emit newMediaLoaded( media );
         connect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ) );
         m_metaDataWorker = new MetaDataWorker( media );
         m_metaDataWorker->start();

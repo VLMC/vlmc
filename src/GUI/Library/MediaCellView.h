@@ -47,6 +47,7 @@ public:
     QString                 title() const;
     const QUuid&            uuid() const;
     const ClickableLabel*   nextButton() const;
+    const ClickableLabel*   deleteButton() const;
 
 protected:
     void changeEvent( QEvent *e );
@@ -64,7 +65,10 @@ protected:
 signals:
     void        cellSelected( const QUuid& uuid );
     void        arrowClicked( const QUuid& uuid );
+    void        cellDeleted( const QUuid& uuid );
 
+public slots:
+    void        deleteButtonClicked( QWidget* sender, QMouseEvent* event );
 
 };
 
