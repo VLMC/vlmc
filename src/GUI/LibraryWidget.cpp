@@ -98,6 +98,7 @@ void                LibraryWidget::removeMedia( const QUuid& uuid )
             }
             m_clips->removeOne( item );
             delete item;
+            return ;
         }
     }
 }
