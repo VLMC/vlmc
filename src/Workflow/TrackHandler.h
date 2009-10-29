@@ -26,13 +26,13 @@
 #include <QObject>
 #include "Toggleable.hpp"
 #include "TrackWorkflow.h"
-
+#include "EffectsEngine.h"
 
 class   TrackHandler : public QObject
 {
     Q_OBJECT
     public:
-        TrackHandler( unsigned int nbTracks, TrackWorkflow::TrackType trackType );
+        TrackHandler( unsigned int nbTracks, TrackWorkflow::TrackType trackType, EffectsEngine* effectsEngine );
         ~TrackHandler();
 
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start );
@@ -66,6 +66,7 @@ class   TrackHandler : public QObject
         void                    activateTrack( unsigned int tracKId );
 
     private:
+        static LightVideoFrame*         nullOutput;
         Toggleable<TrackWorkflow*>*     m_tracks;
         unsigned int                    m_trackCount;
         QAtomicInt                      m_nbTracksToPause;
@@ -84,6 +85,7 @@ class   TrackHandler : public QObject
          *          This is for internal synchronisation only.
          */
         bool                            m_renderCompleted;
+        EffectsEngine*                  m_effectEngine;
 
 
     private slots:

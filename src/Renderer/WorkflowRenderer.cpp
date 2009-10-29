@@ -39,7 +39,7 @@ WorkflowRenderer::WorkflowRenderer() :
     m_media = new LibVLCpp::Media( "fake://" );
 
     sprintf( buffer, ":invmem-width=%i", VIDEOWIDTH );
-    m_media->addOption( ":codec=invmem,inamem" );
+    m_media->addOption( ":codec=invmem" );
     m_media->addOption( buffer );
     sprintf( buffer, ":invmem-height=%i", VIDEOHEIGHT );
     m_media->addOption( buffer );

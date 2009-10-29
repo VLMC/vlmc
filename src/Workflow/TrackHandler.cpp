@@ -22,11 +22,16 @@
 
 #include "TrackHandler.h"
 
-TrackHandler::TrackHandler( unsigned int nbTracks, TrackWorkflow::TrackType trackType ) :
+LightVideoFrame* TrackHandler::nullOutput = NULL;
+
+TrackHandler::TrackHandler( unsigned int nbTracks, TrackWorkflow::TrackType trackType, EffectsEngine* effectsEngine ) :
         m_trackCount( nbTracks ),
         m_trackType( trackType ),
-        m_length( 0 )
+        m_length( 0 ),
+        m_effectEngine( effectsEngine )
 {
+    TrackHandler::nullOutput = new LightVideoFrame();
+
     m_tracks = new Toggleable<TrackWorkflow*>[nbTracks];
     for ( unsigned int i = 0; i < nbTracks; ++i )
     {
@@ -38,11 +43,11 @@ TrackHandler::TrackHandler( unsigned int nbTracks, TrackWorkflow::TrackType trac
     }
     m_highestTrackNumberMutex = new QMutex;
     m_nbTracksToRenderMutex = new QMutex;
-
 }
 
 TrackHandler::~TrackHandler()
 {
+    delete nullOutput;
     delete m_highestTrackNumberMutex;
     delete m_nbTracksToRenderMutex;
 
@@ -288,11 +293,20 @@ void        TrackHandler::tracksRenderCompleted( unsigned int trackId )
     {
         QMutexLocker    lock( m_highestTrackNumberMutex );
 
-        unsigned char* buff = m_tracks[trackId]->getSynchroneOutput();
-        if ( m_highestTrackNumber <= trackId && buff != NULL )
+        if ( m_trackType == TrackWorkflow::Video )
         {
-            m_highestTrackNumber = trackId;
-            m_synchroneRenderingBuffer = buff;;
+            LightVideoFrame* buff = reinterpret_cast<LightVideoFrame*>( m_tracks[trackId]->getSynchroneOutput() );
+            if ( buff == NULL )
+                m_effectEngine->setInputFrame( *TrackHandler::nullOutput, trackId );
+            else
+            {
+                qDebug() << "About to feed effect engine with frame" << (void*)buff;
+                m_effectEngine->setInputFrame( *buff, trackId );
+            }
+        }
+        else
+        {
+            qDebug() << "Audio isn't implemented yet !";
         }
     }
     //We check for minus or equal, since we can have 0 frame to compute,

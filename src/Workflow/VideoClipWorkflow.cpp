@@ -81,7 +81,11 @@ void*    VideoClipWorkflow::getOutput()
     QMutexLocker    lock( m_renderLock );
 
     if ( isEndReached() == true )
+    {
+        qDebug()<< "End reached is true, returning NULL";
         return NULL;
+    }
+    qDebug() << "ptr:" << (void*)m_buffer;
     return m_buffer;
 }
 
@@ -90,7 +94,7 @@ void    VideoClipWorkflow::lock( VideoClipWorkflow* cw, void** pp_ret, int size 
     Q_UNUSED( size );
     cw->m_renderLock->lock();
     *pp_ret = (*(cw->m_buffer))->frame.pixels;
-//    qDebug() << '[' << (void*)cw << "] ClipWorkflow::lock";
+    qDebug() << '[' << (void*)cw << "] ClipWorkflow::lock";
 }
 
 void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int width, int height, int bpp, int size )
@@ -115,7 +119,7 @@ void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int widt
             cw->m_renderWaitCond->wake();
         }
         cw->emit renderComplete( cw );
-//        qDebug() << "Emmiting render completed";
+        qDebug() << "Emmiting render completed";
 
 //        qDebug() << "Entering cond wait";
         cw->m_waitCond->wait( cw->m_condMutex );

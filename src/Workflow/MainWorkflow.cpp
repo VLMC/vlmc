@@ -39,17 +39,19 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     m_renderMutex = new QMutex;
     m_synchroneRenderWaitCondition = new QWaitCondition;
     m_synchroneRenderWaitConditionMutex = new QMutex;
-    m_tracks = new TrackHandler*[2];
+
+    m_effectEngine = new EffectsEngine;
+    m_effectEngine->disable();
+
+    m_tracks = new TrackHandler*[TrackWorkflow::NbType];
     for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
     {
         TrackWorkflow::TrackType trackType = (i == 0 ? TrackWorkflow::Video : TrackWorkflow::Audio );
-        m_tracks[i] = new TrackHandler( trackCount, trackType );
+        m_tracks[i] = new TrackHandler( trackCount, trackType, m_effectEngine );
         connect( m_tracks[i], SIGNAL( tracksPaused() ), this, SLOT( tracksPaused() ) );
         connect( m_tracks[i], SIGNAL( allTracksRenderCompleted() ), this, SLOT( tracksRenderCompleted() ) );
     }
     m_outputBuffers = new OutputBuffers;
-    m_effectEngine = new EffectsEngine;
-    m_effectEngine->disable();
 }
 
 MainWorkflow::~MainWorkflow()
@@ -212,6 +214,7 @@ MainWorkflow::OutputBuffers*  MainWorkflow::getSynchroneOutput()
     m_synchroneRenderWaitConditionMutex->unlock();
     m_outputBuffers->video = reinterpret_cast<LightVideoFrame*>( m_tracks[TrackWorkflow::Video]->getSynchroneOutput() );
     m_outputBuffers->audio = reinterpret_cast<unsigned char*>( m_tracks[TrackWorkflow::Audio]->getSynchroneOutput() );
+    qDebug() << "video ptr:" << (void*) m_outputBuffers->video;
     return m_outputBuffers;
 }
 
