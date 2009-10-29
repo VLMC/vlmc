@@ -51,6 +51,11 @@ ClipRenderer::~ClipRenderer()
 void        ClipRenderer::setMedia( Media* media )
 {
     m_selectedMedia = media;
+    if ( media == NULL )
+    {
+        m_previewLabel->clear();
+        return ;
+    }
     m_begin = 0;
     m_end = media->getNbFrames();
     if ( m_isRendering == true )
@@ -65,6 +70,12 @@ void        ClipRenderer::setMedia( Media* media )
 
 void        ClipRenderer::setClip( Clip* clip )
 {
+    if ( clip == NULL )
+    {
+        m_selectedMedia = NULL;
+        m_previewLabel->clear();
+        return ;
+    }
     m_selectedMedia = clip->getParent();
     m_begin = clip->getBegin();
     m_end = clip->getEnd();

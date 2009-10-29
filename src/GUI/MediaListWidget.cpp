@@ -122,3 +122,8 @@ void MediaListWidget::paintEvent( QPaintEvent* event )
     }
     QListWidget::paintEvent( event );
 }
+
+void    MediaListWidget::unsetSelectedClip()
+{
+    emit selectedClipChanged( NULL );
+}

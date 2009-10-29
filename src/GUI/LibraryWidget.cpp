@@ -88,12 +88,15 @@ void                LibraryWidget::removeMedia( const QUuid& uuid )
             {
             case Media::Audio:
                 m_ui.listWidgetAudio->removeItemWidget( item );
+                m_ui.listWidgetAudio->unsetSelectedClip();
                 break;
             case Media::Image:
                 m_ui.listWidgetImage->removeItemWidget( item );
+                m_ui.listWidgetImage->unsetSelectedClip();
                 break;
             case Media::Video:
                 m_ui.listWidgetVideo->removeItemWidget( item );
+                m_ui.listWidgetVideo->unsetSelectedClip();
                 break;
             }
             m_clips->removeOne( item );
