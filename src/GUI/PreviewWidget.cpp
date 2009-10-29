@@ -56,6 +56,8 @@ PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent 
     connect( m_ui->seekSlider, SIGNAL( sliderReleased() ),      this,   SLOT( seekSliderReleased() ) );
 
     m_renderer->setRenderWidget( m_ui->renderWidget );
+    m_renderer->setPreviewLabel( m_ui->previewLabel );
+
     connect( m_renderer,     SIGNAL( stopped() ),                this,       SLOT( videoStopped() ) );
     connect( m_renderer,     SIGNAL( paused() ),                 this,       SLOT( videoPaused() ) );
     connect( m_renderer,     SIGNAL( playing() ),                this,       SLOT( videoPlaying() ) );
@@ -146,17 +148,11 @@ void    PreviewWidget::videoStopped()
 {
     m_ui->pushButtonPlay->setIcon( QIcon( ":/images/play" ) );
     m_ui->seekSlider->setValue( 0 );
-
-    // Set the black background
-    m_ui->renderWidget->setPalette( m_videoPalette );
 }
 
 void    PreviewWidget::videoPlaying()
 {
     m_ui->pushButtonPlay->setIcon( QIcon( ":/images/pause" ) );
-
-    // Remove the black background
-    m_ui->renderWidget->setPalette( QPalette() );
 }
 
 void    PreviewWidget::endReached()

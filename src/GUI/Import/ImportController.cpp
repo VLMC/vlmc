@@ -203,5 +203,12 @@ void        ImportController::mediaDeletion( const QUuid& uuid )
 
 void        ImportController::clipDeletion( const QUuid& uuid )
 {
-
+    m_mediaListController->removeClip( uuid );
+    QUuid id;
+    foreach(id, m_model->getMedias()->keys() )
+    {
+        Media* media = m_model->getMedias()->value( id );
+        if (media->clip( uuid) );
+            media->removeClip( uuid );
+    }
 }

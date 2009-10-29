@@ -57,11 +57,12 @@
    </widget>
    <widget class="QMenu" name="menuEffets">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="title">
      <string>Effects</string>
     </property>
+    <addaction name="actionBypass_effects_engine"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -189,6 +190,22 @@
    <property name="text">
     <string>Project Preferences</string>
    </property>
+  </action>
+  <action name="actionBypass_effects_engine">
+    <property name="checkable">
+      <bool>true</bool>
+    </property>
+    <property name="checked">
+      <bool>true</bool>
+    </property>
+    <property name="text">
+      <string>Enable effects engine</string>
+    </property>
+  </action>
+  <action name="actionProject_Preferences">
+    <property name="text">
+      <string>Project Preferences</string>
+    </property>
   </action>
  </widget>
  <resources>

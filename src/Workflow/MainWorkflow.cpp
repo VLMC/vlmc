@@ -25,7 +25,8 @@
 
 #include "MainWorkflow.h"
 
-unsigned char*  MainWorkflow::blackOutput = NULL;
+LightVideoFrame*     MainWorkflow::nullOutput = NULL;
+LightVideoFrame*     MainWorkflow::blackOutput = NULL;
 MainWorkflow*   MainWorkflow::m_instance = NULL;
 
 MainWorkflow::MainWorkflow( int trackCount ) :
@@ -38,8 +39,9 @@ MainWorkflow::MainWorkflow( int trackCount ) :
                 "MainWorkflow constructor", "Can't have more than one MainWorkflow instance" );
     m_instance = this;
 
-    MainWorkflow::blackOutput = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 3];
-    memset( MainWorkflow::blackOutput, 0, VIDEOHEIGHT * VIDEOWIDTH * 3 );
+    MainWorkflow::nullOutput = new LightVideoFrame();
+    MainWorkflow::blackOutput = new LightVideoFrame( VIDEOWIDTH * VIDEOHEIGHT * Pixel::NbComposantes );
+    memset( (*MainWorkflow::blackOutput)->frame.octets, 0, ( VIDEOWIDTH * VIDEOHEIGHT * Pixel::NbComposantes ) );
 
     m_tracks = new Toggleable<TrackWorkflow*>[trackCount];
     for ( int i = 0; i < trackCount; ++i )
@@ -52,9 +54,10 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     }
     m_renderStartedLock = new QReadWriteLock;
     m_renderMutex = new QMutex;
-    m_highestTrackNumberMutex = new QMutex;
     m_synchroneRenderWaitCondition = new QWaitCondition;
     m_synchroneRenderWaitConditionMutex = new QMutex;
+    m_effectEngine = new EffectsEngine;
+    m_effectEngine->disable();
     m_nbTracksToRenderMutex = new QMutex;
 }
 
@@ -63,16 +66,22 @@ MainWorkflow::~MainWorkflow()
     //FIXME: this is probably useless, since already done by the renderer
     stop();
 
+    delete m_effectEngine;
     delete m_nbTracksToRenderMutex;
     delete m_synchroneRenderWaitConditionMutex;
     delete m_synchroneRenderWaitCondition;
-    delete m_highestTrackNumberMutex;
     delete m_renderMutex;
     delete m_renderStartedLock;
     for (unsigned int i = 0; i < m_trackCount; ++i)
         delete m_tracks[i];
     delete[] m_tracks;
-    delete[] blackOutput;
+    delete nullOutput;
+    delete blackOutput;
+}
+
+EffectsEngine*          MainWorkflow::getEffectsEngine(void)
+{
+    return ( m_effectEngine );
 }
 
 void        MainWorkflow::addClip( Clip* clip, unsigned int trackId, qint64 start )
@@ -114,15 +123,11 @@ void    MainWorkflow::startRender()
     computeLength();
 }
 
-void                MainWorkflow::getOutput()
+void                    MainWorkflow::getOutput()
 {
-    QReadLocker     lock( m_renderStartedLock );
-    QMutexLocker    lock2( m_renderMutex );
+    QReadLocker         lock( m_renderStartedLock );
+    QMutexLocker        lock2( m_renderMutex );
 
-    {
-        QMutexLocker    lockHighestTrackNumber( m_highestTrackNumberMutex );
-        m_highestTrackNumber = 0;
-    }
     m_nbTracksToRender = 0;
     m_synchroneRenderingBuffer = NULL;
     if ( m_renderStarted == true )
@@ -131,7 +136,10 @@ void                MainWorkflow::getOutput()
         for ( unsigned int i = 0; i < m_trackCount; ++i )
         {
             if ( m_tracks[i].activated() == false )
+            {
+                m_effectEngine->setInputFrame( *MainWorkflow::nullOutput, i );
                 continue ;
+            }
 
             ++m_nbTracksToRender;
             m_tracks[i]->getOutput( m_currentFrame );
@@ -328,14 +336,11 @@ void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
     --m_nbTracksToRender;
 
     {
-        QMutexLocker    lock( m_highestTrackNumberMutex );
-
-        unsigned char* buff = m_tracks[trackId]->getSynchroneOutput();
-        if ( m_highestTrackNumber <= trackId && buff != NULL )
-        {
-            m_highestTrackNumber = trackId;
-            m_synchroneRenderingBuffer = buff;;
-        }
+        LightVideoFrame*     buff = m_tracks[trackId]->getSynchroneOutput();
+        if ( buff == NULL )
+            m_effectEngine->setInputFrame( *MainWorkflow::nullOutput, trackId );
+        else
+            m_effectEngine->setInputFrame( *buff, trackId );
     }
     //We check for minus or equal, since we can have 0 frame to compute,
     //therefore, m_nbTracksToRender will be equal to -1
@@ -346,20 +351,25 @@ void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
         {
             QMutexLocker    lock( m_synchroneRenderWaitConditionMutex );
         }
+        //FIXME: This is uggly.... god probably just killed a kitten :(
         m_synchroneRenderWaitCondition->wakeAll();
     }
 }
 
-unsigned char*  MainWorkflow::getSynchroneOutput()
+const LightVideoFrame*  MainWorkflow::getSynchroneOutput()
 {
     m_synchroneRenderWaitConditionMutex->lock();
     getOutput();
 //    qDebug() << "Waiting for sync output";
     m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
 //    qDebug() << "Got it";
+    m_effectEngine->render();
+    m_synchroneRenderingBuffer = &( m_effectEngine->getOutputFrame( 0 ) );
     m_synchroneRenderWaitConditionMutex->unlock();
-    if ( m_synchroneRenderingBuffer == NULL )
+
+    if ( (*m_synchroneRenderingBuffer)->frame.octets == NULL )
         return MainWorkflow::blackOutput;
+
     return m_synchroneRenderingBuffer;
 }
 

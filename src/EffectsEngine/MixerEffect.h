@@ -1,9 +1,9 @@
 /*****************************************************************************
- * MediaListWidget.h: Multimedia list widget
+ * MixerEffect.h: Effect module to mix multiple frame in one
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Christophe Courtaut <christophe.courtaut@gmail.com>
+ * Authors: Vincent Carrubba <cyberbouba@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,39 +20,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef MEDIALISTWIDGET_H
-#define MEDIALISTWIDGET_H
+#ifndef MIXEREFFECT_H_
+#define MIXEREFFECT_H_
 
-#include <QListWidget>
-#include <QMouseEvent>
-#include <QPoint>
-#include <QMimeData>
-#include <QDrag>
-#include <QApplication>
-#include <QSvgRenderer>
-#include "ListViewMediaItem.h"
-#include "Clip.h"
+#include "GenericEffect.h"
 
-class MediaListWidget : public QListWidget
+class	MixerEffect : public GenericEffect
 {
-    Q_OBJECT
 public:
-    MediaListWidget( QWidget* parent = 0 );
-    void                setType( Media::FileType fileType );
-    void                unsetSelectedClip();
 
-protected:
-    virtual void        mousePressEvent( QMouseEvent* event );
-    virtual void        mouseMoveEvent( QMouseEvent* event );
-    virtual void        paintEvent( QPaintEvent* event );
+  // CTOR & DTOR
+
+  MixerEffect();
+  ~MixerEffect();
+
+  // RENDER METHOD
+
+  void	render( void );
+
 private:
-    Media::FileType     m_Type;
-    QPoint              m_dragStartPos;
-    QSvgRenderer*       m_svgRenderer;
-    Clip*               m_lastClicked;
 
-signals:
-    void                selectedClipChanged( Clip* newClip );
+  static	quint32 const	m_nbVideoInputs = 64;
+  static	quint32 const	m_nbVideoOutputs = 64;
+  static	char const *	m_videoInputsNames[m_nbVideoInputs];
+  static	char const *	m_videoOutputsNames[m_nbVideoOutputs];
+
 };
 
-#endif // MEDIALISTWIDGET_H
+#endif // MIXEREFFECT_H_

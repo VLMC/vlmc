@@ -32,6 +32,8 @@
 #include "Toggleable.hpp"
 #include "TrackWorkflow.h"
 #include "Singleton.hpp"
+#include "LightVideoFrame.h"
+#include "EffectsEngine.h"
 
 class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 {
@@ -41,10 +43,11 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         MainWorkflow( int trackCount );
         ~MainWorkflow();
 
+        EffectsEngine*          getEffectsEngine( void );
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start );
         void                    startRender();
         void                    getOutput();
-        unsigned char*          getSynchroneOutput();
+        const LightVideoFrame*  getSynchroneOutput();
 
         /**
          *  \brief              Set the workflow position
@@ -114,7 +117,8 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
     private:
         static MainWorkflow*    m_instance;
-        static unsigned char*   blackOutput;
+        static LightVideoFrame* nullOutput;
+        static LightVideoFrame* blackOutput;
 
     private:
         void                    computeLength();
@@ -134,14 +138,16 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         QMutex*                         m_renderMutex;
         QAtomicInt                      m_nbTracksToPause;
         QAtomicInt                      m_nbTracksToUnpause;
+        const LightVideoFrame*          m_synchroneRenderingBuffer;
         unsigned int                    m_nbTracksToRender;
         QMutex*                         m_nbTracksToRenderMutex;
         QMutex*                         m_highestTrackNumberMutex;
         unsigned int                    m_highestTrackNumber;
-        unsigned char*                  m_synchroneRenderingBuffer;
         QWaitCondition*                 m_synchroneRenderWaitCondition;
         QMutex*                         m_synchroneRenderWaitConditionMutex;
         bool                            m_paused;
+
+        EffectsEngine*                  m_effectEngine;
 
     private slots:
         void                            trackEndReached( unsigned int trackId );

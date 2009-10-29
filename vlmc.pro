@@ -76,7 +76,12 @@ SOURCES += src/main.cpp \
     src/GUI/ImportMediaCellView.cpp \
     src/GUI/ClickableLabel.cpp \
     src/GUI/Import/ImportModel.cpp \
-    src/GUI/Import/ImportController.cpp
+    src/GUI/Import/ImportController.cpp \
+    src/EffectsEngine/EffectsEngine.cpp \
+    src/EffectsEngine/LightVideoFrame.cpp \
+    src/EffectsEngine/GenericEffect.cpp \
+    src/EffectsEngine/GreenFilterEffect.cpp \
+    src/EffectsEngine/MixerEffect.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -146,7 +151,14 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/ImportMediaCellView.h \
     src/GUI/ClickableLabel.h \
     src/GUI/Import/ImportModel.h \
-    src/GUI/Import/ImportController.h
+    src/GUI/Import/ImportController.h \
+    src/EffectsEngine/EffectsEngine.h \
+    src/EffectsEngine/InSlot.hpp \
+    src/EffectsEngine/OutSlot.hpp \
+    src/EffectsEngine/LightVideoFrame.h \
+    src/EffectsEngine/GenericEffect.h \
+    src/EffectsEngine/GreenFilterEffect.h \
+    src/EffectsEngine/MixerEffect.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \
@@ -180,6 +192,7 @@ INCLUDEPATH += src/LibVLCpp \
     src/Library \
     src/Media \
     src/Project \
+    src/EffectsEngine \
     src/Configuration \
     src
 
