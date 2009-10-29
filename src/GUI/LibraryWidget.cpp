@@ -87,13 +87,13 @@ void                LibraryWidget::removeMedia( const QUuid& uuid )
             switch( item->getFileType() )
             {
             case Media::Audio:
-                this->m_ui.listWidgetAudio->removeItemWidget( item );
+                m_ui.listWidgetAudio->removeItemWidget( item );
                 break;
             case Media::Image:
-                this->m_ui.listWidgetImage->removeItemWidget( item );
+                m_ui.listWidgetImage->removeItemWidget( item );
                 break;
             case Media::Video:
-                this->m_ui.listWidgetVideo->removeItemWidget( item );
+                m_ui.listWidgetVideo->removeItemWidget( item );
                 break;
             }
             m_clips->removeOne( item );
