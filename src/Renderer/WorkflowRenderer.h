@@ -73,7 +73,8 @@ class   WorkflowRenderer : public GenericRenderer
         bool                m_stopping;
 
     private:
-        MainWorkflow::OutputBuffers*      m_lastFrame;
+        unsigned char*	    m_renderVideoFrame;
+        unsigned char*	    m_renderAudioSample;
         QStack<Actions>     m_actions;
         QReadWriteLock*     m_actionsLock;
         bool                m_pauseAsked;

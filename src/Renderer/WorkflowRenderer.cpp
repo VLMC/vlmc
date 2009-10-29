@@ -62,7 +62,7 @@ WorkflowRenderer::WorkflowRenderer() :
     m_condMutex = new QMutex;
     m_waitCond = new QWaitCondition;
 
-    m_renderFrame = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes];
+    m_renderVideoFrame = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes];
    
         //Workflow part
     connect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
@@ -97,7 +97,7 @@ void*   WorkflowRenderer::lockAudio( void* datas )
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
     qDebug() << "Injecting audio data";
-    return self->m_lastFrame->audio;
+    return self->m_renderAudioSample;
 }
 
 void*   WorkflowRenderer::lock( void* datas )
@@ -106,10 +106,11 @@ void*   WorkflowRenderer::lock( void* datas )
 
     if ( self->m_stopping == false )
     {
-        void* ret = self->m_mainWorkflow->getSynchroneOutput();
-        self->m_lastFrame = static_cast<MainWorkflow::OutputBuffers*>( ret );
+        MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getSynchroneOutput();
+        memcpy( self->m_renderVideoFrame, (*(ret->video))->frame.octets, (*(ret->video))->nboctets );
+        self->m_renderAudioSample = ret->audio;
     }
-    return self->m_lastFrame->video->rvf.raw;
+    return self->m_renderVideoFrame;
 }
 
 void    WorkflowRenderer::unlock( void* datas )

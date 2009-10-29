@@ -30,16 +30,11 @@
 //FIXME: remove this !
 #include "ClipWorkflow.h"
 
-unsigned char* MainWorkflow::blackOutput = NULL;
-
 MainWorkflow::MainWorkflow( int trackCount ) :
         m_currentFrame( 0 ),
         m_length( 0 ),
         m_renderStarted( false )
 {
-    MainWorkflow::blackOutput = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 3];
-    memset( MainWorkflow::blackOutput, 0, VIDEOHEIGHT * VIDEOWIDTH * 3 );
-
     m_renderStartedLock = new QReadWriteLock;
     m_renderMutex = new QMutex;
     m_synchroneRenderWaitCondition = new QWaitCondition;
@@ -55,7 +50,6 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     m_outputBuffers = new OutputBuffers;
     m_effectEngine = new EffectsEngine;
     m_effectEngine->disable();
-    m_nbTracksToRenderMutex = new QMutex;
 }
 
 MainWorkflow::~MainWorkflow()
@@ -64,7 +58,6 @@ MainWorkflow::~MainWorkflow()
     stop();
 
     delete m_effectEngine;
-    delete m_nbTracksToRenderMutex;
     delete m_synchroneRenderWaitConditionMutex;
     delete m_synchroneRenderWaitCondition;
     delete m_renderMutex;
@@ -72,8 +65,6 @@ MainWorkflow::~MainWorkflow()
     for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
         delete m_tracks[i];
     delete[] m_tracks;
-    delete nullOutput;
-    delete blackOutput;
 }
 
 EffectsEngine*          MainWorkflow::getEffectsEngine(void)
@@ -218,10 +209,9 @@ MainWorkflow::OutputBuffers*  MainWorkflow::getSynchroneOutput()
     m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
 //    qDebug() << "Got it";
     m_effectEngine->render();
-    m_synchroneRenderingBuffer = &( m_effectEngine->getOutputFrame( 0 ) );
     m_synchroneRenderWaitConditionMutex->unlock();
-    m_outputBuffers->video = m_tracks[TrackWorkflow::Video]->getSynchroneOutput();
-    m_outputBuffers->audio = m_tracks[TrackWorkflow::Audio]->getSynchroneOutput();
+    m_outputBuffers->video = reinterpret_cast<LightVideoFrame*>( m_tracks[TrackWorkflow::Video]->getSynchroneOutput() );
+    m_outputBuffers->audio = reinterpret_cast<unsigned char*>( m_tracks[TrackWorkflow::Audio]->getSynchroneOutput() );
     return m_outputBuffers;
 }
 

@@ -479,7 +479,7 @@ void        TrackWorkflow::clipWorkflowRenderCompleted( ClipWorkflow* cw )
 //        qDebug() << "Track render not completed yet";
 }
 
-LightVideoFrame*     TrackWorkflow::getSynchroneOutput()
+unsigned char*       TrackWorkflow::getSynchroneOutput()
 {
     return m_synchroneRenderBuffer;
 }

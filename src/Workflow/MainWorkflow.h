@@ -44,7 +44,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
     public:
         struct      OutputBuffers
         {
-            VideoFrame*         video;
+            LightVideoFrame*    video;
             unsigned char*      audio;
         };
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start, TrackWorkflow::TrackType type );
@@ -117,17 +117,12 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         int                     getTrackCount( TrackWorkflow::TrackType trackType ) const;
 
     private:
-        static unsigned char*   blackOutput;
-
-    private:
         MainWorkflow( int trackCount = 64 );
         ~MainWorkflow();
         void                    computeLength();
         void                    activateTrack( unsigned int trackId );
 
     private:
-        static unsigned char* blackOutput;
-
         qint64                          m_currentFrame;
         qint64                          m_length;
         /**
@@ -143,9 +138,9 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         TrackHandler**                  m_tracks;
         OutputBuffers*                  m_outputBuffers;
 
-    friend class    Singleton<MainWorkflow>;
-
         EffectsEngine*                  m_effectEngine;
+
+        friend class    Singleton<MainWorkflow>;
 
     private slots:
         void                            tracksPaused();

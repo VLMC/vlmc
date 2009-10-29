@@ -73,7 +73,7 @@ class   TrackWorkflow : public QObject
         /**
          *  Returns the output that has been computed in synchrone mode.
          */
-        LightVideoFrame*                        getSynchroneOutput();
+        unsigned char*                          getSynchroneOutput();
 
         //FIXME: this won't be reliable as soon as we change the fps from the configuration
         static const unsigned int               nbFrameBeforePreload = 60;
@@ -120,7 +120,7 @@ class   TrackWorkflow : public QObject
         QAtomicInt                              m_nbClipToUnpause;
         QAtomicInt                              m_nbClipToRender;
 
-        LightVideoFrame*                        m_synchroneRenderBuffer;
+        unsigned char*                          m_synchroneRenderBuffer;
 
         TrackType                               m_trackType;
 

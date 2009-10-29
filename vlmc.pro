@@ -63,15 +63,12 @@ SOURCES += src/main.cpp \
     src/GUI/VLMCPreferences.cpp \
     src/GUI/VideoProjectPreferences.cpp \
     src/Project/ProjectManager.cpp \
-    src/Configuration/SettingsManager.cpp \
     src/Workflow/VideoClipWorkflow.cpp \
     src/Workflow/TrackHandler.cpp \
     src/Workflow/AudioClipWorkflow.cpp \
     src/EffectsEngine/EffectsEngine.cpp \
     src/EffectsEngine/LightVideoFrame.cpp \
     src/EffectsEngine/GenericEffect.cpp \
-    src/EffectsEngine/PouetEffect.cpp \
-    src/EffectsEngine/MixerEffect.cpp \
     src/EffectsEngine/GreenFilterEffect.cpp \
     src/EffectsEngine/MixerEffect.cpp \
     src/Configuration/SettingsManager.cpp
@@ -131,7 +128,6 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/AudioProjectPreferences.h \
     src/GUI/VideoProjectPreferences.h \
     src/Project/ProjectManager.h \
-    src/Configuration/SettingsManager.h \
     src/Workflow/VideoClipWorkflow.h \
     src/Workflow/TrackHandler.h \
     src/Workflow/AudioClipWorkflow.h \
@@ -140,8 +136,6 @@ HEADERS += src/GUI/MainWindow.h \
     src/EffectsEngine/OutSlot.hpp \
     src/EffectsEngine/LightVideoFrame.h \
     src/EffectsEngine/GenericEffect.h \
-    src/EffectsEngine/PouetEffect.h \
-    src/EffectsEngine/MixerEffect.h \
     src/EffectsEngine/GreenFilterEffect.h \
     src/EffectsEngine/MixerEffect.h \
     src/Configuration/SettingsManager.h

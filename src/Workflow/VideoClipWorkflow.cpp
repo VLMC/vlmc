@@ -24,12 +24,12 @@
 
 VideoClipWorkflow::VideoClipWorkflow( Clip* clip ) : ClipWorkflow( clip )
 {
-    m_buffer = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
+    m_buffer = new LightVideoFrame( VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes );
 }
 
 VideoClipWorkflow::~VideoClipWorkflow()
 {
-    delete[] m_buffer;
+    delete m_buffer;
 }
 
 void            VideoClipWorkflow::initVlcOutput()
@@ -89,7 +89,7 @@ void    VideoClipWorkflow::lock( VideoClipWorkflow* cw, void** pp_ret, int size 
 {
     Q_UNUSED( size );
     cw->m_renderLock->lock();
-    *pp_ret = cw->m_buffer;
+    *pp_ret = (*(cw->m_buffer))->frame.pixels;
 //    qDebug() << '[' << (void*)cw << "] ClipWorkflow::lock";
 }
 

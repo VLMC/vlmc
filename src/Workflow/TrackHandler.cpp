@@ -311,7 +311,7 @@ unsigned int    TrackHandler::getTrackCount() const
     return m_trackCount;
 }
 
-unsigned char*          TrackHandler::getSynchroneOutput()
+void*          TrackHandler::getSynchroneOutput()
 {
     return m_synchroneRenderingBuffer;
 }
