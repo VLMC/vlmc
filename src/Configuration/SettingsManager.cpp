@@ -28,6 +28,8 @@
 #include <QTextStream>
 
 #include "SettingsManager.h"
+#include "VLMCSettingsDefault.h"
+#include "ProjectSettingsDefault.h"
 
 SettingsManager::SettingsManager( QObject* parent )
     : QObject( parent )
@@ -118,5 +120,11 @@ void  SettingsManager::loadSettings( const QDomElement& settings )
     }
     m_lock.unlock();
     emit settingsLoaded();
+}
+
+void  SettingsManager::loadDefaultsSettings()
+{
+    VLMCSettingsDefault::load();
+    ProjectSettingsDefault::load();
 }
 

@@ -35,7 +35,6 @@ AudioProjectPreferences::~AudioProjectPreferences() { }
 
 void    AudioProjectPreferences::load()
 {
-    qDebug() << "Loading preferences : Audio";
     int sampleRate = SettingsManager::getInstance()->getValue( "AudioSampleRate" ).toInt();
     m_ui.SampleRate->setValue( sampleRate );
 

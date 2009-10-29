@@ -43,7 +43,7 @@ class   Settings : public QDialog
     Q_DISABLE_COPY( Settings )
 
     public:
-        Settings( QWidget* parent = 0, Qt::WindowFlags f = 0 );
+        Settings( bool loadDefaults = false, QWidget* parent = 0, Qt::WindowFlags f = 0 );
         virtual ~Settings();
         void                addWidget( const QString& name,
                                         PreferenceWidget* pWidget,
@@ -63,7 +63,8 @@ class   Settings : public QDialog
         QLabel*                     m_title;
         QStackedWidget*             m_stackedWidgets;
         QDialogButtonBox*           m_buttons;
-        bool                        m_saved;
+        bool                        m_defaults;
+
 
     public slots:
         void    switchWidget( int widget );

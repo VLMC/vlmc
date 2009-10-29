@@ -37,9 +37,10 @@
 #include "Panel.h"
 
 
-Settings::Settings( QWidget* parent, Qt::WindowFlags f )
+Settings::Settings( bool loadDefaults, QWidget* parent, Qt::WindowFlags f )
 : QDialog( parent, f ),
-    m_currentWidget( NULL )
+    m_currentWidget( NULL ),
+    m_defaults( loadDefaults )
 {
     m_panel = new Panel( this );
     m_stackedWidgets = new QStackedWidget( this );
@@ -178,7 +179,6 @@ void    Settings::switchWidget( int widget )
 
 void    Settings::load()
 {
-    qDebug() << "Pwid size :" << m_pWidgets.size();
     PreferenceWidget*   pwidg;
     foreach( pwidg, m_pWidgets )
         pwidg->load();
