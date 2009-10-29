@@ -37,7 +37,6 @@ class   PreferenceWidget : public QWidget
         virtual ~PreferenceWidget() {}
 
         virtual void    load() = 0;
-	virtual void    loadDefault() = 0;
         virtual void    save( QHash<QString, QVariant>& settings ) = 0;
 };
 
