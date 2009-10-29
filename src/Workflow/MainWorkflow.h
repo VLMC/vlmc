@@ -53,6 +53,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    startRender();
         void                    getOutput();
         OutputBuffers*          getSynchroneOutput();
+        EffectsEngine*          getEffectsEngine( void );
 
         /**
          *  \brief              Set the workflow position
@@ -141,6 +142,8 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         EffectsEngine*                  m_effectEngine;
 
         friend class    Singleton<MainWorkflow>;
+
+        EffectsEngine*                  m_effectEngine;
 
     private slots:
         void                            tracksPaused();

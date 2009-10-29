@@ -39,6 +39,7 @@ class MediaListWidget : public QListWidget
 public:
     MediaListWidget( QWidget* parent = 0 );
     void                setType( Media::FileType fileType );
+    void                unsetSelectedClip();
 
 protected:
     virtual void        mousePressEvent( QMouseEvent* event );

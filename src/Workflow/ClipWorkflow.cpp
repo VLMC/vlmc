@@ -36,6 +36,8 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
                 m_state( ClipWorkflow::Stopped ),
                 m_fullSpeedRender( false )
 {
+  m_frame = new LightVideoFrame( VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes );
+//    m_backBuffer = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * 4];
     m_stateLock = new QReadWriteLock;
     m_requiredStateLock = new QMutex;
     m_waitCond = new QWaitCondition;

@@ -111,10 +111,6 @@ OutSlot<T>::~OutSlot()
 template<typename T>
 OutSlot<T>&	OutSlot<T>::operator=( T const & val )
 {
-  qDebug() << "HAIE GALLE sur type T";
-  qDebug() << "m_pipe : " << this->m_pipe;
-  qDebug() << "&m_junk : " << &(this->m_junk)
-	   << "\n" ;
   (*m_pipe) = val;
   return ( *this );
 }
@@ -122,10 +118,6 @@ OutSlot<T>&	OutSlot<T>::operator=( T const & val )
 template<typename T>
 OutSlot<T>&	OutSlot<T>::operator<<( T const & val )
 {
-  qDebug() << "CHEUVEU ROND";
-  qDebug() << "m_pipe : " << this->m_pipe;
-  qDebug() << "&m_junk : " << &(this->m_junk)
-	   << "\n" ;
   (*m_pipe) = val;
   return (*this);
 }

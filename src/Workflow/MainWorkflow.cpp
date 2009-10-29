@@ -74,6 +74,11 @@ EffectsEngine*          MainWorkflow::getEffectsEngine(void)
     return ( m_effectEngine );
 }
 
+EffectsEngine*          MainWorkflow::getEffectsEngine(void)
+{
+    return ( m_effectEngine );
+}
+
 void            MainWorkflow::addClip( Clip* clip, unsigned int trackId,
                                         qint64 start, TrackWorkflow::TrackType trackType )
 {

@@ -166,6 +166,7 @@ INCLUDEPATH += src/LibVLCpp \
     src/Library \
     src/Media \
     src/Project \
+    src/EffectsEngine \
     src/Configuration \
     src/EffectsEngine \
     src
