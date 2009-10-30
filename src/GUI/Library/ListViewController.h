@@ -1,9 +1,9 @@
 /*****************************************************************************
- * MetaDataManager.h: Launch the metadata threads
+ * ListViewController.h:
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
+ * Authors: Thomas Boquet <thomas.boquet@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,27 +20,43 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#ifndef LISTVIEWCONTROLLER_H
+#define LISTVIEWCONTROLLER_H
 
-#ifndef METADATAMANAGER_H
-#define METADATAMANAGER_H
+#include <QWidget>
+#include <QListView>
+#include <QAbstractItemModel>
+#include <QScrollArea>
+#include <QUuid>
 
-#include <QObject>
+#include "ViewController.h"
+#include "StackViewController.h"
+#include "Clip.h"
 
-#include "Media.h"
-#include "Singleton.hpp"
 
-class       MetaDataManager : public QObject, public Singleton<MetaDataManager>
+class ListViewController : public ViewController
 {
     Q_OBJECT
-    Q_DISABLE_COPY( MetaDataManager );
 
-    friend class        Singleton<MetaDataManager>;
-    public slots:
-        void            metadataRequired( Media* );
+public:
+    ListViewController() {}
+    ListViewController( StackViewController* nav );
+    ~ListViewController();
 
-    private:
-        MetaDataManager();
-        ~MetaDataManager();
+    QWidget*        view() const;
+    const QString&  title() const;
+    void            addCell( QWidget* cell );
+    void            removeCell( QWidget* cell );
+
+protected:
+    QVBoxLayout*                m_layout;
+
+private:
+    QString*                    m_title;
+    QScrollArea*                m_scrollArea;
+    QWidget*                    m_container;
+
+    StackViewController*        m_nav;
 };
 
-#endif // METADATAMANAGER_H
+#endif // LISTVIEWCONTROLLER_H

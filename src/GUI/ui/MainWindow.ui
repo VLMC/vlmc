@@ -37,6 +37,8 @@
     <addaction name="actionNew_Project"/>
     <addaction name="actionLoad_Project"/>
     <addaction name="actionSave"/>
+    <addaction name="actionImport"/>
+    <addaction name="actionTranscode_File"/>
     <addaction name="actionRender"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -179,7 +181,26 @@
     <string>Save</string>
    </property>
   </action>
+  <action name="actionImport">
+   <property name="text">
+    <string>Import</string>
+   </property>
+  </action>
+  <action name="actionProject_Preferences">
+   <property name="text">
+    <string>Project Preferences</string>
+   </property>
+  </action>
   <action name="actionBypass_effects_engine">
+    <property name="checkable">
+      <bool>true</bool>
+    </property>
+    <property name="checked">
+      <bool>true</bool>
+    </property>
+    <property name="text">
+      <string>Enable effects engine</string>
+    </property>
    <property name="checkable">
     <bool>true</bool>
    </property>

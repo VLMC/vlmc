@@ -1,9 +1,9 @@
 /*****************************************************************************
- * MetaDataManager.h: Launch the metadata threads
+ * MediaLibraryWidget.cpp
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
+ * Authors: Thomas Boquet <thomas.boquet@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,27 +20,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include "MediaLibraryWidget.h"
 
-#ifndef METADATAMANAGER_H
-#define METADATAMANAGER_H
-
-#include <QObject>
-
-#include "Media.h"
-#include "Singleton.hpp"
-
-class       MetaDataManager : public QObject, public Singleton<MetaDataManager>
+MediaLibraryWidget::MediaLibraryWidget( QWidget* parent ) : QWidget( parent )
 {
-    Q_OBJECT
-    Q_DISABLE_COPY( MetaDataManager );
+    m_nav = new StackViewController( this );
+    MediaListViewController* list = new MediaListViewController( m_nav );
 
-    friend class        Singleton<MetaDataManager>;
-    public slots:
-        void            metadataRequired( Media* );
+    m_nav->pushViewController( list );
+}
 
-    private:
-        MetaDataManager();
-        ~MetaDataManager();
-};
+MediaLibraryWidget::~MediaLibraryWidget()
+{
+    delete m_nav;
+}
 
-#endif // METADATAMANAGER_H
+const ViewController*       MediaLibraryWidget::getCurrentViewController()
+{
+    return m_nav->getCurrentViewController();
+}

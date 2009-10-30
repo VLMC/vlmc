@@ -63,6 +63,20 @@ SOURCES += src/main.cpp \
     src/GUI/VLMCPreferences.cpp \
     src/GUI/VideoProjectPreferences.cpp \
     src/Project/ProjectManager.cpp \
+    src/GUI/FileInfoListModel.cpp \
+    src/Configuration/SettingsManager.cpp \
+    src/GUI/TagWidget.cpp \
+    src/GUI/Library/StackViewController.cpp \
+    src/GUI/Library/StackViewNavController.cpp \
+    src/GUI/Library/ListViewController.cpp \
+    src/GUI/Library/MediaCellView.cpp \
+    src/GUI/Library/MediaLibraryWidget.cpp \
+    src/GUI/Library/MediaListViewController.cpp \
+    src/GUI/ImportMediaListController.cpp \
+    src/GUI/ImportMediaCellView.cpp \
+    src/GUI/ClickableLabel.cpp \
+    src/GUI/Import/ImportModel.cpp \
+    src/GUI/Import/ImportController.cpp \
     src/Workflow/VideoClipWorkflow.cpp \
     src/Workflow/TrackHandler.cpp \
     src/Workflow/AudioClipWorkflow.cpp \
@@ -70,9 +84,7 @@ SOURCES += src/main.cpp \
     src/EffectsEngine/LightVideoFrame.cpp \
     src/EffectsEngine/GenericEffect.cpp \
     src/EffectsEngine/GreenFilterEffect.cpp \
-    src/EffectsEngine/MixerEffect.cpp \
-    src/Configuration/SettingsManager.cpp
-
+    src/EffectsEngine/MixerEffect.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -128,6 +140,21 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/AudioProjectPreferences.h \
     src/GUI/VideoProjectPreferences.h \
     src/Project/ProjectManager.h \
+    src/GUI/FileInfoListModel.h \
+    src/Configuration/SettingsManager.h \
+    src/GUI/TagWidget.h \
+    src/GUI/Library/StackViewController.h \
+    src/GUI/Library/StackViewNavController.h \
+    src/GUI/Library/ListViewController.h \
+    src/GUI/Library/MediaCellView.h \
+    src/GUI/Library/MediaLibraryWidget.h \
+    src/GUI/Library/MediaListViewController.h \
+    src/GUI/Library/ViewController.h \
+    src/GUI/ImportMediaListController.h \
+    src/GUI/ImportMediaCellView.h \
+    src/GUI/ClickableLabel.h \
+    src/GUI/Import/ImportModel.h \
+    src/GUI/Import/ImportController.h \
     src/Workflow/VideoClipWorkflow.h \
     src/Workflow/TrackHandler.h \
     src/Workflow/AudioClipWorkflow.h \
@@ -137,8 +164,7 @@ HEADERS += src/GUI/MainWindow.h \
     src/EffectsEngine/LightVideoFrame.h \
     src/EffectsEngine/GenericEffect.h \
     src/EffectsEngine/GreenFilterEffect.h \
-    src/EffectsEngine/MixerEffect.h \
-    src/Configuration/SettingsManager.h
+    src/EffectsEngine/MixerEffect.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \
@@ -151,13 +177,19 @@ FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/ProjectPreferences.ui \
     src/GUI/ui/VLMCPreferences.ui \
     src/GUI/ui/VideoProjectPreferences.ui \
-    src/GUI/ui/AudioProjectPreferences.ui
+    src/GUI/ui/AudioProjectPreferences.ui \
+    src/GUI/ui/TagWidget.ui \
+    src/GUI/Library/ui/StackViewNavController.ui \
+    src/GUI/Library/ui/MediaCellView.ui \
+    src/GUI/Import/ui/ImportController.ui
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts
 RESOURCES += ressources.qrc
 INCLUDEPATH += src/LibVLCpp \
     src/GUI \
+    src/GUI/Library \
+    src/GUI/Import \
     src/Tools \
     src/Renderer \
     src/Metadata \

@@ -1,9 +1,10 @@
 /*****************************************************************************
- * MetaDataManager.h: Launch the metadata threads
+ * ImportMediaCellView.cpp: Inherited class of the MediaCellView
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
+ * Authors: Geoffroy Lacarriere <geoffroylaca@gmail.com>
+ *          Thomas Boquet <thomas.boquet@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,27 +21,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include "ImportMediaCellView.h"
 
-#ifndef METADATAMANAGER_H
-#define METADATAMANAGER_H
-
-#include <QObject>
-
-#include "Media.h"
-#include "Singleton.hpp"
-
-class       MetaDataManager : public QObject, public Singleton<MetaDataManager>
+ImportMediaCellView::ImportMediaCellView( const QUuid& uuid, QWidget *parent ) : MediaCellView( uuid, parent )
 {
-    Q_OBJECT
-    Q_DISABLE_COPY( MetaDataManager );
+}
 
-    friend class        Singleton<MetaDataManager>;
-    public slots:
-        void            metadataRequired( Media* );
+void    ImportMediaCellView::mouseDoubleClickEvent( QMouseEvent* )
+{
+}
 
-    private:
-        MetaDataManager();
-        ~MetaDataManager();
-};
+void    ImportMediaCellView::mousePressEvent( QMouseEvent* )
+{
+    emit cellSelected( uuid() );
+    this->focusWidget();
+}
 
-#endif // METADATAMANAGER_H
+void    ImportMediaCellView::mouseMoveEvent( QMouseEvent* )
+{
+}
+

@@ -30,7 +30,7 @@
 #include <QTimer>
 #include "vlc/vlc.h"
 
-#include "ui_transcode.h"
+//#include "ui_transcode.h"
 
 class Transcode : public QDialog
 {
@@ -48,7 +48,7 @@ class Transcode : public QDialog
         void m_initProgressDialog();
         void m_releaseVLCRessources();
 
-        Ui::Transcode m_ui;
+        //Ui::Transcode m_ui;
         QString m_origVidPath;
 
         libvlc_exception_t m_vlcEx;

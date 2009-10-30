@@ -35,8 +35,10 @@
 #include <QUuid>
 #include <QObject>
 #include <QFileInfo>
+#include <QHash>
 
 #include "VLCMedia.h"
+#include "Clip.h"
 
 struct          audioData
 {
@@ -50,6 +52,8 @@ struct          audioData
     size_t              buffSize;
     QVector<int*>       frameList;
 };
+
+class Clip;
 
 /**
   * Represents a basic container for media informations.
@@ -143,6 +147,14 @@ public:
 
     void                        emitMetaDataComputed();
 
+    bool                        hasMetadata() const;
+
+    void                        addClip( Clip* clip );
+    void                        removeClip( const QUuid& uuid );
+    Clip*                       clip( const QUuid& uuid ) const { return m_clips[uuid]; }
+    const QHash<QUuid, Clip*>*  clips() const { return &m_clips; }
+
+
 private:
     void                        setFileType();
 
@@ -163,11 +175,12 @@ protected:
     audioData                   m_audioData;
     FileType                    m_fileType;
     InputType                   m_inputType;
+    bool                        m_metadataParsed;
     QString                     m_fileName;
     QStringList                 m_metaTags;
+    QHash<QUuid, Clip*>         m_clips;
 
 signals:
-    void                        metaDataComputed();
     void                        metaDataComputed( Media* );
 };
 

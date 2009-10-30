@@ -1,9 +1,9 @@
 /*****************************************************************************
- * MetaDataManager.h: Launch the metadata threads
+ * Import.h: Import menu
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
+ * Authors: Geoffroy Lacarriere <geoffroylaca@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,27 +20,48 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#ifndef IMPORT_H
+#define IMPORT_H
 
-#ifndef METADATAMANAGER_H
-#define METADATAMANAGER_H
-
-#include <QObject>
-
+#include <QDialog>
+#include "PreviewWidget.h"
+#include "ImportBrowser.h"
 #include "Media.h"
-#include "Singleton.hpp"
+#include "TagWidget.h"
+#include "ImportMediaCellView.h"
 
-class       MetaDataManager : public QObject, public Singleton<MetaDataManager>
+namespace Ui
+{
+    class Import;
+}
+
+class Import : public QDialog
 {
     Q_OBJECT
-    Q_DISABLE_COPY( MetaDataManager );
+    public:
+        Import( QWidget *parent = 0 );
+        ~Import();
 
-    friend class        Singleton<MetaDataManager>;
-    public slots:
-        void            metadataRequired( Media* );
+    protected:
+        void changeEvent( QEvent *e );
 
     private:
-        MetaDataManager();
-        ~MetaDataManager();
+        Ui::Import*         m_ui;
+        PreviewWidget*      m_previewWidget;
+        ImportBrowser*      m_importBrowser;
+        TagWidget*          m_tagWidget;
+        QHash<QUuid, Media*> m_mediaList;
+        QUuid               m_currentUuid;
+
+    private slots:
+        void    accept();
+        void    addMedia( Media* media, ImportMediaCellView* cell );
+        void    removeMedia();
+        void    setUIMetaData( QUuid uuid );
+        void    clipViewRequested( QWidget* sender, QMouseEvent* ev );
+
+    signals:
+        void    mediaSelected( Media* );
 };
 
-#endif // METADATAMANAGER_H
+#endif // IMPORT_H
