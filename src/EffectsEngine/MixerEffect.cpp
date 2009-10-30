@@ -105,9 +105,9 @@ MixerEffect::~MixerEffect()
 
 void	MixerEffect::render( void )
 {
-  quint32	i;
+  qint32	i;
 
-  for ( i = 0; i < 64; ++i )
+  for ( i = 63; i >= 0; --i )
   {
       const LightVideoFrame&   lvf = m_videoInputs[i];
       if ( lvf->frame.octets != NULL )

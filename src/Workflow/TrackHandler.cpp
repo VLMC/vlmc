@@ -286,7 +286,6 @@ void        TrackHandler::trackUnpaused()
 
 void        TrackHandler::tracksRenderCompleted( unsigned int trackId )
 {
-//    qDebug() << "tracksRenderCompleted";
     QMutexLocker    lockNbTracks( m_nbTracksToRenderMutex );
     --m_nbTracksToRender;
 
