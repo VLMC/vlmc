@@ -49,11 +49,10 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         };
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start, TrackWorkflow::TrackType type );
 
-        EffectsEngine*          getEffectsEngine( void );
         void                    startRender();
         void                    getOutput();
         OutputBuffers*          getSynchroneOutput();
-        EffectsEngine*          getEffectsEngine( void );
+        EffectsEngine*          getEffectsEngine();
 
         /**
          *  \brief              Set the workflow position
@@ -142,8 +141,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         EffectsEngine*                  m_effectEngine;
 
         friend class    Singleton<MainWorkflow>;
-
-        EffectsEngine*                  m_effectEngine;
 
     private slots:
         void                            tracksPaused();

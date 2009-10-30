@@ -75,7 +75,7 @@ class   WorkflowRenderer : public GenericRenderer
     private:
         unsigned char*	    m_renderVideoFrame;
         unsigned char*	    m_renderAudioSample;
-        QStack<Actions>     m_actions;
+            QStack<Actions>     m_actions;
         QReadWriteLock*     m_actionsLock;
         bool                m_pauseAsked;
         bool                m_unpauseAsked;

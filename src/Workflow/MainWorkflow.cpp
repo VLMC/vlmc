@@ -69,14 +69,9 @@ MainWorkflow::~MainWorkflow()
     delete[] m_tracks;
 }
 
-EffectsEngine*          MainWorkflow::getEffectsEngine(void)
+EffectsEngine*          MainWorkflow::getEffectsEngine()
 {
-    return ( m_effectEngine );
-}
-
-EffectsEngine*          MainWorkflow::getEffectsEngine(void)
-{
-    return ( m_effectEngine );
+    return m_effectEngine;
 }
 
 void            MainWorkflow::addClip( Clip* clip, unsigned int trackId,
