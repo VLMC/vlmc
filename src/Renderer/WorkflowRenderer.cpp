@@ -54,17 +54,18 @@ WorkflowRenderer::WorkflowRenderer() :
     sprintf( buffer, ":height=%i", VIDEOHEIGHT );
     m_media->addOption( buffer );
 
-    sprintf( buffer, ":inamem-data=%lld", (qint64)this );
-    m_media->addOption( buffer );
-    sprintf( buffer, ":inamem-callback=%lld", (qint64)WorkflowRenderer::lock );
-    m_media->addOption( buffer );
+    m_media->addOption( ":no-audio" );
+//    sprintf( buffer, ":inamem-data=%lld", (qint64)this );
+//    m_media->addOption( buffer );
+//    sprintf( buffer, ":inamem-callback=%lld", (qint64)WorkflowRenderer::lock );
+//    m_media->addOption( buffer );
 
     m_condMutex = new QMutex;
     m_waitCond = new QWaitCondition;
 
     m_renderVideoFrame = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes];
    
-        //Workflow part
+     //Workflow part
     connect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
             Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( setCursorPos( qint64 ) ), Qt::QueuedConnection );
     connect( Timeline::getInstance()->tracksView()->tracksCursor(), SIGNAL( cursorPositionChanged( qint64 ) ),
