@@ -138,25 +138,6 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0">
-    <widget class="Slider" name="seekSlider">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>320</width>
-       <height>23</height>
-      </size>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0">
     <widget class="QWidget" name="renderWidget" native="true">
      <property name="sizePolicy">
@@ -180,13 +161,24 @@
      </property>
     </widget>
    </item>
+   <item row="2" column="0">
+    <widget class="PreviewRuler" name="rulerWidget" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>30</height>
+      </size>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Slider</class>
-   <extends>QSlider</extends>
-   <header>Slider.h</header>
+   <class>PreviewRuler</class>
+   <extends>QWidget</extends>
+   <header>PreviewRuler.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

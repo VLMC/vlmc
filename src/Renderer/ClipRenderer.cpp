@@ -22,6 +22,7 @@
  *****************************************************************************/
 
 #include <QtDebug>
+#include <QtGlobal>
 
 #include "ClipRenderer.h"
 
@@ -182,6 +183,15 @@ void        ClipRenderer::previousFrame()
     }
 }
 
+qint64      ClipRenderer::length()
+{
+    if ( m_clipLoaded )
+        return qMax( m_end - m_begin, (qint64)0 );
+    else if ( m_selectedMedia )
+        return m_selectedMedia->getLength();
+    return 0;
+}
+
 //FIXME: this won't work with clips !
 void        ClipRenderer::mediaUnloaded( const QUuid& uuid )
 {
@@ -223,7 +233,7 @@ void        ClipRenderer::__positionChanged()
 {
     if ( m_clipLoaded == false)
         return ;
-    
+
     float   begin = m_begin / ( m_end - m_begin );
     float   end = m_end / ( m_end - m_begin );
     float pos = ( m_mediaPlayer->getPosition() - begin ) /

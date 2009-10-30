@@ -44,6 +44,7 @@ public:
     virtual void            stop();
     virtual void            nextFrame();
     virtual void            previousFrame();
+    virtual qint64          length();
 
 private:
     void                    startPreview();

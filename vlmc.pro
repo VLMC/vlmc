@@ -45,6 +45,7 @@ SOURCES += src/main.cpp \
     src/Workflow/TrackWorkflow.cpp \
     src/Workflow/MainWorkflow.cpp \
     src/GUI/PreviewWidget.cpp \
+    src/GUI/PreviewRuler.cpp \
     src/Renderer/WorkflowRenderer.cpp \
     src/API/vlmc_module_variables.cpp \
     src/API/Module.cpp \
@@ -116,6 +117,7 @@ HEADERS += src/GUI/MainWindow.h \
     src/Workflow/TrackWorkflow.h \
     src/Workflow/MainWorkflow.h \
     src/GUI/PreviewWidget.h \
+    src/GUI/PreviewRuler.h \
     src/Renderer/WorkflowRenderer.h \
     src/Renderer/GenericRenderer.h \
     src/Tools/Toggleable.hpp \
