@@ -52,6 +52,9 @@ private:
 protected:
     virtual void    changeEvent( QEvent *e );
 
+public slots:
+    void            stop();
+
 private slots:
     void            on_pushButtonPlay_clicked();
     void            on_pushButtonStop_clicked();

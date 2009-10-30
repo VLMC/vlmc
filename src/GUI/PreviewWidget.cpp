@@ -179,7 +179,13 @@ void        PreviewWidget::on_pushButtonPreviousFrame_clicked()
         m_renderer->previousFrame();
 }
 
-const GenericRenderer*    PreviewWidget::getGenericRenderer() const
+const GenericRenderer*      PreviewWidget::getGenericRenderer() const
 {
     return m_renderer;
+}
+
+void                        PreviewWidget::stop()
+{
+    //Ugly but avoid code dupplication.
+    on_pushButtonStop_clicked();
 }
