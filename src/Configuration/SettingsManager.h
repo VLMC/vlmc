@@ -42,11 +42,11 @@ class   SettingsManager : public QObject, public QSingleton<SettingsManager>
     friend class QSingleton<SettingsManager>;
     public:
 
-        void	          setValues( QHash<QString, QVariant> );
-        void	          setValue( const QString& key, QVariant& value );
-        const QVariant	  getValue( const QString& key ) const;
-        void    saveSettings( QDomDocument& xmlfile, QDomElement& root );
-        void    loadSettings( const QDomElement& settings );
+        void                setValues( QHash<QString, QVariant> );
+        void                setValue( const QString& key, QVariant& value );
+        const QVariant      getValue( const QString& key ) const;
+        void                saveSettings( QDomDocument& xmlfile, QDomElement& root );
+        void                loadSettings( const QDomElement& settings );
     private:
         SettingsManager( QObject* parent = 0 );
         ~SettingsManager();
@@ -55,7 +55,7 @@ class   SettingsManager : public QObject, public QSingleton<SettingsManager>
         mutable QReadWriteLock              m_lock;
 
     signals:
-        void    settingsLoaded();
+        void                settingsLoaded();
 };
 
 #endif

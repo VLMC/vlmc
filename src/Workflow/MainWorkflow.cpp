@@ -249,84 +249,94 @@ Clip*       MainWorkflow::getClip( const QUuid& uuid, unsigned int trackId, Trac
 
 void        MainWorkflow::loadProject( const QDomElement& project )
 {
-//    if ( project.isNull() == true || project.tagName() != "timeline" )
-//    {
-//        qWarning() << "Invalid timeline node (" << project.tagName() << ')';
-//        return ;
-//    }
-//
-//    clear();
-//
-//    QDomElement elem = project.firstChild().toElement();
-//
-//    while ( elem.isNull() == false )
-//    {
-//        bool    ok;
-//
-//        Q_ASSERT( elem.tagName() == "track" );
-//        unsigned int trackId = elem.attribute( "id" ).toUInt( &ok );
-//        if ( ok == false )
-//        {
-//            qWarning() << "Invalid track number in project file";
-//            return ;
-//        }
-//        QDomElement clip = elem.firstChild().toElement();
-//        while ( clip.isNull() == false )
-//        {
-//            //Iterate over clip fields:
-//            QDomElement clipProperty = clip.firstChild().toElement();
-//            QUuid       parent;
-//            qint64      begin;
-//            qint64      end;
-//            qint64      startPos;
-//
-//            while ( clipProperty.isNull() == false )
-//            {
-//                QString tagName = clipProperty.tagName();
-//                bool    ok;
-//
-//                if ( tagName == "parent" )
-//                    parent = QUuid( clipProperty.text() );
-//                else if ( tagName == "begin" )
-//                {
-//                    begin = clipProperty.text().toLongLong( &ok );
-//                    if ( ok == false )
-//                    {
-//                        qWarning() << "Invalid clip begin";
-//                        return ;
-//                    }
-//                }
-//                else if ( tagName == "end" )
-//                {
-//                    end = clipProperty.text().toLongLong( &ok );
-//                    if ( ok == false )
-//                    {
-//                        qWarning() << "Invalid clip end";
-//                        return ;
-//                    }
-//                }
-//                else if ( tagName == "startFrame" )
-//                {
-//                    startPos = clipProperty.text().toLongLong( &ok );
-//                    if ( ok == false )
-//                    {
-//                        qWarning() << "Invalid clip starting frame";
-//                        return ;
-//                    }
-//                }
-//                else
-//                    qDebug() << "Unknown field" << clipProperty.tagName();
-//
-//                clipProperty = clipProperty.nextSibling().toElement();
-//            }
-//
-//            Clip*       c = new Clip( parent, begin, end );
-//            addClip( c, trackId, startPos, TrackWorkflow::Video );
-//
-//            clip = clip.nextSibling().toElement();
-//        }
-//        elem = elem.nextSibling().toElement();
-//    }
+    if ( project.isNull() == true || project.tagName() != "timeline" )
+    {
+        qWarning() << "Invalid timeline node (" << project.tagName() << ')';
+        return ;
+    }
+
+    clear();
+
+    QDomElement elem = project.firstChild().toElement();
+
+    while ( elem.isNull() == false )
+    {
+        bool    ok;
+
+        Q_ASSERT( elem.tagName() == "track" );
+        unsigned int trackId = elem.attribute( "id" ).toUInt( &ok );
+        if ( ok == false )
+        {
+            qWarning() << "Invalid track number in project file";
+            return ;
+        }
+        QDomElement clip = elem.firstChild().toElement();
+        while ( clip.isNull() == false )
+        {
+            //Iterate over clip fields:
+            QDomElement clipProperty = clip.firstChild().toElement();
+            QUuid                       parent;
+            qint64                      begin;
+            qint64                      end;
+            qint64                      startPos;
+            TrackWorkflow::TrackType    trackType = TrackWorkflow::Video;
+
+            while ( clipProperty.isNull() == false )
+            {
+                QString tagName = clipProperty.tagName();
+                bool    ok;
+
+                if ( tagName == "parent" )
+                    parent = QUuid( clipProperty.text() );
+                else if ( tagName == "begin" )
+                {
+                    begin = clipProperty.text().toLongLong( &ok );
+                    if ( ok == false )
+                    {
+                        qWarning() << "Invalid clip begin";
+                        return ;
+                    }
+                }
+                else if ( tagName == "end" )
+                {
+                    end = clipProperty.text().toLongLong( &ok );
+                    if ( ok == false )
+                    {
+                        qWarning() << "Invalid clip end";
+                        return ;
+                    }
+                }
+                else if ( tagName == "startFrame" )
+                {
+                    startPos = clipProperty.text().toLongLong( &ok );
+                    if ( ok == false )
+                    {
+                        qWarning() << "Invalid clip starting frame";
+                        return ;
+                    }
+                }
+                else if ( tagName == "trackType" )
+                {
+                    trackType = static_cast<TrackWorkflow::TrackType>( clipProperty.text().toUInt( &ok ) );
+                    if ( ok == false )
+                    {
+                        qWarning() << "Invalid track type starting frame";
+                        return ;
+                    }
+                }
+                else
+                    qDebug() << "Unknown field" << clipProperty.tagName();
+
+                clipProperty = clipProperty.nextSibling().toElement();
+            }
+
+            Clip*       c = new Clip( parent, begin, end );
+            addClip( c, trackId, startPos, trackType );
+
+            clip = clip.nextSibling().toElement();
+        }
+        elem = elem.nextSibling().toElement();
+    }
 }
 
 void        MainWorkflow::saveProject( QDomDocument& doc, QDomElement& rootNode )
