@@ -201,7 +201,7 @@ void        ImportController::mediaDeletion( const QUuid& uuid )
     {
         setUIMetaData( NULL );
         m_currentUuid = QUuid();
-        //m_preview->stop();
+        m_preview->stop();
     }
 }
 

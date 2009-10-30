@@ -27,7 +27,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>24</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -201,11 +201,20 @@
     <property name="text">
       <string>Enable effects engine</string>
     </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Enable effects engine</string>
+   </property>
   </action>
   <action name="actionProject_Preferences">
-    <property name="text">
-      <string>Project Preferences</string>
-    </property>
+   <property name="text">
+    <string>Project Preferences</string>
+   </property>
   </action>
  </widget>
  <resources>

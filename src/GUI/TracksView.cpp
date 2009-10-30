@@ -42,7 +42,7 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
     //TODO should be defined by the settings
     m_tracksHeight = 25;
 
-    m_tracksCount = mainWorkflow->getTrackCount();
+    m_tracksCount = mainWorkflow->getTrackCount( TrackWorkflow::Video );
     m_fps = FPS;
 
     m_numAudioTrack = 0;
@@ -426,7 +426,13 @@ void TracksView::dropEvent( QDropEvent* event )
         Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
                                                                 m_dragItem->clip(),
                                                                 m_dragItem->trackNumber(),
-                                                                (qint64)mappedXPos ) );
+                                                                (qint64)mappedXPos,
+                                                                TrackWorkflow::Video ) );
+//        Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
+//                                                                m_dragItem->clip(),
+//                                                                m_dragItem->trackNumber(),
+//                                                                (qint64)mappedXPos,
+//                                                                TrackWorkflow::Audio ) );
         m_dragItem = NULL;
     }
 }
@@ -576,7 +582,8 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
                                                                      movieItem->oldTrackNumber,
                                                                      movieItem->oldPosition,
                                                                      movieItem->trackNumber(),
-                                                                     (qint64)movieItem->pos().x() ) );
+                                                                     (qint64)movieItem->pos().x(),
+                                                                     TrackWorkflow::Video ) );
             movieItem->oldTrackNumber = movieItem->trackNumber();
             movieItem->oldPosition = movieItem->pos().x();
             m_actionMove = false;
@@ -716,5 +723,6 @@ void TracksView::split( GraphicsMovieItem* item, qint64 frame )
     Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
                                                             newclip,
                                                             item->trackNumber(),
-                                                            item->pos().x() + frame ) );
+                                                            item->pos().x() + frame,
+                                                            TrackWorkflow::Video ) );
 }

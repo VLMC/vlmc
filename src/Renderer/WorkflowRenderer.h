@@ -57,6 +57,7 @@ class   WorkflowRenderer : public GenericRenderer
         virtual void        previousFrame();
 
         static void*        lock( void* datas );
+        static void*        lockAudio( void* datas );
         static void         unlock( void* datas );
 
     private:
@@ -72,7 +73,8 @@ class   WorkflowRenderer : public GenericRenderer
         bool                m_stopping;
 
     private:
-        unsigned char*	    m_renderFrame;
+        unsigned char*	    m_renderVideoFrame;
+        unsigned char*	    m_renderAudioSample;
         QStack<Actions>     m_actions;
         QReadWriteLock*     m_actionsLock;
         bool                m_pauseAsked;

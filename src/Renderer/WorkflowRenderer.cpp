@@ -53,14 +53,19 @@ WorkflowRenderer::WorkflowRenderer() :
     m_media->addOption( buffer );
     sprintf( buffer, ":height=%i", VIDEOHEIGHT );
     m_media->addOption( buffer );
+
     m_media->addOption( ":no-audio" );
+//    sprintf( buffer, ":inamem-data=%lld", (qint64)this );
+//    m_media->addOption( buffer );
+//    sprintf( buffer, ":inamem-callback=%lld", (qint64)WorkflowRenderer::lock );
+//    m_media->addOption( buffer );
 
     m_condMutex = new QMutex;
     m_waitCond = new QWaitCondition;
 
-    m_renderFrame = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes];
+    m_renderVideoFrame = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes];
    
-        //Workflow part
+     //Workflow part
     connect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
             Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( setCursorPos( qint64 ) ), Qt::QueuedConnection );
     connect( Timeline::getInstance()->tracksView()->tracksCursor(), SIGNAL( cursorPositionChanged( qint64 ) ),
@@ -88,16 +93,25 @@ WorkflowRenderer::~WorkflowRenderer()
     delete m_waitCond;
 }
 
+void*   WorkflowRenderer::lockAudio( void* datas )
+{
+    WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
+
+    qDebug() << "Injecting audio data";
+    return self->m_renderAudioSample;
+}
+
 void*   WorkflowRenderer::lock( void* datas )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
     if ( self->m_stopping == false )
     {
-        const LightVideoFrame* ret = self->m_mainWorkflow->getSynchroneOutput();
-	memcpy( self->m_renderFrame, (*ret)->frame.octets, (*ret)->nboctets );
+        MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getSynchroneOutput();
+        memcpy( self->m_renderVideoFrame, (*(ret->video))->frame.octets, (*(ret->video))->nboctets );
+        self->m_renderAudioSample = ret->audio;
     }
-    return (self->m_renderFrame);
+    return self->m_renderVideoFrame;
 }
 
 void    WorkflowRenderer::unlock( void* datas )

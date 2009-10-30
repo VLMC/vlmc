@@ -48,7 +48,13 @@ class   TrackWorkflow : public QObject
     Q_OBJECT
 
     public:
-        TrackWorkflow( unsigned int trackId );
+        enum    TrackType
+        {
+            Video,
+            NbType,
+            Audio,
+        };
+        TrackWorkflow( unsigned int trackId, TrackType type );
         ~TrackWorkflow();
 
         bool                                    getOutput( qint64 currentFrame );
@@ -67,7 +73,7 @@ class   TrackWorkflow : public QObject
         /**
          *  Returns the output that has been computed in synchrone mode.
          */
-        LightVideoFrame*                        getSynchroneOutput();
+        void*                                   getSynchroneOutput();
 
         //FIXME: this won't be reliable as soon as we change the fps from the configuration
         static const unsigned int               nbFrameBeforePreload = 60;
@@ -114,7 +120,9 @@ class   TrackWorkflow : public QObject
         QAtomicInt                              m_nbClipToUnpause;
         QAtomicInt                              m_nbClipToRender;
 
-        LightVideoFrame*                        m_synchroneRenderBuffer;
+        void*                                   m_synchroneRenderBuffer;
+
+        TrackType                               m_trackType;
 
     private slots:
         void                                    clipWorkflowPaused();

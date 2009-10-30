@@ -74,16 +74,20 @@ void            ImportModel::metaDataComputed( Media* media )
 
 void            ImportModel::loadMedia( Media* media )
 {
-    if ( !m_medias->contains( media->getUuid() ) )
-    {
-        m_medias->insert( media->getUuid(), media );
-        emit newMediaLoaded( media );
-        connect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ) );
-        m_metaDataWorker = new MetaDataWorker( media );
-        m_metaDataWorker->start();
-    }
-    else
-        delete media;
+    m_medias->insert( media->getUuid(), media );
+    emit newMediaLoaded( media );
+    connect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ) );
+    m_metaDataWorker = new MetaDataWorker( media );
+    m_metaDataWorker->start();
+}
+
+bool        ImportModel::mediaAlreadyLoaded( const QFileInfo& fileInfo )
+{
+    QUuid id;
+    foreach(id, m_medias->keys())
+        if ( m_medias->value( id )->getFileInfo()->filePath() == fileInfo.filePath() )
+            return true;
+    return false;
 }
 
 void            ImportModel::loadFile( const QFileInfo& fileInfo )
@@ -92,8 +96,11 @@ void            ImportModel::loadFile( const QFileInfo& fileInfo )
 
     if ( !fileInfo.isDir() )
     {
-        media = new Media( fileInfo.filePath() );
-        loadMedia( media );
+        if ( !mediaAlreadyLoaded( fileInfo ) )
+        {
+           media = new Media( fileInfo.filePath() );
+           loadMedia( media );
+        }
     }
     else
     {
@@ -103,8 +110,11 @@ void            ImportModel::loadFile( const QFileInfo& fileInfo )
             QFileInfo info = QFileInfo(dir.filePath( dir[i] ) );
             if ( info.isDir() )
                 continue ;
-            media = new Media( info.filePath() );
-            loadMedia( media );
+            if ( !mediaAlreadyLoaded( info ) )
+            {
+                media = new Media( info.filePath() );
+                loadMedia( media );
+            }
         }
     }
 }

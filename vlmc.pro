@@ -77,6 +77,9 @@ SOURCES += src/main.cpp \
     src/GUI/ClickableLabel.cpp \
     src/GUI/Import/ImportModel.cpp \
     src/GUI/Import/ImportController.cpp \
+    src/Workflow/VideoClipWorkflow.cpp \
+    src/Workflow/TrackHandler.cpp \
+    src/Workflow/AudioClipWorkflow.cpp \
     src/EffectsEngine/EffectsEngine.cpp \
     src/EffectsEngine/LightVideoFrame.cpp \
     src/EffectsEngine/GenericEffect.cpp \
@@ -152,6 +155,9 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/ClickableLabel.h \
     src/GUI/Import/ImportModel.h \
     src/GUI/Import/ImportController.h \
+    src/Workflow/VideoClipWorkflow.h \
+    src/Workflow/TrackHandler.h \
+    src/Workflow/AudioClipWorkflow.h \
     src/EffectsEngine/EffectsEngine.h \
     src/EffectsEngine/InSlot.hpp \
     src/EffectsEngine/OutSlot.hpp \
@@ -194,6 +200,7 @@ INCLUDEPATH += src/LibVLCpp \
     src/Project \
     src/EffectsEngine \
     src/Configuration \
+    src/EffectsEngine \
     src
 
 # QMAKE_CFLAGS+=-pg

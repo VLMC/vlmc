@@ -57,6 +57,7 @@ private:
     MetaDataWorker*                 m_metaDataWorker;
 
     void        loadMedia( Media* media );
+    bool        mediaAlreadyLoaded( const QFileInfo& fileInfo );
 
 private slots:
     void        metaDataComputed( Media* media );

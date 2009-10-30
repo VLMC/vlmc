@@ -24,13 +24,16 @@
 
 #include "vlmc.h"
 #include "TrackWorkflow.h"
+#include "VideoClipWorkflow.h"
+#include "AudioClipWorkflow.h"
 
-TrackWorkflow::TrackWorkflow( unsigned int trackId ) :
+TrackWorkflow::TrackWorkflow( unsigned int trackId, TrackWorkflow::TrackType type  ) :
         m_trackId( trackId ),
         m_length( 0 ),
         m_forceRepositionning( false ),
         m_paused( false ),
-        m_synchroneRenderBuffer( NULL )
+        m_synchroneRenderBuffer( NULL ),
+        m_trackType( type )
 {
     m_forceRepositionningMutex = new QMutex;
     m_clipsLock = new QReadWriteLock;
@@ -53,7 +56,13 @@ TrackWorkflow::~TrackWorkflow()
 
 void    TrackWorkflow::addClip( Clip* clip, qint64 start )
 {
-    ClipWorkflow* cw = new ClipWorkflow( clip );
+    if ( m_trackType == Audio )
+        start = 0;
+    ClipWorkflow* cw;
+    if ( m_trackType == TrackWorkflow::Video )
+        cw = new VideoClipWorkflow( clip );
+    else
+        cw = new AudioClipWorkflow( clip );
     addClip( cw, start );
 }
 
@@ -117,7 +126,7 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
 {
     cw->getStateLock()->lockForRead();
 
-//    qDebug() << "Rendering clip" << cw << "state:" << cw->getState();
+//    qDebug() << "Rendering clip" << cw << "state:" << cw->getState() << "Type:" << m_trackType;
     if ( cw->getState() == ClipWorkflow::Rendering )
     {
         //The rendering state meens... whell it means that the frame is
@@ -470,7 +479,7 @@ void        TrackWorkflow::clipWorkflowRenderCompleted( ClipWorkflow* cw )
 //        qDebug() << "Track render not completed yet";
 }
 
-LightVideoFrame*     TrackWorkflow::getSynchroneOutput()
+void*       TrackWorkflow::getSynchroneOutput()
 {
     return m_synchroneRenderBuffer;
 }
@@ -563,6 +572,13 @@ void    TrackWorkflow::save( QDomDocument& doc, QDomElement& trackNode ) const
             QDomCharacterData   text = doc.createTextNode( QString::number( it.value()->getClip()->getEnd() ) );
             end.appendChild( text );
             clipNode.appendChild( end );
+        }
+        {
+            QDomElement     trackType = doc.createElement( "trackType" );
+
+            QDomCharacterData   text = doc.createTextNode( QString::number( m_trackType ) );
+            trackType.appendChild( text );
+            clipNode.appendChild( trackType );
         }
         trackNode.appendChild( clipNode );
     }

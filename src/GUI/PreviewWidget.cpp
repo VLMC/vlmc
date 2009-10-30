@@ -57,6 +57,7 @@ PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent 
 
     m_renderer->setRenderWidget( m_ui->renderWidget );
     m_renderer->setPreviewLabel( m_ui->previewLabel );
+    m_ui->previewLabel->hide();
 
     connect( m_renderer,     SIGNAL( stopped() ),                this,       SLOT( videoStopped() ) );
     connect( m_renderer,     SIGNAL( paused() ),                 this,       SLOT( videoPaused() ) );
@@ -178,7 +179,13 @@ void        PreviewWidget::on_pushButtonPreviousFrame_clicked()
         m_renderer->previousFrame();
 }
 
-const GenericRenderer*    PreviewWidget::getGenericRenderer() const
+const GenericRenderer*      PreviewWidget::getGenericRenderer() const
 {
     return m_renderer;
+}
+
+void                        PreviewWidget::stop()
+{
+    //Ugly but avoid code dupplication.
+    on_pushButtonStop_clicked();
 }

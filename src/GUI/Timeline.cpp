@@ -36,7 +36,7 @@ Timeline::Timeline( QWidget *parent ) :
     m_instance = this;
     m_ui.setupUi( this );
 
-    m_mainWorkflow = new MainWorkflow( MAX_TRACKS );
+    m_mainWorkflow = MainWorkflow::getInstance();
 
     m_tracksScene = new TracksScene( this );
     m_tracksView = new TracksView( m_tracksScene, m_mainWorkflow, m_ui.tracksFrame );
@@ -58,15 +58,15 @@ Timeline::Timeline( QWidget *parent ) :
     setDuration( 0 );
     connect( m_tracksView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), m_tracksRuler, SLOT( moveRuler( int ) ) );
     connect( m_tracksView, SIGNAL( durationChanged(int) ), this, SLOT( setDuration(int) ) );
-    connect( m_mainWorkflow, SIGNAL( clipAdded(Clip*,uint,qint64) ), this, SLOT( actionAddClip(Clip*,uint,qint64) ) );
-    connect( m_mainWorkflow, SIGNAL( clipMoved(QUuid, uint, qint64 ) ), this, SLOT( actionMoveClip(QUuid,uint,qint64) ) );
-    connect( m_mainWorkflow, SIGNAL( clipRemoved(QUuid,uint) ), this, SLOT( actionRemoveClip(QUuid,uint)) );
+    connect( m_mainWorkflow, SIGNAL( clipAdded(Clip*,uint,qint64,TrackWorkflow::TrackType ) ), this, SLOT( actionAddClip(Clip*,uint,qint64,TrackWorkflow::TrackType ) ) );
+    connect( m_mainWorkflow, SIGNAL( clipMoved(QUuid, uint, qint64,TrackWorkflow::TrackType ) ), this, SLOT( actionMoveClip(QUuid,uint,qint64,TrackWorkflow::TrackType ) ) );
+    connect( m_mainWorkflow, SIGNAL( clipRemoved(QUuid,uint,TrackWorkflow::TrackType ) ), this, SLOT( actionRemoveClip(QUuid,uint,TrackWorkflow::TrackType )) );
     connect( m_mainWorkflow, SIGNAL( cleared() ), tracksView(), SLOT( clear() ) );
 }
 
 Timeline::~Timeline()
 {
-    delete m_mainWorkflow;
+    MainWorkflow::destroyInstance();
 }
 
 void Timeline::changeEvent( QEvent *e )
@@ -99,19 +99,19 @@ void Timeline::setTool( ToolButtons button )
     tracksView()->setTool( button );
 }
 
-void Timeline::actionAddClip( Clip* clip, unsigned int track, qint64 start )
+void Timeline::actionAddClip( Clip* clip, unsigned int track, qint64 start, TrackWorkflow::TrackType )
 {
     tracksView()->addMediaItem( clip, track, start );
 }
 
-void Timeline::actionMoveClip( const QUuid& uuid, unsigned int track, qint64 time )
+void Timeline::actionMoveClip( const QUuid& uuid, unsigned int track, qint64 time, TrackWorkflow::TrackType )
 {
     tracksView()->moveMediaItem( uuid, track, time );
     tracksView()->updateDuration();
     tracksRuler()->update();
 }
 
-void Timeline::actionRemoveClip( const QUuid& uuid, unsigned int track )
+void Timeline::actionRemoveClip( const QUuid& uuid, unsigned int track, TrackWorkflow::TrackType )
 {
     tracksView()->removeMediaItem( uuid, track );
 }
