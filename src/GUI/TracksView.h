@@ -95,7 +95,6 @@ private:
     int                     m_tracksHeight;
     unsigned int            m_tracksCount;
     int                     m_projectDuration;
-    int                     m_fps;
     GraphicsCursorItem*     m_cursorLine;
     QGraphicsLinearLayout*  m_layout;
     quint32                 m_numVideoTrack;

@@ -29,7 +29,6 @@
 #include <QtDebug>
 #include <cmath>
 #include "TracksView.h"
-#include "Media.h"
 #include "Library.h"
 #include "GraphicsMovieItem.h"
 #include "GraphicsCursorItem.h"
@@ -43,7 +42,6 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
     m_tracksHeight = 25;
 
     m_tracksCount = mainWorkflow->getTrackCount( TrackWorkflow::Video );
-    m_fps = FPS;
 
     m_numAudioTrack = 0;
     m_numVideoTrack = 0;
