@@ -119,15 +119,53 @@ void        MainWindow::setupLibrary()
     Library*    library = Library::getInstance();
 
     //GUI part :
+    LibraryWidget* libraryWidget = new LibraryWidget( this );
+
     MediaLibraryWidget* mediaLibraryWidget = new MediaLibraryWidget( this );
 
     DockWidgetManager::instance()->addDockedWidget( mediaLibraryWidget,
                                                     tr( "Media Library" ),
                                                     Qt::AllDockWidgetAreas,
                                                     QDockWidget::AllDockWidgetFeatures,
+
                                                     Qt::LeftDockWidgetArea );
+    DockWidgetManager::instance()->addDockedWidget( libraryWidget,
+                                      tr( "Old Media Library" ),
+                                      Qt::AllDockWidgetAreas,
+                                      QDockWidget::AllDockWidgetFeatures,
+                                      Qt::LeftDockWidgetArea );
 
     //Connecting GUI and Frontend :
+    connect( libraryWidget,
+             SIGNAL( newMediaLoadingAsked(const QString& ) ),
+             library,
+             SLOT( newMediaLoadingAsked( const QString& ) ) );
+
+    connect( library,
+             SIGNAL( newClipLoaded( Clip* ) ),
+             libraryWidget,
+             SLOT( newClipLoaded( Clip* ) ) );
+
+    connect( libraryWidget,
+             SIGNAL( removingMediaAsked( const QUuid& ) ),
+             library,
+             SLOT( removingMediaAsked( const QUuid& ) ) );
+
+    connect( library,
+             SIGNAL( mediaRemoved( const QUuid& ) ),
+             libraryWidget,
+             SLOT( mediaRemoved( const QUuid& ) ), Qt::DirectConnection );
+
+    connect( libraryWidget->getVideoListWidget(), SIGNAL( selectedClipChanged( Clip* ) ),
+              m_clipPreview->getGenericRenderer(), SLOT( setClip( Clip* ) ) );
+
+    connect( mediaLibraryWidget->getCurrentViewController(),
+             SIGNAL( selectedClipChanged( Clip* ) ),
+             m_clipPreview->getGenericRenderer(),
+             SLOT( setClip( Clip* ) ) );
+    connect( libraryWidget->getVideoListWidget(), SIGNAL( itemDoubleClicked( QListWidgetItem* ) ),
+                this, SLOT( mediaListItemDoubleClicked( QListWidgetItem* ) ) );
+
     connect( mediaLibraryWidget, SIGNAL( mediaSelected( Media* ) ),
              m_clipPreview->getGenericRenderer(), SLOT( setMedia( Media* ) ) );
 
@@ -278,17 +316,19 @@ void        MainWindow::createGlobalPreferences()
 void	    MainWindow::createProjectPreferences()
 {
     m_projectPreferences = new Settings(  );
+    QSvgRenderer svgRenderer( this );
+
     m_projectPreferences->addWidget("Project",
                                    new ProjectPreferences,
-                                   "../images/vlmc.png",
+                                   ":/images/scalable/vlmc",
                                    "Project settings");
     m_projectPreferences->addWidget("Video",
                                    new VideoProjectPreferences,
-                                   "../images/scalable/video.svg",
+                                   ":/images/scalable/video-scalable",
                                    "Video settings");
     m_projectPreferences->addWidget("Audio",
                                    new AudioProjectPreferences,
-                                   "../images/scalable/audio.svg",
+                                   ":/images/scalable/audio-scalable",
                                    "Audio settings");
     m_projectPreferences->build();
 }
