@@ -159,10 +159,6 @@ void        MainWindow::setupLibrary()
     connect( libraryWidget->getVideoListWidget(), SIGNAL( selectedClipChanged( Clip* ) ),
               m_clipPreview->getGenericRenderer(), SLOT( setClip( Clip* ) ) );
 
-    connect( mediaLibraryWidget->getCurrentViewController(),
-             SIGNAL( selectedClipChanged( Clip* ) ),
-             m_clipPreview->getGenericRenderer(),
-             SLOT( setClip( Clip* ) ) );
     connect( libraryWidget->getVideoListWidget(), SIGNAL( itemDoubleClicked( QListWidgetItem* ) ),
                 this, SLOT( mediaListItemDoubleClicked( QListWidgetItem* ) ) );
 
@@ -316,20 +312,19 @@ void        MainWindow::createGlobalPreferences()
 void	    MainWindow::createProjectPreferences()
 {
     m_projectPreferences = new Settings(  );
-    QSvgRenderer svgRenderer( this );
 
-    m_projectPreferences->addWidget("Project",
+    m_projectPreferences->addWidget( "Project",
                                    new ProjectPreferences,
-                                   ":/images/scalable/vlmc",
-                                   "Project settings");
-    m_projectPreferences->addWidget("Video",
+                                   ":/images/images/vlmc",
+                                   "Project settings" );
+    m_projectPreferences->addWidget( "Video",
                                    new VideoProjectPreferences,
-                                   ":/images/scalable/video-scalable",
-                                   "Video settings");
-    m_projectPreferences->addWidget("Audio",
+                                   ":/images/images/video",
+                                   "Video settings" );
+    m_projectPreferences->addWidget( "Audio",
                                    new AudioProjectPreferences,
-                                   ":/images/scalable/audio-scalable",
-                                   "Audio settings");
+                                   ":/images/images/audio",
+                                   "Audio settings" );
     m_projectPreferences->build();
 }
 

@@ -1,16 +1,16 @@
 <RCC>
-    <qresource prefix="/Lang" >
-        <file alias="es" >ts/vlmc_es.qm</file>
-        <file alias="fr" >ts/vlmc_fr.qm</file>
-        <file alias="sv" >ts/vlmc_sv.qm</file>
+    <qresource prefix="/Lang">
+        <file alias="es">ts/vlmc_es.qm</file>
+        <file alias="fr">ts/vlmc_fr.qm</file>
+        <file alias="sv">ts/vlmc_sv.qm</file>
     </qresource>
-    <qresource prefix="/images" >
+    <qresource prefix="/images">
         <file>images/vlmc.png</file>
-        <file alias="play" >images/play.png</file>
-        <file alias="pause" >images/pause.png</file>
-        <file alias="back" >images/back.png</file>
-        <file alias="forward" >images/forward.png</file>
-        <file alias="up" >images/up.png</file>
+        <file alias="play">images/play.png</file>
+        <file alias="pause">images/pause.png</file>
+        <file alias="back">images/back.png</file>
+        <file alias="forward">images/forward.png</file>
+        <file alias="up">images/up.png</file>
         <file>images/next_frame.png</file>
         <file>images/previous_frame.png</file>
         <file>images/stop.png</file>
@@ -23,15 +23,17 @@
         <file alias="mouse">images/mouse.png</file>
         <file alias="zoomin">images/zoom_in.png</file>
         <file alias="zoomout">images/zoom_out.png</file>
+        <file>images/audio.png</file>
+        <file>images/video.png</file>
     </qresource>
-    <qresource prefix="/text" >
+    <qresource prefix="/text">
         <file>AUTHORS</file>
         <file>COPYING</file>
         <file>TRANSLATORS</file>
     </qresource>
-    <qresource prefix="/images/scalable" >
-        <file alias="audio-scalable" >images/scalable/audio.svg</file>
-        <file alias="image-scalable" >images/scalable/image.svg</file>
-        <file alias="video-scalable" >images/scalable/video.svg</file>
+    <qresource prefix="/images/scalable">
+        <file alias="audio-scalable">images/scalable/audio.svg</file>
+        <file alias="image-scalable">images/scalable/image.svg</file>
+        <file alias="video-scalable">images/scalable/video.svg</file>
     </qresource>
 </RCC>
