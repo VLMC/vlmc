@@ -25,7 +25,6 @@
 
 #include <QDialog>
 #include "PreviewWidget.h"
-#include "ImportBrowser.h"
 #include "Media.h"
 #include "TagWidget.h"
 #include "ImportMediaCellView.h"
@@ -48,7 +47,6 @@ class Import : public QDialog
     private:
         Ui::Import*         m_ui;
         PreviewWidget*      m_previewWidget;
-        ImportBrowser*      m_importBrowser;
         TagWidget*          m_tagWidget;
         QHash<QUuid, Media*> m_mediaList;
         QUuid               m_currentUuid;
