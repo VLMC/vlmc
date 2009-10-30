@@ -68,7 +68,7 @@ void    ProjectManager::saveProject()
 
     Library::getInstance()->saveProject( doc, rootNode );
     MainWorkflow::getInstance()->saveProject( doc, rootNode );
-    SettingsManager::getInstance()->saveSettings( doc, rootNode );
+    //SettingsManager::getInstance()->saveSettings( doc, rootNode );
 
     doc.appendChild( rootNode );
 

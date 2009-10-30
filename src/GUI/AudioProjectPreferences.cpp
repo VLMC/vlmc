@@ -35,14 +35,14 @@ AudioProjectPreferences::~AudioProjectPreferences() { }
 
 void    AudioProjectPreferences::load()
 {
-    int sampleRate = SettingsManager::getInstance()->getValue( "AudioSampleRate" ).toInt();
-    m_ui.SampleRate->setValue( sampleRate );
+    //int sampleRate = SettingsManager::getInstance()->getValue( "AudioSampleRate" ).toInt();
+    //m_ui.SampleRate->setValue( sampleRate );
 
     return ;
 }
 
 void    AudioProjectPreferences::save( QHash<QString, QVariant>& settings )
 {
-    settings.insert( "AudioSampleRate", m_ui.SampleRate->value() );
+    //settings.insert( "AudioSampleRate", m_ui.SampleRate->value() );
     return ;
 }

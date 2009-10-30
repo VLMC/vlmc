@@ -35,20 +35,20 @@ VLMCPreferences::~VLMCPreferences() { }
 
 void    VLMCPreferences::load()
 {
-    qDebug() << "Loading Prefs : VLMC";
-    QString  outputFPS = SettingsManager::getInstance()->getValue( "VLMCOutPutFPS" ).toString();
-    QString  previewFPS = SettingsManager::getInstance()->getValue( "VLMCPreviewFPS" ).toString();
-    QString  tracksNb = SettingsManager::getInstance()->getValue( "VLMCTracksNb" ).toString();
-
-    m_ui.outputFPS->setText( outputFPS );
-    m_ui.previewFPS->setText( previewFPS );
-    m_ui.tracksNb->setText( tracksNb );
-
+//    qDebug() << "Loading Prefs : VLMC";
+//    QString  outputFPS = SettingsManager::getInstance()->getValue( "VLMCOutPutFPS" ).toString();
+//    QString  previewFPS = SettingsManager::getInstance()->getValue( "VLMCPreviewFPS" ).toString();
+//    QString  tracksNb = SettingsManager::getInstance()->getValue( "VLMCTracksNb" ).toString();
+//
+//    m_ui.outputFPS->setText( outputFPS );
+//    m_ui.previewFPS->setText( previewFPS );
+//    m_ui.tracksNb->setText( tracksNb );
+//
 }
 
 void    VLMCPreferences::save( QHash<QString, QVariant>& settings )
 {
-    settings.insert( "VLMCOutPutFPS", QVariant( m_ui.outputFPS->text() ) );
-    settings.insert( "VLMCPreviewFPS", QVariant( m_ui.previewFPS->text() ) );
-    settings.insert( "VLMCTracksNb", QVariant( m_ui.tracksNb->text() ) );
+//    settings.insert( "VLMCOutPutFPS", QVariant( m_ui.outputFPS->text() ) );
+//    settings.insert( "VLMCPreviewFPS", QVariant( m_ui.previewFPS->text() ) );
+//    settings.insert( "VLMCTracksNb", QVariant( m_ui.tracksNb->text() ) );
 }

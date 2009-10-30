@@ -13,7 +13,7 @@ void    ProjectSettingsDefault::load( void )
 void    ProjectSettingsDefault::loadAudioDefaults( void )
 {
     QVariant defaultSampleRate = 0;
-    SettingsManager::getInstance()->setValue( "AudioSampleRate", defaultSampleRate );
+    //SettingsManager::getInstance()->setValue( "AudioSampleRate", defaultSampleRate );
 
     return ;
 }
@@ -25,9 +25,9 @@ void    ProjectSettingsDefault::loadVideoDefaults( void )
     QVariant defaultProjectHeight = 800;
     QVariant defaultProjectWidth = 600;
 
-    settingsMan->setValue( "VideoProjectFPS", defaultProjectFPS );
-    settingsMan->setValue( "VideoProjectHeight", defaultProjectHeight );
-    settingsMan->setValue( "VideoProjectWidth", defaultProjectWidth );
+    //settingsMan->setValue( "VideoProjectFPS", defaultProjectFPS );
+    //settingsMan->setValue( "VideoProjectHeight", defaultProjectHeight );
+    //settingsMan->setValue( "VideoProjectWidth", defaultProjectWidth );
 
     return ;
 }
@@ -38,8 +38,8 @@ void    ProjectSettingsDefault::loadProjectDefaults( void )
     QVariant   defaultName = "project";
     QVariant   defaultPath = "./";
 
-    settingsMan->setValue( "ProjectName", defaultName );
-    settingsMan->setValue( "ProjectDirectory", defaultPath );
+    //settingsMan->setValue( "ProjectName", defaultName );
+    //settingsMan->setValue( "ProjectDirectory", defaultPath );
 
     return ;
 }
