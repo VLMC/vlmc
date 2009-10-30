@@ -56,7 +56,6 @@ class   TrackHandler : public QObject
         Clip*                   getClip( const QUuid& uuid, unsigned int trackId );
         void                    clear();
         void                    setFullSpeedRender( bool value );
-        void*                   getSynchroneOutput();
 
         bool                    isPaused() const;
         bool                    allTracksRendered() const;
