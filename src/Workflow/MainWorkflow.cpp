@@ -78,6 +78,7 @@ void            MainWorkflow::addClip( Clip* clip, unsigned int trackId,
                                         qint64 start, TrackWorkflow::TrackType trackType )
 {
     m_tracks[trackType]->addClip( clip, trackId, start );
+    computeLength();
 
     //Inform the GUI
     emit clipAdded( clip, trackId, start, trackType );
