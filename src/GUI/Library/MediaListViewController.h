@@ -17,9 +17,13 @@ public:
 
 private:
     StackViewController*    m_nav;
+    QUuid                   m_currentUuid;
+    QHash<QUuid, QWidget*>* m_cells;
 
 public slots:
     void        newMediaLoaded( Media* );
+    void        cellSelection( const QUuid& uuid );
+signals:
+    void        mediaSelected( Media* media );
 };
-
 #endif // MEDIALISTVIEWCONTROLLER_H

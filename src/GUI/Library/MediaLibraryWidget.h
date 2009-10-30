@@ -27,6 +27,8 @@
 
 #include "StackViewController.h"
 #include "MediaListViewController.h"
+#include "Media.h"
+#include "Clip.h"
 
 class MediaLibraryWidget : public QWidget
 {
@@ -40,6 +42,13 @@ public:
 
 private:
     StackViewController*    m_nav;
+private slots:
+    void    mediaSelection( Media* media );
+    void    clipSelection( Clip* clip );
+
+signals:
+    void    mediaSelected( Media* media );
+    void    clipSelected( Clip* clip );
 };
 
 #endif // MEDIALIBRARYWIDGET_H

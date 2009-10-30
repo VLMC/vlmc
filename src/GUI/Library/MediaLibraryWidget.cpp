@@ -26,6 +26,7 @@ MediaLibraryWidget::MediaLibraryWidget( QWidget* parent ) : QWidget( parent )
 {
     m_nav = new StackViewController( this );
     MediaListViewController* list = new MediaListViewController( m_nav );
+    connect( list, SIGNAL( mediaSelected( Media* ) ), this, SLOT( mediaSelection( Media* ) ) );
 
     m_nav->pushViewController( list );
 }
@@ -38,4 +39,14 @@ MediaLibraryWidget::~MediaLibraryWidget()
 const ViewController*       MediaLibraryWidget::getCurrentViewController()
 {
     return m_nav->getCurrentViewController();
+}
+
+void    MediaLibraryWidget::mediaSelection( Media* media )
+{
+    emit mediaSelected( media );
+}
+
+void    MediaLibraryWidget::clipSelection( Clip* clip )
+{
+    emit clipSelected( clip );
 }
