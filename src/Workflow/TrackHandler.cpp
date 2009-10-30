@@ -299,10 +299,7 @@ void        TrackHandler::tracksRenderCompleted( unsigned int trackId )
             if ( buff == NULL )
                 m_effectEngine->setInputFrame( *TrackHandler::nullOutput, trackId );
             else
-            {
-                qDebug() << "About to feed effect engine with frame" << (void*)buff;
                 m_effectEngine->setInputFrame( *buff, trackId );
-            }
         }
         else
         {
