@@ -62,6 +62,7 @@ void        ClipRenderer::setMedia( Media* media )
         m_mediaChanged = true;
     else
     {
+        setSnapshotVisibility( true );
         m_previewLabel->setPixmap( media->getSnapshot().scaled( m_previewLabel->size(),
                                                                             Qt::KeepAspectRatio ) );
         m_clipLoaded = false;
@@ -83,6 +84,7 @@ void        ClipRenderer::setClip( Clip* clip )
         m_mediaChanged = true;
     else
     {
+        setSnapshotVisibility( true );
         m_previewLabel->setPixmap( clip->getParent()->getSnapshot().scaled( m_previewLabel->size(),
                                                                             Qt::KeepAspectRatio ) );
         m_clipLoaded = false;
@@ -93,7 +95,7 @@ void        ClipRenderer::startPreview()
 {
     if ( m_selectedMedia == NULL )
         return ;
-    m_previewLabel->setVisible( false );
+    setSnapshotVisibility( false );
 
     //If an old media is found, we delete it, and disconnect
     if ( m_vlcMedia != NULL )
@@ -193,6 +195,12 @@ void        ClipRenderer::mediaUnloaded( const QUuid& uuid )
     }
 }
 
+void        ClipRenderer::setSnapshotVisibility( bool val )
+{
+   m_previewLabel->setVisible( val );
+   m_renderWidget->setVisible( !val );
+}
+
 /////////////////////////////////////////////////////////////////////
 /////SLOTS :
 /////////////////////////////////////////////////////////////////////
@@ -231,4 +239,3 @@ void        ClipRenderer::__endReached()
         m_clipLoaded = false;
     emit endReached();
 }
-

@@ -50,6 +50,7 @@ public:
     virtual void                    setRenderWidget( QWidget* renderWidget )
     {
         m_mediaPlayer->setDrawable( renderWidget->winId() );
+        m_renderWidget = renderWidget;
     }
     virtual void                    setPreviewLabel( QLabel* previewLabel )
     {
@@ -84,6 +85,7 @@ protected:
      */
     bool                            m_isRendering;
 
+    QWidget*                        m_renderWidget;
     QLabel*                         m_previewLabel;
 
 
