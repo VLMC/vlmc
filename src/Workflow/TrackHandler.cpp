@@ -41,14 +41,12 @@ TrackHandler::TrackHandler( unsigned int nbTracks, TrackWorkflow::TrackType trac
         connect( m_tracks[i], SIGNAL( trackUnpaused() ), this, SLOT( trackUnpaused() ) );
         connect( m_tracks[i], SIGNAL( renderCompleted( unsigned int ) ), this,  SLOT( tracksRenderCompleted( unsigned int ) ), Qt::QueuedConnection );
     }
-    m_highestTrackNumberMutex = new QMutex;
     m_nbTracksToRenderMutex = new QMutex;
 }
 
 TrackHandler::~TrackHandler()
 {
     delete nullOutput;
-    delete m_highestTrackNumberMutex;
     delete m_nbTracksToRenderMutex;
 
     for (unsigned int i = 0; i < m_trackCount; ++i)
@@ -98,10 +96,6 @@ qint64      TrackHandler::getLength() const
 
 void        TrackHandler::getOutput( qint64 currentFrame )
 {
-    {
-        QMutexLocker    lockHighestTrackNumber( m_highestTrackNumberMutex );
-        m_highestTrackNumber = 0;
-    }
     m_renderCompleted = false;
     m_nbTracksToRender = 0;
     m_synchroneRenderingBuffer = NULL;
@@ -109,10 +103,14 @@ void        TrackHandler::getOutput( qint64 currentFrame )
     for ( unsigned int i = 0; i < m_trackCount; ++i )
     {
         if ( m_tracks[i].activated() == false )
+        {
+            m_effectEngine->setInputFrame( *TrackHandler::nullOutput, i );
             continue ;
+        }
         ++m_nbTracksToRender;
         m_tracks[i]->getOutput( currentFrame );
     }
+//    qDebug() << "Tracks to render:" << m_nbTracksToRender;
 }
 
 void        TrackHandler::pause()
@@ -290,8 +288,6 @@ void        TrackHandler::tracksRenderCompleted( unsigned int trackId )
     --m_nbTracksToRender;
 
     {
-        QMutexLocker    lock( m_highestTrackNumberMutex );
-
         if ( m_trackType == TrackWorkflow::Video )
         {
             LightVideoFrame* buff = reinterpret_cast<LightVideoFrame*>( m_tracks[trackId]->getSynchroneOutput() );
@@ -309,7 +305,7 @@ void        TrackHandler::tracksRenderCompleted( unsigned int trackId )
     //therefore, m_nbTracksToRender will be equal to -1
     if ( m_nbTracksToRender <= 0 )
     {
-//        qDebug() << "main workflow render completed";
+        qDebug() << "TrackHandler render completed";
         //Just a synchronisation barriere
         m_renderCompleted = true;
         emit allTracksRenderCompleted();

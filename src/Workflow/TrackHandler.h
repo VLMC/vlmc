@@ -74,7 +74,6 @@ class   TrackHandler : public QObject
         QAtomicInt                      m_nbTracksToUnpause;
         TrackWorkflow::TrackType        m_trackType;
         qint64                          m_length;
-        QMutex*                         m_highestTrackNumberMutex;
         unsigned int                    m_highestTrackNumber;
         unsigned int                    m_nbTracksToRender;
         QMutex*                         m_nbTracksToRenderMutex;
