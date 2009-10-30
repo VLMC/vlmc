@@ -341,20 +341,12 @@ void        MainWorkflow::loadProject( const QDomElement& project )
 
 void        MainWorkflow::saveProject( QDomDocument& doc, QDomElement& rootNode )
 {
-//    QDomElement project = doc.createElement( "timeline" );
-//    for ( unsigned int i = 0; i < m_trackCount; ++i )
-//    {
-//        if ( m_tracks[i]->getLength() > 0 )
-//        {
-//            QDomElement     trackNode = doc.createElement( "track" );
-//
-//            trackNode.setAttribute( "id", i );
-//
-//            m_tracks[i]->save( doc, trackNode );
-//            project.appendChild( trackNode );
-//        }
-//    }
-//    rootNode.appendChild( project );
+    QDomElement project = doc.createElement( "timeline" );
+    for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
+    {
+        m_tracks[i]->save( doc, project );
+    }
+    rootNode.appendChild( project );
 }
 
 void        MainWorkflow::clear()

@@ -573,6 +573,13 @@ void    TrackWorkflow::save( QDomDocument& doc, QDomElement& trackNode ) const
             end.appendChild( text );
             clipNode.appendChild( end );
         }
+        {
+            QDomElement     trackType = doc.createElement( "trackType" );
+
+            QDomCharacterData   text = doc.createTextNode( QString::number( m_trackType ) );
+            trackType.appendChild( text );
+            clipNode.appendChild( trackType );
+        }
         trackNode.appendChild( clipNode );
     }
 }

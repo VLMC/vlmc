@@ -60,6 +60,8 @@ class   TrackHandler : public QObject
         bool                    isPaused() const;
         bool                    allTracksRendered() const;
 
+        void                    save( QDomDocument& doc, QDomElement& timelineNode ) const;
+
     private:
         void                    computeLength();
         void                    activateTrack( unsigned int tracKId );

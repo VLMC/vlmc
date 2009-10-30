@@ -322,3 +322,18 @@ unsigned int    TrackHandler::getTrackCount() const
     return m_trackCount;
 }
 
+void            TrackHandler::save( QDomDocument& doc, QDomElement& timelineNode ) const
+{
+    for ( unsigned int i = 0; i < m_trackCount; ++i)
+    {
+        if ( m_tracks[i]->getLength() > 0 )
+        {
+            QDomElement     trackNode = doc.createElement( "track" );
+
+            trackNode.setAttribute( "id", i );
+
+            m_tracks[i]->save( doc, trackNode );
+            timelineNode.appendChild( trackNode );
+        }
+    }
+}
