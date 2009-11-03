@@ -116,6 +116,8 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    setFullSpeedRender( bool value );
         int                     getTrackCount( TrackWorkflow::TrackType trackType ) const;
 
+        qint64                  getCurrentFrame() const;
+
     private:
         MainWorkflow( int trackCount = 64 );
         ~MainWorkflow();
