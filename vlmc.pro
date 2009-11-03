@@ -63,7 +63,6 @@ SOURCES += src/main.cpp \
     src/GUI/VLMCPreferences.cpp \
     src/GUI/VideoProjectPreferences.cpp \
     src/Project/ProjectManager.cpp \
-    src/GUI/FileInfoListModel.cpp \
     src/Configuration/SettingsManager.cpp \
     src/GUI/TagWidget.cpp \
     src/GUI/Library/StackViewController.cpp \
@@ -141,7 +140,6 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/AudioProjectPreferences.h \
     src/GUI/VideoProjectPreferences.h \
     src/Project/ProjectManager.h \
-    src/GUI/FileInfoListModel.h \
     src/Configuration/SettingsManager.h \
     src/GUI/TagWidget.h \
     src/GUI/Library/StackViewController.h \
