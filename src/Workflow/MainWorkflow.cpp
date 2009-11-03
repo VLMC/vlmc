@@ -214,8 +214,8 @@ MainWorkflow::OutputBuffers*  MainWorkflow::getSynchroneOutput()
     m_effectEngine->render();
     m_synchroneRenderWaitConditionMutex->unlock();
     m_outputBuffers->video = &( m_effectEngine->getOutputFrame( 0 ) );
-//    m_outputBuffers->video = reinterpret_cast<LightVideoFrame*>( m_tracks[TrackWorkflow::Video]->getSynchroneOutput() );
-//    m_outputBuffers->audio = reinterpret_cast<unsigned char*>( m_tracks[TrackWorkflow::Audio]->getSynchroneOutput() );
+    m_outputBuffers->audio = m_tracks[TrackWorkflow::Audio]->getTmpAudioBuffer();
+
     return m_outputBuffers;
 }
 

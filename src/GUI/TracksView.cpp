@@ -426,11 +426,11 @@ void TracksView::dropEvent( QDropEvent* event )
                                                                 m_dragItem->trackNumber(),
                                                                 (qint64)mappedXPos,
                                                                 TrackWorkflow::Video ) );
-//        Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
-//                                                                m_dragItem->clip(),
-//                                                                m_dragItem->trackNumber(),
-//                                                                (qint64)mappedXPos,
-//                                                                TrackWorkflow::Audio ) );
+        Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
+                                                                m_dragItem->clip(),
+                                                                m_dragItem->trackNumber(),
+                                                                (qint64)mappedXPos,
+                                                                TrackWorkflow::Audio ) );
         m_dragItem = NULL;
     }
 }

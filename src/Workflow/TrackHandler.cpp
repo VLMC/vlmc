@@ -46,7 +46,11 @@ TrackHandler::TrackHandler( unsigned int nbTracks, TrackWorkflow::TrackType trac
 
 TrackHandler::~TrackHandler()
 {
-    delete nullOutput;
+    if ( nullOutput != NULL )
+    {
+        delete nullOutput;
+        nullOutput = NULL;
+    }
     delete m_nbTracksToRenderMutex;
 
     for (unsigned int i = 0; i < m_trackCount; ++i)
@@ -98,6 +102,7 @@ void        TrackHandler::getOutput( qint64 currentFrame )
 {
     m_renderCompleted = false;
     m_nbTracksToRender = 0;
+    m_tmpAudioBuffer = NULL;
     QMutexLocker    lockNbTracks( m_nbTracksToRenderMutex );
     for ( unsigned int i = 0; i < m_trackCount; ++i )
     {
@@ -297,7 +302,7 @@ void        TrackHandler::tracksRenderCompleted( unsigned int trackId )
         }
         else
         {
-            qDebug() << "Audio isn't implemented yet !";
+            m_tmpAudioBuffer = reinterpret_cast<unsigned char*>( m_tracks[trackId]->getSynchroneOutput() );
         }
     }
     //We check for minus or equal, since we can have 0 frame to compute,
