@@ -261,7 +261,7 @@ void GraphicsMovieItem::mousePressEvent( QGraphicsSceneMouseEvent* event )
     TracksView* tv = Timeline::getInstance()->tracksView();
     if ( tv->tool() == TOOL_DEFAULT )
         setCursor( Qt::ClosedHandCursor );
-    else
+    else if ( tv->tool() == TOOL_CUT )
         emit split( this, qRound64( event->pos().x() ) );
 }
 
