@@ -84,7 +84,8 @@ SOURCES += src/main.cpp \
     src/EffectsEngine/LightVideoFrame.cpp \
     src/EffectsEngine/GenericEffect.cpp \
     src/EffectsEngine/GreenFilterEffect.cpp \
-    src/EffectsEngine/MixerEffect.cpp
+    src/EffectsEngine/MixerEffect.cpp \
+    src/GUI/LCDTimecode.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -164,7 +165,8 @@ HEADERS += src/GUI/MainWindow.h \
     src/EffectsEngine/LightVideoFrame.h \
     src/EffectsEngine/GenericEffect.h \
     src/EffectsEngine/GreenFilterEffect.h \
-    src/EffectsEngine/MixerEffect.h
+    src/EffectsEngine/MixerEffect.h \
+    src/GUI/LCDTimecode.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \
