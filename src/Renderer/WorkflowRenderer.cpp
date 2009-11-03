@@ -38,6 +38,15 @@ WorkflowRenderer::WorkflowRenderer() :
     char        buffer[64];
 
     m_actionsLock = new QReadWriteLock;
+
+    m_videoEsHandler = new EsHandler;
+    m_videoEsHandler->self = this;
+    m_videoEsHandler->type = Video;
+
+    m_audioEsHandler = new EsHandler;
+    m_audioEsHandler->self = this;
+    m_audioEsHandler->type = Audio;
+
     m_media = new LibVLCpp::Media( "imem://" );
 
     sprintf( buffer, ":imem-width=%i", VIDEOWIDTH );
@@ -54,7 +63,7 @@ WorkflowRenderer::WorkflowRenderer() :
     m_media->addOption( buffer );
     sprintf( buffer, ":imem-release=%lld", (qint64)WorkflowRenderer::unlock );
     m_media->addOption( buffer );
-    sprintf( buffer, ":imem-data=%lld", (qint64)this );
+    sprintf( buffer, ":imem-data=%lld", (qint64)m_videoEsHandler );
     m_media->addOption( buffer );
     sprintf( buffer, ":imem-codec=%s", "RV24" );
     m_media->addOption( buffer );
@@ -92,6 +101,8 @@ WorkflowRenderer::~WorkflowRenderer()
     disconnect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
     disconnect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
 
+    delete m_videoEsHandler;
+    delete m_audioEsHandler;
     delete m_actionsLock;
     delete m_media;
     delete m_condMutex;
@@ -100,15 +111,19 @@ WorkflowRenderer::~WorkflowRenderer()
 
 int     WorkflowRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigned int *flags, size_t *bufferSize, void **buffer )
 {
+    EsHandler*  handler = reinterpret_cast<EsHandler*>( datas );
     *dts = -1;
     *flags = 0;
-    return lockVideo( datas, pts, bufferSize, buffer );
+    if ( handler->type == Video )
+        return lockVideo( handler->self, pts, bufferSize, buffer );
+    else if ( handler->type == Audio )
+        return lockAudio( handler->self, pts, bufferSize, buffer );
+    qWarning() << "Invalid ES type";
+    return 1;
 }
 
-int     WorkflowRenderer::lockVideo( void *datas, int64_t *pts, size_t *bufferSize, void **buffer )
+int     WorkflowRenderer::lockVideo( WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer )
 {
-    WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
-
     if ( self->m_stopping == false )
     {
         MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getSynchroneOutput();
@@ -124,10 +139,8 @@ int     WorkflowRenderer::lockVideo( void *datas, int64_t *pts, size_t *bufferSi
 }
 
 
-int     WorkflowRenderer::lockAudio( void *datas, int64_t *pts, size_t *bufferSize, void **buffer )
+int     WorkflowRenderer::lockAudio(  WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer )
 {
-    WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
-
     Q_UNUSED( self );
     Q_UNUSED( pts );
     Q_UNUSED( bufferSize );
@@ -137,8 +150,8 @@ int     WorkflowRenderer::lockAudio( void *datas, int64_t *pts, size_t *bufferSi
 
 void    WorkflowRenderer::unlock( void* datas, size_t, void* )
 {
-    WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
-    self->checkActions();
+    EsHandler* handler = reinterpret_cast<EsHandler*>( datas );
+    handler->self->checkActions();
 }
 
 void        WorkflowRenderer::checkActions()

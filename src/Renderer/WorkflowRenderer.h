@@ -42,6 +42,18 @@ class   WorkflowRenderer : public GenericRenderer
             Pause,
             //Unpause,
         };
+        enum    EsType
+        {
+            Unknown,
+            Audio,
+            Video,
+            Subtitle //This is clearly not used by VLMC, but it fits imem module's model
+        };
+        struct  EsHandler
+        {
+            WorkflowRenderer*   self;
+            EsType              type;
+        };
         WorkflowRenderer();
         ~WorkflowRenderer();
 
@@ -58,8 +70,8 @@ class   WorkflowRenderer : public GenericRenderer
         virtual qint64      length() { return 0; }
 
         static int          lock( void *data, int64_t *dts, int64_t *pts, unsigned int *flags, size_t *bufferSize, void **buffer );
-        static int          lockVideo( void *data, int64_t *pts, size_t *bufferSize, void **buffer );
-        static int          lockAudio( void *data, int64_t *pts, size_t *bufferSize, void **buffer );
+        static int          lockVideo( WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer );
+        static int          lockAudio( WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer );
         static void         unlock( void *data, size_t buffSize, void *buffer );
 
     private:
@@ -84,6 +96,8 @@ class   WorkflowRenderer : public GenericRenderer
         bool                m_unpauseAsked;
         QMutex*             m_condMutex;
         QWaitCondition*     m_waitCond;
+        EsHandler*          m_videoEsHandler;
+        EsHandler*          m_audioEsHandler;
         /**
          *  \brief          This isn't exactly the current PTS.
          *                  It's the number of frame rendered since the render has started.
