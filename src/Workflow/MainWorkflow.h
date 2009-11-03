@@ -52,8 +52,8 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         enum    TrackType
         {
             VideoTrack,
-            NbTrackType,
             AudioTrack,
+            NbTrackType,
         };
         enum    FrameChangedReason
         {
