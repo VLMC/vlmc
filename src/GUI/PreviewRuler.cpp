@@ -57,7 +57,7 @@ void PreviewRuler::sliderChange( SliderChange change )
         qWarning("PreviewRuler: Slider steps are not supported.");
         break;
     case QAbstractSlider::SliderValueChange:
-        m_frame = value() * m_renderer->length() / m_range;
+        m_frame = value() * m_renderer->getLengthMs() / m_range;
         update();
         break;
     }
@@ -75,17 +75,17 @@ void PreviewRuler::paintEvent( QPaintEvent * event )
     painter.setBrush( QBrush( QColor( 50, 50, 50 ) ) );
     painter.drawRect( marks );
 
-    if ( m_renderer->length() > 0 )
+    if ( m_renderer->getLengthMs() > 0 )
     {
         qreal linesToDraw = 0;
         qreal spacing = 0;
         QRect r = marks.adjusted( 1, 0, -1, 0 );
 
         // Draw the marks
-        if ( r.width() / 2  >= m_renderer->length() )
+        if ( r.width() / 2  >= m_renderer->getLengthMs() )
         {   // Every frame
             painter.setPen( QPen( Qt::cyan ) );
-            linesToDraw = (qreal)m_renderer->length();
+            linesToDraw = (qreal)m_renderer->getLengthMs();
             if ( linesToDraw > 0 )
             {
                 spacing = (qreal)r.width() / linesToDraw;
@@ -93,10 +93,10 @@ void PreviewRuler::paintEvent( QPaintEvent * event )
                     painter.drawLine( QLineF( r.left() + step * spacing, r.height() - MARK_XSMALL, r.left() + step * spacing, r.bottom() ) );
             }
         }
-        if ( r.width() / 2 >= ( m_renderer->length() / 25 ) )
+        if ( r.width() / 2 >= ( m_renderer->getLengthMs() / 25 ) )
         {   // Every second
             painter.setPen( QPen( Qt::green ) );
-            linesToDraw = (qreal)m_renderer->length() / 25;
+            linesToDraw = (qreal)m_renderer->getLengthMs() / 25;
             if ( linesToDraw > 0 )
             {
                 spacing = (qreal)r.width() / linesToDraw;
@@ -104,10 +104,10 @@ void PreviewRuler::paintEvent( QPaintEvent * event )
                     painter.drawLine( QLineF( r.left() + step * spacing, r.height() - MARK_XSMALL, r.left() + step * spacing, r.bottom() ) );
             }
         }
-        else if ( r.width() / 2 >= ( m_renderer->length() / 25 / 12 ) )
+        else if ( r.width() / 2 >= ( m_renderer->getLengthMs() / 25 / 12 ) )
         {   // Every 5 seconds
             painter.setPen( QPen( Qt::green ) );
-            linesToDraw = (qreal)m_renderer->length() / 25 / 12;
+            linesToDraw = (qreal)m_renderer->getLengthMs() / 25 / 12;
             if ( linesToDraw > 0 )
             {
                 spacing = (qreal)r.width() / linesToDraw;
@@ -115,10 +115,10 @@ void PreviewRuler::paintEvent( QPaintEvent * event )
                     painter.drawLine( QLineF( r.left() + step * spacing, r.height() - MARK_SMALL, r.left() + step * spacing, r.bottom() ) );
             }
         }
-        if ( r.width() / 2 >= ( m_renderer->length() / 25 / 60 ) )
+        if ( r.width() / 2 >= ( m_renderer->getLengthMs() / 25 / 60 ) )
         {   // Every minute
             painter.setPen( QPen( Qt::yellow ) );
-            linesToDraw = (qreal)m_renderer->length() / 25 / 60;
+            linesToDraw = (qreal)m_renderer->getLengthMs() / 25 / 60;
             if ( linesToDraw > 0 )
             {
                 spacing = (qreal)r.width() / linesToDraw;
@@ -127,10 +127,10 @@ void PreviewRuler::paintEvent( QPaintEvent * event )
 
             }
         }
-        else if ( r.width() / 2 >= ( m_renderer->length() / 25 / 60 / 12 ) )
+        else if ( r.width() / 2 >= ( m_renderer->getLengthMs() / 25 / 60 / 12 ) )
         {   // Every 5 minutes
             painter.setPen( QPen( Qt::yellow ) );
-            linesToDraw = (qreal)m_renderer->length() / 25 / 60 / 12;
+            linesToDraw = (qreal)m_renderer->getLengthMs() / 25 / 60 / 12;
             if ( linesToDraw > 0 )
             {
                 spacing = (qreal)r.width() / linesToDraw;
@@ -139,10 +139,10 @@ void PreviewRuler::paintEvent( QPaintEvent * event )
 
             }
         }
-        if ( r.width() / 2 >= ( m_renderer->length() / 25 / 60 / 60 ) )
+        if ( r.width() / 2 >= ( m_renderer->getLengthMs() / 25 / 60 / 60 ) )
         {   // Every hour
             painter.setPen( QPen( Qt::red ) );
-            linesToDraw = (qreal)m_renderer->length() / 25 / 60 / 60;
+            linesToDraw = (qreal)m_renderer->getLengthMs() / 25 / 60 / 60;
             if ( linesToDraw > 0 )
             {
                 spacing = (qreal)r.width() / linesToDraw;
@@ -159,8 +159,8 @@ void PreviewRuler::paintEvent( QPaintEvent * event )
 
     int cursorPos;
 
-    if ( m_renderer->length() > 0 )
-        cursorPos = m_frame * width() / m_renderer->length();
+    if ( m_renderer->getLengthMs() > 0 )
+        cursorPos = m_frame * width() / m_renderer->getLengthMs();
     else
         cursorPos = value() * width() / m_range;
 
@@ -173,8 +173,8 @@ void PreviewRuler::paintEvent( QPaintEvent * event )
 void PreviewRuler::mousePressEvent( QMouseEvent* event )
 {
     m_isSliding = true;
-    if ( m_renderer->length() )
-        setFrame( event->pos().x() * m_renderer->length() / width() );
+    if ( m_renderer->getLengthMs() )
+        setFrame( event->pos().x() * m_renderer->getLengthMs() / width() );
     else
     {
         setValue( ( event->pos().x() * m_range / width() ) + minimum() );
@@ -186,8 +186,8 @@ void PreviewRuler::mouseMoveEvent( QMouseEvent* event )
 {
     if ( m_isSliding )
     {
-        if ( m_renderer->length() )
-            setFrame( event->pos().x() * m_renderer->length() / width() );
+        if ( m_renderer->getLengthMs() )
+            setFrame( event->pos().x() * m_renderer->getLengthMs() / width() );
         else
         {
             setValue( ( event->pos().x() * m_range / width() ) + minimum() );
@@ -206,15 +206,15 @@ void PreviewRuler::setFrame( qint64 frame )
 {
     m_frame = frame;
     emit frameChanged( frame );
-    setValue( frame * m_range / m_renderer->length() );
+    setValue( frame * m_range / m_renderer->getLengthMs() );
     if ( m_isSliding )
-        emit sliderPosChanged( frame * m_range / m_renderer->length() );
+        emit sliderPosChanged( frame * m_range / m_renderer->getLengthMs() );
     positionChanged();
 }
 
 void PreviewRuler::positionChanged()
 {
-    if ( m_renderer->length() )
+    if ( m_renderer->getLengthMs() )
     {
         qint64 frames = m_frame;
 

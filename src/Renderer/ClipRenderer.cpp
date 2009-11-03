@@ -183,7 +183,7 @@ void        ClipRenderer::previousFrame()
     }
 }
 
-qint64      ClipRenderer::length() const
+qint64      ClipRenderer::getLengthMs() const
 {
     if ( m_clipLoaded )
         return qMax( m_end - m_begin, (qint64)0 );
@@ -215,7 +215,7 @@ qint64      ClipRenderer::getCurrentFrame() const
 {
     if ( m_clipLoaded == false || m_isRendering == false || m_selectedMedia == NULL )
         return 0;
-    return length() * m_selectedMedia->getFps();
+    return m_mediaPlayer->getPosition() * ( m_end - m_begin ) - m_begin;
 }
 
 /////////////////////////////////////////////////////////////////////
