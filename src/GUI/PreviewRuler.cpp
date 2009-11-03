@@ -40,7 +40,7 @@ void PreviewRuler::setRenderer( GenericRenderer* renderer )
         disconnect( m_renderer, SIGNAL( positionChanged(float) ) );
     m_renderer = renderer;
 
-    connect( m_renderer, SIGNAL( positionChanged(float) ), this, SLOT( update() ) );
+    connect( m_renderer, SIGNAL( positionChanged(float) ), this, SLOT( positionChanged() ) );
 }
 
 void PreviewRuler::sliderChange( SliderChange change )
@@ -209,5 +209,25 @@ void PreviewRuler::setFrame( qint64 frame )
     setValue( frame * m_range / m_renderer->length() );
     if ( m_isSliding )
         emit sliderPosChanged( frame * m_range / m_renderer->length() );
+    positionChanged();
+}
+
+void PreviewRuler::positionChanged()
+{
+    if ( m_renderer->length() )
+    {
+        qint64 frames = m_frame;
+
+        int h = frames / 24 / 60 / 60;
+        frames -= h * 24 * 60 * 60;
+
+        int m = frames / 24 / 60;
+        frames -= m * 24 * 60;
+
+        int s = frames / 24;
+        frames -= s * 24;
+
+        emit timeChanged( h, m, s, frames );
+    }
     update();
 }

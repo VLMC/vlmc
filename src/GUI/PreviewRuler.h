@@ -52,6 +52,9 @@ protected:
     virtual void mouseReleaseEvent( QMouseEvent * event );
     virtual void sliderChange( SliderChange change );
 
+private slots:
+    void positionChanged();
+
 private:
     GenericRenderer* m_renderer;
     qint64 m_frame;
@@ -61,6 +64,7 @@ private:
 signals:
     void frameChanged( qint64 );
     void sliderPosChanged( int value );
+    void timeChanged( int h, int m, int s, int f );
 };
 
 #endif // PREVIEWRULER_H
