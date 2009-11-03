@@ -183,7 +183,7 @@ void        ClipRenderer::previousFrame()
     }
 }
 
-qint64      ClipRenderer::length()
+qint64      ClipRenderer::length() const
 {
     if ( m_clipLoaded )
         return qMax( m_end - m_begin, (qint64)0 );
@@ -209,6 +209,13 @@ void        ClipRenderer::setSnapshotVisibility( bool val )
 {
    m_previewLabel->setVisible( val );
    m_renderWidget->setVisible( !val );
+}
+
+qint64      ClipRenderer::getCurrentFrame() const
+{
+    if ( m_clipLoaded == false || m_isRendering == false || m_selectedMedia == NULL )
+        return 0;
+    return length() * m_selectedMedia->getFps();
 }
 
 /////////////////////////////////////////////////////////////////////

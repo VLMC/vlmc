@@ -308,3 +308,8 @@ void        WorkflowRenderer::timelineCursorChanged( qint64 newFrame )
 {
     m_mainWorkflow->setCurrentFrame( newFrame );
 }
+
+qint64      WorkflowRenderer::getCurrentFrame() const
+{
+    return m_mainWorkflow->getCurrentFrame();
+}
