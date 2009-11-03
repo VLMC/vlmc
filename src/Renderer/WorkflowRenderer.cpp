@@ -265,6 +265,22 @@ void        WorkflowRenderer::stop()
     m_mainWorkflow->stop();
 }
 
+qint64      WorkflowRenderer::getCurrentFrame() const
+{
+    return m_mainWorkflow->getCurrentFrame();
+}
+
+qint64      WorkflowRenderer::getLengthMs() const
+{
+    return m_mainWorkflow->getLengthFrame() * OUTPUT_FPS * 1000;
+}
+
+float       WorkflowRenderer::getFps() const
+{
+    //Sigh :'(
+    return static_cast<float>( OUTPUT_FPS );
+}
+
 /////////////////////////////////////////////////////////////////////
 /////SLOTS :
 /////////////////////////////////////////////////////////////////////
@@ -312,12 +328,3 @@ void        WorkflowRenderer::timelineCursorChanged( qint64 newFrame )
     m_mainWorkflow->setCurrentFrame( newFrame );
 }
 
-qint64      WorkflowRenderer::getCurrentFrame() const
-{
-    return m_mainWorkflow->getCurrentFrame();
-}
-
-qint64      WorkflowRenderer::getLengthMs() const
-{
-    return m_mainWorkflow->getLengthFrame() * OUTPUT_FPS * 1000;
-}

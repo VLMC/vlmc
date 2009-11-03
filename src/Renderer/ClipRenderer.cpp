@@ -218,6 +218,13 @@ qint64      ClipRenderer::getCurrentFrame() const
     return m_mediaPlayer->getPosition() * ( m_end - m_begin ) - m_begin;
 }
 
+float       ClipRenderer::getFps() const
+{
+    if ( m_selectedMedia != NULL )
+        return m_selectedMedia->getFps();
+    return 0.0f;
+}
+
 /////////////////////////////////////////////////////////////////////
 /////SLOTS :
 /////////////////////////////////////////////////////////////////////

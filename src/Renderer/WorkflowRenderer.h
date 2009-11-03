@@ -57,6 +57,7 @@ class   WorkflowRenderer : public GenericRenderer
         virtual void        previousFrame();
         virtual qint64      getLengthMs() const;
         virtual qint64      getCurrentFrame() const;
+        virtual float       getFps() const;
 
         static void*        lock( void* datas );
         static void*        lockAudio( void* datas );
