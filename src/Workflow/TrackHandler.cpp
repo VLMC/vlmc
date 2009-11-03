@@ -277,8 +277,7 @@ void        TrackHandler::trackUnpaused()
     if ( m_nbTracksToUnpause <= 0 )
     {
         m_paused = false;
-        //FIXME:
-        //emit mainWorkflowUnpaused();
+        emit tracksUnpaused();
     }
 }
 

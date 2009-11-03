@@ -96,6 +96,7 @@ class   TrackHandler : public QObject
 
     signals:
         void                            tracksPaused();
+        void                            tracksUnpaused();
         void                            allTracksRenderCompleted();
 };
 

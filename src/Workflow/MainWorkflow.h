@@ -146,6 +146,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
     private slots:
         void                            tracksPaused();
+        void                            tracksUnpaused();
         void                            tracksRenderCompleted();
 
     public slots:

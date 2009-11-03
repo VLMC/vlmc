@@ -49,6 +49,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
         TrackWorkflow::TrackType trackType = (i == 0 ? TrackWorkflow::Video : TrackWorkflow::Audio );
         m_tracks[i] = new TrackHandler( trackCount, trackType, m_effectEngine );
         connect( m_tracks[i], SIGNAL( tracksPaused() ), this, SLOT( tracksPaused() ) );
+        connect( m_tracks[i], SIGNAL( tracksUnpaused() ), this, SLOT( tracksUnpaused() ) );
         connect( m_tracks[i], SIGNAL( allTracksRenderCompleted() ), this, SLOT( tracksRenderCompleted() ) );
     }
     m_outputBuffers = new OutputBuffers;
@@ -368,7 +369,17 @@ void        MainWorkflow::tracksPaused()
     for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
         if ( m_tracks[i]->isPaused() == false )
             return ;
+    m_paused = true;
     emit mainWorkflowPaused();
+}
+
+void        MainWorkflow::tracksUnpaused()
+{
+    for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
+        if ( m_tracks[i]->isPaused() == true )
+            return ;
+    m_paused = false;
+    emit mainWorkflowUnpaused();
 }
 
 void        MainWorkflow::tracksRenderCompleted()
