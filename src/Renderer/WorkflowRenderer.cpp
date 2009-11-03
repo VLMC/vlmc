@@ -149,7 +149,7 @@ void        WorkflowRenderer::checkActions()
 
 void        WorkflowRenderer::startPreview()
 {
-    if ( m_mainWorkflow->getLength() <= 0 )
+    if ( m_mainWorkflow->getLengthFrame() <= 0 )
         return ;
     m_mediaPlayer->setMedia( m_media );
 

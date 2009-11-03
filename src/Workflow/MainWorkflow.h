@@ -70,7 +70,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          *  \return             Returns the global length of the workflow
          *                      in frames.
         */
-        qint64                  getLength() const;
+        qint64                  getLengthFrame() const;
 
         /**
          *  Stop the workflow (including sub track workflows and clip workflows)
@@ -126,7 +126,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
     private:
         qint64                          m_currentFrame;
-        qint64                          m_length;
+        qint64                          m_lengthFrame;
         /**
          *  This boolean describe is a render has been started
         */

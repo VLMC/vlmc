@@ -354,7 +354,7 @@ void MainWindow::on_actionTranscode_triggered()
 
 void    MainWindow::on_actionRender_triggered()
 {
-    if ( MainWorkflow::getInstance()->getLength() <= 0 )
+    if ( MainWorkflow::getInstance()->getLengthFrame() <= 0 )
     {
         QMessageBox::warning( NULL, "VLMC Renderer", "There is nothing to render." );
         return ;

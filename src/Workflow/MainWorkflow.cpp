@@ -32,7 +32,7 @@
 
 MainWorkflow::MainWorkflow( int trackCount ) :
         m_currentFrame( 0 ),
-        m_length( 0 ),
+        m_lengthFrame( 0 ),
         m_renderStarted( false )
 {
     m_renderStartedLock = new QReadWriteLock;
@@ -94,7 +94,7 @@ void            MainWorkflow::computeLength()
         if ( m_tracks[i]->getLength() > maxLength )
             maxLength = m_tracks[i]->getLength();
     }
-    m_length = maxLength;
+    m_lengthFrame = maxLength;
 }
 
 void    MainWorkflow::startRender()
@@ -140,14 +140,14 @@ void        MainWorkflow::nextFrame()
 {
     ++m_currentFrame;
     emit frameChanged( m_currentFrame );
-    emit positionChanged( (float)m_currentFrame / (float)m_length );
+    emit positionChanged( (float)m_currentFrame / (float)m_lengthFrame );
 }
 
 void        MainWorkflow::previousFrame()
 {
     --m_currentFrame;
     emit frameChanged( m_currentFrame );
-    emit positionChanged( (float)m_currentFrame / (float)m_length );
+    emit positionChanged( (float)m_currentFrame / (float)m_lengthFrame );
 }
 
 void        MainWorkflow::setPosition( float pos )
@@ -159,15 +159,15 @@ void        MainWorkflow::setPosition( float pos )
         for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i)
             m_tracks[i]->activateAll();
     }
-    qint64  frame = static_cast<qint64>( (float)m_length * pos );
+    qint64  frame = static_cast<qint64>( (float)m_lengthFrame * pos );
     m_currentFrame = frame;
     emit frameChanged( frame );
     //Do not emit a signal for the RenderWidget, since it's the one that triggered that call...
 }
 
-qint64      MainWorkflow::getLength() const
+qint64      MainWorkflow::getLengthFrame() const
 {
-    return m_length;
+    return m_lengthFrame;
 }
 
 qint64      MainWorkflow::getClipPosition( const QUuid& uuid, unsigned int trackId, TrackWorkflow::TrackType trackType ) const
@@ -241,7 +241,7 @@ void        MainWorkflow::unmuteTrack( unsigned int trackId, TrackWorkflow::Trac
 void        MainWorkflow::setCurrentFrame( qint64 currentFrame )
 {
     m_currentFrame = currentFrame;
-    emit positionChanged( (float)m_currentFrame / (float)m_length );
+    emit positionChanged( (float)m_currentFrame / (float)m_lengthFrame );
 }
 
 Clip*       MainWorkflow::getClip( const QUuid& uuid, unsigned int trackId, TrackWorkflow::TrackType trackType )
