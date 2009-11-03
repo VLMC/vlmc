@@ -93,6 +93,7 @@ class   WorkflowRenderer : public GenericRenderer
 
         void                __positionChanged();
         void                __positionChanged( float pos );
+        void                __frameChanged( qint64 frame );
         void                __videoPaused();
         void                __videoStopped();
         void                __videoPlaying();

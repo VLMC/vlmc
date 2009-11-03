@@ -39,6 +39,7 @@ ClipRenderer::ClipRenderer() :
     connect( m_mediaPlayer,     SIGNAL( paused() ),             this,   SLOT( __videoPaused() ) );
     connect( m_mediaPlayer,     SIGNAL( playing() ),            this,   SLOT( __videoPlaying() ) );
     connect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,   SLOT( __positionChanged() ) );
+    connect( m_mediaPlayer,     SIGNAL( timeChanged() ),        this,   SLOT( __timeChanged() ) );
     connect( m_mediaPlayer,     SIGNAL( endReached() ),         this,   SLOT( __endReached() ) );
 }
 
@@ -253,6 +254,12 @@ void        ClipRenderer::__positionChanged()
     float pos = ( m_mediaPlayer->getPosition() - begin ) /
                 ( end - begin );
     emit positionChanged( pos );
+}
+
+void        ClipRenderer::__timeChanged()
+{
+    qint64 f = qRound64( (qreal)m_mediaPlayer->getTime() / 1000 * (qreal)m_mediaPlayer->getFps() );
+    emit frameChanged( f );
 }
 
 void        ClipRenderer::__endReached()

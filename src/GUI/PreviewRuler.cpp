@@ -37,10 +37,14 @@ PreviewRuler::PreviewRuler( QWidget* parent ) : QAbstractSlider( parent ), m_ren
 void PreviewRuler::setRenderer( GenericRenderer* renderer )
 {
     if ( m_renderer )
+    {
         disconnect( m_renderer, SIGNAL( positionChanged(float) ) );
+        disconnect( m_renderer, SIGNAL( frameChanged(qint64) ) );
+    }
     m_renderer = renderer;
 
-    connect( m_renderer, SIGNAL( positionChanged(float) ), this, SLOT( positionChanged() ) );
+    connect( m_renderer, SIGNAL( positionChanged(float) ), this, SLOT( update() ) );
+    connect( m_renderer, SIGNAL( frameChanged(qint64) ), this, SLOT( updateTimecode() ) );
 }
 
 void PreviewRuler::sliderChange( SliderChange change )
@@ -59,6 +63,7 @@ void PreviewRuler::sliderChange( SliderChange change )
     case QAbstractSlider::SliderValueChange:
         m_frame = value() * m_renderer->getLengthMs() / m_range;
         update();
+        updateTimecode();
         break;
     }
 }
@@ -209,25 +214,25 @@ void PreviewRuler::setFrame( qint64 frame )
     setValue( frame * m_range / m_renderer->getLengthMs() );
     if ( m_isSliding )
         emit sliderPosChanged( frame * m_range / m_renderer->getLengthMs() );
-    positionChanged();
+    update();
 }
 
-void PreviewRuler::positionChanged()
+void PreviewRuler::updateTimecode()
 {
     if ( m_renderer->getLengthMs() )
     {
-        qint64 frames = m_frame;
+        int fps = (int)m_renderer->getFps();
+        qint64 frames = m_renderer->getCurrentFrame();
 
-        int h = frames / 24 / 60 / 60;
-        frames -= h * 24 * 60 * 60;
+        int h = frames / fps / 60 / 60;
+        frames -= h * fps * 60 * 60;
 
-        int m = frames / 24 / 60;
-        frames -= m * 24 * 60;
+        int m = frames / fps / 60;
+        frames -= m * fps * 60;
 
-        int s = frames / 24;
-        frames -= s * 24;
+        int s = frames / fps;
+        frames -= s * fps;
 
         emit timeChanged( h, m, s, frames );
     }
-    update();
 }

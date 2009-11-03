@@ -70,6 +70,7 @@ public slots:
     virtual void            mediaUnloaded( const QUuid& );
 
     void                    __positionChanged();
+    void                    __timeChanged();
     void                    __videoPaused();
     void                    __videoPlaying();
     void                    __endReached();

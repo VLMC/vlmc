@@ -67,7 +67,7 @@ WorkflowRenderer::WorkflowRenderer() :
     m_waitCond = new QWaitCondition;
 
     m_renderVideoFrame = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes];
-   
+
      //Workflow part
     connect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
             Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( setCursorPos( qint64 ) ), Qt::QueuedConnection );
@@ -84,11 +84,13 @@ WorkflowRenderer::~WorkflowRenderer()
     stop();
 
     //FIXME this is probably useless...
+    //etix says: yes it is...
     disconnect( m_mediaPlayer, SIGNAL( playing() ),    this,   SLOT( __videoPlaying() ) );
     disconnect( m_mediaPlayer, SIGNAL( paused() ),     this,   SLOT( __videoPaused() ) );
     disconnect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SLOT( __videoStopped() ) );
     disconnect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
     disconnect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
+    disconnect( m_mainWorkflow, SIGNAL( frameChanged( qint64 ) ), this, SLOT( __frameChanged( qint64 ) ) );
 
     delete m_actionsLock;
     delete m_media;
@@ -162,6 +164,7 @@ void        WorkflowRenderer::startPreview()
     connect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SLOT( __videoStopped() ) );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
     connect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
+    connect( m_mainWorkflow, SIGNAL( frameChanged( qint64 ) ), this, SLOT( __frameChanged( qint64 ) ) );
 
     m_mainWorkflow->setFullSpeedRender( false );
     m_mainWorkflow->startRender();
@@ -299,6 +302,11 @@ void        WorkflowRenderer::__positionChanged()
 void        WorkflowRenderer::__positionChanged( float pos )
 {
     emit positionChanged( pos );
+}
+
+void        WorkflowRenderer::__frameChanged( qint64 frame )
+{
+    emit frameChanged( frame );
 }
 
 void        WorkflowRenderer::__videoPaused()

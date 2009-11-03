@@ -152,6 +152,7 @@ signals:
     void                            paused();
     void                            playing();
     void                            positionChanged( float );
+    void                            frameChanged( qint64 );
     void                            endReached();
 };
 
