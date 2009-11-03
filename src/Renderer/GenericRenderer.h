@@ -65,6 +65,14 @@ public:
     virtual qint64                  getCurrentFrame() const = 0;
     virtual float                   getFps() const = 0;
 
+    /**
+     * \brief Return the length is frames
+     * \warning The returned value may not be accurate
+     */
+    qint64                          getLength() const
+    {
+        return getLengthMs() / 1000 * getFps();
+    }
     bool                            isPaused() const
     {
         return m_paused;
