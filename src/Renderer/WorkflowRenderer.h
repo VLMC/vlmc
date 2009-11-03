@@ -84,6 +84,11 @@ class   WorkflowRenderer : public GenericRenderer
         bool                m_unpauseAsked;
         QMutex*             m_condMutex;
         QWaitCondition*     m_waitCond;
+        /**
+         *  \brief          This isn't exactly the current PTS.
+         *                  It's the number of frame rendered since the render has started.
+         */
+        qint64              m_pts;
 
     public slots:
         virtual void        setClip( Clip* ){}

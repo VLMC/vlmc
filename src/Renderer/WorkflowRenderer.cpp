@@ -63,6 +63,7 @@ WorkflowRenderer::WorkflowRenderer() :
     sprintf( buffer, ":height=%i", VIDEOHEIGHT );
     m_media->addOption( buffer );
     m_media->addOption( ":imem-cat=2" );
+    m_media->addOption( ":imem-caching=0" );
 
     m_condMutex = new QMutex;
     m_waitCond = new QWaitCondition;
@@ -115,7 +116,8 @@ int     WorkflowRenderer::lockVideo( void *datas, int64_t *pts, size_t *bufferSi
         self->m_videoBuffSize = (*(ret->video))->nboctets;
         self->m_renderAudioSample = ret->audio;
     }
-    *pts = ( self->m_mainWorkflow->getCurrentFrame() * 1000000 ) / OUTPUT_FPS;
+    *pts = ( self->m_pts * 1000000 ) / OUTPUT_FPS;
+    ++self->m_pts;
     *buffer = self->m_renderVideoFrame;
     *bufferSize = self->m_videoBuffSize;
     return 0;
@@ -181,10 +183,11 @@ void        WorkflowRenderer::startPreview()
 
     m_mainWorkflow->setFullSpeedRender( false );
     m_mainWorkflow->startRender();
-    m_mediaPlayer->play();
     m_isRendering = true;
     m_paused = false;
     m_stopping = false;
+    m_pts = 0;
+    m_mediaPlayer->play();
 }
 
 void        WorkflowRenderer::setPosition( float newPos )
