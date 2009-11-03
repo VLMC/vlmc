@@ -35,7 +35,7 @@ WorkflowRenderer::WorkflowRenderer() :
             m_pauseAsked( false ),
             m_unpauseAsked( false )
 {
-    char        buffer[64];
+    char        buffer[256];
 
     m_actionsLock = new QReadWriteLock;
 
@@ -73,6 +73,10 @@ WorkflowRenderer::WorkflowRenderer() :
     m_media->addOption( buffer );
     m_media->addOption( ":imem-cat=2" );
     m_media->addOption( ":imem-caching=0" );
+
+    sprintf( buffer, ":input-slave=imem://data=%lld:cat=1:codec=s16l:samplerate=48000:channels=2",
+             (qint64)m_audioEsHandler );
+    m_media->addOption( buffer );
 
     m_condMutex = new QMutex;
     m_waitCond = new QWaitCondition;
@@ -141,10 +145,11 @@ int     WorkflowRenderer::lockVideo( WorkflowRenderer* self, int64_t *pts, size_
 
 int     WorkflowRenderer::lockAudio(  WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer )
 {
-    Q_UNUSED( self );
-    Q_UNUSED( pts );
-    Q_UNUSED( bufferSize );
-    Q_UNUSED( buffer );
+    *buffer = self->m_renderAudioSample->buff;
+    *bufferSize = self->m_renderAudioSample->size;
+    *pts = ( self->m_audioPts * 1000000 ) / 48000;
+//    qDebug() << ">>>" << *pts;
+    self->m_audioPts += 2; //chanel number
     return 0;
 }
 
@@ -200,6 +205,7 @@ void        WorkflowRenderer::startPreview()
     m_paused = false;
     m_stopping = false;
     m_pts = 0;
+    m_audioPts = 0;
     m_mediaPlayer->play();
 }
 

@@ -27,6 +27,9 @@
 #include "Toggleable.hpp"
 #include "TrackWorkflow.h"
 #include "EffectsEngine.h"
+//TEMPORARY:
+#include "AudioClipWorkflow.h"
+
 
 class   TrackHandler : public QObject
 {
@@ -58,7 +61,7 @@ class   TrackHandler : public QObject
         void                    setFullSpeedRender( bool value );
 
         //FIXME: remove this. This should go by the effect engine.
-        unsigned char*          getTmpAudioBuffer() { return m_tmpAudioBuffer; }
+        AudioClipWorkflow::AudioSample* getTmpAudioBuffer() { return m_tmpAudioBuffer; }
 
         bool                    isPaused() const;
         bool                    allTracksRendered() const;
@@ -88,7 +91,7 @@ class   TrackHandler : public QObject
          */
         bool                            m_renderCompleted;
         EffectsEngine*                  m_effectEngine;
-        unsigned char*                  m_tmpAudioBuffer;
+        AudioClipWorkflow::AudioSample* m_tmpAudioBuffer;
 
 
     private slots:

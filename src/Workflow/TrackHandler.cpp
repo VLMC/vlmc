@@ -302,7 +302,8 @@ void        TrackHandler::tracksRenderCompleted( unsigned int trackId )
         }
         else
         {
-            m_tmpAudioBuffer = reinterpret_cast<unsigned char*>( m_tracks[trackId]->getSynchroneOutput() );
+           AudioClipWorkflow::AudioSample* buff = reinterpret_cast<AudioClipWorkflow::AudioSample*>( m_tracks[trackId]->getSynchroneOutput() );
+           m_tmpAudioBuffer = buff;
         }
     }
     //We check for minus or equal, since we can have 0 frame to compute,

@@ -25,15 +25,17 @@
 #include "AudioClipWorkflow.h"
 
 AudioClipWorkflow::AudioClipWorkflow( Clip* clip ) :
-        ClipWorkflow( clip ),
-        m_buffer( NULL )
+        ClipWorkflow( clip )
 {
+    m_buffer = new AudioSample;
+    m_buffer->buff = NULL;
 }
 
 AudioClipWorkflow::~AudioClipWorkflow()
 {
-    if ( m_buffer != NULL )
-        delete[] m_buffer;
+    if ( m_buffer->buff != NULL )
+        delete[] m_buffer->buff;
+    delete m_buffer;
 }
 
 void*       AudioClipWorkflow::getLockCallback()
@@ -63,7 +65,8 @@ void        AudioClipWorkflow::initVlcOutput()
     m_vlcMedia->setAudioLockCallback( reinterpret_cast<void*>( getLockCallback() ) );
     m_vlcMedia->setAudioUnlockCallback( reinterpret_cast<void*>( getUnlockCallback() ) );
     m_vlcMedia->addOption( ":sout-transcode-acodec=s16l" );
-
+    m_vlcMedia->addOption( ":sout-transcode-samplerate=48000" );
+    m_vlcMedia->addOption( ":sout-transcode-channels=2" );
     if ( m_fullSpeedRender == true )
     {
         m_vlcMedia->addOption( ":no-sout-smem-time-sync" );
@@ -75,17 +78,21 @@ void        AudioClipWorkflow::initVlcOutput()
 void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer , unsigned int size )
 {
 //    qDebug() << "<<<<<<<<<<<<<<<<<<<< state:" << cw->m_state;
-    if ( cw->m_buffer == NULL )
-        cw->m_buffer = new unsigned char[size];
+    if ( cw->m_buffer->buff == NULL )
+    {
+        cw->m_buffer->buff = new unsigned char[size];
+        cw->m_buffer->size = size;
+    }
     cw->m_renderLock->lock();
-    *pcm_buffer = cw->m_buffer;
+    *pcm_buffer = cw->m_buffer->buff;
 }
 
 void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffer,
                                       unsigned int channels, unsigned int rate,
                                       unsigned int nb_samples, unsigned int bits_per_sample,
-                                      unsigned int size, int pts )
+                                      unsigned int size, qint64 pts )
 {
+//    qDebug() << "pts:" << pts << "nb channels" << channels << "rate:" << rate;
     Q_UNUSED( pcm_buffer );
     Q_UNUSED( channels );
     Q_UNUSED( rate );

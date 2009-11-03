@@ -28,6 +28,11 @@
 class   AudioClipWorkflow : public ClipWorkflow
 {
     public:
+        struct  AudioSample
+        {
+            unsigned char*  buff;
+            size_t          size;
+        };
         AudioClipWorkflow( Clip* clip );
         ~AudioClipWorkflow();
         void*                   getLockCallback();
@@ -35,13 +40,14 @@ class   AudioClipWorkflow : public ClipWorkflow
         virtual void*           getOutput();
 
     private:
-        unsigned char*          m_buffer;
+        //FIXME: this should be temporary
+        AudioSample*            m_buffer;
         void                    initVlcOutput();
         static void             lock( AudioClipWorkflow* clipWorkflow, uint8_t** pcm_buffer , unsigned int size );
         static void             unlock( AudioClipWorkflow* clipWorkflow, uint8_t* pcm_buffer,
                                       unsigned int channels, unsigned int rate,
                                       unsigned int nb_samples, unsigned int bits_per_sample,
-                                      unsigned int size, int pts );
+                                      unsigned int size, qint64 pts );
 };
 
 #endif // AUDIOCLIPWORKFLOW_H

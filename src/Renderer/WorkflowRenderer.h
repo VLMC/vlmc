@@ -89,7 +89,7 @@ class   WorkflowRenderer : public GenericRenderer
     private:
         unsigned char*	    m_renderVideoFrame;
         size_t              m_videoBuffSize;
-        unsigned char*	    m_renderAudioSample;
+        AudioClipWorkflow::AudioSample* m_renderAudioSample;
         QStack<Actions>     m_actions;
         QReadWriteLock*     m_actionsLock;
         bool                m_pauseAsked;
@@ -103,6 +103,7 @@ class   WorkflowRenderer : public GenericRenderer
          *                  It's the number of frame rendered since the render has started.
          */
         qint64              m_pts;
+        qint64              m_audioPts;
 
     public slots:
         virtual void        setClip( Clip* ){}
