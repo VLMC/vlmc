@@ -57,9 +57,10 @@ class   WorkflowRenderer : public GenericRenderer
         virtual void        previousFrame();
         virtual qint64      length() { return 0; }
 
-        static void*        lock( void* datas );
-        static void*        lockAudio( void* datas );
-        static void         unlock( void* datas );
+        static int          lock( void *data, int64_t *dts, int64_t *pts, unsigned int *flags, size_t *bufferSize, void **buffer );
+        static int          lockVideo( void *data, int64_t *pts, size_t *bufferSize, void **buffer );
+        static int          lockAudio( void *data, int64_t *pts, size_t *bufferSize, void **buffer );
+        static void         unlock( void *data, size_t buffSize, void *buffer );
 
     private:
         void                internalPlayPause( bool forcePause );
@@ -75,6 +76,7 @@ class   WorkflowRenderer : public GenericRenderer
 
     private:
         unsigned char*	    m_renderVideoFrame;
+        size_t              m_videoBuffSize;
         unsigned char*	    m_renderAudioSample;
         QStack<Actions>     m_actions;
         QReadWriteLock*     m_actionsLock;

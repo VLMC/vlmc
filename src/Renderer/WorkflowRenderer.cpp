@@ -27,6 +27,8 @@
 #include "WorkflowRenderer.h"
 #include "Timeline.h"
 
+#define OUTPUT_FPS  30
+
 WorkflowRenderer::WorkflowRenderer() :
             m_mainWorkflow( MainWorkflow::getInstance() ),
             m_stopping( false ),
@@ -36,29 +38,31 @@ WorkflowRenderer::WorkflowRenderer() :
     char        buffer[64];
 
     m_actionsLock = new QReadWriteLock;
-    m_media = new LibVLCpp::Media( "fake://" );
+    m_media = new LibVLCpp::Media( "imem://" );
 
-    sprintf( buffer, ":invmem-width=%i", VIDEOWIDTH );
-    m_media->addOption( ":codec=invmem" );
+    sprintf( buffer, ":imem-width=%i", VIDEOWIDTH );
     m_media->addOption( buffer );
-    sprintf( buffer, ":invmem-height=%i", VIDEOHEIGHT );
+    sprintf( buffer, ":imem-height=%i", VIDEOHEIGHT );
     m_media->addOption( buffer );
-    sprintf( buffer, ":invmem-lock=%lld", (qint64)WorkflowRenderer::lock );
+    sprintf( buffer, ":imem-get=%lld", (qint64)WorkflowRenderer::lock );
     m_media->addOption( buffer );
-    sprintf( buffer, ":invmem-unlock=%lld", (qint64)WorkflowRenderer::unlock );
+    sprintf( buffer, ":imem-release=%lld", (qint64)WorkflowRenderer::unlock );
     m_media->addOption( buffer );
-    sprintf( buffer, ":invmem-data=%lld", (qint64)this );
+    sprintf( buffer, ":imem-dar=%s", "4/3" );
+    m_media->addOption( buffer );
+    sprintf( buffer, ":imem-fps=%s", "25/1" );
+    m_media->addOption( buffer );
+    sprintf( buffer, ":imem-release=%lld", (qint64)WorkflowRenderer::unlock );
+    m_media->addOption( buffer );
+    sprintf( buffer, ":imem-data=%lld", (qint64)this );
+    m_media->addOption( buffer );
+    sprintf( buffer, ":imem-codec=%s", "RV24" );
     m_media->addOption( buffer );
     sprintf( buffer, ":width=%i", VIDEOWIDTH );
     m_media->addOption( buffer );
     sprintf( buffer, ":height=%i", VIDEOHEIGHT );
     m_media->addOption( buffer );
-
-    m_media->addOption( ":no-audio" );
-//    sprintf( buffer, ":inamem-data=%lld", (qint64)this );
-//    m_media->addOption( buffer );
-//    sprintf( buffer, ":inamem-callback=%lld", (qint64)WorkflowRenderer::lock );
-//    m_media->addOption( buffer );
+    m_media->addOption( ":imem-cat=2" );
 
     m_condMutex = new QMutex;
     m_waitCond = new QWaitCondition;
@@ -93,15 +97,14 @@ WorkflowRenderer::~WorkflowRenderer()
     delete m_waitCond;
 }
 
-void*   WorkflowRenderer::lockAudio( void* datas )
+int     WorkflowRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigned int *flags, size_t *bufferSize, void **buffer )
 {
-    WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
-
-    qDebug() << "Injecting audio data";
-    return self->m_renderAudioSample;
+    *dts = -1;
+    *flags = 0;
+    return lockVideo( datas, pts, bufferSize, buffer );
 }
 
-void*   WorkflowRenderer::lock( void* datas )
+int     WorkflowRenderer::lockVideo( void *datas, int64_t *pts, size_t *bufferSize, void **buffer )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
@@ -109,12 +112,28 @@ void*   WorkflowRenderer::lock( void* datas )
     {
         MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getSynchroneOutput();
         memcpy( self->m_renderVideoFrame, (*(ret->video))->frame.octets, (*(ret->video))->nboctets );
+        self->m_videoBuffSize = (*(ret->video))->nboctets;
         self->m_renderAudioSample = ret->audio;
     }
-    return self->m_renderVideoFrame;
+    *pts = ( self->m_mainWorkflow->getCurrentFrame() * 1000000 ) / OUTPUT_FPS;
+    *buffer = self->m_renderVideoFrame;
+    *bufferSize = self->m_videoBuffSize;
+    return 0;
 }
 
-void    WorkflowRenderer::unlock( void* datas )
+
+int     WorkflowRenderer::lockAudio( void *datas, int64_t *pts, size_t *bufferSize, void **buffer )
+{
+    WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
+
+    Q_UNUSED( self );
+    Q_UNUSED( pts );
+    Q_UNUSED( bufferSize );
+    Q_UNUSED( buffer );
+    return 0;
+}
+
+void    WorkflowRenderer::unlock( void* datas, size_t, void* )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
     self->checkActions();

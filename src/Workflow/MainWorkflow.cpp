@@ -387,3 +387,7 @@ int         MainWorkflow::getTrackCount( TrackWorkflow::TrackType trackType ) co
     return m_tracks[trackType]->getTrackCount();
 }
 
+qint64      MainWorkflow::getCurrentFrame() const
+{
+    return m_currentFrame;
+}

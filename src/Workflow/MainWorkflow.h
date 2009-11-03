@@ -73,6 +73,11 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         qint64                  getLength() const;
 
         /**
+         *  \return             Returns the current frame.
+         */
+        qint64                  getCurrentFrame() const;
+
+        /**
          *  Stop the workflow (including sub track workflows and clip workflows)
          */
         void                    stop();

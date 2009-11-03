@@ -305,7 +305,6 @@ void        TrackHandler::tracksRenderCompleted( unsigned int trackId )
     //therefore, m_nbTracksToRender will be equal to -1
     if ( m_nbTracksToRender <= 0 )
     {
-        qDebug() << "TrackHandler render completed";
         //Just a synchronisation barriere
         m_renderCompleted = true;
         emit allTracksRenderCompleted();
