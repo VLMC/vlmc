@@ -182,6 +182,11 @@ void    ImportController::treeViewDoubleClicked( const QModelIndex& index )
         forwardButtonClicked();
 }
 
+void    ImportController::reject()
+{
+    m_preview->stop();
+}
+
 void    ImportController::accept()
 {
     QUuid id;
@@ -190,6 +195,7 @@ void    ImportController::accept()
         Media* media = m_model->getMedias()->value( id );
         Library::getInstance()->addMedia( media );
     }
+    m_preview->stop();
     done( Accepted );
 }
 

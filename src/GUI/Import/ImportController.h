@@ -69,6 +69,7 @@ class ImportController : public QDialog
         void        newMediaLoaded( Media* media );
         void        updateMediaRequested( Media* media );
         void        accept();
+        void        reject();
         void        mediaSelection( const QUuid& uuid );
         void        clipSelection( const QUuid& uuid );
         void        mediaDeletion( const QUuid& uuid );
