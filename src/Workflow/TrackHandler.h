@@ -77,7 +77,6 @@ class   TrackHandler : public QObject
         unsigned int                    m_highestTrackNumber;
         unsigned int                    m_nbTracksToRender;
         QMutex*                         m_nbTracksToRenderMutex;
-        void*                           m_synchroneRenderingBuffer;
         bool                            m_paused;
         /**
          *  \brief  This flag is used to know if all tracks handled

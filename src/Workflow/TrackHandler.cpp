@@ -98,7 +98,6 @@ void        TrackHandler::getOutput( qint64 currentFrame )
 {
     m_renderCompleted = false;
     m_nbTracksToRender = 0;
-    m_synchroneRenderingBuffer = NULL;
     QMutexLocker    lockNbTracks( m_nbTracksToRenderMutex );
     for ( unsigned int i = 0; i < m_trackCount; ++i )
     {
