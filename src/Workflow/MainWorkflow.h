@@ -50,9 +50,9 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         };
         enum    TrackType
         {
-            Video,
-            NbType,
-            Audio,
+            VideoTrack,
+            NbTrackType,
+            AudioTrack,
         };
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start, TrackType type );
 

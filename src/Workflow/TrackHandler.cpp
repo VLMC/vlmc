@@ -288,7 +288,7 @@ void        TrackHandler::tracksRenderCompleted( unsigned int trackId )
     --m_nbTracksToRender;
 
     {
-        if ( m_trackType == MainWorkflow::Video )
+        if ( m_trackType == MainWorkflow::VideoTrack )
         {
             LightVideoFrame* buff = reinterpret_cast<LightVideoFrame*>( m_tracks[trackId]->getSynchroneOutput() );
             if ( buff == NULL )

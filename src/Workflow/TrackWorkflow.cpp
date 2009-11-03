@@ -56,10 +56,10 @@ TrackWorkflow::~TrackWorkflow()
 
 void    TrackWorkflow::addClip( Clip* clip, qint64 start )
 {
-    if ( m_trackType == MainWorkflow::Audio )
+    if ( m_trackType == MainWorkflow::AudioTrack )
         start = 0;
     ClipWorkflow* cw;
-    if ( m_trackType == MainWorkflow::Video )
+    if ( m_trackType == MainWorkflow::VideoTrack )
         cw = new VideoClipWorkflow( clip );
     else
         cw = new AudioClipWorkflow( clip );
