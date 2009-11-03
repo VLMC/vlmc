@@ -27,7 +27,6 @@
 #include "ui_Timeline.h"
 #include "TracksRuler.h"
 #include "Workflow/MainWorkflow.h"
-#include "Workflow/TrackWorkflow.h"
 
 class TracksScene;
 class TracksView;
@@ -48,9 +47,9 @@ public slots:
     void changeZoom( int factor );
     void setDuration( int duration );
     void setTool( ToolButtons button );
-    void actionAddClip( Clip* clip, unsigned int track, qint64 start, TrackWorkflow::TrackType );
-    void actionMoveClip( const QUuid& uuid, unsigned int track, qint64 time, TrackWorkflow::TrackType );
-    void actionRemoveClip( const QUuid& uuid, unsigned int track, TrackWorkflow::TrackType );
+    void actionAddClip( Clip* clip, unsigned int track, qint64 start, MainWorkflow::TrackType );
+    void actionMoveClip( const QUuid& uuid, unsigned int track, qint64 time, MainWorkflow::TrackType );
+    void actionRemoveClip( const QUuid& uuid, unsigned int track, MainWorkflow::TrackType );
 
 protected:
     virtual void changeEvent( QEvent *e );

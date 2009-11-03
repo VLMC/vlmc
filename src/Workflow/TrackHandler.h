@@ -25,14 +25,16 @@
 
 #include <QObject>
 #include "Toggleable.hpp"
-#include "TrackWorkflow.h"
 #include "EffectsEngine.h"
+#include "MainWorkflow.h"
+
+class   TrackWorkflow;
 
 class   TrackHandler : public QObject
 {
     Q_OBJECT
     public:
-        TrackHandler( unsigned int nbTracks, TrackWorkflow::TrackType trackType, EffectsEngine* effectsEngine );
+        TrackHandler( unsigned int nbTracks, MainWorkflow::TrackType trackType, EffectsEngine* effectsEngine );
         ~TrackHandler();
 
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start );
@@ -72,7 +74,7 @@ class   TrackHandler : public QObject
         unsigned int                    m_trackCount;
         QAtomicInt                      m_nbTracksToPause;
         QAtomicInt                      m_nbTracksToUnpause;
-        TrackWorkflow::TrackType        m_trackType;
+        MainWorkflow::TrackType         m_trackType;
         qint64                          m_length;
         unsigned int                    m_highestTrackNumber;
         unsigned int                    m_nbTracksToRender;

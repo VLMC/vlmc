@@ -33,6 +33,7 @@
 
 #include "ClipWorkflow.h"
 #include "LightVideoFrame.h"
+#include "MainWorkflow.h"
 
 //TODO: REMOVE THIS
 #ifndef FPS
@@ -48,13 +49,7 @@ class   TrackWorkflow : public QObject
     Q_OBJECT
 
     public:
-        enum    TrackType
-        {
-            Video,
-            NbType,
-            Audio,
-        };
-        TrackWorkflow( unsigned int trackId, TrackType type );
+        TrackWorkflow( unsigned int trackId, MainWorkflow::TrackType type );
         ~TrackWorkflow();
 
         bool                                    getOutput( qint64 currentFrame );
@@ -122,7 +117,7 @@ class   TrackWorkflow : public QObject
 
         void*                                   m_synchroneRenderBuffer;
 
-        TrackType                               m_trackType;
+        MainWorkflow::TrackType                 m_trackType;
 
     private slots:
         void                                    clipWorkflowPaused();
