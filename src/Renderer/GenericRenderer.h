@@ -100,7 +100,7 @@ public:
      */
     qint64                          getLength() const
     {
-        return getLengthMs() / 1000 * getFps();
+        return qRound64( (qreal)getLengthMs() / 1000 * (qreal)getFps() );
     }
 
     /**

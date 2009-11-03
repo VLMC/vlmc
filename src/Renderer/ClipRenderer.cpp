@@ -215,7 +215,7 @@ qint64      ClipRenderer::getCurrentFrame() const
 {
     if ( m_clipLoaded == false || m_isRendering == false || m_selectedMedia == NULL )
         return 0;
-    return m_mediaPlayer->getPosition() * ( m_end - m_begin ) - m_begin;
+    return qRound64( (qreal)m_mediaPlayer->getTime() / 1000 * (qreal)m_selectedMedia->getFps() );
 }
 
 float       ClipRenderer::getFps() const
