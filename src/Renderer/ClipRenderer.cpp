@@ -188,7 +188,7 @@ qint64      ClipRenderer::getLengthMs() const
     if ( m_clipLoaded )
         return qMax( m_end - m_begin, (qint64)0 );
     else if ( m_selectedMedia )
-        return m_selectedMedia->getLength();
+        return m_selectedMedia->getLengthMS();
     return 0;
 }
 

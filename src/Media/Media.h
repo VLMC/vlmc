@@ -103,7 +103,7 @@ public:
         \return                 Returns the length of this media (ie the
                                 video duration) in milliseconds.
     */
-    qint64                      getLength() const;
+    qint64                      getLengthMS() const;
     /**
         \brief                  This methods is most of an entry point for the
                                 MetadataManager than enything else.
@@ -166,7 +166,7 @@ protected:
     QPixmap*                    m_snapshot;
     QUuid                       m_uuid;
     QFileInfo*                  m_fileInfo;
-    qint64                      m_length;
+    qint64                      m_lengthMS;
     qint64                      m_nbFrames;
     unsigned int                m_width;
     unsigned int                m_height;

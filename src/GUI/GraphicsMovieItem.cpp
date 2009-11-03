@@ -32,7 +32,7 @@ GraphicsMovieItem::GraphicsMovieItem( Clip* clip ) : m_clip( clip ), m_width( 0 
 {
     setFlags( QGraphicsItem::ItemIsSelectable );
 
-    QTime length = QTime().addMSecs( clip->getParent()->getLength() );
+    QTime length = QTime().addMSecs( clip->getParent()->getLengthMS() );
     QString tooltip( tr( "<p style='white-space:pre'><b>Name:</b> %1"
                      "<br><b>Length:</b> %2" )
                      .arg( clip->getParent()->getFileName() )
