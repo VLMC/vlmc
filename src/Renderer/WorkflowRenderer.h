@@ -67,7 +67,9 @@ class   WorkflowRenderer : public GenericRenderer
         virtual void        stop();
         virtual void        nextFrame();
         virtual void        previousFrame();
-        virtual qint64      length() { return 0; }
+        virtual qint64      getLengthMs() const;
+        virtual qint64      getCurrentFrame() const;
+        virtual float       getFps() const;
 
         static int          lock( void *data, int64_t *dts, int64_t *pts, unsigned int *flags, size_t *bufferSize, void **buffer );
         static int          lockVideo( WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer );

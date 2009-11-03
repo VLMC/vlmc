@@ -24,6 +24,8 @@
 #include <QtDebug>
 
 #include "MainWorkflow.h"
+#include "TrackWorkflow.h"
+#include "TrackHandler.h"
 
 //JUST FOR THE DEFINES !
 //TODO:
@@ -32,7 +34,7 @@
 
 MainWorkflow::MainWorkflow( int trackCount ) :
         m_currentFrame( 0 ),
-        m_length( 0 ),
+        m_lengthFrame( 0 ),
         m_renderStarted( false )
 {
     m_renderStartedLock = new QReadWriteLock;
@@ -43,12 +45,13 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     m_effectEngine = new EffectsEngine;
     m_effectEngine->disable();
 
-    m_tracks = new TrackHandler*[TrackWorkflow::NbType];
-    for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
+    m_tracks = new TrackHandler*[MainWorkflow::NbTrackType];
+    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
     {
-        TrackWorkflow::TrackType trackType = (i == 0 ? TrackWorkflow::Video : TrackWorkflow::Audio );
+        MainWorkflow::TrackType trackType = (i == 0 ? MainWorkflow::VideoTrack : MainWorkflow::AudioTrack );
         m_tracks[i] = new TrackHandler( trackCount, trackType, m_effectEngine );
         connect( m_tracks[i], SIGNAL( tracksPaused() ), this, SLOT( tracksPaused() ) );
+        connect( m_tracks[i], SIGNAL( tracksUnpaused() ), this, SLOT( tracksUnpaused() ) );
         connect( m_tracks[i], SIGNAL( allTracksRenderCompleted() ), this, SLOT( tracksRenderCompleted() ) );
     }
     m_outputBuffers = new OutputBuffers;
@@ -64,7 +67,7 @@ MainWorkflow::~MainWorkflow()
     delete m_synchroneRenderWaitCondition;
     delete m_renderMutex;
     delete m_renderStartedLock;
-    for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
+    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         delete m_tracks[i];
     delete[] m_tracks;
 }
@@ -75,7 +78,7 @@ EffectsEngine*          MainWorkflow::getEffectsEngine()
 }
 
 void            MainWorkflow::addClip( Clip* clip, unsigned int trackId,
-                                        qint64 start, TrackWorkflow::TrackType trackType )
+                                        qint64 start, MainWorkflow::TrackType trackType )
 {
     m_tracks[trackType]->addClip( clip, trackId, start );
     computeLength();
@@ -88,19 +91,19 @@ void            MainWorkflow::computeLength()
 {
     qint64      maxLength = 0;
 
-    for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
+    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
     {
         if ( m_tracks[i]->getLength() > maxLength )
             maxLength = m_tracks[i]->getLength();
     }
-    m_length = maxLength;
+    m_lengthFrame = maxLength;
 }
 
 void    MainWorkflow::startRender()
 {
     m_renderStarted = true;
     m_paused = false;
-    for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
+    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         m_tracks[i]->startRender();
     computeLength();
 }
@@ -112,7 +115,7 @@ void                    MainWorkflow::getOutput()
 
     if ( m_renderStarted == true )
     {
-        for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
+        for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
             m_tracks[i]->getOutput( m_currentFrame );
         if ( m_paused == false )
             nextFrame();
@@ -123,7 +126,7 @@ void        MainWorkflow::pause()
 {
     QMutexLocker    lock( m_renderMutex );
 
-    for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
+    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         m_tracks[i]->pause();
 }
 
@@ -131,7 +134,7 @@ void        MainWorkflow::unpause()
 {
     QMutexLocker    lock( m_renderMutex );
 
-    for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
+    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         m_tracks[i]->unpause();
 }
 
@@ -139,14 +142,14 @@ void        MainWorkflow::nextFrame()
 {
     ++m_currentFrame;
     emit frameChanged( m_currentFrame );
-    emit positionChanged( (float)m_currentFrame / (float)m_length );
+    emit positionChanged( (float)m_currentFrame / (float)m_lengthFrame );
 }
 
 void        MainWorkflow::previousFrame()
 {
     --m_currentFrame;
     emit frameChanged( m_currentFrame );
-    emit positionChanged( (float)m_currentFrame / (float)m_length );
+    emit positionChanged( (float)m_currentFrame / (float)m_lengthFrame );
 }
 
 void        MainWorkflow::setPosition( float pos )
@@ -155,21 +158,21 @@ void        MainWorkflow::setPosition( float pos )
     {
         //Since any track can be reactivated, we reactivate all of them, and let them
         //unable themself if required.
-        for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i)
+        for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i)
             m_tracks[i]->activateAll();
     }
-    qint64  frame = static_cast<qint64>( (float)m_length * pos );
+    qint64  frame = static_cast<qint64>( (float)m_lengthFrame * pos );
     m_currentFrame = frame;
     emit frameChanged( frame );
     //Do not emit a signal for the RenderWidget, since it's the one that triggered that call...
 }
 
-qint64      MainWorkflow::getLength() const
+qint64      MainWorkflow::getLengthFrame() const
 {
-    return m_length;
+    return m_lengthFrame;
 }
 
-qint64      MainWorkflow::getClipPosition( const QUuid& uuid, unsigned int trackId, TrackWorkflow::TrackType trackType ) const
+qint64      MainWorkflow::getClipPosition( const QUuid& uuid, unsigned int trackId, MainWorkflow::TrackType trackType ) const
 {
     return m_tracks[trackType]->getClipPosition( uuid, trackId );
 }
@@ -179,7 +182,7 @@ void            MainWorkflow::stop()
     QWriteLocker    lock( m_renderStartedLock );
 
     m_renderStarted = false;
-    for (unsigned int i = 0; i < TrackWorkflow::NbType; ++i)
+    for (unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i)
         m_tracks[i]->stop();
     m_currentFrame = 0;
     emit frameChanged( 0 );
@@ -188,7 +191,7 @@ void            MainWorkflow::stop()
 
 void           MainWorkflow::moveClip( const QUuid& clipUuid, unsigned int oldTrack,
                                        unsigned int newTrack, qint64 startingFrame,
-                                       TrackWorkflow::TrackType trackType, bool undoRedoCommand /*= false*/ )
+                                       MainWorkflow::TrackType trackType, bool undoRedoCommand /*= false*/ )
 {
     m_tracks[trackType]->moveClip( clipUuid, oldTrack, newTrack, startingFrame );
     computeLength();
@@ -198,7 +201,7 @@ void           MainWorkflow::moveClip( const QUuid& clipUuid, unsigned int oldTr
     }
 }
 
-Clip*       MainWorkflow::removeClip( const QUuid& uuid, unsigned int trackId, TrackWorkflow::TrackType trackType )
+Clip*       MainWorkflow::removeClip( const QUuid& uuid, unsigned int trackId, MainWorkflow::TrackType trackType )
 {
     emit clipRemoved( uuid, trackId, trackType );
     return m_tracks[trackType]->removeClip( uuid, trackId );
@@ -227,12 +230,12 @@ void        MainWorkflow::cancelSynchronisation()
     m_synchroneRenderWaitCondition->wakeAll();
 }
 
-void        MainWorkflow::muteTrack( unsigned int trackId, TrackWorkflow::TrackType trackType )
+void        MainWorkflow::muteTrack( unsigned int trackId, MainWorkflow::TrackType trackType )
 {
     m_tracks[trackType]->muteTrack( trackId );
 }
 
-void        MainWorkflow::unmuteTrack( unsigned int trackId, TrackWorkflow::TrackType trackType )
+void        MainWorkflow::unmuteTrack( unsigned int trackId, MainWorkflow::TrackType trackType )
 {
     m_tracks[trackType]->unmuteTrack( trackId );
 }
@@ -240,10 +243,10 @@ void        MainWorkflow::unmuteTrack( unsigned int trackId, TrackWorkflow::Trac
 void        MainWorkflow::setCurrentFrame( qint64 currentFrame )
 {
     m_currentFrame = currentFrame;
-    emit positionChanged( (float)m_currentFrame / (float)m_length );
+    emit positionChanged( (float)m_currentFrame / (float)m_lengthFrame );
 }
 
-Clip*       MainWorkflow::getClip( const QUuid& uuid, unsigned int trackId, TrackWorkflow::TrackType trackType )
+Clip*       MainWorkflow::getClip( const QUuid& uuid, unsigned int trackId, MainWorkflow::TrackType trackType )
 {
     return m_tracks[trackType]->getClip( uuid, trackId );
 }
@@ -280,7 +283,7 @@ void        MainWorkflow::loadProject( const QDomElement& project )
             qint64                      begin;
             qint64                      end;
             qint64                      startPos;
-            TrackWorkflow::TrackType    trackType = TrackWorkflow::Video;
+            MainWorkflow::TrackType     trackType = MainWorkflow::VideoTrack;
 
             while ( clipProperty.isNull() == false )
             {
@@ -318,7 +321,7 @@ void        MainWorkflow::loadProject( const QDomElement& project )
                 }
                 else if ( tagName == "trackType" )
                 {
-                    trackType = static_cast<TrackWorkflow::TrackType>( clipProperty.text().toUInt( &ok ) );
+                    trackType = static_cast<MainWorkflow::TrackType>( clipProperty.text().toUInt( &ok ) );
                     if ( ok == false )
                     {
                         qWarning() << "Invalid track type starting frame";
@@ -343,7 +346,7 @@ void        MainWorkflow::loadProject( const QDomElement& project )
 void        MainWorkflow::saveProject( QDomDocument& doc, QDomElement& rootNode )
 {
     QDomElement project = doc.createElement( "timeline" );
-    for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
+    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
     {
         m_tracks[i]->save( doc, project );
     }
@@ -352,28 +355,38 @@ void        MainWorkflow::saveProject( QDomDocument& doc, QDomElement& rootNode 
 
 void        MainWorkflow::clear()
 {
-    for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
+    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         m_tracks[i]->clear();
     emit cleared();
 }
 
 void        MainWorkflow::setFullSpeedRender( bool value )
 {
-    for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
+    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         m_tracks[i]->setFullSpeedRender( value );
 }
 
 void        MainWorkflow::tracksPaused()
 {
-    for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
+    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         if ( m_tracks[i]->isPaused() == false )
             return ;
+    m_paused = true;
     emit mainWorkflowPaused();
+}
+
+void        MainWorkflow::tracksUnpaused()
+{
+    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
+        if ( m_tracks[i]->isPaused() == true )
+            return ;
+    m_paused = false;
+    emit mainWorkflowUnpaused();
 }
 
 void        MainWorkflow::tracksRenderCompleted()
 {
-    for ( unsigned int i = 0; i < TrackWorkflow::NbType; ++i )
+    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         if ( m_tracks[i]->allTracksRendered() == false )
             return ;
     {
@@ -382,7 +395,7 @@ void        MainWorkflow::tracksRenderCompleted()
     m_synchroneRenderWaitCondition->wakeAll();
 }
 
-int         MainWorkflow::getTrackCount( TrackWorkflow::TrackType trackType ) const
+int         MainWorkflow::getTrackCount( MainWorkflow::TrackType trackType ) const
 {
     return m_tracks[trackType]->getTrackCount();
 }

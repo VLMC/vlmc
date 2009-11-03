@@ -31,11 +31,12 @@
 #include <QWaitCondition>
 
 #include "Singleton.hpp"
-#include "TrackWorkflow.h"
-#include "TrackHandler.h"
 #include "Clip.h"
 #include "LightVideoFrame.h"
 #include "EffectsEngine.h"
+
+class   TrackWorkflow;
+class   TrackHandler;
 
 class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 {
@@ -47,7 +48,13 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
             const LightVideoFrame*              video;
             AudioClipWorkflow::AudioSample*     audio;
         };
-        void                    addClip( Clip* clip, unsigned int trackId, qint64 start, TrackWorkflow::TrackType type );
+        enum    TrackType
+        {
+            VideoTrack,
+            NbTrackType,
+            AudioTrack,
+        };
+        void                    addClip( Clip* clip, unsigned int trackId, qint64 start, TrackType type );
 
         void                    startRender();
         void                    getOutput();
@@ -70,7 +77,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          *  \return             Returns the global length of the workflow
          *                      in frames.
         */
-        qint64                  getLength() const;
+        qint64                  getLengthFrame() const;
 
         /**
          *  \return             Returns the current frame.
@@ -91,11 +98,11 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    nextFrame();
         void                    previousFrame();
 
-        Clip*                   removeClip( const QUuid& uuid, unsigned int trackId, TrackWorkflow::TrackType trackType );
+        Clip*                   removeClip( const QUuid& uuid, unsigned int trackId, MainWorkflow::TrackType trackType );
         void                    moveClip( const QUuid& uuid, unsigned int oldTrack,
                                           unsigned int newTrack, qint64 pos,
-                                          TrackWorkflow::TrackType trackType, bool undoRedoCommand = false );
-        qint64                  getClipPosition( const QUuid& uuid, unsigned int trackId, TrackWorkflow::TrackType trackType ) const;
+                                          MainWorkflow::TrackType trackType, bool undoRedoCommand = false );
+        qint64                  getClipPosition( const QUuid& uuid, unsigned int trackId, MainWorkflow::TrackType trackType ) const;
 
         /**
          *  \brief  This method will wake every wait condition, so that threads won't
@@ -103,8 +110,8 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          */
         void                    cancelSynchronisation();
 
-        void                    muteTrack( unsigned int trackId, TrackWorkflow::TrackType );
-        void                    unmuteTrack( unsigned int trackId, TrackWorkflow::TrackType );
+        void                    muteTrack( unsigned int trackId, MainWorkflow::TrackType );
+        void                    unmuteTrack( unsigned int trackId, MainWorkflow::TrackType );
 
         /**
          * \param   uuid : The clip's uuid.
@@ -114,12 +121,14 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          *  \param  trackType : the track type (audio or video)
          *  \returns    The clip that matches the given UUID.
          */
-        Clip*                   getClip( const QUuid& uuid, unsigned int trackId, TrackWorkflow::TrackType trackType );
+        Clip*                   getClip( const QUuid& uuid, unsigned int trackId, MainWorkflow::TrackType trackType );
 
         void                    clear();
 
         void                    setFullSpeedRender( bool value );
-        int                     getTrackCount( TrackWorkflow::TrackType trackType ) const;
+        int                     getTrackCount( MainWorkflow::TrackType trackType ) const;
+
+        qint64                  getCurrentFrame() const;
 
     private:
         MainWorkflow( int trackCount = 64 );
@@ -129,7 +138,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
     private:
         qint64                          m_currentFrame;
-        qint64                          m_length;
+        qint64                          m_lengthFrame;
         /**
          *  This boolean describe is a render has been started
         */
@@ -149,6 +158,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
     private slots:
         void                            tracksPaused();
+        void                            tracksUnpaused();
         void                            tracksRenderCompleted();
 
     public slots:
@@ -168,9 +178,9 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    mainWorkflowEndReached();
         void                    mainWorkflowPaused();
         void                    mainWorkflowUnpaused();
-        void                    clipAdded( Clip*, unsigned int, qint64, TrackWorkflow::TrackType );
-        void                    clipRemoved( QUuid, unsigned int, TrackWorkflow::TrackType );
-        void                    clipMoved( QUuid, unsigned int, qint64, TrackWorkflow::TrackType );
+        void                    clipAdded( Clip*, unsigned int, qint64, MainWorkflow::TrackType );
+        void                    clipRemoved( QUuid, unsigned int, MainWorkflow::TrackType );
+        void                    clipMoved( QUuid, unsigned int, qint64, MainWorkflow::TrackType );
         void                    cleared();
 };
 

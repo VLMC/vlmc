@@ -56,6 +56,8 @@ PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent 
     connect( m_ui->rulerWidget, SIGNAL( sliderPressed() ),       this,   SLOT( seekSliderPressed() ) );
     connect( m_ui->rulerWidget, SIGNAL( sliderPosChanged(int) ), this,   SLOT( seekSliderMoved(int) ) );
     connect( m_ui->rulerWidget, SIGNAL( sliderReleased() ),      this,   SLOT( seekSliderReleased() ) );
+    connect( m_ui->rulerWidget, SIGNAL( timeChanged(int,int,int,int) ),
+             m_ui->lcdNumber,   SLOT( setTime(int,int,int,int) ) );
 
     m_renderer->setRenderWidget( m_ui->renderWidget );
     m_renderer->setPreviewLabel( m_ui->previewLabel );

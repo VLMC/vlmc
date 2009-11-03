@@ -1,10 +1,9 @@
 /*****************************************************************************
- * ClickableLabel.cpp
+ * LCDTimecode.cpp: Widget that displays an LCD-like timecode
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Geoffroy Lacarriere <geoffroylaca@gmail.com>
- *          Thomas Boquet <thomas.boquet@gmail.com>
+ * Authors: Christophe Courtaut <christophe.courtaut@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,13 +20,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "ClickableLabel.h"
+#include <QTime>
+#include "LCDTimecode.h"
 
-ClickableLabel::ClickableLabel( QWidget* parent ) : QLabel( parent )
+LCDTimecode::LCDTimecode( QWidget* parent )
+    : QLCDNumber( parent )
 {
+    setNumDigits( 11 );
+    setTime( 0, 0, 0, 0 );
 }
 
-void    ClickableLabel::mousePressEvent( QMouseEvent* ev )
+void LCDTimecode::setTime( int hours, int minutes, int seconds, int frames )
 {
-    emit clicked( this, ev );
+    QString s = QString("%1:%2:%3.%4")
+                .arg( QString::number( hours ), 2, '0' )
+                .arg( QString::number( minutes ), 2, '0' )
+                .arg( QString::number( seconds), 2, '0' )
+                .arg( QString::number( frames ), 2, '0' );
+    display( s );
 }

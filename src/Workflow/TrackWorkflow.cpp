@@ -27,7 +27,7 @@
 #include "VideoClipWorkflow.h"
 #include "AudioClipWorkflow.h"
 
-TrackWorkflow::TrackWorkflow( unsigned int trackId, TrackWorkflow::TrackType type  ) :
+TrackWorkflow::TrackWorkflow( unsigned int trackId, MainWorkflow::TrackType type  ) :
         m_trackId( trackId ),
         m_length( 0 ),
         m_forceRepositionning( false ),
@@ -56,10 +56,10 @@ TrackWorkflow::~TrackWorkflow()
 
 void    TrackWorkflow::addClip( Clip* clip, qint64 start )
 {
-    if ( m_trackType == Audio )
+    if ( m_trackType == MainWorkflow::AudioTrack )
         start = 0;
     ClipWorkflow* cw;
-    if ( m_trackType == TrackWorkflow::Video )
+    if ( m_trackType == MainWorkflow::VideoTrack )
         cw = new VideoClipWorkflow( clip );
     else
         cw = new AudioClipWorkflow( clip );

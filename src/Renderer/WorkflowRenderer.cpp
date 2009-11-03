@@ -27,6 +27,7 @@
 #include "WorkflowRenderer.h"
 #include "Timeline.h"
 
+//FIXME: remove this...
 #define OUTPUT_FPS  30
 
 WorkflowRenderer::WorkflowRenderer() :
@@ -188,7 +189,7 @@ void        WorkflowRenderer::checkActions()
 
 void        WorkflowRenderer::startPreview()
 {
-    if ( m_mainWorkflow->getLength() <= 0 )
+    if ( m_mainWorkflow->getLengthFrame() <= 0 )
         return ;
     m_mediaPlayer->setMedia( m_media );
 
@@ -303,6 +304,22 @@ void        WorkflowRenderer::stop()
     m_mainWorkflow->stop();
 }
 
+qint64      WorkflowRenderer::getCurrentFrame() const
+{
+    return m_mainWorkflow->getCurrentFrame();
+}
+
+qint64      WorkflowRenderer::getLengthMs() const
+{
+    return m_mainWorkflow->getLengthFrame() * OUTPUT_FPS * 1000;
+}
+
+float       WorkflowRenderer::getFps() const
+{
+    //Sigh :'(
+    return static_cast<float>( OUTPUT_FPS );
+}
+
 /////////////////////////////////////////////////////////////////////
 /////SLOTS :
 /////////////////////////////////////////////////////////////////////
@@ -349,3 +366,4 @@ void        WorkflowRenderer::timelineCursorChanged( qint64 newFrame )
 {
     m_mainWorkflow->setCurrentFrame( newFrame );
 }
+

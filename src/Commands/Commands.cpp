@@ -34,7 +34,7 @@ void Commands::trigger( QUndoCommand* command )
 
 Commands::MainWorkflow::AddClip::AddClip( ::MainWorkflow* workflow, Clip* clip,
                                           unsigned int trackNumber, qint64 pos,
-                                          TrackWorkflow::TrackType trackType ) :
+                                          ::MainWorkflow::TrackType trackType ) :
         m_workflow( workflow ),
         m_clip( clip ),
         m_trackNumber( trackNumber ),
@@ -56,7 +56,7 @@ void Commands::MainWorkflow::AddClip::undo()
 
 Commands::MainWorkflow::MoveClip::MoveClip( ::MainWorkflow* workflow, const QUuid& uuid,
           unsigned int oldTrack, qint64 oldPos, unsigned int newTrack, qint64 newPos,
-          TrackWorkflow::TrackType trackType ) :
+          ::MainWorkflow::TrackType trackType ) :
     m_workflow( workflow ), m_uuid( uuid ), m_oldTrack( oldTrack ),
     m_newTrack( newTrack ), m_pos( newPos ), m_oldPos( oldPos ),
     m_trackType( trackType )
@@ -94,7 +94,7 @@ void Commands::MainWorkflow::RemoveClips::undo()
 }
 
 Commands::MainWorkflow::ResizeClip::ResizeClip( ::MainWorkflow* mainWorkflow, const QUuid& uuid, unsigned int trackId,
-            qint64 newBegin, qint64 newEnd, TrackWorkflow::TrackType trackType ) :
+            qint64 newBegin, qint64 newEnd, ::MainWorkflow::TrackType trackType ) :
     m_mainWorkflow( mainWorkflow ),
     m_newBegin( newBegin ),
     m_newEnd( newEnd ),

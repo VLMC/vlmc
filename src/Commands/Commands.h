@@ -41,24 +41,24 @@ namespace Commands
     {
         struct ClipActionInfo
         {
-            Clip*   clip;
-            quint32 trackNumber;
-            qint64  pos;
-            TrackWorkflow::TrackType    trackType;
+            Clip*                       clip;
+            quint32                     trackNumber;
+            qint64                      pos;
+            ::MainWorkflow::TrackType   trackType;
         };
 
         NEW_COMMAND( AddClip )
         {
             public:
-                AddClip( ::MainWorkflow* workflow, Clip* clip, unsigned int trackNumber, qint64 pos, TrackWorkflow::TrackType trackType );
+                AddClip( ::MainWorkflow* workflow, Clip* clip, unsigned int trackNumber, qint64 pos, ::MainWorkflow::TrackType trackType );
                 virtual void    redo();
                 virtual void    undo();
             private:
-                ::MainWorkflow* m_workflow;
-                Clip*           m_clip;
-                unsigned int    m_trackNumber;
-                qint64          m_pos;
-                TrackWorkflow::TrackType    m_trackType;
+                ::MainWorkflow*             m_workflow;
+                Clip*                       m_clip;
+                unsigned int                m_trackNumber;
+                qint64                      m_pos;
+                ::MainWorkflow::TrackType   m_trackType;
         };
 
         NEW_COMMAND( MoveClip )
@@ -66,19 +66,19 @@ namespace Commands
             public:
                 MoveClip( ::MainWorkflow* workflow, const QUuid& uuid,
                         unsigned int oldTrack, qint64 oldPos, unsigned int newTrack,
-                        qint64 newPos, TrackWorkflow::TrackType trackType );
+                        qint64 newPos, ::MainWorkflow::TrackType trackType );
                 virtual void    redo();
                 virtual void    undo();
 
             private:
-                ::MainWorkflow*     m_workflow;
-                QUuid               m_uuid;
-                unsigned int        m_oldTrack;
-                unsigned int        m_newTrack;
-                qint64              m_pos;
-                qint64              m_oldPos;
-                bool                m_undoRedoAction;
-                TrackWorkflow::TrackType    m_trackType;
+                ::MainWorkflow*             m_workflow;
+                QUuid                       m_uuid;
+                unsigned int                m_oldTrack;
+                unsigned int                m_newTrack;
+                qint64                      m_pos;
+                qint64                      m_oldPos;
+                bool                        m_undoRedoAction;
+                ::MainWorkflow::TrackType   m_trackType;
         };
 
         NEW_COMMAND( RemoveClips )
@@ -98,7 +98,7 @@ namespace Commands
             public:
                 ResizeClip( ::MainWorkflow* mainWorkflow, const QUuid& uuid, unsigned int trackId,
                             qint64 newBegin, qint64 newEnd,
-                            TrackWorkflow::TrackType trackType );
+                            ::MainWorkflow::TrackType trackType );
                 virtual void    redo();
                 virtual void    undo();
             private:
@@ -108,7 +108,7 @@ namespace Commands
                 qint64                      m_newBegin;
                 qint64                      m_newEnd;
                 Clip*                       m_clip;
-                TrackWorkflow::TrackType    m_trackType;
+                ::MainWorkflow::TrackType   m_trackType;
         };
     }
 }

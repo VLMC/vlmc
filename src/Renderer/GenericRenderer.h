@@ -61,7 +61,9 @@ public:
     virtual void                    previousFrame() = 0;
     virtual void                    stop() = 0;
     virtual void                    setPosition( float newPos ) = 0;
-    virtual qint64                  length() = 0;
+    virtual qint64                  getLengthMs() const = 0;
+    virtual qint64                  getCurrentFrame() const = 0;
+    virtual float                   getFps() const = 0;
 
     bool                            isPaused() const
     {

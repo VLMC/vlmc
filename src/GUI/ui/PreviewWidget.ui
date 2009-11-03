@@ -136,6 +136,19 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="LCDTimecode" name="lcdNumber">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="numDigits">
+        <number>11</number>
+       </property>
+       <property name="segmentStyle">
+        <enum>QLCDNumber::Flat</enum>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item row="1" column="0">
@@ -179,6 +192,11 @@
    <extends>QWidget</extends>
    <header>PreviewRuler.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LCDTimecode</class>
+   <extends>QLCDNumber</extends>
+   <header>LCDTimecode.h</header>
   </customwidget>
  </customwidgets>
  <resources>

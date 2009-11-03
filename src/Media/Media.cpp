@@ -39,7 +39,7 @@ Media::Media( const QString& filePath, const QString& uuid )
     : m_vlcMedia( NULL ),
     m_snapshot( NULL ),
     m_fileInfo( NULL ),
-    m_length( 0 ),
+    m_lengthMS( 0 ),
     m_nbFrames( 0 ),
     m_width( 0 ),
     m_height( 0 ),
@@ -145,12 +145,12 @@ const QFileInfo*    Media::getFileInfo() const
 
 void                Media::setLength( qint64 length )
 {
-    m_length = length;
+    m_lengthMS = length;
 }
 
-qint64              Media::getLength() const
+qint64              Media::getLengthMS() const
 {
-    return m_length;
+    return m_lengthMS;
 }
 
 int                 Media::getWidth() const

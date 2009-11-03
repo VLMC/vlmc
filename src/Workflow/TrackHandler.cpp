@@ -21,10 +21,11 @@
  *****************************************************************************/
 
 #include "TrackHandler.h"
+#include "TrackWorkflow.h"
 
 LightVideoFrame* TrackHandler::nullOutput = NULL;
 
-TrackHandler::TrackHandler( unsigned int nbTracks, TrackWorkflow::TrackType trackType, EffectsEngine* effectsEngine ) :
+TrackHandler::TrackHandler( unsigned int nbTracks, MainWorkflow::TrackType trackType, EffectsEngine* effectsEngine ) :
         m_trackCount( nbTracks ),
         m_trackType( trackType ),
         m_length( 0 ),
@@ -281,8 +282,7 @@ void        TrackHandler::trackUnpaused()
     if ( m_nbTracksToUnpause <= 0 )
     {
         m_paused = false;
-        //FIXME:
-        //emit mainWorkflowUnpaused();
+        emit tracksUnpaused();
     }
 }
 
@@ -292,7 +292,7 @@ void        TrackHandler::tracksRenderCompleted( unsigned int trackId )
     --m_nbTracksToRender;
 
     {
-        if ( m_trackType == TrackWorkflow::Video )
+        if ( m_trackType == MainWorkflow::VideoTrack )
         {
             LightVideoFrame* buff = reinterpret_cast<LightVideoFrame*>( m_tracks[trackId]->getSynchroneOutput() );
             if ( buff == NULL )

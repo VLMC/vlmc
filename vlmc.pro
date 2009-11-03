@@ -63,7 +63,6 @@ SOURCES += src/main.cpp \
     src/GUI/VLMCPreferences.cpp \
     src/GUI/VideoProjectPreferences.cpp \
     src/Project/ProjectManager.cpp \
-    src/GUI/FileInfoListModel.cpp \
     src/Configuration/SettingsManager.cpp \
     src/GUI/TagWidget.cpp \
     src/GUI/Library/StackViewController.cpp \
@@ -84,7 +83,8 @@ SOURCES += src/main.cpp \
     src/EffectsEngine/LightVideoFrame.cpp \
     src/EffectsEngine/GenericEffect.cpp \
     src/EffectsEngine/GreenFilterEffect.cpp \
-    src/EffectsEngine/MixerEffect.cpp
+    src/EffectsEngine/MixerEffect.cpp \
+    src/GUI/LCDTimecode.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -140,7 +140,6 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/AudioProjectPreferences.h \
     src/GUI/VideoProjectPreferences.h \
     src/Project/ProjectManager.h \
-    src/GUI/FileInfoListModel.h \
     src/Configuration/SettingsManager.h \
     src/GUI/TagWidget.h \
     src/GUI/Library/StackViewController.h \
@@ -164,7 +163,8 @@ HEADERS += src/GUI/MainWindow.h \
     src/EffectsEngine/LightVideoFrame.h \
     src/EffectsEngine/GenericEffect.h \
     src/EffectsEngine/GreenFilterEffect.h \
-    src/EffectsEngine/MixerEffect.h
+    src/EffectsEngine/MixerEffect.h \
+    src/GUI/LCDTimecode.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \
