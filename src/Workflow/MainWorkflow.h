@@ -34,6 +34,7 @@
 #include "Clip.h"
 #include "LightVideoFrame.h"
 #include "EffectsEngine.h"
+#include "AudioClipWorkflow.h"
 
 class   TrackWorkflow;
 class   TrackHandler;
@@ -127,8 +128,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
         void                    setFullSpeedRender( bool value );
         int                     getTrackCount( MainWorkflow::TrackType trackType ) const;
-
-        qint64                  getCurrentFrame() const;
 
     private:
         MainWorkflow( int trackCount = 64 );
