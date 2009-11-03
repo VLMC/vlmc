@@ -69,80 +69,85 @@ void PreviewRuler::paintEvent( QPaintEvent * event )
     Q_ASSERT( m_renderer );
 
     QPainter painter( this );
+    QRect marks( 0, 0, width() - 1, MARK_LARGE + 1 );
+
+    painter.setPen( QPen( QColor( 50, 50, 50 ) ) );
+    painter.setBrush( QBrush( QColor( 50, 50, 50 ) ) );
+    painter.drawRect( marks );
 
     if ( m_renderer->length() > 0 )
     {
         qreal linesToDraw = 0;
         qreal spacing = 0;
+        QRect r = marks.adjusted( 1, 0, -1, 0 );
 
         // Draw the marks
-
-        if ( width() / 2  >= m_renderer->length() )
+        if ( r.width() / 2  >= m_renderer->length() )
         {   // Every frame
             painter.setPen( QPen( Qt::cyan ) );
             linesToDraw = (qreal)m_renderer->length();
             if ( linesToDraw > 0 )
             {
-                spacing = (qreal)width() / linesToDraw;
+                spacing = (qreal)r.width() / linesToDraw;
                 for ( int step = 0; step < linesToDraw; ++step )
-                    painter.drawLine( QLineF( step * spacing, 0, step * spacing, MARK_XSMALL ) );
+                    painter.drawLine( QLineF( r.left() + step * spacing, r.height() - MARK_XSMALL, r.left() + step * spacing, r.bottom() ) );
             }
         }
-        if ( width() / 2 >= ( m_renderer->length() / 25 ) )
+        if ( r.width() / 2 >= ( m_renderer->length() / 25 ) )
         {   // Every second
             painter.setPen( QPen( Qt::green ) );
             linesToDraw = (qreal)m_renderer->length() / 25;
             if ( linesToDraw > 0 )
             {
-                spacing = (qreal)width() / linesToDraw;
+                spacing = (qreal)r.width() / linesToDraw;
                 for ( int step = 0; step < linesToDraw; ++step )
-                    painter.drawLine( QLineF( step * spacing, 0, step * spacing, MARK_SMALL ) );
+                    painter.drawLine( QLineF( r.left() + step * spacing, r.height() - MARK_XSMALL, r.left() + step * spacing, r.bottom() ) );
             }
         }
-        else if ( width() / 2 >= ( m_renderer->length() / 25 / 12 ) )
+        else if ( r.width() / 2 >= ( m_renderer->length() / 25 / 12 ) )
         {   // Every 5 seconds
             painter.setPen( QPen( Qt::green ) );
             linesToDraw = (qreal)m_renderer->length() / 25 / 12;
             if ( linesToDraw > 0 )
             {
-                spacing = (qreal)width() / linesToDraw;
+                spacing = (qreal)r.width() / linesToDraw;
                 for ( int step = 0; step < linesToDraw; ++step )
-                    painter.drawLine( QLineF( step * spacing, 0, step * spacing, MARK_SMALL) );
+                    painter.drawLine( QLineF( r.left() + step * spacing, r.height() - MARK_SMALL, r.left() + step * spacing, r.bottom() ) );
             }
         }
-        if ( width() / 2 >= ( m_renderer->length() / 25 / 60 ) )
+        if ( r.width() / 2 >= ( m_renderer->length() / 25 / 60 ) )
         {   // Every minute
             painter.setPen( QPen( Qt::yellow ) );
             linesToDraw = (qreal)m_renderer->length() / 25 / 60;
             if ( linesToDraw > 0 )
             {
-                spacing = (qreal)width() / linesToDraw;
+                spacing = (qreal)r.width() / linesToDraw;
                 for ( int step = 0; step < linesToDraw; ++step )
-                    painter.drawLine( QLineF( step * spacing, 0, step * spacing, MARK_MEDIUM ) );
+                    painter.drawLine( QLineF( r.left() + step * spacing, r.height() - MARK_MEDIUM, r.left() + step * spacing, r.bottom() ) );
 
             }
         }
-        else if ( width() / 2 >= ( m_renderer->length() / 25 / 60 / 12 ) )
+        else if ( r.width() / 2 >= ( m_renderer->length() / 25 / 60 / 12 ) )
         {   // Every 5 minutes
             painter.setPen( QPen( Qt::yellow ) );
             linesToDraw = (qreal)m_renderer->length() / 25 / 60 / 12;
             if ( linesToDraw > 0 )
             {
-                spacing = (qreal)width() / linesToDraw;
+                spacing = (qreal)r.width() / linesToDraw;
                 for ( int step = 0; step < linesToDraw; ++step )
-                    painter.drawLine( QLineF( step * spacing, 0, step * spacing, MARK_MEDIUM ) );
+                    painter.drawLine( QLineF( r.left() + step * spacing, r.height() - MARK_MEDIUM, r.left() + step * spacing, r.bottom() ) );
 
             }
         }
-        if ( width() / 2 >= ( m_renderer->length() / 25 / 60 / 60 ) )
+        if ( r.width() / 2 >= ( m_renderer->length() / 25 / 60 / 60 ) )
         {   // Every hour
             painter.setPen( QPen( Qt::red ) );
             linesToDraw = (qreal)m_renderer->length() / 25 / 60 / 60;
             if ( linesToDraw > 0 )
             {
-                spacing = (qreal)width() / linesToDraw;
+                spacing = (qreal)r.width() / linesToDraw;
                 for ( int step = 0; step < linesToDraw; ++step )
-                    painter.drawLine( QLineF( step * spacing, 0, step * spacing, MARK_LARGE ) );
+                    painter.drawLine( QLineF( r.left() + step * spacing, r.height() - MARK_LARGE, r.left() + step * spacing, r.bottom() ) );
             }
         }
     }
