@@ -584,11 +584,12 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
                                                                      TrackWorkflow::Video ) );
             movieItem->oldTrackNumber = movieItem->trackNumber();
             movieItem->oldPosition = movieItem->pos().x();
-            m_actionMove = false;
             m_actionRelativeX = -1;
             m_actionItem = NULL;
         }
     }
+
+    m_actionMove = false;
 
     setDragMode( QGraphicsView::NoDrag );
     QGraphicsView::mouseReleaseEvent( event );
