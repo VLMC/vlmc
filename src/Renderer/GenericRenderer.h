@@ -57,26 +57,63 @@ public:
         m_previewLabel = previewLabel;
     }
     virtual void                    togglePlayPause( bool forcePause = false ) = 0;
+
+    /**
+     * \brief Render the next frame
+     */
     virtual void                    nextFrame() = 0;
+
+    /**
+     * \brief Render the previous frame
+     */
     virtual void                    previousFrame() = 0;
+
+    /**
+     * \brief Stop the renderer
+     */
     virtual void                    stop() = 0;
+
+    /**
+     * \brief Sets the position in the video
+     * The value should be bounded between 0.0 and 1.0
+     */
     virtual void                    setPosition( float newPos ) = 0;
+
+    /**
+     * \brief Return the length in milliseconds
+     */
     virtual qint64                  getLengthMs() const = 0;
+
+    /**
+     * \brief Return the current frame number
+     */
     virtual qint64                  getCurrentFrame() const = 0;
+
+    /**
+     * \brief Return the number of frames per second
+     */
     virtual float                   getFps() const = 0;
 
     /**
-     * \brief Return the length is frames
+     * \brief Return the length in frames
      * \warning The returned value may not be accurate
      */
     qint64                          getLength() const
     {
         return getLengthMs() / 1000 * getFps();
     }
+
+    /**
+     * \brief Return true if the renderer is paused
+     */
     bool                            isPaused() const
     {
         return m_paused;
     }
+
+    /**
+     * \brief Return true if the renderer is currently rendering
+     */
     bool                            isRendering() const
     {
         return m_isRendering;
