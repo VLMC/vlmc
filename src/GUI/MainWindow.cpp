@@ -289,6 +289,8 @@ void MainWindow::initializeDockWidgets( void )
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
+    QShortcut*  shortcut = new QShortcut( QKeySequence( tr( "Space", "Start preview" ) ), this );
+    connect( shortcut, SIGNAL( activated() ), m_projectPreview, SLOT( on_pushButtonPlay_clicked() ) );
 
     dockManager->addDockedWidget( UndoStack::getInstance( this ),
                                   tr( "History" ),
