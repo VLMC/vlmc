@@ -19,11 +19,16 @@ void    VLMCSettingsDefault::loadVLMCDefaults( void )
     QVariant defaultPreviewFPS = "25";
     QVariant defaultTrackNb = "64";
 
-//    settingsMan->setValue( "VLMCOutPutFPS", defaultOutputPFS  );
-//    settingsMan->setValue( "VLMCPreviewFPS", defaultPreviewFPS  );
-//    settingsMan->setValue( "VLMCTracksNb", defaultTrackNb  );
-//
-//    return ;
+    settingsMan->setValue( "default",
+                           "VLMCOutPutFPS", defaultOutputPFS  );
+    settingsMan->setValue( "default",
+                           "VLMCPreviewFPS",
+                           defaultPreviewFPS  );
+    settingsMan->setValue( "default",
+                           "VLMCTracksNb",
+                           defaultTrackNb  );
+
+    return ;
 }
 
 void    VLMCSettingsDefault::loadlanguageDefaults( void )

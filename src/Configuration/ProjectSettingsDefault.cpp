@@ -26,9 +26,15 @@ void    ProjectSettingsDefault::loadVideoDefaults( void )
     QVariant defaultProjectHeight = 800;
     QVariant defaultProjectWidth = 600;
 
-    //settingsMan->setValue( "VideoProjectFPS", defaultProjectFPS );
-    //settingsMan->setValue( "VideoProjectHeight", defaultProjectHeight );
-    //settingsMan->setValue( "VideoProjectWidth", defaultProjectWidth );
+    settingsMan->setValue( "default",
+                           "VideoProjectFPS",
+                           defaultProjectFPS );
+    settingsMan->setValue( "default",
+                           "VideoProjectHeight",
+                           defaultProjectHeight );
+    settingsMan->setValue( "default",
+                           "VideoProjectWidth",
+                           defaultProjectWidth );
 
     return ;
 }

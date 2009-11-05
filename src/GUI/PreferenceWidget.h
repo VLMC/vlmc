@@ -42,7 +42,7 @@ class   PreferenceWidget : public QWidget
         virtual void    load() = 0;
         virtual void    save() = 0;
 
-    private:
+    protected:
         bool            m_defaults;
         QString         m_settName;
 };

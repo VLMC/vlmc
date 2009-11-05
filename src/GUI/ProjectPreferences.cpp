@@ -40,16 +40,19 @@ ProjectPreferences::~ProjectPreferences() { }
 
 void    ProjectPreferences::load()
 {
-    //qDebug() << "Loading preferences : Project";
-    //QString  Name = SettingsManager::getInstance()->getValue( "project", "Name" ).toString();
-    //QString  Dir = SettingsManager::getInstance()->getValue( "project", "path" ).toString();
+    SettingsManager* settMan = SettingsManager::getInstance();
+    const QString& part = m_defaults ? "defaults" : m_settName;
+    QString  Name = settMan->getValue( part, "project", "Name" ).toString();
+    QString  Dir = settMan->getValue( part, "project", "path" ).toString();
 
-    //m_ui.ProjectNameLineEdit->setText( Name );
-    //m_ui.ProjectDirectoryLineEdit->setText( Dir );
+    m_ui.ProjectNameLineEdit->setText( Name );
+    m_ui.ProjectDirectoryLineEdit->setText( Dir );
 }
 
 void    ProjectPreferences::save()
 {
-    //settings.insert( "ProjectName", QVariant( m_ui.ProjectNameLineEdit->text() ) );
-    //settings.insert( "ProjectDirectory", QVariant( m_ui.ProjectDirectoryLineEdit->text() ) );
+    SettingsManager* settMan = SettingsManager::getInstance();
+
+    settMan->setValue( m_settName, "ProjectName", QVariant( m_ui.ProjectNameLineEdit->text() ) );
+    settMan->setValue( m_settName, "ProjectDirectory", QVariant( m_ui.ProjectDirectoryLineEdit->text() ) );
 }
