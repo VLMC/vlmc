@@ -423,6 +423,7 @@ Clip*       TrackWorkflow::removeClip( const QUuid& id )
             ClipWorkflow*   cw = it.value();
             Clip*           clip = cw->getClip();
             m_clips.erase( it );
+            stopClipWorkflow( cw );
             computeLength();
             disconnectClipWorkflow( cw );
             delete cw;
