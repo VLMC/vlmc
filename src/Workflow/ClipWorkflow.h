@@ -166,6 +166,7 @@ class   ClipWorkflow : public QObject
     private:
         void                    setState( State state );
         void                    checkSynchronisation( State newState );
+        void                    adjustBegin();
 
     private:
         Clip*                   m_clip;

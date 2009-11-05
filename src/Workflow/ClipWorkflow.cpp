@@ -88,6 +88,7 @@ void    ClipWorkflow::initialize( bool preloading /*= false*/ )
 
 void    ClipWorkflow::pauseAfterPlaybackStarted()
 {
+    adjustBegin();
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( pauseAfterPlaybackStarted() ) );
     connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( initializedMediaPlayer() ), Qt::DirectConnection );
 
@@ -96,6 +97,7 @@ void    ClipWorkflow::pauseAfterPlaybackStarted()
 
 void    ClipWorkflow::loadingComplete()
 {
+    adjustBegin();
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( loadingComplete() ) );
     setState( Ready );
 }
@@ -104,6 +106,11 @@ void    ClipWorkflow::initializedMediaPlayer()
 {
     disconnect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( initializedMediaPlayer() ) );
     setState( Ready );
+}
+
+void    ClipWorkflow::adjustBegin()
+{
+    m_mediaPlayer->setTime( m_clip->getBegin() / m_clip->getParent()->getFps() * 1000 );
 }
 
 bool    ClipWorkflow::isReady() const
