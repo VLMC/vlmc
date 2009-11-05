@@ -26,6 +26,8 @@
 
 #include <QObject>
 #include <QHash>
+#include <QFileSystemModel>
+#include <QDirModel>
 
 #include "Media.h"
 #include "Clip.h"
@@ -47,6 +49,7 @@ public:
     void            removeMedia( const QUuid& mediaId );
     void            removeClip( const QUuid& mediaId, const QUuid& clipId );
     QHash<QUuid, Media*>*    getMedias() const { return m_medias; }
+    void            setFilter( const QStringList& filter ) { m_filters = filter; }
 
 signals:
     void            newMediaLoaded( Media* media );
@@ -55,6 +58,7 @@ signals:
 private:
     QHash<QUuid, Media*>*           m_medias;
     MetaDataWorker*                 m_metaDataWorker;
+    QStringList                     m_filters;
 
     void        loadMedia( Media* media );
     bool        mediaAlreadyLoaded( const QFileInfo& fileInfo );

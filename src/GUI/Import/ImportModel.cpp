@@ -105,17 +105,11 @@ void            ImportModel::loadFile( const QFileInfo& fileInfo )
     else
     {
         QDir dir = QDir( fileInfo.filePath() );
-        for( uint i = 0; i < dir.count() ; i++)
-        {
-            QFileInfo info = QFileInfo(dir.filePath( dir[i] ) );
-            if ( info.isDir() )
-                continue ;
-            if ( !mediaAlreadyLoaded( info ) )
-            {
-                media = new Media( info.filePath() );
-                loadMedia( media );
-            }
-        }
+        QFileInfoList list = dir.entryInfoList( m_filters );
+        QFileInfo file;
+
+        foreach( file, list )
+            loadFile( file );
     }
 }
 

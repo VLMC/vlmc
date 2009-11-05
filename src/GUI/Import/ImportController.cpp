@@ -56,6 +56,7 @@ ImportController::ImportController(QWidget *parent) :
     m_filesModel->sort( 0, Qt::AscendingOrder );
     m_filesModel->setNameFilters( filters );
 
+    m_model->setFilter( filters );
     m_ui->treeView->setModel( m_filesModel );
     m_ui->treeView->setRootIndex( m_filesModel->index( QDir::rootPath() ) );
     m_ui->treeView->setCurrentIndex( m_filesModel->index( QDir::homePath() ) );
@@ -185,6 +186,7 @@ void    ImportController::treeViewDoubleClicked( const QModelIndex& index )
 void    ImportController::reject()
 {
     m_preview->stop();
+    done( Rejected );
 }
 
 void    ImportController::accept()
