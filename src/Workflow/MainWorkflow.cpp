@@ -32,6 +32,8 @@
 //FIXME: remove this !
 #include "ClipWorkflow.h"
 
+LightVideoFrame*     MainWorkflow::blackOutput = NULL;
+
 MainWorkflow::MainWorkflow( int trackCount ) :
         m_currentFrame( 0 ),
         m_lengthFrame( 0 ),
@@ -55,6 +57,9 @@ MainWorkflow::MainWorkflow( int trackCount ) :
         connect( m_tracks[i], SIGNAL( allTracksRenderCompleted() ), this, SLOT( tracksRenderCompleted() ) );
     }
     m_outputBuffers = new OutputBuffers;
+
+    blackOutput = new LightVideoFrame( VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes );
+    memset( (*blackOutput)->frame.octets, 0, (*blackOutput)->nboctets );
 }
 
 MainWorkflow::~MainWorkflow()
@@ -215,9 +220,14 @@ MainWorkflow::OutputBuffers*  MainWorkflow::getSynchroneOutput()
     m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
 //    qDebug() << "Got it";
     m_effectEngine->render();
+    if ( m_effectEngine->getOutputFrame( 0 )->nboctets == 0 )
+        m_outputBuffers->video = MainWorkflow::blackOutput;
+    else
+        m_outputBuffers->video = &( m_effectEngine->getOutputFrame( 0 ) );
+
     m_synchroneRenderWaitConditionMutex->unlock();
-    m_outputBuffers->video = &( m_effectEngine->getOutputFrame( 0 ) );
-//    m_outputBuffers->video = reinterpret_cast<LightVideoFrame*>( m_tracks[TrackWorkflow::Video]->getSynchroneOutput() );
+
+    //    m_outputBuffers->video = reinterpret_cast<LightVideoFrame*>( m_tracks[TrackWorkflow::Video]->getSynchroneOutput() );
 //    m_outputBuffers->audio = reinterpret_cast<unsigned char*>( m_tracks[TrackWorkflow::Audio]->getSynchroneOutput() );
     return m_outputBuffers;
 }

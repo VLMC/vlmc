@@ -292,7 +292,9 @@ void        TrackHandler::tracksRenderCompleted( unsigned int trackId )
         {
             LightVideoFrame* buff = reinterpret_cast<LightVideoFrame*>( m_tracks[trackId]->getSynchroneOutput() );
             if ( buff == NULL )
+            {
                 m_effectEngine->setInputFrame( *TrackHandler::nullOutput, trackId );
+            }
             else
                 m_effectEngine->setInputFrame( *buff, trackId );
         }

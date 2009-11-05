@@ -131,6 +131,8 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    computeLength();
         void                    activateTrack( unsigned int trackId );
 
+        static LightVideoFrame* blackOutput;
+
     private:
         qint64                          m_currentFrame;
         qint64                          m_lengthFrame;

@@ -40,21 +40,21 @@ GreenFilterEffect::~GreenFilterEffect()
 
 void    GreenFilterEffect::render( void )
 {
-  quint32		i;
-  LightVideoFrame	tmp;
-  
-  ( m_videoInputs[0] ) >> tmp;
-  if (tmp->frame.octets != NULL)
-  {
-    if (m_enabled)
-      for ( i = 0; i < tmp->nbpixels; ++i )
-	{
-	  tmp->frame.pixels[i].Red = 0;
-	  tmp->frame.pixels[i].Blue = 0;
-	}
+    quint32		i;
+    LightVideoFrame	tmp;
+
+    ( m_videoInputs[0] ) >> tmp;
+    if (tmp->frame.octets != NULL)
+    {
+        if (m_enabled)
+            for ( i = 0; i < tmp->nbpixels; ++i )
+            {
+                tmp->frame.pixels[i].Red = 0;
+                tmp->frame.pixels[i].Blue = 0;
+            }
+    }
     (m_videoOutputs[0]) << tmp;
-  }
-  return ;
+    return ;
 }
 
 void	GreenFilterEffect::enable( void )
