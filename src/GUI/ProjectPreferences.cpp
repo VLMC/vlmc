@@ -42,8 +42,8 @@ void    ProjectPreferences::load()
 {
     SettingsManager* settMan = SettingsManager::getInstance();
     const QString& part = m_defaults ? "defaults" : m_settName;
-    QString  Name = settMan->getValue( part, "project", "Name" ).toString();
-    QString  Dir = settMan->getValue( part, "project", "path" ).toString();
+    QString  Name = settMan->getValue( part, "ProjectName" ).toString();
+    QString  Dir = settMan->getValue( part, "ProjectDirectory" ).toString();
 
     m_ui.ProjectNameLineEdit->setText( Name );
     m_ui.ProjectDirectoryLineEdit->setText( Dir );
@@ -52,7 +52,9 @@ void    ProjectPreferences::load()
 void    ProjectPreferences::save()
 {
     SettingsManager* settMan = SettingsManager::getInstance();
+    QVariant name( m_ui.ProjectNameLineEdit->text() );
+    QVariant dir( m_ui.ProjectDirectoryLineEdit->text() );
 
-    settMan->setValue( m_settName, "ProjectName", QVariant( m_ui.ProjectNameLineEdit->text() ) );
-    settMan->setValue( m_settName, "ProjectDirectory", QVariant( m_ui.ProjectDirectoryLineEdit->text() ) );
+    settMan->setValue( m_settName, "ProjectName", name );
+    settMan->setValue( m_settName, "ProjectDirectory", dir );
 }
