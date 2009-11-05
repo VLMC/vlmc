@@ -46,9 +46,6 @@ SOURCES += src/main.cpp \
     src/GUI/PreviewWidget.cpp \
     src/GUI/PreviewRuler.cpp \
     src/Renderer/WorkflowRenderer.cpp \
-    src/API/vlmc_module_variables.cpp \
-    src/API/Module.cpp \
-    src/API/ModuleManager.cpp \
     src/Renderer/WorkflowFileRenderer.cpp \
     src/GUI/UndoStack.cpp \
     src/Metadata/MetaDataManager.cpp \
@@ -119,10 +116,6 @@ HEADERS += src/GUI/MainWindow.h \
     src/Renderer/WorkflowRenderer.h \
     src/Renderer/GenericRenderer.h \
     src/Tools/Toggleable.hpp \
-    src/API/vlmc_module.h \
-    src/API/Module.h \
-    src/API/ModuleManager.h \
-    src/API/vlmc_module_internal.h \
     src/Renderer/WorkflowFileRenderer.h \
     src/vlmc.h \
     src/Tools/Pool.hpp \
@@ -210,7 +203,6 @@ INCLUDEPATH += src/LibVLCpp \
 LIBS += -L/usr/local/lib \
     -lvlc \
     $$[VLMC_ADDITIONAL_LIBS]
-SUBDIRS += modules
 DEFINES += VLMC_VERSION="$$VERSION"
 CODECFORTR = UTF-8
 include(locale.pri)
