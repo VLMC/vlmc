@@ -36,8 +36,15 @@ class   PreferenceWidget : public QWidget
         PreferenceWidget( QWidget* parent = 0 );
         virtual ~PreferenceWidget() {}
 
+        void            setDefaults( bool defaults );
+        void            setName( const QString& name );
+
         virtual void    load() = 0;
-        virtual void    save( QHash<QString, QVariant>& settings ) = 0;
+        virtual void    save() = 0;
+
+    private:
+        bool            m_defaults;
+        QString         m_settName;
 };
 
 #endif

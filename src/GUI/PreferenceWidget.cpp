@@ -26,6 +26,18 @@
 
 
 PreferenceWidget::PreferenceWidget( QWidget* parent )
-    : QWidget( parent )
+    : QWidget( parent ),
+    m_defaults( false ),
+    m_settName( "" )
 {
+}
+
+void    PreferenceWidget::setDefaults( bool defaults )
+{
+    m_defaults = defaults;
+}
+
+void    PreferenceWidget::setName( const QString& name )
+{
+    m_settName = name;
 }

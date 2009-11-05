@@ -5,6 +5,7 @@
 
 void    VLMCSettingsDefault::load( void )
 {
+    SettingsManager::getInstance()->addNewSettingsPart( "default" );
     VLMCSettingsDefault::loadVLMCDefaults();
     VLMCSettingsDefault::loadlanguageDefaults();
 

@@ -48,7 +48,7 @@ void    ProjectPreferences::load()
     //m_ui.ProjectDirectoryLineEdit->setText( Dir );
 }
 
-void    ProjectPreferences::save( QHash<QString, QVariant>& settings )
+void    ProjectPreferences::save()
 {
     //settings.insert( "ProjectName", QVariant( m_ui.ProjectNameLineEdit->text() ) );
     //settings.insert( "ProjectDirectory", QVariant( m_ui.ProjectDirectoryLineEdit->text() ) );

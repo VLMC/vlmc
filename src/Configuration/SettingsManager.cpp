@@ -143,8 +143,13 @@ void  SettingsManager::loadSettings( const QDomElement& settings )
 
 void  SettingsManager::addNewSettingsPart( const QString& name )
 {
-    QWriteLocker    lock( &m_globalLock );
-    m_data.insert( name, new SettingsPart );
+    QReadLocker rLock( &m_globalLock );
+    if ( !m_data.contains( name ) )
+    {
+        rLock.unlock();
+        QWriteLocker    lock( &m_globalLock );
+        m_data.insert( name, new SettingsPart );
+    }
 }
 
 void  SettingsManager::loadDefaultsSettings()

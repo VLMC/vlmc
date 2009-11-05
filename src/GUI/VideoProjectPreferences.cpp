@@ -45,7 +45,7 @@ void    VideoProjectPreferences::load()
 //    m_ui.WidthSpinBox->setValue( projectWidth );
 }
 
-void    VideoProjectPreferences::save( QHash<QString, QVariant>& settings )
+void    VideoProjectPreferences::save()
 {
 //    settings.insert( "VideoProjectFPS", QVariant( m_ui.FPSSpinBox->value() ) );
 //    settings.insert( "VideoProjectHeight", QVariant( m_ui.HeightSpinBox->value() ) );

@@ -46,7 +46,7 @@ void    VLMCPreferences::load()
 //
 }
 
-void    VLMCPreferences::save( QHash<QString, QVariant>& settings )
+void    VLMCPreferences::save()
 {
 //    settings.insert( "VLMCOutPutFPS", QVariant( m_ui.outputFPS->text() ) );
 //    settings.insert( "VLMCPreviewFPS", QVariant( m_ui.previewFPS->text() ) );

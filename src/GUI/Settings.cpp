@@ -37,24 +37,18 @@
 #include "Panel.h"
 
 
-Settings::Settings( bool loadDefaults, QWidget* parent, Qt::WindowFlags f )
+Settings::Settings( bool loadDefaults,
+                    const QString& name,
+                    QWidget* parent,
+                    Qt::WindowFlags f )
 : QDialog( parent, f ),
     m_currentWidget( NULL ),
-    m_defaults( loadDefaults )
+    m_defaults( loadDefaults ),
+    m_name( name )
 {
     m_panel = new Panel( this );
     m_stackedWidgets = new QStackedWidget( this );
-    QObject::connect( m_panel,
-            SIGNAL( changePanel( int ) ),
-            SLOT( switchWidget( int ) ) );
-    QObject::connect( this,
-            SIGNAL( widgetSwitched( int ) ),
-            m_stackedWidgets,
-            SLOT( setCurrentIndex( int ) ));
-    QObject::connect( SettingsManager::getInstance(),
-                        SIGNAL( settingsLoaded() ),
-                        this,
-                        SLOT( load() ) );
+    SettingsManager::getInstance()->addNewSettingsPart( m_name );
 }
 
 Settings::~Settings()
@@ -92,6 +86,20 @@ void        Settings::build()
     hLayout->insertLayout( 1, buildRightHLayout() );
 }
 
+void        Settings::connect( void )
+{
+    QObject::connect( m_panel,
+            SIGNAL( changePanel( int ) ),
+            SLOT( switchWidget( int ) ) );
+    QObject::connect( this,
+            SIGNAL( widgetSwitched( int ) ),
+            m_stackedWidgets,
+            SLOT( setCurrentIndex( int ) ));
+    QObject::connect( SettingsManager::getInstance(),
+                        SIGNAL( settingsLoaded() ),
+                        this,
+                        SLOT( load() ) );
+}
 
 QVBoxLayout*    Settings::buildRightHLayout()
 {
@@ -141,6 +149,7 @@ void    Settings::buttonClicked( QAbstractButton* button )
             break;
         case QDialogButtonBox::Cancel :
             hide = true;
+            load();
             break;
         case QDialogButtonBox::Apply :
             save = true;
@@ -152,18 +161,13 @@ void    Settings::buttonClicked( QAbstractButton* button )
     {
         qDebug() << "Saving Preferences";
         //Save Settings
-        QHash<QString, QVariant>	sett;
         PreferenceWidget*		widg;
 
         foreach( widg, m_pWidgets )
-            widg->save( sett );
-        qDebug() << sett;
-        //SettingsManager::getInstance()->setValues( sett );
+            widg->save();
     }
     if ( hide == true )
-    {
         setVisible( false );
-    }
 }
 
 void    Settings::switchWidget( int widget )
@@ -181,5 +185,5 @@ void    Settings::load()
 {
     PreferenceWidget*   pwidg;
     foreach( pwidg, m_pWidgets )
-        pwidg->load();
+        pwidg->load( );
 }

@@ -3,6 +3,7 @@
 
 void    ProjectSettingsDefault::load( void )
 {
+    SettingsManager::getInstance()->addNewSettingsPart( "default" );
     ProjectSettingsDefault::loadAudioDefaults();
     ProjectSettingsDefault::loadVideoDefaults();
     ProjectSettingsDefault::loadProjectDefaults();
