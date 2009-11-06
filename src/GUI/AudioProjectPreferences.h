@@ -35,7 +35,7 @@ class AudioProjectPreferences : public PreferenceWidget
         AudioProjectPreferences( QWidget *parent = 0 );
         ~AudioProjectPreferences();
         void    load();
-        void    save( QHash<QString, QVariant>& settings );
+        void    save();
     private:
         Ui::AudioProjectPreferences m_ui;
 };

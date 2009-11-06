@@ -38,23 +38,19 @@
 #include "Panel.h"
 
 
-Settings::Settings( QWidget* parent, Qt::WindowFlags f )
+Settings::Settings( bool loadDefaults,
+                    const QString& name,
+                    QWidget* parent,
+                    Qt::WindowFlags f )
 : QDialog( parent, f ),
-    m_currentWidget( NULL )
+    m_currentWidget( NULL ),
+    m_defaults( loadDefaults ),
+    m_name( name )
 {
     m_panel = new Panel( this );
     m_stackedWidgets = new QStackedWidget( this );
-    QObject::connect( m_panel,
-            SIGNAL( changePanel( int ) ),
-            SLOT( switchWidget( int ) ) );
-    QObject::connect( this,
-            SIGNAL( widgetSwitched( int ) ),
-            m_stackedWidgets,
-            SLOT( setCurrentIndex( int ) ));
-    QObject::connect( SettingsManager::getInstance(),
-                        SIGNAL( settingsLoaded() ),
-                        this,
-                        SLOT( load() ) );
+    SettingsManager::getInstance()->addNewSettingsPart( m_name );
+    connect();
 }
 
 Settings::~Settings()
@@ -71,6 +67,10 @@ void        Settings::addWidget( const QString& name,
 {
     m_stackedWidgets->addWidget( pWidget );
 
+    QObject::connect( this,
+                      SIGNAL( loadSettings( const QString&, bool ) ) ,
+                      pWidget,
+                      SLOT( loadThemAll( const QString&, bool ) ) );
     int idx = m_stackedWidgets->indexOf( pWidget );
     m_widgets.insert( idx, name );
     m_pWidgets.push_back( pWidget );
@@ -89,8 +89,36 @@ void        Settings::build()
     //TODO : change the size of the widgets to make it look cleaner
     hLayout->addWidget( m_panel );
     hLayout->insertLayout( 1, buildRightHLayout() );
+    load();
 }
 
+void        Settings::show( const QString& part )
+{
+    if ( part == "default" )
+        m_defaults = true;
+    else
+    {
+        m_name = part;
+        m_defaults = false;
+    }
+    load();
+    QWidget::show();
+}
+
+void        Settings::connect( void )
+{
+    QObject::connect( m_panel,
+            SIGNAL( changePanel( int ) ),
+            SLOT( switchWidget( int ) ) );
+    QObject::connect( this,
+            SIGNAL( widgetSwitched( int ) ),
+            m_stackedWidgets,
+            SLOT( setCurrentIndex( int ) ));
+    QObject::connect( SettingsManager::getInstance(),
+                        SIGNAL( settingsLoaded() ),
+                        this,
+                        SLOT( load() ) );
+}
 
 QVBoxLayout*    Settings::buildRightHLayout()
 {
@@ -150,17 +178,13 @@ void    Settings::buttonClicked( QAbstractButton* button )
     if ( save == true )
     {
         //Save Settings
-        QHash<QString, QVariant>	sett;
         PreferenceWidget*		widg;
 
         foreach( widg, m_pWidgets )
-            widg->save( sett );
-        SettingsManager::getInstance()->setValues( sett );
+            widg->save();
     }
     if ( hide == true )
-    {
         setVisible( false );
-    }
 }
 
 void    Settings::switchWidget( int widget )
@@ -176,7 +200,5 @@ void    Settings::switchWidget( int widget )
 
 void    Settings::load()
 {
-    PreferenceWidget*   pwidg;
-    foreach( pwidg, m_pWidgets )
-        pwidg->load();
+    emit loadSettings( m_name, m_defaults );
 }

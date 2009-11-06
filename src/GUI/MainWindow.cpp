@@ -50,6 +50,8 @@
 #include "ProjectManager.h"
 #include "AudioProjectPreferences.h"
 #include "VideoProjectPreferences.h"
+#include "VLMCSettingsDefault.h"
+#include "ProjectSettingsDefault.h"
 #include "VLMCPreferences.h"
 #include "Import.h"
 #include "MediaLibraryWidget.h"
@@ -61,6 +63,9 @@ MainWindow::MainWindow( QWidget *parent ) :
     DockWidgetManager::instance( this )->setMainWindow( this );
     initializeDockWidgets();
     createStatusBar();
+    loadDefaults();
+    VLMCSettingsDefault::load( "default" );
+    VLMCSettingsDefault::load( "VLMC" );
     createGlobalPreferences();
     createProjectPreferences();
 
@@ -303,7 +308,7 @@ void MainWindow::initializeDockWidgets( void )
 
 void        MainWindow::createGlobalPreferences()
 {
-    m_globalPreferences = new Settings( this );
+    m_globalPreferences = new Settings( false, "VLMC", this );
     m_globalPreferences->addWidget("VLMC",
                                    new VLMCPreferences( m_globalPreferences ),
                                    "../images/vlmc.png",
@@ -313,9 +318,8 @@ void        MainWindow::createGlobalPreferences()
 
 void	    MainWindow::createProjectPreferences()
 {
-    m_projectPreferences = new Settings(  );
-
-    m_projectPreferences->addWidget( "Project",
+    m_projectPreferences = new Settings( false, "project", this );
+    m_projectPreferences->addWidget("Project",
                                    new ProjectPreferences,
                                    ":/images/images/vlmc",
                                    "Project settings" );
@@ -330,6 +334,14 @@ void	    MainWindow::createProjectPreferences()
     m_projectPreferences->build();
 }
 
+void        MainWindow::loadDefaults()
+{
+    VLMCSettingsDefault::load( "default" );
+    VLMCSettingsDefault::load( "VLMC" );
+    ProjectSettingsDefault::load( "default" );
+    ProjectSettingsDefault::load( "project" );
+}
+
 //Private slots definition
 
 void MainWindow::on_actionQuit_triggered()
@@ -339,7 +351,7 @@ void MainWindow::on_actionQuit_triggered()
 
 void MainWindow::on_actionPreferences_triggered()
 {
-   m_globalPreferences->show();
+   m_projectPreferences->show();
 }
 
 void MainWindow::on_actionAbout_triggered()
@@ -443,5 +455,5 @@ void MainWindow::on_actionBypass_effects_engine_toggled(bool toggled)
 
 void MainWindow::on_actionProject_Preferences_triggered()
 {
-    m_projectPreferences->show();
+  m_projectPreferences->show( "project" );
 }

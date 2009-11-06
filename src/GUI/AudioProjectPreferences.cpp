@@ -25,25 +25,28 @@
 
 #include "QDebug"
 
-	AudioProjectPreferences::AudioProjectPreferences( QWidget *parent )
-: PreferenceWidget( parent )
+AudioProjectPreferences::AudioProjectPreferences( QWidget *parent )
+    : PreferenceWidget( parent )
 {
-	m_ui.setupUi( this );
+    m_ui.setupUi( this );
 }
 
 AudioProjectPreferences::~AudioProjectPreferences() { }
 
 void    AudioProjectPreferences::load()
 {
-    qDebug() << "Loading preferences : Audio";
-    int sampleRate = SettingsManager::getInstance()->getValue( "AudioSampleRate" ).toInt();
+    SettingsManager* setMan = SettingsManager::getInstance();
+    const QString& part = m_defaults ? "default" : m_settName;
+    int sampleRate = setMan->getValue( part, "AudioSampleRate" ).toInt();
     m_ui.SampleRate->setValue( sampleRate );
 
     return ;
 }
 
-void    AudioProjectPreferences::save( QHash<QString, QVariant>& settings )
+void    AudioProjectPreferences::save()
 {
-    settings.insert( "AudioSampleRate", m_ui.SampleRate->value() );
+    SettingsManager* setMan = SettingsManager::getInstance();
+    QVariant    sampleRate( m_ui.SampleRate->value() );
+    setMan->setValue( m_settName, "AudioSampleRate", sampleRate );
     return ;
 }

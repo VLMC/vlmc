@@ -33,6 +33,18 @@
 
 #include "QSingleton.hpp"
 
+struct  SettingsPart
+{
+    SettingsPart() {}
+    QHash<QString, QVariant>    m_data;
+    mutable QReadWriteLock      m_lock;
+    bool                        m_rdOnly;
+
+    private:
+        SettingsPart( const SettingsPart& );
+        SettingsPart&   operator =( const SettingsPart& );
+};
+
 
 class   SettingsManager : public QObject, public QSingleton<SettingsManager>
 {
@@ -41,18 +53,20 @@ class   SettingsManager : public QObject, public QSingleton<SettingsManager>
 
     friend class QSingleton<SettingsManager>;
     public:
+        void                setValues( const QString& part, QHash<QString, QVariant> );
+        void                setValue( const QString& part, const QString& key, QVariant& value );
+        const QVariant&     getValue( const QString& part, const QString& key ) const;
+        void                saveSettings( const QString& part, QDomDocument& xmlfile, QDomElement& root );
+        void                loadSettings( const QString& part, const QDomElement& settings );
+        void                addNewSettingsPart( const QString& name );
+        static void         loadDefaultsSettings();
 
-        void                setValues( QHash<QString, QVariant> );
-        void                setValue( const QString& key, QVariant& value );
-        const QVariant      getValue( const QString& key ) const;
-        void                saveSettings( QDomDocument& xmlfile, QDomElement& root );
-        void                loadSettings( const QDomElement& settings );
     private:
         SettingsManager( QObject* parent = 0 );
         ~SettingsManager();
 
-        QHash<QString, QVariant>            m_data;
-        mutable QReadWriteLock              m_lock;
+        QHash<QString, SettingsPart*>            m_data;
+        mutable QReadWriteLock                  m_globalLock;
 
     signals:
         void                settingsLoaded();
