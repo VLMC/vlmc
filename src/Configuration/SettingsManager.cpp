@@ -61,7 +61,6 @@ void  SettingsManager::setValues( const QString& part, QHash<QString, QVariant> 
 
 void  SettingsManager::setValue( const QString& part , const QString& key, QVariant& value )
 {
-    //qDebug() << "Setting value " << key << "for" << part;
     m_globalLock.lockForRead();
     if ( !m_data.contains( part ) )
     {
@@ -76,7 +75,6 @@ void  SettingsManager::setValue( const QString& part , const QString& key, QVari
 
 const QVariant&   SettingsManager::getValue( const QString& part, const QString& key ) const
 {
-    //qDebug() << "getValue" << part << " key :" << key;
     if ( !m_data.contains( part ) )
         return getValue( "default", key );
     QReadLocker readLock( &m_globalLock );
@@ -113,7 +111,6 @@ void  SettingsManager::saveSettings( const QString& part, QDomDocument& xmlfile,
 
 void  SettingsManager::loadSettings( const QString& part, const QDomElement& settings )
 {
-    qDebug() << "Loading settings" << settings.tagName();
     if ( settings.isNull() == true || settings.tagName() != "project" )
     {
         qWarning() << "Invalid settings node";

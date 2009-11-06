@@ -46,7 +46,6 @@ void    PreferenceWidget::setName( const QString& name )
 void    PreferenceWidget::loadThemAll( const QString& part,
                                     bool defaults)
 {
-    qDebug() << "part :" << part << "defaults" << defaults;
     m_defaults = defaults;
     m_settName = part;
     load();

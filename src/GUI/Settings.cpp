@@ -64,7 +64,6 @@ void        Settings::addWidget( const QString& name,
         const QString& icon,
         const QString& label )
 {
-    qDebug() << "Adding Widget" << m_name << " default" << m_defaults;
     m_stackedWidgets->addWidget( pWidget );
 
     QObject::connect( this,

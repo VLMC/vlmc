@@ -51,7 +51,6 @@ void    ProjectPreferences::load()
 
 void    ProjectPreferences::save()
 {
-    qDebug() << "save proj" << m_settName;
     SettingsManager* settMan = SettingsManager::getInstance();
     QVariant name( m_ui.ProjectNameLineEdit->text() );
     QVariant dir( m_ui.ProjectDirectoryLineEdit->text() );
