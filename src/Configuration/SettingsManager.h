@@ -38,6 +38,7 @@ struct  SettingsPart
     SettingsPart() {}
     QHash<QString, QVariant>    m_data;
     mutable QReadWriteLock      m_lock;
+    bool                        m_rdOnly;
 
     private:
         SettingsPart( const SettingsPart& );

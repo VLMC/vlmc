@@ -36,7 +36,7 @@ VLMCPreferences::~VLMCPreferences() { }
 void    VLMCPreferences::load()
 {
     SettingsManager* settMan = SettingsManager::getInstance();
-    const QString& part = m_defaults ? "defaults" : m_settName;
+    const QString& part = m_defaults ? "default" : m_settName;
 
     QString  outputFPS = settMan->getValue( part, "VLMCOutPutFPS" ).toString();
     QString  previewFPS = settMan->getValue( part, "VLMCPreviewFPS" ).toString();

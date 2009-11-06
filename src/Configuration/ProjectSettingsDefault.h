@@ -4,12 +4,12 @@
 class ProjectSettingsDefault
 {
     public:
-        static void load( void );
+        static void load( const QString& part );
 
     private:
-        static void loadAudioDefaults( void );
-        static void loadVideoDefaults( void );
-        static void loadProjectDefaults( void );
+        static void loadAudioDefaults( const QString& part );
+        static void loadVideoDefaults( const QString& part );
+        static void loadProjectDefaults( const QString& part );
 
     private:
         ProjectSettingsDefault();

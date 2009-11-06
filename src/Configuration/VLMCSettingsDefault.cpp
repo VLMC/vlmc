@@ -3,34 +3,34 @@
 #include "VLMCSettingsDefault.h"
 #include "SettingsManager.h"
 
-void    VLMCSettingsDefault::load( void )
+void    VLMCSettingsDefault::load( const QString& part )
 {
-    SettingsManager::getInstance()->addNewSettingsPart( "default" );
-    VLMCSettingsDefault::loadVLMCDefaults();
-    VLMCSettingsDefault::loadlanguageDefaults();
+    SettingsManager::getInstance()->addNewSettingsPart( part );
+    VLMCSettingsDefault::loadVLMCDefaults( part );
+    VLMCSettingsDefault::loadlanguageDefaults( part );
 
     return ;
 }
 
-void    VLMCSettingsDefault::loadVLMCDefaults( void )
+void    VLMCSettingsDefault::loadVLMCDefaults( const QString& part )
 {
     SettingsManager*  settingsMan = SettingsManager::getInstance();
     QVariant defaultOutputPFS = "25";
     QVariant defaultPreviewFPS = "25";
     QVariant defaultTrackNb = "64";
 
-    settingsMan->setValue( "default",
+    settingsMan->setValue( part,
                            "VLMCOutPutFPS", defaultOutputPFS  );
-    settingsMan->setValue( "default",
+    settingsMan->setValue( part,
                            "VLMCPreviewFPS",
                            defaultPreviewFPS  );
-    settingsMan->setValue( "default",
+    settingsMan->setValue( part,
                            "VLMCTracksNb",
                            defaultTrackNb  );
 
     return ;
 }
 
-void    VLMCSettingsDefault::loadlanguageDefaults( void )
+void    VLMCSettingsDefault::loadlanguageDefaults( const QString& part )
 {
 }

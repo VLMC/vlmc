@@ -53,6 +53,7 @@ class   Settings : public QDialog
                                         const QString& icon,
                                         const QString& label );
         void                build();
+        void                show( const QString& part = "default" );
 
     private:
         void            connect( void );
@@ -80,6 +81,7 @@ class   Settings : public QDialog
 
     signals:
         void    widgetSwitched( int widget );
+        void    loadSettings( const QString& part, bool defaults );
 };
 
 #endif /* !SIMPLEPREFERENCES_H */

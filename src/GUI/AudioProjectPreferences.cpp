@@ -36,7 +36,7 @@ AudioProjectPreferences::~AudioProjectPreferences() { }
 void    AudioProjectPreferences::load()
 {
     SettingsManager* setMan = SettingsManager::getInstance();
-    const QString& part = m_defaults ? "defaults" : m_settName;
+    const QString& part = m_defaults ? "default" : m_settName;
     int sampleRate = setMan->getValue( part, "AudioSampleRate" ).toInt();
     m_ui.SampleRate->setValue( sampleRate );
 

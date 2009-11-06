@@ -125,7 +125,8 @@ HEADERS += src/GUI/MainWindow.h \
     src/Project/ProjectManager.h \
     src/Configuration/SettingsManager.h \
     src/Configuration/VLMCSettingsDefault.h \
-    src/Configuration/ProjectSettingsDefault.h
+    src/Configuration/ProjectSettingsDefault.h \
+    src/GUI/PreferenceWidget.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \

@@ -32,6 +32,7 @@
 
 class   PreferenceWidget : public QWidget
 {
+    Q_OBJECT
     public:
         PreferenceWidget( QWidget* parent = 0 );
         virtual ~PreferenceWidget() {}
@@ -45,6 +46,10 @@ class   PreferenceWidget : public QWidget
     protected:
         bool            m_defaults;
         QString         m_settName;
+
+    protected slots:
+        void            loadThemAll( const QString& part = "default",
+                                   bool defaults = false );
 };
 
 #endif

@@ -61,9 +61,12 @@ void  SettingsManager::setValues( const QString& part, QHash<QString, QVariant> 
 
 void  SettingsManager::setValue( const QString& part , const QString& key, QVariant& value )
 {
+    //qDebug() << "Setting value " << key << "for" << part;
     m_globalLock.lockForRead();
     if ( !m_data.contains( part ) )
+    {
         addNewSettingsPart( part );
+    }
     m_globalLock.unlock();
     QWriteLocker    lock( &m_globalLock );
     SettingsPart*   tmp = m_data[part];
@@ -73,11 +76,13 @@ void  SettingsManager::setValue( const QString& part , const QString& key, QVari
 
 const QVariant&   SettingsManager::getValue( const QString& part, const QString& key ) const
 {
+    //qDebug() << "getValue" << part << " key :" << key;
     if ( !m_data.contains( part ) )
         return getValue( "default", key );
     QReadLocker readLock( &m_globalLock );
     QReadLocker rdLock( &m_data[part]->m_lock );
     QVariant&  value = m_data[part]->m_data[key];
+    qDebug() << "value" << value;
     return value;
 }
 
@@ -101,12 +106,6 @@ void  SettingsManager::saveSettings( const QString& part, QDomDocument& xmlfile,
         QDomElement elem = xmlfile.createElement( it.key() );
         elem.setAttribute( "value", it.value().toString() );
         settingsNode.appendChild( elem );
-    }
-
-    //DEBUG
-    {
-        QTextStream stream( stdout );
-        stream << settingsNode;
     }
 
     root.appendChild( settingsNode );
@@ -154,7 +153,7 @@ void  SettingsManager::addNewSettingsPart( const QString& name )
 
 void  SettingsManager::loadDefaultsSettings()
 {
-    VLMCSettingsDefault::load();
-    ProjectSettingsDefault::load();
+    VLMCSettingsDefault::load( "default" );
+    ProjectSettingsDefault::load( "default" );
 }
 

@@ -36,7 +36,7 @@ VideoProjectPreferences::~VideoProjectPreferences() { }
 void    VideoProjectPreferences::load()
 {
     SettingsManager* setMan = SettingsManager::getInstance();
-    const QString& part = m_defaults ? "defaults" : m_settName;
+    const QString& part = m_defaults ? "default" : m_settName;
     int projectFps = setMan->getValue( part, "VideoProjectFPS" ).toInt();
     int projectHeight = setMan->getValue( part, "VideoProjectHeight" ).toInt();
     int projectWidth = setMan->getValue( part, "VideoProjectWidth" ).toInt();

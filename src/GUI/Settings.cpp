@@ -49,6 +49,7 @@ Settings::Settings( bool loadDefaults,
     m_panel = new Panel( this );
     m_stackedWidgets = new QStackedWidget( this );
     SettingsManager::getInstance()->addNewSettingsPart( m_name );
+    connect();
 }
 
 Settings::~Settings()
@@ -63,9 +64,13 @@ void        Settings::addWidget( const QString& name,
         const QString& icon,
         const QString& label )
 {
-    qDebug() << "calling SettingsManager::addWidget()";
+    qDebug() << "Adding Widget" << m_name << " default" << m_defaults;
     m_stackedWidgets->addWidget( pWidget );
 
+    QObject::connect( this,
+                      SIGNAL( loadSettings( const QString&, bool ) ) ,
+                      pWidget,
+                      SLOT( loadThemAll( const QString&, bool ) ) );
     int idx = m_stackedWidgets->indexOf( pWidget );
     m_widgets.insert( idx, name );
     m_pWidgets.push_back( pWidget );
@@ -84,6 +89,20 @@ void        Settings::build()
     //TODO : change the size of the widgets to make it look cleaner
     hLayout->addWidget( m_panel );
     hLayout->insertLayout( 1, buildRightHLayout() );
+    load();
+}
+
+void        Settings::show( const QString& part )
+{
+    if ( part == "default" )
+        m_defaults = true;
+    else
+    {
+        m_name = part;
+        m_defaults = false;
+    }
+    load();
+    QWidget::show();
 }
 
 void        Settings::connect( void )
@@ -149,7 +168,6 @@ void    Settings::buttonClicked( QAbstractButton* button )
             break;
         case QDialogButtonBox::Cancel :
             hide = true;
-            load();
             break;
         case QDialogButtonBox::Apply :
             save = true;
@@ -159,7 +177,6 @@ void    Settings::buttonClicked( QAbstractButton* button )
     }
     if ( save == true )
     {
-        qDebug() << "Saving Preferences";
         //Save Settings
         PreferenceWidget*		widg;
 
@@ -183,7 +200,5 @@ void    Settings::switchWidget( int widget )
 
 void    Settings::load()
 {
-    PreferenceWidget*   pwidg;
-    foreach( pwidg, m_pWidgets )
-        pwidg->load( );
+    emit loadSettings( m_name, m_defaults );
 }

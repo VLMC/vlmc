@@ -4,11 +4,11 @@
 class VLMCSettingsDefault
 {
     public:
-        static void load( void );
+        static void load( const QString& part );
 
     private:
-        static void loadVLMCDefaults( void );
-        static void loadlanguageDefaults( void );
+        static void loadVLMCDefaults( const QString& part );
+        static void loadlanguageDefaults( const QString& part );
     private:
         VLMCSettingsDefault();
         ~VLMCSettingsDefault();

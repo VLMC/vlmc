@@ -21,6 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QtDebug>
 #include <QWidget>
 #include "PreferenceWidget.h"
 
@@ -40,4 +41,13 @@ void    PreferenceWidget::setDefaults( bool defaults )
 void    PreferenceWidget::setName( const QString& name )
 {
     m_settName = name;
+}
+
+void    PreferenceWidget::loadThemAll( const QString& part,
+                                    bool defaults)
+{
+    qDebug() << "part :" << part << "defaults" << defaults;
+    m_defaults = defaults;
+    m_settName = part;
+    load();
 }
