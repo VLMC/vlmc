@@ -111,33 +111,43 @@ void  SettingsManager::saveSettings( const QString& part, QDomDocument& xmlfile,
     root.appendChild( settingsNode );
 }
 
-void  SettingsManager::loadSettings( const QDomElement& settings )
+void  SettingsManager::loadSettings( const QString& part, const QDomElement& settings )
 {
-    //qDebug() << "Loading settings";
-    //if ( settings.isNull() == true || settings.tagName() != "settings" )
-    //{
-    //    qWarning() << "Invalid settings node";
-    //    return ;
-    //}
-    ////Loading all the settings
-    //m_globalLock.lockForWrite();
+    qDebug() << "Loading settings" << settings.tagName();
+    if ( settings.isNull() == true || settings.tagName() != "project" )
+    {
+        qWarning() << "Invalid settings node";
+        return ;
+    }
+    m_globalLock.lockForRead();
+    if ( !m_data.contains( part ) )
+    {
+        qWarning() << "These settings Does not exists";
+        return ;
+    }
+    SettingsPart*   sett = m_data[part];
+    qDebug() << sett->m_data;
+    m_globalLock.unlock();
+    //Loading all the settings
+    m_globalLock.lockForWrite();
+    sett->m_lock.lockForWrite();
+    QDomNodeList  list = settings.childNodes();
+    int           nbChild = list.size();
 
-    //QDomNodeList  list = settings.childNodes();
-    //int           nbChild = list.size();
-
-    //for ( int idx = 0; idx < nbChild; ++idx )
-    //{
-    //    QDomNamedNodeMap  attrMap = list.at( idx ).attributes();
-    //    if ( attrMap.count() > 1 )
-    //    {
-    //        qWarning() << "Invalid number of attributes for" << list.at( idx ).nodeName();
-    //        return ;
-    //    }
-    //    m_data.insert( list.at( idx ).toElement().tagName(),
-    //            QVariant( attrMap.item( 0 ).nodeValue() ));
-    //}
-    //m_lock.unlock();
-    //emit settingsLoaded();
+    for ( int idx = 0; idx < nbChild; ++idx )
+    {
+        QDomNamedNodeMap  attrMap = list.at( idx ).attributes();
+        if ( attrMap.count() > 1 )
+        {
+            qWarning() << "Invalid number of attributes for" << list.at( idx ).nodeName();
+            return ;
+        }
+        sett->m_data.insert( list.at( idx ).toElement().tagName(),
+                QVariant( attrMap.item( 0 ).nodeValue() ));
+    }
+    sett->m_lock.unlock();
+    m_globalLock.unlock();
+    emit settingsLoaded();
 }
 
 void  SettingsManager::addNewSettingsPart( const QString& name )

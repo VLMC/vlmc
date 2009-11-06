@@ -52,7 +52,7 @@ void    ProjectManager::loadProject()
 
     connect( Library::getInstance(), SIGNAL( projectLoaded() ), this, SLOT( loadTimeline() ) );
     Library::getInstance()->loadProject( root.firstChildElement( "medias" ) );
-    SettingsManager::getInstance()->loadSettings( root.firstChildElement( "settings" ) );
+    SettingsManager::getInstance()->loadSettings( "project", root.firstChildElement( "project" ) );
 }
 
 void    ProjectManager::saveProject()
@@ -68,7 +68,7 @@ void    ProjectManager::saveProject()
 
     Library::getInstance()->saveProject( doc, rootNode );
     MainWorkflow::getInstance()->saveProject( doc, rootNode );
-    //SettingsManager::getInstance()->saveSettings( doc, rootNode );
+    SettingsManager::getInstance()->saveSettings( "project", doc, rootNode );
 
     doc.appendChild( rootNode );
 

@@ -57,7 +57,7 @@ class   SettingsManager : public QObject, public QSingleton<SettingsManager>
         void                setValue( const QString& part, const QString& key, QVariant& value );
         const QVariant&     getValue( const QString& part, const QString& key ) const;
         void                saveSettings( const QString& part, QDomDocument& xmlfile, QDomElement& root );
-        void                loadSettings( const QDomElement& settings );
+        void                loadSettings( const QString& part, const QDomElement& settings );
         void                addNewSettingsPart( const QString& name );
         static void         loadDefaultsSettings();
 
