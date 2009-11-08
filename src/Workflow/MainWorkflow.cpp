@@ -208,8 +208,10 @@ void           MainWorkflow::moveClip( const QUuid& clipUuid, unsigned int oldTr
 
 Clip*       MainWorkflow::removeClip( const QUuid& uuid, unsigned int trackId, MainWorkflow::TrackType trackType )
 {
+    Clip* clip = m_tracks[trackType]->removeClip( uuid, trackId );
+    computeLength();
     emit clipRemoved( uuid, trackId, trackType );
-    return m_tracks[trackType]->removeClip( uuid, trackId );
+    return clip;
 }
 
 MainWorkflow::OutputBuffers*  MainWorkflow::getSynchroneOutput()
