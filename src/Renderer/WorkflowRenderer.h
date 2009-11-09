@@ -74,6 +74,7 @@ class   WorkflowRenderer : public GenericRenderer
         MainWorkflow*       m_mainWorkflow;
         LibVLCpp::Media*    m_media;
         bool                m_stopping;
+        float               m_outputFps;
 
     private:
         unsigned char*	    m_renderVideoFrame;

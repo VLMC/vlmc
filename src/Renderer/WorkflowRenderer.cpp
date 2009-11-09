@@ -26,9 +26,7 @@
 #include "vlmc.h"
 #include "WorkflowRenderer.h"
 #include "Timeline.h"
-
-//FIXME: remove this...
-#define OUTPUT_FPS  30
+#include "SettingsManager.h"
 
 WorkflowRenderer::WorkflowRenderer() :
             m_mainWorkflow( MainWorkflow::getInstance() ),
@@ -173,6 +171,7 @@ void        WorkflowRenderer::startPreview()
     m_isRendering = true;
     m_paused = false;
     m_stopping = false;
+    m_outputFps = SettingsManager::getInstance()->getValue( "default", "VLMCPreviewFPS" ).toDouble();
 }
 
 void        WorkflowRenderer::setPosition( float newPos )
@@ -276,13 +275,12 @@ qint64      WorkflowRenderer::getCurrentFrame() const
 
 qint64      WorkflowRenderer::getLengthMs() const
 {
-    return m_mainWorkflow->getLengthFrame() * OUTPUT_FPS * 1000;
+    return m_mainWorkflow->getLengthFrame() * getFps() * 1000;
 }
 
 float       WorkflowRenderer::getFps() const
 {
-    //Sigh :'(
-    return static_cast<float>( OUTPUT_FPS );
+    return m_outputFps;
 }
 
 /////////////////////////////////////////////////////////////////////

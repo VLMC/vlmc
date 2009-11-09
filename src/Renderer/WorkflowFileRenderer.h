@@ -41,6 +41,7 @@ public:
     static void         unlock( void* datas );
 
     void                run();
+    virtual float       getFps() const;
 private:
     const QString               m_outputFileName;
     WorkflowFileRendererDialog* m_dialog;
