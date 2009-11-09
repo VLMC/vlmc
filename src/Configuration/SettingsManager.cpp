@@ -80,7 +80,6 @@ const QVariant&   SettingsManager::getValue( const QString& part, const QString&
     QReadLocker readLock( &m_globalLock );
     QReadLocker rdLock( &m_data[part]->m_lock );
     QVariant&  value = m_data[part]->m_data[key];
-    qDebug() << "value" << value;
     return value;
 }
 
