@@ -97,36 +97,6 @@ public:
 
     virtual int type() const { return Type; }
 
-protected:
-    virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* = 0 )
-    {
-        painter->setMatrixEnabled( false );
-
-        if ( m_trackNumber == 0 )
-        {
-            QString text;
-            switch ( m_type )
-            {
-            case Video:
-                text = tr( "Video" );
-                break;
-            case Audio:
-                text = tr( "Audio" );
-                break;
-            }
-
-            QRectF mapped = mapRectToScene( boundingRect() ).adjusted( 10, 1, 0, 0 );
-            QFont textFont;
-            textFont.setItalic( true );
-            textFont.setBold( true );
-            textFont.setPixelSize( mapped.height() + 12 );
-
-            painter->setPen( QPen( palette().window().color().lighter( 125 ) ) );
-            painter->setFont( textFont );
-            painter->drawText( mapped, Qt::AlignVCenter, text );
-        }
-    }
-
 private:
     MediaType m_type;
     quint32 m_trackNumber;
