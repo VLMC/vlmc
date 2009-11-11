@@ -114,6 +114,8 @@ signals:
     void                    zoomIn();
     void                    zoomOut();
     void                    durationChanged( int duration );
+    void                    videoTrackAdded( GraphicsTrack* );
+    void                    audioTrackAdded( GraphicsTrack* );
 
 friend class Timeline;
 friend class TracksScene;

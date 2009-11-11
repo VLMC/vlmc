@@ -43,6 +43,7 @@ public:
     {
         m_type = type;
         m_trackNumber = trackNumber;
+        m_enabled = true;
 
         setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
         setContentsMargins( 0, 0, 0, 0 );
@@ -61,9 +62,24 @@ public:
         return preferredHeight();
     }
 
+    void setTrackEnabled( bool enabled )
+    {
+        m_enabled = enabled;
+    }
+
+    bool trackEnabled()
+    {
+        return m_enabled;
+    }
+
     quint32 trackNumber()
     {
         return m_trackNumber;
+    }
+
+    MediaType mediaType()
+    {
+        return m_type;
     }
 
     virtual int type() const { return Type; }
@@ -101,6 +117,7 @@ protected:
 private:
     MediaType m_type;
     quint32 m_trackNumber;
+    bool m_enabled;
 };
 
 #endif // GRAPHICSTRACK_HPP

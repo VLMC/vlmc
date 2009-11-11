@@ -26,6 +26,7 @@
 #include "vlmc.h"
 #include "ui_Timeline.h"
 #include "TracksRuler.h"
+#include "TracksControls.h"
 #include "Workflow/MainWorkflow.h"
 
 class TracksScene;
@@ -59,6 +60,7 @@ private:
     TracksView*         m_tracksView;
     TracksScene*        m_tracksScene;
     TracksRuler*        m_tracksRuler;
+    TracksControls*     m_tracksControls;
     double              m_scale;
     MainWorkflow*       m_mainWorkflow;
     static Timeline*    m_instance;

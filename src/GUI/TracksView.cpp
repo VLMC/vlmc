@@ -61,8 +61,6 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
 
     m_scene->addItem( m_cursorLine );
 
-    createLayout();
-
     connect( m_cursorLine, SIGNAL( cursorPositionChanged(qint64) ),
              this, SLOT( ensureCursorVisible() ) );
 }
@@ -110,6 +108,7 @@ void TracksView::addVideoTrack()
     m_cursorLine->setHeight( m_layout->contentsRect().height() );
     m_scene->invalidate(); // Redraw the background
     m_numVideoTrack++;
+    emit videoTrackAdded( track );
 }
 
 void TracksView::addAudioTrack()
@@ -121,6 +120,7 @@ void TracksView::addAudioTrack()
     m_cursorLine->setHeight( m_layout->contentsRect().height() );
     m_scene->invalidate(); // Redraw the background
     m_numAudioTrack++;
+    emit audioTrackAdded( track );
 }
 
 void TracksView::clear()

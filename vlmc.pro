@@ -83,7 +83,9 @@ SOURCES += src/main.cpp \
     src/EffectsEngine/MixerEffect.cpp \
     src/GUI/LCDTimecode.cpp \
     src/Configuration/VLMCSettingsDefault.cpp \
-    src/Configuration/ProjectSettingsDefault.cpp
+    src/Configuration/ProjectSettingsDefault.cpp \
+    src/GUI/TracksControls.cpp \
+    src/GUI/widgets/TrackControls.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -162,7 +164,9 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/LCDTimecode.h \
     src/Configuration/VLMCSettingsDefault.h \
     src/Configuration/ProjectSettingsDefault.h \
-    src/GUI/PreferenceWidget.h
+    src/GUI/PreferenceWidget.h \
+    src/GUI/TracksControls.h \
+    src/GUI/widgets/TrackControls.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \
@@ -179,13 +183,15 @@ FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/TagWidget.ui \
     src/GUI/Library/ui/StackViewNavController.ui \
     src/GUI/Library/ui/MediaCellView.ui \
-    src/GUI/Import/ui/ImportController.ui
+    src/GUI/Import/ui/ImportController.ui \
+    src/GUI/widgets/TrackControls.ui
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts
 RESOURCES += ressources.qrc
 INCLUDEPATH += src/LibVLCpp \
     src/GUI \
+    src/GUI/widgets \
     src/GUI/Library \
     src/GUI/Import \
     src/Tools \
