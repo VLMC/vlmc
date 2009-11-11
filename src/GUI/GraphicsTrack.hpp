@@ -26,6 +26,7 @@
 #include <QGraphicsWidget>
 #include <QPainter>
 #include <QDebug>
+#include "MainWorkflow.h"
 
 class GraphicsTrack : public QGraphicsWidget
 {
@@ -64,7 +65,19 @@ public:
 
     void setTrackEnabled( bool enabled )
     {
+        if ( enabled == m_enabled ) return;
         m_enabled = enabled;
+
+        MainWorkflow::TrackType type;
+        if ( m_type == Audio )
+            type = MainWorkflow::AudioTrack;
+        else
+            type = MainWorkflow::VideoTrack;
+
+        if ( enabled )
+            MainWorkflow::getInstance()->unmuteTrack( m_trackNumber, type );
+        else
+            MainWorkflow::getInstance()->muteTrack( m_trackNumber, type );
     }
 
     bool trackEnabled()
