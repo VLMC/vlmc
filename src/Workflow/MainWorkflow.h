@@ -157,6 +157,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                            tracksPaused();
         void                            tracksUnpaused();
         void                            tracksRenderCompleted();
+        void                            tracksEndReached();
 
     public slots:
         void                            loadProject( const QDomElement& project );

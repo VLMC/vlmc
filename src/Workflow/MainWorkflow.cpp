@@ -55,6 +55,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
         connect( m_tracks[i], SIGNAL( tracksPaused() ), this, SLOT( tracksPaused() ) );
         connect( m_tracks[i], SIGNAL( tracksUnpaused() ), this, SLOT( tracksUnpaused() ) );
         connect( m_tracks[i], SIGNAL( allTracksRenderCompleted() ), this, SLOT( tracksRenderCompleted() ) );
+        connect( m_tracks[i], SIGNAL( tracksEndReached() ), this, SLOT( tracksEndReached() ) );
     }
     m_outputBuffers = new OutputBuffers;
 
@@ -385,6 +386,14 @@ void        MainWorkflow::tracksPaused()
             return ;
     m_paused = true;
     emit mainWorkflowPaused();
+}
+
+void        MainWorkflow::tracksEndReached()
+{
+    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
+        if ( m_tracks[i]->endIsReached() == false )
+            return ;
+    emit mainWorkflowEndReached();
 }
 
 void        MainWorkflow::tracksUnpaused()

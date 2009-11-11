@@ -60,6 +60,7 @@ class   TrackHandler : public QObject
         void                    setFullSpeedRender( bool value );
 
         bool                    isPaused() const;
+        bool                    endIsReached() const;
         bool                    allTracksRendered() const;
 
         void                    save( QDomDocument& doc, QDomElement& timelineNode ) const;
@@ -81,6 +82,7 @@ class   TrackHandler : public QObject
         QMutex*                         m_nbTracksToRenderMutex;
         void*                           m_synchroneRenderingBuffer;
         bool                            m_paused;
+        bool                            m_endReached;
         /**
          *  \brief  This flag is used to know if all tracks handled
          *          have been rendered.
@@ -100,6 +102,7 @@ class   TrackHandler : public QObject
         void                            tracksPaused();
         void                            tracksUnpaused();
         void                            allTracksRenderCompleted();
+        void                            tracksEndReached();
 };
 
 #endif // TRACKHANDLER_H

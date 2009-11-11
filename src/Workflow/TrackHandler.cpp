@@ -73,6 +73,7 @@ void        TrackHandler::addClip( Clip* clip, unsigned int trackId, qint64 star
 void        TrackHandler::startRender()
 {
     m_paused = false;
+    m_endReached = false;
     for ( unsigned int i = 0; i < m_trackCount; ++i )
         activateTrack( i );
     computeLength();
@@ -244,6 +245,11 @@ bool        TrackHandler::isPaused() const
     return m_paused;
 }
 
+bool        TrackHandler::endIsReached() const
+{
+    return m_endReached;
+}
+
 bool        TrackHandler::allTracksRendered() const
 {
     return m_renderCompleted;
@@ -258,8 +264,8 @@ void        TrackHandler::trackEndReached( unsigned int trackId )
         if ( m_tracks[i].activated() == true )
             return ;
     }
-    //FIXME::
-    //emit mainWorkflowEndReached();
+    m_endReached = true;
+    emit tracksEndReached();
 }
 
 void        TrackHandler::trackPaused()

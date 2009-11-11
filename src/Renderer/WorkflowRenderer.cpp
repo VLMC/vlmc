@@ -73,7 +73,6 @@ WorkflowRenderer::WorkflowRenderer() :
              this, SLOT( timelineCursorChanged(qint64) ) );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ) );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowUnpaused() ), this, SLOT( mainWorkflowUnpaused() ) );
-
 }
 
 
