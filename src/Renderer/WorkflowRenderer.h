@@ -40,7 +40,19 @@ class   WorkflowRenderer : public GenericRenderer
         enum    Actions
         {
             Pause,
+            AddClip,
+            RemoveClip,
             //Unpause,
+        };
+        struct  StackedAction
+        {
+            StackedAction( Actions act ) : action( act ), trackId( -1 ), clip( NULL ) {}
+            Actions                     action;
+            QUuid                       uuid;
+            uint32_t                    trackId;
+            MainWorkflow::TrackType     trackType;
+            Clip*                       clip;
+            qint64                      startingPos;
         };
         WorkflowRenderer();
         ~WorkflowRenderer();
@@ -58,11 +70,12 @@ class   WorkflowRenderer : public GenericRenderer
         virtual qint64      getLengthMs() const;
         virtual qint64      getCurrentFrame() const;
         virtual float       getFps() const;
+        void                addClip( Clip* clip, uint32_t trackNumber, qint64 startingPos, MainWorkflow::TrackType trackType );
+        void                removeClip( const QUuid& uuid, uint32_t trackId, MainWorkflow::TrackType trackType );
 
         static void*        lock( void* datas );
         static void*        lockAudio( void* datas );
         static void         unlock( void* datas );
-
     private:
         void                internalPlayPause( bool forcePause );
         void                pauseMainWorkflow();
@@ -79,8 +92,8 @@ class   WorkflowRenderer : public GenericRenderer
     private:
         unsigned char*	    m_renderVideoFrame;
         unsigned char*	    m_renderAudioSample;
-        QStack<Actions>     m_actions;
-        QReadWriteLock*     m_actionsLock;
+        QStack<StackedAction*>     m_actions;
+        QMutex*             m_actionsMutex;
         bool                m_pauseAsked;
         bool                m_unpauseAsked;
         QMutex*             m_condMutex;

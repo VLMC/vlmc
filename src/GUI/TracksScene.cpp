@@ -73,7 +73,7 @@ void TracksScene::keyPressEvent( QKeyEvent* keyEvent )
             clipsinfos.append( ai );
         }
 
-        Commands::trigger( new Commands::MainWorkflow::RemoveClips( tv->m_mainWorkflow,
+        Commands::trigger( new Commands::MainWorkflow::RemoveClips( tv->m_renderer,
                                                                     clipsinfos ) );
     }
 

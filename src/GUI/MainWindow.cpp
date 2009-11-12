@@ -61,6 +61,7 @@ MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
 {
     m_ui.setupUi( this );
+    qRegisterMetaType<MainWorkflow::TrackType>( "MainWorkflow::TrackType" );
     DockWidgetManager::instance( this )->setMainWindow( this );
     initializeDockWidgets();
     createStatusBar();
@@ -269,7 +270,8 @@ void MainWindow::createStatusBar()
 
 void MainWindow::initializeDockWidgets( void )
 {
-    m_timeline = new Timeline( this );
+    WorkflowRenderer*    workflowRenderer = new WorkflowRenderer();
+    m_timeline = new Timeline( workflowRenderer, this );
     m_timeline->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_timeline->show();
     setCentralWidget( m_timeline );
@@ -290,7 +292,7 @@ void MainWindow::initializeDockWidgets( void )
     QShortcut*  clipShortcut = new QShortcut( QKeySequence( tr( "Ctrl+Return", "Start clip preview" ) ), this );
     connect( clipShortcut, SIGNAL( activated() ), m_clipPreview, SLOT( on_pushButtonPlay_clicked() ) );
 
-    m_projectPreview = new PreviewWidget( new WorkflowRenderer(), this );
+    m_projectPreview = new PreviewWidget( workflowRenderer, this );
     dockManager->addDockedWidget( m_projectPreview,
                                   tr( "Project Preview" ),
                                   Qt::AllDockWidgetAreas,

@@ -30,7 +30,7 @@ GreenFilterEffect::GreenFilterEffect() : GenericEffect(
 					   GreenFilterEffect::m_videoInputsNames, GreenFilterEffect::m_nbVideoInputs,
 					   GreenFilterEffect::m_videoOutputsNames, GreenFilterEffect::m_nbVideoOutputs
 					   ),
-					 m_logo(QImage(QImage("vlmc.png").scaled(100, 100, Qt::KeepAspectRatio)).rgbSwapped()),
+                                         m_logo(QImage(QImage(":/images/images/vlmc.png").scaled(100, 100, Qt::KeepAspectRatio)).rgbSwapped()),
 					 m_enabled( true )
 {
 };

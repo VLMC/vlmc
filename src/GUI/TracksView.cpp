@@ -35,8 +35,9 @@
 #include "Commands.h"
 #include "GraphicsTrack.hpp"
 
-TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidget* parent )
-        : QGraphicsView( scene, parent ), m_scene( scene ), m_mainWorkflow( mainWorkflow )
+TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, WorkflowRenderer* renderer, QWidget* parent )
+        : QGraphicsView( scene, parent ), m_scene( scene ), m_mainWorkflow( mainWorkflow ),
+        m_renderer( renderer )
 {
     //TODO should be defined by the settings
     m_tracksHeight = 25;

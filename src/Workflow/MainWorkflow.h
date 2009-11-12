@@ -54,6 +54,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
             NbTrackType,
             AudioTrack,
         };
+
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start, TrackType type );
 
         void                    startRender();
@@ -177,7 +178,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    mainWorkflowPaused();
         void                    mainWorkflowUnpaused();
         void                    clipAdded( Clip*, unsigned int, qint64, MainWorkflow::TrackType );
-        void                    clipRemoved( QUuid, unsigned int, MainWorkflow::TrackType );
+        void                    clipRemoved( Clip*, unsigned int, MainWorkflow::TrackType );
         void                    clipMoved( QUuid, unsigned int, qint64, MainWorkflow::TrackType );
         void                    cleared();
 };

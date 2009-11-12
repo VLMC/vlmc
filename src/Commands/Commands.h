@@ -30,6 +30,7 @@
 #include "UndoStack.h"
 #include "MainWorkflow.h"
 #include "Clip.h"
+#include "WorkflowRenderer.h"
 
 #define NEW_COMMAND(x)      class   x : public QUndoCommand
 
@@ -84,13 +85,13 @@ namespace Commands
         NEW_COMMAND( RemoveClips )
         {
             public:
-                RemoveClips( ::MainWorkflow* workflow, const QVector<ClipActionInfo>& clipsInfos );
+                RemoveClips( WorkflowRenderer* renderer, const QVector<ClipActionInfo>& clipsInfos );
                 virtual void redo();
                 virtual void undo();
 
             private:
-                ::MainWorkflow*             m_workflow;
-                QVector<ClipActionInfo>     m_clips;
+                WorkflowRenderer*               m_renderer;
+                QVector<ClipActionInfo>         m_clips;
         };
 
         NEW_COMMAND( ResizeClip )
