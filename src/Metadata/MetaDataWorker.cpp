@@ -81,7 +81,7 @@ void    MetaDataWorker::getMetaData()
     //Until we have a way of knowing when it is, both getWidth and getHeight method
     //will trigger exception... so we shut it up.
     LibVLCpp::Exception::setErrorCallback( LibVLCpp::Exception::silentExceptionHandler );
-    while ( m_mediaPlayer->getWidth() == 0 )
+    while ( m_mediaPlayer->hasVout() == false )
         SleepMS( 1 ); //Ugly isn't it :)
     LibVLCpp::Exception::setErrorCallback( NULL );
 

@@ -252,3 +252,10 @@ void                                MediaPlayer::nextFrame()
     libvlc_media_player_next_frame( m_internalPtr, m_ex );
     CheckVlcppException( m_ex );
 }
+
+bool                                MediaPlayer::hasVout()
+{
+    bool    res = libvlc_media_player_has_vout( m_internalPtr, m_ex );
+    CheckVlcppException( m_ex );
+    return res;
+}
