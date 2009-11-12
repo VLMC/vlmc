@@ -27,13 +27,20 @@
 #include <QPolygon>
 #include "TracksRuler.h"
 #include "TracksView.h"
+#include "SettingsManager.h"
 
 const int TracksRuler::comboScale[] = { 1, 2, 5, 10, 25, 50, 125, 250, 500, 725, 1500, 3000, 6000, 12000};
 
 TracksRuler::TracksRuler( TracksView* tracksView, QWidget* parent )
     : QWidget( parent ), m_tracksView( tracksView ), m_duration ( 0 ), m_offset( 0 )
 {
-    m_fps = 30;
+
+    //TODO We should really get that from the
+    // workflow and not directly from the settings.
+    SettingsManager* settings = SettingsManager::getInstance();
+    settings->loadDefaultsSettings();
+    m_fps = qRound( settings->getValue( "default", "VLMCPreviewFPS" ).toDouble() );
+
     m_factor = 1;
     m_scale = 3;
     m_littleMarkDistance = FRAME_SIZE;
