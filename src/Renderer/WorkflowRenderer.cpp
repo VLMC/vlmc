@@ -274,7 +274,7 @@ qint64      WorkflowRenderer::getCurrentFrame() const
 
 qint64      WorkflowRenderer::getLengthMs() const
 {
-    return m_mainWorkflow->getLengthFrame() * getFps() * 1000;
+    return m_mainWorkflow->getLengthFrame() / getFps() * 1000;
 }
 
 float       WorkflowRenderer::getFps() const
