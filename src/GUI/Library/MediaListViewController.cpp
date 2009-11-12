@@ -23,6 +23,7 @@ void        MediaListViewController::newMediaLoaded( Media* media )
 
     cell->setThumbnail( media->getSnapshot() );
     cell->setTitle( media->getFileName() );
+    cell->setLength( media->getLengthMS() );
     addCell(cell);
     m_cells->insert( media->getUuid(), cell );
 }

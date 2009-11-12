@@ -24,6 +24,8 @@
 #include "ui_MediaCellView.h"
 #include "Library.h"
 #include "ClipProperty.h"
+
+#include <QTime>
 #include <QDebug>
 
 MediaCellView::MediaCellView( const QUuid& uuid, QWidget *parent ) :
@@ -133,4 +135,11 @@ const ClickableLabel*   MediaCellView::deleteButton() const
 void        MediaCellView::deleteButtonClicked( QWidget*, QMouseEvent* )
 {
     emit cellDeleted( uuid() );
+}
+
+void        MediaCellView::setLength( qint64 length )
+{
+    QTime   duration;
+    duration = duration.addMSecs( length );
+    m_ui->length->setText( duration.toString( "hh:mm:ss" ) );
 }

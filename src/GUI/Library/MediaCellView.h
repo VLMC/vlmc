@@ -44,6 +44,11 @@ public:
     void                    setTitle( const QString& title );
     void                    setThumbnail( const QPixmap& pixmap );
     const QPixmap*          getThumbnail() const;
+    /**
+     *  \brief  Set the length displayed in the cell
+     *  \param  length  The media length, in ms.
+     */
+    void                    setLength( qint64 length );
     QString                 title() const;
     const QUuid&            uuid() const;
     const ClickableLabel*   nextButton() const;

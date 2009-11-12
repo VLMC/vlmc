@@ -131,7 +131,9 @@ void        ImportController::clipSelection( const QUuid& uuid )
 
 void        ImportController::updateMediaRequested( Media* media )
 {
-    m_mediaListController->getCell( media->getUuid() )->setThumbnail( media->getSnapshot() );
+    ImportMediaCellView*    cell = m_mediaListController->getCell( media->getUuid() );
+    cell->setThumbnail( media->getSnapshot() );
+    cell->setLength( media->getLengthMS() );
 }
 void    ImportController::setUIMetaData( Media* media )
 {
