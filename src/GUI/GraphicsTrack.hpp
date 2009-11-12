@@ -70,7 +70,9 @@ public:
 
         MainWorkflow::TrackType type;
         if ( m_type == Audio )
-            type = MainWorkflow::AudioTrack;
+            //TODO need audio support
+            //type = MainWorkflow::AudioTrack;
+            return;
         else
             type = MainWorkflow::VideoTrack;
 
