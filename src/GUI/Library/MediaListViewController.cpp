@@ -19,6 +19,7 @@ void        MediaListViewController::newMediaLoaded( Media* media )
     MediaCellView* cell = new MediaCellView( media->getUuid() );
 
     connect( cell, SIGNAL ( cellSelected( QUuid ) ), this, SLOT ( cellSelection( QUuid ) ) );
+    connect( cell, SIGNAL ( cellDeleted( QUuid ) ), this, SLOT( mediaDeletion( QUuid ) ) );
 
     cell->setThumbnail( media->getSnapshot() );
     cell->setTitle( media->getFileName() );
@@ -37,5 +38,17 @@ void    MediaListViewController::cellSelection( const QUuid& uuid )
     p.setColor( QPalette::Window, QColor( Qt::darkBlue ) );
     m_cells->value( uuid )->setPalette( p );
     m_currentUuid = uuid;
-    emit mediaSelected( Library::getInstance()->getMedia( uuid) );
+    emit mediaSelected( Library::getInstance()->getMedia( uuid ) );
+}
+
+void    MediaListViewController::mediaDeletion( const QUuid& uuid )
+{
+    emit mediaDeleted( uuid );
+}
+
+void    MediaListViewController::mediaRemoved( const QUuid& uuid )
+{
+    removeCell( m_cells->value( uuid ) );
+    m_cells->remove( uuid );
+    m_currentUuid = QUuid();
 }

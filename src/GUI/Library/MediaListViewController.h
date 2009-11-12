@@ -23,7 +23,11 @@ private:
 public slots:
     void        newMediaLoaded( Media* );
     void        cellSelection( const QUuid& uuid );
+    void        mediaDeletion( const QUuid& uuid );
+    void        mediaRemoved( const QUuid& uuid );
 signals:
     void        mediaSelected( Media* media );
+    void        mediaDeleted( const QUuid& uuid );
+
 };
 #endif // MEDIALISTVIEWCONTROLLER_H
