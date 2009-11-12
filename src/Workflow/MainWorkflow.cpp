@@ -32,8 +32,6 @@
 //FIXME: remove this !
 #include "ClipWorkflow.h"
 
-#define LOOP_MODE
-
 LightVideoFrame*     MainWorkflow::blackOutput = NULL;
 
 MainWorkflow::MainWorkflow( int trackCount ) :
@@ -148,10 +146,6 @@ void        MainWorkflow::unpause()
 void        MainWorkflow::nextFrame()
 {
     ++m_currentFrame;
-#ifdef LOOP_MODE
-    if ( m_currentFrame == m_lengthFrame )
-        m_currentFrame = 0;
-#endif
 
     emit frameChanged( m_currentFrame );
     emit positionChanged( (float)m_currentFrame / (float)m_lengthFrame );

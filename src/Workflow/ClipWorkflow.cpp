@@ -72,7 +72,9 @@ void    ClipWorkflow::checkStateChange()
 
 void    ClipWorkflow::initialize( bool preloading /*= false*/ )
 {
+//    qDebug() << "Setting state to initializing";
     setState( Initializing );
+//    qDebug() << "State is Initializing.";
     if ( m_clip->getParent()->getFileType() == Media::Image )
         m_vlcMedia = new LibVLCpp::Media( "fake://" + m_clip->getParent()->getFileInfo()->absoluteFilePath() );
     else
@@ -100,9 +102,11 @@ void    ClipWorkflow::pauseAfterPlaybackStarted()
 
 void    ClipWorkflow::loadingComplete()
 {
+//    qDebug() << "Loading complete, setting begin.";
     adjustBegin();
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( loadingComplete() ) );
     setState( Ready );
+//    qDebug() << "State is Ready";
 }
 
 void    ClipWorkflow::initializedMediaPlayer()

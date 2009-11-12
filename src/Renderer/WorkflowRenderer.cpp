@@ -28,6 +28,8 @@
 #include "Timeline.h"
 #include "SettingsManager.h"
 
+#define LOOP_MODE
+
 WorkflowRenderer::WorkflowRenderer() :
             m_mainWorkflow( MainWorkflow::getInstance() ),
             m_stopping( false ),
@@ -96,6 +98,13 @@ void*   WorkflowRenderer::lock( void* datas )
 
     if ( self->m_stopping == false )
     {
+        #ifdef LOOP_MODE
+        if ( self->m_mainWorkflow->getCurrentFrame() == self->m_mainWorkflow->getLengthFrame() )
+        {
+            self->m_mainWorkflow->stop();
+            self->m_mainWorkflow->startRender();
+        }
+        #endif
         MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getSynchroneOutput();
         memcpy( self->m_renderVideoFrame, (*(ret->video))->frame.octets, (*(ret->video))->nboctets );
         self->m_renderAudioSample = ret->audio;

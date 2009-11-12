@@ -210,6 +210,7 @@ void                TrackWorkflow::preloadClip( ClipWorkflow* cw )
 
 void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
 {
+//    qDebug() << "Stopping clip workflow";
     cw->getStateLock()->lockForRead();
 
     if ( cw->getState() == ClipWorkflow::Stopped )
