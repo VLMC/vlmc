@@ -109,7 +109,7 @@ void        Clip::computeLength()
         if ( fps < 0.1f )
             fps = FPS;
         m_length = m_end - m_begin;
-        m_lengthSeconds = m_length * fps;
+        m_lengthSeconds = m_length / fps;
         emit lengthUpdated();
     }
     else

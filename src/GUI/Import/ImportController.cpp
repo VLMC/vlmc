@@ -139,7 +139,7 @@ void    ImportController::setUIMetaData( Media* media )
     {
         //Duration
         QTime   duration;
-        duration = duration.addSecs( media->getLengthMS() );
+        duration = duration.addMSecs( media->getLengthMS() );
         m_ui->durationValueLabel->setText( duration.toString( "hh:mm:ss" ) );
         //Filename || title
         m_ui->nameValueLabel->setText( media->getFileInfo()->fileName() );
