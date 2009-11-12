@@ -124,6 +124,7 @@ class   TrackWorkflow : public QObject
         void*                                   m_synchroneRenderBuffer;
 
         MainWorkflow::TrackType                 m_trackType;
+        qint64                                  m_lastFrame;
 
     private slots:
         void                                    clipWorkflowPaused();
