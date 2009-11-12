@@ -28,11 +28,11 @@
 #include "LightVideoFrame.h"
 
 ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
-                m_clip( clip ),
                 m_mediaPlayer(NULL),
                 m_requiredState( ClipWorkflow::None ),
                 m_rendering( false ),
                 m_initFlag( false ),
+                m_clip( clip ),
                 m_state( ClipWorkflow::Stopped ),
                 m_fullSpeedRender( false )
 {
@@ -73,7 +73,10 @@ void    ClipWorkflow::checkStateChange()
 void    ClipWorkflow::initialize( bool preloading /*= false*/ )
 {
     setState( Initializing );
-    m_vlcMedia = new LibVLCpp::Media( "file://" + m_clip->getParent()->getFileInfo()->absoluteFilePath() );
+    if ( m_clip->getParent()->getFileType() == Media::Image )
+        m_vlcMedia = new LibVLCpp::Media( "fake://" + m_clip->getParent()->getFileInfo()->absoluteFilePath() );
+    else
+        m_vlcMedia = new LibVLCpp::Media( "file://" + m_clip->getParent()->getFileInfo()->absoluteFilePath() );
     initVlcOutput();
     m_mediaPlayer = Pool<LibVLCpp::MediaPlayer>::getInstance()->get();
     m_mediaPlayer->setMedia( m_vlcMedia );
@@ -110,7 +113,8 @@ void    ClipWorkflow::initializedMediaPlayer()
 
 void    ClipWorkflow::adjustBegin()
 {
-    m_mediaPlayer->setTime( m_clip->getBegin() / m_clip->getParent()->getFps() * 1000 );
+    if ( m_clip->getParent()->getFileType() == Media::Video || m_clip->getParent()->getFileType() == Media::Audio )
+        m_mediaPlayer->setTime( m_clip->getBegin() / m_clip->getParent()->getFps() * 1000 );
 }
 
 bool    ClipWorkflow::isReady() const

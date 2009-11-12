@@ -169,8 +169,6 @@ class   ClipWorkflow : public QObject
         void                    adjustBegin();
 
     private:
-        Clip*                   m_clip;
-
         LibVLCpp::MediaPlayer*  m_mediaPlayer;
 
         State                   m_requiredState;
@@ -192,6 +190,7 @@ class   ClipWorkflow : public QObject
         bool                    m_initFlag;
 
     protected:
+        Clip*                   m_clip;
         QMutex*                 m_renderLock;
         QReadWriteLock*         m_stateLock;
         QMutex*                 m_condMutex;

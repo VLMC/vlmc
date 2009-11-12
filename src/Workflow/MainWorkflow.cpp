@@ -90,7 +90,6 @@ void            MainWorkflow::addClip( Clip* clip, unsigned int trackId,
 {
     m_tracks[trackType]->addClip( clip, trackId, start );
     computeLength();
-
     //Inform the GUI
     emit clipAdded( clip, trackId, start, trackType );
 }
