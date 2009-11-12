@@ -118,7 +118,6 @@ void        TrackHandler::getOutput( qint64 currentFrame )
         ++m_nbTracksToRender;
         m_tracks[i]->getOutput( currentFrame );
     }
-//    qDebug() << "Tracks to render:" << m_nbTracksToRender;
 }
 
 void        TrackHandler::pause()
