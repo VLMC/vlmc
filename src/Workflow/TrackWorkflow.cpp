@@ -294,7 +294,6 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
 
     if ( checkEnd( currentFrame ) == true )
     {
-        qDebug() << "end of track reached";
         emit trackEndReached( m_trackId );
         //We continue, as there can be ClipWorkflow that requires to be stopped.
     }
