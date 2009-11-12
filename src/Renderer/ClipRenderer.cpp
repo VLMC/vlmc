@@ -64,9 +64,9 @@ void        ClipRenderer::setMedia( Media* media )
         m_mediaChanged = true;
     else
     {
-        setSnapshotVisibility( true );
-        m_previewLabel->setPixmap( media->getSnapshot().scaled( m_previewLabel->size(),
-                                                                            Qt::KeepAspectRatio ) );
+        //setSnapshotVisibility( true );
+        //m_previewLabel->setPixmap( media->getSnapshot().scaled( m_previewLabel->size(),
+        //                                                                    Qt::KeepAspectRatio ) );
         m_clipLoaded = false;
     }
 }
