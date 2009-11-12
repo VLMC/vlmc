@@ -85,7 +85,7 @@ Media::~Media()
 
 void        Media::setFileType()
 {
-    QString filter = "*." + m_fileInfo->suffix();
+    QString filter = "*." + m_fileInfo->suffix().toLower();
     if ( Media::VideoExtensions.contains( filter ) )
         m_fileType = Media::Video;
     else if ( Media::AudioExtensions.contains( filter ) )
