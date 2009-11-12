@@ -422,7 +422,7 @@ void TracksView::dropEvent( QDropEvent* event )
         m_dragItem->oldTrackNumber = m_dragItem->trackNumber();
         m_dragItem->oldPosition = (qint64)mappedXPos;
 
-        Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
+        Commands::trigger( new Commands::MainWorkflow::AddClip( m_renderer,
                                                                 m_dragItem->clip(),
                                                                 m_dragItem->trackNumber(),
                                                                 (qint64)mappedXPos,
@@ -720,7 +720,7 @@ void TracksView::split( GraphicsMovieItem* item, qint64 frame )
     Q_ASSERT( newclip );
 
     addMediaItem( newclip, item->trackNumber(), item->pos().x() + frame );
-    Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
+    Commands::trigger( new Commands::MainWorkflow::AddClip( m_renderer,
                                                             newclip,
                                                             item->trackNumber(),
                                                             item->pos().x() + frame,

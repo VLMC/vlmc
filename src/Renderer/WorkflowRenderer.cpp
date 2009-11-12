@@ -129,7 +129,6 @@ void        WorkflowRenderer::checkActions()
                 //This will also pause the MainWorkflow via a signal/slot
                 break ;
             case    AddClip:
-                qDebug() << "Unstacked action";
                 m_mainWorkflow->addClip( act->clip, act->trackId, act->startingPos, act->trackType );
                 break ;
             case    RemoveClip:
@@ -284,7 +283,6 @@ void        WorkflowRenderer::removeClip( const QUuid& uuid, uint32_t trackId, M
     act->trackType = trackType;
     QMutexLocker    lock( m_actionsMutex );
     m_actions.push( act );
-    qDebug() << "<<<<<<<<";
 }
 
 void        WorkflowRenderer::addClip( Clip* clip, uint32_t trackNumber, qint64 startingPos, MainWorkflow::TrackType trackType )
@@ -296,6 +294,8 @@ void        WorkflowRenderer::addClip( Clip* clip, uint32_t trackNumber, qint64 
         act->trackId = trackNumber;
         act->startingPos = startingPos;
         act->trackType = trackType;
+        QMutexLocker    lock( m_actionsMutex );
+        m_actions.push( act );
     }
     else
         m_mainWorkflow->addClip( clip, trackNumber, startingPos, trackType );

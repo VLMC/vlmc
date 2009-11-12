@@ -32,10 +32,10 @@ void Commands::trigger( QUndoCommand* command )
     UndoStack::getInstance()->push( command );
 }
 
-Commands::MainWorkflow::AddClip::AddClip( ::MainWorkflow* workflow, Clip* clip,
+Commands::MainWorkflow::AddClip::AddClip( WorkflowRenderer* renderer, Clip* clip,
                                           unsigned int trackNumber, qint64 pos,
                                           ::MainWorkflow::TrackType trackType ) :
-        m_workflow( workflow ),
+        m_renderer( renderer ),
         m_clip( clip ),
         m_trackNumber( trackNumber ),
         m_pos( pos ),
@@ -46,12 +46,12 @@ Commands::MainWorkflow::AddClip::AddClip( ::MainWorkflow* workflow, Clip* clip,
 
 void Commands::MainWorkflow::AddClip::redo()
 {
-    m_workflow->addClip( m_clip, m_trackNumber, m_pos, m_trackType );
+    m_renderer->addClip( m_clip, m_trackNumber, m_pos, m_trackType );
 }
 
 void Commands::MainWorkflow::AddClip::undo()
 {
-    m_workflow->removeClip( m_clip->getUuid(), m_trackNumber, m_trackType );
+    m_renderer->removeClip( m_clip->getUuid(), m_trackNumber, m_trackType );
 }
 
 Commands::MainWorkflow::MoveClip::MoveClip( ::MainWorkflow* workflow, const QUuid& uuid,

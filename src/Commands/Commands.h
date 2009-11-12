@@ -51,11 +51,11 @@ namespace Commands
         NEW_COMMAND( AddClip )
         {
             public:
-                AddClip( ::MainWorkflow* workflow, Clip* clip, unsigned int trackNumber, qint64 pos, ::MainWorkflow::TrackType trackType );
+                AddClip( WorkflowRenderer* renderer, Clip* clip, unsigned int trackNumber, qint64 pos, ::MainWorkflow::TrackType trackType );
                 virtual void    redo();
                 virtual void    undo();
             private:
-                ::MainWorkflow*             m_workflow;
+                WorkflowRenderer*           m_renderer;
                 Clip*                       m_clip;
                 unsigned int                m_trackNumber;
                 qint64                      m_pos;
