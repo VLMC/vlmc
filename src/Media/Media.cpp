@@ -31,7 +31,7 @@
 
 QPixmap*        Media::defaultSnapshot = NULL;
 const QString   Media::VideoExtensions = "*.mov *.avi *.mkv *.mpg *.mpeg *.wmv *.mp4";
-const QString   Media::ImageExtensions = "*.gif *.png *.jpg";
+const QString   Media::ImageExtensions = "*.gif *.png *.jpg *.jpeg";
 const QString   Media::AudioExtensions = "*.mp3 *.oga *.flac *.aac *.wav";
 const QString   Media::streamPrefix = "stream://";
 
