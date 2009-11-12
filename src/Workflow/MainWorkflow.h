@@ -51,6 +51,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         };
         enum    TrackType
         {
+            BothTrackType = -1,
             VideoTrack,
             AudioTrack,
             NbTrackType,
@@ -66,9 +67,16 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start, TrackType type );
 
         void                    startRender();
-        void                    getOutput();
-        OutputBuffers*          getSynchroneOutput();
+        void                    getOutput( TrackType trackType );
+        OutputBuffers*          getSynchroneOutput( TrackType trackType );
         EffectsEngine*          getEffectsEngine();
+
+        /**
+         *  \brief              This method is meant to make the workflow go to the next frame, only in rendering mode.
+         *                      The nextFrame() method will always go for the next frame, whereas this one only does when
+         *                      rendering isn't paused.
+         */
+        void                    goToNextFrame();
 
         /**
          *  \brief              Set the workflow position by the desired frame
@@ -155,6 +163,8 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         QMutex*                         m_renderMutex;
         QWaitCondition*                 m_synchroneRenderWaitCondition;
         QMutex*                         m_synchroneRenderWaitConditionMutex;
+        unsigned int                    m_nbTrackHandlerToRender;
+        QMutex*                         m_nbTrackHandlerToRenderMutex;
         bool                            m_paused;
         TrackHandler**                  m_tracks;
         OutputBuffers*                  m_outputBuffers;

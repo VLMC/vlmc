@@ -97,6 +97,7 @@ void*    VideoClipWorkflow::getOutput()
 
 void    VideoClipWorkflow::lock( VideoClipWorkflow* cw, void** pp_ret, int size )
 {
+    qDebug() << "Outputing video buffers. Size:" << size;
     Q_UNUSED( size );
     cw->m_renderLock->lock();
     *pp_ret = (*(cw->m_buffer))->frame.pixels;
@@ -104,6 +105,7 @@ void    VideoClipWorkflow::lock( VideoClipWorkflow* cw, void** pp_ret, int size 
 
 void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int width, int height, int bpp, int size )
 {
+    qDebug() << "size on unlock:" << size;
     Q_UNUSED( buffer );
     Q_UNUSED( width );
     Q_UNUSED( height );

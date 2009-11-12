@@ -77,7 +77,6 @@ void        AudioClipWorkflow::initVlcOutput()
 
 void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer , unsigned int size )
 {
-//    qDebug() << "<<<<<<<<<<<<<<<<<<<< state:" << cw->m_state;
     if ( cw->m_buffer->buff == NULL )
     {
         cw->m_buffer->buff = new unsigned char[size];
@@ -94,12 +93,17 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
 {
 //    qDebug() << "pts:" << pts << "nb channels" << channels << "rate:" << rate;
     Q_UNUSED( pcm_buffer );
-    Q_UNUSED( channels );
     Q_UNUSED( rate );
-    Q_UNUSED( nb_samples );
     Q_UNUSED( bits_per_sample );
     Q_UNUSED( size );
     Q_UNUSED( pts );
+
+    if ( cw->m_buffer->buff != NULL )
+    {
+        cw->m_buffer->nbSample = nb_samples;
+        cw->m_buffer->nbChannels = channels;
+    }
+
     cw->m_renderLock->unlock();
     cw->m_stateLock->lockForWrite();
 

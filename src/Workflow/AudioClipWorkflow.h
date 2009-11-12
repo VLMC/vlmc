@@ -32,6 +32,8 @@ class   AudioClipWorkflow : public ClipWorkflow
         {
             unsigned char*  buff;
             size_t          size;
+            unsigned int    nbSample;
+            unsigned int    nbChannels;
         };
         AudioClipWorkflow( Clip* clip );
         ~AudioClipWorkflow();

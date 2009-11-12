@@ -77,6 +77,9 @@ WorkflowRenderer::WorkflowRenderer() :
              (qint64)m_audioEsHandler );
     m_media->addOption( buffer );
 
+    m_media->addOption( ":vvvv" );
+
+
     m_condMutex = new QMutex;
     m_waitCond = new QWaitCondition;
 
@@ -105,25 +108,39 @@ WorkflowRenderer::~WorkflowRenderer()
 
 int     WorkflowRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigned int *flags, size_t *bufferSize, void **buffer )
 {
+    static  char    computed = 0;
+    int             ret = 1;
+
     EsHandler*  handler = reinterpret_cast<EsHandler*>( datas );
     *dts = -1;
     *flags = 0;
     if ( handler->type == Video )
-        return lockVideo( handler->self, pts, bufferSize, buffer );
+    {
+        ++computed;
+        ret = lockVideo( handler->self, pts, bufferSize, buffer );
+    }
     else if ( handler->type == Audio )
-        return lockAudio( handler->self, pts, bufferSize, buffer );
-    qWarning() << "Invalid ES type";
-    return 1;
+    {
+        ++computed;
+        ret = lockAudio( handler->self, pts, bufferSize, buffer );
+    }
+    else
+        qWarning() << "Invalid ES type";
+    if ( computed == 2 )
+    {
+        handler->self->m_mainWorkflow->goToNextFrame();
+        computed = 0;
+    }
+    return ret;
 }
 
 int     WorkflowRenderer::lockVideo( WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer )
 {
     if ( self->m_stopping == false )
     {
-        MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getSynchroneOutput();
+        MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getSynchroneOutput( MainWorkflow::VideoTrack );
         memcpy( self->m_renderVideoFrame, (*(ret->video))->frame.octets, (*(ret->video))->nboctets );
         self->m_videoBuffSize = (*(ret->video))->nboctets;
-        self->m_renderAudioSample = ret->audio;
     }
     *pts = ( self->m_pts * 1000000 ) / self->m_outputFps;
     ++self->m_pts;
@@ -135,11 +152,18 @@ int     WorkflowRenderer::lockVideo( WorkflowRenderer* self, int64_t *pts, size_
 
 int     WorkflowRenderer::lockAudio(  WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer )
 {
+    if ( self->m_paused == true )
+        return 1;
+    if ( self->m_stopping == false )
+    {
+        MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getSynchroneOutput( MainWorkflow::AudioTrack );
+        self->m_renderAudioSample = ret->audio;
+    }
     *buffer = self->m_renderAudioSample->buff;
     *bufferSize = self->m_renderAudioSample->size;
-    *pts = ( self->m_audioPts * 1000000 ) / 48000;
-//    qDebug() << ">>>" << *pts;
-    self->m_audioPts += 2; //chanel number
+    *pts = (( self->m_audioPts * 1000000 ) / 48000 ) * self->m_renderAudioSample->nbSample;
+    self->m_audioPts += self->m_renderAudioSample->nbChannels;
+    qDebug() << "Video buffer size:" << *bufferSize;
     return 0;
 }
 
