@@ -51,6 +51,7 @@ void            VideoClipWorkflow::initVlcOutput()
         sprintf( buffer, ":fake-duration=%d", IMAGE_DURATION );
         m_vlcMedia->addOption( buffer );
         sprintf( buffer, ":fake-fps=%f", m_clip->getParent()->getFps() );
+        m_vlcMedia->addOption( buffer );
     }
 //    m_vlcMedia->addOption( ":no-sout-keep" );
 
