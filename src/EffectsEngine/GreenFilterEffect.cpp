@@ -22,16 +22,17 @@
 
 #include "GreenFilterEffect.h"
 #include <QtDebug>
+#include <QTime>
 
 char const * 	GreenFilterEffect::m_videoInputsNames[] = {"in"};
 char const *	GreenFilterEffect::m_videoOutputsNames[] = {"out"};
- 
+
 GreenFilterEffect::GreenFilterEffect() : GenericEffect(
-					   GreenFilterEffect::m_videoInputsNames, GreenFilterEffect::m_nbVideoInputs,
-					   GreenFilterEffect::m_videoOutputsNames, GreenFilterEffect::m_nbVideoOutputs
-					   ),
-                                         m_logo(QImage(QImage(":/images/images/vlmc.png").scaled(100, 100, Qt::KeepAspectRatio)).rgbSwapped()),
-					 m_enabled( true )
+                       GreenFilterEffect::m_videoInputsNames, GreenFilterEffect::m_nbVideoInputs,
+                       GreenFilterEffect::m_videoOutputsNames, GreenFilterEffect::m_nbVideoOutputs
+                       ),
+                                         m_logo(QImage(QImage(":/images/images/vlmc.png").scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation)).rgbSwapped()),
+                     m_enabled( true )
 {
 };
 
@@ -48,13 +49,18 @@ void    GreenFilterEffect::render( void )
     if (tmp->frame.octets != NULL)
     {
         if (m_enabled)
-	  {
-	    QImage		img(tmp->frame.octets, 640, 480, QImage::Format_RGB888);
-	    QPainter		pouet(&img);
+      {
+        QImage		img(tmp->frame.octets, 640, 480, QImage::Format_RGB888);
+        QPainter		painter(&img);
 
-	    pouet.drawImage(530, 380, m_logo);
-	    //	    pouet.fillRect(30, 30, 100, 100, Qt::blue);
-	  }
+        painter.setRenderHint( QPainter::Antialiasing );
+        painter.drawImage(530, 380, m_logo);
+
+        painter.setFont( QFont( "verdana", 15, QFont::Bold ) );
+        painter.drawText( 500, 50, QTime::currentTime().toString( "HH:mm:ss" ) );
+
+        //	    pouet.fillRect(30, 30, 100, 100, Qt::blue);
+      }
 //             for ( i = 0; i < tmp->nbpixels; ++i )
 //             {
 //                 tmp->frame.pixels[i].Red = 0;
@@ -76,3 +82,4 @@ void	GreenFilterEffect::disable( void )
   m_enabled = false;
   return ;
 }
+
