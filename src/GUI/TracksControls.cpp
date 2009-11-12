@@ -41,11 +41,11 @@ TracksControls::TracksControls( QWidget* parent )
     m_layout->setContentsMargins( 0, 0, 0, 0 );
     m_layout->setSpacing( 0 );
 
-    QWidget* separator = new QWidget;
-    separator->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
-    separator->setMinimumHeight( 20 );
-    separator->setMaximumHeight( 20 );
-    m_layout->addWidget( separator );
+    m_separator = new QWidget;
+    m_separator->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+    m_separator->setMinimumHeight( 20 );
+    m_separator->setMaximumHeight( 20 );
+    m_layout->addWidget( m_separator );
 
     m_centralWidget->setLayout( m_layout );
     setWidget( m_centralWidget );
@@ -67,4 +67,17 @@ void TracksControls::addAudioTrack( GraphicsTrack* track )
     item->setMinimumHeight( 25 );
     item->setContentsMargins( 0, 0, 0, 0 );
     m_layout->insertWidget( -1, item );
+}
+
+void TracksControls::clear()
+{
+    m_layout->removeWidget( m_separator );
+    QLayoutItem* child;
+    while ( ( child = m_layout->takeAt( 0 ) ) != 0 )
+    {
+        if ( child->widget() )
+            delete child->widget();
+        delete child;
+    }
+    m_layout->addWidget( m_separator );
 }

@@ -37,9 +37,11 @@ public:
 public slots:
     void addVideoTrack( GraphicsTrack* track );
     void addAudioTrack( GraphicsTrack* track );
+    void clear();
 
 private:
     QWidget* m_centralWidget;
+    QWidget* m_separator;
     QVBoxLayout* m_layout;
 };
 

@@ -74,6 +74,7 @@ Timeline::Timeline( WorkflowRenderer* renderer, QWidget *parent ) :
     connect( m_mainWorkflow, SIGNAL( clipMoved(QUuid, uint, qint64,MainWorkflow::TrackType ) ), this, SLOT( actionMoveClip(QUuid,uint,qint64,MainWorkflow::TrackType ) ) );
     connect( m_mainWorkflow, SIGNAL( clipRemoved(Clip*,uint,MainWorkflow::TrackType ) ), this, SLOT( actionRemoveClip(Clip*,uint,MainWorkflow::TrackType )) );
     connect( m_mainWorkflow, SIGNAL( cleared() ), tracksView(), SLOT( clear() ) );
+    connect( m_mainWorkflow, SIGNAL( cleared() ), m_tracksControls, SLOT( clear() ) );
 
     connect( m_tracksView, SIGNAL( videoTrackAdded(GraphicsTrack*) ),
              m_tracksControls, SLOT( addVideoTrack(GraphicsTrack*) ) );
