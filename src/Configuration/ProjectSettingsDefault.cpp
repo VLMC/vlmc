@@ -45,7 +45,7 @@ void    ProjectSettingsDefault::loadAudioDefaults( const QString& part )
 void    ProjectSettingsDefault::loadVideoDefaults( const QString& part )
 {
     SettingsManager*  settingsMan = SettingsManager::getInstance();
-    QVariant defaultProjectFPS = 25;
+    QVariant defaultProjectFPS = 30;
     QVariant defaultProjectHeight = 800;
     QVariant defaultProjectWidth = 600;
 

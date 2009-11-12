@@ -37,8 +37,8 @@ void    VLMCSettingsDefault::load( const QString& part )
 void    VLMCSettingsDefault::loadVLMCDefaults( const QString& part )
 {
     SettingsManager*  settingsMan = SettingsManager::getInstance();
-    QVariant defaultOutputPFS = "25";
-    QVariant defaultPreviewFPS = "25";
+    QVariant defaultOutputPFS = "30";
+    QVariant defaultPreviewFPS = "30";
     QVariant defaultTrackNb = "64";
 
     settingsMan->setValue( part,

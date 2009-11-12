@@ -207,6 +207,7 @@ void           MainWorkflow::moveClip( const QUuid& clipUuid, unsigned int oldTr
 {
     m_tracks[trackType]->moveClip( clipUuid, oldTrack, newTrack, startingFrame );
     computeLength();
+
     if ( undoRedoCommand == true )
     {
         emit clipMoved( clipUuid, newTrack, startingFrame, trackType );
