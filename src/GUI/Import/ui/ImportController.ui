@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Import</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../../../../ressources.qrc">
+    <normaloff>:/images/images/vlmc.png</normaloff>:/images/images/vlmc.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
