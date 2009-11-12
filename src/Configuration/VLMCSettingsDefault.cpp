@@ -33,4 +33,12 @@ void    VLMCSettingsDefault::loadVLMCDefaults( const QString& part )
 
 void    VLMCSettingsDefault::loadlanguageDefaults( const QString& part )
 {
+    SettingsManager*    setMan = SettingsManager::getInstance();
+
+    QVariant    defaultLang = "fr";
+    setMan->setValue( part,
+                      "VLMCLang",
+                      defaultLang );
+
+    return ;
 }

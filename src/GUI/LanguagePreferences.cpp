@@ -4,6 +4,7 @@
  * Copyright (C) 2008-2009 the VLMC team
  *
  * Authors: Christophe Courtaut <christophe.courtaut@gmail.com>
+ * Authors: Clement CHAVANCE <kinder@vlmcorg>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,60 +20,49 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+#include <QVariant>
 
+#include "SettingsManager.h"
 #include "LanguagePreferences.h"
 #include "ui_LanguagePreferences.h"
 
-QTranslator* Preferences::m_currentLang = NULL;
-Preferences* Preferences::m_instance = NULL;
+QTranslator* LanguagePreferences::m_currentLang = NULL;
 
-Preferences::Preferences( QWidget *parent ) : QDialog( parent )
+LanguagePreferences::LanguagePreferences( QWidget *parent )
+    : PreferenceWidget( parent )
 {
     m_ui.setupUi( this );
-    m_ui.comboBoxLanguage->addItem( tr( "English" ), "" );
+    m_ui.comboBoxLanguage->addItem( tr( "English" ), "en" );
     m_ui.comboBoxLanguage->addItem( tr( "French" ), "fr" );
     m_ui.comboBoxLanguage->addItem( tr( "Spanish" ), "es" );
     m_ui.comboBoxLanguage->addItem( tr( "Swedish" ), "sv" );
-    connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( deleteLater() ) );
 }
 
-void Preferences::changeEvent( QEvent *e )
+LanguagePreferences::~LanguagePreferences() {}
+
+void LanguagePreferences::load()
 {
-    QWidget::changeEvent( e );
-    switch ( e->type() )
-    {
-    case QEvent::LanguageChange:
-        m_ui.retranslateUi( this );
-        break;
-    default:
-        break;
-    }
+    const QString& part = m_defaults ? "default" : m_settName;
+    SettingsManager* setMan = SettingsManager::getInstance();
+    QVariant    lang = setMan->getValue( part, "VLMCLang" );
+    int idx = m_ui.comboBoxLanguage->findData( lang );
+
+    if ( idx != -1 )
+        m_ui.comboBoxLanguage->setCurrentIndex( idx );
+    return ;
 }
 
-Preferences* Preferences::instance()
+void LanguagePreferences::save()
 {
-    if ( m_instance )
-        return m_instance;
-    m_instance = new Preferences();
-    return m_instance;
+    SettingsManager*    setMan = SettingsManager::getInstance();
+    QVariant lang = m_ui.comboBoxLanguage->itemData( m_ui.comboBoxLanguage->currentIndex() );
+
+    setMan->setValue( m_settName, "VLMCLang", lang );
+    changeLang( lang.toString() );
 }
 
-void Preferences::on_pushButtonCancel_clicked()
+void LanguagePreferences::changeLang( QString langValue )
 {
-    close();
-}
-
-void Preferences::on_pushButtonApply_clicked()
-{
-    Preferences::changeLang( m_ui.comboBoxLanguage->itemData( m_ui.comboBoxLanguage->currentIndex() ).toString() );
-    close();
-}
-
-void Preferences::changeLang( QString langValue )
-{
-    QSettings settings;
-    QString lang = settings.value( "Lang" ).toString();
-    settings.setValue( "Lang", langValue);
     if ( m_currentLang != NULL )
     {
         qApp->removeTranslator( m_currentLang );
@@ -84,5 +74,18 @@ void Preferences::changeLang( QString langValue )
         m_currentLang = new QTranslator();
         m_currentLang->load( langValue, ":/Lang/" );
         qApp->installTranslator( m_currentLang );
+    }
+}
+
+void LanguagePreferences::changeEvent( QEvent *e )
+{
+    QWidget::changeEvent( e );
+    switch ( e->type() )
+    {
+    case QEvent::LanguageChange:
+        m_ui.retranslateUi( this );
+        break;
+    default:
+        break;
     }
 }

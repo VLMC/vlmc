@@ -4,6 +4,7 @@
  * Copyright (C) 2008-2009 the VLMC team
  *
  * Authors: Christophe Courtaut <christophe.courtaut@gmail.com>
+ * Authors: Clement CHAVANCE <kinder@vlmc.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,33 +24,26 @@
 #ifndef PREFERENCES_H
 #define PREFERENCES_H
 
-#include <QtGui/QWidget>
 #include <QTranslator>
-#include <QApplication>
-#include <QSettings>
 #include <QtDebug>
+#include "PreferenceWidget.h"
 #include "ui_LanguagePreferences.h"
 
-class Preferences : public QDialog
+class LanguagePreferences : public PreferenceWidget
 {
-    Q_OBJECT
-    Q_DISABLE_COPY( Preferences )
-public:
-    static  Preferences* instance();
-    static  void    changeLang(QString lang);
+    public:
+        LanguagePreferences( QWidget* parent = 0 );
+        ~LanguagePreferences();
+        void    load();
+        void    save();
+        void    changeLang(QString lang);
 
-protected:
-    virtual void changeEvent( QEvent *e );
+    protected:
+        virtual void changeEvent( QEvent *e );
 
-private:
-    explicit Preferences( QWidget *parent = 0 );
-    Ui::LanguagePreferences m_ui;
-    static QTranslator* m_currentLang;
-    static Preferences* m_instance;
-
-private slots:
-    void on_pushButtonCancel_clicked();
-    void on_pushButtonApply_clicked();
+    private:
+        Ui::LanguagePreferences m_ui;
+        static QTranslator* m_currentLang;
 };
 
 #endif // PREFERENCES_H

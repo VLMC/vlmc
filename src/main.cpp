@@ -50,8 +50,8 @@ int main( int argc, char **argv )
     app.setOrganizationName( "vlmc" );
     app.setOrganizationDomain( "vlmc.org" );
     app.setApplicationVersion( STRINGIFY(VLMC_VERSION) );
-    QSettings::setDefaultFormat( QSettings::IniFormat );
-    Preferences::changeLang( QSettings().value( "Lang" ).toString() );
+    //QSettings::setDefaultFormat( QSettings::IniFormat );
+    //Preferences::changeLang( QSettings().value( "Lang" ).toString() );
 
 #ifdef Q_OS_WIN
     // Ugly workaround

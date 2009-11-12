@@ -55,6 +55,7 @@
 #include "VLMCPreferences.h"
 #include "Import.h"
 #include "MediaLibraryWidget.h"
+#include "LanguagePreferences.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
@@ -315,6 +316,10 @@ void        MainWindow::createGlobalPreferences()
                                    new VLMCPreferences( m_globalPreferences ),
                                    "../images/vlmc.png",
                                    "VLMC settings");
+    m_globalPreferences->addWidget("Language preferences",
+                                   new LanguagePreferences( m_globalPreferences ),
+                                   "../images/vlmc.png",
+                                   "Langage settings");
     m_globalPreferences->build();
 }
 
@@ -353,7 +358,7 @@ void MainWindow::on_actionQuit_triggered()
 
 void MainWindow::on_actionPreferences_triggered()
 {
-   m_projectPreferences->show();
+   m_globalPreferences->show();
 }
 
 void MainWindow::on_actionAbout_triggered()

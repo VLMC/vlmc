@@ -1,69 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>LanguagePreferences</class>
- <widget class="QDialog" name="LanguagePreferences">
+ <widget class="QWidget" name="LanguagePreferences">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>444</width>
-    <height>388</height>
+    <width>400</width>
+    <height>114</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Preferences</string>
+   <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="2">
-    <widget class="QTabWidget" name="tabWidget">
-     <property name="tabPosition">
-      <enum>QTabWidget::North</enum>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Language</string>
      </property>
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="TabGeneral">
-      <attribute name="title">
-       <string>General</string>
-      </attribute>
-      <widget class="QLabel" name="label">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>81</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Language</string>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="comboBoxLanguage">
-       <property name="geometry">
-        <rect>
-         <x>110</x>
-         <y>10</y>
-         <width>121</width>
-         <height>24</height>
-        </rect>
-       </property>
-      </widget>
-     </widget>
     </widget>
    </item>
-   <item row="1" column="0">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>293</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="comboBoxLanguage"/>
    </item>
   </layout>
  </widget>
