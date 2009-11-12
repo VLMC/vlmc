@@ -30,7 +30,8 @@ GreenFilterEffect::GreenFilterEffect() : GenericEffect(
 					   GreenFilterEffect::m_videoInputsNames, GreenFilterEffect::m_nbVideoInputs,
 					   GreenFilterEffect::m_videoOutputsNames, GreenFilterEffect::m_nbVideoOutputs
 					   ),
-			     m_enabled( true )
+					 m_logo(QImage(QImage("vlmc.png").scaled(100, 100, Qt::KeepAspectRatio)).rgbSwapped()),
+					 m_enabled( true )
 {
 };
 
@@ -47,11 +48,18 @@ void    GreenFilterEffect::render( void )
     if (tmp->frame.octets != NULL)
     {
         if (m_enabled)
-            for ( i = 0; i < tmp->nbpixels; ++i )
-            {
-                tmp->frame.pixels[i].Red = 0;
-                tmp->frame.pixels[i].Blue = 0;
-            }
+	  {
+	    QImage		img(tmp->frame.octets, 640, 480, QImage::Format_RGB888);
+	    QPainter		pouet(&img);
+
+	    pouet.drawImage(530, 380, m_logo);
+	    //	    pouet.fillRect(30, 30, 100, 100, Qt::blue);
+	  }
+//             for ( i = 0; i < tmp->nbpixels; ++i )
+//             {
+//                 tmp->frame.pixels[i].Red = 0;
+//                 tmp->frame.pixels[i].Blue = 0;
+//             }
     }
     (m_videoOutputs[0]) << tmp;
     return ;
