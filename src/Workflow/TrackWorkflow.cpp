@@ -633,3 +633,8 @@ void    TrackWorkflow::forceRepositionning()
     QMutexLocker    lock( m_forceRepositionningMutex );
     m_forceRepositionning = true;
 }
+
+void    TrackWorkflow::simulateBlackOutputRender()
+{
+    clipWorkflowRenderCompleted( NULL );
+}

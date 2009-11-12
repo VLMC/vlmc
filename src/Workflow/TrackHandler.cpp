@@ -106,7 +106,13 @@ void        TrackHandler::getOutput( qint64 currentFrame )
     {
         if ( m_tracks[i].activated() == false )
         {
-            m_effectEngine->setInputFrame( *TrackHandler::nullOutput, i );
+            if ( m_tracks[i].hardDeactivated() == true )
+            {
+                ++m_nbTracksToRender;
+                m_tracks[i]->simulateBlackOutputRender();
+            }
+            else
+                m_effectEngine->setInputFrame( *TrackHandler::nullOutput, i );
             continue ;
         }
         ++m_nbTracksToRender;
