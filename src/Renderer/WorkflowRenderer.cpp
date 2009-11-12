@@ -277,12 +277,17 @@ float       WorkflowRenderer::getFps() const
 
 void        WorkflowRenderer::removeClip( const QUuid& uuid, uint32_t trackId, MainWorkflow::TrackType trackType )
 {
-    StackedAction*  act = new StackedAction( RemoveClip );
-    act->uuid = uuid;
-    act->trackId = trackId;
-    act->trackType = trackType;
-    QMutexLocker    lock( m_actionsMutex );
-    m_actions.push( act );
+    if ( m_isRendering == true )
+    {
+        StackedAction*  act = new StackedAction( RemoveClip );
+        act->uuid = uuid;
+        act->trackId = trackId;
+        act->trackType = trackType;
+        QMutexLocker    lock( m_actionsMutex );
+        m_actions.push( act );
+    }
+    else
+        m_mainWorkflow->removeClip( uuid, trackId, trackType );
 }
 
 void        WorkflowRenderer::addClip( Clip* clip, uint32_t trackNumber, qint64 startingPos, MainWorkflow::TrackType trackType )
