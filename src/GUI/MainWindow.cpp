@@ -64,7 +64,6 @@ MainWindow::MainWindow( QWidget *parent ) :
     DockWidgetManager::instance( this )->setMainWindow( this );
     initializeDockWidgets();
     createStatusBar();
-    loadDefaults();
     VLMCSettingsDefault::load( "default" );
     VLMCSettingsDefault::load( "VLMC" );
     createGlobalPreferences();
@@ -341,13 +340,6 @@ void	    MainWindow::createProjectPreferences()
     m_projectPreferences->build();
 }
 
-void        MainWindow::loadDefaults()
-{
-    VLMCSettingsDefault::load( "default" );
-    VLMCSettingsDefault::load( "VLMC" );
-    ProjectSettingsDefault::load( "default" );
-    ProjectSettingsDefault::load( "project" );
-}
 
 //Private slots definition
 

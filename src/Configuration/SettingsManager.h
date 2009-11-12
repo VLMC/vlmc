@@ -60,13 +60,15 @@ class   SettingsManager : public QObject, public QSingleton<SettingsManager>
         void                loadSettings( const QString& part, const QDomElement& settings );
         void                addNewSettingsPart( const QString& name );
         static void         loadDefaultsSettings();
+        static SettingsManager* getInstance();
 
     private:
         SettingsManager( QObject* parent = 0 );
         ~SettingsManager();
 
-        QHash<QString, SettingsPart*>            m_data;
+        QHash<QString, SettingsPart*>           m_data;
         mutable QReadWriteLock                  m_globalLock;
+        static bool                             m_defaultLoaded;
 
     signals:
         void                settingsLoaded();

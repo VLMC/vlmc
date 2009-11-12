@@ -33,6 +33,7 @@
 #include "VLMCSettingsDefault.h"
 #include "ProjectSettingsDefault.h"
 
+bool    SettingsManager::m_defaultLoaded = false;
 
 SettingsManager::SettingsManager( QObject* parent )
     : QObject( parent )
@@ -160,6 +161,19 @@ void  SettingsManager::addNewSettingsPart( const QString& name )
 void  SettingsManager::loadDefaultsSettings()
 {
     VLMCSettingsDefault::load( "default" );
+    VLMCSettingsDefault::load( "VLMC" );
     ProjectSettingsDefault::load( "default" );
+    ProjectSettingsDefault::load( "project" );
+}
+
+SettingsManager*    SettingsManager::getInstance()
+{
+    SettingsManager*    ret = QSingleton<SettingsManager>::getInstance();
+    if ( !SettingsManager::m_defaultLoaded )
+    {
+        SettingsManager::m_defaultLoaded = true;
+        SettingsManager::loadDefaultsSettings();
+    }
+    return ret;
 }
 

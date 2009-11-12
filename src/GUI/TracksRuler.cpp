@@ -38,7 +38,6 @@ TracksRuler::TracksRuler( TracksView* tracksView, QWidget* parent )
     //TODO We should really get that from the
     // workflow and not directly from the settings.
     SettingsManager* settings = SettingsManager::getInstance();
-    settings->loadDefaultsSettings();
     m_fps = qRound( settings->getValue( "default", "VLMCPreviewFPS" ).toDouble() );
 
     m_factor = 1;

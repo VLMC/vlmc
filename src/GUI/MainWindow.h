@@ -66,7 +66,6 @@ private:
     void        createStatusBar();
     void        createGlobalPreferences();
     void        createProjectPreferences();
-    void        loadDefaults();
 
     Ui::MainWindow          m_ui;
     MetaDataManager*        m_metaDataManager;
