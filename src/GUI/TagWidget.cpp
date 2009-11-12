@@ -31,7 +31,7 @@ TagWidget::TagWidget( QWidget *parent, int nbButton, QStringList tagList ) :
     QWidget( parent ), m_ui( new Ui::TagWidget ), m_nbButton( nbButton ), m_defaultTagList( tagList ), m_currentMedia( NULL )
 {
     m_ui->setupUi( this );
-    m_defaultTagList << "Salade" << "Ognon" << "Tomate" << "Mayo" << "Ketchup";
+    m_defaultTagList << "OutDoor" << "Hollidays" << "Seaside" << "Sunset" << "Familly";
 
     int nbRow =  sqrt( nbButton );
     int x = 0;
