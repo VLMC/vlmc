@@ -177,10 +177,8 @@ void        ClipRenderer::previousFrame()
 
 qint64      ClipRenderer::getLengthMs() const
 {
-    if ( m_clipLoaded )
-        return qMax( m_end - m_begin, (qint64)0 );
-    else if ( m_selectedMedia )
-        return m_selectedMedia->getLengthMS();
+    if ( m_selectedMedia )
+        return ( qRound64( (qreal)( m_end - m_begin ) / m_selectedMedia->getFps() * 1000.0 ) );
     return 0;
 }
 
@@ -222,7 +220,7 @@ void        ClipRenderer::previewWidgetCursorChanged( qint64 newFrame )
     if ( m_isRendering == true )
     {
         qint64 nbSeconds = qRound64( (qreal)newFrame / m_selectedMedia->getFps() );
-        m_mediaPlayer->setTime( nbSeconds / 1000 );
+        m_mediaPlayer->setTime( nbSeconds * 1000 );
     }
 }
 
@@ -236,6 +234,7 @@ void        ClipRenderer::__videoPaused()
 
 void        ClipRenderer::__videoStopped()
 {
+    emit frameChanged( 0, MainWorkflow::Renderer );
     emit stopped();
 }
 
