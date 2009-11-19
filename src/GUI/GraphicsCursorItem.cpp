@@ -24,8 +24,7 @@
 #include "GraphicsCursorItem.h"
 
 GraphicsCursorItem::GraphicsCursorItem( const QPen& pen ) :
-        m_pen( pen ),
-        m_manualMove( true )
+        m_pen( pen )
 {
     setFlags( QGraphicsItem::ItemIgnoresTransformations | QGraphicsItem::ItemIsMovable );
     setCursor( QCursor( Qt::SizeHorCursor ) );
@@ -57,8 +56,7 @@ QVariant GraphicsCursorItem::itemChange( GraphicsItemChange change, const QVaria
     //The position HAS changed, ie we released the slider, or setPos has been called.
     else if ( change == ItemPositionHasChanged )
     {
-        if ( m_manualMove == true )
-            emit cursorPositionChanged( ( qint64 ) pos().x() );
+        emit cursorPositionChanged( ( qint64 ) pos().x() );
     }
     return QGraphicsItem::itemChange( change, value );
 }
@@ -67,9 +65,7 @@ void GraphicsCursorItem::frameChanged( qint64 newFrame, MainWorkflow::FrameChang
 {
     if ( reason != MainWorkflow::TimelineCursor )
     {
-        m_manualMove = false;
         setPos( newFrame, pos().y() );
-        m_manualMove = true;
     }
 }
 

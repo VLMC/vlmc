@@ -86,6 +86,9 @@ Timeline::Timeline( WorkflowRenderer* renderer, QWidget *parent ) :
             Qt::QueuedConnection );
     connect( m_tracksView->tracksCursor(), SIGNAL( cursorPositionChanged( qint64 ) ),
              m_renderer, SLOT( timelineCursorChanged(qint64) ) );
+    connect( m_renderer, SIGNAL( frameChanged(qint64,MainWorkflow::FrameChangedReason) ), m_tracksRuler, SLOT( update() ) );
+    connect( m_tracksRuler, SIGNAL( frameChanged(qint64,MainWorkflow::FrameChangedReason) ),
+             m_renderer, SLOT( timelineCursorChanged(qint64) ) );
 
     m_tracksView->createLayout();
 }

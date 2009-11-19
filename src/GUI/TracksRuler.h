@@ -75,6 +75,9 @@ private:
     int m_littleMarkDistance;
     int m_mediumMarkDistance;
     int m_bigMarkDistance;
+
+signals:
+    void        frameChanged( qint64, MainWorkflow::FrameChangedReason );
 };
 
 #endif // TRACKSRULER_H

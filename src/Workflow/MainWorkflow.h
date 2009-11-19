@@ -59,6 +59,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
             Renderer,
             TimelineCursor,
             PreviewCursor,
+            RulerCursor,
         };
 
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start, TrackType type );
