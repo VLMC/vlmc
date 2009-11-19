@@ -69,6 +69,9 @@ WorkflowRenderer::WorkflowRenderer() :
      //Workflow part
     connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ) );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowUnpaused() ), this, SLOT( mainWorkflowUnpaused() ) );
+    connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
+    connect( m_mainWorkflow, SIGNAL( frameChanged( qint64, MainWorkflow::FrameChangedReason ) ),
+             this, SLOT( __frameChanged( qint64, MainWorkflow::FrameChangedReason ) ) );
 }
 
 
@@ -152,9 +155,6 @@ void        WorkflowRenderer::startPreview()
     connect( m_mediaPlayer, SIGNAL( playing() ),    this,   SLOT( __videoPlaying() ), Qt::DirectConnection );
     connect( m_mediaPlayer, SIGNAL( paused() ),     this,   SLOT( __videoPaused() ), Qt::DirectConnection );
     connect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SLOT( __videoStopped() ) );
-    connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
-    connect( m_mainWorkflow, SIGNAL( frameChanged( qint64, MainWorkflow::FrameChangedReason ) ),
-             this, SLOT( __frameChanged( qint64, MainWorkflow::FrameChangedReason ) ) );
 
     m_mainWorkflow->setFullSpeedRender( false );
     m_mainWorkflow->startRender();
@@ -309,6 +309,11 @@ void        WorkflowRenderer::timelineCursorChanged( qint64 newFrame )
 void        WorkflowRenderer::previewWidgetCursorChanged( qint64 newFrame )
 {
     m_mainWorkflow->setCurrentFrame( newFrame, MainWorkflow::PreviewCursor );
+}
+
+void        WorkflowRenderer::rulerCursorChanged( qint64 newFrame )
+{
+    m_mainWorkflow->setCurrentFrame( newFrame, MainWorkflow::RulerCursor );
 }
 
 /////////////////////////////////////////////////////////////////////

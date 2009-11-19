@@ -98,6 +98,7 @@ class   WorkflowRenderer : public GenericRenderer
         virtual void        setMedia( Media* ) {}
         void                mediaUnloaded( const QUuid& ) {}
         void                timelineCursorChanged( qint64 newFrame );
+        void                rulerCursorChanged( qint64 newFrame );
         void                previewWidgetCursorChanged( qint64 newFrame );
 
         void                __frameChanged( qint64 frame, MainWorkflow::FrameChangedReason );
