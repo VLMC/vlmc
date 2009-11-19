@@ -31,7 +31,7 @@
 #include "Media.h"
 #include "VLCMediaPlayer.h"
 
-class MetaDataWorker : public QThread
+class MetaDataWorker : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY( MetaDataWorker )
@@ -39,7 +39,7 @@ class MetaDataWorker : public QThread
     public:
         MetaDataWorker( Media* media );
         ~MetaDataWorker();
-        virtual void                run();
+        void                        compute();
 
     private:
         void                        computeVideoMetaData();

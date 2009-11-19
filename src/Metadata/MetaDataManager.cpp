@@ -39,6 +39,6 @@ void        MetaDataManager::metadataRequired( Media* media )
     if ( media->hasMetadata() == false )
     {
         MetaDataWorker* w = new MetaDataWorker( media );
-        w->start();
+        w->compute();
     }
 }

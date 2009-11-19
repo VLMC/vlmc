@@ -40,7 +40,7 @@ MetaDataWorker::~MetaDataWorker()
         delete m_mediaPlayer;
 }
 
-void    MetaDataWorker::run()
+void    MetaDataWorker::compute()
 {
     if ( m_currentMedia->getFileType() == Media::Video )
     {
