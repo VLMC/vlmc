@@ -1,179 +1,191 @@
-TARGET = vlmc
-DESTDIR = bin
-CONFIG += debug
-TEMPLATE = app
-VERSION = 0.0.1
-OBJECTS_DIR = build
-MOC_DIR = build/moc
-UI_DIR = build/ui
-QMAKE_EXT_H = .h \
-    .hpp
-INCLUDEPATH += build/moc \
-    build/ui \
-    $$[VLMC_ADDITIONAL_INCLUDEPATH]
-QT += gui \
-    network \
-    svg \
-    xml
-SOURCES += src/main.cpp \
-    src/GUI/MainWindow.cpp \
-    src/GUI/LibraryWidget.cpp \
-    src/GUI/DockWidgetManager.cpp \
-    src/LibVLCpp/VLCException.cpp \
-    src/LibVLCpp/VLCInstance.cpp \
-    src/GUI/Timeline.cpp \
-    src/LibVLCpp/VLCMediaPlayer.cpp \
-    src/LibVLCpp/VLCMedia.cpp \
-    src/GUI/TracksView.cpp \
-    src/GUI/TracksScene.cpp \
-    src/Renderer/ClipRenderer.cpp \
-    src/GUI/TracksRuler.cpp \
-    src/GUI/LanguagePreferences.cpp \
-    src/GUI/ListViewMediaItem.cpp \
-    src/GUI/MediaListWidget.cpp \
-    src/Media/Clip.cpp \
-    src/GUI/About.cpp \
-#    src/GUI/Transcode.cpp \
-    src/GUI/Slider.cpp \
-    src/Metadata/MetaDataWorker.cpp \
-    src/Library/Library.cpp \
-    src/GUI/GraphicsMovieItem.cpp \
-    src/GUI/AbstractGraphicsMediaItem.cpp \
-    src/Media/Media.cpp \
-    src/GUI/FileBrowser.cpp \
-    src/GUI/GraphicsCursorItem.cpp \
-    src/Workflow/ClipWorkflow.cpp \
-    src/Workflow/TrackWorkflow.cpp \
-    src/Workflow/MainWorkflow.cpp \
-    src/GUI/PreviewWidget.cpp \
-    src/Renderer/WorkflowRenderer.cpp \
-    src/API/vlmc_module_variables.cpp \
-    src/API/Module.cpp \
-    src/API/ModuleManager.cpp \
-    src/Renderer/WorkflowFileRenderer.cpp \
-    src/GUI/UndoStack.cpp \
-    src/Metadata/MetaDataManager.cpp \
-    src/GUI/ClipProperty.cpp \
-    src/GUI/WorkflowFileRendererDialog.cpp \
-    src/GUI/Settings.cpp \
-    src/GUI/Panel.cpp \
-    src/GUI/PreferenceWidget.cpp \
-    src/GUI/ProjectPreferences.cpp \
-    src/Commands/Commands.cpp \
-    src/GUI/AudioProjectPreferences.cpp \
-    src/GUI/VLMCPreferences.cpp \
-    src/GUI/VideoProjectPreferences.cpp \
-    src/Project/ProjectManager.cpp \
-    src/EffectsEngine/EffectsEngine.cpp \
-    src/EffectsEngine/LightVideoFrame.cpp \
-    src/EffectsEngine/GenericEffect.cpp \
-    src/EffectsEngine/GreenFilterEffect.cpp \
-    src/EffectsEngine/MixerEffect.cpp \
-    src/Configuration/SettingsManager.cpp
-HEADERS += src/GUI/MainWindow.h \
-    src/GUI/DockWidgetManager.h \
-    src/GUI/LibraryWidget.h \
-    src/LibVLCpp/VLCpp.hpp \
-    src/LibVLCpp/VLCException.h \
-    src/LibVLCpp/VLCInstance.h \
-    src/GUI/Timeline.h \
-    src/LibVLCpp/VLCMediaPlayer.h \
-    src/LibVLCpp/VLCMedia.h \
-    src/GUI/TracksView.h \
-    src/GUI/TracksScene.h \
-    src/Renderer/ClipRenderer.h \
-    src/GUI/TracksRuler.h \
-    src/GUI/LanguagePreferences.h \
-    src/GUI/ListViewMediaItem.h \
-    src/Media/Clip.h \
-    src/GUI/MediaListWidget.h \
-    src/GUI/About.h \
-#    src/GUI/Transcode.h \
-    src/GUI/Slider.h \
-    src/Metadata/MetaDataWorker.h \
-    src/Tools/Singleton.hpp \
-    src/Library/Library.h \
-    src/GUI/AbstractGraphicsMediaItem.h \
-    src/GUI/GraphicsMovieItem.h \
-    src/Media/Media.h \
-    src/GUI/FileBrowser.h \
-    src/GUI/GraphicsCursorItem.h \
-    src/Workflow/ClipWorkflow.h \
-    src/Workflow/TrackWorkflow.h \
-    src/Workflow/MainWorkflow.h \
-    src/GUI/PreviewWidget.h \
-    src/Renderer/WorkflowRenderer.h \
-    src/Renderer/GenericRenderer.h \
-    src/Tools/Toggleable.hpp \
-    src/API/vlmc_module.h \
-    src/API/Module.h \
-    src/API/ModuleManager.h \
-    src/API/vlmc_module_internal.h \
-    src/Renderer/WorkflowFileRenderer.h \
-    src/vlmc.h \
-    src/Tools/Pool.hpp \
-    src/GUI/UndoStack.h \
-    src/Tools/WaitCondition.hpp \
-    src/Metadata/MetaDataManager.h \
-    src/Tools/QSingleton.hpp \
-    src/GUI/ClipProperty.h \
-    src/GUI/WorkflowFileRendererDialog.h \
-    src/GUI/Settings.h \
-    src/GUI/Panel.h \
-    src/GUI/GraphicsTrack.hpp \
-    src/Commands/Commands.h \
-    src/GUI/VLMCPreferences.h \
-    src/GUI/AudioProjectPreferences.h \
-    src/GUI/VideoProjectPreferences.h \
-    src/Project/ProjectManager.h \
-    src/EffectsEngine/EffectsEngine.h \
-    src/EffectsEngine/InSlot.hpp \
-    src/EffectsEngine/OutSlot.hpp \
-    src/EffectsEngine/LightVideoFrame.h \
-    src/EffectsEngine/GenericEffect.h \
-    src/EffectsEngine/GreenFilterEffect.h \
-    src/EffectsEngine/MixerEffect.h \
-    src/Configuration/SettingsManager.h
-FORMS += src/GUI/ui/MainWindow.ui \
-    src/GUI/ui/PreviewWidget.ui \
-    src/GUI/ui/LanguagePreferences.ui \
-    src/GUI/ui/Timeline.ui \
-    src/GUI/ui/LibraryWidget.ui \
-    src/GUI/ui/About.ui \
-#    src/GUI/ui/Transcode.ui \
-    src/GUI/ui/FileBrowser.ui \
-    src/GUI/ui/WorkflowFileRendererDialog.ui \
-    src/GUI/ui/ClipProperty.ui \
-    src/GUI/ui/ProjectPreferences.ui \
-    src/GUI/ui/VLMCPreferences.ui \
-    src/GUI/ui/VideoProjectPreferences.ui \
-    src/GUI/ui/AudioProjectPreferences.ui
-TRANSLATIONS = ts/vlmc_es.ts \
-    ts/vlmc_fr.ts \
-    ts/vlmc_sv.ts
-RESOURCES += ressources.qrc
-INCLUDEPATH += src/LibVLCpp \
-    src/GUI \
-    src/Tools \
-    src/Renderer \
-    src/Metadata \
-    src/Commands \
-    src/Workflow \
-    src/Library \
-    src/Media \
-    src/Project \
-    src/EffectsEngine \
-    src/Configuration \
-    src
+######################################################################
+# Automatically generated by qmake (2.01a) Thu Nov 19 15:03:06 2009
+######################################################################
 
-# QMAKE_CFLAGS+=-pg
-# QMAKE_CXXFLAGS+=-pg
-# QMAKE_LFLAGS+=-pg
-# QMAKE_CXXFLAGS += -W -Wall -Wold-style-cast
-LIBS += -L/usr/local/lib \
-    -lvlc \
-    $$[VLMC_ADDITIONAL_LIBS]
-SUBDIRS += modules
-DEFINES += VLMC_VERSION="$$VERSION"
-CODECFORTR = UTF-8
-include(locale.pri)
+TEMPLATE = app
+TARGET = 
+DEPENDPATH += . \
+              src \
+              ts \
+              build/ui \
+              modules/sample_module \
+              src/API \
+              src/Commands \
+              src/Configuration \
+              src/EffectsEngine \
+              src/GUI \
+              src/Library \
+              src/LibVLCpp \
+              src/Media \
+              src/Metadata \
+              src/Project \
+              src/Renderer \
+              src/Tools \
+              src/Workflow \
+              src/GUI/ui
+INCLUDEPATH += . \
+               src/GUI \
+               src \
+               build/ui \
+               src/Metadata \
+               src/Media \
+               src/LibVLCpp \
+               src/Tools \
+               src/Workflow \
+               src/EffectsEngine \
+               src/Renderer \
+               src/Library \
+               src/API \
+               src/Commands \
+               src/Configuration \
+               src/Project
+
+# Input
+HEADERS += src/vlmc.h \
+           build/ui/ui_ImportController.h \
+           build/ui/ui_MediaCellView.h \
+           build/ui/ui_StackViewNavController.h \
+           build/ui/ui_TagWidget.h \
+           build/ui/ui_TrackControls.h \
+           src/API/Module.h \
+           src/API/ModuleManager.h \
+           src/API/vlmc_module.h \
+           src/API/vlmc_module_internal.h \
+           src/Commands/ActionManager.h \
+           src/Commands/Commands.h \
+           src/Configuration/SettingsManager.h \
+           src/EffectsEngine/EffectsEngine.h \
+           src/EffectsEngine/GenericEffect.h \
+           src/EffectsEngine/GreenFilterEffect.h \
+           src/EffectsEngine/InSlot.hpp \
+           src/EffectsEngine/LightVideoFrame.h \
+           src/EffectsEngine/LogoIncrustationEffect.h \
+           src/EffectsEngine/MixerEffect.h \
+           src/EffectsEngine/OutSlot.hpp \
+           src/GUI/About.h \
+           src/GUI/AbstractGraphicsMediaItem.h \
+           src/GUI/AudioProjectPreferences.h \
+           src/GUI/ClipProperty.h \
+           src/GUI/DockWidgetManager.h \
+           src/GUI/FileBrowser.h \
+           src/GUI/GraphicsCursorItem.h \
+           src/GUI/GraphicsMovieItem.h \
+           src/GUI/GraphicsTrack.hpp \
+           src/GUI/LanguagePreferences.h \
+           src/GUI/LibraryWidget.h \
+           src/GUI/ListViewMediaItem.h \
+           src/GUI/MainWindow.h \
+           src/GUI/MediaListWidget.h \
+           src/GUI/Panel.h \
+           src/GUI/PreferenceWidget.h \
+           src/GUI/PreviewWidget.h \
+           src/GUI/ProjectPreferences.h \
+           src/GUI/Settings.h \
+           src/GUI/Slider.h \
+           src/GUI/Timeline.h \
+           src/GUI/TracksRuler.h \
+           src/GUI/TracksScene.h \
+           src/GUI/TracksView.h \
+           src/GUI/Transcode.h \
+           src/GUI/UndoStack.h \
+           src/GUI/VideoProjectPreferences.h \
+           src/GUI/VLMCPreferences.h \
+           src/GUI/WorkflowFileRendererDialog.h \
+           src/Library/Library.h \
+           src/LibVLCpp/VLCException.h \
+           src/LibVLCpp/VLCInstance.h \
+           src/LibVLCpp/VLCMedia.h \
+           src/LibVLCpp/VLCMediaPlayer.h \
+           src/LibVLCpp/VLCpp.hpp \
+           src/Media/Clip.h \
+           src/Media/Media.h \
+           src/Metadata/MetaDataManager.h \
+           src/Metadata/MetaDataWorker.h \
+           src/Project/ProjectManager.h \
+           src/Renderer/ClipRenderer.h \
+           src/Renderer/GenericRenderer.h \
+           src/Renderer/WorkflowFileRenderer.h \
+           src/Renderer/WorkflowRenderer.h \
+           src/Tools/Pool.hpp \
+           src/Tools/QSingleton.hpp \
+           src/Tools/Singleton.hpp \
+           src/Tools/Toggleable.hpp \
+           src/Tools/WaitCondition.hpp \
+           src/Workflow/ClipWorkflow.h \
+           src/Workflow/MainWorkflow.h \
+           src/Workflow/TrackWorkflow.h
+FORMS += src/GUI/ui/About.ui \
+         src/GUI/ui/AudioProjectPreferences.ui \
+         src/GUI/ui/ClipProperty.ui \
+         src/GUI/ui/FileBrowser.ui \
+         src/GUI/ui/LanguagePreferences.ui \
+         src/GUI/ui/LibraryWidget.ui \
+         src/GUI/ui/MainWindow.ui \
+         src/GUI/ui/PreviewWidget.ui \
+         src/GUI/ui/ProjectPreferences.ui \
+         src/GUI/ui/Timeline.ui \
+         src/GUI/ui/transcode.ui \
+         src/GUI/ui/VideoProjectPreferences.ui \
+         src/GUI/ui/VLMCPreferences.ui \
+         src/GUI/ui/WorkflowFileRendererDialog.ui
+SOURCES += main.cpp \
+           src/main.cpp \
+           modules/sample_module/main.cpp \
+           src/API/Module.cpp \
+           src/API/ModuleManager.cpp \
+           src/API/vlmc_module_variables.cpp \
+           src/Commands/Commands.cpp \
+           src/Configuration/SettingsManager.cpp \
+           src/EffectsEngine/EffectsEngine.cpp \
+           src/EffectsEngine/GenericEffect.cpp \
+           src/EffectsEngine/GreenFilterEffect.cpp \
+           src/EffectsEngine/LightVideoFrame.cpp \
+           src/EffectsEngine/LogoIncrustationEffect.cpp \
+           src/EffectsEngine/MixerEffect.cpp \
+           src/EffectsEngine/test.cpp \
+           src/GUI/About.cpp \
+           src/GUI/AbstractGraphicsMediaItem.cpp \
+           src/GUI/AudioProjectPreferences.cpp \
+           src/GUI/ClipProperty.cpp \
+           src/GUI/DockWidgetManager.cpp \
+           src/GUI/FileBrowser.cpp \
+           src/GUI/GraphicsCursorItem.cpp \
+           src/GUI/GraphicsMovieItem.cpp \
+           src/GUI/LanguagePreferences.cpp \
+           src/GUI/LibraryWidget.cpp \
+           src/GUI/ListViewMediaItem.cpp \
+           src/GUI/MainWindow.cpp \
+           src/GUI/MediaListWidget.cpp \
+           src/GUI/Panel.cpp \
+           src/GUI/PreferenceWidget.cpp \
+           src/GUI/PreviewWidget.cpp \
+           src/GUI/ProjectPreferences.cpp \
+           src/GUI/Settings.cpp \
+           src/GUI/Slider.cpp \
+           src/GUI/Timeline.cpp \
+           src/GUI/TracksRuler.cpp \
+           src/GUI/TracksScene.cpp \
+           src/GUI/TracksView.cpp \
+           src/GUI/Transcode.cpp \
+           src/GUI/UndoStack.cpp \
+           src/GUI/VideoProjectPreferences.cpp \
+           src/GUI/VLMCPreferences.cpp \
+           src/GUI/WorkflowFileRendererDialog.cpp \
+           src/Library/Library.cpp \
+           src/LibVLCpp/VLCException.cpp \
+           src/LibVLCpp/VLCInstance.cpp \
+           src/LibVLCpp/VLCMedia.cpp \
+           src/LibVLCpp/VLCMediaPlayer.cpp \
+           src/Media/Clip.cpp \
+           src/Media/Media.cpp \
+           src/Metadata/MetaDataManager.cpp \
+           src/Metadata/MetaDataWorker.cpp \
+           src/Project/ProjectManager.cpp \
+           src/Renderer/ClipRenderer.cpp \
+           src/Renderer/WorkflowFileRenderer.cpp \
+           src/Renderer/WorkflowRenderer.cpp \
+           src/Workflow/ClipWorkflow.cpp \
+           src/Workflow/MainWorkflow.cpp \
+           src/Workflow/TrackWorkflow.cpp
+RESOURCES += ressources.qrc
+TRANSLATIONS += ts/vlmc_es.ts ts/vlmc_fr.ts ts/vlmc_sv.ts

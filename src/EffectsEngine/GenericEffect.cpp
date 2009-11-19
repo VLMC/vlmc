@@ -37,6 +37,12 @@ GenericEffect::~GenericEffect()
 }
 
 
+//-------------------------------------------------------------------
+//
+// DEPRECATED
+//
+//
+
 // CONNECTIONS BETWEEN GENERICEFFECTS
 
 void				GenericEffect::connectOutput( quint32 outIndex, GenericEffect* destEffect, quint32 inIndex)
@@ -59,17 +65,3 @@ void				GenericEffect::connect( quint32 outIndex, InSlot<LightVideoFrame> & in )
   ( m_videoOutputs[outIndex] ).connect( in );
   return ;
 }
-
-//
-// PRIVATES METHODS
-//
-
-// InSlot<LightVideoFrame>&	GenericEffect::getStaticVideoInput( QString const & name )
-// {
-//   return ( m_videoInputs[name] );
-// }
-
-// OutSlot<LightVideoFrame>&	GenericEffect::getStaticVideoOutput( QString const & name )
-// {
-//   return ( m_videoOutputs[name] );
-// }
