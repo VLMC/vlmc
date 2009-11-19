@@ -102,7 +102,6 @@ MainWindow::~MainWindow()
 
     if ( m_renderer )
         delete m_renderer;
-    MetaDataManager::destroyInstance();
     LibVLCpp::Instance::destroyInstance();
 }
 
@@ -307,7 +306,6 @@ void MainWindow::initializeDockWidgets( void )
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::LeftDockWidgetArea );
     setupLibrary();
-    m_metaDataManager = MetaDataManager::getInstance();
 }
 
 void        MainWindow::createGlobalPreferences()

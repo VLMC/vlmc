@@ -33,7 +33,6 @@
 
 #include "DockWidgetManager.h"
 #include "LanguagePreferences.h"
-#include "MetaDataManager.h"
 #include "Timeline.h"
 #include "WorkflowFileRenderer.h"
 #include "PreviewWidget.h"
@@ -68,7 +67,6 @@ private:
     void        createProjectPreferences();
 
     Ui::MainWindow          m_ui;
-    MetaDataManager*        m_metaDataManager;
     QSlider*                m_zoomSlider;
     Timeline*               m_timeline;
     PreviewWidget*          m_clipPreview;

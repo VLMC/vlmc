@@ -48,7 +48,6 @@ SOURCES += src/main.cpp \
     src/Renderer/WorkflowRenderer.cpp \
     src/Renderer/WorkflowFileRenderer.cpp \
     src/GUI/UndoStack.cpp \
-    src/Metadata/MetaDataManager.cpp \
     src/GUI/ClipProperty.cpp \
     src/GUI/WorkflowFileRendererDialog.cpp \
     src/GUI/Settings.cpp \
@@ -125,7 +124,6 @@ HEADERS += src/GUI/MainWindow.h \
     src/Tools/Pool.hpp \
     src/GUI/UndoStack.h \
     src/Tools/WaitCondition.hpp \
-    src/Metadata/MetaDataManager.h \
     src/Tools/QSingleton.hpp \
     src/GUI/ClipProperty.h \
     src/GUI/WorkflowFileRendererDialog.h \
