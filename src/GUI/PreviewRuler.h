@@ -53,7 +53,7 @@ protected:
     virtual void sliderChange( SliderChange change );
 
 private slots:
-    void updateTimecode();
+    void updateTimecode( qint64 frames = -1 );
 
 private:
     GenericRenderer* m_renderer;

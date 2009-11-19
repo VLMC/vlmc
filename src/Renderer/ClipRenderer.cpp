@@ -258,8 +258,8 @@ void        ClipRenderer::__positionChanged()
 
 void        ClipRenderer::__timeChanged()
 {
-    qint64 f = qRound64( (qreal)m_mediaPlayer->getTime() / 1000 * (qreal)m_mediaPlayer->getFps() );
-    emit frameChanged( f );
+    qint64 f = qRound64( (qreal)m_mediaPlayer->getTime() / 1000.0 * (qreal)m_mediaPlayer->getFps() );
+    emit frameChanged( f, Renderer );
 }
 
 void        ClipRenderer::__endReached()

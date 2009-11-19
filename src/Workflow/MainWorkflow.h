@@ -170,10 +170,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          *  \brief Used to notify a change to the timeline cursor
          */
         void                    frameChanged( qint64 currentFrame );
-        /**
-          * \brief Used to nofify a change to the PreviewWidget
-          */
-        void                    positionChanged( float pos );
 
         void                    mainWorkflowEndReached();
         void                    mainWorkflowPaused();

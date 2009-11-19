@@ -30,6 +30,7 @@
 #include <QPainter>
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
+#include "GenericRenderer.h"
 
 class GraphicsCursorItem : public QObject, public QGraphicsItem
 {
@@ -45,14 +46,15 @@ protected:
     virtual QVariant itemChange( GraphicsItemChange change, const QVariant& value );
 
 private:
-    QPen m_pen;
-    QRectF m_boundingRect;
+    QPen        m_pen;
+    QRectF      m_boundingRect;
+    bool        m_manualMove;
 
 signals:
     void cursorPositionChanged( qint64 pos );
 
 public slots:
-    void setCursorPos( qint64 position );
+    void frameChanged( qint64 position, GenericRenderer::FrameChangedReason );
 };
 
 #endif // GRAPHICSCURSORITEM_H

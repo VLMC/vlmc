@@ -94,6 +94,11 @@ void    PreviewWidget::positionChanged( float newPos )
         m_ui->rulerWidget->setValue( (int)( newPos * 1000.0 ) );
 }
 
+void    PreviewWidget::frameChanged( qint64 currentFrame )
+{
+    if ( m_previewStopped == false )
+        m_ui->rulerWidget->setFrame( currentFrame );
+}
 
 void    PreviewWidget::seekSliderPressed()
 {

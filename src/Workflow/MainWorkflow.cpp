@@ -155,7 +155,6 @@ void        MainWorkflow::nextFrame()
 
     ++m_currentFrame;
     emit frameChanged( m_currentFrame );
-    emit positionChanged( (float)m_currentFrame / (float)m_lengthFrame );
 }
 
 void        MainWorkflow::previousFrame()
@@ -164,7 +163,6 @@ void        MainWorkflow::previousFrame()
 
     --m_currentFrame;
     emit frameChanged( m_currentFrame );
-    emit positionChanged( (float)m_currentFrame / (float)m_lengthFrame );
 }
 
 void        MainWorkflow::setPosition( float pos )
@@ -204,7 +202,6 @@ void            MainWorkflow::stop()
         m_tracks[i]->stop();
     m_currentFrame = 0;
     emit frameChanged( 0 );
-    emit positionChanged( 0 );
 }
 
 void           MainWorkflow::moveClip( const QUuid& clipUuid, unsigned int oldTrack,
@@ -271,7 +268,7 @@ void        MainWorkflow::setCurrentFrame( qint64 currentFrame )
     QWriteLocker    lock( m_currentFrameLock );
 
     m_currentFrame = currentFrame;
-    emit positionChanged( (float)m_currentFrame / (float)m_lengthFrame );
+    emit frameChanged( m_currentFrame );
 }
 
 Clip*       MainWorkflow::getClip( const QUuid& uuid, unsigned int trackId, MainWorkflow::TrackType trackType )

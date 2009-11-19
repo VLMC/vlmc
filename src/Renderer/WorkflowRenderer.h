@@ -105,8 +105,7 @@ class   WorkflowRenderer : public GenericRenderer
         void                mediaUnloaded( const QUuid& ) {}
         void                timelineCursorChanged( qint64 newFrame );
 
-        void                __positionChanged();
-        void                __positionChanged( float pos );
+        void                __positionChanged() { qFatal("Get out."); }
         void                __frameChanged( qint64 frame );
         void                __videoPaused();
         void                __videoStopped();

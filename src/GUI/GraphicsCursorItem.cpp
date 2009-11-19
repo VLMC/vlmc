@@ -23,8 +23,9 @@
 #include <QtDebug>
 #include "GraphicsCursorItem.h"
 
-GraphicsCursorItem::GraphicsCursorItem( const QPen& pen )
-        : m_pen( pen )
+GraphicsCursorItem::GraphicsCursorItem( const QPen& pen ) :
+        m_pen( pen ),
+        m_manualMove( true )
 {
     setFlags( QGraphicsItem::ItemIgnoresTransformations | QGraphicsItem::ItemIsMovable );
     setCursor( QCursor( Qt::SizeHorCursor ) );
@@ -46,22 +47,30 @@ void GraphicsCursorItem::paint( QPainter* painter, const QStyleOptionGraphicsIte
 
 QVariant GraphicsCursorItem::itemChange( GraphicsItemChange change, const QVariant& value )
 {
+    //Position is changing :
     if ( change == ItemPositionChange )
     {
         qreal posX = value.toPointF().x();
         if ( posX < 0 ) posX = 0;
         return QPoint( ( int ) posX, ( int ) pos().y() );
     }
-    if ( change == ItemPositionHasChanged )
+    //The position HAS changed, ie we released the slider, or setPos has been called.
+    else if ( change == ItemPositionHasChanged )
     {
-        emit cursorPositionChanged( ( qint64 ) pos().x() );
+        if ( m_manualMove == true )
+            emit cursorPositionChanged( ( qint64 ) pos().x() );
     }
     return QGraphicsItem::itemChange( change, value );
 }
 
-void GraphicsCursorItem::setCursorPos( qint64 position )
+void GraphicsCursorItem::frameChanged( qint64 newFrame, GenericRenderer::FrameChangedReason reason )
 {
-    setPos( position, pos().y() );
+    if ( reason != GenericRenderer::TimelineCursor )
+    {
+        m_manualMove = false;
+        setPos( newFrame, pos().y() );
+        m_manualMove = true;
+    }
 }
 
 void GraphicsCursorItem::setHeight( int height )

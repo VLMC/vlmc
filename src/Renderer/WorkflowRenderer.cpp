@@ -153,8 +153,8 @@ void        WorkflowRenderer::startPreview()
     connect( m_mediaPlayer, SIGNAL( paused() ),     this,   SLOT( __videoPaused() ), Qt::DirectConnection );
     connect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SLOT( __videoStopped() ) );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
-    connect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
-    connect( m_mainWorkflow, SIGNAL( frameChanged( qint64 ) ), this, SLOT( __frameChanged( qint64 ) ) );
+    connect( m_mainWorkflow, SIGNAL( frameChanged( qint64 ) ),
+             this, SLOT( __frameChanged( qint64 ) ) );
 
     m_mainWorkflow->setFullSpeedRender( false );
     m_mainWorkflow->startRender();
@@ -167,6 +167,7 @@ void        WorkflowRenderer::startPreview()
 
 void        WorkflowRenderer::setPosition( float newPos )
 {
+    qDebug() << "Setting position to:" << newPos;
     m_mainWorkflow->setPosition( newPos );
 }
 
@@ -316,19 +317,9 @@ void        WorkflowRenderer::__endReached()
     emit endReached();
 }
 
-void        WorkflowRenderer::__positionChanged()
-{
-    qFatal("This should never be used ! Get out of here !");
-}
-
-void        WorkflowRenderer::__positionChanged( float pos )
-{
-    emit positionChanged( pos );
-}
-
 void        WorkflowRenderer::__frameChanged( qint64 frame )
 {
-    emit frameChanged( frame );
+    emit frameChanged( frame, Renderer );
 }
 
 void        WorkflowRenderer::__videoPaused()

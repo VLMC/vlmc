@@ -39,12 +39,13 @@ void PreviewRuler::setRenderer( GenericRenderer* renderer )
     if ( m_renderer )
     {
         disconnect( m_renderer, SIGNAL( positionChanged(float) ) );
-        disconnect( m_renderer, SIGNAL( frameChanged(qint64) ) );
+        disconnect( m_renderer, SIGNAL( frameChanged(qint64, GenericRenderer::FrameChangedReason ) ) );
     }
     m_renderer = renderer;
 
     connect( m_renderer, SIGNAL( positionChanged(float) ), this, SLOT( update() ) );
-    connect( m_renderer, SIGNAL( frameChanged(qint64) ), this, SLOT( updateTimecode() ) );
+    connect( m_renderer, SIGNAL( frameChanged(qint64,GenericRenderer::FrameChangedReason) ),
+             this, SLOT( updateTimecode( qint64 ) ) );
 }
 
 void PreviewRuler::sliderChange( SliderChange change )
@@ -210,19 +211,19 @@ void PreviewRuler::mouseReleaseEvent( QMouseEvent * event )
 void PreviewRuler::setFrame( qint64 frame )
 {
     m_frame = frame;
-    emit frameChanged( frame );
     setValue( frame * m_range / m_renderer->getLengthMs() );
     if ( m_isSliding )
         emit sliderPosChanged( frame * m_range / m_renderer->getLengthMs() );
     update();
 }
 
-void PreviewRuler::updateTimecode()
+void PreviewRuler::updateTimecode( qint64 frames /*= -1*/ )
 {
     if ( m_renderer->getLengthMs() )
     {
         int fps = (int)m_renderer->getFps();
-        qint64 frames = m_renderer->getCurrentFrame();
+        if ( frames == -1 )
+            frames = m_renderer->getCurrentFrame();
 
         int h = frames / fps / 60 / 60;
         frames -= h * fps * 60 * 60;

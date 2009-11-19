@@ -36,6 +36,12 @@ class   GenericRenderer : public QObject
     Q_DISABLE_COPY( GenericRenderer );
 
 public:
+    enum    FrameChangedReason
+    {
+        Renderer,
+        TimelineCursor,
+        PreviewCursor,
+    };
     explicit GenericRenderer() :
                 m_paused( false ),
                 m_isRendering( false )
@@ -152,7 +158,7 @@ signals:
     void                            paused();
     void                            playing();
     void                            positionChanged( float );
-    void                            frameChanged( qint64 );
+    void                            frameChanged( qint64, GenericRenderer::FrameChangedReason );
     void                            endReached();
 };
 

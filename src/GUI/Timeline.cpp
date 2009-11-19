@@ -81,8 +81,9 @@ Timeline::Timeline( WorkflowRenderer* renderer, QWidget *parent ) :
     connect( m_tracksView, SIGNAL( audioTrackAdded(GraphicsTrack*) ),
              m_tracksControls, SLOT( addAudioTrack(GraphicsTrack*) ) );
 
-    connect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
-            m_tracksView->tracksCursor(), SLOT( setCursorPos( qint64 ) ), Qt::QueuedConnection );
+    connect( m_renderer, SIGNAL( frameChanged(qint64, GenericRenderer::FrameChangedReason) ),
+            m_tracksView->tracksCursor(), SLOT( frameChanged( qint64, GenericRenderer::FrameChangedReason ) ),
+            Qt::QueuedConnection );
     connect( m_tracksView->tracksCursor(), SIGNAL( cursorPositionChanged( qint64 ) ),
              m_renderer, SLOT( timelineCursorChanged(qint64) ) );
 
