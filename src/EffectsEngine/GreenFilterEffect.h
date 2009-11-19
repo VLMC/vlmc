@@ -23,9 +23,10 @@
 #ifndef GREENFILTEREFFECT_H_
 #define GREENFILTEREFFECT_H_
 
-#include "GenericEffect.h"
+#include "IGenericEffect.h"
+#include "IEffectPlugin.h"
 
-class	GreenFilterEffect : public GenericEffect
+class	GreenFilterEffect : public IEffectPlugin
 {
  public:
 
@@ -33,6 +34,10 @@ class	GreenFilterEffect : public GenericEffect
 
   GreenFilterEffect();
   ~GreenFilterEffect();
+
+  // INIT
+
+  void  init( IGenericEffect* ige );
 
   // RENDER METHOD
 
@@ -43,10 +48,9 @@ class	GreenFilterEffect : public GenericEffect
  private:
 
   bool					m_enabled;
+  IGenericEffect*                       m_ige;
   static	quint32 const		m_nbVideoInputs = 1;
   static	quint32 const		m_nbVideoOutputs = 1;
-  static	char const * 	m_videoInputsNames[m_nbVideoInputs];
-  static	char const *	m_videoOutputsNames[m_nbVideoOutputs];
 };
 
 #endif // GREENFILTEREFFECT_H_

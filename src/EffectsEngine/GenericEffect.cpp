@@ -23,17 +23,54 @@
 
 #include "GenericEffect.h"
 
-GenericEffect::GenericEffect( char const * videoinputs[], quint32 const nbvideoinputs,
-			      char const * videooutputs[], quint32 const nbvideooutputs)
+GenericEffect::GenericEffect(IEffectPlugin* plugin) : m_plugin(plugin), m_videoInputs(NULL), m_videoOutputs(NULL)
 {
-  m_videoInputs = new InSlot<LightVideoFrame>[nbvideoinputs];
-  m_videoOutputs = new OutSlot<LightVideoFrame>[nbvideooutputs];
+    m_plugin->init(this);
 }
 
 GenericEffect::~GenericEffect()
 {
-  delete [] m_videoInputs;
-  delete [] m_videoOutputs;
+    delete m_plugin;
+    if ( m_videoInputs )
+        delete [] m_videoInputs;
+    if ( m_videoOutputs )
+        delete [] m_videoOutputs;
+}
+
+
+//-------------------------------------------------------------------
+//
+// DEPRECATED
+//
+//
+
+void                                    GenericEffect::init( quint32 const nbvideoinputs,
+                                                             quint32 const nbvideooutputs )
+{
+    m_videoInputs = new InSlot<LightVideoFrame>[nbvideoinputs];
+    m_videoOutputs = new OutSlot<LightVideoFrame>[nbvideooutputs];
+    return ;
+}
+
+void                                    GenericEffect::render( void )
+{
+    m_plugin->render();
+    return ;
+}
+
+IEffectPlugin*                          GenericEffect::getInternalPlugin( void )
+{
+    return ( m_plugin );
+}
+
+InSlot<LightVideoFrame> &               GenericEffect::getVideoInput(quint32 id)
+{
+    return ( m_videoInputs[id] );
+}
+
+OutSlot<LightVideoFrame> &              GenericEffect::getVideoOutput(quint32 id)
+{
+    return ( m_videoOutputs[id] );
 }
 
 

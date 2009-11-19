@@ -1,5 +1,6 @@
 /*****************************************************************************
- * MixerEffect.h: Effect module to mix multiple frame in one
+ * IEffectPlugin.h: interface that must inherit a plugin effect to work into
+ *                  the effects engine
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,35 +21,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef MIXEREFFECT_H_
-#define MIXEREFFECT_H_
+#ifndef IEFFECTPLUGIN_H_
+#define IEFFECTPLUGIN_H_
 
 #include "IGenericEffect.h"
-#include "IEffectPlugin.h"
 
-class	MixerEffect : public IEffectPlugin
+class	IEffectPlugin
 {
-public:
+ public:
 
-  // CTOR & DTOR
+  // VIRTUAL DTOR
 
-  MixerEffect();
-  ~MixerEffect();
-
-  // INIT
-
-  void          init( IGenericEffect* ige );
+  virtual ~IEffectPlugin() {};
 
   // RENDER METHOD
 
-  void	render( void );
-
-private:
-
-  IGenericEffect*               m_ige;
-  static	quint32 const	m_nbVideoInputs = 64;
-  static	quint32 const	m_nbVideoOutputs = 1;
+  virtual void	render( void ) = 0;
+  virtual void  init(IGenericEffect* ige) = 0;
 
 };
 
-#endif // MIXEREFFECT_H_
+#endif // IEFFECTPLUGIN_H_

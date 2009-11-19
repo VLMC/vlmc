@@ -31,9 +31,7 @@
 #include "LightVideoFrame.h"
 #include "InSlot.hpp"
 #include "OutSlot.hpp"
-#include "GenericEffect.h"
-#include "GreenFilterEffect.h"
-#include "MixerEffect.h"
+#include "EffectsFactory.h"
 
 class	EffectsEngine
 {
@@ -42,7 +40,7 @@ class	EffectsEngine
 
   // CTOR & DTOR
 
-  EffectsEngine( void 
+  EffectsEngine( void
 		/* quint32 nbinputs, quint32 nboutputs  */);
   ~EffectsEngine();
 
@@ -62,7 +60,7 @@ class	EffectsEngine
   LightVideoFrame const &       getOutputFrame( quint32 tracknumber ) const;
 
  private:
-  
+
   // START & STOP
 
   void		start( void );

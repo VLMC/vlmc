@@ -1,5 +1,6 @@
 /*****************************************************************************
- * MixerEffect.h: Effect module to mix multiple frame in one
+ * IGenericEffect.h: Interface of GenericEffect passed to init method of
+ * of an IEffectPlugin
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,35 +21,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef MIXEREFFECT_H_
-#define MIXEREFFECT_H_
+#ifndef IGENERICEFFECT_H_
+#define IGENERICEFFECT_H_
 
-#include "IGenericEffect.h"
-#include "IEffectPlugin.h"
+#include "InSlot.hpp"
+#include "OutSlot.hpp"
+#include "LightVideoFrame.h"
 
-class	MixerEffect : public IEffectPlugin
+class	IGenericEffect
 {
-public:
+    public:
 
-  // CTOR & DTOR
-
-  MixerEffect();
-  ~MixerEffect();
-
-  // INIT
-
-  void          init( IGenericEffect* ige );
-
-  // RENDER METHOD
-
-  void	render( void );
-
-private:
-
-  IGenericEffect*               m_ige;
-  static	quint32 const	m_nbVideoInputs = 64;
-  static	quint32 const	m_nbVideoOutputs = 1;
-
+    virtual ~IGenericEffect() {};
+    virtual void                                init( quint32 const nbvideoinputs, quint32 const nbvideooutputs ) = 0;
+    virtual InSlot<LightVideoFrame> &           getVideoInput(quint32 id) = 0;
+    virtual OutSlot<LightVideoFrame> &          getVideoOutput(quint32 id) = 0;
 };
 
-#endif // MIXEREFFECT_H_
+#endif // IGENERICEFFECT_H_

@@ -29,211 +29,336 @@
 #include <QHash>
 #include <QObject>
 
+#include "IEffectPlugin.h"
 #include "InSlot.hpp"
 #include "OutSlot.hpp"
 #include "LightVideoFrame.h"
 
-class	GenericEffect : public QObject
+class	GenericEffect : public IGenericEffect
 {
 
-  Q_OBJECT
-  Q_CLASSINFO("authors", "Vincent Carrubba")
-  Q_CLASSINFO("mail", "boubak@vlmc.org")
-  Q_CLASSINFO("name", "GenericEffect")
-  Q_CLASSINFO("category", "Primtives")
-  Q_CLASSINFO("www", "www.vlmc.org")
-  Q_CLASSINFO("version", "0.1")
-  Q_CLASSINFO("description", "This is the generic effect your effect must inherit from to work into the effects engine. It's the effects container too.")
+    ////
+    ////
+    ////
+    ////
+    //// METHODS
+    ////
+    ////
+    ////
+    ////
 
     public:
- 
- // CTOR & DTOR
 
-  virtual ~GenericEffect();
+    //
+    //
+    //
+    // CTOR & DTOR
+    //
+    //
+    //
 
-  GenericEffect( char const * videoinputs[],
-		 quint32 const nbvideoinputs,
-		 char const * videooutputs[],
-		 quint32 const nbvideooutputs );
+    virtual ~GenericEffect();
 
-  GenericEffect();
+    GenericEffect(IEffectPlugin* plugin);
 
-  //-------------------------------------------------------------------
-  //
-  // EFFECT CONFIGURATION
-  //
-  //
+    //    GenericEffect();
 
-  //
-  // SETTING EFFECT CONFIGURATION
-  //
+    void        init(quint32 const nbvideoinputs,
+                     quint32 const nbvideooutputs);
 
-  // STATICS SLOTS
+    IEffectPlugin*       getInternalPlugin( void );
 
-  bool		addStaticVideoInput( QByteArray const & name );
-  bool		addStaticVideoOutput( QByteArray const & name );
-  bool		addStaticAudioInput( QByteArray const & name );
-  bool		addStaticAudioOutput(QByteArray const & name );
-  bool		addStaticControlInput(QByteArray const & name );
-  bool		addStaticControlOutput(QByteArray const & name );
+//     //
+//     //
+//     //
+//     // EFFECT CONFIGURATION
+//     //
+//     //
+//     //
 
-  bool		removeStaticVideoInput( QByteArray const & name );
-  bool		removeStaticVideoOutput( QByteArray const & name );
-  bool		removeStaticAudioInput( QByteArray const & name );
-  bool		removeStaticAudioOutput( QByteArray const & name );
-  bool		removeStaticControlInput( QByteArray const & name );
-  bool		removeStaticControlOutput( QByteArray const & name );
+//     //
+//     //
+//     // SETTING EFFECT CONFIGURATION
+//     //
+//     //
 
-  // DYNAMICS SLOTS
+//     //
+//     // STATICS SLOTS
+//     //
 
-  void		enableDynamicVideoInput( void );
-  void		enableDynamicVideoOutput( void );
-  void		enableDynamicAudioInput( void );
-  void		enableDynamicAudioOutput( void );
-  void		enableDynamicControlInput( void );
-  void		enableDynamicControlOutput( void );
+//     bool		addStaticVideoInput( QByteArray const & name );
+//     bool		addStaticVideoOutput( QByteArray const & name );
+//     bool		addStaticAudioInput( QByteArray const & name );
+//     bool		addStaticAudioOutput( QByteArray const & name );
+//     bool		addStaticControlInput( QByteArray const & name );
+//     bool		addStaticControlOutput( QByteArray const & name );
 
-  void		disableDynamicVideoInput( void );
-  void		disableDynamicVideoOutput( void );
-  void		disableDynamicAudioInput( void );
-  void		disableDynamicAudioOutput( void );
-  void		disableDynamicControlInput( void );
-  void		disableDynamicControlOutput( void );
+//     bool		removeStaticVideoInput( QByteArray const & name );
+//     bool		removeStaticVideoOutput( QByteArray const & name );
+//     bool		removeStaticAudioInput( QByteArray const & name );
+//     bool		removeStaticAudioOutput( QByteArray const & name );
+//     bool		removeStaticControlInput( QByteArray const & name );
+//     bool		removeStaticControlOutput( QByteArray const & name );
 
-  //
-  // GETTING EFFECT CONFIGURATION
-  //
+//     //
+//     // DYNAMICS SLOTS
+//     //
 
-  // STATICS SLOTS
+//     void		enableDynamicVideoInput( void );
+//     void		enableDynamicVideoOutput( void );
+//     void		enableDynamicAudioInput( void );
+//     void		enableDynamicAudioOutput( void );
+//     void		enableDynamicControlInput( void );
+//     void		enableDynamicControlOutput( void );
+
+//     void		disableDynamicVideoInput( void );
+//     void		disableDynamicVideoOutput( void );
+//     void		disableDynamicAudioInput( void );
+//     void		disableDynamicAudioOutput( void );
+//     void		disableDynamicControlInput( void );
+//     void		disableDynamicControlOutput( void );
+
+//     //
+//     //
+//     // GETTING EFFECT CONFIGURATION
+//     //
+//     //
+
+//     //
+//     // STATICS SLOTS
+//     //
+
+//     QList<QByteArray> const &	getStaticVideosInputsNameList( void ) const;
+//     QList<QByteArray> const &	getStaticVideosOutputsNameList( void ) const;
+//     QList<QByteArray> const &	getStaticAudiosInputsNameList( void ) const;
+//     QList<QByteArray> const &	getStaticAudiosOutputsNameList( void ) const;
+//     QList<QByteArray> const &	getStaticControlsInputsNameList( void ) const;
+//     QList<QByteArray> const &	getStaticControlsOutputsNameList( void ) const;
+
+//     QByteArray const &          getStaticVideoInputNameById( quint32 const id ) const;
+//     QByteArray const &          getStaticVideoOutputNameById( quint32 const id ) const;
+//     QByteArray const &          getStaticAudioInputNameById( quint32 const id ) const;
+//     QByteArray const &          getStaticAudioOutputNameById( quint32 const id ) const;
+//     QByteArray const &          getStaticControlInputNameById( quint32 const id ) const;
+//     QByteArray const &          getStaticControlOutputNameById( quint32 const id ) const;
+
+//     quint32                     getStaticVideoInputIdByName( QByteArray const & name ) const;
+//     quint32                     getStaticVideoOutputIdByName( QByteArray const & name ) const;
+//     quint32                     getStaticAudioInputIdByName( QByteArray const & name ) const;
+//     quint32                     getStaticAudioOutputIdByName( QByteArray const & name ) const;
+//     quint32                     getStaticControlInputIdByName( QByteArray const & name ) const;
+//     quint32                     getStaticControlOutputIdByName( QByteArray const & name ) const;
+
+//     quint32                     getNBStaticVideosInputs( void ) const;
+//     quint32                     getNBStaticVideosOutputs( void ) const;
+//     quint32                     getNBStaticAudiosIntputs( void ) const;
+//     quint32                     getNBStaticAudiosOutputs( void ) const;
+//     quint32                     getNBStaticControlsInputs( void ) const;
+//     quint32                     getNBStaticControlsOutputs( void ) const;
+
+//     //
+//     // DYNAMICS SLOTS
+//     //
+
+//     quint32             getNBDynamicVideosInputs( void ) const;
+//     quint32             getNBDynamicVideosOutputs( void ) const;
+//     quint32             getNBDynamicAudiosIntputs( void ) const;
+//     quint32             getNBDynamicAudiosOutputs( void ) const;
+//     quint32             getNBDynamicControlsInputs( void ) const;
+//     quint32             getNBDynamicControlsOutputs( void ) const;
+
+//     bool                areDynamicVideosInputsEnabled( void ) const;
+//     bool                areDynamicVideosOutputsEnabled( void ) const;
+//     bool                areDynamicAudiosIntputsEnabled( void ) const;
+//     bool                areDynamicAudiosOutputsEnabled( void ) const;
+//     bool                areDynamicControlsInputsEnabled( void ) const;
+//     bool                areDynamicControlsOutputsEnabled( void ) const;
+
+//     //
+//     //
+//     //
+//     // GETTING EFFECT WIDGET
+//     //
+//     //
+//     //
+
+//     QWidget*            getWidget( void );
+
+//     //
+//     //
+//     //
+//     // RENDER METHOD
+//     //
+//     //
+//     //
+
+    void        render( void );
+
+//     //
+//     //
+//     //
+//     // CONNECTION AND BINDING METHODS
+//     //
+//     //
+//     //
+
+//     //
+//     //
+//     //
+//     // MISSING FUNCTIONNALITY
+//     //
+//     //
+//     //
+
+//     // IN PRIVATE : GETTING SLOT FOR THE EFFECT DEVELOPPER
+
+//     // TO FINISH : CONNECTION AND BINDINDG
+
+//     // INTERPRETER AND ITS PRIMITIVE METHODES
+
+//     // REPLACE VIRTUAL PURE RENDER METHOD BY VIRTUAL RENDER METHOD WHO RENTER THE SUB-EFFECTS BY DEFAULT
+//     // WITH THE MULTI-THREAD RENDER CLASS
+
+//     // EffectsFactory static instance into GenericEffect
+
+//     // SUB-EFFECTS MANAGEMENT METHODS
+
+//     // BIEN SEPARER LE DEVELOPPER-LAND ET LE EFFECTSENGINE-LAND, notamment en faisant des interface IPublic*slot
+//     // DONC TOUT PROXIFIER PAR LE GENERICEFFECT, sauf l'ecriture/lecture dans un slot et le getting de l'id et de l'instance de l'effet et du GenericEffect
+
+    //
+    //
+    //
+    // DEPRECATED
+    //
+    //
+    //
+
+    //
+    // CONNECTIONS BETWEEN GENERICEFFECTS
+    //
+
+    /*   void				connectDynOutToStatIn( GenericEffect* destinationeffect, QString const & inslotname ); */
+    /*   void				connectDynOutToDynIn( GenericEffect* destinationeffect ); */
+    void                                connectOutput( quint32 outIndex, GenericEffect* destEffect, quint32 inIndex );
+    /*   void				connectStatOutToDynIn( QString const & outslotname, GenericEffect* destinationeffect ); */
+
+    //
+    // CONNECTIONS BETWEEN GENERICEFFECT & OUTSLOTS/INSLOTS
+    //
+
+    void                                connect( OutSlot<LightVideoFrame> & out, quint32 inIndex );
+    void                                connect( quint32 outIndex, InSlot<LightVideoFrame> & in);
+
+    InSlot<LightVideoFrame> &           getVideoInput(quint32 id);
+    OutSlot<LightVideoFrame> &          getVideoOutput(quint32 id);
+
+    ////
+    ////
+    ////
+    ////
+    //// ATTRIBUTES
+    ////
+    ////
+    ////
+    ////
 
 
-  //  QList<QByteArray>	getStati
+private:
+//    private:
 
-  quint32	getNBStaticVideosInputs( void ) const;
-  quint32	getNBStaticVideosOutputs( void ) const;
-  quint32	getNBStaticAudiosIntputs( void ) const;
-  quint32	getNBStaticAudiosOutputs( void ) const;
-  quint32	getNBStaticControlsInputs( void ) const;
-  quint32	getNBStaticControlsOutputs( void ) const;
-
-  // DYNAMICS SLOTS
-
-  quint32	getNBDynamicVideosInputs( void ) const;
-  quint32	getNBDynamicVideosOutputs( void ) const;
-  quint32	getNBDynamicAudiosIntputs( void ) const;
-  quint32	getNBDynamicAudiosOutputs( void ) const;
-  quint32	getNBDynamicControlsInputs( void ) const;
-  quint32	getNBDynamicControlsOutputs( void ) const;
-
-  bool		areDynamicVideosInputsEnabled( void ) const;
-  bool		areDynamicVideosOutputsEnabled( void ) const;
-  bool		areDynamicAudiosIntputsEnabled( void ) const;
-  bool		areDynamicAudiosOutputsEnabled( void ) const;
-  bool		areDynamicControlsInputsEnabled( void ) const;
-  bool		areDynamicControlsOutputsEnabled( void ) const;
-
-  //-------------------------------------------------------------------
-  //
-  // GETTING EFFECT WIDGET
-  //
-  //
-
-  QWidget*	getWidget( void );
-
-  //-------------------------------------------------------------------
-  //
-  // RENDER METHOD
-  //
-  //
-
-  virtual void  render( void );
+    IEffectPlugin*                      m_plugin;
+    InSlot<LightVideoFrame>*            m_videoInputs;
+    OutSlot<LightVideoFrame>*           m_videoOutputs;
 
 
+//     //
+//     //
+//     // SLOTS
+//     //
+//     //
 
-  //-------------------------------------------------------------------
-  //
-  // MISSING FUNCTIONNALITY
-  //
-  //
-  
-  // IN PRIVATE : GETTING SLOT FOR THE EFFECT DEVELOPPER
+//     //
+//     // STATIC SLOTS
+//     //
 
-  // TO FINISH : CONNECTION AND BINDINDG
+//     // VIDEOS SLOTS
 
-  // INTERPRETER AND ITS PRIMITIVE METHODES
+//     QMap< quint32, InSlot<LightVideoFrame>* >	m_staticVideosInputs;
+//     QMap< quint32, OutSlot<LightVideoFrame>* >	m_staticVideosOutputs;
 
-  // REPLACE VIRTUAL PURE RENDER METHOD BY VIRTUAL RENDER METHOD WHO RENTER THE SUB-EFFECTS BY DEFAULT
-  // WITH THE MULTI-THREAD RENDER CLASS
+//     // AUDIOS SLOTS
 
-  // EffectsFactory static instance into GenericEffect
+//     // QMap< quint32, InSlot<>* >                m_staticAudiosInputs;
+//     // QMap< quint32, OutSlot<>* >               m_staticAudiosOutputs;
 
-  // SUB-EFFECTS MANAGEMENT METHODS
+//     // CONTROLS SLOTS
 
-  //-------------------------------------------------------------------
-  //
-  // CONNECTION AND BINDING METHODS
-  //
-  //
+//     QMap< quint32, InSlot<qreal>* >		m_staticControlsInputs;
+//     QMap< quint32, OutSlot<qreal>* >		m_staticControlsOutputs;
 
-  
+//     //
+//     // STATIC SLOTS INFOS
+//     //
 
-  //-------------------------------------------------------------------
-  //
-  // DEPRECATED
-  //
-  //
+//     // VIDEOS SLOTS
 
-  //
-  // CONNECTIONS BETWEEN GENERICEFFECTS
-  //
+//     QMap< quint32, QByteArray >                 m_staticVideosInputsNamesByIds;
+//     QMap< QByteArray, quint32 >                 m_staticVideosInputsIdsByNames;
+//     QMap< quint32, QByteArray >                 m_staticVideosOutputsNamesByIds;
+//     QMap< QByteArray, quint32 >                 m_staticVideosOutputsIdsByNames;
 
-  /*   void				connectDynOutToStatIn( GenericEffect* destinationeffect, QString const & inslotname ); */
-  /*   void				connectDynOutToDynIn( GenericEffect* destinationeffect ); */
-  void					connectOutput( quint32 outIndex, GenericEffect* destEffect, quint32 inIndex );
-  /*   void				connectStatOutToDynIn( QString const & outslotname, GenericEffect* destinationeffect ); */
+//     // AUDIOS SLOTS
 
-  //
-  // CONNECTIONS BETWEEN GENERICEFFECT & OUTSLOTS/INSLOTS
-  //
+//     // QMap< quint32, QByteArray >              m_staticAudiosInputsNamesByIds;
+//     // QMap< QByteArray, quint32 >              m_staticAudiosInputsIdsByNames;
+//     // QMap< quint32, QByteArray >              m_staticAudiosOutputsNamesByIds;
+//     // QMap< QByteArray, quint32 >              m_staticAudiosOutputsIdsByNames;
 
-  void					connect( OutSlot<LightVideoFrame> & out, quint32 inIndex );
-  void					connect( quint32 outIndex, InSlot<LightVideoFrame> & in);
+//     // CONTROLS SLOTS
 
- protected:
+//     QMap< quint32, QByteArray >                 m_staticControlsInputsNamesByIds;
+//     QMap< QByteArray, quint32 >                 m_staticControlsInputsIdsByNames;
+//     QMap< quint32, QByteArray >                 m_staticVideosOutputsNamesByIds;
+//     QMap< QByteArray, quint32 >                 m_staticVideosOutputsIdsByNames;
 
+//     //
+//     // DYNAMIC SLOTS
+//     //
 
-  InSlot<LightVideoFrame>*			m_videoInputs;
-  OutSlot<LightVideoFrame>*			m_videoOutputs;
+//     // VIDEOS SLOTS
 
-  //-------------------------------------------------------------------
-  // SLOTS
-  //
+//     QList< InSlot<LightVideoFrame>* >                    m_dynamicVideosInputs;
+//     QList< OutSlot<LightVideoFrame>* >                   m_dynamicVideosOutputs;
 
-  // STATIC SLOTS
+//     // AUDIOS SLOTS
 
-  QMap< quint32, InSlot<LightVideoFrame> >	m_staticVideosInputs;
-  QMap< quint32, OutSlot<LightVideoFrame> >	m_staticVideosOutputs;
-  // QMap< quint32, InSlot<> >			m_staticAudiosInputs;
-  // QMap< quint32, OutSlot<> >			m_staticAudiosOutputs;
-  QMap< quint32, InSlot<qreal> >		m_staticControlsInputs;
-  QMap< quint32, OutSlot<qreal> >		m_staticControlsOutputs;
+//     // QList< InSlot<>* >                                m_dynamicAudiosInputs;
+//     // QList< OutSlot<>* >                               m_dynamicAudiosOutputs;
 
-  // DYNAMIC SLOTS
+//     // CONTROLS SLOTS
 
-  bool						m_enableDynamicVideosInputs;
-  bool						m_enableDynamicVideosOutputs;
-  bool						m_enableDynamicAudiosInputs;
-  bool						m_enableDynamicAudiossOutputs;
-  bool						m_enableDynamicControlInputs;
-  bool						m_enableDynamicControlOutputs;
+//     QList< InSlot<qreal>* >                              m_dynamicControlsInputs;
+//     QList< OutSlot<qreal>* >                             m_dynamicControlsOutputs;
 
-  QList< InSlot<LightVideoFrame> >		m_dynamicVideosInputs;
-  QList< OutSlot<LightVideoFrame> >		m_dynamicVideosOutputs;
-  // QList< InSlot<> >				m_dynamicAudiosInputs;
-  // QList< OutSlot<> >				m_dynamicAudiosOutputs;
-  QList< InSlot<qreal> >			m_dynamicControlsInputs;
-  QList< OutSlot<qreal> >			m_dynamicControlsOutputs;
-  
+//     //
+//     // DYNAMICS SLOTS INFOS
+//     //
+
+//     // VIDEOS SLOTS
+
+//     bool                                        m_enableDynamicVideosInputs;
+//     bool                                        m_enableDynamicVideosOutputs;
+
+//     // AUDIOS SLOTS
+
+// //     bool                                        m_enableDynamicAudiosInputs;
+// //     bool                                        m_enableDynamicAudiossOutputs;
+
+//     // CONTROLS SLOTS
+
+//     bool                                        m_enableDynamicControlInputs;
+//     bool                                        m_enableDynamicControlOutputs;
 };
 
 #endif // GENERICEFFECT_H_

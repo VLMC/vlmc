@@ -1,5 +1,6 @@
 /*****************************************************************************
- * MixerEffect.h: Effect module to mix multiple frame in one
+ * EffectsFactory.cpp: this class is used to instantiate a new GenericEffect
+ *                   which contains builtin or plugin effect
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,35 +21,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef MIXEREFFECT_H_
-#define MIXEREFFECT_H_
+#include "EffectsFactory.h"
 
-#include "IGenericEffect.h"
-#include "IEffectPlugin.h"
 
-class	MixerEffect : public IEffectPlugin
+
+EffectsFactory::EffectsFactory()
 {
-public:
+}
 
-  // CTOR & DTOR
+EffectsFactory::~EffectsFactory()
+{
+}
 
-  MixerEffect();
-  ~MixerEffect();
-
-  // INIT
-
-  void          init( IGenericEffect* ige );
-
-  // RENDER METHOD
-
-  void	render( void );
-
-private:
-
-  IGenericEffect*               m_ige;
-  static	quint32 const	m_nbVideoInputs = 64;
-  static	quint32 const	m_nbVideoOutputs = 1;
-
-};
-
-#endif // MIXEREFFECT_H_
+GenericEffect*        EffectsFactory::getEffect( quint32 id )
+{
+    if ( id == 1 )
+        return ( new GenericEffect( new MixerEffect() ) );
+    else if ( id == 2 )
+        return ( new GenericEffect( new GreenFilterEffect() ) );
+}
