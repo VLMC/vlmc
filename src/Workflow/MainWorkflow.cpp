@@ -39,6 +39,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
         m_lengthFrame( 0 ),
         m_renderStarted( false )
 {
+    m_currentFrameLock = new QReadWriteLock;
     m_renderStartedLock = new QReadWriteLock;
     m_renderMutex = new QMutex;
     m_synchroneRenderWaitCondition = new QWaitCondition;
@@ -73,6 +74,7 @@ MainWorkflow::~MainWorkflow()
     delete m_synchroneRenderWaitCondition;
     delete m_renderMutex;
     delete m_renderStartedLock;
+    delete m_currentFrameLock;
     for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         delete m_tracks[i];
     delete[] m_tracks;
@@ -120,8 +122,12 @@ void                    MainWorkflow::getOutput()
 
     if ( m_renderStarted == true )
     {
-        for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
-            m_tracks[i]->getOutput( m_currentFrame );
+        {
+            QReadLocker         lock3( m_currentFrameLock );
+
+            for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
+                m_tracks[i]->getOutput( m_currentFrame );
+        }
         if ( m_paused == false )
             nextFrame();
     }
@@ -145,14 +151,17 @@ void        MainWorkflow::unpause()
 
 void        MainWorkflow::nextFrame()
 {
-    ++m_currentFrame;
+    QWriteLocker    lock( m_currentFrameLock );
 
+    ++m_currentFrame;
     emit frameChanged( m_currentFrame );
     emit positionChanged( (float)m_currentFrame / (float)m_lengthFrame );
 }
 
 void        MainWorkflow::previousFrame()
 {
+    QWriteLocker    lock( m_currentFrameLock );
+
     --m_currentFrame;
     emit frameChanged( m_currentFrame );
     emit positionChanged( (float)m_currentFrame / (float)m_lengthFrame );
@@ -167,6 +176,8 @@ void        MainWorkflow::setPosition( float pos )
         for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i)
             m_tracks[i]->activateAll();
     }
+    QReadLocker     lock( m_currentFrameLock );
+
     qint64  frame = static_cast<qint64>( (float)m_lengthFrame * pos );
     m_currentFrame = frame;
     emit frameChanged( frame );
@@ -186,6 +197,7 @@ qint64      MainWorkflow::getClipPosition( const QUuid& uuid, unsigned int track
 void            MainWorkflow::stop()
 {
     QWriteLocker    lock( m_renderStartedLock );
+    QWriteLocker    lock2( m_currentFrameLock );
 
     m_renderStarted = false;
     for (unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i)
@@ -256,6 +268,8 @@ void        MainWorkflow::unmuteTrack( unsigned int trackId, MainWorkflow::Track
 
 void        MainWorkflow::setCurrentFrame( qint64 currentFrame )
 {
+    QWriteLocker    lock( m_currentFrameLock );
+
     m_currentFrame = currentFrame;
     emit positionChanged( (float)m_currentFrame / (float)m_lengthFrame );
 }
@@ -424,5 +438,7 @@ int         MainWorkflow::getTrackCount( MainWorkflow::TrackType trackType ) con
 
 qint64      MainWorkflow::getCurrentFrame() const
 {
+    QReadLocker     lock( m_currentFrameLock );
+
     return m_currentFrame;
 }

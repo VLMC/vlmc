@@ -135,6 +135,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         static LightVideoFrame* blackOutput;
 
     private:
+        QReadWriteLock*                 m_currentFrameLock;
         qint64                          m_currentFrame;
         qint64                          m_lengthFrame;
         /**
