@@ -70,8 +70,8 @@ void            ImportModel::cutClip( const QUuid& mediaId, const QUuid& clipId,
 
 void            ImportModel::metaDataComputed( Media* media )
 {
-    static int mediaLoaded = 0;
     disconnect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ) );
+
     if ( media->hasMetadata() )
     {
         m_medias->insert( media->getUuid(), media );
@@ -79,20 +79,37 @@ void            ImportModel::metaDataComputed( Media* media )
         emit updateMediaRequested( media );
     }
     else
+        m_invalidMedias.append( media );
+    m_nbLoadedMedias++;
+
+
+    m_progressDialog->setValue( m_nbLoadedMedias );
+
+    if( m_progressDialog->wasCanceled() )
     {
-        m_invalidMedias.append( media->getFileName() );
-        delete media;
+        Media* media;
+        foreach( media, m_invalidMedias )
+            delete media;
+        m_nbLoadedMedias = 0;
+        m_invalidMedias.clear();
+        return;
     }
-    mediaLoaded++;
-    qDebug() << mediaLoaded << m_loadingMedias;
-    if ( mediaLoaded == m_loadingMedias )
+
+    if ( m_nbLoadedMedias == m_loadingMedias )
     {
         if ( m_invalidMedias.count() > 0 )
         {
-            QMessageBox::warning( NULL, QString( "Error!" ), QString( tr( "Error while loading media(s):\n%0" ) ).arg( m_invalidMedias.join( QString("\n") ) ) );
+            QStringList list;
+            Media* media;
+            foreach( media, m_invalidMedias )
+            {
+                list.append( media->getFileName() );
+                delete media;
+            }
+            QMessageBox::warning( NULL, QString( "Error!" ), QString( tr( "Error while loading media(s):\n%0" ) ).arg( list.join( QString("\n") ) ) );
             m_invalidMedias.clear();
         }
-        mediaLoaded = 0;
+        m_nbLoadedMedias = 0;
     }
 }
 
@@ -126,12 +143,20 @@ void            ImportModel::loadFile( const QFileInfo& fileInfo, int loadingMed
     if ( !fileInfo.isDir() )
     {
         if ( loadingMedias == 0)
+        {
             m_loadingMedias = 1;
+            m_progressDialog = new QProgressDialog("Importing files...", "Cancel", 0, m_loadingMedias, NULL);
+            m_progressDialog->setWindowModality( Qt::WindowModal );
+            m_progressDialog->setMinimumDuration( 1000 );
+            m_nbLoadedMedias = 0;
+        }
         if ( !mediaAlreadyLoaded( fileInfo ) )
         {
            media = new Media( fileInfo.filePath() );
            loadMedia( media );
         }
+        else
+            m_nbLoadedMedias++;
     }
     else
     {
@@ -140,6 +165,10 @@ void            ImportModel::loadFile( const QFileInfo& fileInfo, int loadingMed
         QFileInfo file;
 
         m_loadingMedias = list.count();
+        m_nbLoadedMedias = 0;
+        m_progressDialog = new QProgressDialog("Importing files...", "Cancel", 0, m_loadingMedias, NULL);
+        m_progressDialog->setWindowModality(Qt::WindowModal);
+        m_progressDialog->setMinimumDuration( 1000 );
         foreach( file, list )
             loadFile( file, m_loadingMedias );
     }

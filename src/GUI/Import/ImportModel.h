@@ -28,6 +28,7 @@
 #include <QHash>
 #include <QFileSystemModel>
 #include <QDirModel>
+#include <QProgressDialog>
 
 #include "Media.h"
 #include "Clip.h"
@@ -59,8 +60,10 @@ private:
     QHash<QUuid, Media*>*           m_medias;
     MetaDataWorker*                 m_metaDataWorker;
     QStringList                     m_filters;
-    QStringList                     m_invalidMedias;
+    QList<Media*>                   m_invalidMedias;
     int                             m_loadingMedias;
+    int                             m_nbLoadedMedias;
+    QProgressDialog*                m_progressDialog;
 
     void        loadMedia( Media* media );
     bool        mediaAlreadyLoaded( const QFileInfo& fileInfo );
