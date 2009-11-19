@@ -62,7 +62,7 @@ private slots:
     void            on_pushButtonNextFrame_clicked();
     void            on_pushButtonPreviousFrame_clicked();
     void            positionChanged( float );
-    void            frameChanged( qint64 );
+    void            frameChanged( qint64, GenericRenderer::FrameChangedReason reason );
     void            seekSliderPressed();
     void            seekSliderMoved( int value );
     void            seekSliderReleased();

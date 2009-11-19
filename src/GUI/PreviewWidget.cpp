@@ -67,6 +67,8 @@ PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent 
     connect( m_renderer,     SIGNAL( paused() ),                 this,       SLOT( videoPaused() ) );
     connect( m_renderer,     SIGNAL( playing() ),                this,       SLOT( videoPlaying() ) );
     connect( m_renderer,     SIGNAL( positionChanged(float) ),   this,       SLOT( positionChanged(float) ) );
+    connect( m_renderer,     SIGNAL( frameChanged(qint64,GenericRenderer::FrameChangedReason) ),
+             this, SLOT( frameChanged(qint64, GenericRenderer::FrameChangedReason ) ) );
     connect( m_renderer,     SIGNAL( endReached() ),             this,       SLOT( endReached() ) );
 }
 
@@ -94,10 +96,12 @@ void    PreviewWidget::positionChanged( float newPos )
         m_ui->rulerWidget->setValue( (int)( newPos * 1000.0 ) );
 }
 
-void    PreviewWidget::frameChanged( qint64 currentFrame )
+void    PreviewWidget::frameChanged( qint64 currentFrame, GenericRenderer::FrameChangedReason reason )
 {
-    if ( m_previewStopped == false )
+    if ( m_previewStopped == false && reason != GenericRenderer::PreviewCursor )
+    {
         m_ui->rulerWidget->setFrame( currentFrame );
+    }
 }
 
 void    PreviewWidget::seekSliderPressed()
