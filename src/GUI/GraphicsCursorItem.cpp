@@ -63,9 +63,9 @@ QVariant GraphicsCursorItem::itemChange( GraphicsItemChange change, const QVaria
     return QGraphicsItem::itemChange( change, value );
 }
 
-void GraphicsCursorItem::frameChanged( qint64 newFrame, GenericRenderer::FrameChangedReason reason )
+void GraphicsCursorItem::frameChanged( qint64 newFrame, MainWorkflow::FrameChangedReason reason )
 {
-    if ( reason != GenericRenderer::TimelineCursor )
+    if ( reason != MainWorkflow::TimelineCursor )
     {
         m_manualMove = false;
         setPos( newFrame, pos().y() );

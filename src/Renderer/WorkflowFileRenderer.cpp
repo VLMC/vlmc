@@ -77,11 +77,6 @@ void    WorkflowFileRenderer::stop()
     m_dialog->done( 0 );
 }
 
-void    WorkflowFileRenderer::positionChanged( float newPos )
-{
-    m_dialog->setProgressBarValue( static_cast<int>( newPos * 100 ) );
-}
-
 void    WorkflowFileRenderer::cancelButtonClicked()
 {
     stop();

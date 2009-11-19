@@ -54,7 +54,7 @@ signals:
     void cursorPositionChanged( qint64 pos );
 
 public slots:
-    void frameChanged( qint64 position, GenericRenderer::FrameChangedReason );
+    void frameChanged( qint64 position, MainWorkflow::FrameChangedReason );
 };
 
 #endif // GRAPHICSCURSORITEM_H

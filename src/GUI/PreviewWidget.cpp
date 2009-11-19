@@ -37,9 +37,6 @@ PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent 
 {
     m_ui->setupUi( this );
 
-    m_ui->rulerWidget->setMinimum( 0 );
-    m_ui->rulerWidget->setMaximum( 1000 );
-    m_ui->rulerWidget->setSingleStep( 2 );
     m_ui->rulerWidget->setFocusPolicy( Qt::NoFocus );
 
     // Prepare and set the black background
@@ -53,9 +50,6 @@ PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent 
 
     setAcceptDrops( false );
 
-    connect( m_ui->rulerWidget, SIGNAL( sliderPressed() ),       this,   SLOT( seekSliderPressed() ) );
-    connect( m_ui->rulerWidget, SIGNAL( sliderPosChanged(int) ), this,   SLOT( seekSliderMoved(int) ) );
-    connect( m_ui->rulerWidget, SIGNAL( sliderReleased() ),      this,   SLOT( seekSliderReleased() ) );
     connect( m_ui->rulerWidget, SIGNAL( timeChanged(int,int,int,int) ),
              m_ui->lcdNumber,   SLOT( setTime(int,int,int,int) ) );
 
@@ -63,13 +57,14 @@ PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent 
     m_renderer->setPreviewLabel( m_ui->previewLabel );
     m_ui->previewLabel->hide();
 
-    connect( m_renderer,     SIGNAL( stopped() ),                this,       SLOT( videoStopped() ) );
-    connect( m_renderer,     SIGNAL( paused() ),                 this,       SLOT( videoPaused() ) );
-    connect( m_renderer,     SIGNAL( playing() ),                this,       SLOT( videoPlaying() ) );
-    connect( m_renderer,     SIGNAL( positionChanged(float) ),   this,       SLOT( positionChanged(float) ) );
-    connect( m_renderer,     SIGNAL( frameChanged(qint64,GenericRenderer::FrameChangedReason) ),
-             this, SLOT( frameChanged(qint64, GenericRenderer::FrameChangedReason ) ) );
-    connect( m_renderer,     SIGNAL( endReached() ),             this,       SLOT( endReached() ) );
+    connect( m_renderer,     SIGNAL( stopped() ),               this,       SLOT( videoStopped() ) );
+    connect( m_renderer,     SIGNAL( paused() ),                this,       SLOT( videoPaused() ) );
+    connect( m_renderer,     SIGNAL( playing() ),               this,       SLOT( videoPlaying() ) );
+    connect( m_renderer,     SIGNAL( frameChanged(qint64, MainWorkflow::FrameChangedReason) ),
+             this, SLOT( frameChanged(qint64, MainWorkflow::FrameChangedReason ) ) );
+    connect( m_renderer,     SIGNAL( endReached() ),            this,       SLOT( endReached() ) );
+    connect( m_ui->rulerWidget, SIGNAL( frameChanged(qint64, MainWorkflow::FrameChangedReason) ),
+             m_renderer,       SLOT( previewWidgetCursorChanged(qint64) ) );
 }
 
 PreviewWidget::~PreviewWidget()
@@ -90,51 +85,12 @@ void    PreviewWidget::changeEvent( QEvent *e )
     }
 }
 
-void    PreviewWidget::positionChanged( float newPos )
+void    PreviewWidget::frameChanged( qint64 currentFrame, MainWorkflow::FrameChangedReason reason )
 {
-    if ( m_previewStopped == false )
-        m_ui->rulerWidget->setValue( (int)( newPos * 1000.0 ) );
-}
-
-void    PreviewWidget::frameChanged( qint64 currentFrame, GenericRenderer::FrameChangedReason reason )
-{
-    if ( m_previewStopped == false && reason != GenericRenderer::PreviewCursor )
+    if ( m_previewStopped == false && reason != MainWorkflow::PreviewCursor )
     {
         m_ui->rulerWidget->setFrame( currentFrame );
     }
-}
-
-void    PreviewWidget::seekSliderPressed()
-{
-    disconnect( m_renderer, SIGNAL( positionChanged( float ) ),
-                this, SLOT( positionChanged( float ) ) );
-}
-
-void    PreviewWidget::seekSliderMoved( int )
-{
-    if ( m_ui->rulerWidget->value() == m_ui->rulerWidget->maximum() )
-    {
-        m_endReached = true;
-        return;
-    }
-    m_endReached = false;
-    //Putting back the slider value into vlc position
-    m_renderer->setPosition( (float)m_ui->rulerWidget->value() / 1000.0f );
-}
-
-void    PreviewWidget::seekSliderReleased()
-{
-    if ( m_endReached == true && m_previewStopped == false )
-    {
-        //When cursor reaches the maximum right, end reached becomes true.
-        //When we will release our slider, if endReached is true, we actually set the position.
-        //Otherwise, we do nothing.
-        //This prevents the video to stop if we put the slider to the maximum right by mistake
-        m_renderer->setPosition( (float)m_ui->rulerWidget->maximum() );
-        m_previewStopped = false;
-    }
-    connect( m_renderer, SIGNAL( positionChanged( float ) ),
-             this, SLOT( positionChanged( float ) ) );
 }
 
 void    PreviewWidget::on_pushButtonStop_clicked()
@@ -161,7 +117,6 @@ void    PreviewWidget::videoPaused()
 void    PreviewWidget::videoStopped()
 {
     m_ui->pushButtonPlay->setIcon( QIcon( ":/images/play" ) );
-    m_ui->rulerWidget->setValue( 0 );
 }
 
 void    PreviewWidget::videoPlaying()
@@ -174,7 +129,6 @@ void    PreviewWidget::endReached()
     m_previewStopped = true;
 
     m_ui->pushButtonPlay->setIcon( QIcon( ":/images/play" ) );
-    m_ui->rulerWidget->setValue( 0 );
 
     // Set the black background
     m_ui->renderWidget->setPalette( m_videoPalette );

@@ -57,12 +57,6 @@ class   WorkflowRenderer : public GenericRenderer
         WorkflowRenderer();
         ~WorkflowRenderer();
 
-        /**
-            \brief          Set the preview position
-            \param          newPos : The new position in vlc position (between
-                                        0 and 1)
-        */
-        virtual void        setPosition( float newPos );
         virtual void        togglePlayPause( bool forcePause );
         virtual void        stop();
         virtual void        nextFrame();
@@ -104,9 +98,9 @@ class   WorkflowRenderer : public GenericRenderer
         virtual void        setMedia( Media* ) {}
         void                mediaUnloaded( const QUuid& ) {}
         void                timelineCursorChanged( qint64 newFrame );
+        void                previewWidgetCursorChanged( qint64 newFrame );
 
-        void                __positionChanged() { qFatal("Get out."); }
-        void                __frameChanged( qint64 frame );
+        void                __frameChanged( qint64 frame, MainWorkflow::FrameChangedReason );
         void                __videoPaused();
         void                __videoStopped();
         void                __videoPlaying();

@@ -29,6 +29,7 @@
 
 #include "Clip.h"
 #include "VLCMediaPlayer.h"
+#include "MainWorkflow.h"
 
 class   GenericRenderer : public QObject
 {
@@ -36,12 +37,6 @@ class   GenericRenderer : public QObject
     Q_DISABLE_COPY( GenericRenderer );
 
 public:
-    enum    FrameChangedReason
-    {
-        Renderer,
-        TimelineCursor,
-        PreviewCursor,
-    };
     explicit GenericRenderer() :
                 m_paused( false ),
                 m_isRendering( false )
@@ -80,12 +75,6 @@ public:
     virtual void                    stop() = 0;
 
     /**
-     * \brief Sets the position in the video
-     * The value should be bounded between 0.0 and 1.0
-     */
-    virtual void                    setPosition( float newPos ) = 0;
-
-    /**
      * \brief Return the length in milliseconds
      */
     virtual qint64                  getLengthMs() const = 0;
@@ -106,7 +95,7 @@ public:
      */
     qint64                          getLength() const
     {
-        return qRound64( (qreal)getLengthMs() / 1000 * (qreal)getFps() );
+        return qRound64( (qreal)getLengthMs() / 1000.0 * (qreal)getFps() );
     }
 
     /**
@@ -144,21 +133,20 @@ protected:
 
 
 public slots:
-    virtual void                    __positionChanged() = 0;
     virtual void                    __videoPaused() = 0;
     virtual void                    __videoPlaying() = 0;
     virtual void                    __endReached() = 0;
     virtual void                    setClip( Clip* ) = 0;
     virtual void                    setMedia( Media* ) = 0;
     virtual void                    mediaUnloaded( const QUuid& ) = 0;
+    virtual void                    previewWidgetCursorChanged( qint64 ) = 0;
 
 
 signals:
     void                            stopped();
     void                            paused();
     void                            playing();
-    void                            positionChanged( float );
-    void                            frameChanged( qint64, GenericRenderer::FrameChangedReason );
+    void                            frameChanged( qint64, MainWorkflow::FrameChangedReason );
     void                            endReached();
 };
 

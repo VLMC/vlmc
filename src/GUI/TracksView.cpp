@@ -632,7 +632,7 @@ QList<AbstractGraphicsMediaItem*> TracksView::mediaItems( const QPoint& pos )
 void TracksView::setCursorPos( qint64 pos )
 {
     if ( pos < 0 ) pos = 0;
-    m_cursorLine->frameChanged( pos, GenericRenderer::TimelineCursor );
+    m_cursorLine->frameChanged( pos, MainWorkflow::TimelineCursor );
 }
 
 qint64 TracksView::cursorPos()

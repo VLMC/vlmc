@@ -25,6 +25,7 @@
 #include <QtGlobal>
 
 #include "ClipRenderer.h"
+#include "MainWorkflow.h"
 
 ClipRenderer::ClipRenderer() :
     GenericRenderer(),
@@ -114,16 +115,6 @@ void        ClipRenderer::startPreview()
     m_mediaChanged = false;
 }
 
-void        ClipRenderer::setPosition( float newPos )
-{
-    if ( m_clipLoaded == false || m_isRendering == false )
-        return ;
-    float   begin = m_begin / ( m_end - m_begin );
-    float   end = m_end / ( m_end - m_begin );
-    float   pos = newPos * ( end - begin ) + begin;
-    m_mediaPlayer->setPosition( pos );
-}
-
 void        ClipRenderer::stop()
 {
     if ( m_clipLoaded == true && m_isRendering == true )
@@ -140,7 +131,7 @@ void        ClipRenderer::togglePlayPause( bool forcePause )
 {
     if ( m_clipLoaded == false )
     {
-        emit positionChanged( 0 );
+        emit frameChanged( 0, MainWorkflow::Renderer );
         startPreview();
         return ;
     }
@@ -226,6 +217,15 @@ float       ClipRenderer::getFps() const
     return 0.0f;
 }
 
+void        ClipRenderer::previewWidgetCursorChanged( qint64 newFrame )
+{
+    if ( m_isRendering == true )
+    {
+        qint64 nbSeconds = qRound64( (qreal)newFrame / m_selectedMedia->getFps() );
+        m_mediaPlayer->setTime( nbSeconds / 1000 );
+    }
+}
+
 /////////////////////////////////////////////////////////////////////
 /////SLOTS :
 /////////////////////////////////////////////////////////////////////
@@ -253,13 +253,13 @@ void        ClipRenderer::__positionChanged()
     float   end = m_end / ( m_end - m_begin );
     float pos = ( m_mediaPlayer->getPosition() - begin ) /
                 ( end - begin );
-    emit positionChanged( pos );
+    emit frameChanged( pos, MainWorkflow::Renderer );
 }
 
 void        ClipRenderer::__timeChanged()
 {
     qint64 f = qRound64( (qreal)m_mediaPlayer->getTime() / 1000.0 * (qreal)m_mediaPlayer->getFps() );
-    emit frameChanged( f, Renderer );
+    emit frameChanged( f, MainWorkflow::Renderer );
 }
 
 void        ClipRenderer::__endReached()

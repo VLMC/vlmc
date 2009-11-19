@@ -48,7 +48,6 @@ private:
 
 private slots:
     void                        stop();
-    void                        positionChanged( float newPos );
     void                        cancelButtonClicked();
 };
 

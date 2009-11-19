@@ -153,8 +153,8 @@ void        WorkflowRenderer::startPreview()
     connect( m_mediaPlayer, SIGNAL( paused() ),     this,   SLOT( __videoPaused() ), Qt::DirectConnection );
     connect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SLOT( __videoStopped() ) );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
-    connect( m_mainWorkflow, SIGNAL( frameChanged( qint64 ) ),
-             this, SLOT( __frameChanged( qint64 ) ) );
+    connect( m_mainWorkflow, SIGNAL( frameChanged( qint64, MainWorkflow::FrameChangedReason ) ),
+             this, SLOT( __frameChanged( qint64, MainWorkflow::FrameChangedReason ) ) );
 
     m_mainWorkflow->setFullSpeedRender( false );
     m_mainWorkflow->startRender();
@@ -163,12 +163,6 @@ void        WorkflowRenderer::startPreview()
     m_paused = false;
     m_stopping = false;
     m_outputFps = SettingsManager::getInstance()->getValue( "default", "VLMCPreviewFPS" ).toDouble();
-}
-
-void        WorkflowRenderer::setPosition( float newPos )
-{
-    qDebug() << "Setting position to:" << newPos;
-    m_mainWorkflow->setPosition( newPos );
 }
 
 void        WorkflowRenderer::nextFrame()
@@ -307,6 +301,16 @@ void        WorkflowRenderer::addClip( Clip* clip, uint32_t trackNumber, qint64 
         m_mainWorkflow->addClip( clip, trackNumber, startingPos, trackType );
 }
 
+void        WorkflowRenderer::timelineCursorChanged( qint64 newFrame )
+{
+    m_mainWorkflow->setCurrentFrame( newFrame, MainWorkflow::TimelineCursor );
+}
+
+void        WorkflowRenderer::previewWidgetCursorChanged( qint64 newFrame )
+{
+    m_mainWorkflow->setCurrentFrame( newFrame, MainWorkflow::PreviewCursor );
+}
+
 /////////////////////////////////////////////////////////////////////
 /////SLOTS :
 /////////////////////////////////////////////////////////////////////
@@ -317,9 +321,9 @@ void        WorkflowRenderer::__endReached()
     emit endReached();
 }
 
-void        WorkflowRenderer::__frameChanged( qint64 frame )
+void        WorkflowRenderer::__frameChanged( qint64 frame, MainWorkflow::FrameChangedReason reason )
 {
-    emit frameChanged( frame, Renderer );
+    emit frameChanged( frame, reason );
 }
 
 void        WorkflowRenderer::__videoPaused()
@@ -344,7 +348,3 @@ void        WorkflowRenderer::__videoStopped()
     emit endReached();
 }
 
-void        WorkflowRenderer::timelineCursorChanged( qint64 newFrame )
-{
-    m_mainWorkflow->setCurrentFrame( newFrame );
-}

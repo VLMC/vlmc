@@ -154,7 +154,7 @@ void        MainWorkflow::nextFrame()
     QWriteLocker    lock( m_currentFrameLock );
 
     ++m_currentFrame;
-    emit frameChanged( m_currentFrame );
+    emit frameChanged( m_currentFrame, Renderer );
 }
 
 void        MainWorkflow::previousFrame()
@@ -162,24 +162,7 @@ void        MainWorkflow::previousFrame()
     QWriteLocker    lock( m_currentFrameLock );
 
     --m_currentFrame;
-    emit frameChanged( m_currentFrame );
-}
-
-void        MainWorkflow::setPosition( float pos )
-{
-    if ( m_renderStarted == true )
-    {
-        //Since any track can be reactivated, we reactivate all of them, and let them
-        //unable themself if required.
-        for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i)
-            m_tracks[i]->activateAll();
-    }
-    QReadLocker     lock( m_currentFrameLock );
-
-    qint64  frame = static_cast<qint64>( (float)m_lengthFrame * pos );
-    m_currentFrame = frame;
-    emit frameChanged( frame );
-    //Do not emit a signal for the RenderWidget, since it's the one that triggered that call...
+    emit frameChanged( m_currentFrame, Renderer );
 }
 
 qint64      MainWorkflow::getLengthFrame() const
@@ -201,7 +184,7 @@ void            MainWorkflow::stop()
     for (unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i)
         m_tracks[i]->stop();
     m_currentFrame = 0;
-    emit frameChanged( 0 );
+    emit frameChanged( 0, Renderer );
 }
 
 void           MainWorkflow::moveClip( const QUuid& clipUuid, unsigned int oldTrack,
@@ -263,12 +246,19 @@ void        MainWorkflow::unmuteTrack( unsigned int trackId, MainWorkflow::Track
     m_tracks[trackType]->unmuteTrack( trackId );
 }
 
-void        MainWorkflow::setCurrentFrame( qint64 currentFrame )
+void        MainWorkflow::setCurrentFrame( qint64 currentFrame, MainWorkflow::FrameChangedReason reason )
 {
     QWriteLocker    lock( m_currentFrameLock );
 
+    if ( m_renderStarted == true )
+    {
+        //Since any track can be reactivated, we reactivate all of them, and let them
+        //unable themself if required.
+        for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i)
+            m_tracks[i]->activateAll();
+    }
     m_currentFrame = currentFrame;
-    emit frameChanged( m_currentFrame );
+    emit frameChanged( m_currentFrame, reason );
 }
 
 Clip*       MainWorkflow::getClip( const QUuid& uuid, unsigned int trackId, MainWorkflow::TrackType trackType )

@@ -62,7 +62,7 @@ MainWindow::MainWindow( QWidget *parent ) :
 {
     m_ui.setupUi( this );
     qRegisterMetaType<MainWorkflow::TrackType>( "MainWorkflow::TrackType" );
-    qRegisterMetaType<GenericRenderer::FrameChangedReason>( "GenericRenderer::FrameChangedReason" );
+    qRegisterMetaType<MainWorkflow::FrameChangedReason>( "MainWorkflow::FrameChangedReason" );
     DockWidgetManager::instance( this )->setMainWindow( this );
     initializeDockWidgets();
     createStatusBar();
