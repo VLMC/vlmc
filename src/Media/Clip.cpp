@@ -105,11 +105,11 @@ void        Clip::computeLength()
 {
     if ( m_parent->getInputType() == Media::File )
     {
-        unsigned int   fps = m_parent->getFps();
+        float   fps = m_parent->getFps();
         if ( fps < 0.1f )
             fps = FPS;
         m_length = m_end - m_begin;
-        m_lengthSeconds = m_length / fps;
+        m_lengthSeconds = qRound64( (float)m_length / fps );
         emit lengthUpdated();
     }
     else
