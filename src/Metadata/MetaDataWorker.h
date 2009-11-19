@@ -40,6 +40,7 @@ class MetaDataWorker : public QObject
         MetaDataWorker( Media* media );
         ~MetaDataWorker();
         void                        compute();
+        void                        setMediaValidity( bool validity );
 
     private:
         void                        computeVideoMetaData();
@@ -59,6 +60,7 @@ class MetaDataWorker : public QObject
 
     private:
         LibVLCpp::MediaPlayer*      m_mediaPlayer;
+        bool                        m_validity;
 
         Media*                      m_currentMedia;
         QString                     m_tmpSnapshotFilename;

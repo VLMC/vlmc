@@ -27,6 +27,7 @@
 #include "Library.h"
 
 MetaDataWorker::MetaDataWorker( Media* media ) :
+        m_validity( true ),
         m_currentMedia( media ),
         m_mediaIsPlaying( false),
         m_lengthHasChanged( false )
@@ -36,12 +37,16 @@ MetaDataWorker::MetaDataWorker( Media* media ) :
 
 MetaDataWorker::~MetaDataWorker()
 {
+    if ( m_mediaPlayer->isPlaying() )
+        m_mediaPlayer->stop();
     if (m_mediaPlayer)
         delete m_mediaPlayer;
 }
 
 void    MetaDataWorker::compute()
 {
+    if ( !m_validity )
+        return ;
     if ( m_currentMedia->getFileType() == Media::Video )
     {
         computeVideoMetaData();
@@ -59,6 +64,8 @@ void    MetaDataWorker::compute()
 
 void    MetaDataWorker::computeVideoMetaData()
 {
+    if ( !m_validity )
+        return ;
     //Disabling audio for this specific use of the media
     m_currentMedia->addVolatileParam( ":no-audio", ":audio" );
     connect( m_mediaPlayer, SIGNAL( lengthChanged() ), this, SLOT( entrypointLengthChanged() ) );
@@ -66,6 +73,8 @@ void    MetaDataWorker::computeVideoMetaData()
 
 void    MetaDataWorker::computeImageMetaData()
 {
+    if ( !m_validity )
+        return ;
     m_currentMedia->addVolatileParam( ":access=fake", ":access=''" );
     m_currentMedia->addVolatileParam( ":fake-duration=10000", ":fake-duration=''" );
     //There can't be a length for an image file, so we don't have to wait for it to be updated.
@@ -77,16 +86,21 @@ void    MetaDataWorker::getMetaData()
     m_mediaIsPlaying = false;
     m_lengthHasChanged = false;
 
+    if ( !m_validity )
+        return ;
     //In order to wait for the VOUT to be ready:
     //Until we have a way of knowing when it is, both getWidth and getHeight method
     //will trigger exception... so we shut it up.
     LibVLCpp::Exception::setErrorCallback( LibVLCpp::Exception::silentExceptionHandler );
     while ( m_mediaPlayer->hasVout() == false )
+    {
         SleepMS( 1 ); //Ugly isn't it :)
+    }
     LibVLCpp::Exception::setErrorCallback( NULL );
 
     m_currentMedia->setLength( m_mediaPlayer->getLength() );
-
+    if ( m_currentMedia->getLengthMS() == 0 )
+        m_validity = false;
     m_currentMedia->setWidth( m_mediaPlayer->getWidth() );
     m_currentMedia->setHeight( m_mediaPlayer->getHeight() );
     m_currentMedia->setFps( m_mediaPlayer->getFps() );
@@ -111,6 +125,8 @@ void    MetaDataWorker::renderSnapshot()
 {
     if ( m_currentMedia->getFileType() == Media::Video )
         disconnect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( renderSnapshot() ) );
+    if ( !m_validity )
+        return ;
     QTemporaryFile tmp;
     tmp.setAutoRemove( false );
     tmp.open();
@@ -224,4 +240,9 @@ void    MetaDataWorker::entrypointPlaying()
     m_mediaIsPlaying = true;
     if ( m_lengthHasChanged == true )
         getMetaData();
+}
+
+void    MetaDataWorker::setMediaValidity( bool validity )
+{
+    m_validity = validity;
 }
