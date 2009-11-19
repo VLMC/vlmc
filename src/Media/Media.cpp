@@ -219,10 +219,15 @@ void                Media::addAudioFrame( void* datas, unsigned char* buffer, si
 //    qDebug() << m_audioData.frameList.size();
 }
 
-void            Media::emitMetaDataComputed()
+void            Media::emitMetaDataComputed( bool hasMetadata )
 {
-    m_metadataParsed = true;
+    m_metadataParsed = hasMetadata;
     emit metaDataComputed( this );
+}
+
+void            Media::emitSnapshotComputed()
+{
+    emit snapshotComputed( this );
 }
 
 Media::InputType    Media::getInputType() const

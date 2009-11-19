@@ -68,6 +68,9 @@ class MetaDataWorker : public QObject
         bool                        m_mediaIsPlaying;
         bool                        m_lengthHasChanged;
 
+    signals:
+        void    snapshotRequested();
+
     private slots:
         void    renderSnapshot();
         void    setSnapshot();

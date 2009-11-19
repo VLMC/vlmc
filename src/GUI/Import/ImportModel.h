@@ -45,7 +45,7 @@ public:
     Clip*           getClip( const QUuid& mediaId, const QUuid& clipId ) const;
     void            cutMedia( const QUuid& mediaId, int frame );
     void            cutClip( const QUuid& mediaId, const QUuid& clipId, int frame );
-    void            loadFile( const QFileInfo& fileInfo );
+    void            loadFile( const QFileInfo& fileInfo, int loadingMedias = 0 );
     void            removeMedia( const QUuid& mediaId );
     void            removeClip( const QUuid& mediaId, const QUuid& clipId );
     QHash<QUuid, Media*>*    getMedias() const { return m_medias; }
@@ -59,12 +59,15 @@ private:
     QHash<QUuid, Media*>*           m_medias;
     MetaDataWorker*                 m_metaDataWorker;
     QStringList                     m_filters;
+    QStringList                     m_invalidMedias;
+    int                             m_loadingMedias;
 
     void        loadMedia( Media* media );
     bool        mediaAlreadyLoaded( const QFileInfo& fileInfo );
 
 private slots:
     void        metaDataComputed( Media* media );
+    void        snapshotComputed( Media* media );
 };
 
 #endif // IMPORTMODEL_H

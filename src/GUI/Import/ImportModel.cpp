@@ -23,6 +23,7 @@
 
 #include <QDebug>
 #include <QDir>
+#include <QMessageBox>
 
 #include "ImportModel.h"
 
@@ -69,14 +70,42 @@ void            ImportModel::cutClip( const QUuid& mediaId, const QUuid& clipId,
 
 void            ImportModel::metaDataComputed( Media* media )
 {
+    static int mediaLoaded = 0;
+    disconnect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ) );
+    if ( media->hasMetadata() )
+    {
+        m_medias->insert( media->getUuid(), media );
+        emit newMediaLoaded( media );
+        emit updateMediaRequested( media );
+    }
+    else
+    {
+        m_invalidMedias.append( media->getFileName() );
+        delete media;
+    }
+    mediaLoaded++;
+    qDebug() << mediaLoaded << m_loadingMedias;
+    if ( mediaLoaded == m_loadingMedias )
+    {
+        if ( m_invalidMedias.count() > 0 )
+        {
+            QMessageBox::warning( NULL, QString( "Error!" ), QString( tr( "Error while loading media(s):\n%0" ) ).arg( m_invalidMedias.join( QString("\n") ) ) );
+            m_invalidMedias.clear();
+        }
+        mediaLoaded = 0;
+    }
+}
+
+void            ImportModel::snapshotComputed( Media *media )
+{
+    disconnect( media, SIGNAL( snapshotComputed( Media* ) ), this, SLOT( snapshotComputed( Media* ) ) );
     emit updateMediaRequested( media );
 }
 
 void            ImportModel::loadMedia( Media* media )
 {
-    m_medias->insert( media->getUuid(), media );
-    emit newMediaLoaded( media );
     connect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ) );
+    connect( media, SIGNAL( snapshotComputed(Media*) ), this, SLOT( snapshotComputed(Media*) ) );
     m_metaDataWorker = new MetaDataWorker( media );
     m_metaDataWorker->compute();
 }
@@ -90,12 +119,14 @@ bool        ImportModel::mediaAlreadyLoaded( const QFileInfo& fileInfo )
     return false;
 }
 
-void            ImportModel::loadFile( const QFileInfo& fileInfo )
+void            ImportModel::loadFile( const QFileInfo& fileInfo, int loadingMedias )
 {
     Media* media;
 
     if ( !fileInfo.isDir() )
     {
+        if ( loadingMedias == 0)
+            m_loadingMedias = 1;
         if ( !mediaAlreadyLoaded( fileInfo ) )
         {
            media = new Media( fileInfo.filePath() );
@@ -108,8 +139,9 @@ void            ImportModel::loadFile( const QFileInfo& fileInfo )
         QFileInfoList list = dir.entryInfoList( m_filters );
         QFileInfo file;
 
+        m_loadingMedias = list.count();
         foreach( file, list )
-            loadFile( file );
+            loadFile( file, m_loadingMedias );
     }
 }
 

@@ -111,6 +111,7 @@ void    MetaDataWorker::getMetaData()
     }
     m_currentMedia->setNbFrames( m_currentMedia->getLengthMS() / 1000 * m_currentMedia->getFps() );
 
+    m_currentMedia->emitMetaDataComputed( m_validity );
     //Setting time for snapshot :
     if ( m_currentMedia->getFileType() == Media::Video )
     {
@@ -118,13 +119,15 @@ void    MetaDataWorker::getMetaData()
         m_mediaPlayer->setTime( m_mediaPlayer->getLength() / 3 );
     }
     else
-        renderSnapshot();
+        connect( this, SIGNAL( snapshotRequested() ), this, SLOT( renderSnapshot() ) );
 }
 
 void    MetaDataWorker::renderSnapshot()
 {
     if ( m_currentMedia->getFileType() == Media::Video )
         disconnect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( renderSnapshot() ) );
+    else
+        disconnect( this, SIGNAL( snapshotRequested() ), this, SLOT( renderSnapshot() ) );
     if ( !m_validity )
         return ;
     QTemporaryFile tmp;
@@ -153,7 +156,7 @@ void    MetaDataWorker::setSnapshot()
 
     disconnect( m_mediaPlayer, SIGNAL( snapshotTaken() ), this, SLOT( setSnapshot() ) );
 
-    m_currentMedia->emitMetaDataComputed();
+    m_currentMedia->emitSnapshotComputed();
 
     //CHECKME:
     //This is synchrone, but it may become asynchrone in the future...
