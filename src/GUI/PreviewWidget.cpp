@@ -89,7 +89,7 @@ void    PreviewWidget::frameChanged( qint64 currentFrame, MainWorkflow::FrameCha
 {
     if ( m_previewStopped == false && reason != MainWorkflow::PreviewCursor )
     {
-        m_ui->rulerWidget->setFrame( currentFrame );
+        m_ui->rulerWidget->setFrame( currentFrame, false );
     }
 }
 

@@ -43,7 +43,7 @@ public:
     void setRenderer( GenericRenderer* renderer );
 
 public slots:
-    void setFrame( qint64 frame );
+    void setFrame( qint64 frame, bool broadcastEvent = false );
 
 protected:
     virtual void paintEvent( QPaintEvent* event );

@@ -164,7 +164,7 @@ void PreviewRuler::mousePressEvent( QMouseEvent* event )
     m_isSliding = true;
     if ( m_renderer->getLength() > 0 )
     {
-        setFrame( (qreal)(event->pos().x() * m_renderer->getLength() ) / width() );
+        setFrame( (qreal)(event->pos().x() * m_renderer->getLength() ) / width(), true );
     }
 }
 
@@ -173,7 +173,7 @@ void PreviewRuler::mouseMoveEvent( QMouseEvent* event )
     if ( m_isSliding )
     {
         if ( m_renderer->getLength() > 0 )
-            setFrame( (qreal)(event->pos().x() * m_renderer->getLength() ) / width() );
+            setFrame( (qreal)(event->pos().x() * m_renderer->getLength() ) / width(), true );
     }
 }
 
@@ -182,10 +182,10 @@ void PreviewRuler::mouseReleaseEvent( QMouseEvent* )
     m_isSliding = false;
 }
 
-void PreviewRuler::setFrame( qint64 frame )
+void PreviewRuler::setFrame( qint64 frame, bool broadcastEvent /*= false*/ )
 {
     m_frame = frame;
-    if ( m_isSliding )
+    if ( m_isSliding && broadcastEvent == true )
     {
         emit frameChanged( frame, MainWorkflow::PreviewCursor );
     }
