@@ -356,17 +356,12 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, 
 
 void TracksView::removeMediaItem( const QUuid& uuid, unsigned int track )
 {
-    Q_UNUSED( track );
-    //TODO When a clever API will be done to manage the tracks, we could
-    // use the "track" argument to limit the search into the track instead
-    // of the full scene.
+    QList<QGraphicsItem*> trackItems = getTrack( track )->childItems();;
 
-    QList<QGraphicsItem*> sceneItems = m_scene->items();
-
-    for ( int i = 0; i < sceneItems.size(); ++i )
+    for ( int i = 0; i < trackItems.size(); ++i )
     {
         AbstractGraphicsMediaItem* item =
-                dynamic_cast<AbstractGraphicsMediaItem*>( sceneItems.at( i ) );
+                dynamic_cast<AbstractGraphicsMediaItem*>( trackItems.at( i ) );
         if ( !item || item->uuid() != uuid ) continue;
         removeMediaItem( item );
     }
