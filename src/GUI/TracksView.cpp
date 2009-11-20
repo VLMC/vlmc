@@ -98,7 +98,7 @@ void TracksView::createLayout()
 
 void TracksView::addVideoTrack()
 {
-    GraphicsTrack* track = new GraphicsTrack( GraphicsTrack::Video, m_numVideoTrack );
+    GraphicsTrack* track = new GraphicsTrack( MainWorkflow::VideoTrack, m_numVideoTrack );
     track->setHeight( m_tracksHeight );
     m_layout->insertItem( 0, track );
     m_layout->activate();
@@ -110,7 +110,7 @@ void TracksView::addVideoTrack()
 
 void TracksView::addAudioTrack()
 {
-    GraphicsTrack* track = new GraphicsTrack( GraphicsTrack::Audio, 0 );
+    GraphicsTrack* track = new GraphicsTrack( MainWorkflow::AudioTrack, 0 );
     track->setHeight( m_tracksHeight );
     m_layout->insertItem( 1000, track );
     m_layout->activate();
@@ -448,7 +448,7 @@ void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
         if ( !track ) continue;
 
         QRectF trackRect = track->mapRectToScene( track->boundingRect() );
-        if ( track->type() == GraphicsTrack::Video )
+        if ( track->mediaType() == MainWorkflow::VideoTrack )
             painter->drawLine( trackRect.left(), trackRect.top(), rect.right(), trackRect.top() );
         else
             painter->drawLine( trackRect.left(), trackRect.bottom(), rect.right(), trackRect.bottom() );

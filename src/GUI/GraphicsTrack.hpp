@@ -34,13 +34,8 @@ class GraphicsTrack : public QGraphicsWidget
 
 public:
     enum { Type = UserType + 2 };
-    enum MediaType
-    {
-        Video,
-        Audio
-    };
 
-    GraphicsTrack( MediaType type, quint32 trackNumber, QGraphicsItem* parent = 0 ) : QGraphicsWidget( parent )
+    GraphicsTrack( MainWorkflow::TrackType type, quint32 trackNumber, QGraphicsItem* parent = 0 ) : QGraphicsWidget( parent )
     {
         m_type = type;
         m_trackNumber = trackNumber;
@@ -69,7 +64,7 @@ public:
         m_enabled = enabled;
 
         MainWorkflow::TrackType type;
-        if ( m_type == Audio )
+        if ( m_type == MainWorkflow::AudioTrack )
             //TODO need audio support
             //type = MainWorkflow::AudioTrack;
             return;
@@ -92,7 +87,7 @@ public:
         return m_trackNumber;
     }
 
-    MediaType mediaType()
+    MainWorkflow::TrackType mediaType()
     {
         return m_type;
     }
@@ -100,7 +95,7 @@ public:
     virtual int type() const { return Type; }
 
 private:
-    MediaType m_type;
+    MainWorkflow::TrackType m_type;
     quint32 m_trackNumber;
     bool m_enabled;
 };

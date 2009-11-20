@@ -32,9 +32,9 @@ TrackControls::TrackControls( GraphicsTrack* track, QWidget *parent ) :
     connect( m_ui->disableButton, SIGNAL( clicked(bool) ),
              this, SLOT( setTrackDisabled(bool) ) );
 
-    if ( m_track->mediaType() == GraphicsTrack::Video )
+    if ( m_track->mediaType() == MainWorkflow::VideoTrack )
         m_ui->trackLabel->setText( "Video #" + QString::number( m_track->trackNumber() ) );
-    else if ( m_track->mediaType() == GraphicsTrack::Audio )
+    else if ( m_track->mediaType() == MainWorkflow::AudioTrack )
         m_ui->trackLabel->setText( "Audio #" + QString::number( m_track->trackNumber() ) );
 }
 
@@ -60,16 +60,16 @@ void TrackControls::setTrackDisabled( bool disable )
     m_track->setTrackEnabled( !disable );
     if ( !disable )
     {
-        if ( m_track->mediaType() == GraphicsTrack::Video )
+        if ( m_track->mediaType() == MainWorkflow::VideoTrack )
             m_ui->disableButton->setIcon( QIcon( ":/images/trackon" ) );
-        else if ( m_track->mediaType() == GraphicsTrack::Audio )
+        else if ( m_track->mediaType() == MainWorkflow::AudioTrack )
             m_ui->disableButton->setIcon( QIcon( ":/images/hpon" ) );
     }
     else
     {
-        if ( m_track->mediaType() == GraphicsTrack::Video )
+        if ( m_track->mediaType() == MainWorkflow::VideoTrack )
             m_ui->disableButton->setIcon( QIcon( ":/images/trackoff" ) );
-        else if ( m_track->mediaType() == GraphicsTrack::Audio )
+        else if ( m_track->mediaType() == MainWorkflow::AudioTrack )
             m_ui->disableButton->setIcon( QIcon( ":/images/hpoff" ) );
     }
 }
