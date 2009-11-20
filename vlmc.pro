@@ -200,6 +200,7 @@ INCLUDEPATH += src/LibVLCpp \
     src/GUI/widgets \
     src/GUI/Library \
     src/GUI/Import \
+    src/GUI/wizard \
     src/Tools \
     src/Renderer \
     src/Metadata \

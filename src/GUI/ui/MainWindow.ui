@@ -27,7 +27,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -68,6 +68,7 @@
      <string>Tools</string>
     </property>
     <addaction name="actionTranscode"/>
+    <addaction name="actionProject_Wizard"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
@@ -204,6 +205,11 @@
   <action name="actionProject_Preferences">
    <property name="text">
     <string>Project Preferences</string>
+   </property>
+  </action>
+  <action name="actionProject_Wizard">
+   <property name="text">
+    <string>Project Wizard</string>
    </property>
   </action>
  </widget>

@@ -40,6 +40,7 @@
 #include "Settings.h"
 #include "EffectsEngine.h"
 #include "MainWorkflow.h"
+#include "ProjectWizard.h"
 
 class MainWindow : public QMainWindow
 {
@@ -75,6 +76,7 @@ private:
     Settings*               m_globalPreferences;
     Settings*               m_DefaultProjectPreferences;
     Settings*               m_projectPreferences;
+    ProjectWizard*          m_pWizard;
 
 private slots:
     void on_actionBypass_effects_engine_toggled(bool );
@@ -90,6 +92,7 @@ private slots:
     void on_actionImport_triggered();
     void on_actionHelp_triggered();
     void on_actionProject_Preferences_triggered();
+    void on_actionProject_Wizard_triggered();
     void mediaListItemDoubleClicked( QListWidgetItem* );
     void toolButtonClicked( int id );
 

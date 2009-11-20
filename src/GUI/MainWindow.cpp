@@ -68,6 +68,7 @@ MainWindow::MainWindow( QWidget *parent ) :
     createStatusBar();
     VLMCSettingsDefault::load( "default" );
     VLMCSettingsDefault::load( "VLMC" );
+    m_pWizard = new ProjectWizard( this );
     createGlobalPreferences();
     createProjectPreferences();
 
@@ -458,3 +459,9 @@ void MainWindow::on_actionProject_Preferences_triggered()
 {
   m_projectPreferences->show( "project" );
 }
+
+void MainWindow::on_actionProject_Wizard_triggered()
+{
+    m_pWizard->show();
+}
+
