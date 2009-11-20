@@ -36,6 +36,7 @@ SOURCES += src/main.cpp \
     src/Metadata/MetaDataWorker.cpp \
     src/Library/Library.cpp \
     src/GUI/GraphicsMovieItem.cpp \
+    src/GUI/GraphicsAudioItem.cpp \
     src/GUI/AbstractGraphicsMediaItem.cpp \
     src/Media/Media.cpp \
     src/GUI/FileBrowser.cpp \
@@ -111,6 +112,7 @@ HEADERS += src/GUI/MainWindow.h \
     src/Library/Library.h \
     src/GUI/AbstractGraphicsMediaItem.h \
     src/GUI/GraphicsMovieItem.h \
+    src/GUI/GraphicsAudioItem.h \
     src/Media/Media.h \
     src/GUI/FileBrowser.h \
     src/GUI/GraphicsCursorItem.h \
