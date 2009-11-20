@@ -27,7 +27,6 @@
 #include <QGraphicsWidget>
 #include <QGraphicsSceneDragDropEvent>
 #include <QtDebug>
-#include <cmath>
 #include "TracksView.h"
 #include "Library.h"
 #include "GraphicsMovieItem.h"
@@ -423,11 +422,6 @@ void TracksView::dropEvent( QDropEvent* event )
                                                                 m_dragItem->trackNumber(),
                                                                 (qint64)mappedXPos,
                                                                 MainWorkflow::VideoTrack ) );
-//        Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
-//                                                                m_dragItem->clip(),
-//                                                                m_dragItem->trackNumber(),
-//                                                                (qint64)mappedXPos,
-//                                                                TrackWorkflow::Audio ) );
         m_dragItem = NULL;
     }
 }
