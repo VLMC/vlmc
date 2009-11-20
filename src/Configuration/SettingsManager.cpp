@@ -123,7 +123,6 @@ void  SettingsManager::loadSettings( const QString& part, const QDomElement& set
         return ;
     }
     SettingsPart*   sett = m_data[part];
-    qDebug() << sett->m_data;
     m_globalLock.unlock();
     //Loading all the settings
     m_globalLock.lockForWrite();
