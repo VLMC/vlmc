@@ -145,11 +145,6 @@ class   ClipWorkflow : public QObject
          */
         QReadWriteLock*         getStateLock();
 
-        /**
-         *  Put back the ClipWorkflow in its initial state.
-         */
-        void                    reinitialize();
-
         void                    unpause();
 
         void                    waitForCompleteInit();

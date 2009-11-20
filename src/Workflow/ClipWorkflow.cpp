@@ -255,13 +255,6 @@ QReadWriteLock* ClipWorkflow::getStateLock()
     return m_stateLock;
 }
 
-void            ClipWorkflow::reinitialize()
-{
-    QWriteLocker    lock( m_stateLock );
-    m_state = Stopped;
-    queryStateChange( None );
-}
-
 void            ClipWorkflow::pause()
 {
     connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( pausedMediaPlayer() ), Qt::DirectConnection );
