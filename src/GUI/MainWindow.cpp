@@ -241,12 +241,12 @@ void MainWindow::createStatusBar()
     spacer->setFixedWidth( 20 );
     m_ui.statusbar->addPermanentWidget( spacer );
 
-    // Zoom IN
-    QToolButton* zoomInButton = new QToolButton( this );
-    zoomInButton->setIcon( QIcon( ":/images/zoomin" ) );
-    m_ui.statusbar->addPermanentWidget( zoomInButton );
-    connect( zoomInButton, SIGNAL( clicked() ),
-             this, SLOT( zoomIn() ) );
+    // Zoom Out
+    QToolButton* zoomOutButton = new QToolButton( this );
+    zoomOutButton->setIcon( QIcon( ":/images/zoomout" ) );
+    m_ui.statusbar->addPermanentWidget( zoomOutButton );
+    connect( zoomOutButton, SIGNAL( clicked() ),
+             this, SLOT( zoomOut() ) );
 
     // Zoom slider
     m_zoomSlider = new QSlider( this );
@@ -258,14 +258,15 @@ void MainWindow::createStatusBar()
     m_zoomSlider->setMaximum( 13 );
     m_zoomSlider->setValue( 10 );
     m_zoomSlider->setFixedWidth( 80 );
+    m_zoomSlider->setInvertedAppearance( true );
     m_ui.statusbar->addPermanentWidget( m_zoomSlider );
 
-    // Zoom Out
-    QToolButton* zoomOutButton = new QToolButton( this );
-    zoomOutButton->setIcon( QIcon( ":/images/zoomout" ) );
-    m_ui.statusbar->addPermanentWidget( zoomOutButton );
-    connect( zoomOutButton, SIGNAL( clicked() ),
-             this, SLOT( zoomOut() ) );
+    // Zoom IN
+    QToolButton* zoomInButton = new QToolButton( this );
+    zoomInButton->setIcon( QIcon( ":/images/zoomin" ) );
+    m_ui.statusbar->addPermanentWidget( zoomInButton );
+    connect( zoomInButton, SIGNAL( clicked() ),
+             this, SLOT( zoomIn() ) );
 }
 
 void MainWindow::initializeDockWidgets( void )
