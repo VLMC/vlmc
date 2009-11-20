@@ -168,7 +168,7 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, qint64 start )
 
     GraphicsMovieItem* item = new GraphicsMovieItem( clip );
     item->setHeight( tracksHeight() );
-    item->setParentItem( getTrack( track ) );
+    item->setParentItem( getTrack( MainWorkflow::VideoTrack, track ) );
     item->setPos( start, 0 );
     item->oldTrackNumber = track;
     item->oldPosition = start;
@@ -254,7 +254,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, 
     QPointF oldPos = item->pos();
     QGraphicsItem* oldParent = item->parentItem();
     // Check for vertical collisions
-    item->setParentItem( getTrack( track ) );
+    item->setParentItem( getTrack( MainWorkflow::VideoTrack, track ) );
     bool continueSearch = true;
     while ( continueSearch )
     {
@@ -277,7 +277,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, 
                     }
                     track -= 1;
                     Q_ASSERT( m_layout->itemAt( track )->graphicsItem() != NULL );
-                    item->setParentItem( getTrack( track ) );
+                    item->setParentItem( getTrack( MainWorkflow::VideoTrack, track ) );
                 }
                 else if ( currentItem->trackNumber() < track )
                 {
@@ -289,7 +289,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, 
                     }
                     track += 1;
                     Q_ASSERT( m_layout->itemAt( track )->graphicsItem() != NULL );
-                    item->setParentItem( getTrack( track ) );
+                    item->setParentItem( getTrack( MainWorkflow::VideoTrack, track ) );
                 }
             }
         }
@@ -340,7 +340,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, 
 
 void TracksView::removeMediaItem( const QUuid& uuid, unsigned int track )
 {
-    QList<QGraphicsItem*> trackItems = getTrack( track )->childItems();;
+    QList<QGraphicsItem*> trackItems = getTrack( MainWorkflow::VideoTrack, track )->childItems();;
 
     for ( int i = 0; i < trackItems.size(); ++i )
     {
@@ -673,13 +673,14 @@ void TracksView::updateDuration()
     emit durationChanged( m_projectDuration );
 }
 
-GraphicsTrack* TracksView::getTrack( unsigned int number )
+GraphicsTrack* TracksView::getTrack( MainWorkflow::TrackType type, unsigned int number )
 {
     for (int i = 0; i < m_layout->count(); ++i )
     {
         QGraphicsItem* gi = m_layout->itemAt( i )->graphicsItem();
         GraphicsTrack* track = qgraphicsitem_cast<GraphicsTrack*>( gi );
         if ( !track ) continue;
+        if ( track->mediaType() != type ) continue;
         if ( track->trackNumber() == number )
             return track;
     }
