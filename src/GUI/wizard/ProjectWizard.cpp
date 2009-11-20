@@ -22,7 +22,7 @@
 
 #include "ProjectWizard.h"
 #include "ProjectPreferences.h"
-#include "VideoProjectPreference.h"
+#include "VideoProjectPreferences.h"
 #include "AudioProjectPreferences.h"
 #include "PageFactory.h"
 
@@ -30,9 +30,9 @@ ProjectWizard::ProjectWizard( QWidget* parent )
     : QWizard( parent )
 {
     //Create Wizard
-    QWizardPage* generalPage = PageFactory::generalPage<ProjectPreference>( "General Settings", this );
-    QWizardPage* videoPage = PageFactory::generalPage<VideoProjectPreference>( "Video Settings", this );
-    QWizardPage* audioPage = PageFactory::generalPage<AudioProjectPreference>( "Audio Settings", this );
+    QWizardPage* generalPage = PageFactory::generateWizardPage<ProjectPreferences>( "General Settings", this );
+    QWizardPage* videoPage = PageFactory::generateWizardPage<VideoProjectPreferences>( "Video Settings", this );
+    QWizardPage* audioPage = PageFactory::generateWizardPage<AudioProjectPreferences>( "Audio Settings", this );
     addPage( generalPage );
     addPage( videoPage );
     addPage( audioPage );

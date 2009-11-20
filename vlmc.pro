@@ -84,7 +84,12 @@ SOURCES += src/main.cpp \
     src/Configuration/VLMCSettingsDefault.cpp \
     src/Configuration/ProjectSettingsDefault.cpp \
     src/GUI/TracksControls.cpp \
-    src/GUI/widgets/TrackControls.cpp
+    src/GUI/widgets/TrackControls.cpp \
+    # Wizard Files
+    src/GUI/wizard/ProjectWizard.cpp \
+    src/GUI/wizard/PageFactory.cpp \
+    src/GUI/wizard/CustomWizardPage.cpp
+
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -164,7 +169,11 @@ HEADERS += src/GUI/MainWindow.h \
     src/Configuration/ProjectSettingsDefault.h \
     src/GUI/PreferenceWidget.h \
     src/GUI/TracksControls.h \
-    src/GUI/widgets/TrackControls.h
+    src/GUI/widgets/TrackControls.h \
+    # wizard includes
+    src/GUI/wizard/ProjectWizard.h \
+    src/GUI/wizard/PageFactory.h \
+    src/GUI/wizard/CustomWizardPage.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \

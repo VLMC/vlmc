@@ -23,11 +23,20 @@
 #ifndef PAGEFACTORY_H
 #define PAGEFACTORY_H
 
+#include <QWidget>
+#include "CustomWizardPage.h"
+
 class   PageFactory
 {
     public:
-        template < typename T >
-        static QWizardPage*    generateWizardPage( const char* title, QWidget* parent = 0 );
+        template < typename widgetType >
+        static QWizardPage*    generateWizardPage( const char* title, QWidget* parent = 0 )
+        {
+            CustomWizardPage* page = new CustomWizardPage( title, parent );
+            page->setInternalWidget( new widgetType( page ) );
+
+            return page;
+        }
 
     private:
         PageFactory();
