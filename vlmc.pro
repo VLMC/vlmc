@@ -87,7 +87,6 @@ SOURCES += src/main.cpp \
     src/GUI/widgets/TrackControls.cpp \
     # Wizard Files
     src/GUI/wizard/ProjectWizard.cpp \
-    src/GUI/wizard/PageFactory.cpp \
     src/GUI/wizard/CustomWizardPage.cpp
 
 HEADERS += src/GUI/MainWindow.h \
