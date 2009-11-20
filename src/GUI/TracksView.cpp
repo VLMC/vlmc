@@ -122,24 +122,12 @@ void TracksView::addAudioTrack()
 
 void TracksView::clear()
 {
-    QList<QGraphicsLayoutItem*> clearlist;
+    m_layout->removeItem( m_separator );
 
-    // Collect the list of tracks
-    for ( int i = 0; i < m_layout->count(); ++i )
-    {
-        QGraphicsLayoutItem* li = m_layout->itemAt( i );
-        QGraphicsItem* gi = li->graphicsItem();
-        GraphicsTrack* track = qgraphicsitem_cast<GraphicsTrack*>( gi );
-        if ( !track ) continue;
-        clearlist.append( li );
-    }
+    while ( m_layout->count() > 0 )
+        delete m_layout->itemAt( 0 );
 
-    // Remove collected tracks
-    for ( int i = 0; i < clearlist.size(); ++i )
-    {
-        m_layout->removeItem( clearlist.at( i ) );
-        delete clearlist.at( i );
-    }
+    m_layout->addItem( m_separator );
 
     m_numAudioTrack = 0;
     m_numVideoTrack = 0;
