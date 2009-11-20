@@ -696,8 +696,6 @@ void TracksView::updateDuration()
 
     setSceneRect( m_layout->contentsRect() );
 
-    setSceneRect( m_layout->contentsRect() );
-
     emit durationChanged( m_projectDuration );
 }
 
