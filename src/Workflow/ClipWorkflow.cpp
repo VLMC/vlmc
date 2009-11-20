@@ -146,11 +146,13 @@ ClipWorkflow::State     ClipWorkflow::getState() const
 
 void    ClipWorkflow::startRender( bool startInPausedMode )
 {
-    if ( isReady() == false )
     {
-//        qDebug() << "Waiting for clipworkflow to be ready";
         QMutexLocker    lock( m_initWaitCond->getMutex() );
-        m_initWaitCond->waitLocked();
+        if ( isReady() == false )
+        {
+    //        qDebug() << "Waiting for clipworkflow to be ready";
+            m_initWaitCond->waitLocked();
+        }
     }
 //    qDebug() << "ClipWorkflow is ready";
     if ( startInPausedMode == false )
