@@ -147,6 +147,7 @@ void            ImportModel::loadFile( const QFileInfo& fileInfo, int loadingMed
             m_progressDialog = new QProgressDialog("Importing files...", "Cancel", 0, m_loadingMedias, NULL);
             m_progressDialog->setWindowModality( Qt::WindowModal );
             m_progressDialog->setMinimumDuration( 1000 );
+            m_progressDialog->setValue( 0 );
             m_nbLoadedMedias = 0;
         }
         if ( !mediaAlreadyLoaded( fileInfo ) )
@@ -168,6 +169,7 @@ void            ImportModel::loadFile( const QFileInfo& fileInfo, int loadingMed
         m_progressDialog = new QProgressDialog("Importing files...", "Cancel", 0, m_loadingMedias, NULL);
         m_progressDialog->setWindowModality(Qt::WindowModal);
         m_progressDialog->setMinimumDuration( 1000 );
+        m_progressDialog->setValue( 0 );
         foreach( file, list )
             loadFile( file, m_loadingMedias );
     }
