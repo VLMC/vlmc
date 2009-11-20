@@ -185,10 +185,11 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, qint64 start )
     GraphicsMovieItem* item = new GraphicsMovieItem( clip );
     item->setHeight( tracksHeight() );
     item->setParentItem( getTrack( track ) );
+    item->setPos( start, 0 );
     item->oldTrackNumber = track;
+    item->oldPosition = start;
     connect( item, SIGNAL( split(GraphicsMovieItem*,qint64) ),
              this, SLOT( split(GraphicsMovieItem*,qint64) ) );
-    item->oldPosition = start;
     moveMediaItem( item, track, start );
 
     updateDuration();
