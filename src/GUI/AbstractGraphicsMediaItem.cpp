@@ -23,7 +23,7 @@
 #include "AbstractGraphicsMediaItem.h"
 
 AbstractGraphicsMediaItem::AbstractGraphicsMediaItem() :
-        oldTrackNumber( -1 ), oldPosition( -1 ), m_tracksView( NULL )
+        oldTrackNumber( -1 ), oldPosition( -1 ), m_tracksView( NULL ), m_group( NULL )
 {
 
 }
@@ -42,4 +42,25 @@ quint32 AbstractGraphicsMediaItem::trackNumber()
             return graphicsTrack->trackNumber();
     }
     return -1;
+}
+
+void AbstractGraphicsMediaItem::group( AbstractGraphicsMediaItem* item )
+{
+    Q_ASSERT( item );
+    if ( m_group )
+        ungroup();
+    item->m_group = this;
+    m_group = item;
+}
+
+void AbstractGraphicsMediaItem::ungroup()
+{
+    if ( !m_group ) return;
+    m_group->m_group = NULL;
+    m_group = NULL;
+}
+
+AbstractGraphicsMediaItem* AbstractGraphicsMediaItem::groupItem()
+{
+    return m_group;
 }

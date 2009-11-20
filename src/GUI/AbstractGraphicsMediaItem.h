@@ -50,6 +50,12 @@ public:
     /// Should return the unique uid of the contained media.
     virtual const QUuid& uuid() const = 0;
 
+    /// Group two items together
+    void group( AbstractGraphicsMediaItem* item );
+
+    /// Ungroup two items
+    void ungroup();
+
     /// Return the current track of the item
     quint32 trackNumber();
 
@@ -69,9 +75,18 @@ protected:
      */
     qint64 oldPosition;
 
+    /**
+     * Pointer to the linked item
+     * or NULL if it isn't.
+     */
+    AbstractGraphicsMediaItem* groupItem();
+
 private:
     /// This pointer will be set when inserted in the tracksView.
     TracksView* m_tracksView;
+
+    /// Pointer used to save the address of a linked item.
+    AbstractGraphicsMediaItem* m_group;
 
 };
 
