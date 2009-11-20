@@ -26,7 +26,8 @@
 
 #include <QList>
 #include <QTemporaryFile>
-#include <QThread>
+#include <QThreadPool>
+#include <QRunnable>
 #include <QWidget>
 #include "Media.h"
 #include "VLCMediaPlayer.h"
@@ -57,6 +58,7 @@ class MetaDataWorker : public QObject
 
     private:
         void                        getMetaData();
+        void                        renderSnapshotAsync();
 
     private:
         LibVLCpp::MediaPlayer*      m_mediaPlayer;
@@ -67,7 +69,9 @@ class MetaDataWorker : public QObject
 
         bool                        m_mediaIsPlaying;
         bool                        m_lengthHasChanged;
+        static  QThreadPool*        m_metadataThreadPool;
 
+        friend class SnapshotHelper;
     signals:
         void    snapshotRequested();
 
@@ -78,6 +82,15 @@ class MetaDataWorker : public QObject
         void    stopAudioDataParsing();
         void    entrypointPlaying();
         void    entrypointLengthChanged();
+};
+
+class   SnapshotHelper : public QRunnable
+{
+    public:
+        SnapshotHelper( MetaDataWorker* worker ) : m_worker( worker ) { }
+        virtual void run();
+    private:
+        MetaDataWorker* m_worker;
 };
 
 #endif // METADATAWORKER_H

@@ -26,13 +26,18 @@
 #include "MetaDataWorker.h"
 #include "Library.h"
 
+QThreadPool*    MetaDataWorker::m_metadataThreadPool = NULL;
+
 MetaDataWorker::MetaDataWorker( Media* media ) :
         m_validity( true ),
         m_currentMedia( media ),
         m_mediaIsPlaying( false),
         m_lengthHasChanged( false )
 {
+    if ( m_metadataThreadPool == NULL )
+        m_metadataThreadPool = new QThreadPool();
     m_mediaPlayer = new LibVLCpp::MediaPlayer();
+    m_metadataThreadPool->setMaxThreadCount( 3 );
 }
 
 MetaDataWorker::~MetaDataWorker()
@@ -130,6 +135,11 @@ void    MetaDataWorker::renderSnapshot()
         disconnect( this, SIGNAL( snapshotRequested() ), this, SLOT( renderSnapshot() ) );
     if ( !m_validity )
         return ;
+    m_metadataThreadPool->start( new SnapshotHelper( this ) );
+}
+
+void    MetaDataWorker::renderSnapshotAsync()
+{
     QTemporaryFile tmp;
     tmp.setAutoRemove( false );
     tmp.open();
@@ -248,4 +258,9 @@ void    MetaDataWorker::entrypointPlaying()
 void    MetaDataWorker::setMediaValidity( bool validity )
 {
     m_validity = validity;
+}
+
+void    SnapshotHelper::run()
+{
+    m_worker->renderSnapshotAsync();
 }
