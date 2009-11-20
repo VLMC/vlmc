@@ -110,7 +110,7 @@ void TracksView::addVideoTrack()
 
 void TracksView::addAudioTrack()
 {
-    GraphicsTrack* track = new GraphicsTrack( MainWorkflow::AudioTrack, 0 );
+    GraphicsTrack* track = new GraphicsTrack( MainWorkflow::AudioTrack, m_numAudioTrack );
     track->setHeight( m_tracksHeight );
     m_layout->insertItem( 1000, track );
     m_layout->activate();
