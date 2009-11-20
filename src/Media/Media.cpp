@@ -43,7 +43,7 @@ Media::Media( const QString& filePath, const QString& uuid )
     m_nbFrames( 0 ),
     m_width( 0 ),
     m_height( 0 ),
-    m_metadataParsed( false )
+    m_metadataState( None )
 {
     if ( uuid.length() == 0 )
         m_uuid = QUuid::createUuid();
@@ -221,12 +221,15 @@ void                Media::addAudioFrame( void* datas, unsigned char* buffer, si
 
 void            Media::emitMetaDataComputed( bool hasMetadata )
 {
-    m_metadataParsed = hasMetadata;
+    if ( hasMetadata == true )
+        m_metadataState = ParsedWithoutSnapshot;
     emit metaDataComputed( this );
 }
 
 void            Media::emitSnapshotComputed()
 {
+    if ( m_metadataState == ParsedWithoutSnapshot )
+        m_metadataState = ParsedWithSnapshot;
     emit snapshotComputed( this );
 }
 
@@ -238,11 +241,6 @@ Media::InputType    Media::getInputType() const
 void                Media::setUuid( const QUuid& uuid )
 {
     m_uuid = uuid;
-}
-
-bool                Media::hasMetadata() const
-{
-    return m_metadataParsed;
 }
 
 void                Media::setNbFrames( qint64 nbFrames )
@@ -296,4 +294,9 @@ void            Media::addClip( Clip* clip )
 void            Media::removeClip( const QUuid& uuid )
 {
     m_clips.remove( uuid );
+}
+
+Media::MetadataState   Media::getMetadata() const
+{
+    return m_metadataState;
 }

@@ -71,8 +71,7 @@ void            ImportModel::cutClip( const QUuid& mediaId, const QUuid& clipId,
 void            ImportModel::metaDataComputed( Media* media )
 {
     disconnect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ) );
-
-    if ( media->hasMetadata() )
+    if ( media->getMetadata() == Media::ParsedWithoutSnapshot )
     {
         m_medias->insert( media->getUuid(), media );
         emit newMediaLoaded( media );

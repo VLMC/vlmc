@@ -78,6 +78,12 @@ public:
         File,
         Stream
     };
+    enum    MetadataState
+    {
+        None,
+        ParsedWithoutSnapshot,
+        ParsedWithSnapshot
+    };
     Media( const QString& filePath, const QString& = QString() );
     virtual ~Media();
 
@@ -148,7 +154,8 @@ public:
     void                        emitMetaDataComputed( bool hasMetadata );
     void                        emitSnapshotComputed();
 
-    bool                        hasMetadata() const;
+//    bool                        hasMetadata() const;
+    MetadataState               getMetadata() const;
 
     void                        addClip( Clip* clip );
     void                        removeClip( const QUuid& uuid );
@@ -176,7 +183,7 @@ protected:
     audioData                   m_audioData;
     FileType                    m_fileType;
     InputType                   m_inputType;
-    bool                        m_metadataParsed;
+    MetadataState               m_metadataState;
     QString                     m_fileName;
     QStringList                 m_metaTags;
     QHash<QUuid, Clip*>         m_clips;
