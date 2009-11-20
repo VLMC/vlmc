@@ -173,7 +173,7 @@ void TracksRuler::mousePressEvent( QMouseEvent* event )
     if ( event->buttons() == Qt::LeftButton &&
          event->modifiers() == Qt::NoModifier )
     {
-        emit frameChanged( (qreal)( event->x() + offset() ) / m_factor, MainWorkflow::RulerCursor );
+        emit frameChanged( qMax( (qreal)0, (qreal)( event->x() + offset() ) / m_factor ), MainWorkflow::RulerCursor );
     }
 }
 
@@ -182,7 +182,7 @@ void TracksRuler::mouseMoveEvent( QMouseEvent* event )
     if ( event->buttons() == Qt::LeftButton &&
          event->modifiers() == Qt::NoModifier )
     {
-        emit frameChanged( (qreal)( event->x() + offset() ) / m_factor, MainWorkflow::RulerCursor );
+        emit frameChanged( qMax( (qreal)0, (qreal)( event->x() + offset() ) / m_factor ), MainWorkflow::RulerCursor );
     }
 }
 
