@@ -93,9 +93,6 @@ void TracksView::createLayout()
 
     m_scene->addItem( container );
 
-    // Hack: make sure the tracks type appears correctly
-    m_layout->setMinimumWidth( 2000 );
-    m_layout->setMaximumWidth( 2000 );
     setSceneRect( m_layout->contentsRect() );
 }
 
@@ -676,8 +673,8 @@ void TracksView::updateDuration()
 
     m_projectDuration = projectDuration;
 
-    // Hack: make sure the tracks type appears correctly
-    int minimumWidth = qMax( m_projectDuration, 2000 );
+    // Make sure that the width is not below zero
+    int minimumWidth = qMax( m_projectDuration, 0 );
 
     // PreferredWidth not working ?
     m_layout->setMinimumWidth( minimumWidth );
