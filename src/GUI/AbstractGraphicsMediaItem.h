@@ -50,6 +50,9 @@ public:
     /// Should return the unique uid of the contained media.
     virtual const QUuid& uuid() const = 0;
 
+    /// Clip contained in the item
+    virtual Clip* clip() const = 0;
+
     /// Return the type of the media
     virtual MainWorkflow::TrackType mediaType() const = 0;
 
