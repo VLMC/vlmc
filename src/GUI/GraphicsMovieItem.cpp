@@ -50,6 +50,11 @@ GraphicsMovieItem::~GraphicsMovieItem()
 {
 }
 
+MainWorkflow::TrackType GraphicsMovieItem::mediaType() const
+{
+    return MainWorkflow::VideoTrack;
+}
+
 QRectF GraphicsMovieItem::boundingRect() const
 {
     return QRectF( 0, 0, m_width, m_height );

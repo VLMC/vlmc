@@ -50,6 +50,9 @@ public:
     /// Should return the unique uid of the contained media.
     virtual const QUuid& uuid() const = 0;
 
+    /// Return the type of the media
+    virtual MainWorkflow::TrackType mediaType() const = 0;
+
     /// Group two items together
     void group( AbstractGraphicsMediaItem* item );
 

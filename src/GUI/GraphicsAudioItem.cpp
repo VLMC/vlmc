@@ -51,6 +51,11 @@ GraphicsAudioItem::~GraphicsAudioItem()
 {
 }
 
+MainWorkflow::TrackType GraphicsAudioItem::mediaType() const
+{
+    return MainWorkflow::AudioTrack;
+}
+
 QRectF GraphicsAudioItem::boundingRect() const
 {
     return QRectF( 0, 0, m_width, m_height );
