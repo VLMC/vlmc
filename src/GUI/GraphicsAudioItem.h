@@ -51,7 +51,7 @@ public:
 
     void setWidth( int width );
     void setHeight( int height );
-    Clip* clip() const;
+    virtual Clip* clip() const;
 
 protected:
     void                paintRect( QPainter* painter, const QStyleOptionGraphicsItem* option );
