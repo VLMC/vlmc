@@ -31,25 +31,25 @@ TagWidget::TagWidget( QWidget *parent, int nbButton, QStringList tagList ) :
     QWidget( parent ), m_ui( new Ui::TagWidget ), m_nbButton( nbButton ), m_defaultTagList( tagList ), m_currentMedia( NULL )
 {
     m_ui->setupUi( this );
-    m_defaultTagList << "Salade" << "Ognon" << "Tomate" << "Mayo" << "Ketchup";
+    m_defaultTagList << "OutDoor" << "Hollidays" << "Seaside" << "Sunset" << "Familly";
 
-    int nbRow =  sqrt( nbButton );
-    int x = 0;
-    int y = 0;
-
-    for( int i = 0; i < nbButton; i++ )
-    {
-        if ( x == nbRow )
-        {
-            x = 0;
-            y++;
-        }
-        QPushButton* button = new QPushButton();
-        button->setCheckable( true );
-        connect( button, SIGNAL( clicked() ), this, SLOT( buttonTagClicked() ) );
-        m_buttonList.append( button );
-        m_ui->buttonGridLayout->addWidget( button, x++, y );
-    }
+//    int nbRow =  sqrt( nbButton );
+//    int x = 0;
+//    int y = 0;
+//
+//    for( int i = 0; i < nbButton; i++ )
+//    {
+//        if ( x == nbRow )
+//        {
+//            x = 0;
+//            y++;
+//        }
+//        QPushButton* button = new QPushButton();
+//        button->setCheckable( true );
+//        connect( button, SIGNAL( clicked() ), this, SLOT( buttonTagClicked() ) );
+//        m_buttonList.append( button );
+//        m_ui->buttonGridLayout->addWidget( button, x++, y );
+//    }
 
     for( int i = 0; i < m_defaultTagList.count(); i++ )
         if ( i < m_buttonList.count() )

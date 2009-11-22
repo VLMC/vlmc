@@ -26,6 +26,9 @@
 
 #include <QObject>
 #include <QHash>
+#include <QFileSystemModel>
+#include <QDirModel>
+#include <QProgressDialog>
 
 #include "Media.h"
 #include "Clip.h"
@@ -43,10 +46,11 @@ public:
     Clip*           getClip( const QUuid& mediaId, const QUuid& clipId ) const;
     void            cutMedia( const QUuid& mediaId, int frame );
     void            cutClip( const QUuid& mediaId, const QUuid& clipId, int frame );
-    void            loadFile( const QFileInfo& fileInfo );
+    void            loadFile( const QFileInfo& fileInfo, int loadingMedias = 0 );
     void            removeMedia( const QUuid& mediaId );
     void            removeClip( const QUuid& mediaId, const QUuid& clipId );
     QHash<QUuid, Media*>*    getMedias() const { return m_medias; }
+    void            setFilter( const QStringList& filter ) { m_filters = filter; }
 
 signals:
     void            newMediaLoaded( Media* media );
@@ -55,12 +59,18 @@ signals:
 private:
     QHash<QUuid, Media*>*           m_medias;
     MetaDataWorker*                 m_metaDataWorker;
+    QStringList                     m_filters;
+    QList<Media*>                   m_invalidMedias;
+    int                             m_loadingMedias;
+    int                             m_nbLoadedMedias;
+    QProgressDialog*                m_progressDialog;
 
     void        loadMedia( Media* media );
     bool        mediaAlreadyLoaded( const QFileInfo& fileInfo );
 
 private slots:
     void        metaDataComputed( Media* media );
+    void        snapshotComputed( Media* media );
 };
 
 #endif // IMPORTMODEL_H

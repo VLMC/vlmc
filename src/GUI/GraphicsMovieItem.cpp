@@ -64,12 +64,6 @@ void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     painter->save();
     paintTitle( painter, option );
     painter->restore();
-
-    /* buggy code
-    painter->save();
-    paintAudioSpectrum( painter );
-    painter->restore();
-    */
 }
 
 void GraphicsMovieItem::setWidth( int width )
@@ -90,50 +84,6 @@ void GraphicsMovieItem::adjustLength()
     Q_ASSERT_X( m_clip->getLength() <= m_width, "adjustLength", "Clip expanding not supported!" );
     prepareGeometryChange();
     setWidth( m_clip->getLength() );
-}
-
-void GraphicsMovieItem::paintAudioSpectrum( QPainter* painter )
-{
-    qreal x1, x2, y1, y2;
-    QRectF tmp = boundingRect();
-    tmp.getCoords( &x1, &y1, &x2, &y2 );
-
-    painter->setPen( Qt::black );
-    painter->setBrush( Qt::black );
-
-    QLineF line;
-
-    for (int i = 0; i < m_clip->getParent()->getAudioFrameList().size(); i++)
-    {
-        //qDebug() << "Frame: " << i << "/" << m_media->getAudioFrameList().size();
-        for (unsigned int u = 0; u < m_clip->getParent()->getAudioNbSample(); u += 400)
-        {
-
-
-            int value = m_clip->getParent()->getAudioFrameList()[i][u];
-            value /= 30;
-            if( value > 48 ) value = 48;
-            if( value < 0 ) value = 0;
-
-            //qDebug() << "frame nb:" << i << " buff value: " << value;
-
-            static QPointF point = QPointF( x1, ( y2 - y1 ) / 2 );
-
-            qreal y = ( ( y2 - y1 ) / 2 ) - value / 2;
-            x1 += 2;
-            QPointF point2( x1, y );
-
-            line.setPoints( point, point2);
-            //line.setLine( x1 , y, x1 + 2, y);
-
-
-            painter->drawLine(line);
-            //painter->drawRect(tmp);
-
-            point.setX( point2.x() );
-            point.setY( point2.y() );
-        }
-    }
 }
 
 Clip* GraphicsMovieItem::clip() const
@@ -261,7 +211,7 @@ void GraphicsMovieItem::mousePressEvent( QGraphicsSceneMouseEvent* event )
     TracksView* tv = Timeline::getInstance()->tracksView();
     if ( tv->tool() == TOOL_DEFAULT )
         setCursor( Qt::ClosedHandCursor );
-    else
+    else if ( tv->tool() == TOOL_CUT )
         emit split( this, qRound64( event->pos().x() ) );
 }
 

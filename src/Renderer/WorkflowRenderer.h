@@ -40,6 +40,8 @@ class   WorkflowRenderer : public GenericRenderer
         enum    Actions
         {
             Pause,
+            AddClip,
+            RemoveClip,
             //Unpause,
         };
         enum    EsType
@@ -54,15 +56,19 @@ class   WorkflowRenderer : public GenericRenderer
             WorkflowRenderer*   self;
             EsType              type;
         };
+        struct  StackedAction
+        {
+            StackedAction( Actions act ) : action( act ), trackId( -1 ), clip( NULL ) {}
+            Actions                     action;
+            QUuid                       uuid;
+            uint32_t                    trackId;
+            MainWorkflow::TrackType     trackType;
+            Clip*                       clip;
+            qint64                      startingPos;
+        };
         WorkflowRenderer();
         ~WorkflowRenderer();
 
-        /**
-            \brief          Set the preview position
-            \param          newPos : The new position in vlc position (between
-                                        0 and 1)
-        */
-        virtual void        setPosition( float newPos );
         virtual void        togglePlayPause( bool forcePause );
         virtual void        stop();
         virtual void        nextFrame();
@@ -70,6 +76,8 @@ class   WorkflowRenderer : public GenericRenderer
         virtual qint64      getLengthMs() const;
         virtual qint64      getCurrentFrame() const;
         virtual float       getFps() const;
+        void                addClip( Clip* clip, uint32_t trackNumber, qint64 startingPos, MainWorkflow::TrackType trackType );
+        void                removeClip( const QUuid& uuid, uint32_t trackId, MainWorkflow::TrackType trackType );
 
         static int          lock( void *data, int64_t *dts, int64_t *pts, unsigned int *flags, size_t *bufferSize, void **buffer );
         static int          lockVideo( WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer );
@@ -87,13 +95,14 @@ class   WorkflowRenderer : public GenericRenderer
         MainWorkflow*       m_mainWorkflow;
         LibVLCpp::Media*    m_media;
         bool                m_stopping;
+        float               m_outputFps;
 
     private:
         unsigned char*	    m_renderVideoFrame;
         size_t              m_videoBuffSize;
         AudioClipWorkflow::AudioSample* m_renderAudioSample;
-        QStack<Actions>     m_actions;
-        QReadWriteLock*     m_actionsLock;
+        QStack<StackedAction*>     m_actions;
+        QMutex*             m_actionsMutex;
         bool                m_pauseAsked;
         bool                m_unpauseAsked;
         QMutex*             m_condMutex;
@@ -112,9 +121,10 @@ class   WorkflowRenderer : public GenericRenderer
         virtual void        setMedia( Media* ) {}
         void                mediaUnloaded( const QUuid& ) {}
         void                timelineCursorChanged( qint64 newFrame );
+        void                rulerCursorChanged( qint64 newFrame );
+        void                previewWidgetCursorChanged( qint64 newFrame );
 
-        void                __positionChanged();
-        void                __positionChanged( float pos );
+        void                __frameChanged( qint64 frame, MainWorkflow::FrameChangedReason );
         void                __videoPaused();
         void                __videoStopped();
         void                __videoPlaying();

@@ -34,7 +34,7 @@
 #define MARK_MEDIUM 8
 #define MARK_LARGE 11
 
-class PreviewRuler : public QAbstractSlider
+class PreviewRuler : public QWidget
 {
     Q_OBJECT
 public:
@@ -43,27 +43,24 @@ public:
     void setRenderer( GenericRenderer* renderer );
 
 public slots:
-    void setFrame( qint64 frame );
+    void setFrame( qint64 frame, bool broadcastEvent = false );
 
 protected:
     virtual void paintEvent( QPaintEvent* event );
     virtual void mousePressEvent( QMouseEvent* event );
     virtual void mouseMoveEvent( QMouseEvent* event );
     virtual void mouseReleaseEvent( QMouseEvent * event );
-    virtual void sliderChange( SliderChange change );
 
 private slots:
-    void positionChanged();
+    void updateTimecode( qint64 frames = -1 );
 
 private:
-    GenericRenderer* m_renderer;
-    qint64 m_frame;
-    bool m_isSliding;
-    int m_range;
+    GenericRenderer*    m_renderer;
+    qint64              m_frame;
+    bool                m_isSliding;
 
 signals:
-    void frameChanged( qint64 );
-    void sliderPosChanged( int value );
+    void frameChanged( qint64, MainWorkflow::FrameChangedReason );
     void timeChanged( int h, int m, int s, int f );
 };
 

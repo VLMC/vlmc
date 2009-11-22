@@ -66,6 +66,7 @@ class   TrackHandler : public QObject
         AudioClipWorkflow::AudioSample* getTmpAudioBuffer() { return m_tmpAudioBuffer; }
 
         bool                    isPaused() const;
+        bool                    endIsReached() const;
         bool                    allTracksRendered() const;
 
         void                    save( QDomDocument& doc, QDomElement& timelineNode ) const;
@@ -86,6 +87,7 @@ class   TrackHandler : public QObject
         unsigned int                    m_nbTracksToRender;
         QMutex*                         m_nbTracksToRenderMutex;
         bool                            m_paused;
+        bool                            m_endReached;
         /**
          *  \brief  This flag is used to know if all tracks handled
          *          have been rendered.
@@ -106,6 +108,7 @@ class   TrackHandler : public QObject
         void                            tracksPaused();
         void                            tracksUnpaused();
         void                            allTracksRenderCompleted();
+        void                            tracksEndReached();
 };
 
 #endif // TRACKHANDLER_H

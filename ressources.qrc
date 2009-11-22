@@ -23,6 +23,10 @@
         <file alias="mouse">images/mouse.png</file>
         <file alias="zoomin">images/zoom_in.png</file>
         <file alias="zoomout">images/zoom_out.png</file>
+        <file alias="trackon">images/trackon.png</file>
+        <file alias="trackoff">images/trackoff.png</file>
+        <file alias="hpon">images/hpon.png</file>
+        <file alias="hpoff">images/hpoff.png</file>
         <file>images/audio.png</file>
         <file>images/video.png</file>
     </qresource>

@@ -79,6 +79,12 @@ class   TrackWorkflow : public QObject
         void                                    setFullSpeedRender( bool value );
         void                                    forceRepositionning();
 
+        /**
+         *  \brief          This method is only to simulate a track render, which will render a black output.
+         *                  this is meant to render a muted track, though the Qt event loop (QueuedConnection signal)
+         */
+        void                                    simulateBlackOutputRender();
+
     private:
         void                                    computeLength();
         void                                    renderClip( ClipWorkflow* cw, qint64 currentFrame,
@@ -118,6 +124,7 @@ class   TrackWorkflow : public QObject
         void*                                   m_synchroneRenderBuffer;
 
         MainWorkflow::TrackType                 m_trackType;
+        qint64                                  m_lastFrame;
 
     private slots:
         void                                    clipWorkflowPaused();

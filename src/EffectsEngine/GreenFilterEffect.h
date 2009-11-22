@@ -24,6 +24,8 @@
 #define GREENFILTEREFFECT_H_
 
 #include "GenericEffect.h"
+#include <QPainter>
+#include <QImage>
 
 class	GreenFilterEffect : public GenericEffect
 {
@@ -42,6 +44,7 @@ class	GreenFilterEffect : public GenericEffect
 
  private:
 
+  QImage				m_logo;
   bool					m_enabled;
   static	quint32 const		m_nbVideoInputs = 1;
   static	quint32 const		m_nbVideoOutputs = 1;

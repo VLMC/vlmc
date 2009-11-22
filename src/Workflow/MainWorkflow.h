@@ -55,6 +55,14 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
             NbTrackType,
             AudioTrack,
         };
+        enum    FrameChangedReason
+        {
+            Renderer,
+            TimelineCursor,
+            PreviewCursor,
+            RulerCursor,
+        };
+
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start, TrackType type );
 
         void                    startRender();
@@ -63,16 +71,13 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         EffectsEngine*          getEffectsEngine();
 
         /**
-         *  \brief              Set the workflow position
-         *  \param              pos: The position in vlc position
-        */
-        void                    setPosition( float pos );
-
-        /**
          *  \brief              Set the workflow position by the desired frame
          *  \param              currentFrame: The desired frame to render from
+         *  \paragraph          reason: The program part which required this frame change
+                                        (to avoid cyclic events)
         */
-        void                    setCurrentFrame( qint64 currentFrame );
+        void                    setCurrentFrame( qint64 currentFrame,
+                                                 MainWorkflow::FrameChangedReason reason );
 
         /**
          *  \return             Returns the global length of the workflow
@@ -135,7 +140,10 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    computeLength();
         void                    activateTrack( unsigned int trackId );
 
+        static LightVideoFrame* blackOutput;
+
     private:
+        QReadWriteLock*                 m_currentFrameLock;
         qint64                          m_currentFrame;
         qint64                          m_lengthFrame;
         /**
@@ -159,6 +167,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                            tracksPaused();
         void                            tracksUnpaused();
         void                            tracksRenderCompleted();
+        void                            tracksEndReached();
 
     public slots:
         void                            loadProject( const QDomElement& project );
@@ -166,19 +175,16 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
     signals:
         /**
-         *  \brief Used to notify a change to the timeline cursor
+         *  \brief Used to notify a change to the timeline and preview widget cursor
          */
-        void                    frameChanged( qint64 currentFrame );
-        /**
-          * \brief Used to nofify a change to the PreviewWidget
-          */
-        void                    positionChanged( float pos );
+        void                    frameChanged( qint64,
+                                              MainWorkflow::FrameChangedReason );
 
         void                    mainWorkflowEndReached();
         void                    mainWorkflowPaused();
         void                    mainWorkflowUnpaused();
         void                    clipAdded( Clip*, unsigned int, qint64, MainWorkflow::TrackType );
-        void                    clipRemoved( QUuid, unsigned int, MainWorkflow::TrackType );
+        void                    clipRemoved( Clip*, unsigned int, MainWorkflow::TrackType );
         void                    clipMoved( QUuid, unsigned int, qint64, MainWorkflow::TrackType );
         void                    cleared();
 };

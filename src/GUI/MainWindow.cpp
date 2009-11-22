@@ -50,17 +50,25 @@
 #include "ProjectManager.h"
 #include "AudioProjectPreferences.h"
 #include "VideoProjectPreferences.h"
+#include "VLMCSettingsDefault.h"
+#include "ProjectSettingsDefault.h"
 #include "VLMCPreferences.h"
 #include "Import.h"
 #include "MediaLibraryWidget.h"
+#include "LanguagePreferences.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
 {
     m_ui.setupUi( this );
+    qRegisterMetaType<MainWorkflow::TrackType>( "MainWorkflow::TrackType" );
+    qRegisterMetaType<MainWorkflow::FrameChangedReason>( "MainWorkflow::FrameChangedReason" );
     DockWidgetManager::instance( this )->setMainWindow( this );
     initializeDockWidgets();
     createStatusBar();
+    VLMCSettingsDefault::load( "default" );
+    VLMCSettingsDefault::load( "VLMC" );
+    m_pWizard = new ProjectWizard( this );
     createGlobalPreferences();
     createProjectPreferences();
 
@@ -96,7 +104,6 @@ MainWindow::~MainWindow()
 
     if ( m_renderer )
         delete m_renderer;
-    MetaDataManager::destroyInstance();
     LibVLCpp::Instance::destroyInstance();
 }
 
@@ -116,10 +123,10 @@ void MainWindow::changeEvent( QEvent *e )
 void        MainWindow::setupLibrary()
 {
     //Library part :
-    Library*    library = Library::getInstance();
+    //Library*    library = Library::getInstance();
 
     //GUI part :
-    LibraryWidget* libraryWidget = new LibraryWidget( this );
+    //LibraryWidget* libraryWidget = new LibraryWidget( this );
 
     MediaLibraryWidget* mediaLibraryWidget = new MediaLibraryWidget( this );
 
@@ -129,24 +136,24 @@ void        MainWindow::setupLibrary()
                                                     QDockWidget::AllDockWidgetFeatures,
 
                                                     Qt::LeftDockWidgetArea );
-    DockWidgetManager::instance()->addDockedWidget( libraryWidget,
+    /*DockWidgetManager::instance()->addDockedWidget( libraryWidget,
                                       tr( "Old Media Library" ),
                                       Qt::AllDockWidgetAreas,
                                       QDockWidget::AllDockWidgetFeatures,
-                                      Qt::LeftDockWidgetArea );
+                                      Qt::LeftDockWidgetArea );*/
 
     //Connecting GUI and Frontend :
-    connect( libraryWidget,
+    /*connect( libraryWidget,
              SIGNAL( newMediaLoadingAsked(const QString& ) ),
              library,
-             SLOT( newMediaLoadingAsked( const QString& ) ) );
+             SLOT( newMediaLoadingAsked( const QString& ) ) );*/
 
-    connect( library,
+    /*connect( library,
              SIGNAL( newClipLoaded( Clip* ) ),
              libraryWidget,
-             SLOT( newClipLoaded( Clip* ) ) );
+             SLOT( newClipLoaded( Clip* ) ) );*/
 
-    connect( libraryWidget,
+    /*connect( libraryWidget,
              SIGNAL( removingMediaAsked( const QUuid& ) ),
              library,
              SLOT( removingMediaAsked( const QUuid& ) ) );
@@ -154,13 +161,13 @@ void        MainWindow::setupLibrary()
     connect( library,
              SIGNAL( mediaRemoved( const QUuid& ) ),
              libraryWidget,
-             SLOT( mediaRemoved( const QUuid& ) ), Qt::DirectConnection );
+             SLOT( mediaRemoved( const QUuid& ) ), Qt::DirectConnection );*/
 
-    connect( libraryWidget->getVideoListWidget(), SIGNAL( selectedClipChanged( Clip* ) ),
+    /*connect( libraryWidget->getVideoListWidget(), SIGNAL( selectedClipChanged( Clip* ) ),
               m_clipPreview->getGenericRenderer(), SLOT( setClip( Clip* ) ) );
 
     connect( libraryWidget->getVideoListWidget(), SIGNAL( itemDoubleClicked( QListWidgetItem* ) ),
-                this, SLOT( mediaListItemDoubleClicked( QListWidgetItem* ) ) );
+                this, SLOT( mediaListItemDoubleClicked( QListWidgetItem* ) ) );*/
 
     connect( mediaLibraryWidget, SIGNAL( mediaSelected( Media* ) ),
              m_clipPreview->getGenericRenderer(), SLOT( setMedia( Media* ) ) );
@@ -235,12 +242,12 @@ void MainWindow::createStatusBar()
     spacer->setFixedWidth( 20 );
     m_ui.statusbar->addPermanentWidget( spacer );
 
-    // Zoom IN
-    QToolButton* zoomInButton = new QToolButton( this );
-    zoomInButton->setIcon( QIcon( ":/images/zoomin" ) );
-    m_ui.statusbar->addPermanentWidget( zoomInButton );
-    connect( zoomInButton, SIGNAL( clicked() ),
-             this, SLOT( zoomIn() ) );
+    // Zoom Out
+    QToolButton* zoomOutButton = new QToolButton( this );
+    zoomOutButton->setIcon( QIcon( ":/images/zoomout" ) );
+    m_ui.statusbar->addPermanentWidget( zoomOutButton );
+    connect( zoomOutButton, SIGNAL( clicked() ),
+             this, SLOT( zoomOut() ) );
 
     // Zoom slider
     m_zoomSlider = new QSlider( this );
@@ -252,19 +259,21 @@ void MainWindow::createStatusBar()
     m_zoomSlider->setMaximum( 13 );
     m_zoomSlider->setValue( 10 );
     m_zoomSlider->setFixedWidth( 80 );
+    m_zoomSlider->setInvertedAppearance( true );
     m_ui.statusbar->addPermanentWidget( m_zoomSlider );
 
-    // Zoom Out
-    QToolButton* zoomOutButton = new QToolButton( this );
-    zoomOutButton->setIcon( QIcon( ":/images/zoomout" ) );
-    m_ui.statusbar->addPermanentWidget( zoomOutButton );
-    connect( zoomOutButton, SIGNAL( clicked() ),
-             this, SLOT( zoomOut() ) );
+    // Zoom IN
+    QToolButton* zoomInButton = new QToolButton( this );
+    zoomInButton->setIcon( QIcon( ":/images/zoomin" ) );
+    m_ui.statusbar->addPermanentWidget( zoomInButton );
+    connect( zoomInButton, SIGNAL( clicked() ),
+             this, SLOT( zoomIn() ) );
 }
 
 void MainWindow::initializeDockWidgets( void )
 {
-    m_timeline = new Timeline( this );
+    WorkflowRenderer*    workflowRenderer = new WorkflowRenderer();
+    m_timeline = new Timeline( workflowRenderer, this );
     m_timeline->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_timeline->show();
     setCentralWidget( m_timeline );
@@ -282,13 +291,17 @@ void MainWindow::initializeDockWidgets( void )
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
+    QShortcut*  clipShortcut = new QShortcut( QKeySequence( tr( "Ctrl+Return", "Start clip preview" ) ), this );
+    connect( clipShortcut, SIGNAL( activated() ), m_clipPreview, SLOT( on_pushButtonPlay_clicked() ) );
 
-    m_projectPreview = new PreviewWidget( new WorkflowRenderer(), this );
+    m_projectPreview = new PreviewWidget( workflowRenderer, this );
     dockManager->addDockedWidget( m_projectPreview,
                                   tr( "Project Preview" ),
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
+    QShortcut*  renderShortcut = new QShortcut( QKeySequence( tr( "Space", "Start render preview" ) ), this );
+    connect( renderShortcut, SIGNAL( activated() ), m_projectPreview, SLOT( on_pushButtonPlay_clicked() ) );
 
     dockManager->addDockedWidget( UndoStack::getInstance( this ),
                                   tr( "History" ),
@@ -296,24 +309,26 @@ void MainWindow::initializeDockWidgets( void )
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::LeftDockWidgetArea );
     setupLibrary();
-    m_metaDataManager = MetaDataManager::getInstance();
 }
 
 void        MainWindow::createGlobalPreferences()
 {
-    m_globalPreferences = new Settings( this );
+    m_globalPreferences = new Settings( false, "VLMC", this );
     m_globalPreferences->addWidget("VLMC",
                                    new VLMCPreferences( m_globalPreferences ),
                                    "../images/vlmc.png",
                                    "VLMC settings");
+    m_globalPreferences->addWidget("Language preferences",
+                                   new LanguagePreferences( m_globalPreferences ),
+                                   "../images/vlmc.png",
+                                   "Langage settings");
     m_globalPreferences->build();
 }
 
 void	    MainWindow::createProjectPreferences()
 {
-    m_projectPreferences = new Settings(  );
-
-    m_projectPreferences->addWidget( "Project",
+    m_projectPreferences = new Settings( false, "project", this );
+    m_projectPreferences->addWidget("Project",
                                    new ProjectPreferences,
                                    ":/images/images/vlmc",
                                    "Project settings" );
@@ -327,6 +342,7 @@ void	    MainWindow::createProjectPreferences()
                                    "Audio settings" );
     m_projectPreferences->build();
 }
+
 
 //Private slots definition
 
@@ -441,5 +457,11 @@ void MainWindow::on_actionBypass_effects_engine_toggled(bool toggled)
 
 void MainWindow::on_actionProject_Preferences_triggered()
 {
-    m_projectPreferences->show();
+  m_projectPreferences->show( "project" );
 }
+
+void MainWindow::on_actionProject_Wizard_triggered()
+{
+    m_pWizard->show();
+}
+

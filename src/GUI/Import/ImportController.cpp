@@ -56,6 +56,7 @@ ImportController::ImportController(QWidget *parent) :
     m_filesModel->sort( 0, Qt::AscendingOrder );
     m_filesModel->setNameFilters( filters );
 
+    m_model->setFilter( filters );
     m_ui->treeView->setModel( m_filesModel );
     m_ui->treeView->setRootIndex( m_filesModel->index( QDir::rootPath() ) );
     m_ui->treeView->setCurrentIndex( m_filesModel->index( QDir::homePath() ) );
@@ -130,7 +131,9 @@ void        ImportController::clipSelection( const QUuid& uuid )
 
 void        ImportController::updateMediaRequested( Media* media )
 {
-    m_mediaListController->getCell( media->getUuid() )->setThumbnail( media->getSnapshot() );
+    ImportMediaCellView*    cell = m_mediaListController->getCell( media->getUuid() );
+    cell->setThumbnail( media->getSnapshot() );
+    cell->setLength( media->getLengthMS() );
 }
 void    ImportController::setUIMetaData( Media* media )
 {
@@ -138,7 +141,7 @@ void    ImportController::setUIMetaData( Media* media )
     {
         //Duration
         QTime   duration;
-        duration = duration.addSecs( media->getLengthMS() );
+        duration = duration.addMSecs( media->getLengthMS() );
         m_ui->durationValueLabel->setText( duration.toString( "hh:mm:ss" ) );
         //Filename || title
         m_ui->nameValueLabel->setText( media->getFileInfo()->fileName() );
@@ -182,6 +185,12 @@ void    ImportController::treeViewDoubleClicked( const QModelIndex& index )
         forwardButtonClicked();
 }
 
+void    ImportController::reject()
+{
+    m_preview->stop();
+    done( Rejected );
+}
+
 void    ImportController::accept()
 {
     QUuid id;
@@ -190,6 +199,7 @@ void    ImportController::accept()
         Media* media = m_model->getMedias()->value( id );
         Library::getInstance()->addMedia( media );
     }
+    m_preview->stop();
     done( Accepted );
 }
 

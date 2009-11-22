@@ -38,7 +38,6 @@
     <addaction name="actionLoad_Project"/>
     <addaction name="actionSave"/>
     <addaction name="actionImport"/>
-    <addaction name="actionTranscode_File"/>
     <addaction name="actionRender"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -69,6 +68,7 @@
      <string>Tools</string>
     </property>
     <addaction name="actionTranscode"/>
+    <addaction name="actionProject_Wizard"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
@@ -192,20 +192,11 @@
    </property>
   </action>
   <action name="actionBypass_effects_engine">
-    <property name="checkable">
-      <bool>true</bool>
-    </property>
-    <property name="checked">
-      <bool>true</bool>
-    </property>
-    <property name="text">
-      <string>Enable effects engine</string>
-    </property>
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>Enable effects engine</string>
@@ -214,6 +205,11 @@
   <action name="actionProject_Preferences">
    <property name="text">
     <string>Project Preferences</string>
+   </property>
+  </action>
+  <action name="actionProject_Wizard">
+   <property name="text">
+    <string>Project Wizard</string>
    </property>
   </action>
  </widget>

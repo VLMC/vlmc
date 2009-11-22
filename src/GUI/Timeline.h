@@ -26,7 +26,9 @@
 #include "vlmc.h"
 #include "ui_Timeline.h"
 #include "TracksRuler.h"
+#include "TracksControls.h"
 #include "Workflow/MainWorkflow.h"
+#include "WorkflowRenderer.h"
 
 class TracksScene;
 class TracksView;
@@ -36,7 +38,7 @@ class Timeline : public QWidget
     Q_OBJECT
     Q_DISABLE_COPY( Timeline )
 public:
-    explicit Timeline( QWidget *parent = 0 );
+    explicit Timeline( WorkflowRenderer* renderer, QWidget *parent = 0 );
     virtual ~Timeline();
     TracksView*         tracksView() { return m_tracksView; }
     TracksScene*        tracksScene() { return m_tracksScene; }
@@ -49,7 +51,7 @@ public slots:
     void setTool( ToolButtons button );
     void actionAddClip( Clip* clip, unsigned int track, qint64 start, MainWorkflow::TrackType );
     void actionMoveClip( const QUuid& uuid, unsigned int track, qint64 time, MainWorkflow::TrackType );
-    void actionRemoveClip( const QUuid& uuid, unsigned int track, MainWorkflow::TrackType );
+    void actionRemoveClip( Clip* clip, unsigned int track, MainWorkflow::TrackType );
 
 protected:
     virtual void changeEvent( QEvent *e );
@@ -59,8 +61,10 @@ private:
     TracksView*         m_tracksView;
     TracksScene*        m_tracksScene;
     TracksRuler*        m_tracksRuler;
+    TracksControls*     m_tracksControls;
     double              m_scale;
     MainWorkflow*       m_mainWorkflow;
+    WorkflowRenderer*   m_renderer;
     static Timeline*    m_instance;
 };
 

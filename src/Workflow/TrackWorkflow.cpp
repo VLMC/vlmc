@@ -33,7 +33,8 @@ TrackWorkflow::TrackWorkflow( unsigned int trackId, MainWorkflow::TrackType type
         m_forceRepositionning( false ),
         m_paused( false ),
         m_synchroneRenderBuffer( NULL ),
-        m_trackType( type )
+        m_trackType( type ),
+        m_lastFrame( 0 )
 {
     m_forceRepositionningMutex = new QMutex;
     m_clipsLock = new QReadWriteLock;
@@ -210,6 +211,7 @@ void                TrackWorkflow::preloadClip( ClipWorkflow* cw )
 
 void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
 {
+//    qDebug() << "Stopping clip workflow";
     cw->getStateLock()->lockForRead();
 
     if ( cw->getState() == ClipWorkflow::Stopped )
@@ -280,6 +282,7 @@ void                    TrackWorkflow::stop()
         stopClipWorkflow( it.value() );
         ++it;
     }
+    m_lastFrame = 0;
 }
 
 bool                TrackWorkflow::getOutput( qint64 currentFrame )
@@ -288,7 +291,6 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
 
     QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
     QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
-    static  qint64                              lastFrame = 0;
     bool                                        needRepositioning;
     bool                                        hasRendered = false;
 
@@ -304,10 +306,10 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
             needRepositioning = true;
             m_forceRepositionning = false;
         }
-        else if ( m_paused == true && currentFrame != lastFrame )
+        else if ( m_paused == true && currentFrame != m_lastFrame )
             needRepositioning = true;
         else
-            needRepositioning = ( abs( currentFrame - lastFrame ) > 1 ) ? true : false;
+            needRepositioning = ( abs( currentFrame - m_lastFrame ) > 1 ) ? true : false;
     }
     m_nbClipToRender = 0;
 
@@ -341,7 +343,7 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
     {
         clipWorkflowRenderCompleted( NULL );
     }
-    lastFrame = currentFrame;
+    m_lastFrame = currentFrame;
     return hasRendered;
 }
 
@@ -423,9 +425,12 @@ Clip*       TrackWorkflow::removeClip( const QUuid& id )
             ClipWorkflow*   cw = it.value();
             Clip*           clip = cw->getClip();
             m_clips.erase( it );
+            stopClipWorkflow( cw );
             computeLength();
             disconnectClipWorkflow( cw );
             delete cw;
+            if ( m_length == 0 )
+                emit trackEndReached( m_trackId );
             return clip;
         }
         ++it;
@@ -631,4 +636,9 @@ void    TrackWorkflow::forceRepositionning()
 {
     QMutexLocker    lock( m_forceRepositionningMutex );
     m_forceRepositionning = true;
+}
+
+void    TrackWorkflow::simulateBlackOutputRender()
+{
+    clipWorkflowRenderCompleted( NULL );
 }

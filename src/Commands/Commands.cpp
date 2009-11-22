@@ -32,10 +32,10 @@ void Commands::trigger( QUndoCommand* command )
     UndoStack::getInstance()->push( command );
 }
 
-Commands::MainWorkflow::AddClip::AddClip( ::MainWorkflow* workflow, Clip* clip,
+Commands::MainWorkflow::AddClip::AddClip( WorkflowRenderer* renderer, Clip* clip,
                                           unsigned int trackNumber, qint64 pos,
                                           ::MainWorkflow::TrackType trackType ) :
-        m_workflow( workflow ),
+        m_renderer( renderer ),
         m_clip( clip ),
         m_trackNumber( trackNumber ),
         m_pos( pos ),
@@ -46,12 +46,12 @@ Commands::MainWorkflow::AddClip::AddClip( ::MainWorkflow* workflow, Clip* clip,
 
 void Commands::MainWorkflow::AddClip::redo()
 {
-    m_workflow->addClip( m_clip, m_trackNumber, m_pos, m_trackType );
+    m_renderer->addClip( m_clip, m_trackNumber, m_pos, m_trackType );
 }
 
 void Commands::MainWorkflow::AddClip::undo()
 {
-    m_workflow->removeClip( m_clip->getUuid(), m_trackNumber, m_trackType );
+    m_renderer->removeClip( m_clip->getUuid(), m_trackNumber, m_trackType );
 }
 
 Commands::MainWorkflow::MoveClip::MoveClip( ::MainWorkflow* workflow, const QUuid& uuid,
@@ -77,20 +77,23 @@ void Commands::MainWorkflow::MoveClip::undo()
     m_undoRedoAction = true;
 }
 
-Commands::MainWorkflow::RemoveClips::RemoveClips( ::MainWorkflow* workflow, const QVector<ClipActionInfo>& clipsInfos ) :
-        m_workflow( workflow ), m_clips( clipsInfos )
+Commands::MainWorkflow::RemoveClips::RemoveClips( WorkflowRenderer* renderer, const QVector<ClipActionInfo>& clipsInfos ) :
+        m_renderer( renderer ), m_clips( clipsInfos )
 {
     setText( QObject::tr( "Remove clip" ) );
 }
 void Commands::MainWorkflow::RemoveClips::redo()
 {
     for (int i = 0; i < m_clips.size(); ++i )
-        m_workflow->removeClip( m_clips.at( i ).clip->getUuid(), m_clips.at( i ).trackNumber, m_clips.at( i ).trackType );
+    {
+        const ClipActionInfo&   clipInfo = m_clips.at( i );
+        m_renderer->removeClip( clipInfo.clip->getUuid(), clipInfo.trackNumber, clipInfo.trackType );
+    }
 }
 void Commands::MainWorkflow::RemoveClips::undo()
 {
     for (int i = 0; i < m_clips.size(); ++i )
-        m_workflow->addClip( m_clips.at( i ).clip, m_clips.at( i ).trackNumber, m_clips.at( i ).pos, m_clips.at( i ).trackType );
+        m_renderer->addClip( m_clips.at( i ).clip, m_clips.at( i ).trackNumber, m_clips.at( i ).pos, m_clips.at( i ).trackType );
 }
 
 Commands::MainWorkflow::ResizeClip::ResizeClip( ::MainWorkflow* mainWorkflow, const QUuid& uuid, unsigned int trackId,

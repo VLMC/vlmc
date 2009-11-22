@@ -155,7 +155,7 @@
               </font>
              </property>
              <property name="text">
-              <string>42</string>
+              <string>0</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -185,7 +185,7 @@
               </font>
              </property>
              <property name="text">
-              <string>24m45</string>
+              <string>0</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

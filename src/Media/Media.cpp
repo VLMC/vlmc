@@ -31,7 +31,7 @@
 
 QPixmap*        Media::defaultSnapshot = NULL;
 const QString   Media::VideoExtensions = "*.mov *.avi *.mkv *.mpg *.mpeg *.wmv *.mp4";
-const QString   Media::ImageExtensions = "*.gif *.png *.jpg";
+const QString   Media::ImageExtensions = "*.gif *.png *.jpg *.jpeg";
 const QString   Media::AudioExtensions = "*.mp3 *.oga *.flac *.aac *.wav";
 const QString   Media::streamPrefix = "stream://";
 
@@ -43,7 +43,7 @@ Media::Media( const QString& filePath, const QString& uuid )
     m_nbFrames( 0 ),
     m_width( 0 ),
     m_height( 0 ),
-    m_metadataParsed( false )
+    m_metadataState( None )
 {
     if ( uuid.length() == 0 )
         m_uuid = QUuid::createUuid();
@@ -85,7 +85,7 @@ Media::~Media()
 
 void        Media::setFileType()
 {
-    QString filter = "*." + m_fileInfo->suffix();
+    QString filter = "*." + m_fileInfo->suffix().toLower();
     if ( Media::VideoExtensions.contains( filter ) )
         m_fileType = Media::Video;
     else if ( Media::AudioExtensions.contains( filter ) )
@@ -219,10 +219,18 @@ void                Media::addAudioFrame( void* datas, unsigned char* buffer, si
 //    qDebug() << m_audioData.frameList.size();
 }
 
-void            Media::emitMetaDataComputed()
+void            Media::emitMetaDataComputed( bool hasMetadata )
 {
-    m_metadataParsed = true;
+    if ( hasMetadata == true )
+        m_metadataState = ParsedWithoutSnapshot;
     emit metaDataComputed( this );
+}
+
+void            Media::emitSnapshotComputed()
+{
+    if ( m_metadataState == ParsedWithoutSnapshot )
+        m_metadataState = ParsedWithSnapshot;
+    emit snapshotComputed( this );
 }
 
 Media::InputType    Media::getInputType() const
@@ -233,11 +241,6 @@ Media::InputType    Media::getInputType() const
 void                Media::setUuid( const QUuid& uuid )
 {
     m_uuid = uuid;
-}
-
-bool                Media::hasMetadata() const
-{
-    return m_metadataParsed;
 }
 
 void                Media::setNbFrames( qint64 nbFrames )
@@ -291,4 +294,9 @@ void            Media::addClip( Clip* clip )
 void            Media::removeClip( const QUuid& uuid )
 {
     m_clips.remove( uuid );
+}
+
+Media::MetadataState   Media::getMetadata() const
+{
+    return m_metadataState;
 }

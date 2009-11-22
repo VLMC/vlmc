@@ -41,13 +41,13 @@ public:
     static void         unlock( void* datas );
 
     void                run();
+    virtual float       getFps() const;
 private:
     const QString               m_outputFileName;
     WorkflowFileRendererDialog* m_dialog;
 
 private slots:
     void                        stop();
-    void                        positionChanged( float newPos );
     void                        cancelButtonClicked();
 };
 

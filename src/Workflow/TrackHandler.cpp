@@ -77,6 +77,7 @@ void        TrackHandler::addClip( Clip* clip, unsigned int trackId, qint64 star
 void        TrackHandler::startRender()
 {
     m_paused = false;
+    m_endReached = false;
     for ( unsigned int i = 0; i < m_trackCount; ++i )
         activateTrack( i );
     computeLength();
@@ -109,13 +110,18 @@ void        TrackHandler::getOutput( qint64 currentFrame )
     {
         if ( m_tracks[i].activated() == false )
         {
-            m_effectEngine->setInputFrame( *TrackHandler::nullOutput, i );
+            if ( m_tracks[i].hardDeactivated() == true )
+            {
+                ++m_nbTracksToRender;
+                m_tracks[i]->simulateBlackOutputRender();
+            }
+            else
+                m_effectEngine->setInputFrame( *TrackHandler::nullOutput, i );
             continue ;
         }
         ++m_nbTracksToRender;
         m_tracks[i]->getOutput( currentFrame );
     }
-//    qDebug() << "Tracks to render:" << m_nbTracksToRender;
 }
 
 void        TrackHandler::pause()
@@ -248,6 +254,11 @@ bool        TrackHandler::isPaused() const
     return m_paused;
 }
 
+bool        TrackHandler::endIsReached() const
+{
+    return m_endReached;
+}
+
 bool        TrackHandler::allTracksRendered() const
 {
     return m_renderCompleted;
@@ -262,8 +273,8 @@ void        TrackHandler::trackEndReached( unsigned int trackId )
         if ( m_tracks[i].activated() == true )
             return ;
     }
-    //FIXME::
-    //emit mainWorkflowEndReached();
+    m_endReached = true;
+    emit tracksEndReached();
 }
 
 void        TrackHandler::trackPaused()
@@ -296,7 +307,9 @@ void        TrackHandler::tracksRenderCompleted( unsigned int trackId )
         {
             LightVideoFrame* buff = reinterpret_cast<LightVideoFrame*>( m_tracks[trackId]->getSynchroneOutput() );
             if ( buff == NULL )
+            {
                 m_effectEngine->setInputFrame( *TrackHandler::nullOutput, trackId );
+            }
             else
                 m_effectEngine->setInputFrame( *buff, trackId );
         }

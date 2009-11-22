@@ -1,9 +1,9 @@
 /*****************************************************************************
- * MetaDataManager.h: Launch the metadata threads
+ * TracksControls.cpp: Left panel of the timeline
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
+ * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,25 +20,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <QtDebug>
-#include "MetaDataManager.h"
-#include "MetaDataWorker.h"
-#include "Library.h"
+#ifndef TRACKSCONTROLS_H
+#define TRACKSCONTROLS_H
 
-MetaDataManager::MetaDataManager()
-{
-    connect( Library::getInstance(), SIGNAL( metadataRequired( Media* ) ), this, SLOT( metadataRequired( Media* ) ) );
-}
+#include <QScrollArea>
+#include <QVBoxLayout>
+#include "GraphicsTrack.hpp"
+#include "TrackControls.h"
 
-MetaDataManager::~MetaDataManager()
+class TracksControls : public QScrollArea
 {
-}
+    Q_OBJECT
+public:
+    TracksControls( QWidget* parent = 0 );
 
-void        MetaDataManager::metadataRequired( Media* media )
-{
-    if ( media->hasMetadata() == false )
-    {
-        MetaDataWorker* w = new MetaDataWorker( media );
-        w->start();
-    }
-}
+public slots:
+    void addVideoTrack( GraphicsTrack* track );
+    void addAudioTrack( GraphicsTrack* track );
+    void clear();
+
+private:
+    QWidget* m_centralWidget;
+    QWidget* m_separator;
+    QVBoxLayout* m_layout;
+};
+
+#endif // TRACKSCONTROLS_H

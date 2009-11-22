@@ -39,7 +39,6 @@ public:
     explicit ClipRenderer();
     virtual ~ClipRenderer();
 
-    virtual void            setPosition( float newPos );
     virtual void            togglePlayPause( bool forcePause );
     virtual void            stop();
     virtual void            nextFrame();
@@ -68,8 +67,10 @@ public slots:
     virtual void            setClip( Clip* clip );
     virtual void            setMedia( Media* media );
     virtual void            mediaUnloaded( const QUuid& );
+    virtual void            previewWidgetCursorChanged( qint64 newFrame );
 
     void                    __positionChanged();
+    void                    __timeChanged();
     void                    __videoPaused();
     void                    __videoPlaying();
     void                    __endReached();

@@ -32,11 +32,14 @@
 //FIXME: remove this !
 #include "ClipWorkflow.h"
 
+LightVideoFrame*     MainWorkflow::blackOutput = NULL;
+
 MainWorkflow::MainWorkflow( int trackCount ) :
         m_currentFrame( 0 ),
         m_lengthFrame( 0 ),
         m_renderStarted( false )
 {
+    m_currentFrameLock = new QReadWriteLock;
     m_renderStartedLock = new QReadWriteLock;
     m_renderMutex = new QMutex;
     m_synchroneRenderWaitCondition = new QWaitCondition;
@@ -53,8 +56,12 @@ MainWorkflow::MainWorkflow( int trackCount ) :
         connect( m_tracks[i], SIGNAL( tracksPaused() ), this, SLOT( tracksPaused() ) );
         connect( m_tracks[i], SIGNAL( tracksUnpaused() ), this, SLOT( tracksUnpaused() ) );
         connect( m_tracks[i], SIGNAL( allTracksRenderCompleted() ), this, SLOT( tracksRenderCompleted() ) );
+        connect( m_tracks[i], SIGNAL( tracksEndReached() ), this, SLOT( tracksEndReached() ) );
     }
     m_outputBuffers = new OutputBuffers;
+
+    blackOutput = new LightVideoFrame( VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes );
+    memset( (*blackOutput)->frame.octets, 0, (*blackOutput)->nboctets );
 }
 
 MainWorkflow::~MainWorkflow()
@@ -67,6 +74,7 @@ MainWorkflow::~MainWorkflow()
     delete m_synchroneRenderWaitCondition;
     delete m_renderMutex;
     delete m_renderStartedLock;
+    delete m_currentFrameLock;
     for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         delete m_tracks[i];
     delete[] m_tracks;
@@ -82,7 +90,6 @@ void            MainWorkflow::addClip( Clip* clip, unsigned int trackId,
 {
     m_tracks[trackType]->addClip( clip, trackId, start );
     computeLength();
-
     //Inform the GUI
     emit clipAdded( clip, trackId, start, trackType );
 }
@@ -115,8 +122,12 @@ void                    MainWorkflow::getOutput()
 
     if ( m_renderStarted == true )
     {
-        for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
-            m_tracks[i]->getOutput( m_currentFrame );
+        {
+            QReadLocker         lock3( m_currentFrameLock );
+
+            for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
+                m_tracks[i]->getOutput( m_currentFrame );
+        }
         if ( m_paused == false )
             nextFrame();
     }
@@ -140,31 +151,18 @@ void        MainWorkflow::unpause()
 
 void        MainWorkflow::nextFrame()
 {
+    QWriteLocker    lock( m_currentFrameLock );
+
     ++m_currentFrame;
-    emit frameChanged( m_currentFrame );
-    emit positionChanged( (float)m_currentFrame / (float)m_lengthFrame );
+    emit frameChanged( m_currentFrame, Renderer );
 }
 
 void        MainWorkflow::previousFrame()
 {
-    --m_currentFrame;
-    emit frameChanged( m_currentFrame );
-    emit positionChanged( (float)m_currentFrame / (float)m_lengthFrame );
-}
+    QWriteLocker    lock( m_currentFrameLock );
 
-void        MainWorkflow::setPosition( float pos )
-{
-    if ( m_renderStarted == true )
-    {
-        //Since any track can be reactivated, we reactivate all of them, and let them
-        //unable themself if required.
-        for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i)
-            m_tracks[i]->activateAll();
-    }
-    qint64  frame = static_cast<qint64>( (float)m_lengthFrame * pos );
-    m_currentFrame = frame;
-    emit frameChanged( frame );
-    //Do not emit a signal for the RenderWidget, since it's the one that triggered that call...
+    --m_currentFrame;
+    emit frameChanged( m_currentFrame, Renderer );
 }
 
 qint64      MainWorkflow::getLengthFrame() const
@@ -180,13 +178,13 @@ qint64      MainWorkflow::getClipPosition( const QUuid& uuid, unsigned int track
 void            MainWorkflow::stop()
 {
     QWriteLocker    lock( m_renderStartedLock );
+    QWriteLocker    lock2( m_currentFrameLock );
 
     m_renderStarted = false;
     for (unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i)
         m_tracks[i]->stop();
     m_currentFrame = 0;
-    emit frameChanged( 0 );
-    emit positionChanged( 0 );
+    emit frameChanged( 0, Renderer );
 }
 
 void           MainWorkflow::moveClip( const QUuid& clipUuid, unsigned int oldTrack,
@@ -195,6 +193,7 @@ void           MainWorkflow::moveClip( const QUuid& clipUuid, unsigned int oldTr
 {
     m_tracks[trackType]->moveClip( clipUuid, oldTrack, newTrack, startingFrame );
     computeLength();
+
     if ( undoRedoCommand == true )
     {
         emit clipMoved( clipUuid, newTrack, startingFrame, trackType );
@@ -203,8 +202,10 @@ void           MainWorkflow::moveClip( const QUuid& clipUuid, unsigned int oldTr
 
 Clip*       MainWorkflow::removeClip( const QUuid& uuid, unsigned int trackId, MainWorkflow::TrackType trackType )
 {
-    emit clipRemoved( uuid, trackId, trackType );
-    return m_tracks[trackType]->removeClip( uuid, trackId );
+    Clip* clip = m_tracks[trackType]->removeClip( uuid, trackId );
+    computeLength();
+    emit clipRemoved( clip, trackId, trackType );
+    return clip;
 }
 
 MainWorkflow::OutputBuffers*  MainWorkflow::getSynchroneOutput()
@@ -215,10 +216,14 @@ MainWorkflow::OutputBuffers*  MainWorkflow::getSynchroneOutput()
     m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
 //    qDebug() << "Got it";
     m_effectEngine->render();
+    if ( m_effectEngine->getOutputFrame( 0 )->nboctets == 0 )
+        m_outputBuffers->video = MainWorkflow::blackOutput;
+    else
+        m_outputBuffers->video = &( m_effectEngine->getOutputFrame( 0 ) );
+
     m_synchroneRenderWaitConditionMutex->unlock();
     m_outputBuffers->video = &( m_effectEngine->getOutputFrame( 0 ) );
     m_outputBuffers->audio = m_tracks[MainWorkflow::AudioTrack]->getTmpAudioBuffer();
-
     return m_outputBuffers;
 }
 
@@ -240,10 +245,19 @@ void        MainWorkflow::unmuteTrack( unsigned int trackId, MainWorkflow::Track
     m_tracks[trackType]->unmuteTrack( trackId );
 }
 
-void        MainWorkflow::setCurrentFrame( qint64 currentFrame )
+void        MainWorkflow::setCurrentFrame( qint64 currentFrame, MainWorkflow::FrameChangedReason reason )
 {
+    QWriteLocker    lock( m_currentFrameLock );
+
+    if ( m_renderStarted == true )
+    {
+        //Since any track can be reactivated, we reactivate all of them, and let them
+        //unable themself if required.
+        for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i)
+            m_tracks[i]->activateAll();
+    }
     m_currentFrame = currentFrame;
-    emit positionChanged( (float)m_currentFrame / (float)m_lengthFrame );
+    emit frameChanged( m_currentFrame, reason );
 }
 
 Clip*       MainWorkflow::getClip( const QUuid& uuid, unsigned int trackId, MainWorkflow::TrackType trackType )
@@ -375,6 +389,14 @@ void        MainWorkflow::tracksPaused()
     emit mainWorkflowPaused();
 }
 
+void        MainWorkflow::tracksEndReached()
+{
+    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
+        if ( m_tracks[i]->endIsReached() == false )
+            return ;
+    emit mainWorkflowEndReached();
+}
+
 void        MainWorkflow::tracksUnpaused()
 {
     for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
@@ -402,5 +424,7 @@ int         MainWorkflow::getTrackCount( MainWorkflow::TrackType trackType ) con
 
 qint64      MainWorkflow::getCurrentFrame() const
 {
+    QReadLocker     lock( m_currentFrameLock );
+
     return m_currentFrame;
 }

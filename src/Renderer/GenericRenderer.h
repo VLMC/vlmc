@@ -29,6 +29,7 @@
 
 #include "Clip.h"
 #include "VLCMediaPlayer.h"
+#include "MainWorkflow.h"
 
 class   GenericRenderer : public QObject
 {
@@ -57,18 +58,57 @@ public:
         m_previewLabel = previewLabel;
     }
     virtual void                    togglePlayPause( bool forcePause = false ) = 0;
+
+    /**
+     * \brief Render the next frame
+     */
     virtual void                    nextFrame() = 0;
+
+    /**
+     * \brief Render the previous frame
+     */
     virtual void                    previousFrame() = 0;
+
+    /**
+     * \brief Stop the renderer
+     */
     virtual void                    stop() = 0;
-    virtual void                    setPosition( float newPos ) = 0;
+
+    /**
+     * \brief Return the length in milliseconds
+     */
     virtual qint64                  getLengthMs() const = 0;
+
+    /**
+     * \brief Return the current frame number
+     */
     virtual qint64                  getCurrentFrame() const = 0;
+
+    /**
+     * \brief Return the number of frames per second
+     */
     virtual float                   getFps() const = 0;
 
+    /**
+     * \brief Return the length in frames
+     * \warning The returned value may not be accurate
+     */
+    qint64                          getLength() const
+    {
+        return qRound64( (qreal)getLengthMs() / 1000.0 * (qreal)getFps() );
+    }
+
+    /**
+     * \brief Return true if the renderer is paused
+     */
     bool                            isPaused() const
     {
         return m_paused;
     }
+
+    /**
+     * \brief Return true if the renderer is currently rendering
+     */
     bool                            isRendering() const
     {
         return m_isRendering;
@@ -93,20 +133,20 @@ protected:
 
 
 public slots:
-    virtual void                    __positionChanged() = 0;
     virtual void                    __videoPaused() = 0;
     virtual void                    __videoPlaying() = 0;
     virtual void                    __endReached() = 0;
     virtual void                    setClip( Clip* ) = 0;
     virtual void                    setMedia( Media* ) = 0;
     virtual void                    mediaUnloaded( const QUuid& ) = 0;
+    virtual void                    previewWidgetCursorChanged( qint64 ) = 0;
 
 
 signals:
     void                            stopped();
     void                            paused();
     void                            playing();
-    void                            positionChanged( float );
+    void                            frameChanged( qint64, MainWorkflow::FrameChangedReason );
     void                            endReached();
 };
 

@@ -43,15 +43,20 @@ class   Settings : public QDialog
     Q_DISABLE_COPY( Settings )
 
     public:
-        Settings( QWidget* parent = 0, Qt::WindowFlags f = 0 );
+        Settings( bool loadDefaults = false,
+                  const QString& name = "default",
+                  QWidget* parent = 0,
+                  Qt::WindowFlags f = 0 );
         virtual ~Settings();
         void                addWidget( const QString& name,
                                         PreferenceWidget* pWidget,
                                         const QString& icon,
                                         const QString& label );
         void                build();
+        void                show( const QString& part = "default" );
 
     private:
+        void            connect( void );
         QVBoxLayout*    buildRightHLayout();
         void    save( void );
 
@@ -63,7 +68,9 @@ class   Settings : public QDialog
         QLabel*                     m_title;
         QStackedWidget*             m_stackedWidgets;
         QDialogButtonBox*           m_buttons;
-        bool                        m_saved;
+        bool                        m_defaults;
+        QString                     m_name;
+
 
     public slots:
         void    switchWidget( int widget );
@@ -74,6 +81,7 @@ class   Settings : public QDialog
 
     signals:
         void    widgetSwitched( int widget );
+        void    loadSettings( const QString& part, bool defaults );
 };
 
 #endif /* !SIMPLEPREFERENCES_H */

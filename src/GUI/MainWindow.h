@@ -33,7 +33,6 @@
 
 #include "DockWidgetManager.h"
 #include "LanguagePreferences.h"
-#include "MetaDataManager.h"
 #include "Timeline.h"
 #include "WorkflowFileRenderer.h"
 #include "PreviewWidget.h"
@@ -41,6 +40,7 @@
 #include "Settings.h"
 #include "EffectsEngine.h"
 #include "MainWorkflow.h"
+#include "ProjectWizard.h"
 
 class MainWindow : public QMainWindow
 {
@@ -68,14 +68,15 @@ private:
     void        createProjectPreferences();
 
     Ui::MainWindow          m_ui;
-    MetaDataManager*        m_metaDataManager;
     QSlider*                m_zoomSlider;
     Timeline*               m_timeline;
     PreviewWidget*          m_clipPreview;
     PreviewWidget*          m_projectPreview;
     WorkflowFileRenderer*   m_renderer;
     Settings*               m_globalPreferences;
+    Settings*               m_DefaultProjectPreferences;
     Settings*               m_projectPreferences;
+    ProjectWizard*          m_pWizard;
 
 private slots:
     void on_actionBypass_effects_engine_toggled(bool );
@@ -91,6 +92,7 @@ private slots:
     void on_actionImport_triggered();
     void on_actionHelp_triggered();
     void on_actionProject_Preferences_triggered();
+    void on_actionProject_Wizard_triggered();
     void mediaListItemDoubleClicked( QListWidgetItem* );
     void toolButtonClicked( int id );
 

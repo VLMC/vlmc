@@ -51,8 +51,6 @@ public:
     void setWidth( int width );
     void setHeight( int height );
     Clip* clip() const;
-    //void setAudioSpectrum( QVector<float*> spectrum );
-    void paintAudioSpectrum( QPainter* painter );
 
 protected:
     void                paintRect( QPainter* painter, const QStyleOptionGraphicsItem* option );
@@ -69,7 +67,6 @@ private:
     Clip*               m_clip;
     int                 m_width;
     int                 m_height;
-    QVector<float*>     m_audioSpectrum;
 
 signals:
     void                split( GraphicsMovieItem* self, qint64 frame );

@@ -1,9 +1,9 @@
 /*****************************************************************************
- * MetaDataManager.h: Launch the metadata threads
+ * ProjectWizard.cpp: Project wizard
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
+ * Authors: Clement CHAVANCE <kinder@vlmc.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,27 +20,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include "ProjectWizard.h"
+#include "ProjectPreferences.h"
+#include "VideoProjectPreferences.h"
+#include "AudioProjectPreferences.h"
+#include "PageFactory.h"
 
-#ifndef METADATAMANAGER_H
-#define METADATAMANAGER_H
-
-#include <QObject>
-
-#include "Media.h"
-#include "Singleton.hpp"
-
-class       MetaDataManager : public QObject, public Singleton<MetaDataManager>
+ProjectWizard::ProjectWizard( QWidget* parent )
+    : QWizard( parent )
 {
-    Q_OBJECT
-    Q_DISABLE_COPY( MetaDataManager );
+    //Create Wizard
+    QWizardPage* generalPage = PageFactory::generateWizardPage<ProjectPreferences>( "General Settings", this );
+    QWizardPage* videoPage = PageFactory::generateWizardPage<VideoProjectPreferences>( "Video Settings", this );
+    QWizardPage* audioPage = PageFactory::generateWizardPage<AudioProjectPreferences>( "Audio Settings", this );
+    addPage( generalPage );
+    addPage( videoPage );
+    addPage( audioPage );
+}
 
-    friend class        Singleton<MetaDataManager>;
-    public slots:
-        void            metadataRequired( Media* );
-
-    private:
-        MetaDataManager();
-        ~MetaDataManager();
-};
-
-#endif // METADATAMANAGER_H
+ProjectWizard::~ProjectWizard()
+{
+}

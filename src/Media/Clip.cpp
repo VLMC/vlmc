@@ -105,11 +105,11 @@ void        Clip::computeLength()
 {
     if ( m_parent->getInputType() == Media::File )
     {
-        unsigned int   fps = m_parent->getFps();
+        float   fps = m_parent->getFps();
         if ( fps < 0.1f )
             fps = FPS;
         m_length = m_end - m_begin;
-        m_lengthSeconds = m_length * fps;
+        m_lengthSeconds = qRound64( (float)m_length / fps );
         emit lengthUpdated();
     }
     else
@@ -180,8 +180,8 @@ void                Clip::setEnd( qint64 end )
 Clip*               Clip::split( qint64 endFrame )
 {
     Q_ASSERT( endFrame != m_end );
+    endFrame += m_begin;
     Clip*   newClip = new Clip( this, endFrame, m_end );
-    qDebug() << "Created new clip. begin:" << newClip->m_begin << "end:" << newClip->m_end;
     m_end = endFrame;
     computeLength();
     return newClip;

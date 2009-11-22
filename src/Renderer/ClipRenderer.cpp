@@ -25,6 +25,7 @@
 #include <QtGlobal>
 
 #include "ClipRenderer.h"
+#include "MainWorkflow.h"
 
 ClipRenderer::ClipRenderer() :
     GenericRenderer(),
@@ -39,6 +40,7 @@ ClipRenderer::ClipRenderer() :
     connect( m_mediaPlayer,     SIGNAL( paused() ),             this,   SLOT( __videoPaused() ) );
     connect( m_mediaPlayer,     SIGNAL( playing() ),            this,   SLOT( __videoPlaying() ) );
     connect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,   SLOT( __positionChanged() ) );
+    connect( m_mediaPlayer,     SIGNAL( timeChanged() ),        this,   SLOT( __timeChanged() ) );
     connect( m_mediaPlayer,     SIGNAL( endReached() ),         this,   SLOT( __endReached() ) );
 }
 
@@ -63,9 +65,9 @@ void        ClipRenderer::setMedia( Media* media )
         m_mediaChanged = true;
     else
     {
-        setSnapshotVisibility( true );
-        m_previewLabel->setPixmap( media->getSnapshot().scaled( m_previewLabel->size(),
-                                                                            Qt::KeepAspectRatio ) );
+        //setSnapshotVisibility( true );
+        //m_previewLabel->setPixmap( media->getSnapshot().scaled( m_previewLabel->size(),
+        //                                                                    Qt::KeepAspectRatio ) );
         m_clipLoaded = false;
     }
 }
@@ -113,16 +115,6 @@ void        ClipRenderer::startPreview()
     m_mediaChanged = false;
 }
 
-void        ClipRenderer::setPosition( float newPos )
-{
-    if ( m_clipLoaded == false || m_isRendering == false )
-        return ;
-    float   begin = m_begin / ( m_end - m_begin );
-    float   end = m_end / ( m_end - m_begin );
-    float   pos = newPos * ( end - begin ) + begin;
-    m_mediaPlayer->setPosition( pos );
-}
-
 void        ClipRenderer::stop()
 {
     if ( m_clipLoaded == true && m_isRendering == true )
@@ -139,7 +131,7 @@ void        ClipRenderer::togglePlayPause( bool forcePause )
 {
     if ( m_clipLoaded == false )
     {
-        emit positionChanged( 0 );
+        emit frameChanged( 0, MainWorkflow::Renderer );
         startPreview();
         return ;
     }
@@ -185,10 +177,8 @@ void        ClipRenderer::previousFrame()
 
 qint64      ClipRenderer::getLengthMs() const
 {
-    if ( m_clipLoaded )
-        return qMax( m_end - m_begin, (qint64)0 );
-    else if ( m_selectedMedia )
-        return m_selectedMedia->getLengthMS();
+    if ( m_selectedMedia )
+        return ( qRound64( (qreal)( m_end - m_begin ) / m_selectedMedia->getFps() * 1000.0 ) );
     return 0;
 }
 
@@ -215,7 +205,7 @@ qint64      ClipRenderer::getCurrentFrame() const
 {
     if ( m_clipLoaded == false || m_isRendering == false || m_selectedMedia == NULL )
         return 0;
-    return m_mediaPlayer->getPosition() * ( m_end - m_begin ) - m_begin;
+    return qRound64( (qreal)m_mediaPlayer->getTime() / 1000 * (qreal)m_selectedMedia->getFps() );
 }
 
 float       ClipRenderer::getFps() const
@@ -223,6 +213,15 @@ float       ClipRenderer::getFps() const
     if ( m_selectedMedia != NULL )
         return m_selectedMedia->getFps();
     return 0.0f;
+}
+
+void        ClipRenderer::previewWidgetCursorChanged( qint64 newFrame )
+{
+    if ( m_isRendering == true )
+    {
+        qint64 nbSeconds = qRound64( (qreal)newFrame / m_selectedMedia->getFps() );
+        m_mediaPlayer->setTime( nbSeconds * 1000 );
+    }
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -235,6 +234,7 @@ void        ClipRenderer::__videoPaused()
 
 void        ClipRenderer::__videoStopped()
 {
+    emit frameChanged( 0, MainWorkflow::Renderer );
     emit stopped();
 }
 
@@ -252,7 +252,13 @@ void        ClipRenderer::__positionChanged()
     float   end = m_end / ( m_end - m_begin );
     float pos = ( m_mediaPlayer->getPosition() - begin ) /
                 ( end - begin );
-    emit positionChanged( pos );
+    emit frameChanged( pos, MainWorkflow::Renderer );
+}
+
+void        ClipRenderer::__timeChanged()
+{
+    qint64 f = qRound64( (qreal)m_mediaPlayer->getTime() / 1000.0 * (qreal)m_mediaPlayer->getFps() );
+    emit frameChanged( f, MainWorkflow::Renderer );
 }
 
 void        ClipRenderer::__endReached()

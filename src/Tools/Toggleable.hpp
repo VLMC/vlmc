@@ -57,6 +57,10 @@ class   Toggleable
         {
             return ( m_hardDeactivated == true || m_activated == false );
         }
+        bool    hardDeactivated() const
+        {
+            return m_hardDeactivated;
+        }
         void    activate()
         {
             m_activated = true;

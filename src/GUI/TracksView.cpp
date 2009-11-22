@@ -27,7 +27,6 @@
 #include <QGraphicsWidget>
 #include <QGraphicsSceneDragDropEvent>
 #include <QtDebug>
-#include <cmath>
 #include "TracksView.h"
 #include "Library.h"
 #include "GraphicsMovieItem.h"
@@ -35,8 +34,9 @@
 #include "Commands.h"
 #include "GraphicsTrack.hpp"
 
-TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidget* parent )
-        : QGraphicsView( scene, parent ), m_scene( scene ), m_mainWorkflow( mainWorkflow )
+TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, WorkflowRenderer* renderer, QWidget* parent )
+        : QGraphicsView( scene, parent ), m_scene( scene ), m_mainWorkflow( mainWorkflow ),
+        m_renderer( renderer )
 {
     //TODO should be defined by the settings
     m_tracksHeight = 25;
@@ -60,8 +60,6 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
     m_cursorLine = new GraphicsCursorItem( QPen( QColor( 220, 30, 30 ) ) );
 
     m_scene->addItem( m_cursorLine );
-
-    createLayout();
 
     connect( m_cursorLine, SIGNAL( cursorPositionChanged(qint64) ),
              this, SLOT( ensureCursorVisible() ) );
@@ -95,9 +93,6 @@ void TracksView::createLayout()
 
     m_scene->addItem( container );
 
-    // Hack: make sure the tracks type appears correctly
-    m_layout->setMinimumWidth( 2000 );
-    m_layout->setMaximumWidth( 2000 );
     setSceneRect( m_layout->contentsRect() );
 }
 
@@ -110,6 +105,7 @@ void TracksView::addVideoTrack()
     m_cursorLine->setHeight( m_layout->contentsRect().height() );
     m_scene->invalidate(); // Redraw the background
     m_numVideoTrack++;
+    emit videoTrackAdded( track );
 }
 
 void TracksView::addAudioTrack()
@@ -121,28 +117,17 @@ void TracksView::addAudioTrack()
     m_cursorLine->setHeight( m_layout->contentsRect().height() );
     m_scene->invalidate(); // Redraw the background
     m_numAudioTrack++;
+    emit audioTrackAdded( track );
 }
 
 void TracksView::clear()
 {
-    QList<QGraphicsLayoutItem*> clearlist;
+    m_layout->removeItem( m_separator );
 
-    // Collect the list of tracks
-    for ( int i = 0; i < m_layout->count(); ++i )
-    {
-        QGraphicsLayoutItem* li = m_layout->itemAt( i );
-        QGraphicsItem* gi = li->graphicsItem();
-        GraphicsTrack* track = qgraphicsitem_cast<GraphicsTrack*>( gi );
-        if ( !track ) continue;
-        clearlist.append( li );
-    }
+    while ( m_layout->count() > 0 )
+        delete m_layout->itemAt( 0 );
 
-    // Remove collected tracks
-    for ( int i = 0; i < clearlist.size(); ++i )
-    {
-        m_layout->removeItem( clearlist.at( i ) );
-        delete clearlist.at( i );
-    }
+    m_layout->addItem( m_separator );
 
     m_numAudioTrack = 0;
     m_numVideoTrack = 0;
@@ -184,10 +169,11 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, qint64 start )
     GraphicsMovieItem* item = new GraphicsMovieItem( clip );
     item->setHeight( tracksHeight() );
     item->setParentItem( getTrack( track ) );
+    item->setPos( start, 0 );
     item->oldTrackNumber = track;
+    item->oldPosition = start;
     connect( item, SIGNAL( split(GraphicsMovieItem*,qint64) ),
              this, SLOT( split(GraphicsMovieItem*,qint64) ) );
-    item->oldPosition = start;
     moveMediaItem( item, track, start );
 
     updateDuration();
@@ -354,17 +340,12 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, 
 
 void TracksView::removeMediaItem( const QUuid& uuid, unsigned int track )
 {
-    Q_UNUSED( track );
-    //TODO When a clever API will be done to manage the tracks, we could
-    // use the "track" argument to limit the search into the track instead
-    // of the full scene.
+    QList<QGraphicsItem*> trackItems = getTrack( track )->childItems();;
 
-    QList<QGraphicsItem*> sceneItems = m_scene->items();
-
-    for ( int i = 0; i < sceneItems.size(); ++i )
+    for ( int i = 0; i < trackItems.size(); ++i )
     {
         AbstractGraphicsMediaItem* item =
-                dynamic_cast<AbstractGraphicsMediaItem*>( sceneItems.at( i ) );
+                dynamic_cast<AbstractGraphicsMediaItem*>( trackItems.at( i ) );
         if ( !item || item->uuid() != uuid ) continue;
         removeMediaItem( item );
     }
@@ -421,12 +402,12 @@ void TracksView::dropEvent( QDropEvent* event )
         m_dragItem->oldTrackNumber = m_dragItem->trackNumber();
         m_dragItem->oldPosition = (qint64)mappedXPos;
 
-        Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
+        Commands::trigger( new Commands::MainWorkflow::AddClip( m_renderer,
                                                                 m_dragItem->clip(),
                                                                 m_dragItem->trackNumber(),
                                                                 (qint64)mappedXPos,
                                                                 MainWorkflow::VideoTrack ) );
-        Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
+        Commands::trigger( new Commands::MainWorkflow::AddClip( m_renderer,
                                                                 m_dragItem->clip(),
                                                                 m_dragItem->trackNumber(),
                                                                 (qint64)mappedXPos,
@@ -631,7 +612,7 @@ QList<AbstractGraphicsMediaItem*> TracksView::mediaItems( const QPoint& pos )
 void TracksView::setCursorPos( qint64 pos )
 {
     if ( pos < 0 ) pos = 0;
-    m_cursorLine->setCursorPos( pos );
+    m_cursorLine->frameChanged( pos, MainWorkflow::TimelineCursor );
 }
 
 qint64 TracksView::cursorPos()
@@ -685,14 +666,12 @@ void TracksView::updateDuration()
 
     m_projectDuration = projectDuration;
 
-    // Hack: make sure the tracks type appears correctly
-    int minimumWidth = qMax( m_projectDuration, 2000 );
+    // Make sure that the width is not below zero
+    int minimumWidth = qMax( m_projectDuration, 0 );
 
     // PreferredWidth not working ?
     m_layout->setMinimumWidth( minimumWidth );
     m_layout->setMaximumWidth( minimumWidth );
-
-    setSceneRect( m_layout->contentsRect() );
 
     setSceneRect( m_layout->contentsRect() );
 
@@ -719,7 +698,7 @@ void TracksView::split( GraphicsMovieItem* item, qint64 frame )
     Q_ASSERT( newclip );
 
     addMediaItem( newclip, item->trackNumber(), item->pos().x() + frame );
-    Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
+    Commands::trigger( new Commands::MainWorkflow::AddClip( m_renderer,
                                                             newclip,
                                                             item->trackNumber(),
                                                             item->pos().x() + frame,

@@ -49,26 +49,6 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="KeywordSetLabel">
-     <property name="text">
-      <string>Keyword Set</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QComboBox" name="KeywordSetComboBox"/>
-   </item>
-   <item row="3" column="0" colspan="2">
-    <layout class="QGridLayout" name="buttonGridLayout" rowstretch="0">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetDefaultConstraint</enum>
-     </property>
-     <property name="spacing">
-      <number>6</number>
-     </property>
-    </layout>
-   </item>
   </layout>
  </widget>
  <resources/>

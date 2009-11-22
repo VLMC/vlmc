@@ -37,6 +37,7 @@
 #include "MainWorkflow.h"
 #include "TrackWorkflow.h"
 #include "AbstractGraphicsMediaItem.h"
+#include "WorkflowRenderer.h"
 
 class GraphicsMovieItem;
 class TracksScene;
@@ -46,7 +47,7 @@ class TracksView : public QGraphicsView
     Q_OBJECT
 
 public:
-    TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidget* parent = 0 );
+    TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, WorkflowRenderer* renderer, QWidget* parent = 0 );
     void setDuration( int duration );
     int duration() const { return m_projectDuration; }
     int tracksHeight() const { return m_tracksHeight; }
@@ -103,6 +104,7 @@ private:
     GraphicsMovieItem*      m_dragItem;
     QGraphicsWidget*        m_separator;
     ToolButtons             m_tool;
+    WorkflowRenderer*       m_renderer;
 
     // Mouse actions on Medias
     bool                    m_actionMove;
@@ -114,6 +116,8 @@ signals:
     void                    zoomIn();
     void                    zoomOut();
     void                    durationChanged( int duration );
+    void                    videoTrackAdded( GraphicsTrack* );
+    void                    audioTrackAdded( GraphicsTrack* );
 
 friend class Timeline;
 friend class TracksScene;

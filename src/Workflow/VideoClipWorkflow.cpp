@@ -22,6 +22,8 @@
 
 #include "VideoClipWorkflow.h"
 
+#define IMAGE_DURATION  10000
+
 VideoClipWorkflow::VideoClipWorkflow( Clip* clip ) : ClipWorkflow( clip )
 {
     m_buffer = new LightVideoFrame( VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes );
@@ -44,6 +46,13 @@ void            VideoClipWorkflow::initVlcOutput()
     m_vlcMedia->setVideoUnlockCallback( reinterpret_cast<void*>( getUnlockCallback() ) );
     m_vlcMedia->addOption( ":sout-transcode-vcodec=RV24" );
     m_vlcMedia->addOption( ":sout-transcode-acodec=s16l" );
+    if ( m_clip->getParent()->getFileType() == Media::Image )
+    {
+        sprintf( buffer, ":fake-duration=%d", IMAGE_DURATION );
+        m_vlcMedia->addOption( buffer );
+        sprintf( buffer, ":fake-fps=%f", m_clip->getParent()->getFps() );
+        m_vlcMedia->addOption( buffer );
+    }
 //    m_vlcMedia->addOption( ":no-sout-keep" );
 
     if ( m_fullSpeedRender == true )
@@ -59,6 +68,7 @@ void            VideoClipWorkflow::initVlcOutput()
     sprintf( buffer, ":sout-transcode-height=%i", VIDEOHEIGHT );
     m_vlcMedia->addOption( buffer );
 
+    //Forced output fps
     sprintf( buffer, ":sout-transcode-fps=%f", (float)FPS );
     m_vlcMedia->addOption( buffer );
 
@@ -90,7 +100,6 @@ void    VideoClipWorkflow::lock( VideoClipWorkflow* cw, void** pp_ret, int size 
     Q_UNUSED( size );
     cw->m_renderLock->lock();
     *pp_ret = (*(cw->m_buffer))->frame.pixels;
-//    qDebug() << '[' << (void*)cw << "] ClipWorkflow::lock";
 }
 
 void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int width, int height, int bpp, int size )

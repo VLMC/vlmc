@@ -145,11 +145,6 @@ class   ClipWorkflow : public QObject
          */
         QReadWriteLock*         getStateLock();
 
-        /**
-         *  Put back the ClipWorkflow in its initial state.
-         */
-        void                    reinitialize();
-
         void                    unpause();
 
         void                    waitForCompleteInit();
@@ -166,10 +161,9 @@ class   ClipWorkflow : public QObject
     private:
         void                    setState( State state );
         void                    checkSynchronisation( State newState );
+        void                    adjustBegin();
 
     private:
-        Clip*                   m_clip;
-
         LibVLCpp::MediaPlayer*  m_mediaPlayer;
 
         State                   m_requiredState;
@@ -191,6 +185,7 @@ class   ClipWorkflow : public QObject
         bool                    m_initFlag;
 
     protected:
+        Clip*                   m_clip;
         QMutex*                 m_renderLock;
         QReadWriteLock*         m_stateLock;
         QMutex*                 m_condMutex;

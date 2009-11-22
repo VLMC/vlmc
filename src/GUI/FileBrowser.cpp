@@ -36,7 +36,7 @@ FileBrowser::FileBrowser( QWidget* parent ) : QWidget( parent )
     QStringList filters;
     filters << "*.mp3" << "*.oga" << "*.flac" << "*.aac" << "*.wav";
     filters << "*.mov" << "*.avi" << "*.mkv" << "*.mpg" << "*.mpeg" << "*.wmv" << "*.mp4";
-    filters << "*.gif" << "*.png" << "*.jpg";
+    filters << "*.gif" << "*.png" << "*.jpg" << "*.jpeg";
 
     m_FilesModel->setFilter( QDir::AllDirs | QDir::Files | QDir::Readable | QDir::NoDotAndDotDot );
     m_FilesModel->sort( 2, Qt::AscendingOrder );
