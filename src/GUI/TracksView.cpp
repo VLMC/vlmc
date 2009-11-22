@@ -407,11 +407,6 @@ void TracksView::dropEvent( QDropEvent* event )
                                                                 m_dragItem->trackNumber(),
                                                                 (qint64)mappedXPos,
                                                                 MainWorkflow::VideoTrack ) );
-        Commands::trigger( new Commands::MainWorkflow::AddClip( m_renderer,
-                                                                m_dragItem->clip(),
-                                                                m_dragItem->trackNumber(),
-                                                                (qint64)mappedXPos,
-                                                                MainWorkflow::AudioTrack ) );
         m_dragItem = NULL;
     }
 }
