@@ -30,6 +30,7 @@
 #include "TracksView.h"
 #include "Library.h"
 #include "GraphicsMovieItem.h"
+#include "GraphicsAudioItem.h"
 #include "GraphicsCursorItem.h"
 #include "Commands.h"
 #include "GraphicsTrack.hpp"
@@ -45,7 +46,8 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, Workf
 
     m_numAudioTrack = 0;
     m_numVideoTrack = 0;
-    m_dragItem = NULL;
+    m_dragVideoItem = NULL;
+    m_dragAudioItem = NULL;
     m_actionMove = false;
     m_actionRelativeX = -1;
     m_actionItem = NULL;
@@ -189,21 +191,36 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
     if ( !clip ) return;
 
     //FIXME: this leaks, but at least we have independant clips.
-    clip = new Clip( clip );
+    Clip* audioClip = new Clip( clip );
+    Clip* videoClip = new Clip( clip );
 
-    if ( m_dragItem ) delete m_dragItem;
-    m_dragItem = new GraphicsMovieItem( clip );
-    m_dragItem->setHeight( tracksHeight() );
-    m_dragItem->setParentItem( m_layout->itemAt( 0 )->graphicsItem() );
-    connect( m_dragItem, SIGNAL( split(GraphicsMovieItem*,qint64) ),
+    // Remove old items (if any)
+    if ( m_dragAudioItem ) delete m_dragAudioItem;
+    if ( m_dragVideoItem ) delete m_dragVideoItem;
+
+    // Create the items
+    m_dragAudioItem = new GraphicsAudioItem( audioClip );
+    m_dragAudioItem->setHeight( tracksHeight() );
+    m_dragAudioItem->setParentItem( getTrack( m_dragAudioItem->mediaType(), 0 ) );
+
+    m_dragVideoItem = new GraphicsMovieItem( videoClip );
+    m_dragVideoItem->setHeight( tracksHeight() );
+    m_dragVideoItem->setParentItem( getTrack( m_dragVideoItem->mediaType(), 0 ) );
+
+    // Group the items together
+    m_dragVideoItem->group( m_dragAudioItem );
+
+    //TODO connect the split signal to the audio clip
+    connect( m_dragVideoItem, SIGNAL( split(GraphicsMovieItem*,qint64) ),
              this, SLOT( split(GraphicsMovieItem*,qint64) ) );
-    moveMediaItem( m_dragItem, event->pos() );
+
+    moveMediaItem( m_dragVideoItem, event->pos() );
 }
 
 void TracksView::dragMoveEvent( QDragMoveEvent* event )
 {
-    if ( !m_dragItem ) return;
-    moveMediaItem( m_dragItem, event->pos() );
+    if ( !m_dragVideoItem ) return;
+    moveMediaItem( m_dragVideoItem, event->pos() );
 }
 
 void TracksView::moveMediaItem( const QUuid& uuid, unsigned int track, qint64 time )
@@ -248,13 +265,15 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position
 
 void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, qint64 time )
 {
-    if ( track > m_numVideoTrack - 1)
-        track = m_numVideoTrack - 1;
+    if ( item->mediaType() == MainWorkflow::VideoTrack )
+        track = qMin( track, m_numVideoTrack - 1 );
+    else if ( item->mediaType() == MainWorkflow::AudioTrack )
+        track = qMin( track, m_numAudioTrack - 1 );
 
     QPointF oldPos = item->pos();
     QGraphicsItem* oldParent = item->parentItem();
     // Check for vertical collisions
-    item->setParentItem( getTrack( MainWorkflow::VideoTrack, track ) );
+    item->setParentItem( getTrack( item->mediaType(), track ) );
     bool continueSearch = true;
     while ( continueSearch )
     {
@@ -277,7 +296,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, 
                     }
                     track -= 1;
                     Q_ASSERT( m_layout->itemAt( track )->graphicsItem() != NULL );
-                    item->setParentItem( getTrack( MainWorkflow::VideoTrack, track ) );
+                    item->setParentItem( getTrack( item->mediaType(), track ) );
                 }
                 else if ( currentItem->trackNumber() < track )
                 {
@@ -289,7 +308,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, 
                     }
                     track += 1;
                     Q_ASSERT( m_layout->itemAt( track )->graphicsItem() != NULL );
-                    item->setParentItem( getTrack( MainWorkflow::VideoTrack, track ) );
+                    item->setParentItem( getTrack( item->mediaType(), track ) );
                 }
             }
         }
@@ -336,6 +355,15 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, 
             }
         }
     }
+
+    // Synchronise the position with the linked item
+    // if any.
+    AbstractGraphicsMediaItem* groupItem;
+    if ( ( groupItem = item->groupItem() ) )
+    {
+        groupItem->setParentItem( getTrack( groupItem->mediaType(), item->trackNumber() ) );
+        groupItem->setPos( item->pos() );
+    }
 }
 
 void TracksView::removeMediaItem( const QUuid& uuid, unsigned int track )
@@ -381,33 +409,64 @@ void TracksView::removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items
 void TracksView::dragLeaveEvent( QDragLeaveEvent* event )
 {
     Q_UNUSED( event )
-    if ( m_dragItem )
+    bool updateDurationNeeded = false;
+    if ( m_dragAudioItem || m_dragVideoItem )
+        updateDurationNeeded = true;
+
+    if ( m_dragAudioItem )
     {
-        delete m_dragItem;
-        m_dragItem = NULL;
-        updateDuration();
+        delete m_dragAudioItem;
+        m_dragAudioItem = NULL;
     }
+    if ( m_dragVideoItem )
+    {
+        delete m_dragVideoItem;
+        m_dragVideoItem = NULL;
+    }
+
+    if ( updateDurationNeeded )
+        updateDuration();
 }
 
 void TracksView::dropEvent( QDropEvent* event )
 {
-    if ( m_dragItem )
+    qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );;
+
+    if ( m_dragAudioItem )
     {
         updateDuration();
-        if ( m_layout->itemAt( 0 )->graphicsItem()->childItems().count() > 0 )
+        if ( getTrack( MainWorkflow::AudioTrack, m_numAudioTrack - 1 )->childItems().count() > 0 )
+            addAudioTrack();
+        event->acceptProposedAction();
+
+        m_dragAudioItem->oldTrackNumber = m_dragAudioItem->trackNumber();
+        m_dragAudioItem->oldPosition = (qint64)mappedXPos;
+
+        Commands::trigger( new Commands::MainWorkflow::AddClip( m_renderer,
+                                                                m_dragAudioItem->clip(),
+                                                                m_dragAudioItem->trackNumber(),
+                                                                (qint64)mappedXPos,
+                                                                MainWorkflow::AudioTrack ) );
+
+        m_dragAudioItem = NULL;
+    }
+
+    if ( m_dragVideoItem )
+    {
+        updateDuration();
+        if ( getTrack( MainWorkflow::VideoTrack, m_numVideoTrack - 1 )->childItems().count() > 0 )
             addVideoTrack();
         event->acceptProposedAction();
 
-        qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );
-        m_dragItem->oldTrackNumber = m_dragItem->trackNumber();
-        m_dragItem->oldPosition = (qint64)mappedXPos;
+        m_dragVideoItem->oldTrackNumber = m_dragVideoItem->trackNumber();
+        m_dragVideoItem->oldPosition = (qint64)mappedXPos;
 
         Commands::trigger( new Commands::MainWorkflow::AddClip( m_renderer,
-                                                                m_dragItem->clip(),
-                                                                m_dragItem->trackNumber(),
+                                                                m_dragVideoItem->clip(),
+                                                                m_dragVideoItem->trackNumber(),
                                                                 (qint64)mappedXPos,
                                                                 MainWorkflow::VideoTrack ) );
-        m_dragItem = NULL;
+        m_dragVideoItem = NULL;
     }
 }
 
@@ -543,29 +602,32 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
 {
     if ( m_actionMove && m_actionMoveExecuted )
     {
+        Q_ASSERT( m_actionItem );
         m_actionItem->setOpacity( 1.0 );
 
-        GraphicsMovieItem* movieItem = qgraphicsitem_cast<GraphicsMovieItem*>( m_actionItem );
-        if ( movieItem )
-        {
-            updateDuration();
-            if ( m_layout->itemAt( 0 )->graphicsItem()->childItems().count() > 0 )
-                addVideoTrack();
-            Commands::trigger( new Commands::MainWorkflow::MoveClip( m_mainWorkflow,
-                                                                     movieItem->clip()->getUuid(),
-                                                                     movieItem->oldTrackNumber,
-                                                                     movieItem->oldPosition,
-                                                                     movieItem->trackNumber(),
-                                                                     (qint64)movieItem->pos().x(),
-                                                                     MainWorkflow::VideoTrack ) );
-            movieItem->oldTrackNumber = movieItem->trackNumber();
-            movieItem->oldPosition = movieItem->pos().x();
-            m_actionRelativeX = -1;
-            m_actionItem = NULL;
-        }
+        updateDuration();
+
+        if ( getTrack( MainWorkflow::VideoTrack, m_numVideoTrack - 1 )->childItems().count() > 0 )
+            addVideoTrack();
+        if ( getTrack( MainWorkflow::AudioTrack, m_numAudioTrack - 1 )->childItems().count() > 0 )
+            addAudioTrack();
+
+        Commands::trigger( new Commands::MainWorkflow::MoveClip( m_mainWorkflow,
+                                                                 m_actionItem->clip()->getUuid(),
+                                                                 m_actionItem->oldTrackNumber,
+                                                                 m_actionItem->oldPosition,
+                                                                 m_actionItem->trackNumber(),
+                                                                 (qint64)m_actionItem->pos().x(),
+                                                                 m_actionItem->mediaType() ) );
+
+        m_actionItem->oldTrackNumber = m_actionItem->trackNumber();
+        m_actionItem->oldPosition = m_actionItem->pos().x();
+        m_actionRelativeX = -1;
+        m_actionItem = NULL;
     }
 
     m_actionMove = false;
+    m_actionMoveExecuted = false;
 
     setDragMode( QGraphicsView::NoDrag );
     QGraphicsView::mouseReleaseEvent( event );

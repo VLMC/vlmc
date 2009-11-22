@@ -24,6 +24,7 @@
 #include "TracksScene.h"
 #include "Commands.h"
 #include "GraphicsMovieItem.h"
+#include "GraphicsAudioItem.h"
 #include "Timeline.h"
 
 TracksScene::TracksScene( QObject* parent ) : QGraphicsScene( parent )

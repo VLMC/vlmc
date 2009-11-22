@@ -40,6 +40,7 @@
 #include "WorkflowRenderer.h"
 
 class GraphicsMovieItem;
+class GraphicsAudioItem;
 class TracksScene;
 
 class TracksView : public QGraphicsView
@@ -101,7 +102,8 @@ private:
     quint32                 m_numVideoTrack;
     quint32                 m_numAudioTrack;
     MainWorkflow*           m_mainWorkflow;
-    GraphicsMovieItem*      m_dragItem;
+    GraphicsMovieItem*      m_dragVideoItem;
+    GraphicsAudioItem*      m_dragAudioItem;
     QGraphicsWidget*        m_separator;
     ToolButtons             m_tool;
     WorkflowRenderer*       m_renderer;
