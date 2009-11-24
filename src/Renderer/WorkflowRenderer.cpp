@@ -138,7 +138,7 @@ void        WorkflowRenderer::checkActions()
                 m_mainWorkflow->removeClip( act->uuid, act->trackId, act->trackType );
                 break ;
             case    ResizeClip:
-                resizeClip( act->clip, act->newBegin, act->newEnd );
+                act->clip->setBoundaries( act->newBegin, act->newEnd );
                 break ;
             default:
                 qDebug() << "Unhandled action:" << act->action;
@@ -355,7 +355,17 @@ Clip*       WorkflowRenderer::split( Clip* toSplit, uint32_t trackId, qint64 new
 
 void    WorkflowRenderer::resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd )
 {
-    clip->setBoundaries( newBegin, newEnd );
+    if ( m_isRendering == true )
+    {
+        StackedAction*  act = new StackedAction( ResizeClip );
+        act->clip = clip;
+        act->newBegin = newBegin;
+        act->newEnd = newEnd;
+        QMutexLocker    lock( m_actionsMutex );
+        m_actions.push( act );
+    }
+    else
+        clip->setBoundaries( newBegin, newEnd );
 }
 
 /////////////////////////////////////////////////////////////////////
