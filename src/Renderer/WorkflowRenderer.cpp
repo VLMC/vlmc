@@ -353,6 +353,34 @@ Clip*       WorkflowRenderer::split( Clip* toSplit, uint32_t trackId, qint64 new
     return newClip;
 }
 
+void    WorkflowRenderer::unsplit( Clip* origin, Clip* splitted, uint32_t trackId, qint64 oldEnd, MainWorkflow::TrackType trackType )
+{
+    if ( m_isRendering == true )
+    {
+        //removing clip
+        StackedAction*  act = new StackedAction( RemoveClip );
+        act->uuid = splitted->getUuid();
+        act->trackId = trackId;
+        act->trackType = trackType;
+
+        //resizing it
+        StackedAction*  act2 = new StackedAction( ResizeClip );
+        act2->clip = origin;
+        act2->newBegin = splitted->getBegin();
+        act2->newEnd = oldEnd;
+
+        //Push the actions onto the action stack
+        QMutexLocker    lock( m_actionsMutex );
+        m_actions.push( act );
+        m_actions.push( act2 );
+    }
+    else
+    {
+        delete m_mainWorkflow->removeClip( splitted->getUuid(), trackId, trackType );
+        origin->setEnd( oldEnd );
+    }
+}
+
 void    WorkflowRenderer::resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd )
 {
     if ( m_isRendering == true )

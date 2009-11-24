@@ -703,5 +703,7 @@ void TracksView::split( GraphicsMovieItem* item, qint64 frame )
     //item->pos().x() is the position of the splitted clip (in frame)
     //therefore, the position of the newly created clip is
     //the splitted clip pos + the splitting point (ie pos().x() + frame)
-    m_renderer->split( item->clip(), item->trackNumber(), item->pos().x() + frame, frame, MainWorkflow::VideoTrack );
+//    m_renderer->split( item->clip(), item->trackNumber(), item->pos().x() + frame, frame, MainWorkflow::VideoTrack );
+    Commands::trigger( new Commands::MainWorkflow::SplitClip( m_renderer, item->clip(), item->trackNumber(),
+                                                              item->pos().x() + frame, frame, MainWorkflow::VideoTrack ) );
 }

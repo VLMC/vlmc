@@ -70,6 +70,7 @@ class   WorkflowRenderer : public GenericRenderer
         void                addClip( Clip* clip, uint32_t trackId, qint64 startingPos, MainWorkflow::TrackType trackType );
         void                removeClip( const QUuid& uuid, uint32_t trackId, MainWorkflow::TrackType trackType );
         Clip*               split( Clip* toSplit, uint32_t trackId, qint64 newClipPos, qint64 newClipBegin, MainWorkflow::TrackType trackType );
+        void                unsplit( Clip* origin, Clip* splitted, uint32_t trackId, qint64 oldEnd, MainWorkflow::TrackType trackType );
         void                resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd );
 
         static void*        lock( void* datas );

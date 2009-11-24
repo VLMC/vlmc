@@ -119,3 +119,31 @@ void Commands::MainWorkflow::ResizeClip::undo()
     m_clip->setBegin( m_oldBegin );
     m_clip->setEnd( m_oldEnd );
 }
+
+Commands::MainWorkflow::SplitClip::SplitClip( WorkflowRenderer* renderer, Clip* toSplit, uint32_t trackId,
+                           qint64 newClipPos, qint64 newClipBegin, ::MainWorkflow::TrackType trackType ) :
+    m_renderer( renderer ),
+    m_toSplit( toSplit ),
+    m_newClip( NULL ),
+    m_trackId( trackId ),
+    m_newClipPos( newClipPos ),
+    m_newClipBegin( newClipBegin ),
+    m_clipOldEnd( toSplit->getEnd() ),
+    m_trackType( trackType )
+{
+    setText( QObject::tr("Splitting clip") );
+}
+
+void    Commands::MainWorkflow::SplitClip::redo()
+{
+    Q_ASSERT( m_newClip == NULL );
+
+    m_clipOldEnd = m_toSplit->getEnd();
+    m_newClip = m_renderer->split( m_toSplit, m_trackId, m_newClipPos, m_newClipBegin, m_trackType );
+}
+
+void    Commands::MainWorkflow::SplitClip::undo()
+{
+    m_renderer->unsplit( m_toSplit, m_newClip, m_trackId, m_clipOldEnd, m_trackType );
+    m_newClip = NULL;
+}
