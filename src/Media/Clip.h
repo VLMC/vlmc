@@ -57,6 +57,7 @@ class   Clip : public QObject
 
         void                setBegin( qint64 begin );
         void                setEnd( qint64 end );
+        void                setBoundaries( qint64 newBegin, qint64 newEnd );
 
         /**
             \return         Returns the clip length in frame.
@@ -88,14 +89,6 @@ class   Clip : public QObject
 
         const QString&      getNotes() const;
         void                setNotes( const QString& notes );
-
-        /**
-         *  \brief  Split this clip in two parts.
-         *  \param  newEnd  The new end for this Clip. This will be the beginning of the
-         *                  newly created Clip.
-         *  \returns A new Clip starting at newEnd.
-         */
-        Clip*               split( qint64 newEndFrame );
 
     private:
         void        computeLength();

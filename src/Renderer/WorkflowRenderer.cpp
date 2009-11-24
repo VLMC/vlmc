@@ -137,6 +137,9 @@ void        WorkflowRenderer::checkActions()
             case    RemoveClip:
                 m_mainWorkflow->removeClip( act->uuid, act->trackId, act->trackType );
                 break ;
+            case    ResizeClip:
+                resizeClip( act->clip, act->newBegin, act->newEnd );
+                break ;
             default:
                 qDebug() << "Unhandled action:" << act->action;
                 break ;
@@ -316,6 +319,45 @@ void        WorkflowRenderer::rulerCursorChanged( qint64 newFrame )
     m_mainWorkflow->setCurrentFrame( newFrame, MainWorkflow::RulerCursor );
 }
 
+Clip*       WorkflowRenderer::split( Clip* toSplit, uint32_t trackId, qint64 newClipPos, qint64 newClipBegin, MainWorkflow::TrackType trackType )
+{
+    Clip*   newClip = new Clip( toSplit, newClipBegin, toSplit->getEnd() );
+
+    if ( m_isRendering == true )
+    {
+        //adding clip
+        //We can NOT call addClip, as it would lock the action lock and then release it,
+        //thus potentially breaking the synchrone way of doing this
+        StackedAction*  act = new StackedAction( AddClip );
+        act->clip = newClip;
+        act->trackId = trackId;
+        act->startingPos = newClipPos;
+        act->trackType = trackType;
+
+        //resizing it
+        StackedAction*  act2 = new StackedAction( ResizeClip );
+        act2->clip = toSplit;
+        act2->newBegin = toSplit->getBegin();
+        act2->newEnd = newClipBegin;
+
+        //Push the actions onto the action stack
+        QMutexLocker    lock( m_actionsMutex );
+        m_actions.push( act );
+        m_actions.push( act2 );
+    }
+    else
+    {
+        toSplit->setEnd( newClipBegin );
+        m_mainWorkflow->addClip( newClip, trackId, newClipPos, trackType );
+    }
+    return newClip;
+}
+
+void    WorkflowRenderer::resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd )
+{
+    clip->setBoundaries( newBegin, newEnd );
+}
+
 /////////////////////////////////////////////////////////////////////
 /////SLOTS :
 /////////////////////////////////////////////////////////////////////
@@ -352,4 +394,3 @@ void        WorkflowRenderer::__videoStopped()
 {
     emit endReached();
 }
-

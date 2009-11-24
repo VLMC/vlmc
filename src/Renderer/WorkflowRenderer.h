@@ -42,6 +42,7 @@ class   WorkflowRenderer : public GenericRenderer
             Pause,
             AddClip,
             RemoveClip,
+            ResizeClip,
             //Unpause,
         };
         struct  StackedAction
@@ -53,6 +54,8 @@ class   WorkflowRenderer : public GenericRenderer
             MainWorkflow::TrackType     trackType;
             Clip*                       clip;
             qint64                      startingPos;
+            qint64                      newBegin;
+            qint64                      newEnd;
         };
         WorkflowRenderer();
         ~WorkflowRenderer();
@@ -64,8 +67,10 @@ class   WorkflowRenderer : public GenericRenderer
         virtual qint64      getLengthMs() const;
         virtual qint64      getCurrentFrame() const;
         virtual float       getFps() const;
-        void                addClip( Clip* clip, uint32_t trackNumber, qint64 startingPos, MainWorkflow::TrackType trackType );
+        void                addClip( Clip* clip, uint32_t trackId, qint64 startingPos, MainWorkflow::TrackType trackType );
         void                removeClip( const QUuid& uuid, uint32_t trackId, MainWorkflow::TrackType trackType );
+        Clip*               split( Clip* toSplit, uint32_t trackId, qint64 newClipPos, qint64 newClipBegin, MainWorkflow::TrackType trackType );
+        void                resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd );
 
         static void*        lock( void* datas );
         static void*        lockAudio( void* datas );
