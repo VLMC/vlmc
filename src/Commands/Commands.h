@@ -87,7 +87,6 @@ namespace Commands
         {
             public:
                 RemoveClips( WorkflowRenderer* renderer, const QVector<ClipActionInfo>& clipsInfos );
-                ~RemoveClips();
                 virtual void redo();
                 virtual void undo();
 

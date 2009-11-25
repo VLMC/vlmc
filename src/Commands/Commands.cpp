@@ -88,13 +88,6 @@ Commands::MainWorkflow::RemoveClips::RemoveClips( WorkflowRenderer* renderer, co
     setText( QObject::tr( "Remove clip" ) );
 }
 
-Commands::MainWorkflow::RemoveClips::~RemoveClips()
-{
-    int size = m_clips.size();
-    for (int i = 0; i < size; ++i )
-        delete m_clips[i].clip;
-}
-
 void Commands::MainWorkflow::RemoveClips::redo()
 {
     for (int i = 0; i < m_clips.size(); ++i )
