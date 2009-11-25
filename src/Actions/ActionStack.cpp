@@ -50,4 +50,5 @@ void    Stack::addAction( StackedAction* act )
         else
             ++it;
     }
+    push_back( act );
 }
