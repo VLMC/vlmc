@@ -75,8 +75,6 @@ class   WorkflowRenderer : public GenericRenderer
         unsigned char*	    m_renderAudioSample;
         QStack<StackedAction*>     m_actions;
         QMutex*             m_actionsMutex;
-        bool                m_pauseAsked;
-        bool                m_unpauseAsked;
         QMutex*             m_condMutex;
         QWaitCondition*     m_waitCond;
 

@@ -120,6 +120,7 @@ protected:
      *  \brief  This flag allows us to know if the render is paused
      *          or not, without using libvlc, especially for the render preview.
      *  If the video is stopped, then this flag will be equal to false
+     *  \warning    This is not thread safe.
      */
     bool                            m_paused;
 

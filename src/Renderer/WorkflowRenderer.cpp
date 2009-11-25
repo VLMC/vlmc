@@ -30,9 +30,7 @@
 
 WorkflowRenderer::WorkflowRenderer() :
             m_mainWorkflow( MainWorkflow::getInstance() ),
-            m_stopping( false ),
-            m_pauseAsked( false ),
-            m_unpauseAsked( false )
+            m_stopping( false )
 {
     char        buffer[64];
 
@@ -128,13 +126,6 @@ void        WorkflowRenderer::checkActions()
     {
         StackedAction*   act = m_actions.top();
         m_actions.pop();
-//            case    Pause:
-//                if ( m_pauseAsked == true )
-//                    continue ;
-//                m_pauseAsked = true;
-//                pauseMainWorkflow();
-//                //This will also pause the MainWorkflow via a signal/slot
-//                break ;
         act->execute();
         delete act;
     }
@@ -190,7 +181,6 @@ void        WorkflowRenderer::unpauseMainWorkflow()
 void        WorkflowRenderer::mainWorkflowPaused()
 {
     m_paused = true;
-    m_pauseAsked = false;
     {
         QMutexLocker    lock( m_condMutex );
     }
@@ -201,7 +191,6 @@ void        WorkflowRenderer::mainWorkflowPaused()
 void        WorkflowRenderer::mainWorkflowUnpaused()
 {
     m_paused = false;
-    m_unpauseAsked = false;
     emit playing();
 }
 
@@ -222,7 +211,6 @@ void        WorkflowRenderer::internalPlayPause( bool forcePause )
         {
             if ( m_paused == true )
             {
-                m_unpauseAsked = true;
                 unpauseMainWorkflow();
             }
         }
@@ -242,8 +230,6 @@ void        WorkflowRenderer::stop()
 {
     m_isRendering = false;
     m_paused = false;
-    m_pauseAsked = false;
-    m_unpauseAsked = false;
     m_stopping = true;
     m_mainWorkflow->cancelSynchronisation();
     m_mediaPlayer->stop();
@@ -379,13 +365,12 @@ void        WorkflowRenderer::__frameChanged( qint64 frame, MainWorkflow::FrameC
 
 void        WorkflowRenderer::__videoPaused()
 {
-    if ( m_pauseAsked == true )
-        pauseMainWorkflow();
+    pauseMainWorkflow();
 }
 
 void        WorkflowRenderer::__videoPlaying()
 {
-    if ( m_unpauseAsked == true )
+    if ( m_paused == true )
         unpauseMainWorkflow();
     else
     {
