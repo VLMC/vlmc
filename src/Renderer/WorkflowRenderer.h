@@ -30,6 +30,7 @@
 
 #include "Workflow/MainWorkflow.h"
 #include "GenericRenderer.h"
+#include "StackedAction.hpp"
 
 class   WorkflowRenderer : public GenericRenderer
 {
@@ -37,26 +38,6 @@ class   WorkflowRenderer : public GenericRenderer
     Q_DISABLE_COPY( WorkflowRenderer )
 
     public:
-        enum    Actions
-        {
-            Pause,
-            AddClip,
-            RemoveClip,
-            ResizeClip,
-            //Unpause,
-        };
-        struct  StackedAction
-        {
-            StackedAction( Actions act ) : action( act ), trackId( -1 ), clip( NULL ) {}
-            Actions                     action;
-            QUuid                       uuid;
-            uint32_t                    trackId;
-            MainWorkflow::TrackType     trackType;
-            Clip*                       clip;
-            qint64                      startingPos;
-            qint64                      newBegin;
-            qint64                      newEnd;
-        };
         WorkflowRenderer();
         ~WorkflowRenderer();
 
