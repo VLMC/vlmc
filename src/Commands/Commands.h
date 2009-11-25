@@ -52,6 +52,7 @@ namespace Commands
         {
             public:
                 AddClip( WorkflowRenderer* renderer, Clip* clip, unsigned int trackNumber, qint64 pos, ::MainWorkflow::TrackType trackType );
+                virtual ~AddClip();
                 virtual void    redo();
                 virtual void    undo();
             private:
@@ -86,6 +87,7 @@ namespace Commands
         {
             public:
                 RemoveClips( WorkflowRenderer* renderer, const QVector<ClipActionInfo>& clipsInfos );
+                ~RemoveClips();
                 virtual void redo();
                 virtual void undo();
 
