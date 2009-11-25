@@ -31,6 +31,7 @@
 #include "Workflow/MainWorkflow.h"
 #include "GenericRenderer.h"
 #include "StackedAction.hpp"
+#include "ActionStack.h"
 
 class   WorkflowRenderer : public GenericRenderer
 {
@@ -73,7 +74,7 @@ class   WorkflowRenderer : public GenericRenderer
     private:
         unsigned char*	    m_renderVideoFrame;
         unsigned char*	    m_renderAudioSample;
-        QStack<StackedAction*>     m_actions;
+        Action::Stack       m_actions;
         QMutex*             m_actionsMutex;
         QMutex*             m_condMutex;
         QWaitCondition*     m_waitCond;

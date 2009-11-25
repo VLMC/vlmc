@@ -32,6 +32,10 @@ class   StackedAction
     public:
         virtual ~StackedAction(){}
         virtual void    execute() = 0;
+        virtual bool    isOpposite( const StackedAction* ) const
+        {
+            return false;
+        }
 };
 
 class   WorkflowAction : public StackedAction

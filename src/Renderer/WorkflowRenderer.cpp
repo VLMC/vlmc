@@ -81,12 +81,6 @@ WorkflowRenderer::~WorkflowRenderer()
     delete m_media;
     delete m_condMutex;
     delete m_waitCond;
-    while ( m_actions.empty() == false )
-    {
-        StackedAction*  act = m_actions.top();
-        delete act;
-        m_actions.pop();
-    }
 }
 
 void*   WorkflowRenderer::lockAudio( void* datas )
@@ -220,7 +214,7 @@ void        WorkflowRenderer::internalPlayPause( bool forcePause )
             {
                 StackedAction*      act = new PauseAction( m_mainWorkflow );
                 QMutexLocker        lock( m_actionsMutex );
-                m_actions.push( act );
+                m_actions.addAction( act );
             }
         }
     }
@@ -257,7 +251,7 @@ void        WorkflowRenderer::removeClip( const QUuid& uuid, uint32_t trackId, M
     {
         StackedAction*  act = new RemoveClipAction( m_mainWorkflow, trackId, trackType, uuid );
         QMutexLocker    lock( m_actionsMutex );
-        m_actions.push( act );
+        m_actions.addAction( act );
     }
     else
         m_mainWorkflow->removeClip( uuid, trackId, trackType );
@@ -269,7 +263,7 @@ void        WorkflowRenderer::addClip( Clip* clip, uint32_t trackId, qint64 star
     {
         StackedAction*  act = new AddClipAction( m_mainWorkflow, trackId, trackType, clip, startingPos );
         QMutexLocker    lock( m_actionsMutex );
-        m_actions.push( act );
+        m_actions.addAction( act );
     }
     else
         m_mainWorkflow->addClip( clip, trackId, startingPos, trackType );
@@ -305,7 +299,7 @@ Clip*       WorkflowRenderer::split( Clip* toSplit, uint32_t trackId, qint64 new
 
         //Push the actions onto the action stack
         QMutexLocker    lock( m_actionsMutex );
-        m_actions.push( act );
+        m_actions.addAction( act );
         m_actions.push( act2 );
     }
     else
@@ -326,8 +320,8 @@ void    WorkflowRenderer::unsplit( Clip* origin, Clip* splitted, uint32_t trackI
         StackedAction*  act2 = new ResizeClipAction( origin, splitted->getBegin(), oldEnd );
         //Push the actions onto the action stack
         QMutexLocker    lock( m_actionsMutex );
-        m_actions.push( act );
-        m_actions.push( act2 );
+        m_actions.addAction( act );
+        m_actions.addAction( act2 );
     }
     else
     {
@@ -342,7 +336,7 @@ void    WorkflowRenderer::resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd
     {
         StackedAction*  act = new ResizeClipAction(  clip, newBegin, newEnd );
         QMutexLocker    lock( m_actionsMutex );
-        m_actions.push( act );
+        m_actions.addAction( act );
     }
     else
         clip->setBoundaries( newBegin, newEnd );

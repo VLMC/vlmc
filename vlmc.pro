@@ -86,7 +86,8 @@ SOURCES += src/main.cpp \
     src/GUI/TracksControls.cpp \
     src/GUI/widgets/TrackControls.cpp \
     src/GUI/wizard/ProjectWizard.cpp \
-    src/GUI/wizard/CustomWizardPage.cpp
+    src/GUI/wizard/CustomWizardPage.cpp \
+    src/Actions/ActionStack.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -211,6 +212,7 @@ INCLUDEPATH += src/LibVLCpp \
     src/EffectsEngine \
     src/Configuration \
     src/EffectsEngine \
+    src/Actions \
     src
 
 # QMAKE_CFLAGS+=-pg
