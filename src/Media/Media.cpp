@@ -28,6 +28,7 @@
 
 #include <QtDebug>
 #include "Media.h"
+#include "MetaDataManager.h"
 
 QPixmap*        Media::defaultSnapshot = NULL;
 const QString   Media::VideoExtensions = "*.mov *.avi *.mkv *.mpg *.mpeg *.wmv *.mp4";
@@ -231,6 +232,7 @@ void            Media::emitSnapshotComputed()
     if ( m_metadataState == ParsedWithoutSnapshot )
         m_metadataState = ParsedWithSnapshot;
     emit snapshotComputed( this );
+    disconnect( this, SIGNAL( snapshotComputed( Media* ) ), MetaDataManager::getInstance(), SLOT( checkMediasToCompute() ) );
 }
 
 Media::InputType    Media::getInputType() const

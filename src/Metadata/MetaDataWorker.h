@@ -38,10 +38,16 @@ class MetaDataWorker : public QObject
     Q_DISABLE_COPY( MetaDataWorker )
 
     public:
-        MetaDataWorker( Media* media );
+        enum MetaDataType
+        {
+            MetaData,
+            Snapshot
+        };
+
+    public:
+        MetaDataWorker( LibVLCpp::MediaPlayer* mediaPlayer, Media* media, MetaDataType type );
         ~MetaDataWorker();
         void                        compute();
-        void                        setMediaValidity( bool validity );
 
     private:
         void                        computeVideoMetaData();
@@ -58,22 +64,21 @@ class MetaDataWorker : public QObject
 
     private:
         void                        getMetaData();
-        void                        renderSnapshotAsync();
 
     private:
         LibVLCpp::MediaPlayer*      m_mediaPlayer;
-        bool                        m_validity;
+        MetaDataType                m_type;
 
-        Media*                      m_currentMedia;
+        Media*                      m_media;
         QString                     m_tmpSnapshotFilename;
 
         bool                        m_mediaIsPlaying;
         bool                        m_lengthHasChanged;
-        static  QThreadPool*        m_metadataThreadPool;
 
         friend class SnapshotHelper;
     signals:
         void    snapshotRequested();
+        void    mediaPlayerIdle( LibVLCpp::MediaPlayer* mediaPlayer );
 
     private slots:
         void    renderSnapshot();
@@ -82,15 +87,6 @@ class MetaDataWorker : public QObject
         void    stopAudioDataParsing();
         void    entrypointPlaying();
         void    entrypointLengthChanged();
-};
-
-class   SnapshotHelper : public QRunnable
-{
-    public:
-        SnapshotHelper( MetaDataWorker* worker ) : m_worker( worker ) { }
-        virtual void run();
-    private:
-        MetaDataWorker* m_worker;
 };
 
 #endif // METADATAWORKER_H

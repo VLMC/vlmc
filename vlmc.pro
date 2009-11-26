@@ -34,6 +34,7 @@ SOURCES += src/main.cpp \
     src/Media/Clip.cpp \
     src/GUI/About.cpp \
     src/Metadata/MetaDataWorker.cpp \
+    src/Metadata/MetaDataManager.cpp \
     src/Library/Library.cpp \
     src/GUI/GraphicsMovieItem.cpp \
     src/GUI/GraphicsAudioItem.cpp \
@@ -108,6 +109,7 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/MediaListWidget.h \
     src/GUI/About.h \
     src/Metadata/MetaDataWorker.h \
+    src/Metadata/MetaDataManager.h \
     src/Tools/Singleton.hpp \
     src/Library/Library.h \
     src/GUI/AbstractGraphicsMediaItem.h \
