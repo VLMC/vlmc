@@ -30,18 +30,33 @@
 class   StackedAction
 {
     public:
+        enum    Type
+        {
+            Pause,
+            Unpause,
+            Resize,
+            Remove,
+            Add,
+        };
+        StackedAction( Type type ) : m_type( type ) {}
         virtual ~StackedAction(){}
         virtual void    execute() = 0;
         virtual bool    isOpposite( const StackedAction* ) const
         {
             return false;
         }
+        Type    getType() const
+        {
+            return m_type;
+        }
+    private:
+        Type    m_type;
 };
 
 class   WorkflowAction : public StackedAction
 {
     public:
-        WorkflowAction( MainWorkflow* mainWorkflow ) : m_mainWorkflow( mainWorkflow ) {}
+        WorkflowAction( MainWorkflow* mainWorkflow, Type type ) : StackedAction( type ), m_mainWorkflow( mainWorkflow ) {}
     protected:
         MainWorkflow*   m_mainWorkflow;
 };
@@ -49,8 +64,8 @@ class   WorkflowAction : public StackedAction
 class   TrackAction : public WorkflowAction
 {
     public:
-        TrackAction( MainWorkflow* mainWorkflow, uint32_t trackId, MainWorkflow::TrackType trackType ) :
-            WorkflowAction( mainWorkflow ), m_trackId( trackId ), m_trackType( trackType )
+        TrackAction( MainWorkflow* mainWorkflow, uint32_t trackId, MainWorkflow::TrackType trackType, Type type ) :
+            WorkflowAction( mainWorkflow, type ), m_trackId( trackId ), m_trackType( trackType )
         {
         }
     protected:
@@ -62,7 +77,7 @@ class   AddClipAction : public TrackAction
 {
     public:
         AddClipAction( MainWorkflow* mainWorkflow, uint32_t trackId, MainWorkflow::TrackType trackType,
-                       Clip* clip, qint64 startingPos ) : TrackAction( mainWorkflow, trackId, trackType ),
+                       Clip* clip, qint64 startingPos ) : TrackAction( mainWorkflow, trackId, trackType, Add ),
                                                         m_clip( clip ), m_startingPos( startingPos )
         {
         }
@@ -79,7 +94,7 @@ class   RemoveClipAction : public TrackAction
 {
     public:
         RemoveClipAction( MainWorkflow* mainWorkflow, uint32_t trackId, MainWorkflow::TrackType trackType,
-                       const QUuid& uuid ) : TrackAction( mainWorkflow, trackId, trackType ),
+                       const QUuid& uuid ) : TrackAction( mainWorkflow, trackId, trackType, Remove ),
                                             m_uuid( uuid )
         {
         }
@@ -94,8 +109,8 @@ class   RemoveClipAction : public TrackAction
 class   ResizeClipAction : public StackedAction
 {
     public:
-        ResizeClipAction( Clip* clip, qint64 newBegin, qint64 newEnd ) : m_clip( clip ),
-                        m_newBegin( newBegin ), m_newEnd( newEnd )
+        ResizeClipAction( Clip* clip, qint64 newBegin, qint64 newEnd ) : StackedAction( Resize ),
+                m_clip( clip ), m_newBegin( newBegin ), m_newEnd( newEnd )
         {
         }
         void    execute()
@@ -111,24 +126,32 @@ class   ResizeClipAction : public StackedAction
 class   PauseAction : public WorkflowAction
 {
     public:
-        PauseAction( MainWorkflow* mainWorkflow ) : WorkflowAction( mainWorkflow )
+        PauseAction( MainWorkflow* mainWorkflow ) : WorkflowAction( mainWorkflow, Pause )
         {
         }
         void    execute()
         {
             m_mainWorkflow->pause();
         }
+        bool    isOpposite( const StackedAction* act ) const
+        {
+            return ( act->getType() == Unpause );
+        }
 };
 
 class   UnpauseAction : public WorkflowAction
 {
     public:
-        UnpauseAction( MainWorkflow* mainWorkflow ) : WorkflowAction( mainWorkflow )
+        UnpauseAction( MainWorkflow* mainWorkflow ) : WorkflowAction( mainWorkflow, Unpause )
         {
         }
         void    execute()
         {
             m_mainWorkflow->unpause();
+        }
+        bool    isOpposite( const StackedAction* act ) const
+        {
+            return ( act->getType() == Pause );
         }
 };
 
