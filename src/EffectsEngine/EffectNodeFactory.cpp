@@ -22,11 +22,33 @@
  *****************************************************************************/
 
 #include "EffectNodeFactory.h"
+#include <QDir>
 
-
+#define PLUGINS_PATH "./src/EffectsEngine"
 
 EffectNodeFactory::EffectNodeFactory()
 {
+    QDir        dir;
+    QStringList filter;
+    quint32     i;
+    quint32     size;
+    QFileInfoList list;
+
+    if (dir.cd(PLUGINS_PATH) == false)
+        qDebug() << "ERROR PLUGINS_PATH";
+    else
+    {
+        filter << "*.so";
+        list = dir.entryInfoList(filter, QDir::Files);
+        size = list.size();
+        if (size == 0)
+            qDebug() << "AUCUN PLUGINS";
+        else
+            for (i = 0; i < size; ++i)
+            {
+                qDebug() << list.at(i).fileName();
+            }
+    }
     m_epc["mixer"] = new MixerEffectPluginCreator();
     m_epc["green"] = new GreenFilterEffectPluginCreator();
 }
