@@ -58,7 +58,7 @@ WorkflowRenderer::WorkflowRenderer() :
     m_media->addOption( buffer );
     sprintf( buffer, ":imem-dar=%s", "4/3" );
     m_media->addOption( buffer );
-    sprintf( buffer, ":imem-fps=%s", "25/1" );
+    sprintf( buffer, ":imem-fps=%s", "30/1" );
     m_media->addOption( buffer );
     sprintf( buffer, ":imem-release=%lld", (qint64)WorkflowRenderer::unlock );
     m_media->addOption( buffer );
