@@ -37,8 +37,8 @@ MetaDataWorker::MetaDataWorker( LibVLCpp::MediaPlayer* mediaPlayer, Media* media
 
 MetaDataWorker::~MetaDataWorker()
 {
-    if ( m_mediaPlayer->isPlaying() )
-        m_mediaPlayer->stop();
+    //if ( m_mediaPlayer->isPlaying() )
+    //    m_mediaPlayer->stop();
 }
 
 void    MetaDataWorker::compute()
@@ -100,9 +100,13 @@ void    MetaDataWorker::getMetaData()
             m_media->setFps( FPS );
         }
         m_media->setNbFrames( (m_media->getLengthMS() / 1000) * m_media->getFps() );
+//        connect( m_mediaPlayer, SIGNAL( stopped () ), this, SLOT( mediaPlayerStopped() ), Qt::QueuedConnection );
         m_mediaPlayer->stop();
         emit mediaPlayerIdle( m_mediaPlayer );
-        m_media->emitMetaDataComputed( true );
+        if ( m_type == Snapshot )
+            m_media->emitSnapshotComputed();
+        else
+            m_media->emitMetaDataComputed( true );
         delete this;
         return;
     }
@@ -121,6 +125,7 @@ void    MetaDataWorker::getMetaData()
 
 void    MetaDataWorker::renderSnapshot()
 {
+    qDebug() << "rendering snapshot";
     if ( m_media->getFileType() == Media::Video )
         disconnect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( renderSnapshot() ) );
     else
@@ -153,10 +158,25 @@ void    MetaDataWorker::setSnapshot()
 
     //CHECKME:
     //This is synchrone, but it may become asynchrone in the future...
+//    connect( m_mediaPlayer, SIGNAL( stopped () ), this, SLOT( mediaPlayerStopped() ), Qt::QueuedConnection );
     m_mediaPlayer->stop();
     emit mediaPlayerIdle( m_mediaPlayer );
-    m_media->emitSnapshotComputed();
+    if ( m_type == Snapshot )
+        m_media->emitSnapshotComputed();
+    else
+        m_media->emitMetaDataComputed( true );
+    delete this;
     //startAudioDataParsing();
+}
+
+void    MetaDataWorker::mediaPlayerStopped()
+{
+    disconnect( m_mediaPlayer, SIGNAL( stopped() ), this, SLOT( mediaPlayerStopped() ) );
+    emit mediaPlayerIdle( m_mediaPlayer );
+    if ( m_type == Snapshot )
+        m_media->emitSnapshotComputed();
+    else
+        m_media->emitMetaDataComputed( true );
     delete this;
 }
 

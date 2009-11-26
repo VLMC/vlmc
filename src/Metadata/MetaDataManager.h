@@ -24,6 +24,8 @@
 #define METADATAMANAGER_H
 
 #include <QObject>
+#include <QMutex>
+#include <QMutexLocker>
 #include <QQueue>
 #include <QMultiMap>
 #include <QThreadPool>
@@ -31,7 +33,7 @@
 #include "Media.h"
 #include "Singleton.hpp"
 
-#define DEFAULT_MAX_MEDIA_PLAYER 1
+#define DEFAULT_MAX_MEDIA_PLAYER 2
 
 class MetaDataManager : public QObject, public Singleton<MetaDataManager>
 {
@@ -44,6 +46,7 @@ class MetaDataManager : public QObject, public Singleton<MetaDataManager>
     };
 
     public:
+        ~MetaDataManager();
         void    computeMediaMetadata( Media* media );
         void    setMediaPlayersNumberMaxCount( int number );
         void    addMediaPlayer();
@@ -60,6 +63,9 @@ class MetaDataManager : public QObject, public Singleton<MetaDataManager>
         QQueue<Media*>                                          m_mediasToComputeMetaData;
         QQueue<Media*>                                          m_mediasToComputeSnapshot;
         QMultiMap<MediaPlayerState, LibVLCpp::MediaPlayer*>     m_mediaPlayers;
+        QMutex                                                  m_mediasToComputeMetaDataMutex;
+        QMutex                                                  m_mediasToComputeSnapshotMutex;
+        QMutex                                                  m_mediaPlayersMutex;
         int                                                     m_mediaPlayersMaxCount;
         int                                                     m_mediaPlayersToRemove;
         friend class                                            Singleton<MetaDataManager>;

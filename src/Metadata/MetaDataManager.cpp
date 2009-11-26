@@ -23,12 +23,23 @@
 #include "MetaDataManager.h"
 #include "MetaDataWorker.h"
 
+#include "vlmc.h"
+
 #include <QMap>
+#include <QDebug>
 
 MetaDataManager::MetaDataManager() : m_mediaPlayersMaxCount( DEFAULT_MAX_MEDIA_PLAYER ), m_mediaPlayersToRemove( 0 )
 {
     for ( int i = 0; i < m_mediaPlayersMaxCount; ++i )
         addMediaPlayer();
+}
+
+MetaDataManager::~MetaDataManager()
+{
+    while ( m_mediaPlayers.count(Running) )
+        SleepMS(1);
+    while ( LibVLCpp::MediaPlayer* mediaPlayer = m_mediaPlayers.take( Idle ) )
+        delete mediaPlayer;
 }
 
 void    MetaDataManager::addMediaPlayer()
@@ -80,47 +91,70 @@ int     MetaDataManager::mediaPlayersMaxCount() const
 
 void    MetaDataManager::computeMediaMetadata( Media *media )
 {
-    m_mediasToComputeMetaData.enqueue( media );
+    {
+        QMutexLocker lock(&m_mediasToComputeMetaDataMutex);
+        m_mediasToComputeMetaData.enqueue( media );
+    }
     checkMediasToCompute();
 }
 
 void    MetaDataManager::checkMediasToCompute()
 {
+    qDebug() << "checking media to compute" << m_mediasToComputeMetaData << m_mediasToComputeSnapshot;
+    m_mediasToComputeMetaDataMutex.lock();
+    m_mediasToComputeSnapshotMutex.lock();
+    m_mediaPlayersMutex.lock();
     QMap<MediaPlayerState, LibVLCpp::MediaPlayer*>::iterator it;
     if ( m_mediasToComputeMetaData.count() > 0 &&
          ( it = m_mediaPlayers.find( Idle ) ) != m_mediaPlayers.end() )
     {
         Media* media;
+        media = m_mediasToComputeMetaData.dequeue();
+        m_mediasToComputeSnapshot.enqueue( media );
+        m_mediasToComputeMetaDataMutex.unlock();
+        m_mediasToComputeSnapshotMutex.unlock();
         LibVLCpp::MediaPlayer* mediaPlayer = it.value();
         m_mediaPlayers.erase( it );
         m_mediaPlayers.insert( Running, mediaPlayer );
-        media = m_mediasToComputeMetaData.dequeue();
+        m_mediaPlayersMutex.unlock();
         MetaDataWorker* worker = new MetaDataWorker( mediaPlayer, media, MetaDataWorker::MetaData );
-        connect( worker, SIGNAL( mediaPlayerIdle( LibVLCpp::MediaPlayer* ) ), this, SLOT( mediaPlayerIdle( LibVLCpp::MediaPlayer* ) ) );
+        connect( worker, SIGNAL( mediaPlayerIdle( LibVLCpp::MediaPlayer* ) ), this, SLOT( mediaPlayerIdle( LibVLCpp::MediaPlayer* ) ), Qt::DirectConnection );
         //connect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( checkMediasToCompute() ) );
         worker->compute();
-        m_mediasToComputeSnapshot.enqueue( media );
     }
     else if ( m_mediasToComputeSnapshot.count() > 0 &&
               ( it = m_mediaPlayers.find( Idle ) ) != m_mediaPlayers.end() )
     {
+        m_mediasToComputeMetaDataMutex.unlock();
         Media* media;
+        media = m_mediasToComputeSnapshot.dequeue();
+        m_mediasToComputeSnapshotMutex.unlock();
         LibVLCpp::MediaPlayer* mediaPlayer = it.value();
         m_mediaPlayers.erase( it );
         m_mediaPlayers.insert( Running, mediaPlayer );
-        media = m_mediasToComputeSnapshot.dequeue();
+        m_mediaPlayersMutex.unlock();
         MetaDataWorker* worker = new MetaDataWorker( mediaPlayer, media, MetaDataWorker::Snapshot );
-        disconnect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( checkMediasToCompute() ) );
-        connect( worker, SIGNAL( mediaPlayerIdle( LibVLCpp::MediaPlayer* ) ), this, SLOT( mediaPlayerIdle( LibVLCpp::MediaPlayer* ) ) );
+        //disconnect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( checkMediasToCompute() ) );
+        connect( worker, SIGNAL( mediaPlayerIdle( LibVLCpp::MediaPlayer* ) ), this, SLOT( mediaPlayerIdle( LibVLCpp::MediaPlayer* ) ), Qt::DirectConnection );
         //connect( media, SIGNAL( snapshotComputed( Media* ) ), this, SLOT( checkMediasToCompute() ) );
         worker->compute();
+    }
+    else
+    {
+        m_mediasToComputeSnapshotMutex.unlock();
+        m_mediasToComputeMetaDataMutex.unlock();
+        m_mediaPlayersMutex.unlock();
     }
     return;
 }
 
 void    MetaDataManager::mediaPlayerIdle( LibVLCpp::MediaPlayer* mediaPlayer )
 {
-    m_mediaPlayers.remove( Running, mediaPlayer );
-    m_mediaPlayers.insert( Idle, mediaPlayer );
+    qDebug() << "new media player idle";
+    {
+        QMutexLocker lock(&m_mediaPlayersMutex);
+        m_mediaPlayers.remove( Running, mediaPlayer );
+        m_mediaPlayers.insert( Idle, mediaPlayer );
+    }
     checkMediasToCompute();
 }

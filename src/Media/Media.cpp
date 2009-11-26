@@ -232,7 +232,6 @@ void            Media::emitSnapshotComputed()
     if ( m_metadataState == ParsedWithoutSnapshot )
         m_metadataState = ParsedWithSnapshot;
     emit snapshotComputed( this );
-    disconnect( this, SIGNAL( snapshotComputed( Media* ) ), MetaDataManager::getInstance(), SLOT( checkMediasToCompute() ) );
 }
 
 Media::InputType    Media::getInputType() const

@@ -87,6 +87,7 @@ class MetaDataWorker : public QObject
         void    stopAudioDataParsing();
         void    entrypointPlaying();
         void    entrypointLengthChanged();
+        void    mediaPlayerStopped();
 };
 
 #endif // METADATAWORKER_H
