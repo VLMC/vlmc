@@ -100,7 +100,7 @@ void    MetaDataManager::computeMediaMetadata( Media *media )
 
 void    MetaDataManager::checkMediasToCompute()
 {
-    qDebug() << "checking media to compute" << m_mediasToComputeMetaData << m_mediasToComputeSnapshot;
+    //qDebug() << "checking media to compute" << m_mediasToComputeMetaData << m_mediasToComputeSnapshot;
     m_mediasToComputeMetaDataMutex.lock();
     m_mediasToComputeSnapshotMutex.lock();
     m_mediaPlayersMutex.lock();
@@ -150,7 +150,7 @@ void    MetaDataManager::checkMediasToCompute()
 
 void    MetaDataManager::mediaPlayerIdle( LibVLCpp::MediaPlayer* mediaPlayer )
 {
-    qDebug() << "new media player idle";
+    //qDebug() << "new media player idle";
     {
         QMutexLocker lock(&m_mediaPlayersMutex);
         m_mediaPlayers.remove( Running, mediaPlayer );
