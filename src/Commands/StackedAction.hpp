@@ -120,4 +120,16 @@ class   PauseAction : public WorkflowAction
         }
 };
 
+class   UnpauseAction : public WorkflowAction
+{
+    public:
+        UnpauseAction( MainWorkflow* mainWorkflow ) : WorkflowAction( mainWorkflow )
+        {
+        }
+        void    execute()
+        {
+            m_mainWorkflow->unpause();
+        }
+};
+
 #endif // STACKEDACTION_H

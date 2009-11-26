@@ -60,8 +60,6 @@ class   WorkflowRenderer : public GenericRenderer
         static void         unlock( void* datas );
     private:
         void                internalPlayPause( bool forcePause );
-        void                pauseMainWorkflow();
-        void                unpauseMainWorkflow();
         virtual void        startPreview();
         void                checkActions();
 

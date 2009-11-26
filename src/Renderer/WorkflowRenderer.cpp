@@ -155,30 +155,12 @@ void        WorkflowRenderer::previousFrame()
     m_mainWorkflow->previousFrame();
 }
 
-void        WorkflowRenderer::pauseMainWorkflow()
-{
-    if ( m_paused == true )
-        return ;
-
-    QMutexLocker    lock( m_condMutex );
-    m_mainWorkflow->pause();
-    m_waitCond->wait( m_condMutex );
-}
-
-void        WorkflowRenderer::unpauseMainWorkflow()
-{
-    if ( m_paused == false )
-        return ;
-    m_mainWorkflow->unpause();
-}
-
 void        WorkflowRenderer::mainWorkflowPaused()
 {
     m_paused = true;
     {
         QMutexLocker    lock( m_condMutex );
     }
-    m_waitCond->wakeAll();
     emit paused();
 }
 
@@ -203,10 +185,9 @@ void        WorkflowRenderer::internalPlayPause( bool forcePause )
     {
         if ( m_paused == true && forcePause == false )
         {
-            if ( m_paused == true )
-            {
-                unpauseMainWorkflow();
-            }
+            StackedAction*      act = new UnpauseAction( m_mainWorkflow );
+            QMutexLocker        lock( m_actionsMutex );
+            m_actions.addAction( act );
         }
         else
         {
@@ -357,23 +338,17 @@ void        WorkflowRenderer::__frameChanged( qint64 frame, MainWorkflow::FrameC
     emit frameChanged( frame, reason );
 }
 
-void        WorkflowRenderer::__videoPaused()
-{
-    pauseMainWorkflow();
-}
-
 void        WorkflowRenderer::__videoPlaying()
 {
-    if ( m_paused == true )
-        unpauseMainWorkflow();
-    else
-    {
-        m_paused = false;
-        emit playing();
-    }
+    emit playing();
 }
 
 void        WorkflowRenderer::__videoStopped()
 {
     emit endReached();
+}
+
+void        WorkflowRenderer::__videoPaused()
+{
+    emit paused();
 }
