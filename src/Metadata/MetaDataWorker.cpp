@@ -125,7 +125,6 @@ void    MetaDataWorker::getMetaData()
 
 void    MetaDataWorker::renderSnapshot()
 {
-    qDebug() << "rendering snapshot";
     if ( m_media->getFileType() == Media::Video )
         disconnect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( renderSnapshot() ) );
     else
