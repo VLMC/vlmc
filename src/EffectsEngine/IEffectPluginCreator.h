@@ -1,6 +1,6 @@
 /*****************************************************************************
- * IEffectsPluginFactory.cpp: Interface that must inherit the factory of an
- *                            effect plugin
+ * IEffectPluginCreator.cpp: Interface that must inherit the class who can an
+ *                            instantiate an effect plugin
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -26,10 +26,10 @@
 
 #include "IEffectPlugin.h"
 
-class   IEffectPluginFactory
+class   IEffectPluginCreator
 {
 public:
-    virtual ~IEffectPluginFactory() {};
+    virtual ~IEffectPluginCreator() {};
     virtual IEffectPlugin*      getIEffectPlugin( void ) = 0;
 };
 

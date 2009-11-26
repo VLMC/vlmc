@@ -138,7 +138,7 @@ HEADERS += src/GUI/MainWindow.h \
     src/EffectsEngine/MixerEffect.h \
     src/EffectsEngine/IEffectPlugin.h \
     src/EffectsEngine/IEffectNode.h \
-    src/EffectsEngine/EffectNodeFactory.h \
+    src/EffectsEngine/EffectNodeCreator.h \
     src/EffectsEngine/IEffectPluginFactory.h \
     src/EffectsEngine/GreenFilterEffectFactory.h \
     src/EffectsEngine/MixerEffectFactory.h \

@@ -24,11 +24,11 @@
 #ifndef GREENFILTEREFFECTFACTORY_H_
 #define GREENFILTEREFFECTFACTORY_H_
 
-#include "IEffectPluginFactory.h"
+#include "IEffectPluginCreator.h"
 #include "IEffectPlugin.h"
 #include "GreenFilterEffect.h"
 
-class   GreenFilterEffectFactory : public IEffectPluginFactory
+class   GreenFilterEffectFactory : public IEffectPluginCreator
 {
 public:
     IEffectPlugin*      getIEffectPlugin( void );

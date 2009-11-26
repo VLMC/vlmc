@@ -29,13 +29,8 @@
 #include "GreenFilterEffectFactory.h"
 #include "MixerEffectFactory.h"
 
-#include "IEffectPluginFactory.h"
+#include "IEffectPluginCreator.h"
 #include "EffectNode.h"
-
-/* class   SmartFactoryProxy */
-/* { */
-
-/* }; */
 
 class	EffectNodeFactory
 {
@@ -47,8 +42,11 @@ class	EffectNodeFactory
     ~EffectNodeFactory();
 
   EffectNode*        getEffect( quint32 id );
+
  private:
-  QMap<QByteArray, IEffectPluginFactory*>       m_epf;
+
+  QMap<QByteArray, IEffectPluginCreator*>       m_epc;
+
 };
 
 #endif // EFFECTNODEFACTORY_H_

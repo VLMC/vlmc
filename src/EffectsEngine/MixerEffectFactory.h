@@ -23,11 +23,11 @@
 #ifndef MIXEREFFECTFACTORY_H_
 #define MIXEREFFECTFACTORY_H_
 
-#include "IEffectPluginFactory.h"
+#include "IEffectPluginCreator.h"
 #include "IEffectPlugin.h"
 #include "MixerEffect.h"
 
-class   MixerEffectFactory : public IEffectPluginFactory
+class   MixerEffectFactory : public IEffectPluginCreator
 {
  public:
     IEffectPlugin*     getIEffectPlugin( void );

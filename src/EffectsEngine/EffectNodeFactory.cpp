@@ -27,8 +27,8 @@
 
 EffectNodeFactory::EffectNodeFactory()
 {
-    m_epf["mixer"] = new MixerEffectFactory();
-    m_epf["green"] = new GreenFilterEffectFactory();
+    m_epc["mixer"] = new MixerEffectFactory();
+    m_epc["green"] = new GreenFilterEffectFactory();
 }
 
 EffectNodeFactory::~EffectNodeFactory()
@@ -38,7 +38,7 @@ EffectNodeFactory::~EffectNodeFactory()
 EffectNode*        EffectNodeFactory::getEffect( quint32 id )
 {
     if ( id == 1 )
-        return ( new EffectNode( m_epf["mixer"]->getIEffectPlugin() ) );
+        return ( new EffectNode( m_epc["mixer"]->getIEffectPlugin() ) );
     else if ( id == 2 )
-        return ( new EffectNode( m_epf["green"]->getIEffectPlugin() ) );
+        return ( new EffectNode( m_epc["green"]->getIEffectPlugin() ) );
 }
