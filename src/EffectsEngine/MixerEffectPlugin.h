@@ -1,5 +1,5 @@
 /*****************************************************************************
- * GreenFilterEffect.h: test effect module, just for apply a green filter
+ * MixerEffectPlugin.h: Effect module to mix multiple frame in one
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,37 +20,35 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef GREENFILTEREFFECT_H_
-#define GREENFILTEREFFECT_H_
+#ifndef MIXEREFFECTPLUGIN_H_
+#define MIXEREFFECTPLUGIN_H_
 
 #include "IEffectNode.h"
 #include "IEffectPlugin.h"
 
-class	GreenFilterEffect : public IEffectPlugin
+class	MixerEffectPlugin : public IEffectPlugin
 {
- public:
+public:
 
   // CTOR & DTOR
 
-  GreenFilterEffect();
-  ~GreenFilterEffect();
+  MixerEffectPlugin();
+  ~MixerEffectPlugin();
 
   // INIT
 
-  void  init( IEffectNode* ien );
+  void          init( IEffectNode* ien );
 
   // RENDER METHOD
 
   void	render( void );
-  void	enable( void );
-  void	disable( void );
 
- private:
+private:
 
-  bool                          m_enabled;
   IEffectNode*                  m_ien;
-  static	quint32 const   m_nbVideoInputs = 1;
-  static	quint32 const   m_nbVideoOutputs = 1;
+  static	quint32 const	m_nbVideoInputs = 64;
+  static	quint32 const	m_nbVideoOutputs = 1;
+
 };
 
-#endif // GREENFILTEREFFECT_H_
+#endif // MIXEREFFECTPLUGIN_H_

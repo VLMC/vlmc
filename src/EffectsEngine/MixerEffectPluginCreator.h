@@ -1,5 +1,6 @@
 /*****************************************************************************
- * MixerEffectPluginCreator.h: this class is used to instantiate a MixerEffect
+ * MixerEffectPluginCreator.h: this class is used to instantiate
+ *                             a MixerEffectPlugin
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -25,7 +26,7 @@
 
 #include "IEffectPluginCreator.h"
 #include "IEffectPlugin.h"
-#include "MixerEffect.h"
+#include "MixerEffectPlugin.h"
 
 class   MixerEffectPluginCreator : public IEffectPluginCreator
 {

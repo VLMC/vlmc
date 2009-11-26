@@ -1,5 +1,5 @@
 /*****************************************************************************
- * MixerEffect.cpp: Effect module to mix multiple frame in one
+ * GreenFilterEffectPlugin.h: test effect module, just for apply a green filter
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,36 +20,37 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "MixerEffect.h"
-#include <QtDebug>
+#ifndef GREENFILTEREFFECTPLUGIN_H_
+#define GREENFILTEREFFECTPLUGIN_H_
 
-MixerEffect::MixerEffect()
+#include "IEffectNode.h"
+#include "IEffectPlugin.h"
+
+class	GreenFilterEffectPlugin : public IEffectPlugin
 {
-}
+ public:
 
-MixerEffect::~MixerEffect()
-{
-}
+  // CTOR & DTOR
 
-void    MixerEffect::init( IEffectNode* ien )
-{
-    m_ien = ien;
-    m_ien->init(MixerEffect::m_nbVideoInputs, MixerEffect::m_nbVideoOutputs);
-    return ;
-}
+  GreenFilterEffectPlugin();
+  ~GreenFilterEffectPlugin();
 
-void	MixerEffect::render( void )
-{
-  quint32	i;
+  // INIT
 
-  for ( i = 0; i < 64; ++i )
-  {
-      const LightVideoFrame&   lvf = m_ien->getVideoInput( i );
-      if ( lvf->frame.octets != NULL )
-      {
-          m_ien->getVideoOutput( 0 ) << lvf;
-          return ;
-      }
-  }
-  return ;
-}
+  void  init( IEffectNode* ien );
+
+  // RENDER METHOD
+
+  void	render( void );
+  void	enable( void );
+  void	disable( void );
+
+ private:
+
+  bool                          m_enabled;
+  IEffectNode*                  m_ien;
+  static	quint32 const   m_nbVideoInputs = 1;
+  static	quint32 const   m_nbVideoOutputs = 1;
+};
+
+#endif // GREENFILTEREFFECTPLUGIN_H_

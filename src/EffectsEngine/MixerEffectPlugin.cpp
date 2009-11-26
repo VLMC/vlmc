@@ -1,5 +1,5 @@
 /*****************************************************************************
- * MixerEffect.h: Effect module to mix multiple frame in one
+ * MixerEffectPlugin.cpp: Effect module to mix multiple frame in one
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,35 +20,36 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef MIXEREFFECT_H_
-#define MIXEREFFECT_H_
+#include "MixerEffectPlugin.h"
+#include <QtDebug>
 
-#include "IEffectNode.h"
-#include "IEffectPlugin.h"
-
-class	MixerEffect : public IEffectPlugin
+MixerEffectPlugin::MixerEffectPlugin()
 {
-public:
+}
 
-  // CTOR & DTOR
+MixerEffectPlugin::~MixerEffectPlugin()
+{
+}
 
-  MixerEffect();
-  ~MixerEffect();
+void    MixerEffectPlugin::init( IEffectNode* ien )
+{
+    m_ien = ien;
+    m_ien->init(MixerEffectPlugin::m_nbVideoInputs, MixerEffectPlugin::m_nbVideoOutputs);
+    return ;
+}
 
-  // INIT
+void	MixerEffectPlugin::render( void )
+{
+  quint32	i;
 
-  void          init( IEffectNode* ien );
-
-  // RENDER METHOD
-
-  void	render( void );
-
-private:
-
-  IEffectNode*                  m_ien;
-  static	quint32 const	m_nbVideoInputs = 64;
-  static	quint32 const	m_nbVideoOutputs = 1;
-
-};
-
-#endif // MIXEREFFECT_H_
+  for ( i = 0; i < 64; ++i )
+  {
+      const LightVideoFrame&   lvf = m_ien->getVideoInput( i );
+      if ( lvf->frame.octets != NULL )
+      {
+          m_ien->getVideoOutput( 0 ) << lvf;
+          return ;
+      }
+  }
+  return ;
+}

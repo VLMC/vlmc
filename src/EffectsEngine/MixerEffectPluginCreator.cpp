@@ -1,5 +1,6 @@
 /*****************************************************************************
- * MixerEffectPluginCreator.cpp: this class is used to instantiate a MixerEffect
+ * MixerEffectPluginCreator.cpp: this class is used to instantiate
+ *                               a MixerEffectPlugin
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -24,5 +25,5 @@
 
 IEffectPlugin*  MixerEffectPluginCreator::getIEffectPlugin(void)
 {
-    return (new MixerEffect());
+    return (new MixerEffectPlugin());
 }

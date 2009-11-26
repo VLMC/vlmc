@@ -1,6 +1,6 @@
 /*****************************************************************************
- * GreenFilterEffectPluginCreator.h: this class is used to instantiate
- *                                   a GreenFilterEffect
+ * GreenFilterEffectPluginCreator.cpp: this class is used to instantiate
+ *                                    a GreenFilterEffectPlugin
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -23,7 +23,7 @@
 
 #include "GreenFilterEffectPluginCreator.h"
 
-IEffectPlugin*  GreenFilterEffectPluginCreator::getIEffectPlugin(void)
+IEffectPlugin*  GreenFilterEffectPluginCreator::getIEffectPlugin( void )
 {
-    return (new GreenFilterEffect());
+    return (new GreenFilterEffectPlugin());
 }

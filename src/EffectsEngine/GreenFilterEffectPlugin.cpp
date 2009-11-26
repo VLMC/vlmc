@@ -1,5 +1,5 @@
 /*****************************************************************************
- * GreenFilterEffect.cpp: test effect module, just for apply a green filter
+ * GreenFilterEffectPlugin.cpp: test effect module, just for apply a green filter
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,26 +20,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "GreenFilterEffect.h"
+#include "GreenFilterEffectPlugin.h"
 #include <QtDebug>
 
 
-GreenFilterEffect::GreenFilterEffect() : m_enabled( true )
+GreenFilterEffectPlugin::GreenFilterEffectPlugin() : m_enabled( true )
 {
 }
 
-GreenFilterEffect::~GreenFilterEffect()
+GreenFilterEffectPlugin::~GreenFilterEffectPlugin()
 {
 }
 
-void            GreenFilterEffect::init(IEffectNode* ien)
+void            GreenFilterEffectPlugin::init(IEffectNode* ien)
 {
     m_ien = ien;
     m_ien->init(m_nbVideoInputs, m_nbVideoOutputs);
     return ;
 }
 
-void    GreenFilterEffect::render( void )
+void    GreenFilterEffectPlugin::render( void )
 {
     quint32		i;
     LightVideoFrame	tmp;
@@ -58,13 +58,13 @@ void    GreenFilterEffect::render( void )
     return ;
 }
 
-void	GreenFilterEffect::enable( void )
+void	GreenFilterEffectPlugin::enable( void )
 {
   m_enabled = true;
   return ;
 }
 
-void	GreenFilterEffect::disable( void )
+void	GreenFilterEffectPlugin::disable( void )
 {
   m_enabled = false;
   return ;
