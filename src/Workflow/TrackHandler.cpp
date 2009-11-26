@@ -102,10 +102,11 @@ qint64      TrackHandler::getLength() const
 
 void        TrackHandler::getOutput( qint64 currentFrame )
 {
+    QMutexLocker    lockNbTracks( m_nbTracksToRenderMutex );
+
     m_renderCompleted = false;
     m_nbTracksToRender = 0;
     m_tmpAudioBuffer = NULL;
-    QMutexLocker    lockNbTracks( m_nbTracksToRenderMutex );
     for ( unsigned int i = 0; i < m_trackCount; ++i )
     {
         if ( m_tracks[i].activated() == false )
