@@ -171,7 +171,7 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/wizard/ProjectWizard.h \
     src/GUI/wizard/PageFactory.h \
     src/GUI/wizard/CustomWizardPage.h \
-    src/Commands/StackedAction.hpp \
+    src/Actions/StackedAction.hpp \
     src/Actions/ActionStack.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
