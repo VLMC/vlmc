@@ -68,7 +68,7 @@ void TracksScene::keyPressEvent( QKeyEvent* keyEvent )
             Commands::MainWorkflow::ClipActionInfo ai;
             ai.clip = item->clip();
             ai.trackNumber = item->trackNumber();
-            ai.pos = item->pos().x();
+            ai.pos = item->startPos();
             ai.trackType = MainWorkflow::VideoTrack;
             clipsinfos.append( ai );
         }

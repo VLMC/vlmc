@@ -64,3 +64,13 @@ AbstractGraphicsMediaItem* AbstractGraphicsMediaItem::groupItem()
 {
     return m_group;
 }
+
+void AbstractGraphicsMediaItem::setStartPos( qint64 position )
+{
+    QGraphicsItem::setPos( (qreal)position, 0 );
+}
+
+qint64 AbstractGraphicsMediaItem::startPos()
+{
+    return qRound64( QGraphicsItem::pos().x() );
+}

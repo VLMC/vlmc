@@ -65,6 +65,12 @@ public:
     /// Return the current track of the item
     quint32 trackNumber();
 
+    /// Set the position of the item (in frames) for the x-axis.
+    void setStartPos( qint64 position );
+
+    /// Return the position of the item (in frames) for the x-axis.
+    qint64 startPos();
+
 protected:
     /**
      * Returns the current tracksView for the item,
