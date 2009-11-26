@@ -1,6 +1,5 @@
 /*****************************************************************************
- * GenericEffect.cpp: Abstract class you must inherit from, when you program
- * an effect module
+ * EffectNode.cpp: Node of the patch
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -21,14 +20,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "GenericEffect.h"
+#include "EffectNode.h"
 
-GenericEffect::GenericEffect(IEffectPlugin* plugin) : m_plugin(plugin), m_videoInputs(NULL), m_videoOutputs(NULL)
+EffectNode::EffectNode(IEffectPlugin* plugin) : m_plugin(plugin), m_videoInputs(NULL), m_videoOutputs(NULL)
 {
     m_plugin->init(this);
 }
 
-GenericEffect::~GenericEffect()
+EffectNode::~EffectNode()
 {
     delete m_plugin;
     if ( m_videoInputs )
@@ -44,7 +43,7 @@ GenericEffect::~GenericEffect()
 //
 //
 
-void                                    GenericEffect::init( quint32 const nbvideoinputs,
+void                                    EffectNode::init( quint32 const nbvideoinputs,
                                                              quint32 const nbvideooutputs )
 {
     m_videoInputs = new InSlot<LightVideoFrame>[nbvideoinputs];
@@ -52,23 +51,23 @@ void                                    GenericEffect::init( quint32 const nbvid
     return ;
 }
 
-void                                    GenericEffect::render( void )
+void                                    EffectNode::render( void )
 {
     m_plugin->render();
     return ;
 }
 
-IEffectPlugin*                          GenericEffect::getInternalPlugin( void )
+IEffectPlugin*                          EffectNode::getInternalPlugin( void )
 {
     return ( m_plugin );
 }
 
-InSlot<LightVideoFrame> &               GenericEffect::getVideoInput(quint32 id)
+InSlot<LightVideoFrame> &               EffectNode::getVideoInput(quint32 id)
 {
     return ( m_videoInputs[id] );
 }
 
-OutSlot<LightVideoFrame> &              GenericEffect::getVideoOutput(quint32 id)
+OutSlot<LightVideoFrame> &              EffectNode::getVideoOutput(quint32 id)
 {
     return ( m_videoOutputs[id] );
 }
@@ -82,7 +81,7 @@ OutSlot<LightVideoFrame> &              GenericEffect::getVideoOutput(quint32 id
 
 // CONNECTIONS BETWEEN GENERICEFFECTS
 
-void				GenericEffect::connectOutput( quint32 outIndex, GenericEffect* destEffect, quint32 inIndex)
+void				EffectNode::connectOutput( quint32 outIndex, EffectNode* destEffect, quint32 inIndex)
 {
   // THINK TO CHECK IF THE SLOTS EXISTS BY CALLING THE PRIVATES METHODS!!!
   ( m_videoOutputs[outIndex] ).connect( destEffect->m_videoInputs[inIndex] );
@@ -91,13 +90,13 @@ void				GenericEffect::connectOutput( quint32 outIndex, GenericEffect* destEffec
 
 // CONNECTIONS DETWEEN GENERICEFFECT & OUTSLOT/INSLOT
 
-void				GenericEffect::connect( OutSlot<LightVideoFrame> & out, quint32 inIndex )
+void				EffectNode::connect( OutSlot<LightVideoFrame> & out, quint32 inIndex )
 {
   out.connect( m_videoInputs[inIndex] );
   return ;
 }
 
-void				GenericEffect::connect( quint32 outIndex, InSlot<LightVideoFrame> & in )
+void				EffectNode::connect( quint32 outIndex, InSlot<LightVideoFrame> & in )
 {
   ( m_videoOutputs[outIndex] ).connect( in );
   return ;

@@ -35,10 +35,10 @@ EffectsFactory::~EffectsFactory()
 {
 }
 
-GenericEffect*        EffectsFactory::getEffect( quint32 id )
+EffectNode*        EffectsFactory::getEffect( quint32 id )
 {
     if ( id == 1 )
-        return ( new GenericEffect( m_epf["mixer"]->getIEffectPlugin() ) );
+        return ( new EffectNode( m_epf["mixer"]->getIEffectPlugin() ) );
     else if ( id == 2 )
-        return ( new GenericEffect( m_epf["green"]->getIEffectPlugin() ) );
+        return ( new EffectNode( m_epf["green"]->getIEffectPlugin() ) );
 }

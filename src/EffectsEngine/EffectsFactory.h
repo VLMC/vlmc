@@ -30,7 +30,7 @@
 #include "MixerEffectFactory.h"
 
 #include "IEffectPluginFactory.h"
-#include "GenericEffect.h"
+#include "EffectNode.h"
 
 /* class   SmartFactoryProxy */
 /* { */
@@ -46,7 +46,7 @@ class	EffectsFactory
     EffectsFactory();
     ~EffectsFactory();
 
-  GenericEffect*        getEffect( quint32 id );
+  EffectNode*        getEffect( quint32 id );
  private:
   QMap<QByteArray, IEffectPluginFactory*>       m_epf;
 };

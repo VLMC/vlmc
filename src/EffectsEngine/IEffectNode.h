@@ -28,11 +28,11 @@
 #include "OutSlot.hpp"
 #include "LightVideoFrame.h"
 
-class	IGenericEffect
+class	IEffectNode
 {
     public:
 
-    virtual ~IGenericEffect() {};
+    virtual ~IEffectNode() {};
     virtual void                                init( quint32 const nbvideoinputs, quint32 const nbvideooutputs ) = 0;
     virtual InSlot<LightVideoFrame> &           getVideoInput(quint32 id) = 0;
     virtual OutSlot<LightVideoFrame> &          getVideoOutput(quint32 id) = 0;

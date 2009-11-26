@@ -32,10 +32,10 @@ GreenFilterEffect::~GreenFilterEffect()
 {
 }
 
-void            GreenFilterEffect::init(IGenericEffect* ige)
+void            GreenFilterEffect::init(IEffectNode* ien)
 {
-    m_ige = ige;
-    m_ige->init(m_nbVideoInputs, m_nbVideoOutputs);
+    m_ien = ien;
+    m_ien->init(m_nbVideoInputs, m_nbVideoOutputs);
     return ;
 }
 
@@ -44,7 +44,7 @@ void    GreenFilterEffect::render( void )
     quint32		i;
     LightVideoFrame	tmp;
 
-    m_ige->getVideoInput(0) >> tmp;
+    m_ien->getVideoInput(0) >> tmp;
     if (tmp->frame.octets != NULL)
     {
         if (m_enabled)
@@ -53,7 +53,7 @@ void    GreenFilterEffect::render( void )
                 tmp->frame.pixels[i].Red = 0;
                 tmp->frame.pixels[i].Blue = 0;
             }
-        m_ige->getVideoOutput(0) << tmp;
+        m_ien->getVideoOutput(0) << tmp;
     }
     return ;
 }

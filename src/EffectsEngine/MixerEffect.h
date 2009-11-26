@@ -23,7 +23,7 @@
 #ifndef MIXEREFFECT_H_
 #define MIXEREFFECT_H_
 
-#include "IGenericEffect.h"
+#include "IEffectNode.h"
 #include "IEffectPlugin.h"
 
 class	MixerEffect : public IEffectPlugin
@@ -37,7 +37,7 @@ public:
 
   // INIT
 
-  void          init( IGenericEffect* ige );
+  void          init( IEffectNode* ien );
 
   // RENDER METHOD
 
@@ -45,7 +45,7 @@ public:
 
 private:
 
-  IGenericEffect*               m_ige;
+  IEffectNode*                  m_ien;
   static	quint32 const	m_nbVideoInputs = 64;
   static	quint32 const	m_nbVideoOutputs = 1;
 

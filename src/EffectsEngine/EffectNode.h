@@ -1,5 +1,5 @@
 /*****************************************************************************
- * GenericEffect.h: Abstract class you must inherit from, when you program
+ * EffectNode.h: Abstract class you must inherit from, when you program
  * an effect module
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
@@ -21,20 +21,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef GENERICEFFECT_H_
-#define GENERICEFFECT_H_
+#ifndef EFFECTNODE_H_
+#define EFFECTNODE_H_
 
 #include <QtGlobal>
 #include <QString>
 #include <QHash>
 #include <QObject>
 
+#include "IEffectNode.h"
 #include "IEffectPlugin.h"
 #include "InSlot.hpp"
 #include "OutSlot.hpp"
 #include "LightVideoFrame.h"
 
-class	GenericEffect : public IGenericEffect
+class	EffectNode : public IEffectNode
 {
 
     ////
@@ -57,11 +58,11 @@ class	GenericEffect : public IGenericEffect
     //
     //
 
-    virtual ~GenericEffect();
+    virtual ~EffectNode();
 
-    GenericEffect(IEffectPlugin* plugin);
+    EffectNode(IEffectPlugin* plugin);
 
-    //    GenericEffect();
+    //    EffectNode();
 
     void        init(quint32 const nbvideoinputs,
                      quint32 const nbvideooutputs);
@@ -219,12 +220,12 @@ class	GenericEffect : public IGenericEffect
 //     // REPLACE VIRTUAL PURE RENDER METHOD BY VIRTUAL RENDER METHOD WHO RENTER THE SUB-EFFECTS BY DEFAULT
 //     // WITH THE MULTI-THREAD RENDER CLASS
 
-//     // EffectsFactory static instance into GenericEffect
+//     // EffectsFactory static instance into EffectNode
 
 //     // SUB-EFFECTS MANAGEMENT METHODS
 
 //     // BIEN SEPARER LE DEVELOPPER-LAND ET LE EFFECTSENGINE-LAND, notamment en faisant des interface IPublic*slot
-//     // DONC TOUT PROXIFIER PAR LE GENERICEFFECT, sauf l'ecriture/lecture dans un slot et le getting de l'id et de l'instance de l'effet et du GenericEffect
+//     // DONC TOUT PROXIFIER PAR LE GENERICEFFECT, sauf l'ecriture/lecture dans un slot et le getting de l'id et de l'instance de l'effet et du EffectNode
 
     //
     //
@@ -238,10 +239,10 @@ class	GenericEffect : public IGenericEffect
     // CONNECTIONS BETWEEN GENERICEFFECTS
     //
 
-    /*   void				connectDynOutToStatIn( GenericEffect* destinationeffect, QString const & inslotname ); */
-    /*   void				connectDynOutToDynIn( GenericEffect* destinationeffect ); */
-    void                                connectOutput( quint32 outIndex, GenericEffect* destEffect, quint32 inIndex );
-    /*   void				connectStatOutToDynIn( QString const & outslotname, GenericEffect* destinationeffect ); */
+    /*   void				connectDynOutToStatIn( EffectNode* destinationeffect, QString const & inslotname ); */
+    /*   void				connectDynOutToDynIn( EffectNode* destinationeffect ); */
+    void                                connectOutput( quint32 outIndex, EffectNode* destEffect, quint32 inIndex );
+    /*   void				connectStatOutToDynIn( QString const & outslotname, EffectNode* destinationeffect ); */
 
     //
     // CONNECTIONS BETWEEN GENERICEFFECT & OUTSLOTS/INSLOTS
@@ -361,4 +362,4 @@ private:
 //     bool                                        m_enableDynamicControlOutputs;
 };
 
-#endif // GENERICEFFECT_H_
+#endif // EFFECTNODE_H_

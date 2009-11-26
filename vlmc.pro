@@ -67,7 +67,7 @@ SOURCES += src/main.cpp \
     src/EffectsEngine/EffectsFactory.cpp \
     src/EffectsEngine/EffectsEngine.cpp \
     src/EffectsEngine/LightVideoFrame.cpp \
-    src/EffectsEngine/GenericEffect.cpp \
+    src/EffectsEngine/EffectNode.cpp \
     src/EffectsEngine/GreenFilterEffect.cpp \
     src/EffectsEngine/MixerEffect.cpp \
     src/EffectsEngine/MixerEffectFactory.cpp \
@@ -133,11 +133,11 @@ HEADERS += src/GUI/MainWindow.h \
     src/EffectsEngine/InSlot.hpp \
     src/EffectsEngine/OutSlot.hpp \
     src/EffectsEngine/LightVideoFrame.h \
-    src/EffectsEngine/GenericEffect.h \
+    src/EffectsEngine/EffectNode.h \
     src/EffectsEngine/GreenFilterEffect.h \
     src/EffectsEngine/MixerEffect.h \
     src/EffectsEngine/IEffectPlugin.h \
-    src/EffectsEngine/IGenericEffect.h \
+    src/EffectsEngine/IEffectNode.h \
     src/EffectsEngine/EffectsFactory.h \
     src/EffectsEngine/IEffectPluginFactory.h \
     src/EffectsEngine/GreenFilterEffectFactory.h \

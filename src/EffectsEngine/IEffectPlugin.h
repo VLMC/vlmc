@@ -24,7 +24,7 @@
 #ifndef IEFFECTPLUGIN_H_
 #define IEFFECTPLUGIN_H_
 
-#include "IGenericEffect.h"
+#include "IEffectNode.h"
 
 class	IEffectPlugin
 {
@@ -37,7 +37,7 @@ class	IEffectPlugin
   // RENDER METHOD
 
   virtual void	render( void ) = 0;
-  virtual void  init(IGenericEffect* ige) = 0;
+  virtual void  init(IEffectNode* ien) = 0;
 
 };
 

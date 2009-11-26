@@ -31,10 +31,10 @@ MixerEffect::~MixerEffect()
 {
 }
 
-void    MixerEffect::init( IGenericEffect* ige )
+void    MixerEffect::init( IEffectNode* ien )
 {
-    m_ige = ige;
-    m_ige->init(MixerEffect::m_nbVideoInputs, MixerEffect::m_nbVideoOutputs);
+    m_ien = ien;
+    m_ien->init(MixerEffect::m_nbVideoInputs, MixerEffect::m_nbVideoOutputs);
     return ;
 }
 
@@ -44,10 +44,10 @@ void	MixerEffect::render( void )
 
   for ( i = 0; i < 64; ++i )
   {
-      const LightVideoFrame&   lvf = m_ige->getVideoInput( i );
+      const LightVideoFrame&   lvf = m_ien->getVideoInput( i );
       if ( lvf->frame.octets != NULL )
       {
-          m_ige->getVideoOutput( 0 ) << lvf;
+          m_ien->getVideoOutput( 0 ) << lvf;
           return ;
       }
   }

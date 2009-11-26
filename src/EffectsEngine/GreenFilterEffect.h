@@ -23,7 +23,7 @@
 #ifndef GREENFILTEREFFECT_H_
 #define GREENFILTEREFFECT_H_
 
-#include "IGenericEffect.h"
+#include "IEffectNode.h"
 #include "IEffectPlugin.h"
 
 class	GreenFilterEffect : public IEffectPlugin
@@ -37,7 +37,7 @@ class	GreenFilterEffect : public IEffectPlugin
 
   // INIT
 
-  void  init( IGenericEffect* ige );
+  void  init( IEffectNode* ien );
 
   // RENDER METHOD
 
@@ -47,10 +47,10 @@ class	GreenFilterEffect : public IEffectPlugin
 
  private:
 
-  bool					m_enabled;
-  IGenericEffect*                       m_ige;
-  static	quint32 const		m_nbVideoInputs = 1;
-  static	quint32 const		m_nbVideoOutputs = 1;
+  bool                          m_enabled;
+  IEffectNode*                  m_ien;
+  static	quint32 const   m_nbVideoInputs = 1;
+  static	quint32 const   m_nbVideoOutputs = 1;
 };
 
 #endif // GREENFILTEREFFECT_H_
