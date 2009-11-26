@@ -122,8 +122,7 @@ void            ImportModel::loadMedia( Media* media )
 {
     connect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ) );
     connect( media, SIGNAL( snapshotComputed(Media*) ), this, SLOT( snapshotComputed(Media*) ) );
-    m_metaDataWorker = new MetaDataWorker( media );
-    m_metaDataWorker->compute();
+    MetaDataManager::getInstance()->computeMediaMetadata( media );
 }
 
 bool        ImportModel::mediaAlreadyLoaded( const QFileInfo& fileInfo )

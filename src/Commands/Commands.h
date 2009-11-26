@@ -52,6 +52,7 @@ namespace Commands
         {
             public:
                 AddClip( WorkflowRenderer* renderer, Clip* clip, unsigned int trackNumber, qint64 pos, ::MainWorkflow::TrackType trackType );
+                virtual ~AddClip();
                 virtual void    redo();
                 virtual void    undo();
             private:
@@ -109,6 +110,24 @@ namespace Commands
                 qint64                      m_newBegin;
                 qint64                      m_newEnd;
                 Clip*                       m_clip;
+                ::MainWorkflow::TrackType   m_trackType;
+        };
+
+        NEW_COMMAND( SplitClip )
+        {
+            public:
+                SplitClip( WorkflowRenderer* renderer, Clip* toSplit, uint32_t trackId,
+                           qint64 newClipPos, qint64 newClipBegin, ::MainWorkflow::TrackType trackType );
+                virtual void    redo();
+                virtual void    undo();
+            private:
+                WorkflowRenderer*           m_renderer;
+                Clip*                       m_toSplit;
+                Clip*                       m_newClip;
+                uint32_t                    m_trackId;
+                qint64                      m_newClipPos;
+                qint64                      m_newClipBegin;
+                qint64                      m_clipOldEnd;
                 ::MainWorkflow::TrackType   m_trackType;
         };
     }

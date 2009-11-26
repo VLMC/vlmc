@@ -1,5 +1,5 @@
 /*****************************************************************************
- * CommandManager.h: Manage the VLMC command pattern implementation
+ * ActionStack.h: Action stack
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,19 +20,35 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include "ActionStack.h"
 
-#ifndef COMMANDMANAGER_H
-#define COMMANDMANAGER_H
+using namespace Action;
 
-#include "Singleton.hpp"
-#include "Command.h"
-
-class   CommandManager : public Singleton<CommandManager>
+Stack::~Stack()
 {
-    void        triggerCommand( Command* command );
-private:
-    ActionManager();
-    ~ActionManager();
-};
+    while ( empty() == false )
+    {
+        Action::Generic*  act = top();
+        delete act;
+        pop();
+    }
+}
 
-#endif // ACTIONMANAGER_H
+void    Stack::addAction( Action::Generic* act )
+{
+    iterator    it = begin();
+    iterator    ite = end();
+
+    while ( it != ite )
+    {
+        if ( (*it)->isOpposite( act ) == true )
+        {
+            delete *it;
+            it = erase( it );
+            delete act;
+        }
+        else
+            ++it;
+    }
+    push_back( act );
+}

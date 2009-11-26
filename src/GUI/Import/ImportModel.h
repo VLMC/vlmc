@@ -32,7 +32,7 @@
 
 #include "Media.h"
 #include "Clip.h"
-#include "MetaDataWorker.h"
+#include "MetaDataManager.h"
 
 class ImportModel : public QObject
 {
@@ -58,7 +58,6 @@ signals:
 
 private:
     QHash<QUuid, Media*>*           m_medias;
-    MetaDataWorker*                 m_metaDataWorker;
     QStringList                     m_filters;
     QList<Media*>                   m_invalidMedias;
     int                             m_loadingMedias;

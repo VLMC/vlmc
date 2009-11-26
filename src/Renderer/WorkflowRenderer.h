@@ -30,6 +30,9 @@
 
 #include "Workflow/MainWorkflow.h"
 #include "GenericRenderer.h"
+#include "StackedAction.hpp"
+#include "ActionStack.h"
+#include "AudioClipWorkflow.h"
 
 class   WorkflowRenderer : public GenericRenderer
 {
@@ -37,13 +40,6 @@ class   WorkflowRenderer : public GenericRenderer
     Q_DISABLE_COPY( WorkflowRenderer )
 
     public:
-        enum    Actions
-        {
-            Pause,
-            AddClip,
-            RemoveClip,
-            //Unpause,
-        };
         enum    EsType
         {
             Unknown,
@@ -56,16 +52,7 @@ class   WorkflowRenderer : public GenericRenderer
             WorkflowRenderer*   self;
             EsType              type;
         };
-        struct  StackedAction
-        {
-            StackedAction( Actions act ) : action( act ), trackId( -1 ), clip( NULL ) {}
-            Actions                     action;
-            QUuid                       uuid;
-            uint32_t                    trackId;
-            MainWorkflow::TrackType     trackType;
-            Clip*                       clip;
-            qint64                      startingPos;
-        };
+
         WorkflowRenderer();
         ~WorkflowRenderer();
 
@@ -76,8 +63,11 @@ class   WorkflowRenderer : public GenericRenderer
         virtual qint64      getLengthMs() const;
         virtual qint64      getCurrentFrame() const;
         virtual float       getFps() const;
-        void                addClip( Clip* clip, uint32_t trackNumber, qint64 startingPos, MainWorkflow::TrackType trackType );
+        void                addClip( Clip* clip, uint32_t trackId, qint64 startingPos, MainWorkflow::TrackType trackType );
         void                removeClip( const QUuid& uuid, uint32_t trackId, MainWorkflow::TrackType trackType );
+        Clip*               split( Clip* toSplit, uint32_t trackId, qint64 newClipPos, qint64 newClipBegin, MainWorkflow::TrackType trackType );
+        void                unsplit( Clip* origin, Clip* splitted, uint32_t trackId, qint64 oldEnd, MainWorkflow::TrackType trackType );
+        void                resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd );
 
         static int          lock( void *data, int64_t *dts, int64_t *pts, unsigned int *flags, size_t *bufferSize, void **buffer );
         static int          lockVideo( WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer );
@@ -86,8 +76,6 @@ class   WorkflowRenderer : public GenericRenderer
 
     private:
         void                internalPlayPause( bool forcePause );
-        void                pauseMainWorkflow();
-        void                unpauseMainWorkflow();
         virtual void        startPreview();
         void                checkActions();
 
@@ -105,11 +93,9 @@ class   WorkflowRenderer : public GenericRenderer
          */
         static uint8_t*     m_silencedAudioBuffer;
         size_t              m_videoBuffSize;
-        AudioClipWorkflow::AudioSample* m_renderAudioSample;
-        QStack<StackedAction*>     m_actions;
+        AudioClipWorkflow::AudioSample*     m_renderAudioSample;
+        Action::Stack       m_actions;
         QMutex*             m_actionsMutex;
-        bool                m_pauseAsked;
-        bool                m_unpauseAsked;
         QMutex*             m_condMutex;
         QWaitCondition*     m_waitCond;
         EsHandler*          m_videoEsHandler;

@@ -28,6 +28,7 @@
 
 #include <QtDebug>
 #include "Media.h"
+#include "MetaDataManager.h"
 
 QPixmap*        Media::defaultSnapshot = NULL;
 const QString   Media::VideoExtensions = "*.mov *.avi *.mkv *.mpg *.mpeg *.wmv *.mp4";

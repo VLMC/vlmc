@@ -86,7 +86,11 @@ void GraphicsMovieItem::setHeight( int height )
 void GraphicsMovieItem::adjustLength()
 {
     //FIXME implement clip expanding.
-    Q_ASSERT_X( m_clip->getLength() <= m_width, "adjustLength", "Clip expanding not supported!" );
+    if ( m_clip->getLength() > m_width )
+    {
+        qWarning( "adjustLength: Clip expanding not supported!" );
+        return ;
+    }
     prepareGeometryChange();
     setWidth( m_clip->getLength() );
 }

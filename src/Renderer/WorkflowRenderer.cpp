@@ -32,9 +32,7 @@ uint8_t*    WorkflowRenderer::m_silencedAudioBuffer = NULL;
 
 WorkflowRenderer::WorkflowRenderer() :
             m_mainWorkflow( MainWorkflow::getInstance() ),
-            m_stopping( false ),
-            m_pauseAsked( false ),
-            m_unpauseAsked( false )
+            m_stopping( false )
 {
     char        buffer[256];
 
@@ -200,27 +198,9 @@ void        WorkflowRenderer::checkActions()
         return ;
     while ( m_actions.empty() == false )
     {
-        StackedAction*   act = m_actions.top();
+        Action::Generic*   act = m_actions.top();
         m_actions.pop();
-        switch ( act->action )
-        {
-            case    Pause:
-                if ( m_pauseAsked == true )
-                    continue ;
-                m_pauseAsked = true;
-                pauseMainWorkflow();
-                //This will also pause the MainWorkflow via a signal/slot
-                break ;
-            case    AddClip:
-                m_mainWorkflow->addClip( act->clip, act->trackId, act->startingPos, act->trackType );
-                break ;
-            case    RemoveClip:
-                m_mainWorkflow->removeClip( act->uuid, act->trackId, act->trackType );
-                break ;
-            default:
-                qDebug() << "Unhandled action:" << act->action;
-                break ;
-        }
+        act->execute();
         delete act;
     }
 }
@@ -257,38 +237,18 @@ void        WorkflowRenderer::previousFrame()
     m_mainWorkflow->previousFrame();
 }
 
-void        WorkflowRenderer::pauseMainWorkflow()
-{
-    if ( m_paused == true )
-        return ;
-
-    QMutexLocker    lock( m_condMutex );
-    m_mainWorkflow->pause();
-    m_waitCond->wait( m_condMutex );
-}
-
-void        WorkflowRenderer::unpauseMainWorkflow()
-{
-    if ( m_paused == false )
-        return ;
-    m_mainWorkflow->unpause();
-}
-
 void        WorkflowRenderer::mainWorkflowPaused()
 {
     m_paused = true;
-    m_pauseAsked = false;
     {
         QMutexLocker    lock( m_condMutex );
     }
-    m_waitCond->wakeAll();
     emit paused();
 }
 
 void        WorkflowRenderer::mainWorkflowUnpaused()
 {
     m_paused = false;
-    m_unpauseAsked = false;
     emit playing();
 }
 
@@ -307,19 +267,17 @@ void        WorkflowRenderer::internalPlayPause( bool forcePause )
     {
         if ( m_paused == true && forcePause == false )
         {
-            if ( m_paused == true )
-            {
-                m_unpauseAsked = true;
-                unpauseMainWorkflow();
-            }
+            Action::Generic*    act = new Action::Unpause( m_mainWorkflow );
+            QMutexLocker        lock( m_actionsMutex );
+            m_actions.addAction( act );
         }
         else
         {
             if ( m_paused == false )
             {
+                Action::Generic*    act = new Action::Unpause( m_mainWorkflow );
                 QMutexLocker        lock( m_actionsMutex );
-                StackedAction*      act = new StackedAction( Pause );
-                m_actions.push( act );
+                m_actions.addAction( act );
             }
         }
     }
@@ -329,8 +287,6 @@ void        WorkflowRenderer::stop()
 {
     m_isRendering = false;
     m_paused = false;
-    m_pauseAsked = false;
-    m_unpauseAsked = false;
     m_stopping = true;
     m_mainWorkflow->cancelSynchronisation();
     m_mediaPlayer->stop();
@@ -356,31 +312,24 @@ void        WorkflowRenderer::removeClip( const QUuid& uuid, uint32_t trackId, M
 {
     if ( m_isRendering == true )
     {
-        StackedAction*  act = new StackedAction( RemoveClip );
-        act->uuid = uuid;
-        act->trackId = trackId;
-        act->trackType = trackType;
-        QMutexLocker    lock( m_actionsMutex );
-        m_actions.push( act );
+        Action::Generic*    act = new Action::RemoveClip( m_mainWorkflow, trackId, trackType, uuid );
+        QMutexLocker        lock( m_actionsMutex );
+        m_actions.addAction( act );
     }
     else
         m_mainWorkflow->removeClip( uuid, trackId, trackType );
 }
 
-void        WorkflowRenderer::addClip( Clip* clip, uint32_t trackNumber, qint64 startingPos, MainWorkflow::TrackType trackType )
+void        WorkflowRenderer::addClip( Clip* clip, uint32_t trackId, qint64 startingPos, MainWorkflow::TrackType trackType )
 {
     if ( m_isRendering == true )
     {
-        StackedAction*  act = new StackedAction( AddClip );
-        act->clip = clip;
-        act->trackId = trackNumber;
-        act->startingPos = startingPos;
-        act->trackType = trackType;
-        QMutexLocker    lock( m_actionsMutex );
-        m_actions.push( act );
+        Action::Generic*    act = new Action::AddClip( m_mainWorkflow, trackId, trackType, clip, startingPos );
+        QMutexLocker        lock( m_actionsMutex );
+        m_actions.addAction( act );
     }
     else
-        m_mainWorkflow->addClip( clip, trackNumber, startingPos, trackType );
+        m_mainWorkflow->addClip( clip, trackId, startingPos, trackType );
 }
 
 void        WorkflowRenderer::timelineCursorChanged( qint64 newFrame )
@@ -398,6 +347,64 @@ void        WorkflowRenderer::rulerCursorChanged( qint64 newFrame )
     m_mainWorkflow->setCurrentFrame( newFrame, MainWorkflow::RulerCursor );
 }
 
+Clip*       WorkflowRenderer::split( Clip* toSplit, uint32_t trackId, qint64 newClipPos, qint64 newClipBegin, MainWorkflow::TrackType trackType )
+{
+    Clip*   newClip = new Clip( toSplit, newClipBegin, toSplit->getEnd() );
+
+    if ( m_isRendering == true )
+    {
+        //adding clip
+        //We can NOT call addClip, as it would lock the action lock and then release it,
+        //thus potentially breaking the synchrone way of doing this
+        Action::Generic*    act = new Action::AddClip( m_mainWorkflow, trackId, trackType, newClip, newClipPos );
+        //resizing it
+        Action::Generic*    act2 = new Action::ResizeClip( toSplit, toSplit->getBegin(), newClipBegin );
+
+        //Push the actions onto the action stack
+        QMutexLocker    lock( m_actionsMutex );
+        m_actions.addAction( act );
+        m_actions.push( act2 );
+    }
+    else
+    {
+        toSplit->setEnd( newClipBegin );
+        m_mainWorkflow->addClip( newClip, trackId, newClipPos, trackType );
+    }
+    return newClip;
+}
+
+void    WorkflowRenderer::unsplit( Clip* origin, Clip* splitted, uint32_t trackId, qint64 oldEnd, MainWorkflow::TrackType trackType )
+{
+    if ( m_isRendering == true )
+    {
+        //removing clip
+        Action::Generic*    act = new Action::RemoveClip( m_mainWorkflow, trackId, trackType, splitted->getUuid() );
+        //resizing it
+        Action::Generic*    act2 = new Action::ResizeClip( origin, splitted->getBegin(), oldEnd );
+        //Push the actions onto the action stack
+        QMutexLocker        lock( m_actionsMutex );
+        m_actions.addAction( act );
+        m_actions.addAction( act2 );
+    }
+    else
+    {
+        delete m_mainWorkflow->removeClip( splitted->getUuid(), trackId, trackType );
+        origin->setEnd( oldEnd );
+    }
+}
+
+void    WorkflowRenderer::resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd )
+{
+    if ( m_isRendering == true )
+    {
+        Action::Generic*    act = new Action::ResizeClip(  clip, newBegin, newEnd );
+        QMutexLocker        lock( m_actionsMutex );
+        m_actions.addAction( act );
+    }
+    else
+        clip->setBoundaries( newBegin, newEnd );
+}
+
 /////////////////////////////////////////////////////////////////////
 /////SLOTS :
 /////////////////////////////////////////////////////////////////////
@@ -413,21 +420,9 @@ void        WorkflowRenderer::__frameChanged( qint64 frame, MainWorkflow::FrameC
     emit frameChanged( frame, reason );
 }
 
-void        WorkflowRenderer::__videoPaused()
-{
-    if ( m_pauseAsked == true )
-        pauseMainWorkflow();
-}
-
 void        WorkflowRenderer::__videoPlaying()
 {
-    if ( m_unpauseAsked == true )
-        unpauseMainWorkflow();
-    else
-    {
-        m_paused = false;
-        emit playing();
-    }
+    emit playing();
 }
 
 void        WorkflowRenderer::__videoStopped()
@@ -435,3 +430,7 @@ void        WorkflowRenderer::__videoStopped()
     emit endReached();
 }
 
+void        WorkflowRenderer::__videoPaused()
+{
+    emit paused();
+}

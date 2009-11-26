@@ -34,6 +34,7 @@ SOURCES += src/main.cpp \
     src/Media/Clip.cpp \
     src/GUI/About.cpp \
     src/Metadata/MetaDataWorker.cpp \
+    src/Metadata/MetaDataManager.cpp \
     src/Library/Library.cpp \
     src/GUI/GraphicsMovieItem.cpp \
     src/GUI/GraphicsAudioItem.cpp \
@@ -86,10 +87,9 @@ SOURCES += src/main.cpp \
     src/Configuration/ProjectSettingsDefault.cpp \
     src/GUI/TracksControls.cpp \
     src/GUI/widgets/TrackControls.cpp \
-    # Wizard Files
     src/GUI/wizard/ProjectWizard.cpp \
-    src/GUI/wizard/CustomWizardPage.cpp
-
+    src/GUI/wizard/CustomWizardPage.cpp \
+    src/Actions/ActionStack.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -109,6 +109,7 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/MediaListWidget.h \
     src/GUI/About.h \
     src/Metadata/MetaDataWorker.h \
+    src/Metadata/MetaDataManager.h \
     src/Tools/Singleton.hpp \
     src/Library/Library.h \
     src/GUI/AbstractGraphicsMediaItem.h \
@@ -171,10 +172,11 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/PreferenceWidget.h \
     src/GUI/TracksControls.h \
     src/GUI/widgets/TrackControls.h \
-    # wizard includes
     src/GUI/wizard/ProjectWizard.h \
     src/GUI/wizard/PageFactory.h \
-    src/GUI/wizard/CustomWizardPage.h
+    src/GUI/wizard/CustomWizardPage.h \
+    src/Actions/StackedAction.hpp \
+    src/Actions/ActionStack.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \
@@ -214,6 +216,7 @@ INCLUDEPATH += src/LibVLCpp \
     src/EffectsEngine \
     src/Configuration \
     src/EffectsEngine \
+    src/Actions \
     src
 
 # QMAKE_CFLAGS+=-pg
