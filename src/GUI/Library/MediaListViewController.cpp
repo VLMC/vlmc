@@ -21,6 +21,8 @@ void        MediaListViewController::newMediaLoaded( Media* media )
     connect( cell, SIGNAL ( cellSelected( QUuid ) ), this, SLOT ( cellSelection( QUuid ) ) );
     connect( cell, SIGNAL ( cellDeleted( QUuid ) ), this, SLOT( mediaDeletion( QUuid ) ) );
 
+    if ( media->getMetadata() != Media::ParsedWithSnapshot )
+        connect( media, SIGNAL( snapshotComputed( Media* ) ), this, SLOT( updateCell( Media* ) ) );
     cell->setThumbnail( media->getSnapshot() );
     cell->setTitle( media->getFileName() );
     cell->setLength( media->getLengthMS() );
@@ -52,4 +54,11 @@ void    MediaListViewController::mediaRemoved( const QUuid& uuid )
     removeCell( m_cells->value( uuid ) );
     m_cells->remove( uuid );
     m_currentUuid = QUuid();
+}
+
+void    MediaListViewController::updateCell( Media* media )
+{
+    MediaCellView* cell = dynamic_cast<MediaCellView*>( m_cells->value( media->getUuid(), NULL ) );
+    if ( cell != NULL )
+        cell->setThumbnail( media->getSnapshot() );
 }

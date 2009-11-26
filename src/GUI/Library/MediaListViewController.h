@@ -25,6 +25,7 @@ public slots:
     void        cellSelection( const QUuid& uuid );
     void        mediaDeletion( const QUuid& uuid );
     void        mediaRemoved( const QUuid& uuid );
+    void        updateCell( Media* media );
 signals:
     void        mediaSelected( Media* media );
     void        mediaDeleted( const QUuid& uuid );
