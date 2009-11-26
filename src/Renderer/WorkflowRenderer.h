@@ -99,6 +99,11 @@ class   WorkflowRenderer : public GenericRenderer
 
     private:
         unsigned char*	    m_renderVideoFrame;
+        /**
+         *  \brief          When there's no sound to play, this is the buffer that'll
+         *                  be injected
+         */
+        static uint8_t*     m_silencedAudioBuffer;
         size_t              m_videoBuffSize;
         AudioClipWorkflow::AudioSample* m_renderAudioSample;
         QStack<StackedAction*>     m_actions;
@@ -115,6 +120,8 @@ class   WorkflowRenderer : public GenericRenderer
          */
         qint64              m_pts;
         qint64              m_audioPts;
+        uint32_t            m_nbChannels;
+
 
     public slots:
         virtual void        setClip( Clip* ){}

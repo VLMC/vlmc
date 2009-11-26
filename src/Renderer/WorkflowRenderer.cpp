@@ -28,6 +28,8 @@
 #include "Timeline.h"
 #include "SettingsManager.h"
 
+uint8_t*    WorkflowRenderer::m_silencedAudioBuffer = NULL;
+
 WorkflowRenderer::WorkflowRenderer() :
             m_mainWorkflow( MainWorkflow::getInstance() ),
             m_stopping( false ),
@@ -73,8 +75,9 @@ WorkflowRenderer::WorkflowRenderer() :
     m_media->addOption( ":imem-cat=2" );
     m_media->addOption( ":imem-caching=0" );
 
-    sprintf( buffer, ":input-slave=imem://data=%lld:cat=1:codec=s16l:samplerate=48000:channels=2",
-             (qint64)m_audioEsHandler );
+    m_nbChannels = 1;
+    sprintf( buffer, ":input-slave=imem://data=%lld:cat=1:codec=s16l:samplerate=48000:channels=%u",
+             (qint64)m_audioEsHandler, m_nbChannels );
     m_media->addOption( buffer );
 
     m_media->addOption( ":vvvv" );
@@ -159,11 +162,28 @@ int     WorkflowRenderer::lockAudio(  WorkflowRenderer* self, int64_t *pts, size
         MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getSynchroneOutput( MainWorkflow::AudioTrack );
         self->m_renderAudioSample = ret->audio;
     }
-    *buffer = self->m_renderAudioSample->buff;
-    *bufferSize = self->m_renderAudioSample->size;
-    *pts = (( self->m_audioPts * 1000000 ) / 48000 ) * self->m_renderAudioSample->nbSample;
-    self->m_audioPts += self->m_renderAudioSample->nbChannels;
-    qDebug() << "Video buffer size:" << *bufferSize;
+    if ( self->m_renderAudioSample != NULL )
+    {
+        *buffer = self->m_renderAudioSample->buff;
+        *bufferSize = self->m_renderAudioSample->size;
+        *pts = (( self->m_audioPts * 1000000 ) / 48000 ) * self->m_renderAudioSample->nbSample;
+        self->m_audioPts += self->m_renderAudioSample->nbChannels;
+    }
+    else
+    {
+        //We set the nbSample to 10ms, which is 1/100 of a sec, so we divide the samplerate
+        //by 100.
+        unsigned int    nbSample = 48000 / 100;
+        unsigned int    buffSize = self->m_nbChannels * 2 * nbSample;
+        if ( WorkflowRenderer::m_silencedAudioBuffer == NULL )
+            WorkflowRenderer::m_silencedAudioBuffer = new uint8_t[ buffSize ];
+        memset( WorkflowRenderer::m_silencedAudioBuffer, 0, buffSize );
+        *buffer = WorkflowRenderer::m_silencedAudioBuffer;
+        *bufferSize = buffSize;
+        *pts = (( self->m_audioPts * 1000000 ) / 48000 ) * nbSample;
+        self->m_audioPts += self->m_nbChannels;
+    }
+//    qDebug() << "Video buffer size:" << *bufferSize;
     return 0;
 }
 

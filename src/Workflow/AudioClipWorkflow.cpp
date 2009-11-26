@@ -53,7 +53,10 @@ void*       AudioClipWorkflow::getOutput()
     QMutexLocker    lock( m_renderLock );
 
     if ( isEndReached() == true )
+    {
+        qDebug() << "Audio end reached";
         return NULL;
+    }
     return m_buffer;
 }
 
@@ -91,7 +94,8 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
                                       unsigned int nb_samples, unsigned int bits_per_sample,
                                       unsigned int size, qint64 pts )
 {
-//    qDebug() << "pts:" << pts << "nb channels" << channels << "rate:" << rate;
+//    qDebug() << "pts:" << pts << "nb channels" << channels << "rate:" << rate <<
+//            "size:" << size << "nb_samples:" << nb_samples;
     Q_UNUSED( pcm_buffer );
     Q_UNUSED( rate );
     Q_UNUSED( bits_per_sample );
