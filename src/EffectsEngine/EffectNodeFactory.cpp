@@ -1,6 +1,6 @@
 /*****************************************************************************
- * EffectsFactory.cpp: this class is used to instantiate a new GenericEffect
- *                   which contains builtin or plugin effect
+ * EffectNodeFactory.cpp: this class is used to instantiate a new EffectNode
+ *                        which contains builtin or plugin effect
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -21,21 +21,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "EffectsFactory.h"
+#include "EffectNodeFactory.h"
 
 
 
-EffectsFactory::EffectsFactory()
+EffectNodeFactory::EffectNodeFactory()
 {
     m_epf["mixer"] = new MixerEffectFactory();
     m_epf["green"] = new GreenFilterEffectFactory();
 }
 
-EffectsFactory::~EffectsFactory()
+EffectNodeFactory::~EffectNodeFactory()
 {
 }
 
-EffectNode*        EffectsFactory::getEffect( quint32 id )
+EffectNode*        EffectNodeFactory::getEffect( quint32 id )
 {
     if ( id == 1 )
         return ( new EffectNode( m_epf["mixer"]->getIEffectPlugin() ) );

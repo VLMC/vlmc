@@ -31,7 +31,7 @@
 #include "LightVideoFrame.h"
 #include "InSlot.hpp"
 #include "OutSlot.hpp"
-#include "EffectsFactory.h"
+#include "EffectNodeFactory.h"
 
 class	EffectsEngine
 {

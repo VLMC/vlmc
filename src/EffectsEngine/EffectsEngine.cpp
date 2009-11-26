@@ -107,10 +107,10 @@ void	EffectsEngine::stop( void )
 
 void	EffectsEngine::loadEffects( void )
 {
-    EffectsFactory      ef;
+    EffectNodeFactory      enf;
 
-    m_effects[0] = ef.getEffect( 1 );
-    m_effects[1] = ef.getEffect( 2 );
+    m_effects[0] = enf.getEffect( 1 );
+    m_effects[1] = enf.getEffect( 2 );
     return ;
 }
 

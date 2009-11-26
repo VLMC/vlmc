@@ -64,7 +64,7 @@ SOURCES += src/main.cpp \
     src/GUI/VLMCPreferences.cpp \
     src/GUI/VideoProjectPreferences.cpp \
     src/Project/ProjectManager.cpp \
-    src/EffectsEngine/EffectsFactory.cpp \
+    src/EffectsEngine/EffectNodeFactory.cpp \
     src/EffectsEngine/EffectsEngine.cpp \
     src/EffectsEngine/LightVideoFrame.cpp \
     src/EffectsEngine/EffectNode.cpp \
@@ -138,7 +138,7 @@ HEADERS += src/GUI/MainWindow.h \
     src/EffectsEngine/MixerEffect.h \
     src/EffectsEngine/IEffectPlugin.h \
     src/EffectsEngine/IEffectNode.h \
-    src/EffectsEngine/EffectsFactory.h \
+    src/EffectsEngine/EffectNodeFactory.h \
     src/EffectsEngine/IEffectPluginFactory.h \
     src/EffectsEngine/GreenFilterEffectFactory.h \
     src/EffectsEngine/MixerEffectFactory.h \

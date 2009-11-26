@@ -1,6 +1,6 @@
 /*****************************************************************************
- * EffectsFactory.h: this class is used to instantiate a new GenericEffect
- *                   which contains builtin or plugin effect
+ * EffectNodeFactory.h: this class is used to instantiate a new EffectNode
+ *                      which contains builtin or plugin effect
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -21,8 +21,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef EFFECTSFACTORY_H_
-#define EFFECTSFACTORY_H_
+#ifndef EFFECTNODEFACTORY_H_
+#define EFFECTNODEFACTORY_H_
 
 #include <QMap>
 
@@ -37,18 +37,18 @@
 
 /* }; */
 
-class	EffectsFactory
+class	EffectNodeFactory
 {
  public:
 
   // CTOR & DTOR
 
-    EffectsFactory();
-    ~EffectsFactory();
+    EffectNodeFactory();
+    ~EffectNodeFactory();
 
   EffectNode*        getEffect( quint32 id );
  private:
   QMap<QByteArray, IEffectPluginFactory*>       m_epf;
 };
 
-#endif // EFFECTSFACTORY_H_
+#endif // EFFECTNODEFACTORY_H_
