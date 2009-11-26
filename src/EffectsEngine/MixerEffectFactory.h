@@ -1,6 +1,5 @@
 /*****************************************************************************
- * EffectsFactory.h: this class is used to instantiate a new GenericEffect
- *                   which contains builtin or plugin effect
+ * MixerEffectFactory.h: this class is used to instantiate a MixerEffect
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -21,34 +20,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef EFFECTSFACTORY_H_
-#define EFFECTSFACTORY_H_
-
-#include <QMap>
-
-#include "GreenFilterEffectFactory.h"
-#include "MixerEffectFactory.h"
+#ifndef MIXEREFFECTFACTORY_H_
+#define MIXEREFFECTFACTORY_H_
 
 #include "IEffectPluginFactory.h"
-#include "GenericEffect.h"
+#include "IEffectPlugin.h"
+#include "MixerEffect.h"
 
-/* class   SmartFactoryProxy */
-/* { */
-
-/* }; */
-
-class	EffectsFactory
+class   MixerEffectFactory : public IEffectPluginFactory
 {
  public:
-
-  // CTOR & DTOR
-
-    EffectsFactory();
-    ~EffectsFactory();
-
-  GenericEffect*        getEffect( quint32 id );
- private:
-  QMap<QByteArray, IEffectPluginFactory*>       m_epf;
+    IEffectPlugin*     getIEffectPlugin( void );
 };
 
-#endif // EFFECTSFACTORY_H_
+#endif // MIXEREFFECTFACTORY_H_

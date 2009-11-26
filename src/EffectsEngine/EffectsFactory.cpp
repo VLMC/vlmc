@@ -27,6 +27,8 @@
 
 EffectsFactory::EffectsFactory()
 {
+    m_epf["mixer"] = new MixerEffectFactory();
+    m_epf["green"] = new GreenFilterEffectFactory();
 }
 
 EffectsFactory::~EffectsFactory()
@@ -36,7 +38,7 @@ EffectsFactory::~EffectsFactory()
 GenericEffect*        EffectsFactory::getEffect( quint32 id )
 {
     if ( id == 1 )
-        return ( new GenericEffect( new MixerEffect() ) );
+        return ( new GenericEffect( m_epf["mixer"]->getIEffectPlugin() ) );
     else if ( id == 2 )
-        return ( new GenericEffect( new GreenFilterEffect() ) );
+        return ( new GenericEffect( m_epf["green"]->getIEffectPlugin() ) );
 }
