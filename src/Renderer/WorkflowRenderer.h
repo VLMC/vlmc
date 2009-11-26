@@ -121,6 +121,7 @@ class   WorkflowRenderer : public GenericRenderer
         qint64              m_pts;
         qint64              m_audioPts;
         uint32_t            m_nbChannels;
+        uint32_t            m_rate;
 
 
     public slots:

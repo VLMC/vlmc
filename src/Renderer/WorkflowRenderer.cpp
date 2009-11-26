@@ -76,12 +76,10 @@ WorkflowRenderer::WorkflowRenderer() :
     m_media->addOption( ":imem-caching=0" );
 
     m_nbChannels = 1;
-    sprintf( buffer, ":input-slave=imem://data=%lld:cat=1:codec=s16l:samplerate=48000:channels=%u",
-             (qint64)m_audioEsHandler, m_nbChannels );
+    m_rate = 48000;
+    sprintf( buffer, ":input-slave=imem://data=%lld:cat=1:codec=s16l:samplerate=%u:channels=%u",
+             (qint64)m_audioEsHandler, m_rate, m_nbChannels );
     m_media->addOption( buffer );
-
-    m_media->addOption( ":vvvv" );
-
 
     m_condMutex = new QMutex;
     m_waitCond = new QWaitCondition;
@@ -166,24 +164,25 @@ int     WorkflowRenderer::lockAudio(  WorkflowRenderer* self, int64_t *pts, size
     {
         *buffer = self->m_renderAudioSample->buff;
         *bufferSize = self->m_renderAudioSample->size;
-        *pts = (( self->m_audioPts * 1000000 ) / 48000 ) * self->m_renderAudioSample->nbSample;
-        self->m_audioPts += self->m_renderAudioSample->nbChannels;
+        *pts = self->m_audioPts + ( ( 1000000 / self->m_rate ) * self->m_nbChannels * self->m_renderAudioSample->nbSample);
+//        qDebug() << self->m_renderAudioSample->nbSample;
+//        qDebug() << "Sound rendered";
     }
     else
     {
         //We set the nbSample to 10ms, which is 1/100 of a sec, so we divide the samplerate
         //by 100.
-        unsigned int    nbSample = 48000 / 100;
+        unsigned int    nbSample = self->m_rate / 100;
         unsigned int    buffSize = self->m_nbChannels * 2 * nbSample;
         if ( WorkflowRenderer::m_silencedAudioBuffer == NULL )
             WorkflowRenderer::m_silencedAudioBuffer = new uint8_t[ buffSize ];
         memset( WorkflowRenderer::m_silencedAudioBuffer, 0, buffSize );
         *buffer = WorkflowRenderer::m_silencedAudioBuffer;
         *bufferSize = buffSize;
-        *pts = (( self->m_audioPts * 1000000 ) / 48000 ) * nbSample;
-        self->m_audioPts += self->m_nbChannels;
+        *pts = self->m_audioPts + ( ( 1000000 / self->m_rate ) * self->m_nbChannels * nbSample);
+//        qDebug() << "Silence rendered";
     }
-//    qDebug() << "Video buffer size:" << *bufferSize;
+    self->m_audioPts = *pts;
     return 0;
 }
 
