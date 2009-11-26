@@ -166,7 +166,6 @@ void                Clip::setBegin( qint64 begin )
     if ( begin == m_begin ) return;
     m_begin = begin;
     computeLength();
-    emit lengthUpdated();
 }
 
 void                Clip::setEnd( qint64 end )
@@ -174,7 +173,6 @@ void                Clip::setEnd( qint64 end )
     if ( end == m_end ) return;
     m_end = end;
     computeLength();
-    emit lengthUpdated();
 }
 
 void                Clip::setBoundaries( qint64 newBegin, qint64 newEnd )
@@ -183,5 +181,4 @@ void                Clip::setBoundaries( qint64 newBegin, qint64 newEnd )
     m_begin = newBegin;
     m_end = newEnd;
     computeLength();
-    emit lengthUpdated();
 }
