@@ -29,6 +29,7 @@ void    ProjectSettingsDefault::load( const QString& part )
     ProjectSettingsDefault::loadAudioDefaults( part );
     ProjectSettingsDefault::loadVideoDefaults( part );
     ProjectSettingsDefault::loadProjectDefaults( part );
+    SettingsManager::getInstance()->commit();
 
     return ;
 }
