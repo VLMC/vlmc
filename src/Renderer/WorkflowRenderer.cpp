@@ -118,7 +118,7 @@ void        WorkflowRenderer::checkActions()
         return ;
     while ( m_actions.empty() == false )
     {
-        StackedAction*   act = m_actions.top();
+        Action::Generic*   act = m_actions.top();
         m_actions.pop();
         act->execute();
         delete act;
@@ -185,7 +185,7 @@ void        WorkflowRenderer::internalPlayPause( bool forcePause )
     {
         if ( m_paused == true && forcePause == false )
         {
-            StackedAction*      act = new UnpauseAction( m_mainWorkflow );
+            Action::Generic*    act = new Action::Unpause( m_mainWorkflow );
             QMutexLocker        lock( m_actionsMutex );
             m_actions.addAction( act );
         }
@@ -193,7 +193,7 @@ void        WorkflowRenderer::internalPlayPause( bool forcePause )
         {
             if ( m_paused == false )
             {
-                StackedAction*      act = new PauseAction( m_mainWorkflow );
+                Action::Generic*    act = new Action::Unpause( m_mainWorkflow );
                 QMutexLocker        lock( m_actionsMutex );
                 m_actions.addAction( act );
             }
@@ -230,8 +230,8 @@ void        WorkflowRenderer::removeClip( const QUuid& uuid, uint32_t trackId, M
 {
     if ( m_isRendering == true )
     {
-        StackedAction*  act = new RemoveClipAction( m_mainWorkflow, trackId, trackType, uuid );
-        QMutexLocker    lock( m_actionsMutex );
+        Action::Generic*    act = new Action::RemoveClip( m_mainWorkflow, trackId, trackType, uuid );
+        QMutexLocker        lock( m_actionsMutex );
         m_actions.addAction( act );
     }
     else
@@ -242,8 +242,8 @@ void        WorkflowRenderer::addClip( Clip* clip, uint32_t trackId, qint64 star
 {
     if ( m_isRendering == true )
     {
-        StackedAction*  act = new AddClipAction( m_mainWorkflow, trackId, trackType, clip, startingPos );
-        QMutexLocker    lock( m_actionsMutex );
+        Action::Generic*    act = new Action::AddClip( m_mainWorkflow, trackId, trackType, clip, startingPos );
+        QMutexLocker        lock( m_actionsMutex );
         m_actions.addAction( act );
     }
     else
@@ -274,9 +274,9 @@ Clip*       WorkflowRenderer::split( Clip* toSplit, uint32_t trackId, qint64 new
         //adding clip
         //We can NOT call addClip, as it would lock the action lock and then release it,
         //thus potentially breaking the synchrone way of doing this
-        StackedAction*  act = new AddClipAction( m_mainWorkflow, trackId, trackType, newClip, newClipPos );
+        Action::Generic*    act = new Action::AddClip( m_mainWorkflow, trackId, trackType, newClip, newClipPos );
         //resizing it
-        StackedAction*  act2 = new ResizeClipAction( toSplit, toSplit->getBegin(), newClipBegin );
+        Action::Generic*    act2 = new Action::ResizeClip( toSplit, toSplit->getBegin(), newClipBegin );
 
         //Push the actions onto the action stack
         QMutexLocker    lock( m_actionsMutex );
@@ -296,11 +296,11 @@ void    WorkflowRenderer::unsplit( Clip* origin, Clip* splitted, uint32_t trackI
     if ( m_isRendering == true )
     {
         //removing clip
-        StackedAction*  act = new RemoveClipAction( m_mainWorkflow, trackId, trackType, splitted->getUuid() );
+        Action::Generic*    act = new Action::RemoveClip( m_mainWorkflow, trackId, trackType, splitted->getUuid() );
         //resizing it
-        StackedAction*  act2 = new ResizeClipAction( origin, splitted->getBegin(), oldEnd );
+        Action::Generic*    act2 = new Action::ResizeClip( origin, splitted->getBegin(), oldEnd );
         //Push the actions onto the action stack
-        QMutexLocker    lock( m_actionsMutex );
+        QMutexLocker        lock( m_actionsMutex );
         m_actions.addAction( act );
         m_actions.addAction( act2 );
     }
@@ -315,8 +315,8 @@ void    WorkflowRenderer::resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd
 {
     if ( m_isRendering == true )
     {
-        StackedAction*  act = new ResizeClipAction(  clip, newBegin, newEnd );
-        QMutexLocker    lock( m_actionsMutex );
+        Action::Generic*    act = new Action::ResizeClip(  clip, newBegin, newEnd );
+        QMutexLocker        lock( m_actionsMutex );
         m_actions.addAction( act );
     }
     else

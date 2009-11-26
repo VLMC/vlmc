@@ -28,13 +28,13 @@ Stack::~Stack()
 {
     while ( empty() == false )
     {
-        StackedAction*  act = top();
+        Action::Generic*  act = top();
         delete act;
         pop();
     }
 }
 
-void    Stack::addAction( StackedAction* act )
+void    Stack::addAction( Action::Generic* act )
 {
     iterator    it = begin();
     iterator    ite = end();

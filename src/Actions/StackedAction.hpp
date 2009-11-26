@@ -27,132 +27,134 @@
 
 #include "MainWorkflow.h"
 
-class   StackedAction
+namespace Action
 {
-    public:
-        enum    Type
-        {
-            Pause,
-            Unpause,
-            Resize,
-            Remove,
-            Add,
-        };
-        StackedAction( Type type ) : m_type( type ) {}
-        virtual ~StackedAction(){}
-        virtual void    execute() = 0;
-        virtual bool    isOpposite( const StackedAction* ) const
-        {
-            return false;
-        }
-        Type    getType() const
-        {
-            return m_type;
-        }
-    private:
-        Type    m_type;
-};
+    class   Generic
+    {
+        public:
+            enum    Type
+            {
+                Pause,
+                Unpause,
+                Resize,
+                Remove,
+                Add,
+            };
+            Generic( Type type ) : m_type( type ) {}
+            virtual ~Generic(){}
+            virtual void    execute() = 0;
+            virtual bool    isOpposite( const Generic* ) const
+            {
+                return false;
+            }
+            Type    getType() const
+            {
+                return m_type;
+            }
+        private:
+            Type    m_type;
+    };
 
-class   WorkflowAction : public StackedAction
-{
-    public:
-        WorkflowAction( MainWorkflow* mainWorkflow, Type type ) : StackedAction( type ), m_mainWorkflow( mainWorkflow ) {}
-    protected:
-        MainWorkflow*   m_mainWorkflow;
-};
+    class   Workflow : public Generic
+    {
+        public:
+            Workflow( MainWorkflow* mainWorkflow, Type type ) : Generic( type ), m_mainWorkflow( mainWorkflow ) {}
+        protected:
+            MainWorkflow*   m_mainWorkflow;
+    };
 
-class   TrackAction : public WorkflowAction
-{
-    public:
-        TrackAction( MainWorkflow* mainWorkflow, uint32_t trackId, MainWorkflow::TrackType trackType, Type type ) :
-            WorkflowAction( mainWorkflow, type ), m_trackId( trackId ), m_trackType( trackType )
-        {
-        }
-    protected:
-        uint32_t                    m_trackId;
-        MainWorkflow::TrackType     m_trackType;
-};
+    class   Track : public Workflow
+    {
+        public:
+            Track( MainWorkflow* mainWorkflow, uint32_t trackId, MainWorkflow::TrackType trackType, Type type ) :
+                Workflow( mainWorkflow, type ), m_trackId( trackId ), m_trackType( trackType )
+            {
+            }
+        protected:
+            uint32_t                    m_trackId;
+            MainWorkflow::TrackType     m_trackType;
+    };
 
-class   AddClipAction : public TrackAction
-{
-    public:
-        AddClipAction( MainWorkflow* mainWorkflow, uint32_t trackId, MainWorkflow::TrackType trackType,
-                       Clip* clip, qint64 startingPos ) : TrackAction( mainWorkflow, trackId, trackType, Add ),
-                                                        m_clip( clip ), m_startingPos( startingPos )
-        {
-        }
-        void        execute()
-        {
-            m_mainWorkflow->addClip( m_clip, m_trackId, m_startingPos, m_trackType );
-        }
-    protected:
-        Clip*       m_clip;
-        qint64      m_startingPos;
-};
+    class   AddClip : public Track
+    {
+        public:
+            AddClip( MainWorkflow* mainWorkflow, uint32_t trackId, MainWorkflow::TrackType trackType,
+                           Clip* clip, qint64 startingPos ) : Track( mainWorkflow, trackId, trackType, Add ),
+                                                            m_clip( clip ), m_startingPos( startingPos )
+            {
+            }
+            void        execute()
+            {
+                m_mainWorkflow->addClip( m_clip, m_trackId, m_startingPos, m_trackType );
+            }
+        protected:
+            Clip*       m_clip;
+            qint64      m_startingPos;
+    };
 
-class   RemoveClipAction : public TrackAction
-{
-    public:
-        RemoveClipAction( MainWorkflow* mainWorkflow, uint32_t trackId, MainWorkflow::TrackType trackType,
-                       const QUuid& uuid ) : TrackAction( mainWorkflow, trackId, trackType, Remove ),
-                                            m_uuid( uuid )
-        {
-        }
-        void        execute()
-        {
-            m_mainWorkflow->removeClip( m_uuid, m_trackId, m_trackType );
-        }
-    protected:
-        QUuid       m_uuid;
-};
+    class   RemoveClip : public Track
+    {
+        public:
+            RemoveClip( MainWorkflow* mainWorkflow, uint32_t trackId, MainWorkflow::TrackType trackType,
+                           const QUuid& uuid ) : Track( mainWorkflow, trackId, trackType, Remove ),
+                                                m_uuid( uuid )
+            {
+            }
+            void        execute()
+            {
+                m_mainWorkflow->removeClip( m_uuid, m_trackId, m_trackType );
+            }
+        protected:
+            QUuid       m_uuid;
+    };
 
-class   ResizeClipAction : public StackedAction
-{
-    public:
-        ResizeClipAction( Clip* clip, qint64 newBegin, qint64 newEnd ) : StackedAction( Resize ),
-                m_clip( clip ), m_newBegin( newBegin ), m_newEnd( newEnd )
-        {
-        }
-        void    execute()
-        {
-            m_clip->setBoundaries( m_newBegin, m_newEnd );
-        }
-    protected:
-        Clip*   m_clip;
-        qint64  m_newBegin;
-        qint64  m_newEnd;
-};
+    class   ResizeClip : public Generic
+    {
+        public:
+            ResizeClip( Clip* clip, qint64 newBegin, qint64 newEnd ) : Generic( Resize ),
+                    m_clip( clip ), m_newBegin( newBegin ), m_newEnd( newEnd )
+            {
+            }
+            void    execute()
+            {
+                m_clip->setBoundaries( m_newBegin, m_newEnd );
+            }
+        protected:
+            Clip*   m_clip;
+            qint64  m_newBegin;
+            qint64  m_newEnd;
+    };
 
-class   PauseAction : public WorkflowAction
-{
-    public:
-        PauseAction( MainWorkflow* mainWorkflow ) : WorkflowAction( mainWorkflow, Pause )
-        {
-        }
-        void    execute()
-        {
-            m_mainWorkflow->pause();
-        }
-        bool    isOpposite( const StackedAction* act ) const
-        {
-            return ( act->getType() == Unpause );
-        }
-};
+    class   Pause : public Workflow
+    {
+        public:
+            Pause( MainWorkflow* mainWorkflow ) : Workflow( mainWorkflow, Generic::Pause )
+            {
+            }
+            void    execute()
+            {
+                m_mainWorkflow->pause();
+            }
+            bool    isOpposite( const Generic* act ) const
+            {
+                return ( act->getType() == Unpause );
+            }
+    };
 
-class   UnpauseAction : public WorkflowAction
-{
-    public:
-        UnpauseAction( MainWorkflow* mainWorkflow ) : WorkflowAction( mainWorkflow, Unpause )
-        {
-        }
-        void    execute()
-        {
-            m_mainWorkflow->unpause();
-        }
-        bool    isOpposite( const StackedAction* act ) const
-        {
-            return ( act->getType() == Pause );
-        }
-};
-
+    class   Unpause : public Workflow
+    {
+        public:
+            Unpause( MainWorkflow* mainWorkflow ) : Workflow( mainWorkflow, Generic::Unpause )
+            {
+            }
+            void    execute()
+            {
+                m_mainWorkflow->unpause();
+            }
+            bool    isOpposite( const Generic* act ) const
+            {
+                return ( act->getType() == Generic::Pause );
+            }
+    };
+}
 #endif // STACKEDACTION_H

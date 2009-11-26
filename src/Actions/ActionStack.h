@@ -29,11 +29,11 @@
 
 namespace Action
 {
-    class   Stack : public QStack<StackedAction*>
+    class   Stack : public QStack<Action::Generic*>
     {
         public:
             ~Stack();
-            void        addAction( StackedAction* act );
+            void        addAction( Action::Generic* act );
     };
 }
 
