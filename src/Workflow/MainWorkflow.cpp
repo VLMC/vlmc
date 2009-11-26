@@ -228,16 +228,13 @@ MainWorkflow::OutputBuffers*  MainWorkflow::getSynchroneOutput( MainWorkflow::Tr
 //    qDebug() << "Waiting for sync output";
     m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
 //    qDebug() << "Got it";
-    m_effectEngine->render();
-    if ( m_effectEngine->getOutputFrame( 0 )->nboctets == 0 )
-        m_outputBuffers->video = MainWorkflow::blackOutput;
-    else
-        m_outputBuffers->video = &( m_effectEngine->getOutputFrame( 0 ) );
-
     if ( trackType == BothTrackType || trackType == VideoTrack )
     {
         m_effectEngine->render();
-        m_outputBuffers->video = &( m_effectEngine->getOutputFrame( 0 ) );
+        if ( m_effectEngine->getOutputFrame( 0 )->nboctets == 0 )
+            m_outputBuffers->video = MainWorkflow::blackOutput;
+        else
+            m_outputBuffers->video = &( m_effectEngine->getOutputFrame( 0 ) );
     }
     if ( trackType == BothTrackType || trackType == AudioTrack )
         m_outputBuffers->audio = m_tracks[MainWorkflow::AudioTrack]->getTmpAudioBuffer();
