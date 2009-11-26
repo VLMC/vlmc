@@ -46,11 +46,8 @@ public:
     virtual bool moveable() const { return true; }
     virtual const QUuid& uuid() const { return m_clip->getUuid(); }
     virtual MainWorkflow::TrackType mediaType() const;
-    virtual QRectF boundingRect() const;
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
 
-    void setWidth( int width );
-    void setHeight( int height );
     virtual Clip* clip() const;
 
 protected:
@@ -61,13 +58,8 @@ protected:
     virtual void        mousePressEvent( QGraphicsSceneMouseEvent* event );
     virtual void        mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
 
-private slots:
-    void                adjustLength();
-
 private:
     Clip*               m_clip;
-    int                 m_width;
-    int                 m_height;
 
 signals:
     void                split( GraphicsMovieItem* self, qint64 frame );

@@ -27,6 +27,7 @@
 #include <QUuid>
 #include <QCursor>
 #include "GraphicsTrack.hpp"
+#include "Clip.h"
 
 class TracksView;
 
@@ -35,8 +36,17 @@ class AbstractGraphicsMediaItem : public QObject, public QGraphicsItem
     Q_OBJECT
     friend class TracksView;
 public:
+    enum From
+    {
+        BEGINNING,
+        END
+    };
+
     AbstractGraphicsMediaItem();
     virtual ~AbstractGraphicsMediaItem() { }
+
+    /// Defines the outer bounds of the item as a rectangle
+    virtual QRectF boundingRect() const;
 
     /// Return the Type of the MediaItem (see http://doc.trolltech.com/4.5/qgraphicsitem.html#type)
     virtual int type() const = 0;
@@ -71,6 +81,9 @@ public:
     /// Return the position of the item (in frames) for the x-axis.
     qint64 startPos();
 
+    /// Resize an item from its beginning or from its end.
+    void resize( qint64 size, From from = BEGINNING );
+
 protected:
     /**
      * Returns the current tracksView for the item,
@@ -93,6 +106,12 @@ protected:
      */
     AbstractGraphicsMediaItem* groupItem();
 
+    void setWidth( qint64 width );
+    void setHeight( qint64 height );
+
+protected slots:
+    void adjustLength();
+
 private:
     /// This pointer will be set when inserted in the tracksView.
     TracksView* m_tracksView;
@@ -100,6 +119,8 @@ private:
     /// Pointer used to save the address of a linked item.
     AbstractGraphicsMediaItem* m_group;
 
+    qint64 m_width;
+    qint64 m_height;
 };
 
 #endif // ABSTRACTGRAPHICSMEDIAITEM_H

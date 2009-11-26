@@ -28,7 +28,7 @@
 #include "TracksView.h"
 #include "Timeline.h"
 
-GraphicsMovieItem::GraphicsMovieItem( Clip* clip ) : m_clip( clip ), m_width( 0 ), m_height( 0 )
+GraphicsMovieItem::GraphicsMovieItem( Clip* clip ) : m_clip( clip )
 {
     setFlags( QGraphicsItem::ItemIsSelectable );
 
@@ -42,7 +42,7 @@ GraphicsMovieItem::GraphicsMovieItem( Clip* clip ) : m_clip( clip ), m_width( 0 
 
     // Adjust the width
     setWidth( clip->getLength() );
-    // Automatically adjust future changes
+    // Automatically adjust for future changes
     connect( clip, SIGNAL( lengthUpdated() ), this, SLOT( adjustLength() ) );
 }
 
@@ -55,11 +55,6 @@ MainWorkflow::TrackType GraphicsMovieItem::mediaType() const
     return MainWorkflow::VideoTrack;
 }
 
-QRectF GraphicsMovieItem::boundingRect() const
-{
-    return QRectF( 0, 0, m_width, m_height );
-}
-
 void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* )
 {
     painter->save();
@@ -69,30 +64,6 @@ void GraphicsMovieItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     painter->save();
     paintTitle( painter, option );
     painter->restore();
-}
-
-void GraphicsMovieItem::setWidth( int width )
-{
-    prepareGeometryChange();
-    m_width = width;
-}
-
-void GraphicsMovieItem::setHeight( int height )
-{
-    prepareGeometryChange();
-    m_height = height;
-}
-
-void GraphicsMovieItem::adjustLength()
-{
-    //FIXME implement clip expanding.
-    if ( m_clip->getLength() > m_width )
-    {
-        qWarning( "adjustLength: Clip expanding not supported!" );
-        return ;
-    }
-    prepareGeometryChange();
-    setWidth( m_clip->getLength() );
 }
 
 Clip* GraphicsMovieItem::clip() const
