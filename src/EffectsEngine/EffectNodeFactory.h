@@ -26,8 +26,8 @@
 
 #include <QMap>
 
-#include "GreenFilterEffectFactory.h"
-#include "MixerEffectFactory.h"
+#include "GreenFilterEffectPluginCreator.h"
+#include "MixerEffectPluginCreator.h"
 
 #include "IEffectPluginCreator.h"
 #include "EffectNode.h"

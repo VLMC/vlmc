@@ -1,6 +1,6 @@
 /*****************************************************************************
- * GreenFilterEffectFactory.h: this class is used to instantiate
- *                             a GreenFilterEffect
+ * GreenFilterEffectPluginCreator.h: this class is used to instantiate
+ *                                   a GreenFilterEffect
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -21,9 +21,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "GreenFilterEffectFactory.h"
+#include "GreenFilterEffectPluginCreator.h"
 
-IEffectPlugin*  GreenFilterEffectFactory::getIEffectPlugin(void)
+IEffectPlugin*  GreenFilterEffectPluginCreator::getIEffectPlugin(void)
 {
     return (new GreenFilterEffect());
 }

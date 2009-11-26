@@ -1,5 +1,5 @@
 /*****************************************************************************
- * MixerEffectFactory.h: this class is used to instantiate a MixerEffect
+ * MixerEffectPluginCreator.cpp: this class is used to instantiate a MixerEffect
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,17 +20,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef MIXEREFFECTFACTORY_H_
-#define MIXEREFFECTFACTORY_H_
+#include "MixerEffectPluginCreator.h"
 
-#include "IEffectPluginCreator.h"
-#include "IEffectPlugin.h"
-#include "MixerEffect.h"
-
-class   MixerEffectFactory : public IEffectPluginCreator
+IEffectPlugin*  MixerEffectPluginCreator::getIEffectPlugin(void)
 {
- public:
-    IEffectPlugin*     getIEffectPlugin( void );
-};
-
-#endif // MIXEREFFECTFACTORY_H_
+    return (new MixerEffect());
+}

@@ -27,8 +27,8 @@
 
 EffectNodeFactory::EffectNodeFactory()
 {
-    m_epc["mixer"] = new MixerEffectFactory();
-    m_epc["green"] = new GreenFilterEffectFactory();
+    m_epc["mixer"] = new MixerEffectPluginCreator();
+    m_epc["green"] = new GreenFilterEffectPluginCreator();
 }
 
 EffectNodeFactory::~EffectNodeFactory()

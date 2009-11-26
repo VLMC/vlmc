@@ -1,5 +1,6 @@
 /*****************************************************************************
- * MixerEffectFactory.cpp: this class is used to instantiate a MixerEffect
+ * GreenFilterEffectPluginCreator.h: this class is used to instantiate
+ *                                   a GreenFilterEffect
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,9 +21,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "MixerEffectFactory.h"
+#ifndef GREENFILTEREFFECTPLUGINCREATOR_H_
+#define GREENFILTEREFFECTPLUGINCREATOR_H_
 
-IEffectPlugin*  MixerEffectFactory::getIEffectPlugin(void)
+#include "IEffectPluginCreator.h"
+#include "IEffectPlugin.h"
+#include "GreenFilterEffect.h"
+
+class   GreenFilterEffectPluginCreator : public IEffectPluginCreator
 {
-    return (new MixerEffect());
-}
+public:
+    IEffectPlugin*      getIEffectPlugin( void );
+};
+
+#endif // GREENFILTEREFFECTPLUGINCREATOR_H_

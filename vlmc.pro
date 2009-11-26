@@ -70,8 +70,8 @@ SOURCES += src/main.cpp \
     src/EffectsEngine/EffectNode.cpp \
     src/EffectsEngine/GreenFilterEffect.cpp \
     src/EffectsEngine/MixerEffect.cpp \
-    src/EffectsEngine/MixerEffectFactory.cpp \
-    src/EffectsEngine/GreenFilterEffectFactory.cpp \
+    src/EffectsEngine/MixerEffectPluginCreator.cpp \
+    src/EffectsEngine/GreenFilterEffectPluginCreator.cpp \
     src/Configuration/SettingsManager.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
@@ -140,8 +140,8 @@ HEADERS += src/GUI/MainWindow.h \
     src/EffectsEngine/IEffectNode.h \
     src/EffectsEngine/EffectNodeCreator.h \
     src/EffectsEngine/IEffectPluginFactory.h \
-    src/EffectsEngine/GreenFilterEffectFactory.h \
-    src/EffectsEngine/MixerEffectFactory.h \
+    src/EffectsEngine/GreenFilterEffectPluginCreator.h \
+    src/EffectsEngine/MixerEffectPluginCreator.h \
     src/Configuration/SettingsManager.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
