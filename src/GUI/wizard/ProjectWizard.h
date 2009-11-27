@@ -33,7 +33,7 @@ class ProjectWizard : public QWizard
         ~ProjectWizard();
 
     private slots:
-        void    projectLoaded();
+        void    loadProject();
 };
 
 #endif

@@ -20,6 +20,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QString>
+#include <QFileDialog>
+#include "ProjectManager.h"
 #include "ProjectWizard.h"
 #include "ProjectPreferences.h"
 #include "VideoProjectPreferences.h"
@@ -45,8 +48,18 @@ ProjectWizard::~ProjectWizard()
 {
 }
 
-void    ProjectWizard::projectLoaded()
+void    ProjectWizard::loadProject()
 {
+    QString outputFileName = QFileDialog::getOpenFileName( NULL,
+                                                           "Enter the output file name",
+                                                           QString(), "VLMC project file(*.vlmc)" );
+    if ( outputFileName.length() == 0 )
+        return ;
+    else
+    {
+        ProjectManager* pm = new ProjectManager( outputFileName );
+        pm->loadProject();
+    }
     restart();
     QDialog::accept();
 }
