@@ -54,6 +54,15 @@ void    ProjectWizard::accept()
     SettingsManager::getInstance()->commit();
     restart();
     QDialog::accept();
+    return ;
+}
+
+void    ProjectWizard::reject()
+{
+    SettingsManager::getInstance()->flush();
+    restart();
+    QDialog::reject();
+    return ;
 }
 
 void    ProjectWizard::loadProject()
