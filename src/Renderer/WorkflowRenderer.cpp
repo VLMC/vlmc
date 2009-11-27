@@ -75,7 +75,7 @@ WorkflowRenderer::WorkflowRenderer() :
 
     m_nbChannels = 1;
     m_rate = 48000;
-    sprintf( buffer, ":input-slave=imem://data=%lld:cat=1:codec=s16l:samplerate=%u:channels=%u",
+    sprintf( buffer, ":input-slave=imem://data=%lld:cat=1:codec=s16l:samplerate=%u:channels=%u:fps=30/1",
              (qint64)m_audioEsHandler, m_rate, m_nbChannels );
     m_media->addOption( buffer );
 
@@ -130,6 +130,7 @@ int     WorkflowRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigne
         handler->self->m_mainWorkflow->goToNextFrame();
         computed = 0;
     }
+//    qDebug() << "ES Type:" << handler->type << "pts:" << *pts;
     return ret;
 }
 
@@ -141,7 +142,7 @@ int     WorkflowRenderer::lockVideo( WorkflowRenderer* self, int64_t *pts, size_
         memcpy( self->m_renderVideoFrame, (*(ret->video))->frame.octets, (*(ret->video))->nboctets );
         self->m_videoBuffSize = (*(ret->video))->nboctets;
     }
-    *pts = ( self->m_pts * 1000000 ) / self->m_outputFps;
+    *pts = qRound64( (float)( self->m_pts * 1000000.0f ) / self->m_outputFps );
     ++self->m_pts;
     *buffer = self->m_renderVideoFrame;
     *bufferSize = self->m_videoBuffSize;
@@ -158,29 +159,27 @@ int     WorkflowRenderer::lockAudio(  WorkflowRenderer* self, int64_t *pts, size
         MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getSynchroneOutput( MainWorkflow::AudioTrack );
         self->m_renderAudioSample = ret->audio;
     }
+    uint32_t    nbSample;
     if ( self->m_renderAudioSample != NULL )
     {
+        nbSample = self->m_renderAudioSample->nbSample;
         *buffer = self->m_renderAudioSample->buff;
         *bufferSize = self->m_renderAudioSample->size;
-        *pts = self->m_audioPts + ( ( 1000000 / self->m_rate ) * self->m_nbChannels * self->m_renderAudioSample->nbSample);
-//        qDebug() << self->m_renderAudioSample->nbSample;
-//        qDebug() << "Sound rendered";
     }
     else
     {
         //We set the nbSample to 10ms, which is 1/100 of a sec, so we divide the samplerate
         //by 100.
-        unsigned int    nbSample = self->m_rate / 100;
+        nbSample = self->m_rate / 100;
         unsigned int    buffSize = self->m_nbChannels * 2 * nbSample;
         if ( WorkflowRenderer::m_silencedAudioBuffer == NULL )
             WorkflowRenderer::m_silencedAudioBuffer = new uint8_t[ buffSize ];
         memset( WorkflowRenderer::m_silencedAudioBuffer, 0, buffSize );
         *buffer = WorkflowRenderer::m_silencedAudioBuffer;
         *bufferSize = buffSize;
-        *pts = self->m_audioPts + ( ( 1000000 / self->m_rate ) * self->m_nbChannels * nbSample);
-//        qDebug() << "Silence rendered";
     }
-    self->m_audioPts = *pts;
+    *pts = self->m_audioPts * 1000000.0f / self->m_rate;
+    self->m_audioPts += nbSample * self->m_nbChannels;
     return 0;
 }
 
