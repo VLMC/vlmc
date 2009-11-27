@@ -176,6 +176,8 @@ void    SettingsManager::commit()
         for ( ; iter != ed; ++iter )
             m_data[it.key()]->m_data.insert( iter.key(), iter.value() );
     }
+    lock.unlock();
+    flush();
 }
 
 void    SettingsManager::flush()
