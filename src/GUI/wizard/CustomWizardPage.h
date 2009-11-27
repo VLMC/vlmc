@@ -34,11 +34,13 @@ class CustomWizardPage : public QWizardPage
         CustomWizardPage( const char* title, QWidget* parent = 0 );
         ~CustomWizardPage();
         void    setInternalWidget( PreferenceWidget* widg );
-        void    cleanUpPage();
         bool    validatePage();
-        void    restart();
     private:
         PreferenceWidget*   m_widget;
+
+    public slots:
+        void        restart();
+
 };
 
 #endif

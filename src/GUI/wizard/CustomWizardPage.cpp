@@ -21,6 +21,7 @@
  *****************************************************************************/
 
 #include <QVBoxLayout>
+#include <QtDebug>
 #include "CustomWizardPage.h"
 #include "VideoProjectPreferences.h"
 
@@ -28,6 +29,13 @@ CustomWizardPage::CustomWizardPage( const char* title, QWidget* parent )
     : QWizardPage( parent )
 {
     setTitle( tr( title ) );
+    if ( parent != 0 )
+    {
+        QObject::connect( parent,
+                          SIGNAL( flush() ),
+                          this,
+                          SLOT( restart() ) );
+    }
 }
 
 CustomWizardPage::~CustomWizardPage()
@@ -47,12 +55,6 @@ void    CustomWizardPage::setInternalWidget( PreferenceWidget* widg )
     setLayout( layout );
 }
 
-void    CustomWizardPage::cleanUpPage()
-{
-    //m_widget->setDefaults( false );
-    //m_widget->load();
-    return ;
-}
 
 bool    CustomWizardPage::validatePage()
 {
@@ -62,6 +64,6 @@ bool    CustomWizardPage::validatePage()
 
 void    CustomWizardPage::restart()
 {
-    m_widget->setDefaults( true );
     m_widget->load();
 }
+

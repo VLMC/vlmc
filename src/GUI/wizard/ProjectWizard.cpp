@@ -52,6 +52,7 @@ ProjectWizard::~ProjectWizard()
 void    ProjectWizard::accept()
 {
     SettingsManager::getInstance()->commit();
+    emit flush();
     restart();
     QDialog::accept();
     return ;
@@ -60,6 +61,7 @@ void    ProjectWizard::accept()
 void    ProjectWizard::reject()
 {
     SettingsManager::getInstance()->flush();
+    emit flush();
     restart();
     QDialog::reject();
     return ;

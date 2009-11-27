@@ -37,6 +37,9 @@ class ProjectWizard : public QWizard
 
     private slots:
         void    loadProject();
+
+    signals:
+        void    flush();
 };
 
 #endif
