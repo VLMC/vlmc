@@ -24,7 +24,7 @@
 #include "EffectNodeFactory.h"
 #include <QDir>
 
-#define PLUGINS_PATH "./src/EffectsEngine"
+#define PLUGINS_PATH "./src/EffectsEngine/Plugins"
 
 EffectNodeFactory::EffectNodeFactory()
 {
