@@ -32,6 +32,8 @@ class ProjectWizard : public QWizard
         ProjectWizard( QWidget* parent = 0 );
         ~ProjectWizard();
 
+        void    accept();
+
     private slots:
         void    loadProject();
 };

@@ -27,6 +27,7 @@
 #include "ProjectPreferences.h"
 #include "VideoProjectPreferences.h"
 #include "AudioProjectPreferences.h"
+#include "SettingsManager.h"
 #include "PageFactory.h"
 #include "LoadPage.h"
 
@@ -46,6 +47,13 @@ ProjectWizard::ProjectWizard( QWidget* parent )
 
 ProjectWizard::~ProjectWizard()
 {
+}
+
+void    ProjectWizard::accept()
+{
+    SettingsManager::getInstance()->commit();
+    restart();
+    QDialog::accept();
 }
 
 void    ProjectWizard::loadProject()
