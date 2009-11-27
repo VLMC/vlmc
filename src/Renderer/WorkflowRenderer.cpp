@@ -170,7 +170,7 @@ int     WorkflowRenderer::lockAudio(  WorkflowRenderer* self, int64_t *pts, size
     {
         //We set the nbSample to 10ms, which is 1/100 of a sec, so we divide the samplerate
         //by 100.
-        nbSample = self->m_rate / 100;
+        nbSample = self->m_rate / self->m_outputFps;
         unsigned int    buffSize = self->m_nbChannels * 2 * nbSample;
         if ( WorkflowRenderer::m_silencedAudioBuffer == NULL )
             WorkflowRenderer::m_silencedAudioBuffer = new uint8_t[ buffSize ];
