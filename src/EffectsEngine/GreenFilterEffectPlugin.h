@@ -51,6 +51,7 @@ class	GreenFilterEffectPlugin : public IEffectPlugin
   IEffectNode*                  m_ien;
   static	quint32 const   m_nbVideoInputs = 1;
   static	quint32 const   m_nbVideoOutputs = 1;
+  quint32                       m_instanceId;
 };
 
 #endif // GREENFILTEREFFECTPLUGIN_H_

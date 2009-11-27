@@ -30,7 +30,8 @@ class   IEffectPluginCreator
 {
 public:
     virtual ~IEffectPluginCreator() {};
-    virtual IEffectPlugin*      getIEffectPlugin( void ) = 0;
+    virtual IEffectPlugin*      createIEffectPluginInstance( void ) = 0;
+    virtual void                deleteIEffectPluginInstance( IEffectPlugin* todelete ) = 0;
 };
 
 #endif // IEFFECTPLUGINFACTORY_H_

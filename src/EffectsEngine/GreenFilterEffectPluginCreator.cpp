@@ -23,7 +23,13 @@
 
 #include "GreenFilterEffectPluginCreator.h"
 
-IEffectPlugin*  GreenFilterEffectPluginCreator::getIEffectPlugin( void )
+IEffectPlugin*  GreenFilterEffectPluginCreator::createIEffectPluginInstance( void )
 {
     return (new GreenFilterEffectPlugin());
+}
+
+void  GreenFilterEffectPluginCreator::deleteIEffectPluginInstance( IEffectPlugin* todelete )
+{
+    delete todelete;
+    return ;
 }

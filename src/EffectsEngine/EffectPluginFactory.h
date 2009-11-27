@@ -51,5 +51,6 @@ private:
 
 // L'IEffectPluginCreator doit aussi avoir la methode deleteInstance( quint32 id )
 // L'IEffectPlugin doit avoir son constructeur et son destructeur en private avec IEffectPluginCreator en friend
+// L'IEffectPlugin doit avoir un setInstanceId et un getInstanceId
 
 #endif // EFFECTPLUGINFACTORY_H_

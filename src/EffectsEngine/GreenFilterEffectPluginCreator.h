@@ -31,7 +31,8 @@
 class   GreenFilterEffectPluginCreator : public IEffectPluginCreator
 {
 public:
-    IEffectPlugin*      getIEffectPlugin( void );
+    IEffectPlugin*      createIEffectPluginInstance( void );
+    void                deleteIEffectPluginInstance( IEffectPlugin* todelete );
 };
 
 #endif // GREENFILTEREFFECTPLUGINCREATOR_H_

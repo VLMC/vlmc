@@ -23,7 +23,13 @@
 
 #include "MixerEffectPluginCreator.h"
 
-IEffectPlugin*  MixerEffectPluginCreator::getIEffectPlugin(void)
+IEffectPlugin*  MixerEffectPluginCreator::createIEffectPluginInstance( void )
 {
     return (new MixerEffectPlugin());
+}
+
+void  MixerEffectPluginCreator::deleteIEffectPluginInstance( IEffectPlugin* todelete )
+{
+    delete todelete;
+    return ;
 }

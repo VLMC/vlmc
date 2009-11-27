@@ -31,7 +31,8 @@
 class   MixerEffectPluginCreator : public IEffectPluginCreator
 {
  public:
-    IEffectPlugin*     getIEffectPlugin( void );
+    IEffectPlugin*     createIEffectPluginInstance( void );
+    void               deleteIEffectPluginInstance( IEffectPlugin* todelete );
 };
 
 #endif // MIXEREFFECTPLUGINCREATOR_H_

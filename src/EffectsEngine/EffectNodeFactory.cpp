@@ -46,7 +46,7 @@ EffectNodeFactory::EffectNodeFactory()
         else
             for (i = 0; i < size; ++i)
             {
-                qDebug() << list.at(i).fileName();
+                qDebug() << "Try to load : " << list.at(i).fileName();
             }
     }
     m_epc["mixer"] = new MixerEffectPluginCreator();
@@ -60,7 +60,7 @@ EffectNodeFactory::~EffectNodeFactory()
 EffectNode*        EffectNodeFactory::getEffect( quint32 id )
 {
     if ( id == 1 )
-        return ( new EffectNode( m_epc["mixer"]->getIEffectPlugin() ) );
+        return ( new EffectNode( m_epc["mixer"]->createIEffectPluginInstance() ) );
     else if ( id == 2 )
-        return ( new EffectNode( m_epc["green"]->getIEffectPlugin() ) );
+        return ( new EffectNode( m_epc["green"]->createIEffectPluginInstance() ) );
 }

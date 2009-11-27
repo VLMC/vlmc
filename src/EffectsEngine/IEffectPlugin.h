@@ -37,7 +37,7 @@ class	IEffectPlugin
   // RENDER METHOD
 
   virtual void	render( void ) = 0;
-  virtual void  init(IEffectNode* ien) = 0;
+  virtual void  init( IEffectNode* ien ) = 0;
 
 };
 

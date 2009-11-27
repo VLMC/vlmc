@@ -52,21 +52,26 @@ bool    EffectPluginFactory::load( QString const & fileName )
     return  ( true );
 }
 
-IEffectPlugin*  EffectPluginFactory::newIEffectPlugin( void )
+IEffectPlugin*  EffectPluginFactory::newIEffectPlugin( quint32& instanceIdToGet )
 {
     if ( m_iepc != NULL )
     {
         IEffectPlugin*      newInstance;
 
-        newInstance = m_iepc->getInstance();
+        newInstance = m_iepc->createIEffectPluginInstance();
         if ( mapHoles > 0 )
         {
-            m_iepi[m_iepi.key( NULL )] = newInstance;
+            quint32     key;
+
+            m_iepi.key( NULL );
+            m_iepi[key] = newInstance;
+            instanceIdToGet = key;
             --mapHoles;
         }
         else
         {
             m_iepi[m_higherFreeId] = newInstance;
+            instanceIdToGet = m_higherFreeId;
             ++m_higherFreeId;
         }
         return ( newInstance );
@@ -89,7 +94,7 @@ bool            EffectPluginFactory::deleteIEffectPluginInstance( quint32 id )
             value = it.value();
             if (value != NULL)
             {
-                m_iepc->deleteInstance( value );
+                m_iepc->deleteIEffectPluginInstance( value );
                 if ( id <  ( m_higherFreeId - 1 ) )
                 {
                     m_iepi[ id ] = NULL
