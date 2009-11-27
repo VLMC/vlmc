@@ -81,7 +81,6 @@ SOURCES += src/main.cpp \
     src/GUI/wizard/ProjectWizard.cpp \
     src/GUI/wizard/CustomWizardPage.cpp \
     src/GUI/wizard/LoadPage.cpp \
-    src/Actions/ActionStack.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -161,8 +160,6 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/wizard/PageFactory.h \
     src/GUI/wizard/CustomWizardPage.h \
     src/GUI/wizard/LoadPage.h \
-    src/Actions/StackedAction.hpp \
-    src/Actions/ActionStack.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/Timeline.ui \
