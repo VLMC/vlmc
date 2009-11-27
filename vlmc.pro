@@ -52,7 +52,6 @@ SOURCES += src/main.cpp \
     src/GUI/ClipProperty.cpp \
     src/GUI/WorkflowFileRendererDialog.cpp \
     src/Commands/Commands.cpp \
-    src/Project/ProjectManager.cpp \
     src/Configuration/SettingsManager.cpp \
     src/GUI/TagWidget.cpp \
     src/GUI/Library/StackViewController.cpp \
@@ -128,7 +127,6 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/WorkflowFileRendererDialog.h \
     src/GUI/GraphicsTrack.hpp \
     src/Commands/Commands.h \
-    src/Project/ProjectManager.h \
     src/Configuration/SettingsManager.h \
     src/GUI/TagWidget.h \
     src/GUI/Library/StackViewController.h \
