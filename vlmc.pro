@@ -28,7 +28,6 @@ SOURCES += src/main.cpp \
     src/GUI/TracksScene.cpp \
     src/Renderer/ClipRenderer.cpp \
     src/GUI/TracksRuler.cpp \
-    src/GUI/LanguagePreferences.cpp \
     src/GUI/ListViewMediaItem.cpp \
     src/GUI/MediaListWidget.cpp \
     src/Media/Clip.cpp \
@@ -52,14 +51,7 @@ SOURCES += src/main.cpp \
     src/GUI/UndoStack.cpp \
     src/GUI/ClipProperty.cpp \
     src/GUI/WorkflowFileRendererDialog.cpp \
-    src/GUI/Settings.cpp \
-    src/GUI/Panel.cpp \
-    src/GUI/PreferenceWidget.cpp \
-    src/GUI/ProjectPreferences.cpp \
     src/Commands/Commands.cpp \
-    src/GUI/AudioProjectPreferences.cpp \
-    src/GUI/VLMCPreferences.cpp \
-    src/GUI/VideoProjectPreferences.cpp \
     src/Project/ProjectManager.cpp \
     src/Configuration/SettingsManager.cpp \
     src/GUI/TagWidget.cpp \
@@ -104,7 +96,6 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/TracksScene.h \
     src/Renderer/ClipRenderer.h \
     src/GUI/TracksRuler.h \
-    src/GUI/LanguagePreferences.h \
     src/GUI/ListViewMediaItem.h \
     src/Media/Clip.h \
     src/GUI/MediaListWidget.h \
@@ -135,13 +126,8 @@ HEADERS += src/GUI/MainWindow.h \
     src/Tools/QSingleton.hpp \
     src/GUI/ClipProperty.h \
     src/GUI/WorkflowFileRendererDialog.h \
-    src/GUI/Settings.h \
-    src/GUI/Panel.h \
     src/GUI/GraphicsTrack.hpp \
     src/Commands/Commands.h \
-    src/GUI/VLMCPreferences.h \
-    src/GUI/AudioProjectPreferences.h \
-    src/GUI/VideoProjectPreferences.h \
     src/Project/ProjectManager.h \
     src/Configuration/SettingsManager.h \
     src/GUI/TagWidget.h \
@@ -181,7 +167,6 @@ HEADERS += src/GUI/MainWindow.h \
     src/Actions/ActionStack.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
-    src/GUI/ui/LanguagePreferences.ui \
     src/GUI/ui/Timeline.ui \
     src/GUI/ui/LibraryWidget.ui \
     src/GUI/ui/About.ui \
@@ -189,9 +174,6 @@ FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/WorkflowFileRendererDialog.ui \
     src/GUI/ui/ClipProperty.ui \
     src/GUI/ui/ProjectPreferences.ui \
-    src/GUI/ui/VLMCPreferences.ui \
-    src/GUI/ui/VideoProjectPreferences.ui \
-    src/GUI/ui/AudioProjectPreferences.ui \
     src/GUI/ui/TagWidget.ui \
     src/GUI/Library/ui/StackViewNavController.ui \
     src/GUI/Library/ui/MediaCellView.ui \
