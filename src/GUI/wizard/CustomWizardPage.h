@@ -36,6 +36,7 @@ class CustomWizardPage : public QWizardPage
         void    setInternalWidget( PreferenceWidget* widg );
         void    cleanUpPage();
         bool    validatePage();
+        void    restart();
     private:
         PreferenceWidget*   m_widget;
 };

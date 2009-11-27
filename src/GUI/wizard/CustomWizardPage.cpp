@@ -49,8 +49,8 @@ void    CustomWizardPage::setInternalWidget( PreferenceWidget* widg )
 
 void    CustomWizardPage::cleanUpPage()
 {
-    m_widget->setDefaults( false );
-    m_widget->load();
+    //m_widget->setDefaults( false );
+    //m_widget->load();
     return ;
 }
 
@@ -58,4 +58,10 @@ bool    CustomWizardPage::validatePage()
 {
     m_widget->save();
     return true;
+}
+
+void    CustomWizardPage::restart()
+{
+    m_widget->setDefaults( true );
+    m_widget->load();
 }

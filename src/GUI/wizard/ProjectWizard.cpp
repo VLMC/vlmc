@@ -25,6 +25,7 @@
 #include "VideoProjectPreferences.h"
 #include "AudioProjectPreferences.h"
 #include "PageFactory.h"
+#include "LoadPage.h"
 
 ProjectWizard::ProjectWizard( QWidget* parent )
     : QWizard( parent )
@@ -33,6 +34,8 @@ ProjectWizard::ProjectWizard( QWidget* parent )
     QWizardPage* generalPage = PageFactory::generateWizardPage<ProjectPreferences>( "General Settings", this );
     QWizardPage* videoPage = PageFactory::generateWizardPage<VideoProjectPreferences>( "Video Settings", this );
     QWizardPage* audioPage = PageFactory::generateWizardPage<AudioProjectPreferences>( "Audio Settings", this );
+    QWizardPage* loadPage = new LoadPage( this );
+    addPage( loadPage );
     addPage( generalPage );
     addPage( videoPage );
     addPage( audioPage );
@@ -40,4 +43,10 @@ ProjectWizard::ProjectWizard( QWidget* parent )
 
 ProjectWizard::~ProjectWizard()
 {
+}
+
+void    ProjectWizard::projectLoaded()
+{
+    restart();
+    QDialog::accept();
 }
