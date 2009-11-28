@@ -26,9 +26,7 @@
 
 #include <QList>
 #include <QTemporaryFile>
-#include <QThreadPool>
-#include <QRunnable>
-#include <QWidget>
+#include <QLabel>
 #include "Media.h"
 #include "VLCMediaPlayer.h"
 
@@ -41,7 +39,8 @@ class MetaDataWorker : public QObject
         enum MetaDataType
         {
             MetaData,
-            Snapshot
+            Snapshot,
+            AudioSpectrum
         };
 
     public:
@@ -52,18 +51,19 @@ class MetaDataWorker : public QObject
     private:
         void                        computeVideoMetaData();
         void                        computeImageMetaData();
+        void                        computeAudioMetaData();
+        void                        addAudioValue( int value );
 
-        //AMEM part :
-        static  void                openSoundBuffer( void* datas, unsigned int* freq,
-                                                        unsigned int* nbChannels, unsigned int* fourCCFormat,
-                                                        unsigned int* frameSize );
-        static  void                playSoundBuffer( void* datas, unsigned char* buffer,
-                                                     size_t buffSize, unsigned int nbSample );
-        static  void                closeSoundBuffer( void* datas );
-        static  void                instanceParameterHandler( void*, char*, char* );
+        void                        generateAudioPixmap();
 
     private:
         void                        getMetaData();
+        void                        initVlcOutput();
+        static void                 lock( MetaDataWorker* metaDataWorker, uint8_t** pcm_buffer , unsigned int size );
+        static void                 unlock( MetaDataWorker* metaDataWorker, uint8_t* pcm_buffer,
+                                        unsigned int channels, unsigned int rate,
+                                        unsigned int nb_samples, unsigned int bits_per_sample,
+                                        unsigned int size, int pts );
 
     private:
         LibVLCpp::MediaPlayer*      m_mediaPlayer;
@@ -75,6 +75,12 @@ class MetaDataWorker : public QObject
         bool                        m_mediaIsPlaying;
         bool                        m_lengthHasChanged;
 
+        QWidget*                    m_widgetAudioDebug;
+
+        unsigned char*              m_audioBuffer;
+        QLabel*                     m_audioDebugWidget;
+        QList<int>*                 m_audioValueList;
+
         friend class SnapshotHelper;
     signals:
         void    snapshotRequested();
@@ -83,11 +89,10 @@ class MetaDataWorker : public QObject
     private slots:
         void    renderSnapshot();
         void    setSnapshot();
-        void    startAudioDataParsing();
-        void    stopAudioDataParsing();
         void    entrypointPlaying();
         void    entrypointLengthChanged();
         void    mediaPlayerStopped();
+        void    generateAudioSpectrum();
 };
 
 #endif // METADATAWORKER_H

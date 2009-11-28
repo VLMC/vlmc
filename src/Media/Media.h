@@ -40,19 +40,6 @@
 #include "VLCMedia.h"
 #include "Clip.h"
 
-struct          audioData
-{
-    void*               datas;
-    unsigned int*       freq;
-    unsigned int*       nbChannels;
-    unsigned int*       fourCCFormat;
-    unsigned int*       frameSize;
-    unsigned int        nbSample;
-    unsigned char*      buffer;
-    size_t              buffSize;
-    QVector<int*>       frameList;
-};
-
 class Clip;
 
 /**
@@ -140,13 +127,6 @@ public:
     InputType                   getInputType() const;
     static const QString        streamPrefix;
 
-    void                        initAudioData( void* datas, unsigned int* freq, unsigned int* nbChannels, unsigned int* fourCCFormat, unsigned int* frameSize );
-    void                        addAudioFrame( void* datas, unsigned char* buffer, size_t buffSize, unsigned int nbSample );
-
-    audioData*                  getAudioData() { return &m_audioData; }
-    QVector<int*>               getAudioFrameList() { return m_audioData.frameList; }
-    unsigned int                getAudioNbSample() { return m_audioData.nbSample; }
-
     const QStringList&          getMetaTags() const;
     void                        setMetaTags( const QStringList& tags );
     bool                        matchMetaTag( const QString& tag ) const;
@@ -161,6 +141,9 @@ public:
     void                        removeClip( const QUuid& uuid );
     Clip*                       clip( const QUuid& uuid ) const { return m_clips[uuid]; }
     const QHash<QUuid, Clip*>*  clips() const { return &m_clips; }
+
+    QPixmap*                    getPixmap() { return m_audioPixmap; }
+    void                        setAudioPixmap( QPixmap* audioPixmap ) { m_audioPixmap = audioPixmap; }
 
 
 private:
@@ -179,14 +162,13 @@ protected:
     unsigned int                m_width;
     unsigned int                m_height;
     float                       m_fps;
-    int*                        m_audioSpectrum;
-    audioData                   m_audioData;
     FileType                    m_fileType;
     InputType                   m_inputType;
     MetadataState               m_metadataState;
     QString                     m_fileName;
     QStringList                 m_metaTags;
     QHash<QUuid, Clip*>         m_clips;
+    QPixmap*                    m_audioPixmap;
 
 signals:
     void                        metaDataComputed( Media* );

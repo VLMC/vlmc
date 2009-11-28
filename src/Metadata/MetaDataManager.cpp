@@ -103,11 +103,13 @@ void    MetaDataManager::checkMediasToCompute()
     //qDebug() << "checking media to compute" << m_mediasToComputeMetaData << m_mediasToComputeSnapshot;
     m_mediasToComputeMetaDataMutex.lock();
     m_mediasToComputeSnapshotMutex.lock();
+    m_mediasToComputeAudioSpectrumMutex.lock();
     m_mediaPlayersMutex.lock();
     QMap<MediaPlayerState, LibVLCpp::MediaPlayer*>::iterator it;
     if ( m_mediasToComputeMetaData.count() > 0 &&
          ( it = m_mediaPlayers.find( Idle ) ) != m_mediaPlayers.end() )
     {
+        m_mediasToComputeAudioSpectrumMutex.unlock();
         Media* media;
         media = m_mediasToComputeMetaData.dequeue();
         m_mediasToComputeSnapshot.enqueue( media );
@@ -128,7 +130,9 @@ void    MetaDataManager::checkMediasToCompute()
         m_mediasToComputeMetaDataMutex.unlock();
         Media* media;
         media = m_mediasToComputeSnapshot.dequeue();
+        m_mediasToComputeAudioSpectrum.enqueue( media );
         m_mediasToComputeSnapshotMutex.unlock();
+        m_mediasToComputeAudioSpectrumMutex.unlock();
         LibVLCpp::MediaPlayer* mediaPlayer = it.value();
         m_mediaPlayers.erase( it );
         m_mediaPlayers.insert( Running, mediaPlayer );
@@ -139,10 +143,27 @@ void    MetaDataManager::checkMediasToCompute()
         //connect( media, SIGNAL( snapshotComputed( Media* ) ), this, SLOT( checkMediasToCompute() ) );
         worker->compute();
     }
+    else if (m_mediasToComputeAudioSpectrum.count() > 0 &&
+             (it = m_mediaPlayers.find( Idle ) ) != m_mediaPlayers.end() )
+    {
+        m_mediasToComputeMetaDataMutex.unlock();
+        m_mediasToComputeSnapshotMutex.unlock();
+        Media* media;
+        media = m_mediasToComputeAudioSpectrum.dequeue();
+        m_mediasToComputeAudioSpectrumMutex.unlock();
+        LibVLCpp::MediaPlayer* mediaPlayer = it.value();
+        m_mediaPlayers.erase( it );
+        m_mediaPlayers.insert( Running, mediaPlayer );
+        m_mediaPlayersMutex.unlock();
+        MetaDataWorker* worker = new MetaDataWorker( mediaPlayer, media, MetaDataWorker::AudioSpectrum );
+        connect( worker, SIGNAL( mediaPlayerIdle( LibVLCpp::MediaPlayer* ) ), this, SLOT( mediaPlayerIdle( LibVLCpp::MediaPlayer* ) ), Qt::DirectConnection );
+        worker->compute();
+    }
     else
     {
         m_mediasToComputeSnapshotMutex.unlock();
         m_mediasToComputeMetaDataMutex.unlock();
+        m_mediasToComputeAudioSpectrumMutex.unlock();
         m_mediaPlayersMutex.unlock();
     }
     return;
