@@ -27,10 +27,19 @@
 
 class ProjectWizard : public QWizard
 {
-    //Q_OBJECT
+    Q_OBJECT
     public:
         ProjectWizard( QWidget* parent = 0 );
         ~ProjectWizard();
+
+        void    accept();
+        void    reject();
+
+    private slots:
+        void    loadProject();
+
+    signals:
+        void    flush();
 };
 
 #endif

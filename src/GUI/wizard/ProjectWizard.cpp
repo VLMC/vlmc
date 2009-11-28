@@ -20,11 +20,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QString>
+#include <QFileDialog>
+#include "ProjectManager.h"
 #include "ProjectWizard.h"
 #include "ProjectPreferences.h"
 #include "VideoProjectPreferences.h"
 #include "AudioProjectPreferences.h"
+#include "SettingsManager.h"
 #include "PageFactory.h"
+#include "LoadPage.h"
 
 ProjectWizard::ProjectWizard( QWidget* parent )
     : QWizard( parent )
@@ -33,6 +38,8 @@ ProjectWizard::ProjectWizard( QWidget* parent )
     QWizardPage* generalPage = PageFactory::generateWizardPage<ProjectPreferences>( "General Settings", this );
     QWizardPage* videoPage = PageFactory::generateWizardPage<VideoProjectPreferences>( "Video Settings", this );
     QWizardPage* audioPage = PageFactory::generateWizardPage<AudioProjectPreferences>( "Audio Settings", this );
+    QWizardPage* loadPage = new LoadPage( this );
+    addPage( loadPage );
     addPage( generalPage );
     addPage( videoPage );
     addPage( audioPage );
@@ -40,4 +47,38 @@ ProjectWizard::ProjectWizard( QWidget* parent )
 
 ProjectWizard::~ProjectWizard()
 {
+}
+
+void    ProjectWizard::accept()
+{
+    SettingsManager::getInstance()->commit();
+    emit flush();
+    restart();
+    QDialog::accept();
+    return ;
+}
+
+void    ProjectWizard::reject()
+{
+    SettingsManager::getInstance()->flush();
+    emit flush();
+    restart();
+    QDialog::reject();
+    return ;
+}
+
+void    ProjectWizard::loadProject()
+{
+    QString outputFileName = QFileDialog::getOpenFileName( NULL,
+                                                           "Enter the output file name",
+                                                           QString(), "VLMC project file(*.vlmc)" );
+    if ( outputFileName.length() == 0 )
+        return ;
+    else
+    {
+        ProjectManager* pm = new ProjectManager( outputFileName );
+        pm->loadProject();
+    }
+    restart();
+    QDialog::accept();
 }

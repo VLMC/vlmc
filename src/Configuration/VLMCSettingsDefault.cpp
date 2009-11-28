@@ -30,6 +30,7 @@ void    VLMCSettingsDefault::load( const QString& part )
     SettingsManager::getInstance()->addNewSettingsPart( part );
     VLMCSettingsDefault::loadVLMCDefaults( part );
     VLMCSettingsDefault::loadlanguageDefaults( part );
+    SettingsManager::getInstance()->commit();
 
     return ;
 }

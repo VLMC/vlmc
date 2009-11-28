@@ -59,6 +59,8 @@ class   SettingsManager : public QObject, public QSingleton<SettingsManager>
         void                saveSettings( const QString& part, QDomDocument& xmlfile, QDomElement& root );
         void                loadSettings( const QString& part, const QDomElement& settings );
         void                addNewSettingsPart( const QString& name );
+        void                commit();
+        void                flush();
         static void         loadDefaultsSettings();
         static SettingsManager* getInstance();
 
@@ -67,6 +69,7 @@ class   SettingsManager : public QObject, public QSingleton<SettingsManager>
         ~SettingsManager();
 
         QHash<QString, SettingsPart*>           m_data;
+        QHash<QString, SettingsPart*>           m_tempData;
         mutable QReadWriteLock                  m_globalLock;
         static bool                             m_defaultLoaded;
 

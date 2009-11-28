@@ -46,10 +46,10 @@ SettingsManager::~SettingsManager()
 
 void  SettingsManager::setValues( const QString& part, QHash<QString, QVariant> values )
 {
-    if ( !m_data.contains( part ) )
+    if ( !m_tempData.contains( part ) )
         addNewSettingsPart( part );
     m_globalLock.lockForRead();
-    SettingsPart* sett = m_data[part];
+    SettingsPart* sett = m_tempData[part];
     m_globalLock.unlock();
     QHash<QString, QVariant>::iterator  it = values.begin();
     QHash<QString, QVariant>::iterator  end = values.end();
@@ -63,13 +63,13 @@ void  SettingsManager::setValues( const QString& part, QHash<QString, QVariant> 
 void  SettingsManager::setValue( const QString& part , const QString& key, QVariant& value )
 {
     m_globalLock.lockForRead();
-    if ( !m_data.contains( part ) )
+    if ( !m_tempData.contains( part ) )
     {
         addNewSettingsPart( part );
     }
     m_globalLock.unlock();
     QWriteLocker    lock( &m_globalLock );
-    SettingsPart*   tmp = m_data[part];
+    SettingsPart*   tmp = m_tempData[part];
     tmp->m_data.insert( key, value );
     return ;
 }
@@ -154,6 +154,43 @@ void  SettingsManager::addNewSettingsPart( const QString& name )
         rLock.unlock();
         QWriteLocker    lock( &m_globalLock );
         m_data.insert( name, new SettingsPart );
+        m_tempData.insert( name, new SettingsPart );
+    }
+}
+
+void    SettingsManager::commit()
+{
+    QWriteLocker     lock( &m_globalLock );
+
+    QHash<QString, SettingsPart*>::iterator it = m_tempData.begin();
+    QHash<QString, SettingsPart*>::iterator ed = m_tempData.end();
+
+    for ( ; it != ed; ++it )
+    {
+        SettingsPart*   sett = it.value();
+
+        QReadLocker rLock( &sett->m_lock );
+        QHash<QString, QVariant>::iterator iter = sett->m_data.begin();
+        QHash<QString, QVariant>::iterator ed = sett->m_data.end();
+        QWriteLocker    wLock( &m_data[it.key()]->m_lock );
+        for ( ; iter != ed; ++iter )
+            m_data[it.key()]->m_data.insert( iter.key(), iter.value() );
+    }
+    lock.unlock();
+    flush();
+}
+
+void    SettingsManager::flush()
+{
+    QWriteLocker     lock( &m_globalLock );
+
+    QHash<QString, SettingsPart*>::iterator it = m_tempData.begin();
+    QHash<QString, SettingsPart*>::iterator ed = m_tempData.end();
+
+    for ( ; it != ed; ++it )
+    {
+        QWriteLocker    wLock( &it.value()->m_lock );
+        it.value()->m_data.clear();
     }
 }
 

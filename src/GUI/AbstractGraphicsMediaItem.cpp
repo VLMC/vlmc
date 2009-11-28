@@ -23,7 +23,8 @@
 #include "AbstractGraphicsMediaItem.h"
 
 AbstractGraphicsMediaItem::AbstractGraphicsMediaItem() :
-        oldTrackNumber( -1 ), oldPosition( -1 ), m_tracksView( NULL ), m_group( NULL )
+        oldTrackNumber( -1 ), oldPosition( -1 ), m_tracksView( NULL ),
+        m_group( NULL ), m_width( 0 ), m_height( 0 )
 {
 
 }
@@ -31,6 +32,23 @@ AbstractGraphicsMediaItem::AbstractGraphicsMediaItem() :
 TracksView* AbstractGraphicsMediaItem::tracksView()
 {
     return m_tracksView;
+}
+
+QRectF AbstractGraphicsMediaItem::boundingRect() const
+{
+    return QRectF( 0, 0, (qreal)m_width, (qreal)m_height );
+}
+
+void AbstractGraphicsMediaItem::setWidth( qint64 width )
+{
+    prepareGeometryChange();
+    m_width = width;
+}
+
+void AbstractGraphicsMediaItem::setHeight( qint64 height )
+{
+    prepareGeometryChange();
+    m_height = height;
 }
 
 quint32 AbstractGraphicsMediaItem::trackNumber()
@@ -63,4 +81,42 @@ void AbstractGraphicsMediaItem::ungroup()
 AbstractGraphicsMediaItem* AbstractGraphicsMediaItem::groupItem()
 {
     return m_group;
+}
+
+void AbstractGraphicsMediaItem::setStartPos( qint64 position )
+{
+    QGraphicsItem::setPos( (qreal)position, 0 );
+}
+
+qint64 AbstractGraphicsMediaItem::startPos()
+{
+    return qRound64( QGraphicsItem::pos().x() );
+}
+
+void AbstractGraphicsMediaItem::resize( qint64 size, From from )
+{
+    Q_ASSERT( clip() );
+
+    if ( size > clip()->getLength() )
+    {
+        qWarning( "AbstractGraphicsMediaItem: Can't expand a clip beyond its original size" );
+        size = clip()->getLength();
+    }
+
+    if ( from == BEGINNING )
+        clip()->setEnd( clip()->getBegin() + size );
+    else
+    {
+        qint64 oldBegin = clip()->getBegin();
+        clip()->setBegin( clip()->getEnd() - size );
+        setStartPos( clip()->getBegin() - oldBegin );
+    }
+
+    setWidth( clip()->getLength() );
+}
+
+void AbstractGraphicsMediaItem::adjustLength()
+{
+    Q_ASSERT( clip() );
+    resize( clip()->getLength() );
 }

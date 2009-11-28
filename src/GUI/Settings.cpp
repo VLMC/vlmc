@@ -182,6 +182,7 @@ void    Settings::buttonClicked( QAbstractButton* button )
 
         foreach( widg, m_pWidgets )
             widg->save();
+        SettingsManager::getInstance()->commit();
     }
     if ( hide == true )
         setVisible( false );
