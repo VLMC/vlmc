@@ -62,6 +62,64 @@ IEffectPlugin*                          EffectNode::getInternalPlugin( void )
     return ( m_plugin );
 }
 
+
+//
+//
+//
+// EFFECT INSTANCE AND EFFECT TYPE INFORMATIONS
+//
+//
+//
+
+void                    EffectNode::setTypeId( quint32 typeId )
+{
+    m_typeId = typeId;
+    return ;
+}
+
+void                    EffectNode::setTypeName( QString const & typeName )
+{
+    m_typeName = typeName;
+    return ;
+}
+
+void                    EffectNode::setInstanceId( quint32 instanceId )
+{
+    m_instanceId = instanceId;
+    return ;
+}
+
+void                    EffectNode::setInstanceName( QString const & instanceName )
+{
+    m_instanceName = instanceName;
+    return ;
+}
+
+quint32                 EffectNode::getTypeId( void ) const
+{
+    return ( m_typeId );
+}
+
+QString const &         EffectNode::getTypeName( void ) const
+{
+    return ( m_typeName );
+}
+
+quint32                 EffectNode::getInstanceId( void ) const
+{
+    return ( m_instanceId );
+}
+
+QString const &         EffectNode::getInstanceName( void ) const
+{
+    return ( m_instanceName );
+}
+
+
+//
+//
+//
+
 InSlot<LightVideoFrame> &               EffectNode::getVideoInput(quint32 id)
 {
     return ( m_videoInputs[id] );

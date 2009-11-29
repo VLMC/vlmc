@@ -24,7 +24,10 @@
 #ifndef EFFECTPLUGINTYPEMANAGER_H_
 #define EFFECTPLUGINTYPEMANAGER_H_
 
+#include <QDir>
 #include "EffectPluginTypeLoader.h"
+
+#define PLUGINS_PATH "./src/EffectsEngine/Plugins"
 
 class   EffectPluginTypeManager
 {
@@ -34,11 +37,11 @@ class   EffectPluginTypeManager
     EffectPluginTypeManager();
     ~EffectPluginTypeManager();
 
-    IEffectPlugin*      createIEffectPluginInstance( quint32 typeId ) const;
-    IEffectPlugin*      createIEffectPluginInstance( QString const & typeName ) const;
+    IEffectPlugin*              createIEffectPluginInstance( quint32 typeId ) const;
+    IEffectPlugin*              createIEffectPluginInstance( QString const & typeName ) const;
 
-    QList<QString> const &      getEffectPluginTypesNamesList( void ) const;
-    QList<quint32> const &      getEffectPluginTypesIdsList( void ) const;
+    QList<QString>              getEffectPluginTypesNamesList( void ) const;
+    QList<quint32>              getEffectPluginTypesIdsList( void ) const;
 
     QString const               getEffectPluginTypeNameByTypeId( quint32 typeId ) const;
     quint32                     getEffectPluginTypeIdByTypeName( QString const & typeName ) const;

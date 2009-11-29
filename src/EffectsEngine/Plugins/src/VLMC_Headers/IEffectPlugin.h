@@ -1,6 +1,6 @@
 /*****************************************************************************
- * GreenFilterEffectPluginCreator.cpp: this class is used to instantiate
- *                                    a GreenFilterEffectPlugin
+ * IEffectPlugin.h: interface that must inherit a plugin effect to work into
+ *                  the effects engine
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -21,17 +21,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "GreenFilterEffectPluginCreator.h"
+#ifndef IEFFECTPLUGIN_H_
+#define IEFFECTPLUGIN_H_
 
-IEffectPlugin*  GreenFilterEffectPluginCreator::createIEffectPluginInstance( void )
+#include "IEffectNode.h"
+
+class	IEffectPlugin
 {
-    return (new GreenFilterEffectPlugin());
-}
+ public:
 
-void  GreenFilterEffectPluginCreator::deleteIEffectPluginInstance( IEffectPlugin* todelete )
-{
-    delete todelete;
-    return ;
-}
+  // VIRTUAL DTOR
 
-Q_EXPORT_PLUGIN2( GreenFilterEffectPluginCreator, GreenFilterEffectPluginCreator )
+  virtual ~IEffectPlugin() {};
+
+  // RENDER METHOD
+
+  virtual void	render( void ) = 0;
+  virtual void  init( IEffectNode* ien ) = 0;
+
+};
+
+#endif // IEFFECTPLUGIN_H_

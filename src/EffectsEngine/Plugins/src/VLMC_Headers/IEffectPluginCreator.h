@@ -1,6 +1,6 @@
 /*****************************************************************************
- * GreenFilterEffectPluginCreator.h: this class is used to instantiate
- *                                   a GreenFilterEffectPlugin
+ * IEffectPluginCreator.cpp: Interface that must inherit the class who can an
+ *                            instantiate an effect plugin
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -21,21 +21,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef GREENFILTEREFFECTPLUGINCREATOR_H_
-#define GREENFILTEREFFECTPLUGINCREATOR_H_
+#ifndef IEFFECTPLUGINFACTORY_H_
+#define IEFFECTPLUGINFACTORY_H_
 
-#include <QObject>
-#include "IEffectPluginCreator.h"
 #include "IEffectPlugin.h"
-#include "GreenFilterEffectPlugin.h"
 
-class   GreenFilterEffectPluginCreator : public QObject, public IEffectPluginCreator
+class   IEffectPluginCreator
 {
-    Q_OBJECT
-    Q_INTERFACES( IEffectPluginCreator )
 public:
-    IEffectPlugin*      createIEffectPluginInstance( void );
-    void                deleteIEffectPluginInstance( IEffectPlugin* todelete );
+    virtual ~IEffectPluginCreator() {};
+    virtual IEffectPlugin*      createIEffectPluginInstance( void ) = 0;
 };
 
-#endif // GREENFILTEREFFECTPLUGINCREATOR_H_
+Q_DECLARE_INTERFACE(IEffectPluginCreator, "IEffectPluginCreator/0.1")
+
+#endif // IEFFECTPLUGINFACTORY_H_

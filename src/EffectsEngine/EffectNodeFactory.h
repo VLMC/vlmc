@@ -25,13 +25,11 @@
 #define EFFECTNODEFACTORY_H_
 
 #include <QMap>
-#include <QDir>
 
 #include "IEffectPluginCreator.h"
 #include "EffectNode.h"
 #include "EffectPluginTypeManager.h"
 
-#define PLUGINS_PATH "./src/EffectsEngine/Plugins"
 
 class	EffectNodeFactory
 {
@@ -44,16 +42,16 @@ class	EffectNodeFactory
 
     // EFFECT TYPES INFORMATION
 
-    QList<QString> const &      getEffectNodeTypesNamesList( void ) const;
-    QList<quint32> const &      getEffectNodeTypesIdsList( void ) const;
+    QList<QString>              getEffectNodeTypesNamesList( void ) const;
+    QList<quint32>              getEffectNodeTypesIdsList( void ) const;
 
     QString const               getEffectNodeTypeNameByTypeId( quint32 typeId ) const;
     quint32                     getEffectNodeTypeIdByTypeName( QString const & typeName ) const;
 
     // EFFECT INSTANCES INFORMATIONS
 
-    QList<QString> const &      getEffectNodeInstancesNamesList( void ) const;
-    QList<quint32> const &      getEffectNodeInstancesIdsList( void ) const;
+    QList<QString>              getEffectNodeInstancesNamesList( void ) const;
+    QList<quint32>              getEffectNodeInstancesIdsList( void ) const;
 
     QString const               getEffectNodeInstanceNameByInstanceId( quint32 typeId ) const;
     quint32                     getEffectNodeInstanceIdByInstanceName( QString const & typeName ) const;

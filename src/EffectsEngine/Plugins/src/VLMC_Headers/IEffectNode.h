@@ -1,5 +1,6 @@
 /*****************************************************************************
- * GreenFilterEffectPlugin.h: test effect module, just for apply a green filter
+ * IGenericEffect.h: Interface of GenericEffect passed to init method of
+ * of an IEffectPlugin
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,38 +21,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef GREENFILTEREFFECTPLUGIN_H_
-#define GREENFILTEREFFECTPLUGIN_H_
+#ifndef IGENERICEFFECT_H_
+#define IGENERICEFFECT_H_
 
-#include "IEffectNode.h"
-#include "IEffectPlugin.h"
+#include "InSlot.hpp"
+#include "OutSlot.hpp"
+#include "LightVideoFrame.h"
 
-class	GreenFilterEffectPlugin : public QObject, public IEffectPlugin
+class	IEffectNode
 {
- public:
+    public:
 
-  // CTOR & DTOR
-
-  GreenFilterEffectPlugin();
-  ~GreenFilterEffectPlugin();
-
-  // INIT
-
-  void  init( IEffectNode* ien );
-
-  // RENDER METHOD
-
-  void	render( void );
-  void	enable( void );
-  void	disable( void );
-
- private:
-
-  bool                          m_enabled;
-  IEffectNode*                  m_ien;
-  static	quint32 const   m_nbVideoInputs = 1;
-  static	quint32 const   m_nbVideoOutputs = 1;
-  quint32                       m_instanceId;
+    virtual ~IEffectNode() {};
+    virtual void                                init( quint32 const nbvideoinputs, quint32 const nbvideooutputs ) = 0;
+    virtual InSlot<LightVideoFrame> &           getVideoInput(quint32 id) = 0;
+    virtual OutSlot<LightVideoFrame> &          getVideoOutput(quint32 id) = 0;
 };
 
-#endif // GREENFILTEREFFECTPLUGIN_H_
+#endif // IGENERICEFFECT_H_

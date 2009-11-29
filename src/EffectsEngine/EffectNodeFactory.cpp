@@ -42,12 +42,12 @@ EffectNodeFactory::~EffectNodeFactory()
 
 // EFFECT TYPES INFORMATION
 
-QList<QString> const &      EffectNodeFactory::getEffectNodeTypesNamesList( void ) const
+QList<QString>              EffectNodeFactory::getEffectNodeTypesNamesList( void ) const
 {
     return ( EffectNodeFactory::m_eptm.getEffectPluginTypesNamesList() );
 }
 
-QList<quint32> const &      EffectNodeFactory::getEffectNodeTypesIdsList( void ) const
+QList<quint32>              EffectNodeFactory::getEffectNodeTypesIdsList( void ) const
 {
     return ( EffectNodeFactory::m_eptm.getEffectPluginTypesIdsList() );
 }
@@ -64,12 +64,12 @@ quint32                     EffectNodeFactory::getEffectNodeTypeIdByTypeName( QS
 
 // EFFECT INSTANCES INFORMATIONS
 
-QList<QString> const &      EffectNodeFactory::getEffectNodeInstancesNamesList( void ) const
+QList<QString>              EffectNodeFactory::getEffectNodeInstancesNamesList( void ) const
 {
     return ( m_nameById.values() );
 }
 
-QList<quint32> const &      EffectNodeFactory::getEffectNodeInstancesIdsList( void ) const
+QList<quint32>              EffectNodeFactory::getEffectNodeInstancesIdsList( void ) const
 {
     return ( m_nameById.keys() );
 }

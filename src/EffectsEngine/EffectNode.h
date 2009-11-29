@@ -28,6 +28,7 @@
 #include <QString>
 #include <QHash>
 #include <QObject>
+#include <QString>
 
 #include "IEffectNode.h"
 #include "IEffectPlugin.h"
@@ -68,6 +69,25 @@ class	EffectNode : public IEffectNode
                      quint32 const nbvideooutputs);
 
     IEffectPlugin*       getInternalPlugin( void );
+
+    //
+    //
+    //
+    // EFFECT INSTANCE AND EFFECT TYPE INFORMATIONS
+    //
+    //
+    //
+
+    void        setTypeId( quint32 typeId );
+    void        setTypeName( QString const & typeName );
+    void        setInstanceId( quint32 instanceId );
+    void        setInstanceName( QString const & instanceName );
+
+    quint32             getTypeId( void ) const;
+    QString const &     getTypeName( void ) const;
+    quint32             getInstanceId( void ) const;
+    QString const &     getInstanceName( void ) const;
+
 
 //     //
 //     //
@@ -272,6 +292,18 @@ private:
     InSlot<LightVideoFrame>*            m_videoInputs;
     OutSlot<LightVideoFrame>*           m_videoOutputs;
 
+    //
+    //
+    //
+    // EFFECT TYPE AND EFFECT INSTANCE INFORMATIONS
+    //
+    //
+    //
+
+    quint32                             m_typeId;
+    QString                             m_typeName;
+    quint32                             m_instanceId;
+    QString                             m_instanceName;
 
 //     //
 //     //

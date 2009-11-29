@@ -77,18 +77,18 @@ EffectPluginTypeManager::~EffectPluginTypeManager()
 
 IEffectPlugin*      EffectPluginTypeManager::createIEffectPluginInstance( quint32 typeId ) const
 {
-    QMap<quint32, EffectPluginTypeLoader*>::iterator    it;
+    QMap<quint32, EffectPluginTypeLoader*>::const_iterator    it = m_eptlById.find( typeId );
 
-    if ( ( it = m_eptlById.find( typeId ) ) == m_eptlById.end() )
+    if ( it == m_eptlById.end() )
         return ( it.value()->createIEffectPluginInstance() );
     return ( NULL );
 }
 
 IEffectPlugin*      EffectPluginTypeManager::createIEffectPluginInstance( QString const & typeName ) const
 {
-    QMap<QString, EffectPluginTypeLoader*>::iterator    it;
+    QMap<QString, EffectPluginTypeLoader*>::const_iterator    it = m_eptlByName.find( typeName );
 
-    if ( ( it = m_eptlByName.find( typeName ) ) == m_eptlByName.end() )
+    if ( it == m_eptlByName.end() )
         return ( it.value()->createIEffectPluginInstance() );
     return ( NULL );
 }
@@ -105,10 +105,10 @@ QList<quint32>      EffectPluginTypeManager::getEffectPluginTypesIdsList( void )
 
 QString const       EffectPluginTypeManager::getEffectPluginTypeNameByTypeId( quint32 typeId ) const
 {
-    return ( m_nameById.value( typeName, "" ) );
+    return ( m_nameById.value( typeId, "" ) );
 }
 
-quint32             EffectPluginTypeManager::getEffectPluginTypeNameByTypeId( QString const & typeName ) const
+quint32       EffectPluginTypeManager::getEffectPluginTypeIdByTypeName( QString const & typeName ) const
 {
     return ( m_nameById.key( typeName, 0 ) );
 }
