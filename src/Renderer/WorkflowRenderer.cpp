@@ -34,9 +34,14 @@ WorkflowRenderer::WorkflowRenderer() :
             m_mainWorkflow( MainWorkflow::getInstance() ),
             m_stopping( false )
 {
-    char        buffer[256];
+    char        videoString[512];
+    char        audioString[512];
+    char        callbacks[64];
 
     m_actionsMutex = new QMutex;
+    m_condMutex = new QMutex;
+    m_waitCond = new QWaitCondition;
+    m_renderVideoFrame = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes];
 
     m_videoEsHandler = new EsHandler;
     m_videoEsHandler->self = this;
@@ -46,43 +51,21 @@ WorkflowRenderer::WorkflowRenderer() :
     m_audioEsHandler->self = this;
     m_audioEsHandler->type = Audio;
 
-    m_media = new LibVLCpp::Media( "imem://" );
-
-    sprintf( buffer, ":imem-width=%i", VIDEOWIDTH );
-    m_media->addOption( buffer );
-    sprintf( buffer, ":imem-height=%i", VIDEOHEIGHT );
-    m_media->addOption( buffer );
-    sprintf( buffer, ":imem-get=%lld", (qint64)WorkflowRenderer::lock );
-    m_media->addOption( buffer );
-    sprintf( buffer, ":imem-release=%lld", (qint64)WorkflowRenderer::unlock );
-    m_media->addOption( buffer );
-    sprintf( buffer, ":imem-dar=%s", "4/3" );
-    m_media->addOption( buffer );
-    sprintf( buffer, ":imem-fps=%s", "30/1" );
-    m_media->addOption( buffer );
-    sprintf( buffer, ":imem-release=%lld", (qint64)WorkflowRenderer::unlock );
-    m_media->addOption( buffer );
-    sprintf( buffer, ":imem-data=%lld", (qint64)m_videoEsHandler );
-    m_media->addOption( buffer );
-    sprintf( buffer, ":imem-codec=%s", "RV24" );
-    m_media->addOption( buffer );
-    sprintf( buffer, ":width=%i", VIDEOWIDTH );
-    m_media->addOption( buffer );
-    sprintf( buffer, ":height=%i", VIDEOHEIGHT );
-    m_media->addOption( buffer );
-    m_media->addOption( ":imem-cat=2" );
-    m_media->addOption( ":imem-caching=0" );
-
     m_nbChannels = 1;
     m_rate = 48000;
-    sprintf( buffer, ":input-slave=imem://data=%lld:cat=1:codec=s16l:samplerate=%u:channels=%u:fps=30/1",
+
+    sprintf( videoString, "width=%i:height=%i:dar=%s:fps=%s:data=%lld:codec=%s:cat=2:caching=0",
+             VIDEOWIDTH, VIDEOHEIGHT, "4/3", "30/1", (qint64)m_videoEsHandler, "RV24" );
+    sprintf( audioString, ":input-slave=imem://data=%lld:cat=1:codec=s16l:samplerate=%u:channels=%u",
              (qint64)m_audioEsHandler, m_rate, m_nbChannels );
-    m_media->addOption( buffer );
 
-    m_condMutex = new QMutex;
-    m_waitCond = new QWaitCondition;
+    m_media = new LibVLCpp::Media( "imem://" + QString( videoString ) );
+    m_media->addOption( audioString );
 
-    m_renderVideoFrame = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes];
+    sprintf( callbacks, "imem-get=%lld", (qint64)WorkflowRenderer::lock );
+    m_media->addOption( callbacks );
+    sprintf( callbacks, ":imem-release=%lld", (qint64)WorkflowRenderer::unlock );
+    m_media->addOption( callbacks );
 
      //Workflow part
     connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ) );
