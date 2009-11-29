@@ -24,6 +24,7 @@
 #ifndef MIXEREFFECTPLUGINCREATOR_H_
 #define MIXEREFFECTPLUGINCREATOR_H_
 
+#include <QtPlugin>
 #include <QObject>
 #include "IEffectPluginCreator.h"
 #include "IEffectPlugin.h"
@@ -36,7 +37,6 @@ class   MixerEffectPluginCreator : public QObject, public IEffectPluginCreator
 
  public:
     IEffectPlugin*     createIEffectPluginInstance( void );
-    void               deleteIEffectPluginInstance( IEffectPlugin* todelete );
 };
 
 #endif // MIXEREFFECTPLUGINCREATOR_H_

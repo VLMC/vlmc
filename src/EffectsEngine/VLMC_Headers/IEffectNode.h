@@ -36,6 +36,12 @@ class	IEffectNode
     virtual void                                init( quint32 const nbvideoinputs, quint32 const nbvideooutputs ) = 0;
     virtual InSlot<LightVideoFrame> &           getVideoInput(quint32 id) = 0;
     virtual OutSlot<LightVideoFrame> &          getVideoOutput(quint32 id) = 0;
+
+    quint32             getTypeId( void ) const = 0;
+    QString const &     getTypeName( void ) const = 0;
+    quint32             getInstanceId( void ) const = 0;
+    QString const &     getInstanceName( void ) const = 0;
+
 };
 
 #endif // IGENERICEFFECT_H_

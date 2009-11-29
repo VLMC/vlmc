@@ -25,6 +25,7 @@
 #define GREENFILTEREFFECTPLUGINCREATOR_H_
 
 #include <QObject>
+#include <QtPlugin>
 #include "IEffectPluginCreator.h"
 #include "IEffectPlugin.h"
 #include "GreenFilterEffectPlugin.h"

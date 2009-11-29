@@ -3,17 +3,17 @@
 ######################################################################
 
 
-TARGET =      VLMC_GreenFilterEffectPlugin
+TARGET =      VLMC_MixerEffectPlugin
 TEMPLATE      = lib
 CONFIG       += plugin
 INCLUDEPATH  += . ../../../VLMC_Headers
-HEADERS      += GreenFilterEffectPlugin.h \
-                GreenFilterEffectPluginCreator.h \
+HEADERS      += MixerEffectPlugin.h \
+                MixerEffectPluginCreator.h \
                 ../../../VLMC_Headers/IEffectNode.h \
                 ../../../VLMC_Headers/IEffectPlugin.h \
                 ../../../VLMC_Headers/IEffectPluginCreator.h \
                 ../../../VLMC_Headers/InSlot.hpp \
                 ../../../VLMC_Headers/OutSlot.hpp \
                 ../../../VLMC_Headers/LightVideoFrame.h
-SOURCES      += GreenFilterEffectPlugin.cpp GreenFilterEffectPluginCreator.cpp
+SOURCES      += MixerEffectPlugin.cpp MixerEffectPluginCreator.cpp
 DESTDIR       = ../../bin

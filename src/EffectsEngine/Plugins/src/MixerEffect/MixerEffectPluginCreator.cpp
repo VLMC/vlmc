@@ -28,10 +28,4 @@ IEffectPlugin*  MixerEffectPluginCreator::createIEffectPluginInstance( void )
     return (new MixerEffectPlugin());
 }
 
-void  MixerEffectPluginCreator::deleteIEffectPluginInstance( IEffectPlugin* todelete )
-{
-    delete todelete;
-    return ;
-}
-
 Q_EXPORT_PLUGIN2( MixerEffectPluginCreator, MixerEffectPluginCreator )

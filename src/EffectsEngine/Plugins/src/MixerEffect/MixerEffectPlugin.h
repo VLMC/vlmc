@@ -48,7 +48,6 @@ private:
   IEffectNode*                  m_ien;
   static	quint32 const	m_nbVideoInputs = 64;
   static	quint32 const	m_nbVideoOutputs = 1;
-  quint32                       m_instanceId;
 
 };
 
