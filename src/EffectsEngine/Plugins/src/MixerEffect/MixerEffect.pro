@@ -15,5 +15,5 @@ HEADERS      += MixerEffectPlugin.h \
                 ../../../VLMC_Headers/InSlot.hpp \
                 ../../../VLMC_Headers/OutSlot.hpp \
                 ../../../VLMC_Headers/LightVideoFrame.h
-SOURCES      += MixerEffectPlugin.cpp MixerEffectPluginCreator.cpp
+SOURCES      += MixerEffectPlugin.cpp MixerEffectPluginCreator.cpp ../../../VLMC_Headers/LightVideoFrame.cpp
 DESTDIR       = ../../bin

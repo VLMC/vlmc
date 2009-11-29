@@ -107,18 +107,31 @@ void	EffectsEngine::stop( void )
 
 void	EffectsEngine::loadEffects( void )
 {
-    EffectNodeFactory      enf;
+    QList<QString> list = m_enf.getEffectNodeTypesNamesList();
+    quint32     i;
+    quint32     size = list.size();
 
-    m_effects[0] = enf.getEffect( 1 );
-    m_effects[1] = enf.getEffect( 2 );
+
+    for ( i = 0; i < size; ++i )
+        qDebug() << "typename : " << list.at( i );
+    m_enf.createEffectNodeInstance( "libVLMC_GreenFilterEffectPlugin" );
+    m_enf.createEffectNodeInstance( "libVLMC_MixerEffectPlugin" );
+
+    list = m_enf.getEffectNodeInstancesNamesList();
+    size = list.size();
+    for ( i = 0; i < size; ++i )
+        qDebug() << "instancename : " << list.at( i );
+
+    m_effects[0] = m_enf.getEffectNodeInstance( "libVLMC_MixerEffectPlugin_2" );
+    m_effects[1] = m_enf.getEffectNodeInstance( "libVLMC_GreenFilterEffectPlugin_1" );
     return ;
 }
 
 void	EffectsEngine::unloadEffects( void )
 {
-  delete m_effects[0];
-  delete m_effects[1];
-  return ;
+    m_enf.deleteEffectNodeInstance( "libVLMC_GreenFilterEffectPlugin_1" );
+    m_enf.deleteEffectNodeInstance( "libVLMC_MixerEffectPlugin_2" );
+    return ;
 }
 
 // EFFECTS PATCHING

@@ -79,6 +79,7 @@ class	EffectsEngine
 
  private:
 
+  EffectNodeFactory                             m_enf;
   QHash< quint32, EffectNode* >                 m_effects;
   OutSlot<LightVideoFrame>*			m_videoInputs; // It's OutSlots because, it's the Outputs of the workflow, that should be connected to InSlots of effects
   InSlot<LightVideoFrame>*			m_videoOutputs; // It's InSlots because, it's the Inputs of the effect engine, that should be connected to OutSlots of the renderer

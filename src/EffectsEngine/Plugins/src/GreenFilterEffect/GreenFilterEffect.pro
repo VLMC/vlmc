@@ -15,5 +15,5 @@ HEADERS      += GreenFilterEffectPlugin.h \
                 ../../../VLMC_Headers/InSlot.hpp \
                 ../../../VLMC_Headers/OutSlot.hpp \
                 ../../../VLMC_Headers/LightVideoFrame.h
-SOURCES      += GreenFilterEffectPlugin.cpp GreenFilterEffectPluginCreator.cpp
+SOURCES      += GreenFilterEffectPlugin.cpp GreenFilterEffectPluginCreator.cpp ../../../VLMC_Headers/LightVideoFrame.cpp
 DESTDIR       = ../../bin

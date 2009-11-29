@@ -23,6 +23,8 @@
 
 #include "EffectNodeFactory.h"
 
+EffectPluginTypeManager EffectNodeFactory::m_eptm = EffectPluginTypeManager();
+
 EffectNodeFactory::EffectNodeFactory() : m_higherFreeId( 1 )
 {
 }
@@ -117,7 +119,9 @@ bool                        EffectNodeFactory::createEffectNodeInstance( QString
         m_enById[ instanceId ] = newNode;
         m_nameById[ instanceId ] = instanceName;
         return ( true );
+        qDebug() << "EffectNode* with typeName[" << typeName << "] created.";
     }
+    qDebug() << "Can't create EffectNode* with typeName[" << typeName << "]!";
     return ( false );
 }
 
@@ -152,7 +156,9 @@ bool        EffectNodeFactory::createEffectNodeInstance( quint32 typeId )
         m_enById[ instanceId ] = newNode;
         m_nameById[ instanceId ] = instanceName;
         return ( true );
+    qDebug() << "EffectNode* with typeId[" << typeId << "] created.";
     }
+    qDebug() << "Can't create EffectNode* with typeId[" << typeId << "]!";
     return ( false );
 }
 
@@ -256,7 +262,7 @@ EffectNode* EffectNodeFactory::getEffectNodeInstance( quint32 instanceId ) const
 {
    QMap<quint32, EffectNode*>::const_iterator    it = m_enById.find( instanceId );
 
-    if ( it == m_enById.end() )
+    if ( it != m_enById.end() )
         return ( it.value() );
     return ( NULL );
 }
@@ -265,7 +271,7 @@ EffectNode* EffectNodeFactory::getEffectNodeInstance( QString const & instanceNa
 {
     QMap<QString, EffectNode*>::const_iterator    it = m_enByName.find( instanceName );
 
-    if ( it == m_enByName.end() )
+    if ( it != m_enByName.end() )
         return ( it.value() );
     return ( NULL );
 }

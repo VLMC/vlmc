@@ -79,7 +79,7 @@ IEffectPlugin*      EffectPluginTypeManager::createIEffectPluginInstance( quint3
 {
     QMap<quint32, EffectPluginTypeLoader*>::const_iterator    it = m_eptlById.find( typeId );
 
-    if ( it == m_eptlById.end() )
+    if ( it != m_eptlById.end() )
         return ( it.value()->createIEffectPluginInstance() );
     return ( NULL );
 }
@@ -88,7 +88,7 @@ IEffectPlugin*      EffectPluginTypeManager::createIEffectPluginInstance( QStrin
 {
     QMap<QString, EffectPluginTypeLoader*>::const_iterator    it = m_eptlByName.find( typeName );
 
-    if ( it == m_eptlByName.end() )
+    if ( it != m_eptlByName.end() )
         return ( it.value()->createIEffectPluginInstance() );
     return ( NULL );
 }
