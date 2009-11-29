@@ -24,6 +24,8 @@
 #ifndef EFFECTPLUGINTYPEMANAGER_H_
 #define EFFECTPLUGINTYPEMANAGER_H_
 
+#include "EffectPluginTypeLoader.h"
+
 class   EffectPluginTypeManager
 {
 

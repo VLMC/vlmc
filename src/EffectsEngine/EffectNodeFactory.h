@@ -29,7 +29,7 @@
 
 #include "IEffectPluginCreator.h"
 #include "EffectNode.h"
-#include "EffectPluginFactory.h"
+#include "EffectPluginTypeManager.h"
 
 #define PLUGINS_PATH "./src/EffectsEngine/Plugins"
 

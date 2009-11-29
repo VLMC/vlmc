@@ -65,7 +65,8 @@ SOURCES += src/main.cpp \
     src/GUI/VideoProjectPreferences.cpp \
     src/Project/ProjectManager.cpp \
     src/EffectsEngine/EffectNodeFactory.cpp \
-    src/EffectsEngine/EffectPluginFactory.cpp \
+    src/EffectsEngine/EffectPluginTypeManager.cpp \
+    src/EffectsEngine/EffectPluginTypeLoader.cpp \
     src/EffectsEngine/EffectsEngine.cpp \
     src/EffectsEngine/LightVideoFrame.cpp \
     src/EffectsEngine/EffectNode.cpp \
@@ -133,7 +134,8 @@ HEADERS += src/GUI/MainWindow.h \
     src/EffectsEngine/EffectNode.h \
     src/EffectsEngine/IEffectNode.h \
     src/EffectsEngine/EffectNodeFactory.h \
-    src/EffectsEngine/EffectPluginFactory.h \
+    src/EffectsEngine/EffectPluginTypeManager.h \
+    src/EffectsEngine/EffectPluginTypeLoader.h \
     src/EffectsEngine/IEffectPluginCreator.h \
     src/EffectsEngine/IEffectPlugin.h \
     src/Configuration/SettingsManager.h

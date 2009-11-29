@@ -44,22 +44,22 @@ EffectNodeFactory::~EffectNodeFactory()
 
 QList<QString> const &      EffectNodeFactory::getEffectNodeTypesNamesList( void ) const
 {
-    return ( m_eptm::getEffectPluginTypesNamesList() );
+    return ( EffectNodeFactory::m_eptm.getEffectPluginTypesNamesList() );
 }
 
 QList<quint32> const &      EffectNodeFactory::getEffectNodeTypesIdsList( void ) const
 {
-    return ( m_eptm::getEffectPluginTypesIdsList() );
+    return ( EffectNodeFactory::m_eptm.getEffectPluginTypesIdsList() );
 }
 
 QString const               EffectNodeFactory::getEffectNodeTypeNameByTypeId( quint32 typeId ) const
 {
-    return ( m_eptm::getEffectPluginTypeNameByTypeId( typeId ) );
+    return ( EffectNodeFactory::m_eptm.getEffectPluginTypeNameByTypeId( typeId ) );
 }
 
 quint32                     EffectNodeFactory::getEffectNodeTypeIdByTypeName( QString const & typeName ) const
 {
-    return ( m_eptm::getEffectPluginTypeIdByTypeName( typeName ) );
+    return ( EffectNodeFactory::m_eptm.getEffectPluginTypeIdByTypeName( typeName ) );
 }
 
 // EFFECT INSTANCES INFORMATIONS
@@ -93,7 +93,7 @@ bool                        EffectNodeFactory::createEffectNodeInstance( QString
     quint32             instanceId;
     QString             instanceName;
 
-    newInstance = m_eptm::createIEffectPluginInstance( typeName );
+    newInstance = EffectNodeFactory::m_eptm.createIEffectPluginInstance( typeName );
     if ( newInstance != NULL )
     {
         newNode = new EffectNode( newInstance );
@@ -109,10 +109,10 @@ bool                        EffectNodeFactory::createEffectNodeInstance( QString
         }
         instanceName.setNum( instanceId );
         instanceName.insert( 0 , typeName + "_" );
-        newNode.setTypeId( getEffectNodeTypeIdByTypeName( typeName) );
-        newNode.setTypeName( typeName );
-        newNode.setInstanceId( instanceId );
-        newNode.setInstanceName( instanceName );
+        newNode->setTypeId( getEffectNodeTypeIdByTypeName( typeName) );
+        newNode->setTypeName( typeName );
+        newNode->setInstanceId( instanceId );
+        newNode->setInstanceName( instanceName );
         m_enByName[ instanceName ] = newNode;
         m_enById[ instanceId ] = newNode;
         m_nameById[ instanceId ] = instanceName;
@@ -128,8 +128,8 @@ bool        EffectNodeFactory::createEffectNodeInstance( quint32 typeId )
     quint32             instanceId;
     QString             instanceName;
 
-    newInstance = m_eptm::createIEffectPluginInstance( typeId );
-    if ( newInstace != NULL )
+    newInstance = EffectNodeFactory::m_eptm.createIEffectPluginInstance( typeId );
+    if ( newInstance != NULL )
     {
         newNode = new EffectNode( newInstance );
         if ( m_mapHoles > 0 )
@@ -143,11 +143,11 @@ bool        EffectNodeFactory::createEffectNodeInstance( quint32 typeId )
             ++m_higherFreeId;
         }
         instanceName.setNum( instanceId );
-        instanceName.insert( 0 , typeName + "_" );
-        newNode.setTypeId( typeId );
-        newNode.setTypeName( getEffectNodeTypeNameByTypeId( typeId ) );
-        newNode.setInstanceId( instanceId );
-        newNode.setInstanceName( instanceName );
+        instanceName.insert( 0 , getEffectNodeTypeNameByTypeId( typeId ) + "_" );
+        newNode->setTypeId( typeId );
+        newNode->setTypeName( getEffectNodeTypeNameByTypeId( typeId ) );
+        newNode->setInstanceId( instanceId );
+        newNode->setInstanceName( instanceName );
         m_enByName[ instanceName ] = newNode;
         m_enById[ instanceId ] = newNode;
         m_nameById[ instanceId ] = instanceName;
@@ -174,7 +174,7 @@ bool        EffectNodeFactory::deleteEffectNodeInstance( QString const & instanc
             delete value;
 
             m_enByName.erase( m_enByName.find( instanceName ) );
-            m_nameBydId.erase( m_nameById.find( instanceId) );
+            m_nameById.erase( m_nameById.find( instanceId) );
             if ( instanceId <  ( m_higherFreeId - 1 ) )
             {
                 m_enById[ instanceId ] = NULL;
@@ -220,8 +220,8 @@ bool        EffectNodeFactory::deleteEffectNodeInstance( quint32 instanceId )
         {
             delete value;
 
-            m_enByName.erase( m_enByName.find( getEffectNodeInstanceNameById( instanceId ) ) );
-            m_nameBydId.erase( m_nameById.find( instanceId) );
+            m_enByName.erase( m_enByName.find( getEffectNodeInstanceNameByInstanceId( instanceId ) ) );
+            m_nameById.erase( m_nameById.find( instanceId) );
             if ( instanceId <  ( m_higherFreeId - 1 ) )
             {
                 m_enById[ instanceId ] = NULL;
@@ -254,18 +254,18 @@ bool        EffectNodeFactory::deleteEffectNodeInstance( quint32 instanceId )
 
 EffectNode* EffectNodeFactory::getEffectNodeInstance( quint32 instanceId ) const
 {
-   QMap<quint32, EffectNode*>::iterator    it;
+   QMap<quint32, EffectNode*>::const_iterator    it = m_enById.find( instanceId );
 
-    if ( ( it = m_enById.find( instanceId ) ) == m_enById.end() )
+    if ( it == m_enById.end() )
         return ( it.value() );
     return ( NULL );
 }
 
-EffectNode* EffectNodeFactory::getEffectNodeInstance( QString const & instanceName ) const;
+EffectNode* EffectNodeFactory::getEffectNodeInstance( QString const & instanceName ) const
 {
-   QMap<QString, EffectNode*>::iterator    it;
+    QMap<QString, EffectNode*>::const_iterator    it = m_enByName.find( instanceName );
 
-    if ( ( it = m_enByName.find( instanceName ) ) == m_enByName.end() )
+    if ( it == m_enByName.end() )
         return ( it.value() );
     return ( NULL );
 }
