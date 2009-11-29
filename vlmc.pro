@@ -65,13 +65,10 @@ SOURCES += src/main.cpp \
     src/GUI/VideoProjectPreferences.cpp \
     src/Project/ProjectManager.cpp \
     src/EffectsEngine/EffectNodeFactory.cpp \
+    src/EffectsEngine/EffectPluginFactory.cpp \
     src/EffectsEngine/EffectsEngine.cpp \
     src/EffectsEngine/LightVideoFrame.cpp \
     src/EffectsEngine/EffectNode.cpp \
-    src/EffectsEngine/GreenFilterEffectPlugin.cpp \
-    src/EffectsEngine/MixerEffectPlugin.cpp \
-    src/EffectsEngine/MixerEffectPluginCreator.cpp \
-    src/EffectsEngine/GreenFilterEffectPluginCreator.cpp \
     src/Configuration/SettingsManager.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
@@ -134,14 +131,11 @@ HEADERS += src/GUI/MainWindow.h \
     src/EffectsEngine/OutSlot.hpp \
     src/EffectsEngine/LightVideoFrame.h \
     src/EffectsEngine/EffectNode.h \
-    src/EffectsEngine/GreenFilterEffectPlugin.h \
-    src/EffectsEngine/MixerEffectPlugin.h \
-    src/EffectsEngine/IEffectPlugin.h \
     src/EffectsEngine/IEffectNode.h \
-    src/EffectsEngine/EffectNodeCreator.h \
-    src/EffectsEngine/IEffectPluginFactory.h \
-    src/EffectsEngine/GreenFilterEffectPluginCreator.h \
-    src/EffectsEngine/MixerEffectPluginCreator.h \
+    src/EffectsEngine/EffectNodeFactory.h \
+    src/EffectsEngine/EffectPluginFactory.h \
+    src/EffectsEngine/IEffectPluginCreator.h \
+    src/EffectsEngine/IEffectPlugin.h \
     src/Configuration/SettingsManager.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \

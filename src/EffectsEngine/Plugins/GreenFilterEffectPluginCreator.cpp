@@ -33,3 +33,5 @@ void  GreenFilterEffectPluginCreator::deleteIEffectPluginInstance( IEffectPlugin
     delete todelete;
     return ;
 }
+
+Q_EXPORT_PLUGIN2( GreenFilterEffectPluginCreator, GreenFilterEffectPluginCreator )

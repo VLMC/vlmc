@@ -24,12 +24,15 @@
 #ifndef GREENFILTEREFFECTPLUGINCREATOR_H_
 #define GREENFILTEREFFECTPLUGINCREATOR_H_
 
+#include <QObject>
 #include "IEffectPluginCreator.h"
 #include "IEffectPlugin.h"
 #include "GreenFilterEffectPlugin.h"
 
-class   GreenFilterEffectPluginCreator : public IEffectPluginCreator
+class   GreenFilterEffectPluginCreator : public QObject, public IEffectPluginCreator
 {
+    Q_OBJECT
+    Q_INTERFACES( IEffectPluginCreator )
 public:
     IEffectPlugin*      createIEffectPluginInstance( void );
     void                deleteIEffectPluginInstance( IEffectPlugin* todelete );

@@ -1,6 +1,6 @@
 /*****************************************************************************
- * MixerEffectPluginCreator.h: this class is used to instantiate
- *                             a MixerEffectPlugin
+ * EffectPluginTypeLoader.cpp: this class is used to load a .so and instantiate
+ *                             the IEffectPluginCreator from this
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -21,18 +21,41 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef MIXEREFFECTPLUGINCREATOR_H_
-#define MIXEREFFECTPLUGINCREATOR_H_
+#include "EffectPluginTypeLoader.h"
 
-#include "IEffectPluginCreator.h"
-#include "IEffectPlugin.h"
-#include "MixerEffectPlugin.h"
-
-class   MixerEffectPluginCreator : public IEffectPluginCreator
+EffectPluginTypeLoader::EffectPluginTypeLoader() : m_iepc( NULL )
 {
- public:
-    IEffectPlugin*     createIEffectPluginInstance( void );
-    void               deleteIEffectPluginInstance( IEffectPlugin* todelete );
-};
+}
 
-#endif // MIXEREFFECTPLUGINCREATOR_H_
+EffectPluginTypeLoader::~EffectPluginTypeLoader()
+{
+}
+
+IEffectPlugin*   EffectPluginTypeLoader::createIEffectPluginInstance( void ) const
+{
+    if ( m_iepc != NULL )
+        return ( m_iepc->createIEffectPluginInstance() );
+    return ( NULL );
+}
+
+bool    EffectPluginTypeLoader::load( QString const & fileName )
+{
+    QObject*    tmp;
+    m_qpl.setFileName( fileName );
+    tmp = m_qpl.instance();
+
+    if ( tmp == NULL )
+    {
+        qDebug() << m_qpl.errorString();
+        return ( false );
+    }
+
+    m_iepc = qobject_cast<IEffectPluginCreator*>( tmp );
+    if ( m_iepc == NULL )
+    {
+        qDebug() << "The type of the created instance of the loaded class isn't IEffectPluginCreator* !";
+        return ( false );
+    }
+    return  ( true );
+}
+

@@ -1,6 +1,5 @@
 /*****************************************************************************
- * IEffectPluginCreator.cpp: Interface that must inherit the class who can an
- *                            instantiate an effect plugin
+ * GreenFilterEffectPlugin.h: test effect module, just for apply a green filter
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -21,18 +20,38 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef IEFFECTPLUGINFACTORY_H_
-#define IEFFECTPLUGINFACTORY_H_
+#ifndef GREENFILTEREFFECTPLUGIN_H_
+#define GREENFILTEREFFECTPLUGIN_H_
 
+#include "IEffectNode.h"
 #include "IEffectPlugin.h"
 
-class   IEffectPluginCreator
+class	GreenFilterEffectPlugin : public QObject, public IEffectPlugin
 {
-public:
-    virtual ~IEffectPluginCreator() {};
-    virtual IEffectPlugin*      createIEffectPluginInstance( void ) = 0;
+ public:
+
+  // CTOR & DTOR
+
+  GreenFilterEffectPlugin();
+  ~GreenFilterEffectPlugin();
+
+  // INIT
+
+  void  init( IEffectNode* ien );
+
+  // RENDER METHOD
+
+  void	render( void );
+  void	enable( void );
+  void	disable( void );
+
+ private:
+
+  bool                          m_enabled;
+  IEffectNode*                  m_ien;
+  static	quint32 const   m_nbVideoInputs = 1;
+  static	quint32 const   m_nbVideoOutputs = 1;
+  quint32                       m_instanceId;
 };
 
-Q_DECLARE_INTERFACE(IEffectPluginCreator, "IEffectPluginCreator/0.1")
-
-#endif // IEFFECTPLUGINFACTORY_H_
+#endif // GREENFILTEREFFECTPLUGIN_H_

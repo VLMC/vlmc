@@ -57,14 +57,14 @@ void	EffectsEngine::render( void )
 
 void		EffectsEngine::enable( void )
 {
-  QWriteLocker    lock( m_inputLock );
-  reinterpret_cast<GreenFilterEffectPlugin*>(m_effects[1]->getInternalPlugin())->enable(); // YES, I KNOW, IT'S HUGLY, BUT IT'S TEMPORARY
+//   QWriteLocker    lock( m_inputLock );
+//   reinterpret_cast<GreenFilterEffectPlugin*>(m_effects[1]->getInternalPlugin())->enable(); // YES, I KNOW, IT'S HUGLY, BUT IT'S TEMPORARY
 }
 
 void		EffectsEngine::disable( void )
 {
-  QWriteLocker    lock( m_inputLock );
-  reinterpret_cast<GreenFilterEffectPlugin*>(m_effects[1]->getInternalPlugin())->disable(); // YES, I KNOW, IT'S HUGLY, BUT IT'S TEMPORARY (second time)
+//   QWriteLocker    lock( m_inputLock );
+//   reinterpret_cast<GreenFilterEffectPlugin*>(m_effects[1]->getInternalPlugin())->disable(); // YES, I KNOW, IT'S HUGLY, BUT IT'S TEMPORARY (second time)
 }
 
 // INPUTS & OUTPUTS METHODS

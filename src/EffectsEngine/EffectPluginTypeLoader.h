@@ -1,6 +1,6 @@
 /*****************************************************************************
- * EffectPluginFactory.h: this class is used to load a .so and instantiate
- *                          a new IEffectPlugin from this
+ * EffectPluginTypeLoader.cpp: this class is used to load a .so and instantiate
+ *                             the IEffectPluginCreator from this
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -21,36 +21,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef EFFECTPLUGINFACTORY_H_
-#define EFFECTPLUGINFACTORY_H_
+#ifndef EFFECTPLUGINTYPELOADER_H_
+#define EFFECTPLUGINTYPELOADER_H_
 
 #include <QPluginLoader>
-#include <QList>
-#include <IEffectPluginCreator.h>
-#include <IEffectPlugin.h>
+#include <QDebug>
+#include "IEffectPluginCreator.h"
 
-class   EffectPluginFactory
+class   EffectPluginTypeLoader
 {
 public:
 
-    EffectPluginFactory();
-    ~EffectPluginFactory();
+    EffectPluginTypeLoader();
+    ~EffectPluginTypeLoader();
 
+    IEffectPlugin*       createIEffectPluginInstance( void ) const;
     bool                load( QString const & fileName );
-    IEffectPlugin*      newIEffectPlugin( void );
-    bool                deleteIEffectPluginInstance( quint32 id )
 
 private:
 
     QPluginLoader                       m_qpl;
     IEffectPluginCreator*               m_iepc;
-    QMap<quint32, IEffectPlugin*>       m_iepi;
-    quint32                             m_higherFreeId;
-    quint32                             m_mapHoles;
 };
 
-// L'IEffectPluginCreator doit aussi avoir la methode deleteInstance( quint32 id )
-// L'IEffectPlugin doit avoir son constructeur et son destructeur en private avec IEffectPluginCreator en friend
-// L'IEffectPlugin doit avoir un setInstanceId et un getInstanceId
+// L'EffectNode contiendra son id de type, son nom de type, son id d'instance, et son nom d'instance
 
-#endif // EFFECTPLUGINFACTORY_H_
+#endif // EFFECTPLUGINTYPELOADER_H_

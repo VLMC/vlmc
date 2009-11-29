@@ -1,5 +1,6 @@
 /*****************************************************************************
- * GreenFilterEffectPlugin.h: test effect module, just for apply a green filter
+ * MixerEffectPluginCreator.cpp: this class is used to instantiate
+ *                               a MixerEffectPlugin
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,38 +21,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef GREENFILTEREFFECTPLUGIN_H_
-#define GREENFILTEREFFECTPLUGIN_H_
+#include "MixerEffectPluginCreator.h"
 
-#include "IEffectNode.h"
-#include "IEffectPlugin.h"
-
-class	GreenFilterEffectPlugin : public IEffectPlugin
+IEffectPlugin*  MixerEffectPluginCreator::createIEffectPluginInstance( void )
 {
- public:
+    return (new MixerEffectPlugin());
+}
 
-  // CTOR & DTOR
+void  MixerEffectPluginCreator::deleteIEffectPluginInstance( IEffectPlugin* todelete )
+{
+    delete todelete;
+    return ;
+}
 
-  GreenFilterEffectPlugin();
-  ~GreenFilterEffectPlugin();
-
-  // INIT
-
-  void  init( IEffectNode* ien );
-
-  // RENDER METHOD
-
-  void	render( void );
-  void	enable( void );
-  void	disable( void );
-
- private:
-
-  bool                          m_enabled;
-  IEffectNode*                  m_ien;
-  static	quint32 const   m_nbVideoInputs = 1;
-  static	quint32 const   m_nbVideoOutputs = 1;
-  quint32                       m_instanceId;
-};
-
-#endif // GREENFILTEREFFECTPLUGIN_H_
+Q_EXPORT_PLUGIN2( MixerEffectPluginCreator, MixerEffectPluginCreator )

@@ -1,6 +1,6 @@
 /*****************************************************************************
- * MixerEffectPluginCreator.cpp: this class is used to instantiate
- *                               a MixerEffectPlugin
+ * MixerEffectPluginCreator.h: this class is used to instantiate
+ *                             a MixerEffectPlugin
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -21,15 +21,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "MixerEffectPluginCreator.h"
+#ifndef MIXEREFFECTPLUGINCREATOR_H_
+#define MIXEREFFECTPLUGINCREATOR_H_
 
-IEffectPlugin*  MixerEffectPluginCreator::createIEffectPluginInstance( void )
-{
-    return (new MixerEffectPlugin());
-}
+#include <QObject>
+#include "IEffectPluginCreator.h"
+#include "IEffectPlugin.h"
+#include "MixerEffectPlugin.h"
 
-void  MixerEffectPluginCreator::deleteIEffectPluginInstance( IEffectPlugin* todelete )
+class   MixerEffectPluginCreator : public QObject, public IEffectPluginCreator
 {
-    delete todelete;
-    return ;
-}
+    Q_OBJECT
+    Q_INTERFACES( IEffectPluginCreator )
+
+ public:
+    IEffectPlugin*     createIEffectPluginInstance( void );
+    void               deleteIEffectPluginInstance( IEffectPlugin* todelete );
+};
+
+#endif // MIXEREFFECTPLUGINCREATOR_H_
