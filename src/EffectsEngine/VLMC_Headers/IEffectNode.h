@@ -37,10 +37,10 @@ class	IEffectNode
     virtual InSlot<LightVideoFrame> &           getVideoInput(quint32 id) = 0;
     virtual OutSlot<LightVideoFrame> &          getVideoOutput(quint32 id) = 0;
 
-    quint32             getTypeId( void ) const = 0;
-    QString const &     getTypeName( void ) const = 0;
-    quint32             getInstanceId( void ) const = 0;
-    QString const &     getInstanceName( void ) const = 0;
+    virtual quint32             getTypeId( void ) const = 0;
+    virtual QString const &     getTypeName( void ) const = 0;
+    virtual quint32             getInstanceId( void ) const = 0;
+    virtual QString const &     getInstanceName( void ) const = 0;
 
 };
 
