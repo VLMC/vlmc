@@ -35,7 +35,8 @@ WorkflowRenderer::WorkflowRenderer() :
             m_stopping( false )
 {
     char        videoString[512];
-    char        audioString[512];
+    char        inputSlave[256];
+    char        audioParameters[256];
     char        callbacks[64];
 
     m_actionsMutex = new QMutex;
@@ -56,11 +57,13 @@ WorkflowRenderer::WorkflowRenderer() :
 
     sprintf( videoString, "width=%i:height=%i:dar=%s:fps=%s:data=%lld:codec=%s:cat=2:caching=0",
              VIDEOWIDTH, VIDEOHEIGHT, "4/3", "30/1", (qint64)m_videoEsHandler, "RV24" );
-    sprintf( audioString, ":input-slave=imem://data=%lld:cat=1:codec=s16l:samplerate=%u:channels=%u",
+    sprintf( audioParameters, "data=%lld:cat=1:codec=s16l:samplerate=%u:channels=%u",
              (qint64)m_audioEsHandler, m_rate, m_nbChannels );
+    strcpy( inputSlave, ":input-slave=imem://" );
+    strcat( inputSlave, audioParameters );
 
     m_media = new LibVLCpp::Media( "imem://" + QString( videoString ) );
-    m_media->addOption( audioString );
+    m_media->addOption( inputSlave );
 
     sprintf( callbacks, "imem-get=%lld", (qint64)WorkflowRenderer::lock );
     m_media->addOption( callbacks );
