@@ -29,6 +29,8 @@
 
 #include "Clip.h"
 
+const int   Clip::DefaultFPS = 30;
+
 Clip::Clip( Media* parent ) : m_parent( parent ), m_begin( 0 ), m_end( parent->getNbFrames() )
 {
     m_Uuid = QUuid::createUuid();
