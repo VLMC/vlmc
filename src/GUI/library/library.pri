@@ -1,6 +1,5 @@
 FORMS	+=	ui/StackViewNavController.ui	\
-		ui/MediaCellView.ui	\
-		ui/StackViewNavController.ui
+		ui/MediaCellView.ui
 
 HEADERS	+=	ListViewController.h	\
 		MediaCellView.h	\
