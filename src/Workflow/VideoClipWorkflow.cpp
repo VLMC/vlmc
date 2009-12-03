@@ -69,7 +69,7 @@ void            VideoClipWorkflow::initVlcOutput()
     m_vlcMedia->addOption( buffer );
 
     //Forced output fps
-    sprintf( buffer, ":sout-transcode-fps=%f", (float)FPS );
+    sprintf( buffer, ":sout-transcode-fps=%f", (float)Clip::DefaultFPS );
     m_vlcMedia->addOption( buffer );
 
     //sprintf( buffer, "sout-smem-video-pitch=%i", VIDEOWIDTH * 3 );
