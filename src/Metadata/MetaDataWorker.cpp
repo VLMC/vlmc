@@ -26,7 +26,6 @@
 #include "MetaDataWorker.h"
 #include "Library.h"
 
-const int   Clip::DefaultFPS = 30;
 
 MetaDataWorker::MetaDataWorker( LibVLCpp::MediaPlayer* mediaPlayer, Media* media, MetaDataWorker::MetaDataType type ) :
         m_mediaPlayer( mediaPlayer ),
