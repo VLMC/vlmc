@@ -193,7 +193,7 @@ void        WorkflowRenderer::internalPlayPause( bool forcePause )
         {
             if ( m_paused == false )
             {
-                Action::Generic*    act = new Action::Unpause( m_mainWorkflow );
+                Action::Generic*    act = new Action::Pause( m_mainWorkflow );
                 QMutexLocker        lock( m_actionsMutex );
                 m_actions.addAction( act );
             }
