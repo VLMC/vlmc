@@ -150,7 +150,7 @@ void    MetaDataWorker::getMetaData()
         if ( m_media->getFps() == .0f )
         {
             qWarning() << "Invalid FPS for media:" << m_media->getFileInfo()->absoluteFilePath();
-            m_media->setFps( FPS );
+            m_media->setFps( Clip::DefaultFPS );
         }
         m_media->setNbFrames( (m_media->getLengthMS() / 1000) * m_media->getFps() );
 //        connect( m_mediaPlayer, SIGNAL( stopped () ), this, SLOT( mediaPlayerStopped() ), Qt::QueuedConnection );

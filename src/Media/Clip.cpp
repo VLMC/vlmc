@@ -107,7 +107,7 @@ void        Clip::computeLength()
     {
         float   fps = m_parent->getFps();
         if ( fps < 0.1f )
-            fps = FPS;
+            fps = Clip::DefaultFPS;
         m_length = m_end - m_begin;
         m_lengthSeconds = qRound64( (float)m_length / fps );
         emit lengthUpdated();

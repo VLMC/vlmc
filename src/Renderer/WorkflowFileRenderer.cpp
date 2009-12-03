@@ -41,18 +41,20 @@ void        WorkflowFileRenderer::run()
 {
     char        buffer[256];
 
+    m_outputFps = SettingsManager::getInstance()->getValue( "VLMC", "VLMCOutPutFPS" ).toDouble();
+
     //Media as already been created an mainly initialized by the WorkflowRenderer
     m_media->addOption( ":no-audio" );
     m_media->addOption( "no-sout-audio" );
     m_media->addOption( ":fake" );
-    sprintf(buffer, ":fake-fps=%i", FPS );
-    m_media->addOption( buffer );
+    //sprintf(buffer, ":fake-fps=%i", FPS );
+    //m_media->addOption( buffer );
     QString     transcodeStr = ":sout=#transcode{vcodec=mp4v,vb=800,acodec=mpga,ab=128,no-hurry-up}"
                                ":standard{access=file,mux=ps,dst=\""
                           + m_outputFileName + "\"}";
     m_media->addOption( transcodeStr.toStdString().c_str() );
 
-    sprintf( buffer, ":sout-transcode-fps=%f", (float)FPS );
+    sprintf( buffer, ":sout-transcode-fps=%f", m_outputFps );
     m_media->addOption( buffer );
 
     m_mediaPlayer->setMedia( m_media );
@@ -64,7 +66,6 @@ void        WorkflowFileRenderer::run()
 
     m_isRendering = true;
     m_stopping = false;
-    m_outputFps = SettingsManager::getInstance()->getValue( "default", "VLMCOutPutFPS" ).toDouble();
 
     m_mainWorkflow->setFullSpeedRender( true );
     m_mainWorkflow->startRender();
