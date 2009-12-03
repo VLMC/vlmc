@@ -55,6 +55,7 @@ protected:
     void                paintTitle( QPainter* painter, const QStyleOptionGraphicsItem* option );
     virtual void        hoverEnterEvent( QGraphicsSceneHoverEvent* event );
     virtual void        hoverLeaveEvent( QGraphicsSceneHoverEvent* event );
+    virtual void        hoverMoveEvent( QGraphicsSceneHoverEvent* event );
     virtual void        mousePressEvent( QGraphicsSceneMouseEvent* event );
     virtual void        mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
 

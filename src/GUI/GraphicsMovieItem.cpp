@@ -186,19 +186,38 @@ void GraphicsMovieItem::hoverLeaveEvent( QGraphicsSceneHoverEvent* event )
     AbstractGraphicsMediaItem::hoverLeaveEvent( event );
 }
 
+void GraphicsMovieItem::hoverMoveEvent( QGraphicsSceneHoverEvent* event )
+{
+    if ( !tracksView() ) return;
+
+    if ( tracksView()->tool() == TOOL_DEFAULT )
+    {
+        QPoint mouseMapped = tracksView()->mapFromScene( event->pos() );
+        QPoint sizeMapped = tracksView()->mapFromScene( boundingRect().width(), boundingRect().height() );
+
+        if ( mouseMapped.x() < RESIZE_ZONE ||
+             mouseMapped.x() > ( sizeMapped.x() - RESIZE_ZONE ) )
+            setCursor( Qt::SizeHorCursor );
+        else
+            setCursor( Qt::OpenHandCursor );
+    }
+}
+
 void GraphicsMovieItem::mousePressEvent( QGraphicsSceneMouseEvent* event )
 {
-    TracksView* tv = Timeline::getInstance()->tracksView();
-    if ( tv->tool() == TOOL_DEFAULT )
+    if ( !tracksView() ) return;
+
+    if ( tracksView()->tool() == TOOL_DEFAULT )
         setCursor( Qt::ClosedHandCursor );
-    else if ( tv->tool() == TOOL_CUT )
+    else if ( tracksView()->tool() == TOOL_CUT )
         emit split( this, qRound64( event->pos().x() ) );
 }
 
 void GraphicsMovieItem::mouseReleaseEvent( QGraphicsSceneMouseEvent*  event )
 {
     Q_UNUSED( event );
-    TracksView* tv = Timeline::getInstance()->tracksView();
-    if ( tv->tool() == TOOL_DEFAULT )
+    if ( !tracksView() ) return;
+
+    if ( tracksView()->tool() == TOOL_DEFAULT )
         setCursor( Qt::OpenHandCursor );
 }

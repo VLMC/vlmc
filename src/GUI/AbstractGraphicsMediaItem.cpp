@@ -97,19 +97,26 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
 {
     Q_ASSERT( clip() );
 
-    if ( size > clip()->getLength() )
+    if ( size > clip()->getParent()->getNbFrames() )
     {
         qWarning( "AbstractGraphicsMediaItem: Can't expand a clip beyond its original size" );
-        size = clip()->getLength();
+        return;
     }
+
+    if ( size < 0 ) return;
 
     if ( from == BEGINNING )
         clip()->setEnd( clip()->getBegin() + size );
     else
     {
-        qint64 oldBegin = clip()->getBegin();
-        clip()->setBegin( clip()->getEnd() - size );
-        setStartPos( clip()->getBegin() - oldBegin );
+        qint64 oldLength = clip()->getLength();
+        if ( ( clip()->getEnd() - size ) < 0 )
+        {
+            qWarning( "Warning: resizing a region with a size below 0" );
+            size += clip()->getEnd() - size;
+        }
+        clip()->setBegin( qMax( clip()->getEnd() - size, (qint64)0 ) );
+        setStartPos( startPos() + ( oldLength - size ) );
     }
 
     setWidth( clip()->getLength() );

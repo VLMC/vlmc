@@ -47,6 +47,7 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, Workf
     m_numVideoTrack = 0;
     m_dragItem = NULL;
     m_actionMove = false;
+    m_actionResize = false;
     m_actionRelativeX = -1;
     m_actionItem = NULL;
     m_tool = TOOL_DEFAULT;
@@ -167,6 +168,7 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, qint64 start )
     }
 
     GraphicsMovieItem* item = new GraphicsMovieItem( clip );
+    item->m_tracksView = this;
     item->setHeight( tracksHeight() );
     item->setParentItem( getTrack( MainWorkflow::VideoTrack, track ) );
     item->setStartPos( start );
@@ -193,6 +195,7 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
 
     if ( m_dragItem ) delete m_dragItem;
     m_dragItem = new GraphicsMovieItem( clip );
+    m_dragItem->m_tracksView = this;
     m_dragItem->setHeight( tracksHeight() );
     m_dragItem->setParentItem( m_layout->itemAt( 0 )->graphicsItem() );
     connect( m_dragItem, SIGNAL( split(GraphicsMovieItem*,qint64) ),
@@ -490,6 +493,24 @@ void TracksView::mouseMoveEvent( QMouseEvent* event )
             m_actionRelativeX = event->pos().x() - mapFromScene( m_actionItem->pos() ).x();
         moveMediaItem( m_actionItem, QPoint( event->pos().x() - m_actionRelativeX, event->pos().y() ) );
     }
+    else if ( event->modifiers() == Qt::NoModifier &&
+              event->buttons() == Qt::LeftButton &&
+              m_actionResize == true )
+    {
+        QPointF itemPos = m_actionItem->mapToScene( 0, 0 );
+        QPointF itemNewSize = mapToScene( event->pos() ) - itemPos;
+
+        if ( m_actionResizeType == AbstractGraphicsMediaItem::END )
+        {
+            qint64 distance = mapToScene( event->pos() ).x() - m_actionResizeStart;
+            qint64 newsize = qMax( m_actionResizeBase - distance, (qint64)0 );
+            m_actionItem->resize( newsize , AbstractGraphicsMediaItem::END );
+        }
+        else
+        {
+            m_actionItem->resize( itemNewSize.x(), AbstractGraphicsMediaItem::BEGINNING );
+        }
+    }
 
     QGraphicsView::mouseMoveEvent( event );
 }
@@ -509,11 +530,28 @@ void TracksView::mousePressEvent( QMouseEvent* event )
          mediaCollisionList.count() == 1 )
     {
         AbstractGraphicsMediaItem* item = mediaCollisionList.at( 0 );
-        if ( item->moveable() )
+
+        QPoint itemEndPos = mapFromScene( item->mapToScene( item->boundingRect().bottomRight() ) );
+        QPoint itemPos = mapFromScene( item->mapToScene( 0, 0 ) );
+        QPoint clickPos = event->pos() - itemPos;
+        QPoint itemSize = itemEndPos - itemPos;
+
+        if ( clickPos.x() < RESIZE_ZONE || clickPos.x() > ( itemSize.x() - RESIZE_ZONE ) )
+        {
+            if ( clickPos.x() < RESIZE_ZONE )
+                m_actionResizeType = AbstractGraphicsMediaItem::END;
+            else
+                m_actionResizeType = AbstractGraphicsMediaItem::BEGINNING;
+            m_actionResize = true;
+            m_actionResizeStart = mapToScene( event->pos() ).x();
+            m_actionResizeBase = item->clip()->getLength();
+            m_actionItem = item;
+        }
+        else if ( item->moveable() )
         {
             m_actionMove = true;
             m_actionMoveExecuted = false;
-            m_actionItem = mediaCollisionList.at( 0 );
+            m_actionItem = item;
         }
         scene()->clearSelection();
         item->setSelected( true );
@@ -564,8 +602,13 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
             m_actionItem = NULL;
         }
     }
+    else if ( m_actionResize )
+    {
+        updateDuration();
+    }
 
     m_actionMove = false;
+    m_actionResize = false;
 
     setDragMode( QGraphicsView::NoDrag );
     QGraphicsView::mouseReleaseEvent( event );
