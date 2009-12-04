@@ -57,7 +57,8 @@ public slots:
     void        zoomOut();
 
 protected:
-    virtual void changeEvent( QEvent *e );
+    virtual void    changeEvent( QEvent *e );
+    virtual void    closeEvent( QCloseEvent* e );
 
 private:
     void        initializeDockWidgets( void );

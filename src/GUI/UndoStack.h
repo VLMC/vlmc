@@ -45,7 +45,7 @@ class UndoStack : public QUndoView, public QSingleton<UndoStack>
         QShortcut*      m_redoShortcut;
 
     signals:
-        void            cleanChanged();
+        void            cleanChanged( bool val );
 
     friend class        QSingleton<UndoStack>;
 };

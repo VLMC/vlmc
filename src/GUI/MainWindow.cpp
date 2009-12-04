@@ -386,3 +386,31 @@ void MainWindow::on_actionProject_Wizard_triggered()
     m_pWizard->show();
 }
 
+void    MainWindow::closeEvent( QCloseEvent* e )
+{
+    if ( ProjectManager::getInstance()->needSave() == true )
+    {
+        QMessageBox msgBox;
+        msgBox.setText( tr( "The project has been modified." ) );
+        msgBox.setInformativeText( tr( "Do you want to save it ?" ) );
+        msgBox.setStandardButtons( QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel );
+        msgBox.setDefaultButton(QMessageBox::Save);
+        int     ret = msgBox.exec();
+
+        switch ( ret )
+        {
+            case QMessageBox::Save:
+                ProjectManager::getInstance()->saveProject();
+                break ;
+            case QMessageBox::Discard:
+                break ;
+            case QMessageBox::Cancel:
+            default:
+                e->ignore();
+                return ;
+            e->accept();
+        }
+    }
+    else
+        e->accept();
+}

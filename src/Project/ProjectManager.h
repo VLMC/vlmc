@@ -36,6 +36,7 @@ class   ProjectManager : public QObject, public Singleton<ProjectManager>
 public:
     void        loadProject();
     void        saveProject();
+    bool        needSave() const;
 
 private:
     ProjectManager();
@@ -47,11 +48,13 @@ private:
 private:
     QFile*          m_projectFile;
     QDomDocument*   m_domDocument;
+    bool            m_needSave;
 
     friend class    Singleton<ProjectManager>;
 
 private slots:
-    void        loadTimeline();
+    void            loadTimeline();
+    void            cleanChanged( bool val );
 };
 
 #endif // PROJECTMANAGER_H

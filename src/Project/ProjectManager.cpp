@@ -21,13 +21,14 @@
  *****************************************************************************/
 
 #include <QFileDialog>
+#include <QtDebug>
 
 #include "ProjectManager.h"
 #include "Library.h"
 #include "MainWorkflow.h"
 #include "SettingsManager.h"
 
-ProjectManager::ProjectManager() : m_projectFile( NULL )
+ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
 {
 }
 
@@ -35,6 +36,16 @@ ProjectManager::~ProjectManager()
 {
     if ( m_projectFile != NULL )
         delete m_projectFile;
+}
+
+bool    ProjectManager::needSave() const
+{
+    return m_needSave;
+}
+
+void    ProjectManager::cleanChanged( bool val )
+{
+    m_needSave = !val;
 }
 
 void    ProjectManager::loadTimeline()
