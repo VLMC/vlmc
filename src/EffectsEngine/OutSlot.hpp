@@ -55,7 +55,15 @@ public:
 
   // GETTING INFOS
 
-  InSlot<T>*	getInSlotPtr( void );
+    InSlot<T>*	getInSlotPtr( void ) const;
+
+    QString const       getName( void ) const;
+    quint32             getId( void ) const;
+
+ // SRTTING INFOS
+
+    void          setId( quint32 id );
+    void          setName( QString const & name );
 private:
 
   // OTHERS
@@ -70,6 +78,9 @@ private:
   InSlot<T>*		m_InSlotPtr;
   T			m_junk;
   T*			m_pipe;
+
+    quint32             m_id;
+    QString             m_name;
 };
 
 /////////////////////////
@@ -146,9 +157,37 @@ bool	OutSlot<T>::disconnect( void )
 // GETTING INFOS
 
 template<typename T>
-InSlot<T>*	OutSlot<T>::getInSlotPtr( void )
+InSlot<T>*	OutSlot<T>::getInSlotPtr( void ) const
 {
   return ( m_InSlotPtr );
+}
+
+template<typename T>
+quint32                OutSlot<T>::getId( void ) const
+{
+    return ( m_id );
+}
+
+template<typename T>
+QString const          OutSlot<T>::getName( void ) const
+{
+    return ( m_name );
+}
+
+// SETTING INFOS
+
+template<typename T>
+void                OutSlot<T>::setId( quint32 id )
+{
+    m_id = id;
+    return ;
+}
+
+template<typename T>
+void                OutSlot<T>::setName( QString const & name )
+{
+    m_name = name;
+    return ;
 }
 
 //////////////////////////

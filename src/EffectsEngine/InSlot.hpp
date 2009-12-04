@@ -48,9 +48,17 @@ public:
   InSlot<T> const&	operator>>( T & ) const;
 			operator T const & () const;
 
-  // GETTING INFOS
+    // GETTING INFOS
 
-  OutSlot<T>*		getOutSlotPtr( void );
+    OutSlot<T>*		getOutSlotPtr( void ) const;
+
+    QString const       getName( void ) const;
+    quint32             getId( void ) const;
+
+    // SETTING INFO
+
+    void                setId( quint32 id );
+    void                setName( QString const & name );
 
 private:
 
@@ -68,8 +76,11 @@ private:
 
   static T			m_defaultValue;
   OutSlot<T>*			m_OutSlotPtr;
-  T				m_shared;		
+  T				m_shared;
   T*				m_currentShared;
+
+    quint32                     m_id;
+    QString                     m_name;
 };
 
 template<typename T>
@@ -92,7 +103,7 @@ template<typename T>
 InSlot<T>::InSlot(InSlot const &)
 {
   resetOutSlotPtr();
-  setCurrentSharedToDefault();  
+  setCurrentSharedToDefault();
 }
 
 template<typename T>
@@ -127,9 +138,37 @@ InSlot<T>::operator T const & () const
 // GETTING INFOS
 
 template<typename T>
-OutSlot<T>*	InSlot<T>::getOutSlotPtr( void )
+OutSlot<T>*	InSlot<T>::getOutSlotPtr( void ) const
 {
   return ( m_OutSlotPtr );
+}
+
+template<typename T>
+quint32                InSlot<T>::getId( void ) const
+{
+    return ( m_id );
+}
+
+template<typename T>
+QString const          InSlot<T>::getName( void ) const
+{
+    return ( m_name );
+}
+
+// SETTING INFOS
+
+template<typename T>
+void                InSlot<T>::setId( quint32 id )
+{
+    m_id = id;
+    return ;
+}
+
+template<typename T>
+void                InSlot<T>::setName( QString const & name )
+{
+    m_name = name;
+    return ;
 }
 
 //////////////////////////

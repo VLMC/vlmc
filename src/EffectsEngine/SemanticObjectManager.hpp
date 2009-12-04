@@ -41,12 +41,11 @@ public:
     {
         if ( m_objectByName.empty() == false )
         {
-            quint32     i;
-            quint32     size;
+            typename QMap<QString, T*>::iterator it = m_objectByName.begin();
+            typename QMap<QString, T*>::iterator end = m_objectByName.end();
 
-            size = m_objectByName.size();
-            for ( i = 0; i < size; ++i )
-                delete m_objectByName[i];
+            for ( ; it != end; ++it )
+                delete it.value();
         }
     }
 
@@ -72,7 +71,7 @@ public:
         return ( m_nameById.key( objectName, 0 ) );
     }
 
-    inline quint32                     getNBObjects( void )
+    inline quint32                     getNBObjects( void ) const
     {
         return ( m_nameById.size() );
     }
@@ -136,8 +135,7 @@ public:
 
     inline bool                        deleteObject( quint32 objectId )
     {
-        QMap<quint32, T*>::iterator itid;
-        quint32                     objectId;
+        typename QMap<quint32, T*>::iterator itid;
 
         itid = m_objectById.find( objectId );
 
@@ -184,7 +182,7 @@ public:
 
     inline bool                        deleteObject( QString const & objectName )
     {
-        QMap<quint32, T*>::iterator itid;
+        typename QMap<quint32, T*>::iterator itid;
         quint32                     objectId;
 
         itid = m_objectById.find( getObjectIdByObjectName( objectName ) );
@@ -234,7 +232,7 @@ public:
 
     inline T*                          getObject( quint32 objectId ) const
     {
-        QMap<quint32, T*>::const_iterator    it = m_objectById.find( objectId );
+        typename QMap<quint32, T*>::const_iterator    it = m_objectById.find( objectId );
 
         if ( it != m_objectById.end() )
             return ( it.value() );
@@ -243,7 +241,7 @@ public:
 
     inline T*                          getObject( QString const & objectName ) const
     {
-        QMap<QString, T*>::const_iterator    it = m_objectByName.find( objectName );
+        typename QMap<QString, T*>::const_iterator    it = m_objectByName.find( objectName );
 
         if ( it != m_objectByName.end() )
             return ( it.value() );

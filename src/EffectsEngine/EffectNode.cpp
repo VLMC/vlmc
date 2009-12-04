@@ -22,6 +22,15 @@
 
 #include "EffectNode.h"
 
+template class SemanticObjectManager< InSlot<LightVideoFrame> >;
+template class SemanticObjectManager< OutSlot<LightVideoFrame> >;
+
+// template class SemanticObjectManager<InSlot<AudioSoundSample> >;
+// template class SemanticObjectManager<OutSlot<AudioSoundSample> >;
+
+// template class SemanticObjectManager<InSlot<qreal> >;
+// template class SemanticObjectManager<OutSlot<qreal> >;
+
 EffectNode::EffectNode(IEffectPlugin* plugin) : m_plugin(plugin), m_videoInputs(NULL), m_videoOutputs(NULL)
 {
     m_plugin->init(this);
@@ -133,13 +142,13 @@ QString const &         EffectNode::getInstanceName( void ) const
     // STATICS SLOTS
     //
 
-void		addStaticVideoInput( QString const & name )
+void		EffectNode::createStaticVideoInput( QString const & name )
 {
     m_staticVideosInputs.createObject( name );
     return ;
 }
 
-void		addStaticVideoOutput( QString const & name )
+void		EffectNode::createStaticVideoOutput( QString const & name )
 {
     m_staticVideosOutputs.createObject( name );
     return ;
@@ -150,13 +159,13 @@ void		addStaticVideoOutput( QString const & name )
 //     void		addStaticControlInput( QByteArray const & name );
 //     void		addStaticControlOutput( QByteArray const & name );
 
-void		addStaticVideoInput( void )
+void		EffectNode::createStaticVideoInput( void )
 {
     m_staticVideosInputs.createObject();
     return ;
 }
 
-void		addStaticVideoOutput( void )
+void		EffectNode::createStaticVideoOutput( void )
 {
     m_staticVideosOutputs.createObject();
     return ;
@@ -167,12 +176,12 @@ void		addStaticVideoOutput( void )
 //     void		addStaticControlOutput( void );
 
 
-bool		removeStaticVideoInput( QString const & name )
+bool		EffectNode::removeStaticVideoInput( QString const & name )
 {
     return ( m_staticVideosInputs.deleteObject( name ) );
 }
 
-bool		removeStaticVideoOutput( QString const & name )
+bool		EffectNode::removeStaticVideoOutput( QString const & name )
 {
     return ( m_staticVideosOutputs.deleteObject( name ) );
 }
@@ -181,12 +190,12 @@ bool		removeStaticVideoOutput( QString const & name )
 //     bool		removeStaticControlInput( QByteArray const & name );
 //     bool		removeStaticControlOutput( QByteArray const & name );
 
-bool		removeStaticVideoInput( quint32 id )
+bool		EffectNode::removeStaticVideoInput( quint32 id )
 {
     return ( m_staticVideosInputs.deleteObject( id ) );
 }
 
-bool		removeStaticVideoOutput( quint32 id )
+bool		EffectNode::removeStaticVideoOutput( quint32 id )
 {
     return ( m_staticVideosOutputs.deleteObject( id ) );
 }
@@ -224,12 +233,12 @@ bool		removeStaticVideoOutput( quint32 id )
 // STATIC SLOTS
 //
 
-InSlot<LightVideoFrame>*		getStaticVideoInput( QString const & name ) const
+InSlot<LightVideoFrame>*		EffectNode::getStaticVideoInput( QString const & name ) const
 {
     return ( m_staticVideosInputs.getObject( name ) );
 }
 
-OutSlot<LightVideoFrame>*	        getStaticVideoOutput( QString const & name ) const
+OutSlot<LightVideoFrame>*	        EffectNode::getStaticVideoOutput( QString const & name ) const
 {
     return ( m_staticVideosOutputs.getObject( name ) );
 }
@@ -239,12 +248,12 @@ OutSlot<LightVideoFrame>*	        getStaticVideoOutput( QString const & name ) c
 //     InSlot<qreal>*		getStaticControlInput( QByteArray const & name ) const;
 //     OutSlot<qreal>* 		getStaticControlOutput( QByteArray const & name ) const;
 
-IntSlot<LightVideoFrame>*		getStaticVideoInput( quint32 id ) const
+InSlot<LightVideoFrame>*		EffectNode::getStaticVideoInput( quint32 id ) const
 {
     return ( m_staticVideosInputs.getObject( id ) );
 }
 
-OutSlot<LightVideoFrame>*		getStaticVideoOutput( quint32 id ) const
+OutSlot<LightVideoFrame>*		EffectNode::getStaticVideoOutput( quint32 id ) const
 {
     return ( m_staticVideosOutputs.getObject( id ) );
 }
@@ -254,12 +263,12 @@ OutSlot<LightVideoFrame>*		getStaticVideoOutput( quint32 id ) const
 //  InSlot<qreal>*		getStaticControlInput( quint32 id ) const;
 //  OutSlot<qreal>*		getStaticControlOutput( quint32 id ) const;
 
-QList<OutSlot<LightVideoFrame>*>	getStaticVideoInputList( void ) const
+QList<InSlot<LightVideoFrame>*>	EffectNode::getStaticsVideosInputsList( void ) const
 {
     return ( m_staticVideosInputs.getObjectsList() );
 }
 
-QList<InSlot<LightVideoFrame>*>		getStaticVideoOutputList( void ) const
+QList<OutSlot<LightVideoFrame>*>		EffectNode::getStaticsVideosOutputsList( void ) const
 {
     return ( m_staticVideosOutputs.getObjectsList() );
 }
@@ -303,12 +312,12 @@ QList<InSlot<LightVideoFrame>*>		getStaticVideoOutputList( void ) const
     // STATICS SLOTS
     //
 
-QList<QByteArray>	getStaticVideosInputsNamesList( void ) const
+QList<QString>	EffectNode::getStaticsVideosInputsNamesList( void ) const
 {
     return ( m_staticVideosInputs.getObjectsNamesList() );
 }
 
-QList<QByteArray>	getStaticVideosOutputsNamesList( void ) const
+QList<QString>	EffectNode::getStaticsVideosOutputsNamesList( void ) const
 {
     return ( m_staticVideosOutputs.getObjectsNamesList() );
 }
@@ -318,12 +327,12 @@ QList<QByteArray>	getStaticVideosOutputsNamesList( void ) const
 //     QList<QByteArray> const &	getStaticControlsInputsNameList( void ) const;
 //     QList<QByteArray> const &	getStaticControlsOutputsNameList( void ) const;
 
-QList<QByteArray>	getStaticVideosInputsIdsList( void ) const
+QList<quint32>	EffectNode::getStaticsVideosInputsIdsList( void ) const
 {
     return ( m_staticVideosInputs.getObjectsIdsList() );
 }
 
-QList<QByteArray>	getStaticVideosOutputsIdsList( void ) const
+QList<quint32>	EffectNode::getStaticsVideosOutputsIdsList( void ) const
 {
     return ( m_staticVideosOutputs.getObjectsIdsList() );
 }
@@ -333,12 +342,12 @@ QList<QByteArray>	getStaticVideosOutputsIdsList( void ) const
 //     QList<QByteArray> const &	getStaticControlsInputsIdList( void ) const;
 //     QList<QByteArray> const &	getStaticControlsOutputsIdList( void ) const;
 
-QString const           getStaticVideoInputNameById( quint32 const id ) const
+QString const           EffectNode::getStaticVideoInputNameById( quint32 const id ) const
 {
     return ( m_staticVideosInputs.getObjectNameByObjectId( id ) );
 }
 
-QString const           getStaticVideoOutputNameById( quint32 const id ) const
+QString const           EffectNode::getStaticVideoOutputNameById( quint32 const id ) const
 {
     return ( m_staticVideosOutputs.getObjectNameByObjectId( id ) );
 }
@@ -348,12 +357,12 @@ QString const           getStaticVideoOutputNameById( quint32 const id ) const
 //     QByteArray const &          getStaticControlInputNameById( quint32 const id ) const;
 //     QByteArray const &          getStaticControlOutputNameById( quint32 const id ) const;
 
-quint32                     getStaticVideoInputIdByName( QString const & name ) const
+quint32                     EffectNode::getStaticVideoInputIdByName( QString const & name ) const
 {
     return ( m_staticVideosInputs.getObjectIdByObjectName( name ) );
 }
 
-quint32                     getStaticVideoOutputIdByName( QString const & name ) const
+quint32                     EffectNode::getStaticVideoOutputIdByName( QString const & name ) const
 {
     return ( m_staticVideosOutputs.getObjectIdByObjectName( name ) );
 }
@@ -363,12 +372,14 @@ quint32                     getStaticVideoOutputIdByName( QString const & name )
 //     quint32                     getStaticControlInputIdByName( QByteArray const & name ) const;
 //     quint32                     getStaticControlOutputIdByName( QByteArray const & name ) const;
 
-quint32                     getNBStaticVideosInputs( void ) const
+quint32                     EffectNode::getNBStaticsVideosInputs( void ) const
 {
+    return ( m_staticVideosInputs.getNBObjects() );
 }
 
-quint32                     getNBStaticVideosOutputs( void ) const
+quint32                     EffectNode::getNBStaticsVideosOutputs( void ) const
 {
+    return ( m_staticVideosOutputs.getNBObjects() );
 }
 
 //     quint32                     getNBStaticAudiosIntputs( void ) const;

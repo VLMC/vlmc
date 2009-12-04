@@ -37,14 +37,6 @@
 #include "LightVideoFrame.h"
 #include "SemanticObjectManager.hpp"
 
-template class SemanticObjectManager<InSlot<LightVideoFrame> >;
-template class SemanticObjectManager<OutSlot<LightVideoFrame> >;
-
-// template class SemanticObjectManager<InSlot<AudioSoundSample> >;
-// template class SemanticObjectManager<OutSlot<AudioSoundSample> >;
-
-// template class SemanticObjectManager<InSlot<qreal> >;
-// template class SemanticObjectManager<OutSlot<qreal> >;
 
 class	EffectNode : public IEffectNode
 {
@@ -117,22 +109,22 @@ class	EffectNode : public IEffectNode
     // STATICS SLOTS
     //
 
-    bool		addStaticVideoInput( QByteArray const & name );
-    bool		addStaticVideoOutput( QByteArray const & name );
-    //     bool		addStaticAudioInput( QByteArray const & name );
-    //     bool		addStaticAudioOutput( QByteArray const & name );
-    //     bool		addStaticControlInput( QByteArray const & name );
-    //     bool		addStaticControlOutput( QByteArray const & name );
+    void		createStaticVideoInput( void );
+    void		createStaticVideoOutput( void );
+    //     void		createStaticAudioInput( void );
+    //     void		createStaticAudioOutput( void );
+    //     void		createStaticControlInput( void );
+    //     void		createStaticControlOutput( void );
 
-    bool		addStaticVideoInput( void );
-    bool		addStaticVideoOutput( void );
-    //     bool		addStaticAudioInput( void );
-    //     bool		addStaticAudioOutput( void );
-    //     bool		addStaticControlInput( void );
-    //     bool		addStaticControlOutput( void );
+    void		createStaticVideoInput( QString const & name );
+    void		createStaticVideoOutput( QString const & name );
+    //     void		createStaticAudioInput( QByteArray const & name );
+    //     void		createStaticAudioOutput( QByteArray const & name );
+    //     void		createStaticControlInput( QByteArray const & name );
+    //     void		createStaticControlOutput( QByteArray const & name );
 
-    bool		removeStaticVideoInput( QByteArray const & name );
-    bool		removeStaticVideoOutput( QByteArray const & name );
+    bool		removeStaticVideoInput( QString const & name );
+    bool		removeStaticVideoOutput( QString const & name );
     //     bool		removeStaticAudioInput( QByteArray const & name );
     //     bool		removeStaticAudioOutput( QByteArray const & name );
     //     bool		removeStaticControlInput( QByteArray const & name );
@@ -173,26 +165,26 @@ class	EffectNode : public IEffectNode
 // STATIC SLOTS
 //
 
-    InSlot<LightVideoFrame>*		getStaticVideoInput( QByteArray const & name ) const;
-    OutSlot<LightVideoFrame>*	        getStaticVideoOutput( QByteArray const & name ) const;
+    InSlot<LightVideoFrame>*		getStaticVideoInput( QString const & name ) const;
+    OutSlot<LightVideoFrame>*	        getStaticVideoOutput( QString const & name ) const;
     //     InSlot<AudioSoundSample>*		getStaticAudioInput( QByteArray const & name ) const;
     //     OutSlot<AudioSoundSample>*		getStaticAudioOutput( QByteArray const & name ) const;
     //     InSlot<qreal>*		getStaticControlInput( QByteArray const & name ) const;
     //     OutSlot<qreal>* 		getStaticControlOutput( QByteArray const & name ) const;
 
-    IntSlot<LightVideoFrame>*		getStaticVideoInput( quint32 id ) const;
+    InSlot<LightVideoFrame>*		getStaticVideoInput( quint32 id ) const;
     OutSlot<LightVideoFrame>*		getStaticVideoOutput( quint32 id ) const;
     //  InSlot<AudioSoundSample>*		getStaticAudioInput( quint32 id ) const;
     //  OutSlot<AudioSoundSample>*		getStaticAudioOutput( quint32 id ) const;
     //  InSlot<qreal>*		getStaticControlInput( quint32 id ) const;
     //  OutSlot<qreal>*		getStaticControlOutput( quint32 id ) const;
 
-    QList<OutSlot<LightVideoFrame>*>		getStaticVideoInputList( void ) const;
-    QList<InSlot<LightVideoFrame>*>		getStaticVideoOutputList( void ) const;
-    //  QList<InSlot<AudioSoundSample>*>		getStaticAudioInputList( void ) const;
-    //     QList<OutSlot<AudioSoundSample>*>		getStaticAudioOutputList( void ) const;
-    //     QList<InSlot<qreal>*>		getStaticControlInputList( void ) const;
-    //     QList<OutSlot<qreal>*>		getStaticControlOutputList( void ) const;
+    QList<InSlot<LightVideoFrame>*>		getStaticsVideosInputsList( void ) const;
+    QList<OutSlot<LightVideoFrame>*>		getStaticsVideosOutputsList( void ) const;
+    //  QList<InSlot<AudioSoundSample>*>		getStaticsAudiosInputsList( void ) const;
+    //     QList<OutSlot<AudioSoundSample>*>		getStaticsAudiosOutputsList( void ) const;
+    //     QList<InSlot<qreal>*>		getStaticsControlsInputsList( void ) const;
+    //     QList<OutSlot<qreal>*>		getStaticsControlsOutputsList( void ) const;
 
 //
 // DYNAMIC SLOTS
@@ -228,36 +220,36 @@ class	EffectNode : public IEffectNode
     // STATICS SLOTS
     //
 
-    QList<QByteArray> const &	getStaticVideosInputsNameList( void ) const;
-    QList<QByteArray> const &	getStaticVideosOutputsNameList( void ) const;
+    QList<QString>	getStaticsVideosInputsNamesList( void ) const;
+    QList<QString>	getStaticsVideosOutputsNamesList( void ) const;
     //     QList<QByteArray> const &	getStaticAudiosInputsNameList( void ) const;
     //     QList<QByteArray> const &	getStaticAudiosOutputsNameList( void ) const;
     //     QList<QByteArray> const &	getStaticControlsInputsNameList( void ) const;
     //     QList<QByteArray> const &	getStaticControlsOutputsNameList( void ) const;
 
-    QList<QByteArray> const &	getStaticVideosInputsIdList( void ) const;
-    QList<QByteArray> const &	getStaticVideosOutputsIdList( void ) const;
+    QList<quint32>	getStaticsVideosInputsIdsList( void ) const;
+    QList<quint32>	getStaticsVideosOutputsIdsList( void ) const;
     //     QList<QByteArray> const &	getStaticAudiosInputsIdList( void ) const;
     //     QList<QByteArray> const &	getStaticAudiosOutputsIdList( void ) const;
     //     QList<QByteArray> const &	getStaticControlsInputsIdList( void ) const;
     //     QList<QByteArray> const &	getStaticControlsOutputsIdList( void ) const;
 
-    QByteArray const &          getStaticVideoInputNameById( quint32 const id ) const;
-    QByteArray const &          getStaticVideoOutputNameById( quint32 const id ) const;
+    QString const          getStaticVideoInputNameById( quint32 const id ) const;
+    QString const          getStaticVideoOutputNameById( quint32 const id ) const;
     //     QByteArray const &          getStaticAudioInputNameById( quint32 const id ) const;
     //     QByteArray const &          getStaticAudioOutputNameById( quint32 const id ) const;
     //     QByteArray const &          getStaticControlInputNameById( quint32 const id ) const;
     //     QByteArray const &          getStaticControlOutputNameById( quint32 const id ) const;
 
-    quint32                     getStaticVideoInputIdByName( QByteArray const & name ) const;
-    quint32                     getStaticVideoOutputIdByName( QByteArray const & name ) const;
+    quint32                     getStaticVideoInputIdByName( QString const & name ) const;
+    quint32                     getStaticVideoOutputIdByName( QString const & name ) const;
     //     quint32                     getStaticAudioInputIdByName( QByteArray const & name ) const;
     //     quint32                     getStaticAudioOutputIdByName( QByteArray const & name ) const;
     //     quint32                     getStaticControlInputIdByName( QByteArray const & name ) const;
     //     quint32                     getStaticControlOutputIdByName( QByteArray const & name ) const;
 
-    quint32                     getNBStaticVideosInputs( void ) const;
-    quint32                     getNBStaticVideosOutputs( void ) const;
+    quint32                     getNBStaticsVideosInputs( void ) const;
+    quint32                     getNBStaticsVideosOutputs( void ) const;
     //     quint32                     getNBStaticAudiosIntputs( void ) const;
     //     quint32                     getNBStaticAudiosOutputs( void ) const;
     //     quint32                     getNBStaticControlsInputs( void ) const;

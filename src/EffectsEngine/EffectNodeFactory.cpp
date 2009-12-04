@@ -33,12 +33,11 @@ EffectNodeFactory::~EffectNodeFactory()
 {
     if ( m_enByName.empty() == false )
     {
-        quint32     i;
-        quint32     size;
+        QMap<QString, EffectNode*>::iterator it  = m_enByName.begin();;
+        QMap<QString, EffectNode*>::iterator end = m_enByName.end();
 
-        size = m_enByName.size();
-        for ( i = 0; i < size; ++i )
-            delete m_enByName[i];
+        for ( ; it != end; ++it )
+            delete it.value();
     }
 }
 
