@@ -55,6 +55,9 @@ private:
 private slots:
     void            loadTimeline();
     void            cleanChanged( bool val );
+
+signals:
+    void            projectChanged( const QString& projectName, bool savedState );
 };
 
 #endif // PROJECTMANAGER_H

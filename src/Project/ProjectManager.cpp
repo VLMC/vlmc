@@ -30,6 +30,7 @@
 
 ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
 {
+
 }
 
 ProjectManager::~ProjectManager()
@@ -46,12 +47,17 @@ bool    ProjectManager::needSave() const
 void    ProjectManager::cleanChanged( bool val )
 {
     m_needSave = !val;
+    if ( m_projectFile != NULL )
+        emit projectChanged( m_projectFile->fileName(), val );
+    else
+        emit projectChanged( tr( "<Unsaved project>" ), val );
 }
 
 void    ProjectManager::loadTimeline()
 {
     QDomElement     root = m_domDocument->documentElement();
     MainWorkflow::getInstance()->loadProject( root.firstChildElement( "timeline" ) );
+    emit projectChanged( m_projectFile->fileName(), true );
 }
 
 void    ProjectManager::loadProject()

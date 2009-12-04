@@ -79,21 +79,22 @@ private:
     ProjectWizard*          m_pWizard;
 
 private slots:
-    void on_actionBypass_effects_engine_toggled(bool );
-    void on_actionFullscreen_triggered( bool checked );
-    void on_actionQuit_triggered();
-    void on_actionAbout_triggered();
-    void on_actionPreferences_triggered();
-    void on_actionTranscode_triggered();
-    void on_actionRender_triggered();
-    void on_actionNew_Project_triggered();
-    void on_actionLoad_Project_triggered();
-    void on_actionSave_triggered();
-    void on_actionImport_triggered();
-    void on_actionHelp_triggered();
-    void on_actionProject_Preferences_triggered();
-    void on_actionProject_Wizard_triggered();
-    void toolButtonClicked( int id );
+    void                    on_actionBypass_effects_engine_toggled(bool );
+    void                    on_actionFullscreen_triggered( bool checked );
+    void                    on_actionQuit_triggered();
+    void                    on_actionAbout_triggered();
+    void                    on_actionPreferences_triggered();
+    void                    on_actionTranscode_triggered();
+    void                    on_actionRender_triggered();
+    void                    on_actionNew_Project_triggered();
+    void                    on_actionLoad_Project_triggered();
+    void                    on_actionSave_triggered();
+    void                    on_actionImport_triggered();
+    void                    on_actionHelp_triggered();
+    void                    on_actionProject_Preferences_triggered();
+    void                    on_actionProject_Wizard_triggered();
+    void                    toolButtonClicked( int id );
+    void                    projectChanged( const QString& projectName, bool savedStatus );
 
 signals:
     void translateDockWidgetTitle();

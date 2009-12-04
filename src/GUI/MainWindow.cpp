@@ -53,6 +53,7 @@
 #include "Import.h"
 #include "MediaLibraryWidget.h"
 #include "LanguagePreferences.h"
+#include "ProjectManager.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
@@ -82,6 +83,9 @@ MainWindow::MainWindow( QWidget *parent ) :
              this, SLOT( zoomOut() ) );
     connect( this, SIGNAL( toolChanged( ToolButtons ) ),
              m_timeline, SLOT( setTool( ToolButtons ) ) );
+
+    connect( ProjectManager::getInstance(), SIGNAL( projectChanged( const QString&, bool ) ),
+             this, SLOT( projectChanged( const QString&, bool ) ) );
 
     QSettings s;
     // Restore the geometry
@@ -413,4 +417,14 @@ void    MainWindow::closeEvent( QCloseEvent* e )
     }
     else
         e->accept();
+}
+
+void    MainWindow::projectChanged( const QString& projectName, bool savedStatus )
+{
+    QString title = tr( "VideoLAN Movie Creator" );
+    title += " ";
+    title += projectName;
+    if ( savedStatus == false )
+        title += " *";
+    setWindowTitle( title );
 }
