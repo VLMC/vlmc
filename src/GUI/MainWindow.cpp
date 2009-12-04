@@ -37,7 +37,6 @@
 #include "Library.h"
 #include "Timeline.h"
 #include "About.h"
-#include "FileBrowser.h"
 #include "WorkflowRenderer.h"
 #include "ClipRenderer.h"
 #include "UndoStack.h"
@@ -240,11 +239,6 @@ void MainWindow::initializeDockWidgets( void )
     setCentralWidget( m_timeline );
 
     DockWidgetManager *dockManager = DockWidgetManager::instance();
-    dockManager->addDockedWidget( new FileBrowser( this ),
-                                  tr( "FileBrowser" ),
-                                  Qt::AllDockWidgetAreas,
-                                  QDockWidget::AllDockWidgetFeatures,
-                                  Qt::TopDockWidgetArea);
 
     m_clipPreview = new PreviewWidget( new ClipRenderer, this );
     dockManager->addDockedWidget( m_clipPreview,

@@ -1,6 +1,5 @@
 FORMS	+=	ui/About.ui	\
 		ui/ClipProperty.ui	\
-		ui/FileBrowser.ui	\
 		ui/Import.ui	\
 		ui/LoadPage.ui	\
 		ui/MainWindow.ui	\
@@ -15,7 +14,6 @@ HEADERS	+=	About.h	\
 		ClickableLabel.h	\
 		ClipProperty.h	\
 		DockWidgetManager.h	\
-		FileBrowser.h	\
 		FileInfoListModel.h	\
 		GraphicsAudioItem.h	\
 		GraphicsCursorItem.h	\
@@ -42,7 +40,6 @@ SOURCES	+=	About.cpp	\
 		ClickableLabel.cpp	\
 		ClipProperty.cpp	\
 		DockWidgetManager.cpp	\
-		FileBrowser.cpp	\
 		FileInfoListModel.cpp	\
 		GraphicsAudioItem.cpp	\
 		GraphicsCursorItem.cpp	\
