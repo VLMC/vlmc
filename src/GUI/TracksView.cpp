@@ -756,22 +756,11 @@ GraphicsTrack* TracksView::getTrack( MainWorkflow::TrackType type, unsigned int 
 
 void TracksView::split( GraphicsMovieItem* item, qint64 frame )
 {
-//    Q_ASSERT( item );
-//    Clip* newclip = item->clip()->split( frame );
-//    Q_ASSERT( newclip );
-//
-//    addMediaItem( newclip, item->trackNumber(), item->startPos() + frame );
-//    Commands::trigger( new Commands::MainWorkflow::AddClip( m_renderer,
-//                                                            newclip,
-//                                                            item->trackNumber(),
-//                                                            item->startPos() + frame,
-//                                                            MainWorkflow::VideoTrack ) );
-
     //frame is the number of frame from the beginning of the clip
-    //item->pos().x() is the position of the splitted clip (in frame)
+    //item->startPos() is the position of the splitted clip (in frame)
     //therefore, the position of the newly created clip is
     //the splitted clip pos + the splitting point (ie startPos() + frame)
-//    m_renderer->split( item->clip(), item->trackNumber(), item->startPos() + frame, frame, MainWorkflow::VideoTrack );
     Commands::trigger( new Commands::MainWorkflow::SplitClip( m_renderer, item->clip(), item->trackNumber(),
-                                                              item->startPos() + frame, frame, MainWorkflow::VideoTrack ) );
+                                                              item->startPos() + frame, frame + item->clip()->getBegin(),
+                                                              MainWorkflow::VideoTrack ) );
 }
