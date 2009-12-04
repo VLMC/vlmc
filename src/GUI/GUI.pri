@@ -25,9 +25,7 @@ HEADERS	+=	About.h	\
 		ImportMediaListController.h	\
 		LanguagePreferences.h	\
 		LCDTimecode.h	\
-		ListViewMediaItem.h	\
 		MainWindow.h	\
-		MediaListWidget.h	\
 		PreviewRuler.h	\
 		PreviewWidget.h	\
 		TagWidget.h	\
@@ -53,9 +51,7 @@ SOURCES	+=	About.cpp	\
 		ImportMediaListController.cpp	\
 		LanguagePreferences.cpp	\
 		LCDTimecode.cpp	\
-		ListViewMediaItem.cpp	\
 		MainWindow.cpp	\
-		MediaListWidget.cpp	\
 		PreviewRuler.cpp	\
 		PreviewWidget.cpp	\
 		TagWidget.cpp	\

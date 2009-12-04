@@ -34,7 +34,6 @@
 #include <QStringList>
 
 #include "MainWindow.h"
-#include "MediaListWidget.h"
 #include "Library.h"
 #include "Timeline.h"
 #include "About.h"
@@ -391,13 +390,6 @@ void    MainWindow::on_actionFullscreen_triggered( bool checked )
 void    MainWindow::registerWidgetInWindowMenu( QDockWidget* widget )
 {
     m_ui.menuWindow->addAction( widget->toggleViewAction() );
-}
-
-void    MainWindow::mediaListItemDoubleClicked( QListWidgetItem* qItem )
-{
-    ListViewMediaItem* item = static_cast<ListViewMediaItem*>( qItem );
-    ClipProperty* mp = new ClipProperty( item->getClip(), this );
-    mp->show();
 }
 
 void    MainWindow::toolButtonClicked( int id )

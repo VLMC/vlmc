@@ -26,7 +26,6 @@
 #include <QMetaMethod>
 #include "PreviewWidget.h"
 #include "ui_PreviewWidget.h"
-#include "MediaListWidget.h"
 #include "Library.h"
 
 PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent ) :

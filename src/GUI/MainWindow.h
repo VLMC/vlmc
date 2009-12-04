@@ -36,7 +36,6 @@
 #include "Timeline.h"
 #include "WorkflowFileRenderer.h"
 #include "PreviewWidget.h"
-#include "ListViewMediaItem.h"
 #include "Settings.h"
 #include "EffectsEngine.h"
 #include "MainWorkflow.h"
@@ -93,7 +92,6 @@ private slots:
     void on_actionHelp_triggered();
     void on_actionProject_Preferences_triggered();
     void on_actionProject_Wizard_triggered();
-    void mediaListItemDoubleClicked( QListWidgetItem* );
     void toolButtonClicked( int id );
 
 signals:
