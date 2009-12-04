@@ -422,7 +422,7 @@ void    MainWindow::closeEvent( QCloseEvent* e )
 void    MainWindow::projectChanged( const QString& projectName, bool savedStatus )
 {
     QString title = tr( "VideoLAN Movie Creator" );
-    title += " ";
+    title += " - ";
     title += projectName;
     if ( savedStatus == false )
         title += " *";
