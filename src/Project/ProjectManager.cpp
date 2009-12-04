@@ -94,9 +94,9 @@ bool    ProjectManager::loadProjectFile()
     return true;
 }
 
-bool    ProjectManager::checkProjectOpen()
+bool    ProjectManager::checkProjectOpen( bool saveAs )
 {
-    if ( m_projectFile == NULL )
+    if ( m_projectFile == NULL || saveAs == true )
     {
         QString outputFileName =
             QFileDialog::getSaveFileName( NULL, "Enter the output file name",
@@ -110,9 +110,9 @@ bool    ProjectManager::checkProjectOpen()
     return true;
 }
 
-void    ProjectManager::saveProject()
+void    ProjectManager::saveProject( bool saveAs /*= true*/ )
 {
-    if ( checkProjectOpen() == false )
+    if ( checkProjectOpen( saveAs ) == false )
         return ;
     QDomImplementation    implem = QDomDocument().implementation();
     //FIXME: Think about naming the project...
@@ -132,5 +132,10 @@ void    ProjectManager::saveProject()
     m_projectFile->open( QFile::WriteOnly );
     m_projectFile->write( doc.toString().toAscii() );
     m_projectFile->close();
+    if ( saveAs == true )
+    {
+        QFileInfo   fInfo( *m_projectFile );
+        emit projectChanged( fInfo.fileName(), true );
+    }
     emit projectSaved();
 }

@@ -145,6 +145,11 @@ void    MainWindow::on_actionSave_triggered()
     ProjectManager::getInstance()->saveProject();
 }
 
+void    MainWindow::on_actionSave_As_triggered()
+{
+    ProjectManager::getInstance()->saveProject( true );
+}
+
 void    MainWindow::on_actionLoad_Project_triggered()
 {
     ProjectManager::getInstance()->loadProject();
