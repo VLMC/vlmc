@@ -138,6 +138,7 @@ HEADERS += src/GUI/MainWindow.h \
     src/EffectsEngine/EffectPluginTypeLoader.h \
     src/EffectsEngine/IEffectPluginCreator.h \
     src/EffectsEngine/IEffectPlugin.h \
+    src/EffectsEngine/SemanticObjectManager.h \
     src/Configuration/SettingsManager.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \

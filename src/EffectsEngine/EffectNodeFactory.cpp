@@ -31,14 +31,14 @@ EffectNodeFactory::EffectNodeFactory() : m_higherFreeId( 1 )
 
 EffectNodeFactory::~EffectNodeFactory()
 {
-    if ( m_enById.empty() == false )
+    if ( m_enByName.empty() == false )
     {
         quint32     i;
         quint32     size;
 
-        size = m_enById.size();
+        size = m_enByName.size();
         for ( i = 0; i < size; ++i )
-            delete m_enById[i];
+            delete m_enByName[i];
     }
 }
 
@@ -278,5 +278,5 @@ EffectNode* EffectNodeFactory::getEffectNodeInstance( QString const & instanceNa
 
 QList<EffectNode*>  EffectNodeFactory::getEffectNodeInstancesList( void ) const
 {
-    return ( m_enById.values() );
+    return ( m_enByName.values() );
 }

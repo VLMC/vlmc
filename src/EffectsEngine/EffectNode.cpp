@@ -115,6 +115,286 @@ QString const &         EffectNode::getInstanceName( void ) const
     return ( m_instanceName );
 }
 
+    //
+    //
+    //
+    // EFFECT CONFIGURATION
+    //
+    //
+    //
+
+    //
+    //
+    // SETTING EFFECT CONFIGURATION
+    //
+    //
+
+    //
+    // STATICS SLOTS
+    //
+
+void		addStaticVideoInput( QString const & name )
+{
+    m_staticVideosInputs.createObject( name );
+    return ;
+}
+
+void		addStaticVideoOutput( QString const & name )
+{
+    m_staticVideosOutputs.createObject( name );
+    return ;
+}
+
+//     void		addStaticAudioInput( QByteArray const & name );
+//     void		addStaticAudioOutput( QByteArray const & name );
+//     void		addStaticControlInput( QByteArray const & name );
+//     void		addStaticControlOutput( QByteArray const & name );
+
+void		addStaticVideoInput( void )
+{
+    m_staticVideosInputs.createObject();
+    return ;
+}
+
+void		addStaticVideoOutput( void )
+{
+    m_staticVideosOutputs.createObject();
+    return ;
+}
+//     void		addStaticAudioInput( void );
+//     void		addStaticAudioOutput( void );
+//     void		addStaticControlInput( void );
+//     void		addStaticControlOutput( void );
+
+
+bool		removeStaticVideoInput( QString const & name )
+{
+    return ( m_staticVideosInputs.deleteObject( name ) );
+}
+
+bool		removeStaticVideoOutput( QString const & name )
+{
+    return ( m_staticVideosOutputs.deleteObject( name ) );
+}
+//     bool		removeStaticAudioInput( QByteArray const & name );
+//     bool		removeStaticAudioOutput( QByteArray const & name );
+//     bool		removeStaticControlInput( QByteArray const & name );
+//     bool		removeStaticControlOutput( QByteArray const & name );
+
+bool		removeStaticVideoInput( quint32 id )
+{
+    return ( m_staticVideosInputs.deleteObject( id ) );
+}
+
+bool		removeStaticVideoOutput( quint32 id )
+{
+    return ( m_staticVideosOutputs.deleteObject( id ) );
+}
+
+//     bool		removeStaticAudioInput( quint32 id );
+//     bool		removeStaticAudioOutput( quint32 id );
+//     bool		removeStaticControlInput( quint32 id );
+//     bool		removeStaticControlOutput( quint32 id );
+
+//
+// DYNAMICS SLOTS
+//
+
+//     void		enableDynamicVideoInput( void );
+//     void		enableDynamicVideoOutput( void );
+//     void		enableDynamicAudioInput( void );
+//     void		enableDynamicAudioOutput( void );
+//     void		enableDynamicControlInput( void );
+//     void		enableDynamicControlOutput( void );
+
+//     void		disableDynamicVideoInput( void );
+//     void		disableDynamicVideoOutput( void );
+//     void		disableDynamicAudioInput( void );
+//     void		disableDynamicAudioOutput( void );
+//     void		disableDynamicControlInput( void );
+//     void		disableDynamicControlOutput( void );
+
+//
+//
+// GETTING SLOTS
+//
+//
+
+//
+// STATIC SLOTS
+//
+
+InSlot<LightVideoFrame>*		getStaticVideoInput( QString const & name ) const
+{
+    return ( m_staticVideosInputs.getObject( name ) );
+}
+
+OutSlot<LightVideoFrame>*	        getStaticVideoOutput( QString const & name ) const
+{
+    return ( m_staticVideosOutputs.getObject( name ) );
+}
+
+//     InSlot<AudioSoundSample>*		getStaticAudioInput( QByteArray const & name ) const;
+//     OutSlot<AudioSoundSample>*		getStaticAudioOutput( QByteArray const & name ) const;
+//     InSlot<qreal>*		getStaticControlInput( QByteArray const & name ) const;
+//     OutSlot<qreal>* 		getStaticControlOutput( QByteArray const & name ) const;
+
+IntSlot<LightVideoFrame>*		getStaticVideoInput( quint32 id ) const
+{
+    return ( m_staticVideosInputs.getObject( id ) );
+}
+
+OutSlot<LightVideoFrame>*		getStaticVideoOutput( quint32 id ) const
+{
+    return ( m_staticVideosOutputs.getObject( id ) );
+}
+
+//  InSlot<AudioSoundSample>*		getStaticAudioInput( quint32 id ) const;
+//  OutSlot<AudioSoundSample>*		getStaticAudioOutput( quint32 id ) const;
+//  InSlot<qreal>*		getStaticControlInput( quint32 id ) const;
+//  OutSlot<qreal>*		getStaticControlOutput( quint32 id ) const;
+
+QList<OutSlot<LightVideoFrame>*>	getStaticVideoInputList( void ) const
+{
+    return ( m_staticVideosInputs.getObjectsList() );
+}
+
+QList<InSlot<LightVideoFrame>*>		getStaticVideoOutputList( void ) const
+{
+    return ( m_staticVideosOutputs.getObjectsList() );
+}
+
+//  QList<InSlot<AudioSoundSample>*>		getStaticAudioInputList( void ) const;
+//     QList<OutSlot<AudioSoundSample>*>		getStaticAudioOutputList( void ) const;
+//     QList<InSlot<qreal>*>		getStaticControlInputList( void ) const;
+//     QList<OutSlot<qreal>*>		getStaticControlOutputList( void ) const;
+
+//
+// DYNAMIC SLOTS
+//
+
+//     QList<OutSlot<LightVideoFrame>*>    getDynamicVideoOutputList( void ) const;
+//     QList<InSlot<LightVideoFrame>*>     getDynamicVideoInputList( void ) const;
+
+//     QList<OutSlot<AudioSoundSample>*>    getDynamicAudioOutputList( void ) const;
+//     QList<InSlot<AudioSoundSample>*>     getDynamicAudioInputList( void ) const;
+
+//     QList<OutSlot<qreal>*>    getDynamicControlOutputList( void ) const;
+//     QList<InSlot<qreal>*>     getDynamicControlInputList( void ) const;
+
+
+//     QList<OutSlot<LightVideoFrame>*>    getDynamicVideoOutputById( quint32 id ) const;
+//     QList<InSlot<LightVideoFrame>*>     getDynamicVideoInputById( quint32 id ) const;
+
+//     QList<OutSlot<AudioSoundSample>*>    getDynamicAudioOutputById( quint32 id ) const;
+//     QList<InSlot<AudioSoundSample>*>     getDynamicAudioInputById( quint32 id ) const;
+
+//     QList<OutSlot<qreal>*>    getDynamicControlOutputById( quint32 ) const;
+//     QList<InSlot<qreal>*>     getDynamicControlInputById( quint32 ) const;
+
+
+    //
+    //
+    // GETTING EFFECT CONFIGURATION
+    //
+    //
+
+    //
+    // STATICS SLOTS
+    //
+
+QList<QByteArray>	getStaticVideosInputsNamesList( void ) const
+{
+    return ( m_staticVideosInputs.getObjectsNamesList() );
+}
+
+QList<QByteArray>	getStaticVideosOutputsNamesList( void ) const
+{
+    return ( m_staticVideosOutputs.getObjectsNamesList() );
+}
+
+//     QList<QByteArray> const &	getStaticAudiosInputsNameList( void ) const;
+//     QList<QByteArray> const &	getStaticAudiosOutputsNameList( void ) const;
+//     QList<QByteArray> const &	getStaticControlsInputsNameList( void ) const;
+//     QList<QByteArray> const &	getStaticControlsOutputsNameList( void ) const;
+
+QList<QByteArray>	getStaticVideosInputsIdsList( void ) const
+{
+    return ( m_staticVideosInputs.getObjectsIdsList() );
+}
+
+QList<QByteArray>	getStaticVideosOutputsIdsList( void ) const
+{
+    return ( m_staticVideosOutputs.getObjectsIdsList() );
+}
+
+//     QList<QByteArray> const &	getStaticAudiosInputsIdList( void ) const;
+//     QList<QByteArray> const &	getStaticAudiosOutputsIdList( void ) const;
+//     QList<QByteArray> const &	getStaticControlsInputsIdList( void ) const;
+//     QList<QByteArray> const &	getStaticControlsOutputsIdList( void ) const;
+
+QString const           getStaticVideoInputNameById( quint32 const id ) const
+{
+    return ( m_staticVideosInputs.getObjectNameByObjectId( id ) );
+}
+
+QString const           getStaticVideoOutputNameById( quint32 const id ) const
+{
+    return ( m_staticVideosOutputs.getObjectNameByObjectId( id ) );
+}
+
+//     QByteArray const &          getStaticAudioInputNameById( quint32 const id ) const;
+//     QByteArray const &          getStaticAudioOutputNameById( quint32 const id ) const;
+//     QByteArray const &          getStaticControlInputNameById( quint32 const id ) const;
+//     QByteArray const &          getStaticControlOutputNameById( quint32 const id ) const;
+
+quint32                     getStaticVideoInputIdByName( QString const & name ) const
+{
+    return ( m_staticVideosInputs.getObjectIdByObjectName( name ) );
+}
+
+quint32                     getStaticVideoOutputIdByName( QString const & name ) const
+{
+    return ( m_staticVideosOutputs.getObjectIdByObjectName( name ) );
+}
+
+//     quint32                     getStaticAudioInputIdByName( QByteArray const & name ) const;
+//     quint32                     getStaticAudioOutputIdByName( QByteArray const & name ) const;
+//     quint32                     getStaticControlInputIdByName( QByteArray const & name ) const;
+//     quint32                     getStaticControlOutputIdByName( QByteArray const & name ) const;
+
+quint32                     getNBStaticVideosInputs( void ) const
+{
+}
+
+quint32                     getNBStaticVideosOutputs( void ) const
+{
+}
+
+//     quint32                     getNBStaticAudiosIntputs( void ) const;
+//     quint32                     getNBStaticAudiosOutputs( void ) const;
+//     quint32                     getNBStaticControlsInputs( void ) const;
+//     quint32                     getNBStaticControlsOutputs( void ) const;
+
+    //
+    // DYNAMICS SLOTS
+    //
+
+//     quint32             getNBDynamicVideosInputs( void ) const;
+//     quint32             getNBDynamicVideosOutputs( void ) const;
+//     quint32             getNBDynamicAudiosIntputs( void ) const;
+//     quint32             getNBDynamicAudiosOutputs( void ) const;
+//     quint32             getNBDynamicControlsInputs( void ) const;
+//     quint32             getNBDynamicControlsOutputs( void ) const;
+
+//     bool                areDynamicVideosInputsEnabled( void ) const;
+//     bool                areDynamicVideosOutputsEnabled( void ) const;
+//     bool                areDynamicAudiosIntputsEnabled( void ) const;
+//     bool                areDynamicAudiosOutputsEnabled( void ) const;
+//     bool                areDynamicControlsInputsEnabled( void ) const;
+//     bool                areDynamicControlsOutputsEnabled( void ) const;
+
+
 
 //
 //
