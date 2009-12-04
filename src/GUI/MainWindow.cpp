@@ -35,7 +35,6 @@
 
 #include "MainWindow.h"
 #include "MediaListWidget.h"
-#include "LibraryWidget.h"
 #include "Library.h"
 #include "Timeline.h"
 #include "About.h"
@@ -122,11 +121,7 @@ void MainWindow::changeEvent( QEvent *e )
 
 void        MainWindow::setupLibrary()
 {
-    //Library part :
-    //Library*    library = Library::getInstance();
-
     //GUI part :
-    //LibraryWidget* libraryWidget = new LibraryWidget( this );
 
     MediaLibraryWidget* mediaLibraryWidget = new MediaLibraryWidget( this );
 
@@ -136,39 +131,6 @@ void        MainWindow::setupLibrary()
                                                     QDockWidget::AllDockWidgetFeatures,
 
                                                     Qt::LeftDockWidgetArea );
-    /*DockWidgetManager::instance()->addDockedWidget( libraryWidget,
-                                      tr( "Old Media Library" ),
-                                      Qt::AllDockWidgetAreas,
-                                      QDockWidget::AllDockWidgetFeatures,
-                                      Qt::LeftDockWidgetArea );*/
-
-    //Connecting GUI and Frontend :
-    /*connect( libraryWidget,
-             SIGNAL( newMediaLoadingAsked(const QString& ) ),
-             library,
-             SLOT( newMediaLoadingAsked( const QString& ) ) );*/
-
-    /*connect( library,
-             SIGNAL( newClipLoaded( Clip* ) ),
-             libraryWidget,
-             SLOT( newClipLoaded( Clip* ) ) );*/
-
-    /*connect( libraryWidget,
-             SIGNAL( removingMediaAsked( const QUuid& ) ),
-             library,
-             SLOT( removingMediaAsked( const QUuid& ) ) );
-
-    connect( library,
-             SIGNAL( mediaRemoved( const QUuid& ) ),
-             libraryWidget,
-             SLOT( mediaRemoved( const QUuid& ) ), Qt::DirectConnection );*/
-
-    /*connect( libraryWidget->getVideoListWidget(), SIGNAL( selectedClipChanged( Clip* ) ),
-              m_clipPreview->getGenericRenderer(), SLOT( setClip( Clip* ) ) );
-
-    connect( libraryWidget->getVideoListWidget(), SIGNAL( itemDoubleClicked( QListWidgetItem* ) ),
-                this, SLOT( mediaListItemDoubleClicked( QListWidgetItem* ) ) );*/
-
     connect( mediaLibraryWidget, SIGNAL( mediaSelected( Media* ) ),
              m_clipPreview->getGenericRenderer(), SLOT( setMedia( Media* ) ) );
 

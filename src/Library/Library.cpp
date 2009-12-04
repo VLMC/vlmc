@@ -112,6 +112,7 @@ bool        Library::mediaAlreadyLoaded( const QString& filePath )
 
 void        Library::loadProject( const QDomElement& medias )
 {
+    qDebug() << "Loading (library part) project";
     if ( medias.isNull() == true || medias.tagName() != "medias" )
     {
         qWarning() << "Invalid medias node";
@@ -122,6 +123,7 @@ void        Library::loadProject( const QDomElement& medias )
     m_nbMediasToLoad = 0;
     while ( elem.isNull() == false )
     {
+        qDebug() << "Iterating over element";
         QDomElement mediaProperty = elem.firstChild().toElement();
         QString     path;
         QString     uuid;

@@ -2,7 +2,6 @@ FORMS	+=	ui/About.ui	\
 		ui/ClipProperty.ui	\
 		ui/FileBrowser.ui	\
 		ui/Import.ui	\
-		ui/LibraryWidget.ui	\
 		ui/LoadPage.ui	\
 		ui/MainWindow.ui	\
 		ui/PreviewWidget.ui	\
@@ -26,7 +25,6 @@ HEADERS	+=	About.h	\
 		ImportMediaListController.h	\
 		LanguagePreferences.h	\
 		LCDTimecode.h	\
-		LibraryWidget.h	\
 		ListViewMediaItem.h	\
 		MainWindow.h	\
 		MediaListWidget.h	\
@@ -55,7 +53,6 @@ SOURCES	+=	About.cpp	\
 		ImportMediaListController.cpp	\
 		LanguagePreferences.cpp	\
 		LCDTimecode.cpp	\
-		LibraryWidget.cpp	\
 		ListViewMediaItem.cpp	\
 		MainWindow.cpp	\
 		MediaListWidget.cpp	\
