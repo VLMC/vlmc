@@ -28,10 +28,10 @@
 
 #include <QtDebug>
 #include "Library.h"
+#include "MetaDataManager.h"
 
 Library::Library()
 {
-    m_nbMediasToLoad = -1;
 }
 
 Media*          Library::getMedia( const QUuid& uuid )
@@ -64,14 +64,6 @@ void        Library::metaDataComputed( Media* media )
     Clip* clip = new Clip( media );
     m_clips[media->getUuid()] = clip;
     emit newClipLoaded( clip );
-    if ( m_nbMediasToLoad >= 0 )
-    {
-        m_nbMediasToLoad.fetchAndAddAcquire( -1 );
-        if ( m_nbMediasToLoad <= 0 )
-        {
-            emit projectLoaded();
-        }
-    }
 }
 
 void        Library::newMediaLoadingAsked( const QString& filePath, const QString& uuid )
@@ -98,9 +90,27 @@ void        Library::addMedia( Media* media )
     metaDataComputed( media );
 }
 
+void        Library::loadMedia( const QString& path, const QUuid& uuid )
+{
+    Media*  it;
+    foreach ( it, m_medias )
+    {
+        if ( it->getFileInfo()->absoluteFilePath() == path )
+        {
+            m_medias.remove( it->getUuid() );
+            m_medias[uuid] = it;
+            it->setUuid( uuid );
+            return ;
+        }
+    }
+    Media*  media = new Media( path, uuid );
+    connect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ) );
+    MetaDataManager::getInstance()->computeMediaMetadata( media );
+    m_medias[uuid] = media;
+}
+
 bool        Library::mediaAlreadyLoaded( const QString& filePath )
 {
-    //FIXME: Is this necessary ??
     Media*   media;
     foreach ( media, m_medias )
     {
@@ -112,7 +122,6 @@ bool        Library::mediaAlreadyLoaded( const QString& filePath )
 
 void        Library::loadProject( const QDomElement& medias )
 {
-    qDebug() << "Loading (library part) project";
     if ( medias.isNull() == true || medias.tagName() != "medias" )
     {
         qWarning() << "Invalid medias node";
@@ -120,10 +129,8 @@ void        Library::loadProject( const QDomElement& medias )
     }
 
     QDomElement elem = medias.firstChild().toElement();
-    m_nbMediasToLoad = 0;
     while ( elem.isNull() == false )
     {
-        qDebug() << "Iterating over element";
         QDomElement mediaProperty = elem.firstChild().toElement();
         QString     path;
         QString     uuid;
@@ -160,12 +167,12 @@ void        Library::loadProject( const QDomElement& medias )
         }
         else
         {
-            m_nbMediasToLoad.fetchAndAddAcquire( 1 );
-            newMediaLoadingAsked( path, uuid );
+            loadMedia( path, uuid );
         }
 
         elem = elem.nextSibling().toElement();
     }
+    emit projectLoaded();
 }
 
 void        Library::saveProject( QDomDocument& doc, QDomElement& rootNode )
