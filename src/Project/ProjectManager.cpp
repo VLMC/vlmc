@@ -105,6 +105,8 @@ bool    ProjectManager::checkProjectOpen( bool saveAs )
             return false;
         if ( m_projectFile != NULL )
             delete m_projectFile;
+        if ( outputFileName.endsWith( ".vlmc" ) == false )
+            outputFileName += ".vlmc";
         m_projectFile = new QFile( outputFileName );
     }
     return true;
