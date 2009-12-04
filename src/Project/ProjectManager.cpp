@@ -127,4 +127,5 @@ void    ProjectManager::saveProject()
     m_projectFile->open( QFile::WriteOnly );
     m_projectFile->write( doc.toString().toAscii() );
     m_projectFile->close();
+    emit projectSaved();
 }

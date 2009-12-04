@@ -58,6 +58,7 @@ private slots:
 
 signals:
     void            projectChanged( const QString& projectName, bool savedState );
+    void            projectSaved();
 };
 
 #endif // PROJECTMANAGER_H

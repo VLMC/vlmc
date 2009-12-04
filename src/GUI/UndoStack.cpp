@@ -31,6 +31,8 @@ UndoStack::UndoStack( QWidget* parent ) : QUndoView( parent )
     setStack( m_undoStack );
     connect( m_undoStack, SIGNAL( cleanChanged( bool ) ),
              ProjectManager::getInstance(), SLOT( cleanChanged( bool ) ) );
+    connect( ProjectManager::getInstance(), SIGNAL( projectSaved() ),
+             m_undoStack, SLOT( setClean() ) );
 
     m_undoShortcut = new QShortcut( QKeySequence( tr( "Ctrl+z", "Undo" ) ), this );
     m_redoShortcut = new QShortcut( QKeySequence( tr( "Ctrl+Shift+z", "Redo" ) ), this );
