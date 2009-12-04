@@ -20,29 +20,33 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QFileDialog>
+
 #include "ProjectManager.h"
 #include "Library.h"
 #include "MainWorkflow.h"
 #include "SettingsManager.h"
 
-ProjectManager::ProjectManager( const QString& filePath )
+ProjectManager::ProjectManager() : m_projectFile( NULL )
 {
-    m_projectFile = new QFile( filePath, this );
 }
 
 ProjectManager::~ProjectManager()
 {
+    if ( m_projectFile != NULL )
+        delete m_projectFile;
 }
 
 void    ProjectManager::loadTimeline()
 {
     QDomElement     root = m_domDocument->documentElement();
     MainWorkflow::getInstance()->loadProject( root.firstChildElement( "timeline" ) );
-    deleteLater();
 }
 
 void    ProjectManager::loadProject()
 {
+    if ( loadProjectFile() == false )
+        return ;
     m_domDocument = new QDomDocument;
     m_projectFile->open( QFile::ReadOnly );
     m_domDocument->setContent( m_projectFile );
@@ -55,8 +59,39 @@ void    ProjectManager::loadProject()
     SettingsManager::getInstance()->loadSettings( "project", root.firstChildElement( "project" ) );
 }
 
+bool    ProjectManager::loadProjectFile()
+{
+    QString fileName =
+            QFileDialog::getOpenFileName( NULL, "Enter the output file name",
+                                          QString(), "VLMC project file(*.vlmc)" );
+    if ( fileName.length() == 0 )
+        return false;
+    if ( m_projectFile != NULL )
+        delete m_projectFile;
+    m_projectFile = new QFile( fileName );
+    return true;
+}
+
+bool    ProjectManager::checkProjectOpen()
+{
+    if ( m_projectFile == NULL )
+    {
+        QString outputFileName =
+            QFileDialog::getSaveFileName( NULL, "Enter the output file name",
+                                          QString(), "VLMC project file(*.vlmc)" );
+        if ( outputFileName.length() == 0 )
+            return false;
+        if ( m_projectFile != NULL )
+            delete m_projectFile;
+        m_projectFile = new QFile( outputFileName );
+    }
+    return true;
+}
+
 void    ProjectManager::saveProject()
 {
+    if ( checkProjectOpen() == false )
+        return ;
     QDomImplementation    implem = QDomDocument().implementation();
     //FIXME: Think about naming the project...
     QString name = "VLMCProject";
@@ -75,5 +110,4 @@ void    ProjectManager::saveProject()
     m_projectFile->open( QFile::WriteOnly );
     m_projectFile->write( doc.toString().toAscii() );
     m_projectFile->close();
-    deleteLater();
 }

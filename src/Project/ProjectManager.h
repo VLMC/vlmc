@@ -27,21 +27,28 @@
 #include <QObject>
 #include <QDomDocument>
 
-class   ProjectManager : public QObject
+#include "Singleton.hpp"
+
+class   ProjectManager : public QObject, public Singleton<ProjectManager>
 {
     Q_OBJECT
     Q_DISABLE_COPY( ProjectManager );
 public:
-    ProjectManager( const QString& filePath );
-    ~ProjectManager();
-
     void        loadProject();
     void        saveProject();
+
+private:
+    ProjectManager();
+    ~ProjectManager();
+
+    bool        checkProjectOpen();
+    bool        loadProjectFile();
 
 private:
     QFile*          m_projectFile;
     QDomDocument*   m_domDocument;
 
+    friend class    Singleton<ProjectManager>;
 
 private slots:
     void        loadTimeline();

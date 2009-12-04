@@ -138,39 +138,12 @@ void        MainWindow::setupLibrary()
 
 void    MainWindow::on_actionSave_triggered()
 {
-    QString outputFileName =
-            QFileDialog::getSaveFileName( NULL, "Enter the output file name",
-                                          QString(), "VLMC project file(*.vlmc)" );
-    if ( outputFileName.length() == 0 )
-        return ;
-    else
-    {
-        //Project manager will destroy itself.
-        QStringList list = outputFileName.split( "." );
-        if ( list.at( list.size() - 1 ) != "vlmc" )
-        {
-            list.append( "vlmc" );
-            outputFileName = list.join(".");
-        }
-
-        ProjectManager* pm = new ProjectManager( outputFileName );
-        pm->saveProject();
-    }
+    ProjectManager::getInstance()->saveProject();
 }
 
 void    MainWindow::on_actionLoad_Project_triggered()
 {
-    QString outputFileName =
-            QFileDialog::getOpenFileName( NULL, "Enter the output file name",
-                                          QString(), "VLMC project file(*.vlmc)" );
-    if ( outputFileName.length() == 0 )
-        return ;
-    else
-    {
-        //Project manager will destroy itself.
-        ProjectManager* pm = new ProjectManager( outputFileName );
-        pm->loadProject();
-    }
+    ProjectManager::getInstance()->loadProject();
 }
 
 void MainWindow::createStatusBar()
