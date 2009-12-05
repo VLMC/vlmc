@@ -25,7 +25,7 @@
 
 EffectPluginTypeManager EffectNodeFactory::m_eptm = EffectPluginTypeManager();
 
-EffectNodeFactory::EffectNodeFactory() : m_higherFreeId( 1 )
+EffectNodeFactory::EffectNodeFactory() : m_higherFreeId( 1 ), m_mapHoles( 0 )
 {
 }
 

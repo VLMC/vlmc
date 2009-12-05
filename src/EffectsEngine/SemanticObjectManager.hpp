@@ -33,7 +33,7 @@ class SemanticObjectManager
 {
 public:
 
-    SemanticObjectManager() : m_higherFreeId( 1 )
+    SemanticObjectManager() : m_higherFreeId( 1 ), m_mapHoles( 0 )
     {
     }
 
