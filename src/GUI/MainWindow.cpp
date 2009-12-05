@@ -253,11 +253,11 @@ void        MainWindow::createGlobalPreferences()
     m_globalPreferences = new Settings( false, "VLMC", this );
     m_globalPreferences->addWidget("VLMC",
                                    new VLMCPreferences( m_globalPreferences ),
-                                   "../images/vlmc.png",
+                                   QIcon( ":/images/images/vlmc.png" ),
                                    "VLMC settings");
     m_globalPreferences->addWidget("Language preferences",
                                    new LanguagePreferences( m_globalPreferences ),
-                                   "../images/vlmc.png",
+                                   QIcon( ":/images/images/vlmc.png" ),
                                    "Langage settings");
     m_globalPreferences->build();
 }
@@ -267,15 +267,15 @@ void	    MainWindow::createProjectPreferences()
     m_projectPreferences = new Settings( false, "project", this );
     m_projectPreferences->addWidget("Project",
                                    new ProjectPreferences,
-                                   ":/images/images/vlmc",
+                                   QIcon( ":/images/images/vlmc.png" ),
                                    "Project settings" );
     m_projectPreferences->addWidget( "Video",
                                    new VideoProjectPreferences,
-                                   ":/images/images/video",
+                                   QIcon( ":/images/images/video.png" ),
                                    "Video settings" );
     m_projectPreferences->addWidget( "Audio",
                                    new AudioProjectPreferences,
-                                   ":/images/images/audio",
+                                   QIcon( ":/images/images/audio.png" ),
                                    "Audio settings" );
     m_projectPreferences->build();
 }

@@ -67,13 +67,13 @@ Panel::~Panel()
 }
 
 void    Panel::addButton( const QString& label,
-                          const QString& iconPath,
+                          const QIcon& icon,
                           int number)
 {
     QToolButton*    button = new QToolButton( this );
 
     button->setText( label );
-    button->setIcon( QIcon( iconPath ) );
+    button->setIcon( icon );
     button->setAutoRaise( true );
     button->setCheckable( true );
     button->setIconSize( QSize( Panel::M_ICON_HEIGHT,
