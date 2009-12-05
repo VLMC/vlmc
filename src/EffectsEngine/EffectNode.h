@@ -30,6 +30,7 @@
 #include <QObject>
 #include <QString>
 
+#include "EffectNodeFactory.h"
 #include "IEffectNode.h"
 #include "IEffectPlugin.h"
 #include "InSlot.hpp"
@@ -37,10 +38,10 @@
 #include "LightVideoFrame.h"
 #include "SemanticObjectManager.hpp"
 
+//class EffectPluginFactory;
 
 class	EffectNode : public IEffectNode
 {
-
     ////
     ////
     ////
@@ -330,6 +331,7 @@ class	EffectNode : public IEffectNode
 private:
 
 
+    EffectNodeFactory                   m_enf;
     EffectNode*                         m_father;
     IEffectPlugin*                      m_plugin;
     InSlot<LightVideoFrame>*            m_videoInputs;

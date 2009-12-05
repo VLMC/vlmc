@@ -33,9 +33,10 @@ template class SemanticObjectManager< OutSlot<LightVideoFrame> >;
 
 EffectNode::EffectNode(IEffectPlugin* plugin) : m_father( NULL ), m_plugin( plugin ), m_videoInputs( NULL ), m_videoOutputs( NULL )
 {
-    m_plugin->init(this);
+    m_plugin->init( this );
     m_staticVideosInputs.setFather( this );
     m_staticVideosOutputs.setFather( this );
+    m_enf.setFather( this );
 }
 
 
@@ -43,6 +44,7 @@ EffectNode::EffectNode() : m_father( NULL ), m_plugin( NULL ), m_videoInputs( NU
 {
     m_staticVideosInputs.setFather( this );
     m_staticVideosOutputs.setFather( this );
+    m_enf.setFather( this );
 }
 
 EffectNode::~EffectNode()

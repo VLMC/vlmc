@@ -27,8 +27,8 @@
 #include <QMap>
 
 #include "IEffectPluginCreator.h"
-#include "EffectNode.h"
 #include "EffectPluginTypeManager.h"
+class   EffectNode;
 
 class	EffectNodeFactory
 {
@@ -91,5 +91,7 @@ private:
     static EffectPluginTypeManager              m_eptm;
 
 };
+
+#include "EffectNode.h"
 
 #endif // EFFECTNODEFACTORY_H_
