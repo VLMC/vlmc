@@ -45,7 +45,7 @@ ImportController::ImportController(QWidget *parent) :
 
     QStringList filters;
     //Video
-    filters << "*.mov" << "*.avi" << "*.mkv" << "*.mpg" << "*.mpeg" << "*.wmv" << "*.mp4";
+    filters << "*.mov" << "*.avi" << "*.mkv" << "*.mpg" << "*.mpeg" << "*.wmv" << "*.mp4" << "*.ogg" << "*.ogv";
     //Audio
     filters << "*.mp3" << "*.oga" << "*.flac" << "*.aac" << "*.wav";
     //Picture
