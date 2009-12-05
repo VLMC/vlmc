@@ -58,6 +58,12 @@ public:
 private:
     Library();
     bool                    mediaAlreadyLoaded( const QString& filePath );
+    /**
+     *  \brief      This method is used to load a media directly from it's
+     *              path, with a specified UUID.
+     *              It shouldn't used for something else that loading a project file
+     **/
+    void                    loadMedia( const QString& path, const QUuid& uuid );
 
     QHash<QUuid, Media*>    m_medias;
     QHash<QUuid, Clip*>     m_clips;
@@ -69,7 +75,6 @@ private:
             return NULL;
         return *it;
     }
-    QAtomicInt              m_nbMediasToLoad;
 
 public slots:
     void                    newMediaLoadingAsked( const QString& filePath, const QString& uuid = QString() );

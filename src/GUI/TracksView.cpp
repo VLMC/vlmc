@@ -49,6 +49,7 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, Workf
     m_dragVideoItem = NULL;
     m_dragAudioItem = NULL;
     m_actionMove = false;
+    m_actionResize = false;
     m_actionRelativeX = -1;
     m_actionItem = NULL;
     m_tool = TOOL_DEFAULT;
@@ -169,6 +170,7 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, qint64 start )
     }
 
     GraphicsMovieItem* item = new GraphicsMovieItem( clip );
+    item->m_tracksView = this;
     item->setHeight( tracksHeight() );
     item->setParentItem( getTrack( MainWorkflow::VideoTrack, track ) );
     item->setStartPos( start );
@@ -549,6 +551,48 @@ void TracksView::mouseMoveEvent( QMouseEvent* event )
             m_actionRelativeX = event->pos().x() - mapFromScene( m_actionItem->pos() ).x();
         moveMediaItem( m_actionItem, QPoint( event->pos().x() - m_actionRelativeX, event->pos().y() ) );
     }
+    else if ( event->modifiers() == Qt::NoModifier &&
+              event->buttons() == Qt::LeftButton &&
+              m_actionResize == true )
+    {
+        QPointF itemPos = m_actionItem->mapToScene( 0, 0 );
+        QPointF itemNewSize = mapToScene( event->pos() ) - itemPos;
+
+        //FIXME: BEGIN UGLY
+        GraphicsTrack* track = getTrack( m_actionItem->mediaType(), m_actionItem->trackNumber() );
+        Q_ASSERT( track );
+
+        QPointF collidePos = track->sceneBoundingRect().topRight();
+        collidePos.setX( itemPos.x() + itemNewSize.x() );
+
+        QList<QGraphicsItem*> gi = scene()->items( collidePos );
+
+        bool collide = false;
+        for ( int i = 0; i < gi.count(); ++i )
+        {
+            AbstractGraphicsMediaItem* mi = dynamic_cast<AbstractGraphicsMediaItem*>( gi.at( i ) );
+            if ( mi && mi != m_actionItem )
+            {
+                collide = true;
+                break;
+            }
+        }
+        // END UGLY
+
+        if ( !collide )
+        {
+            if ( m_actionResizeType == AbstractGraphicsMediaItem::END )
+            {
+                qint64 distance = mapToScene( event->pos() ).x() - m_actionResizeStart;
+                qint64 newsize = qMax( m_actionResizeBase - distance, (qint64)0 );
+                m_actionItem->resize( newsize , AbstractGraphicsMediaItem::END );
+            }
+            else
+            {
+                m_actionItem->resize( itemNewSize.x(), AbstractGraphicsMediaItem::BEGINNING );
+            }
+        }
+    }
 
     QGraphicsView::mouseMoveEvent( event );
 }
@@ -568,11 +612,28 @@ void TracksView::mousePressEvent( QMouseEvent* event )
          mediaCollisionList.count() == 1 )
     {
         AbstractGraphicsMediaItem* item = mediaCollisionList.at( 0 );
-        if ( item->moveable() )
+
+        QPoint itemEndPos = mapFromScene( item->mapToScene( item->boundingRect().bottomRight() ) );
+        QPoint itemPos = mapFromScene( item->mapToScene( 0, 0 ) );
+        QPoint clickPos = event->pos() - itemPos;
+        QPoint itemSize = itemEndPos - itemPos;
+
+        if ( clickPos.x() < RESIZE_ZONE || clickPos.x() > ( itemSize.x() - RESIZE_ZONE ) )
+        {
+            if ( clickPos.x() < RESIZE_ZONE )
+                m_actionResizeType = AbstractGraphicsMediaItem::END;
+            else
+                m_actionResizeType = AbstractGraphicsMediaItem::BEGINNING;
+            m_actionResize = true;
+            m_actionResizeStart = mapToScene( event->pos() ).x();
+            m_actionResizeBase = item->clip()->getLength();
+            m_actionItem = item;
+        }
+        else if ( item->moveable() )
         {
             m_actionMove = true;
             m_actionMoveExecuted = false;
-            m_actionItem = mediaCollisionList.at( 0 );
+            m_actionItem = item;
         }
         scene()->clearSelection();
         item->setSelected( true );
@@ -625,9 +686,14 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
         m_actionRelativeX = -1;
         m_actionItem = NULL;
     }
+    else if ( m_actionResize )
+    {
+        updateDuration();
+    }
 
     m_actionMove = false;
     m_actionMoveExecuted = false;
+    m_actionResize = false;
 
     setDragMode( QGraphicsView::NoDrag );
     QGraphicsView::mouseReleaseEvent( event );
@@ -751,22 +817,11 @@ GraphicsTrack* TracksView::getTrack( MainWorkflow::TrackType type, unsigned int 
 
 void TracksView::split( GraphicsMovieItem* item, qint64 frame )
 {
-//    Q_ASSERT( item );
-//    Clip* newclip = item->clip()->split( frame );
-//    Q_ASSERT( newclip );
-//
-//    addMediaItem( newclip, item->trackNumber(), item->startPos() + frame );
-//    Commands::trigger( new Commands::MainWorkflow::AddClip( m_renderer,
-//                                                            newclip,
-//                                                            item->trackNumber(),
-//                                                            item->startPos() + frame,
-//                                                            MainWorkflow::VideoTrack ) );
-
     //frame is the number of frame from the beginning of the clip
-    //item->pos().x() is the position of the splitted clip (in frame)
+    //item->startPos() is the position of the splitted clip (in frame)
     //therefore, the position of the newly created clip is
     //the splitted clip pos + the splitting point (ie startPos() + frame)
-//    m_renderer->split( item->clip(), item->trackNumber(), item->startPos() + frame, frame, MainWorkflow::VideoTrack );
     Commands::trigger( new Commands::MainWorkflow::SplitClip( m_renderer, item->clip(), item->trackNumber(),
-                                                              item->startPos() + frame, frame, MainWorkflow::VideoTrack ) );
+                                                              item->startPos() + frame, frame + item->clip()->getBegin(),
+                                                              MainWorkflow::VideoTrack ) );
 }

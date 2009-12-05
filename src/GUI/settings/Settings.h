@@ -50,7 +50,7 @@ class   Settings : public QDialog
         virtual ~Settings();
         void                addWidget( const QString& name,
                                         PreferenceWidget* pWidget,
-                                        const QString& icon,
+                                        const QIcon& icon,
                                         const QString& label );
         void                build();
         void                show( const QString& part = "default" );

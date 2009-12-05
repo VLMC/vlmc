@@ -209,7 +209,7 @@ void        WorkflowRenderer::startPreview()
     m_pts = 0;
     m_audioPts = 0;
     m_mediaPlayer->play();
-    m_outputFps = SettingsManager::getInstance()->getValue( "default", "VLMCPreviewFPS" ).toDouble();
+    m_outputFps = SettingsManager::getInstance()->getValue( "VLMC", "VLMCOutPutFPS" ).toDouble();
 }
 
 void        WorkflowRenderer::nextFrame()
@@ -260,7 +260,7 @@ void        WorkflowRenderer::internalPlayPause( bool forcePause )
         {
             if ( m_paused == false )
             {
-                Action::Generic*    act = new Action::Unpause( m_mainWorkflow );
+                Action::Generic*    act = new Action::Pause( m_mainWorkflow );
                 QMutexLocker        lock( m_actionsMutex );
                 m_actions.addAction( act );
             }

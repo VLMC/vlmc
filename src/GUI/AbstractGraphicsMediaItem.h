@@ -29,6 +29,8 @@
 #include "GraphicsTrack.hpp"
 #include "Clip.h"
 
+#define RESIZE_ZONE 7
+
 class TracksView;
 
 class AbstractGraphicsMediaItem : public QObject, public QGraphicsItem

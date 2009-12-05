@@ -111,6 +111,10 @@ private:
     // Mouse actions on Medias
     bool                    m_actionMove;
     bool                    m_actionMoveExecuted;
+    bool                    m_actionResize;
+    qint64                  m_actionResizeStart;
+    qint64                  m_actionResizeBase;
+    AbstractGraphicsMediaItem::From m_actionResizeType;
     int                     m_actionRelativeX;
     AbstractGraphicsMediaItem* m_actionItem;
 

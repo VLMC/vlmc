@@ -33,10 +33,6 @@
 
 #include "Media.h"
 
-//TODO: REMOVE THIS
-#ifndef FPS
-#define FPS     30
-#endif
 
 class Media;
 
@@ -45,6 +41,7 @@ class   Clip : public QObject
     Q_OBJECT
 
     public:
+        static const int DefaultFPS;
         Clip( Media* parent );
         Clip( Media* parent, qint64 begin, qint64 end );
         Clip( Clip* creator, qint64 begin, qint64 end );
