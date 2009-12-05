@@ -36,7 +36,7 @@ const QString   Media::ImageExtensions = "*.gif *.png *.jpg *.jpeg";
 const QString   Media::AudioExtensions = "*.mp3 *.oga *.flac *.aac *.wav";
 const QString   Media::streamPrefix = "stream://";
 
-Media::Media( const QString& filePath, const QString& uuid )
+Media::Media( const QString& filePath, const QString& uuid /*= QString()*/ )
     : m_vlcMedia( NULL ),
     m_snapshot( NULL ),
     m_fileInfo( NULL ),
@@ -71,6 +71,8 @@ Media::Media( const QString& filePath, const QString& uuid )
         m_fileName = m_mrl;
         qDebug() << "Loading a stream";
     }
+
+    m_audioValueList = new QList<int>();
     m_vlcMedia = new LibVLCpp::Media( m_mrl );
 }
 
@@ -270,4 +272,3 @@ Media::MetadataState   Media::getMetadata() const
 {
     return m_metadataState;
 }
-

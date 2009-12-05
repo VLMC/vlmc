@@ -71,7 +71,7 @@ public:
         ParsedWithoutSnapshot,
         ParsedWithSnapshot
     };
-    Media( const QString& filePath, const QString& = QString() );
+    Media( const QString& filePath, const QString& uuid = QString() );
     virtual ~Media();
 
     /**
@@ -142,8 +142,7 @@ public:
     Clip*                       clip( const QUuid& uuid ) const { return m_clips[uuid]; }
     const QHash<QUuid, Clip*>*  clips() const { return &m_clips; }
 
-    QPixmap*                    getPixmap() { return m_audioPixmap; }
-    void                        setAudioPixmap( QPixmap* audioPixmap ) { m_audioPixmap = audioPixmap; }
+    QList<int>*                 getAudioValues() { return m_audioValueList; }
 
 
 private:
@@ -168,11 +167,12 @@ protected:
     QString                     m_fileName;
     QStringList                 m_metaTags;
     QHash<QUuid, Clip*>         m_clips;
-    QPixmap*                    m_audioPixmap;
+    QList<int>*                 m_audioValueList;
 
 signals:
     void                        metaDataComputed( Media* );
     void                        snapshotComputed( Media* );
+    void                        audioSpectrumComputed( Media* );
 };
 
 #endif // CLIP_H__

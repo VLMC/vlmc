@@ -40,7 +40,7 @@ class MetaDataWorker : public QObject
         {
             MetaData,
             Snapshot,
-            AudioSpectrum
+            Audio
         };
 
     public:
@@ -79,7 +79,6 @@ class MetaDataWorker : public QObject
 
         unsigned char*              m_audioBuffer;
         QLabel*                     m_audioDebugWidget;
-        QList<int>*                 m_audioValueList;
 
         friend class SnapshotHelper;
     signals:
@@ -91,7 +90,6 @@ class MetaDataWorker : public QObject
         void    setSnapshot();
         void    entrypointPlaying();
         void    entrypointLengthChanged();
-        void    mediaPlayerStopped();
         void    generateAudioSpectrum();
 };
 

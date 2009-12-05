@@ -100,7 +100,7 @@ void    MetaDataManager::computeMediaMetadata( Media *media )
 
 void    MetaDataManager::checkMediasToCompute()
 {
-    //qDebug() << "checking media to compute" << m_mediasToComputeMetaData << m_mediasToComputeSnapshot;
+    //qDebug() << "checking media to compute" << m_mediasToComputeMetaData << m_mediasToComputeSnapshot << m_mediasToComputeAudioSpectrum;
     m_mediasToComputeMetaDataMutex.lock();
     m_mediasToComputeSnapshotMutex.lock();
     m_mediasToComputeAudioSpectrumMutex.lock();
@@ -155,7 +155,15 @@ void    MetaDataManager::checkMediasToCompute()
         m_mediaPlayers.erase( it );
         m_mediaPlayers.insert( Running, mediaPlayer );
         m_mediaPlayersMutex.unlock();
-        MetaDataWorker* worker = new MetaDataWorker( mediaPlayer, media, MetaDataWorker::AudioSpectrum );
+        /******************************************************************************************/
+        // FIXME: In MetaDataWorker the m_media->getVLCMedia()->setAudioDataCtx( this ); method
+        // doesn't change anything so the lock continue to use the old instance even if this method
+        // is set with a new instance. It seems that the mediaPlayer instance keept the first value
+        // and don't care of the new value.
+        delete mediaPlayer;
+        mediaPlayer = new LibVLCpp::MediaPlayer();
+        /******************************************************************************************/
+        MetaDataWorker* worker = new MetaDataWorker( mediaPlayer, media, MetaDataWorker::Audio );
         connect( worker, SIGNAL( mediaPlayerIdle( LibVLCpp::MediaPlayer* ) ), this, SLOT( mediaPlayerIdle( LibVLCpp::MediaPlayer* ) ), Qt::DirectConnection );
         worker->compute();
     }
