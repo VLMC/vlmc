@@ -54,8 +54,6 @@ class MetaDataWorker : public QObject
         void                        computeAudioMetaData();
         void                        addAudioValue( int value );
 
-        void                        generateAudioPixmap();
-
     private:
         void                        getMetaData();
         void                        initVlcOutput();
@@ -75,12 +73,8 @@ class MetaDataWorker : public QObject
         bool                        m_mediaIsPlaying;
         bool                        m_lengthHasChanged;
 
-        QWidget*                    m_widgetAudioDebug;
-
         unsigned char*              m_audioBuffer;
-        QLabel*                     m_audioDebugWidget;
 
-        friend class SnapshotHelper;
     signals:
         void    snapshotRequested();
         void    mediaPlayerIdle( LibVLCpp::MediaPlayer* mediaPlayer );

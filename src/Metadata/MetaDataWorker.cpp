@@ -31,9 +31,7 @@
 #include <QThreadPool>
 #include <QRunnable>
 
-static int      count = 0;
-
-class AudioSpectrum : public QRunnable
+class AudioSpectrumHelper : public QRunnable
 {
 
     private:
@@ -43,7 +41,7 @@ class AudioSpectrum : public QRunnable
         QPainterPath    m_path;
 
     public:
-        AudioSpectrum(QList<int>* audioValueList) : m_audioValueList( audioValueList )
+        AudioSpectrumHelper(QList<int>* audioValueList) : m_audioValueList( audioValueList )
         {
             int imageHeight = 50;
             m_image = new QImage( m_audioValueList->count(), imageHeight, QImage::Format_RGB32 );
@@ -65,18 +63,14 @@ class AudioSpectrum : public QRunnable
                     max = m_audioValueList->at(i);
             }
             averageValue /= m_audioValueList->count();
-            //qDebug() << "averageValue: " << averageValue;
-            //qDebug() << "Max: " << max;
 
             for( int x = 0; x < m_audioValueList->count(); x++ )
             {
                 qreal y = ( (qreal)m_audioValueList->at(x) / max ) * 500;
                 y -= 365;
-                //qDebug() << y;
                 m_path.lineTo( x, y );
             }
             m_painter->drawPath( m_path );
-            //m_image->save( "/home/geoff/testSpectrum/" + QString::number(count++) + ".png", "png", 100 );
         }
 };
 
@@ -93,8 +87,6 @@ MetaDataWorker::MetaDataWorker( LibVLCpp::MediaPlayer* mediaPlayer, Media* media
 MetaDataWorker::~MetaDataWorker()
 {
     delete m_audioBuffer;
-    //if ( m_mediaPlayer->isPlaying() )
-    //    m_mediaPlayer->stop();
 }
 
 void    MetaDataWorker::compute()
@@ -111,13 +103,10 @@ void    MetaDataWorker::compute()
         computeImageMetaData();
     }
 
-    //qDebug() << "Preparing computation for metadata. Type:" << m_type;
     m_media->addConstantParam( ":vout=dummy" );
-    //qDebug() << "Setting media:" << (void*)m_media;
     m_mediaPlayer->setMedia( m_media->getVLCMedia() );
     if ( m_type != Audio )
         connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( entrypointPlaying() ) );
-    //qDebug() << "Starting playback." << (void*)this;
     m_mediaPlayer->play();
     m_media->flushVolatileParameters();
 }
@@ -141,7 +130,6 @@ void    MetaDataWorker::computeAudioMetaData()
 {
     m_media->getVLCMedia()->addOption( ":no-sout-video" );
     m_media->getVLCMedia()->addOption( ":sout=#transcode{}:smem" );
-    //qDebug() << "setting audio ctx to" << (void*)this;
     m_media->getVLCMedia()->setAudioDataCtx( this );
     m_media->getVLCMedia()->setAudioLockCallback( reinterpret_cast<void*>( lock ) );
     m_media->getVLCMedia()->setAudioUnlockCallback( reinterpret_cast<void*>( unlock ) );
@@ -178,7 +166,6 @@ void    MetaDataWorker::getMetaData()
             m_media->setFps( Clip::DefaultFPS );
         }
         m_media->setNbFrames( (m_media->getLengthMS() / 1000) * m_media->getFps() );
-//        connect( m_mediaPlayer, SIGNAL( stopped () ), this, SLOT( mediaPlayerStopped() ), Qt::QueuedConnection );
         if ( m_mediaPlayer->isPlaying() )
             m_mediaPlayer->stop();
         emit mediaPlayerIdle( m_mediaPlayer );
@@ -263,9 +250,6 @@ void    MetaDataWorker::entrypointPlaying()
 
 void        MetaDataWorker::lock( MetaDataWorker* metaDataWorker, uint8_t** pcm_buffer , unsigned int size )
 {
-    //qDebug() << "[" << (void*)metaDataWorker << "] toto";
-//    qDebug() << metaDataWorker->m_media->getFileName();
-//    qDebug() << "tata";
     if ( metaDataWorker->m_audioBuffer == NULL )
         metaDataWorker->m_audioBuffer = new unsigned char[size];
     *pcm_buffer = metaDataWorker->m_audioBuffer;
@@ -276,7 +260,6 @@ void        MetaDataWorker::unlock( MetaDataWorker* metaDataWorker, uint8_t* pcm
                                       unsigned int nb_samples, unsigned int bits_per_sample,
                                       unsigned int size, int pts )
 {
-    //qDebug() << "Unlock";
     Q_UNUSED( rate );
     Q_UNUSED( size );
     Q_UNUSED( pts );
@@ -306,7 +289,6 @@ void        MetaDataWorker::unlock( MetaDataWorker* metaDataWorker, uint8_t* pcm
     }
     leftAverage /= nb_samples;
     metaDataWorker->addAudioValue( leftAverage );
-    //qDebug() << leftAverage;
 }
 
 void    MetaDataWorker::generateAudioSpectrum()
@@ -314,8 +296,7 @@ void    MetaDataWorker::generateAudioSpectrum()
     disconnect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( generateAudioSpectrum() ) );
     m_mediaPlayer->stop();
     emit mediaPlayerIdle( m_mediaPlayer );
-    //qDebug() << "Audio data stocked in " << m_media->getFileName();
-    AudioSpectrum* audioSpectrum = new AudioSpectrum( m_media->getAudioValues() );
+    AudioSpectrumHelper* audioSpectrum = new AudioSpectrumHelper( m_media->getAudioValues() );
     audioSpectrum->setAutoDelete( true );
     QThreadPool::globalInstance()->start( audioSpectrum );
     delete this;
@@ -324,33 +305,4 @@ void    MetaDataWorker::generateAudioSpectrum()
 void    MetaDataWorker::addAudioValue( int value )
 {
     m_media->getAudioValues()->append( value );
-}
-
-void    MetaDataWorker::generateAudioPixmap()
-{
-    m_audioDebugWidget = new QLabel();
-    m_audioDebugWidget->setFixedSize( m_media->getAudioValues()->count(), 500 );
-    //m_audioDebugWidget->show();
-
-    //QImage* image = new QImage( 300, 300, QImage::Format_RGB32);
-    QPixmap image(m_media->getAudioValues()->count(), 500);
-    QPainter painter(&image);
-    painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.setPen( QPen( QColor( 79, 106, 25 ), 1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin ) );
-
-    QPainterPath path;
-    int max = 0;
-    for( int x = 0; x < m_media->getAudioValues()->count(); x++ )
-        if( m_media->getAudioValues()->count() > max )
-            max = m_media->getAudioValues()->at(x);
-    for( int x = 0; x < m_media->getAudioValues()->count(); x++ )
-    {
-        qreal y = ( (qreal)m_media->getAudioValues()->at(x) / max ) * 500;
-        y -= 700;
-        //qDebug() << y;
-        path.lineTo( x, y );
-    }
-
-    painter.drawPath(path);
-    m_audioDebugWidget->setPixmap(image);
 }
