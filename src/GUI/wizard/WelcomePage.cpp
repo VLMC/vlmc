@@ -19,3 +19,15 @@ int WelcomePage::nextId() const
     else
         return ProjectWizard::Page_Open;
 }
+
+void WelcomePage::changeEvent( QEvent *e )
+{
+    switch ( e->type() )
+    {
+    case QEvent::LanguageChange:
+        m_ui.retranslateUi( this );
+        break;
+    default:
+        break;
+    }
+}

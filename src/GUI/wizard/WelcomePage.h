@@ -16,6 +16,9 @@ class WelcomePage : public QWizardPage
 
         int nextId() const;
 
+    protected:
+        virtual void changeEvent( QEvent *e );
+
     private:
         Ui::WelcomePage m_ui;
 };
