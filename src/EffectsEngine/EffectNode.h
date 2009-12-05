@@ -96,6 +96,38 @@ class	EffectNode : public IEffectNode
 
     // ================================================================= CHILD NODES ========================================================================
 
+    // ------------------- CHILDS TYPES INFORMATIONS -------------------
+
+    QList<QString>              getChildsTypesNamesList( void ) const;
+    QList<quint32>              getChildsTypesIdsList( void ) const;
+
+    QString const               getChildTypeNameByTypeId( quint32 typeId ) const;
+    quint32                     getChildTypeIdByTypeName( QString const & typeName ) const;
+
+    // ------------------- CHILDS INFORMATIONS -------------------
+
+    QList<QString>              getChildsNamesList( void ) const;
+    QList<quint32>              getChildsIdsList( void ) const;
+
+    QString const               getChildNameByChildId( quint32 childId ) const;
+    quint32                     getChildIdByChildName( QString const & childName ) const;
+
+    // ------------------- CREATE AND DELETE CHILDS -------------------
+
+    void        createEmptyChild( void );
+
+    bool        createChild( quint32 typeId );
+    bool        createChild( QString const & typeName );
+
+    bool        deleteChild( quint32 childId );
+    bool        deleteChild( QString const & childName );
+
+    // ------------------- GETTING CHILDS -------------------
+
+    EffectNode* getChild( quint32 childId ) const;
+    EffectNode* getChild( QString const & childName ) const;
+
+    QList<EffectNode*>  getChildsList( void ) const;
 
     // ================================================================= SLOTS ========================================================================
 

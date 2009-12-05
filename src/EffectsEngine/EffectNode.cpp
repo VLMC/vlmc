@@ -262,6 +262,97 @@ QString const &         EffectNode::getInstanceName( void ) const
 {
     return ( m_instanceName );
 }
+// ================================================================= CHILD NODES ========================================================================
+
+// ------------------- CHILDS TYPES INFORMATIONS -------------------
+
+QList<QString>              getChildsTypesNamesList( void ) const
+{
+    return ( m_enf.getEffectNodeTypesNamesList() );
+}
+
+QList<quint32>              getChildsTypesIdsList( void ) const
+{
+    return ( m_enf.getEffectNodeTypesIdsList() );
+}
+
+QString const               getChildTypeNameByTypeId( quint32 typeId ) const
+{
+    return ( m_enf.getEffectNodeTypeNameByTypeId( typeId ) );
+}
+
+quint32                     getChildTypeIdByTypeName( QString const & typeName ) const
+{
+    return ( m_enf.getEffectNodeTypeIdByTypeName( typeName ) );
+}
+
+// ------------------- CHILDS INFORMATIONS -------------------
+
+QList<QString>              getChildsNamesList( void ) const
+{
+    return ( m_enf.getEffectNodeInstancesNamesList() );
+}
+
+QList<quint32>              getChildsIdsList( void ) const
+{
+    return ( m_enf.getEffectNodeInstancesIdsList() );
+}
+
+QString const               getChildNameByChildId( quint32 childId ) const
+{
+    return ( m_enf.getEffectNodeInstanceNameByInstanceId( typeId ) );
+}
+
+quint32                     getChildIdByChildName( QString const & childName ) const
+{
+    return ( m_enf.getEffectNodeInstanceIdByInstanceName( typeName ) );
+}
+
+// ------------------- CREATE AND DELETE CHILDS -------------------
+
+void        createEmptyChild( void )
+{
+    m_enf.createEmptyEffectNodeInstance();
+    return ;
+}
+
+bool        createChild( quint32 typeId )
+{
+    return ( m_enf.createEffectNodeInstance( typeId ) );
+}
+
+bool        createChild( QString const & typeName )
+{
+    return ( m_enf.createEffectNodeInstance( typeName ) );
+}
+
+bool        deleteChild( quint32 childId )
+{
+    return ( m_enf.deleteEffectNodeInstance( instanceId ) );
+}
+
+bool        deleteChild( QString const & childName )
+{
+    return ( m_enf.deleteEffectNodeInstance( instanceName ) );
+}
+
+// ------------------- GETTING CHILDS -------------------
+
+EffectNode* getChild( quint32 childId ) const
+{
+    return ( m_enf.getEffectNodeInstance( instanceId ) );
+}
+
+EffectNode* getChild( QString const & childName ) const
+{
+    return ( m_enf.getEffectNodeInstance( instanceName ) );
+}
+
+QList<EffectNode*>  getChildsList( void ) const
+{
+    return ( m_enf.getEffectNodeInstancesList() );
+}
+
 
     //
     //
