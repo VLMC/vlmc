@@ -3,21 +3,21 @@
 
 #include <QWizardPage>
 #include "ProjectWizard.h"
-#include "ui_LoadPage.h"
+#include "ui_WelcomePage.h"
 
 class   QWizard;
 
-class LoadPage : public QWizardPage
+class WelcomePage : public QWizardPage
 {
     Q_OBJECT
     public:
-        LoadPage( QWidget* parent = 0 );
-        ~LoadPage() { }
+        WelcomePage( QWidget* parent = 0 );
+        ~WelcomePage() { }
 
         int nextId() const;
 
     private:
-        Ui::LoadPage    m_ui;
+        Ui::WelcomePage m_ui;
 };
 
 #endif

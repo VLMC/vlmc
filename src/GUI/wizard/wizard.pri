@@ -1,8 +1,8 @@
 HEADERS += CustomWizardPage.h \
-    LoadPage.h \
+    WelcomePage.h \
     PageFactory.h \
     ProjectWizard.h
 SOURCES += CustomWizardPage.cpp \
-    LoadPage.cpp \
+    WelcomePage.cpp \
     ProjectWizard.cpp
-FORMS += ui/LoadPage.ui
+FORMS += ui/WelcomePage.ui

@@ -30,7 +30,7 @@
 #include "AudioProjectPreferences.h"
 #include "SettingsManager.h"
 #include "PageFactory.h"
-#include "LoadPage.h"
+#include "WelcomePage.h"
 
 ProjectWizard::ProjectWizard( QWidget* parent )
     : QWizard( parent )
@@ -54,12 +54,12 @@ ProjectWizard::ProjectWizard( QWidget* parent )
 
     // Create pages
 
-    QWizardPage* loadPage = new LoadPage( this );
+    QWizardPage* welcomePage = new WelcomePage( this );
     QWizardPage* generalPage = PageFactory::generateWizardPage<ProjectPreferences>( "General Settings", this );
     QWizardPage* videoPage = PageFactory::generateWizardPage<VideoProjectPreferences>( "Video Settings", this );
     QWizardPage* audioPage = PageFactory::generateWizardPage<AudioProjectPreferences>( "Audio Settings", this );
 
-    setPage( Page_Welcome, loadPage );
+    setPage( Page_Welcome, welcomePage );
     setPage( Page_General, generalPage );
     setPage( Page_Video, videoPage );
     setPage( Page_Audio, audioPage );

@@ -1,9 +1,9 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include "LoadPage.h"
+#include "WelcomePage.h"
 
-LoadPage::LoadPage( QWidget* parent )
+WelcomePage::WelcomePage( QWidget* parent )
     : QWizardPage( parent )
 {
     m_ui.setupUi( this );
@@ -12,7 +12,7 @@ LoadPage::LoadPage( QWidget* parent )
     setSubTitle( tr( "Open or create a project" ) );
 }
 
-int LoadPage::nextId() const
+int WelcomePage::nextId() const
 {
     if ( m_ui.createRadioButton->isChecked() )
         return ProjectWizard::Page_General;
