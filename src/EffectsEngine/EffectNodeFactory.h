@@ -30,7 +30,6 @@
 #include "EffectNode.h"
 #include "EffectPluginTypeManager.h"
 
-
 class	EffectNodeFactory
 {
  public:
@@ -80,6 +79,8 @@ private:
     QMap<quint32, QString>                      m_nameById;
     quint32                                     m_higherFreeId;
     quint32                                     m_mapHoles;
+
+    EffectNode*                                 m_father;
 
     static EffectPluginTypeManager              m_eptm;
 

@@ -63,7 +63,7 @@ class	EffectNode : public IEffectNode
 
     virtual ~EffectNode();
 
-    EffectNode(IEffectPlugin* plugin);
+    EffectNode( IEffectPlugin* plugin );
 
     //    EffectNode();
 
@@ -79,6 +79,11 @@ class	EffectNode : public IEffectNode
     //
     //
     //
+
+    void                setFather( EffectNode* father );
+    IEffectNode*        getFather( void ) const;
+    EffectNode*         getPrivateFather( void ) const;
+
 
     void        setTypeId( quint32 typeId );
     void        setTypeName( QString const & typeName );
@@ -403,6 +408,8 @@ class	EffectNode : public IEffectNode
 
 private:
 
+
+    EffectNode*                         m_father;
     IEffectPlugin*                      m_plugin;
     InSlot<LightVideoFrame>*            m_videoInputs;
     OutSlot<LightVideoFrame>*           m_videoOutputs;

@@ -31,7 +31,7 @@ template class SemanticObjectManager< OutSlot<LightVideoFrame> >;
 // template class SemanticObjectManager<InSlot<qreal> >;
 // template class SemanticObjectManager<OutSlot<qreal> >;
 
-EffectNode::EffectNode(IEffectPlugin* plugin) : m_plugin(plugin), m_videoInputs(NULL), m_videoOutputs(NULL)
+EffectNode::EffectNode(IEffectPlugin* plugin) : m_father( NULL ), m_plugin( plugin ), m_videoInputs( NULL ), m_videoOutputs( NULL )
 {
     m_plugin->init(this);
     m_staticVideosInputs.setFather( this );
@@ -191,6 +191,24 @@ IEffectPlugin*                          EffectNode::getInternalPlugin( void )
 //
 //
 //
+
+void                    EffectNode::setFather( EffectNode* father )
+{
+    m_father = father;
+    return ;
+}
+
+IEffectNode*            EffectNode::getFather( void ) const
+{
+    return ( m_father );
+}
+
+EffectNode*             EffectNode::getPrivateFather( void ) const
+{
+    return ( m_father );
+}
+
+
 
 void                    EffectNode::setTypeId( quint32 typeId )
 {

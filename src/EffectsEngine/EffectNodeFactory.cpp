@@ -25,7 +25,7 @@
 
 EffectPluginTypeManager EffectNodeFactory::m_eptm = EffectPluginTypeManager();
 
-EffectNodeFactory::EffectNodeFactory() : m_higherFreeId( 1 ), m_mapHoles( 0 )
+EffectNodeFactory::EffectNodeFactory() : m_higherFreeId( 1 ), m_mapHoles( 0 ), m_father( NULL )
 {
 }
 
@@ -40,6 +40,8 @@ EffectNodeFactory::~EffectNodeFactory()
             delete it.value();
     }
 }
+
+
 
 // EFFECT TYPES INFORMATION
 
@@ -114,6 +116,7 @@ bool                        EffectNodeFactory::createEffectNodeInstance( QString
         newNode->setTypeName( typeName );
         newNode->setInstanceId( instanceId );
         newNode->setInstanceName( instanceName );
+        newNode->setFather( m_father );
         m_enByName[ instanceName ] = newNode;
         m_enById[ instanceId ] = newNode;
         m_nameById[ instanceId ] = instanceName;
@@ -151,6 +154,7 @@ bool        EffectNodeFactory::createEffectNodeInstance( quint32 typeId )
         newNode->setTypeName( getEffectNodeTypeNameByTypeId( typeId ) );
         newNode->setInstanceId( instanceId );
         newNode->setInstanceName( instanceName );
+        newNode->setFather( m_father );
         m_enByName[ instanceName ] = newNode;
         m_enById[ instanceId ] = newNode;
         m_nameById[ instanceId ] = instanceName;
