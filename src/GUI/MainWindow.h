@@ -93,7 +93,6 @@ private slots:
     void                    on_actionImport_triggered();
     void                    on_actionHelp_triggered();
     void                    on_actionProject_Preferences_triggered();
-    void                    on_actionProject_Wizard_triggered();
     void                    toolButtonClicked( int id );
     void                    projectChanged( const QString& projectName, bool savedStatus );
 

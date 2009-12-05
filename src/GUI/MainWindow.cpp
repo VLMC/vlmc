@@ -59,16 +59,25 @@ MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
 {
     m_ui.setupUi( this );
+
     qRegisterMetaType<MainWorkflow::TrackType>( "MainWorkflow::TrackType" );
     qRegisterMetaType<MainWorkflow::FrameChangedReason>( "MainWorkflow::FrameChangedReason" );
+
+    // Settings
+    VLMCSettingsDefault::load( "default" );
+    VLMCSettingsDefault::load( "VLMC" );
+
+    // GUI
     DockWidgetManager::instance( this )->setMainWindow( this );
     initializeDockWidgets();
     createStatusBar();
-    VLMCSettingsDefault::load( "default" );
-    VLMCSettingsDefault::load( "VLMC" );
-    m_pWizard = new ProjectWizard( this );
     createGlobalPreferences();
     createProjectPreferences();
+
+    // Wizard
+    m_pWizard = new ProjectWizard( this );
+    m_pWizard->setModal( true );
+    m_pWizard->show();
 
     // Translations
     connect( this, SIGNAL( translateDockWidgetTitle() ),
@@ -331,7 +340,7 @@ void MainWindow::on_actionNew_Project_triggered()
     //TODO : clear the library, the timeline, and show the configuration box
     //of the newly created project
 
-    m_projectPreferences->show();
+    m_pWizard->show();
 }
 
 void    MainWindow::on_actionHelp_triggered()
@@ -388,11 +397,6 @@ void MainWindow::on_actionBypass_effects_engine_toggled(bool toggled)
 void MainWindow::on_actionProject_Preferences_triggered()
 {
   m_projectPreferences->show( "project" );
-}
-
-void MainWindow::on_actionProject_Wizard_triggered()
-{
-    m_pWizard->show();
 }
 
 void    MainWindow::closeEvent( QCloseEvent* e )
