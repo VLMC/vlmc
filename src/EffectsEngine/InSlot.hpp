@@ -26,6 +26,9 @@
 
 #include <QDebug>
 
+class EffectNode;
+class IEffectNode;
+
 template<typename T> class OutSlot;
 
 
@@ -54,13 +57,19 @@ public:
 
     QString const       getName( void ) const;
     quint32             getId( void ) const;
+    IEffectNode*        getFather( void ) const;
 
-    // SETTING INFO
+    // SETTING INFOS
 
     void                setId( quint32 id );
     void                setName( QString const & name );
+    void                setFather( EffectNode* father );
 
 private:
+
+    // GETTING PRIVATES INFOS
+
+    EffectNode*         getPrivateFather( void ) const;
 
   // CONNECTION & DISCONNECTION
 
@@ -81,6 +90,7 @@ private:
 
     quint32                     m_id;
     QString                     m_name;
+    EffectNode*                 m_father;
 };
 
 template<typename T>
@@ -93,7 +103,7 @@ T			InSlot<T>::m_defaultValue = 0;
 // CTOR & DTOR
 
 template<typename T>
-InSlot<T>::InSlot()
+InSlot<T>::InSlot() : m_father( NULL )
 {
   resetOutSlotPtr();
   setCurrentSharedToDefault();
@@ -155,6 +165,12 @@ QString const          InSlot<T>::getName( void ) const
     return ( m_name );
 }
 
+template<typename T>
+IEffectNode*          InSlot<T>::getFather( void ) const
+{
+    return ( m_father );
+}
+
 // SETTING INFOS
 
 template<typename T>
@@ -171,9 +187,24 @@ void                InSlot<T>::setName( QString const & name )
     return ;
 }
 
+template<typename T>
+void                InSlot<T>::setFather( EffectNode* father )
+{
+    m_father = father;
+    return ;
+}
+
 //////////////////////////
 //// PRIVATES METHODS ////
 //////////////////////////
+
+// GETTING PRIVATES INFOS
+
+template<typename T>
+EffectNode*          InSlot<T>::getPrivateFather( void ) const
+{
+    return ( m_father );
+}
 
 // CONNECTION METHODS
 

@@ -24,9 +24,12 @@
 #ifndef OUTSLOT_HPP_
 #define OUTSLOT_HPP_
 
-#include "InSlot.hpp"
 #include <QDebug>
 
+#include "InSlot.hpp"
+
+class IEffectNode;
+class EffectNode;
 
 template<typename T>
 class   OutSlot
@@ -59,12 +62,19 @@ public:
 
     QString const       getName( void ) const;
     quint32             getId( void ) const;
+    IEffectNode*         getFather( void ) const;
 
  // SRTTING INFOS
 
     void          setId( quint32 id );
     void          setName( QString const & name );
+    void          setFather( EffectNode* father );
+
 private:
+
+    // GETTING PRIVATES INFOS
+
+    EffectNode*         getPrivateFather( void ) const;
 
   // OTHERS
 
@@ -81,6 +91,7 @@ private:
 
     quint32             m_id;
     QString             m_name;
+    EffectNode*        m_father;
 };
 
 /////////////////////////
@@ -90,7 +101,7 @@ private:
 // CTOR & DTOR
 
 template<typename T>
-OutSlot<T>::OutSlot()
+OutSlot<T>::OutSlot() : m_father( NULL )
 {
   resetInSlotPtr();
   resetPipe();
@@ -174,6 +185,12 @@ QString const          OutSlot<T>::getName( void ) const
     return ( m_name );
 }
 
+template<typename T>
+IEffectNode*         OutSlot<T>::getFather( void ) const
+{
+    return ( m_father );
+}
+
 // SETTING INFOS
 
 template<typename T>
@@ -190,9 +207,24 @@ void                OutSlot<T>::setName( QString const & name )
     return ;
 }
 
+template<typename T>
+void         OutSlot<T>::setFather( EffectNode* father )
+{
+    m_father = father;
+    return ;
+}
+
 //////////////////////////
 //// PRIVATES METHODS ////
 //////////////////////////
+
+// GETTING PRIVATES INFOS
+
+template<typename T>
+EffectNode*         OutSlot<T>::getPrivateFather( void ) const
+{
+    return ( m_father );
+}
 
 // OTHERS
 

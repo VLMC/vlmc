@@ -33,7 +33,7 @@ ROUTE		DUMP			NODEINSTANCE-ID
 ================ LightVideoFrame ================
 
 -rajouter le numero de la frame
--rajouter le numero de track de la frame 
+-rajouter le numero de track de la frame
 -rajouter la hauteur et la largeure
 
 ================= EffectsEngine =================
@@ -74,8 +74,6 @@ ou sinon pouvoir definir qu'un slot et persistant ou non
 -truc que en fait je ferais pas -> -rajouter le using dans le template pour forcer le type sur lequel on template a posseder
 la methode get default value
 ===> a la place : faire en sorte que les types sur lesquelles sont templates mes In/OutSlot s'initialisent avec une valeur par defaut quand on leur assigne 0
-
-================ Classe de Binding ================
 
 ================ Classe de commande ================
 

@@ -34,6 +34,8 @@ template class SemanticObjectManager< OutSlot<LightVideoFrame> >;
 EffectNode::EffectNode(IEffectPlugin* plugin) : m_plugin(plugin), m_videoInputs(NULL), m_videoOutputs(NULL)
 {
     m_plugin->init(this);
+    m_staticVideosInputs.setFather( this );
+    m_staticVideosOutputs.setFather( this );
 }
 
 EffectNode::~EffectNode()
@@ -65,6 +67,116 @@ void                                    EffectNode::render( void )
     m_plugin->render();
     return ;
 }
+
+//
+//
+//
+// CONNECTION AND BINDING METHODS
+//
+//
+//
+
+//
+//
+// VIDEO SLOTS
+//
+//
+
+//
+// STATIC TO STATIC
+//
+
+// bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( QString const & outName, QString const & nodeName, QString const & inName )
+// {
+// }
+
+// bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( QString const & outName, QString const & nodeName, quint32 inId )
+// {
+// }
+
+// bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( QString const & outName, quint32 nodeId, QString const & inName )
+// {
+// }
+
+// bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( QString const & outName, quint32 nodeId, quint32 inId )
+// {
+// }
+
+// bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( quint32 outId, QString const & nodeName, QString const & inName )
+// {
+// }
+
+// bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( quint32 outId, QString const & nodeName, quint32 inId )
+// {
+// }
+
+// bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( quint32 outId, quint32 nodeId, QString const & inName )
+// {
+// }
+
+// bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( quint32 outId, quint32 nodeId, quint32 inId )
+// {
+// }
+
+// bool        EffectNode::connectStaticVideoOutputToDynamicVideoInput( QString const & outName, quint32 nodeId )
+// {
+// }
+
+// bool        EffectNode::connectStaticVideoOutputToDynamicVideoInput( QString const & outName, QString const & nodeName )
+// {
+// }
+
+// bool        EffectNode::connectStaticVideoOutputToDynamicVideoInput( quint32 outId, QString const & nodeName )
+// {
+// }
+
+// bool        EffectNode::connectStaticVideoOutputToDynamicVideoInput( quint32 outId, quint32 nodeId )
+// {
+// }
+
+// bool        EffectNode::connectDynamicVideoOutputToStaticVideoInput( QString const & nodeName, QString const & inName )
+// {
+// }
+
+// bool        EffectNode::connectDynamicVideoOutputToStaticVideoInput( QString const & nodeName, quint32 inId )
+// {
+// }
+
+// bool        EffectNode::connectDynamicVideoOutputToStaticVideoInput( quint32 nodeId, QString const & inName )
+// {
+// }
+
+// bool        EffectNode::connectDynamicVideoOutputToStaticVideoInput( quint32 nodeId, quint32 inId )
+// {
+// }
+
+// bool        EffectNode::connectDynamicVideoOutputToDynamicVideoInput( QString const & nodeName )
+// {
+// }
+
+// bool        EffectNode::connectDynamicVideoOutputToDynamicVideoInput( quint32 nodeId )
+// {
+// }
+
+// bool        EffectNode::disconnectDynamicVideoOutput( void )
+// {
+// }
+
+// bool        EffectNode::disconnectStaticVideoOutput( quint32 nodeId )
+// {
+// }
+
+// bool        EffectNode::disconnectStaticVideoOutput( QString const & nodeName )
+// {
+// }
+
+//
+//
+//
+// GET INTERNAL PLUGIN
+//
+//
+//
 
 IEffectPlugin*                          EffectNode::getInternalPlugin( void )
 {

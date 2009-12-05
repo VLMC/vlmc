@@ -303,6 +303,42 @@ class	EffectNode : public IEffectNode
 
     //
     //
+    // VIDEO SLOTS
+    //
+    //
+
+    //
+    // STATIC TO STATIC
+    //
+
+//     bool        connectStaticVideoOutputToStaticVideoInput( QString const & outName, QString const & nodeName, QString const & inName );
+//     bool        connectStaticVideoOutputToStaticVideoInput( QString const & outName, QString const & nodeName, quint32 inId );
+//     bool        connectStaticVideoOutputToStaticVideoInput( QString const & outName, quint32 nodeId, QString const & inName );
+//     bool        connectStaticVideoOutputToStaticVideoInput( QString const & outName, quint32 nodeId, quint32 inId );
+//     bool        connectStaticVideoOutputToStaticVideoInput( quint32 outId, QString const & nodeName, QString const & inName );
+//     bool        connectStaticVideoOutputToStaticVideoInput( quint32 outId, QString const & nodeName, quint32 inId );
+//     bool        connectStaticVideoOutputToStaticVideoInput( quint32 outId, quint32 nodeId, QString const & inName );
+//     bool        connectStaticVideoOutputToStaticVideoInput( quint32 outId, quint32 nodeId, quint32 inId );
+
+//     bool        connectStaticVideoOutputToDynamicVideoInput( QString const & outName, quint32 nodeId );
+//     bool        connectStaticVideoOutputToDynamicVideoInput( QString const & outName, QString const & nodeName );
+//     bool        connectStaticVideoOutputToDynamicVideoInput( quint32 outId, QString const & nodeName );
+//     bool        connectStaticVideoOutputToDynamicVideoInput( quint32 outId, quint32 nodeId );
+
+//     bool        connectDynamicVideoOutputToStaticVideoInput( QString const & nodeName, QString const & inName );
+//     bool        connectDynamicVideoOutputToStaticVideoInput( QString const & nodeName, quint32 inId );
+//     bool        connectDynamicVideoOutputToStaticVideoInput( quint32 nodeId, QString const & inName );
+//     bool        connectDynamicVideoOutputToStaticVideoInput( quint32 nodeId, quint32 inId );
+
+//     bool        connectDynamicVideoOutputToDynamicVideoInput( QString const & nodeName );
+//     bool        connectDynamicVideoOutputToDynamicVideoInput( quint32 nodeId );
+
+//     bool        disconnectDynamicVideoOutput( void );
+//     bool        disconnectStaticVideoOutput( quint32 nodeId );
+//     bool        disconnectStaticVideoOutput( QString const & nodeName );
+
+    //
+    //
     //
     // MISSING FUNCTIONNALITY
     //
@@ -310,6 +346,8 @@ class	EffectNode : public IEffectNode
     //
 
     // IN PRIVATE : GETTING SLOT FOR THE EFFECT DEVELOPPER
+
+    // PENSER A POPER UN SLOTDYNAMIQUE QUAND IL SE FAIT DECO BRUTAL :D
 
     // TO FINISH : CONNECTION AND BINDINDG
 

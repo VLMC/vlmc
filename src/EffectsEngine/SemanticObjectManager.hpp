@@ -28,12 +28,14 @@
 #include <QString>
 #include <QMap>
 
+class EffectNode;
+
 template<typename T>
 class SemanticObjectManager
 {
 public:
 
-    SemanticObjectManager() : m_higherFreeId( 1 ), m_mapHoles( 0 )
+    SemanticObjectManager() : m_higherFreeId( 1 ), m_mapHoles( 0 ), m_father( NULL )
     {
     }
 
@@ -47,6 +49,12 @@ public:
             for ( ; it != end; ++it )
                 delete it.value();
         }
+    }
+
+    inline void                        setFather( EffectNode* father)
+    {
+        m_father = father;
+        return ;
     }
 
     // OBJECTS INFORMATIONS
@@ -100,6 +108,7 @@ public:
 
         newObject->setId( objectId );
         newObject->setName( objectName );
+        newObject->setFather( m_father );
 
         m_objectByName[ objectName ] = newObject;
         m_objectById[ objectId ] = newObject;
@@ -126,6 +135,7 @@ public:
 
         newObject->setId( objectId );
         newObject->setName( objectName );
+        newObject->setFather( m_father );
 
         m_objectByName[ objectName ] = newObject;
         m_objectById[ objectId ] = newObject;
@@ -260,7 +270,7 @@ private:
     QMap<quint32, QString>      m_nameById;
     quint32                     m_higherFreeId;
     quint32                     m_mapHoles;
-
+    EffectNode*                m_father;
 };
 
 #endif // SEMANTICOBJECTMANAGER_H_
