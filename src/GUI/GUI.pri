@@ -1,7 +1,6 @@
 FORMS	+=	ui/About.ui	\
 		ui/ClipProperty.ui	\
 		ui/Import.ui	\
-		ui/LoadPage.ui	\
 		ui/MainWindow.ui	\
 		ui/PreviewWidget.ui	\
 		ui/TagWidget.ui	\
