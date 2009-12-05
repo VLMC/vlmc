@@ -1,5 +1,5 @@
 
-================= GenericEffect =================
+================= EffectNode =================
 
 -rajouter le mode conteneur, avec donc la generation des Out/InSlot necessaire pour proxyfier les infos,
  et le getter pour savoir s'il est en mode conteneur ou pas
@@ -29,6 +29,34 @@ ROUTE		CONNECT-STAT/DYN	SRC-NODEINSTANCE-ID OUTSLOT-ID DST-NODEINSTANCE-ID
 ROUTE		DISCONNECT-STAT		NODEINSTANCE-ID OUTSLOTID
 ROUTE		DISCONNECT-DYN		NODEINSTANCE-ID
 ROUTE		DUMP			NODEINSTANCE-ID
+
+
+    //
+    //
+    //
+    // MISSING FUNCTIONNALITY
+    //
+    //
+    //
+
+    // IN PRIVATE : GETTING SLOT FOR THE EFFECT DEVELOPPER
+
+    // PENSER A POPER UN SLOTDYNAMIQUE QUAND IL SE FAIT DECO BRUTAL :D
+
+    // TO FINISH : CONNECTION AND BINDINDG
+
+    // INTERPRETER AND ITS PRIMITIVE METHODES
+
+    // REPLACE VIRTUAL PURE RENDER METHOD BY VIRTUAL RENDER METHOD WHO RENTER THE SUB-EFFECTS BY DEFAULT
+    // WITH THE MULTI-THREAD RENDER CLASS
+
+    // EffectsFactory static instance into EffectNode
+
+    // SUB-EFFECTS MANAGEMENT METHODS
+
+    // BIEN SEPARER LE DEVELOPPER-LAND ET LE EFFECTSENGINE-LAND, notamment en faisant des interface IPublic*slot
+    // DONC TOUT PROXIFIER PAR LE GENERICEFFECT, sauf l'ecriture/lecture dans un slot et le getting de l'id et de l'instance de l'effet et du EffectNode
+
 
 ================ LightVideoFrame ================
 
