@@ -34,7 +34,15 @@
 ProjectWizard::ProjectWizard( QWidget* parent )
     : QWizard( parent )
 {
-    //Create Wizard
+    // Create Wizard
+    setWizardStyle( QWizard::ModernStyle );
+
+    QPixmap logo = QPixmap( ":/images/images/vlmc.png" )
+                   .scaledToHeight( 50, Qt::SmoothTransformation );
+
+    setPixmap( QWizard::LogoPixmap, logo );
+    setPixmap( QWizard::WatermarkPixmap, QPixmap( ":/images/wizard_watermark" ) );
+
     QWizardPage* generalPage = PageFactory::generateWizardPage<ProjectPreferences>( "General Settings", this );
     QWizardPage* videoPage = PageFactory::generateWizardPage<VideoProjectPreferences>( "Video Settings", this );
     QWizardPage* audioPage = PageFactory::generateWizardPage<AudioProjectPreferences>( "Audio Settings", this );

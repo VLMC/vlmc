@@ -29,6 +29,7 @@
         <file alias="hpoff">images/hpoff.png</file>
         <file>images/audio.png</file>
         <file>images/video.png</file>
+        <file alias="wizard_watermark">images/wizard_watermark.png</file>
     </qresource>
     <qresource prefix="/text">
         <file>AUTHORS</file>
