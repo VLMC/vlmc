@@ -62,7 +62,7 @@ Settings::~Settings()
 //adjust to the size of the biggest Widget.
 void        Settings::addWidget( const QString& name,
         PreferenceWidget* pWidget,
-        const QString& icon,
+        const QIcon& icon,
         const QString& label )
 {
     m_stackedWidgets->addWidget( pWidget );

@@ -34,12 +34,9 @@
 #include <QStringList>
 
 #include "MainWindow.h"
-#include "MediaListWidget.h"
-#include "LibraryWidget.h"
 #include "Library.h"
 #include "Timeline.h"
 #include "About.h"
-#include "FileBrowser.h"
 #include "WorkflowRenderer.h"
 #include "ClipRenderer.h"
 #include "UndoStack.h"
@@ -56,6 +53,7 @@
 #include "Import.h"
 #include "MediaLibraryWidget.h"
 #include "LanguagePreferences.h"
+#include "ProjectManager.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
@@ -85,6 +83,9 @@ MainWindow::MainWindow( QWidget *parent ) :
              this, SLOT( zoomOut() ) );
     connect( this, SIGNAL( toolChanged( ToolButtons ) ),
              m_timeline, SLOT( setTool( ToolButtons ) ) );
+
+    connect( ProjectManager::getInstance(), SIGNAL( projectChanged( const QString&, bool ) ),
+             this, SLOT( projectChanged( const QString&, bool ) ) );
 
     QSettings s;
     // Restore the geometry
@@ -122,11 +123,7 @@ void MainWindow::changeEvent( QEvent *e )
 
 void        MainWindow::setupLibrary()
 {
-    //Library part :
-    //Library*    library = Library::getInstance();
-
     //GUI part :
-    //LibraryWidget* libraryWidget = new LibraryWidget( this );
 
     MediaLibraryWidget* mediaLibraryWidget = new MediaLibraryWidget( this );
 
@@ -136,39 +133,6 @@ void        MainWindow::setupLibrary()
                                                     QDockWidget::AllDockWidgetFeatures,
 
                                                     Qt::LeftDockWidgetArea );
-    /*DockWidgetManager::instance()->addDockedWidget( libraryWidget,
-                                      tr( "Old Media Library" ),
-                                      Qt::AllDockWidgetAreas,
-                                      QDockWidget::AllDockWidgetFeatures,
-                                      Qt::LeftDockWidgetArea );*/
-
-    //Connecting GUI and Frontend :
-    /*connect( libraryWidget,
-             SIGNAL( newMediaLoadingAsked(const QString& ) ),
-             library,
-             SLOT( newMediaLoadingAsked( const QString& ) ) );*/
-
-    /*connect( library,
-             SIGNAL( newClipLoaded( Clip* ) ),
-             libraryWidget,
-             SLOT( newClipLoaded( Clip* ) ) );*/
-
-    /*connect( libraryWidget,
-             SIGNAL( removingMediaAsked( const QUuid& ) ),
-             library,
-             SLOT( removingMediaAsked( const QUuid& ) ) );
-
-    connect( library,
-             SIGNAL( mediaRemoved( const QUuid& ) ),
-             libraryWidget,
-             SLOT( mediaRemoved( const QUuid& ) ), Qt::DirectConnection );*/
-
-    /*connect( libraryWidget->getVideoListWidget(), SIGNAL( selectedClipChanged( Clip* ) ),
-              m_clipPreview->getGenericRenderer(), SLOT( setClip( Clip* ) ) );
-
-    connect( libraryWidget->getVideoListWidget(), SIGNAL( itemDoubleClicked( QListWidgetItem* ) ),
-                this, SLOT( mediaListItemDoubleClicked( QListWidgetItem* ) ) );*/
-
     connect( mediaLibraryWidget, SIGNAL( mediaSelected( Media* ) ),
              m_clipPreview->getGenericRenderer(), SLOT( setMedia( Media* ) ) );
 
@@ -178,39 +142,17 @@ void        MainWindow::setupLibrary()
 
 void    MainWindow::on_actionSave_triggered()
 {
-    QString outputFileName =
-            QFileDialog::getSaveFileName( NULL, "Enter the output file name",
-                                          QString(), "VLMC project file(*.vlmc)" );
-    if ( outputFileName.length() == 0 )
-        return ;
-    else
-    {
-        //Project manager will destroy itself.
-        QStringList list = outputFileName.split( "." );
-        if ( list.at( list.size() - 1 ) != "vlmc" )
-        {
-            list.append( "vlmc" );
-            outputFileName = list.join(".");
-        }
+    ProjectManager::getInstance()->saveProject();
+}
 
-        ProjectManager* pm = new ProjectManager( outputFileName );
-        pm->saveProject();
-    }
+void    MainWindow::on_actionSave_As_triggered()
+{
+    ProjectManager::getInstance()->saveProject( true );
 }
 
 void    MainWindow::on_actionLoad_Project_triggered()
 {
-    QString outputFileName =
-            QFileDialog::getOpenFileName( NULL, "Enter the output file name",
-                                          QString(), "VLMC project file(*.vlmc)" );
-    if ( outputFileName.length() == 0 )
-        return ;
-    else
-    {
-        //Project manager will destroy itself.
-        ProjectManager* pm = new ProjectManager( outputFileName );
-        pm->loadProject();
-    }
+    ProjectManager::getInstance()->loadProject();
 }
 
 void MainWindow::createStatusBar()
@@ -279,11 +221,6 @@ void MainWindow::initializeDockWidgets( void )
     setCentralWidget( m_timeline );
 
     DockWidgetManager *dockManager = DockWidgetManager::instance();
-    dockManager->addDockedWidget( new FileBrowser( this ),
-                                  tr( "FileBrowser" ),
-                                  Qt::AllDockWidgetAreas,
-                                  QDockWidget::AllDockWidgetFeatures,
-                                  Qt::TopDockWidgetArea);
 
     m_clipPreview = new PreviewWidget( new ClipRenderer, this );
     dockManager->addDockedWidget( m_clipPreview,
@@ -316,11 +253,11 @@ void        MainWindow::createGlobalPreferences()
     m_globalPreferences = new Settings( false, "VLMC", this );
     m_globalPreferences->addWidget("VLMC",
                                    new VLMCPreferences( m_globalPreferences ),
-                                   "../images/vlmc.png",
+                                   QIcon( ":/images/images/vlmc.png" ),
                                    "VLMC settings");
     m_globalPreferences->addWidget("Language preferences",
                                    new LanguagePreferences( m_globalPreferences ),
-                                   "../images/vlmc.png",
+                                   QIcon( ":/images/images/vlmc.png" ),
                                    "Langage settings");
     m_globalPreferences->build();
 }
@@ -330,15 +267,15 @@ void	    MainWindow::createProjectPreferences()
     m_projectPreferences = new Settings( false, "project", this );
     m_projectPreferences->addWidget("Project",
                                    new ProjectPreferences,
-                                   ":/images/images/vlmc",
+                                   QIcon( ":/images/images/vlmc.png" ),
                                    "Project settings" );
     m_projectPreferences->addWidget( "Video",
                                    new VideoProjectPreferences,
-                                   ":/images/images/video",
+                                   QIcon( ":/images/images/video.png" ),
                                    "Video settings" );
     m_projectPreferences->addWidget( "Audio",
                                    new AudioProjectPreferences,
-                                   ":/images/images/audio",
+                                   QIcon( ":/images/images/audio.png" ),
                                    "Audio settings" );
     m_projectPreferences->build();
 }
@@ -431,13 +368,6 @@ void    MainWindow::registerWidgetInWindowMenu( QDockWidget* widget )
     m_ui.menuWindow->addAction( widget->toggleViewAction() );
 }
 
-void    MainWindow::mediaListItemDoubleClicked( QListWidgetItem* qItem )
-{
-    ListViewMediaItem* item = static_cast<ListViewMediaItem*>( qItem );
-    ClipProperty* mp = new ClipProperty( item->getClip(), this );
-    mp->show();
-}
-
 void    MainWindow::toolButtonClicked( int id )
 {
     emit toolChanged( (ToolButtons)id );
@@ -465,3 +395,41 @@ void MainWindow::on_actionProject_Wizard_triggered()
     m_pWizard->show();
 }
 
+void    MainWindow::closeEvent( QCloseEvent* e )
+{
+    if ( ProjectManager::getInstance()->needSave() == true )
+    {
+        QMessageBox msgBox;
+        msgBox.setText( tr( "The project has been modified." ) );
+        msgBox.setInformativeText( tr( "Do you want to save it ?" ) );
+        msgBox.setStandardButtons( QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel );
+        msgBox.setDefaultButton(QMessageBox::Save);
+        int     ret = msgBox.exec();
+
+        switch ( ret )
+        {
+            case QMessageBox::Save:
+                ProjectManager::getInstance()->saveProject();
+                break ;
+            case QMessageBox::Discard:
+                break ;
+            case QMessageBox::Cancel:
+            default:
+                e->ignore();
+                return ;
+            e->accept();
+        }
+    }
+    else
+        e->accept();
+}
+
+void    MainWindow::projectChanged( const QString& projectName, bool savedStatus )
+{
+    QString title = tr( "VideoLAN Movie Creator" );
+    title += " - ";
+    title += projectName;
+    if ( savedStatus == false )
+        title += " *";
+    setWindowTitle( title );
+}

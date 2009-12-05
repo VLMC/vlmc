@@ -31,6 +31,7 @@
 
 class LanguagePreferences : public PreferenceWidget
 {
+    Q_OBJECT
     public:
         LanguagePreferences( QWidget* parent = 0 );
         ~LanguagePreferences();

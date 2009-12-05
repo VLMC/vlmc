@@ -20,29 +20,55 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QFileDialog>
+#include <QtDebug>
+
 #include "ProjectManager.h"
 #include "Library.h"
 #include "MainWorkflow.h"
 #include "SettingsManager.h"
 
-ProjectManager::ProjectManager( const QString& filePath )
+ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
 {
-    m_projectFile = new QFile( filePath, this );
+
 }
 
 ProjectManager::~ProjectManager()
 {
+    if ( m_projectFile != NULL )
+        delete m_projectFile;
+}
+
+bool    ProjectManager::needSave() const
+{
+    return m_needSave;
+}
+
+void    ProjectManager::cleanChanged( bool val )
+{
+    m_needSave = !val;
+    if ( m_projectFile != NULL )
+    {
+        QFileInfo   fInfo( *m_projectFile );
+        emit projectChanged( fInfo.fileName(), val );
+    }
+    else
+        emit projectChanged( tr( "<Unsaved project>" ), val );
 }
 
 void    ProjectManager::loadTimeline()
 {
     QDomElement     root = m_domDocument->documentElement();
+    QFileInfo       fInfo( *m_projectFile );
+
     MainWorkflow::getInstance()->loadProject( root.firstChildElement( "timeline" ) );
-    deleteLater();
+    emit projectChanged( fInfo.fileName(), true );
 }
 
 void    ProjectManager::loadProject()
 {
+    if ( loadProjectFile() == false )
+        return ;
     m_domDocument = new QDomDocument;
     m_projectFile->open( QFile::ReadOnly );
     m_domDocument->setContent( m_projectFile );
@@ -55,8 +81,41 @@ void    ProjectManager::loadProject()
     SettingsManager::getInstance()->loadSettings( "project", root.firstChildElement( "project" ) );
 }
 
-void    ProjectManager::saveProject()
+bool    ProjectManager::loadProjectFile()
 {
+    QString fileName =
+            QFileDialog::getOpenFileName( NULL, "Enter the output file name",
+                                          QString(), "VLMC project file(*.vlmc)" );
+    if ( fileName.length() == 0 )
+        return false;
+    if ( m_projectFile != NULL )
+        delete m_projectFile;
+    m_projectFile = new QFile( fileName );
+    return true;
+}
+
+bool    ProjectManager::checkProjectOpen( bool saveAs )
+{
+    if ( m_projectFile == NULL || saveAs == true )
+    {
+        QString outputFileName =
+            QFileDialog::getSaveFileName( NULL, "Enter the output file name",
+                                          QString(), "VLMC project file(*.vlmc)" );
+        if ( outputFileName.length() == 0 )
+            return false;
+        if ( m_projectFile != NULL )
+            delete m_projectFile;
+        if ( outputFileName.endsWith( ".vlmc" ) == false )
+            outputFileName += ".vlmc";
+        m_projectFile = new QFile( outputFileName );
+    }
+    return true;
+}
+
+void    ProjectManager::saveProject( bool saveAs /*= true*/ )
+{
+    if ( checkProjectOpen( saveAs ) == false )
+        return ;
     QDomImplementation    implem = QDomDocument().implementation();
     //FIXME: Think about naming the project...
     QString name = "VLMCProject";
@@ -75,5 +134,10 @@ void    ProjectManager::saveProject()
     m_projectFile->open( QFile::WriteOnly );
     m_projectFile->write( doc.toString().toAscii() );
     m_projectFile->close();
-    deleteLater();
+    if ( saveAs == true )
+    {
+        QFileInfo   fInfo( *m_projectFile );
+        emit projectChanged( fInfo.fileName(), true );
+    }
+    emit projectSaved();
 }

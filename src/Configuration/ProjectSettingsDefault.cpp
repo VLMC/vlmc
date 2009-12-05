@@ -67,10 +67,8 @@ void    ProjectSettingsDefault::loadProjectDefaults( const QString& part )
 {
     SettingsManager*  setMan = SettingsManager::getInstance();
     QVariant   defaultName = "project";
-    QVariant   defaultPath = "./";
 
     setMan->setValue( part, "ProjectName", defaultName );
-    setMan->setValue( part, "ProjectDirectory", defaultPath );
 
     return ;
 }

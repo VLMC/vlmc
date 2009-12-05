@@ -69,16 +69,7 @@ void    ProjectWizard::reject()
 
 void    ProjectWizard::loadProject()
 {
-    QString outputFileName = QFileDialog::getOpenFileName( NULL,
-                                                           "Enter the output file name",
-                                                           QString(), "VLMC project file(*.vlmc)" );
-    if ( outputFileName.length() == 0 )
-        return ;
-    else
-    {
-        ProjectManager* pm = new ProjectManager( outputFileName );
-        pm->loadProject();
-    }
+    ProjectManager::getInstance()->loadProject();
     restart();
     QDialog::accept();
 }

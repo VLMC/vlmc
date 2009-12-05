@@ -37,7 +37,7 @@ class   Panel : public QWidget
         ~Panel();
 
         void    addButton( const QString& label,
-                           const QString& iconPath,
+                           const QIcon& icon,
                            int number);
         void    show();
 

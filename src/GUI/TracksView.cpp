@@ -500,15 +500,39 @@ void TracksView::mouseMoveEvent( QMouseEvent* event )
         QPointF itemPos = m_actionItem->mapToScene( 0, 0 );
         QPointF itemNewSize = mapToScene( event->pos() ) - itemPos;
 
-        if ( m_actionResizeType == AbstractGraphicsMediaItem::END )
+        //FIXME: BEGIN UGLY
+        GraphicsTrack* track = getTrack( m_actionItem->mediaType(), m_actionItem->trackNumber() );
+        Q_ASSERT( track );
+
+        QPointF collidePos = track->sceneBoundingRect().topRight();
+        collidePos.setX( itemPos.x() + itemNewSize.x() );
+
+        QList<QGraphicsItem*> gi = scene()->items( collidePos );
+
+        bool collide = false;
+        for ( int i = 0; i < gi.count(); ++i )
         {
-            qint64 distance = mapToScene( event->pos() ).x() - m_actionResizeStart;
-            qint64 newsize = qMax( m_actionResizeBase - distance, (qint64)0 );
-            m_actionItem->resize( newsize , AbstractGraphicsMediaItem::END );
+            AbstractGraphicsMediaItem* mi = dynamic_cast<AbstractGraphicsMediaItem*>( gi.at( i ) );
+            if ( mi && mi != m_actionItem )
+            {
+                collide = true;
+                break;
+            }
         }
-        else
+        // END UGLY
+
+        if ( !collide )
         {
-            m_actionItem->resize( itemNewSize.x(), AbstractGraphicsMediaItem::BEGINNING );
+            if ( m_actionResizeType == AbstractGraphicsMediaItem::END )
+            {
+                qint64 distance = mapToScene( event->pos() ).x() - m_actionResizeStart;
+                qint64 newsize = qMax( m_actionResizeBase - distance, (qint64)0 );
+                m_actionItem->resize( newsize , AbstractGraphicsMediaItem::END );
+            }
+            else
+            {
+                m_actionItem->resize( itemNewSize.x(), AbstractGraphicsMediaItem::BEGINNING );
+            }
         }
     }
 
@@ -732,22 +756,11 @@ GraphicsTrack* TracksView::getTrack( MainWorkflow::TrackType type, unsigned int 
 
 void TracksView::split( GraphicsMovieItem* item, qint64 frame )
 {
-//    Q_ASSERT( item );
-//    Clip* newclip = item->clip()->split( frame );
-//    Q_ASSERT( newclip );
-//
-//    addMediaItem( newclip, item->trackNumber(), item->startPos() + frame );
-//    Commands::trigger( new Commands::MainWorkflow::AddClip( m_renderer,
-//                                                            newclip,
-//                                                            item->trackNumber(),
-//                                                            item->startPos() + frame,
-//                                                            MainWorkflow::VideoTrack ) );
-
     //frame is the number of frame from the beginning of the clip
-    //item->pos().x() is the position of the splitted clip (in frame)
+    //item->startPos() is the position of the splitted clip (in frame)
     //therefore, the position of the newly created clip is
     //the splitted clip pos + the splitting point (ie startPos() + frame)
-//    m_renderer->split( item->clip(), item->trackNumber(), item->startPos() + frame, frame, MainWorkflow::VideoTrack );
     Commands::trigger( new Commands::MainWorkflow::SplitClip( m_renderer, item->clip(), item->trackNumber(),
-                                                              item->startPos() + frame, frame, MainWorkflow::VideoTrack ) );
+                                                              item->startPos() + frame, frame + item->clip()->getBegin(),
+                                                              MainWorkflow::VideoTrack ) );
 }
