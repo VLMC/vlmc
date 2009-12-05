@@ -22,6 +22,7 @@
 
 #include <QString>
 #include <QFileDialog>
+#include <QMessageBox>
 #include "ProjectManager.h"
 #include "ProjectWizard.h"
 #include "ProjectPreferences.h"
@@ -35,26 +36,56 @@ ProjectWizard::ProjectWizard( QWidget* parent )
     : QWizard( parent )
 {
     // Create Wizard
+
+#ifndef Q_WS_MAC
     setWizardStyle( QWizard::ModernStyle );
+#endif
 
     QPixmap logo = QPixmap( ":/images/images/vlmc.png" )
                    .scaledToHeight( 50, Qt::SmoothTransformation );
 
     setPixmap( QWizard::LogoPixmap, logo );
     setPixmap( QWizard::WatermarkPixmap, QPixmap( ":/images/wizard_watermark" ) );
+    setWindowTitle( tr( "Project wizard" ) );
 
+    // Show and connect the help button
+    setOption( HaveHelpButton, true );
+    connect( this, SIGNAL( helpRequested() ), this, SLOT( showHelp() ) );
+
+    // Create pages
+
+    QWizardPage* loadPage = new LoadPage( this );
     QWizardPage* generalPage = PageFactory::generateWizardPage<ProjectPreferences>( "General Settings", this );
     QWizardPage* videoPage = PageFactory::generateWizardPage<VideoProjectPreferences>( "Video Settings", this );
     QWizardPage* audioPage = PageFactory::generateWizardPage<AudioProjectPreferences>( "Audio Settings", this );
-    QWizardPage* loadPage = new LoadPage( this );
-    addPage( loadPage );
-    addPage( generalPage );
-    addPage( videoPage );
-    addPage( audioPage );
+
+    setPage( Page_Welcome, loadPage );
+    setPage( Page_General, generalPage );
+    setPage( Page_Video, videoPage );
+    setPage( Page_Audio, audioPage );
+
+    // Set the start page
+    setStartId( Page_Welcome );
 }
 
 ProjectWizard::~ProjectWizard()
 {
+}
+
+void    ProjectWizard::showHelp()
+{
+    QString message;
+
+    switch ( currentId() )
+    {
+    case Page_Welcome:
+        message = tr( "Choose the appropriate action then click Next to continue." );
+        break;
+    default:
+        message = tr( "This help is likely not to be of any help." );
+    }
+
+    QMessageBox::information( this, tr( "Project wizard help" ), message );
 }
 
 void    ProjectWizard::accept()

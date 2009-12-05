@@ -28,14 +28,20 @@
 class ProjectWizard : public QWizard
 {
     Q_OBJECT
+
     public:
-        ProjectWizard( QWidget* parent = 0 );
-        ~ProjectWizard();
+         enum { Page_Welcome,
+                Page_General, Page_Video, Page_Audio,
+                Page_Open };
+
+         ProjectWizard( QWidget* parent = 0 );
+         ~ProjectWizard();
 
         void    accept();
         void    reject();
 
     private slots:
+        void    showHelp();
         void    loadProject();
 
     signals:

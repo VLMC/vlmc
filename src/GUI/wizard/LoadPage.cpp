@@ -12,3 +12,10 @@ LoadPage::LoadPage( QWidget* parent )
     setSubTitle( tr( "Open or create a project" ) );
 }
 
+int LoadPage::nextId() const
+{
+    if ( m_ui.createRadioButton->isChecked() )
+        return ProjectWizard::Page_General;
+    else
+        return ProjectWizard::Page_Open;
+}
