@@ -60,6 +60,7 @@ protected:
     virtual void        mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
 
 private:
+    bool                resizeZone( const QPointF& position );
     Clip*               m_clip;
 
 signals:

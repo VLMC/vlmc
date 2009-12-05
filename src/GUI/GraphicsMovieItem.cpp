@@ -192,11 +192,7 @@ void GraphicsMovieItem::hoverMoveEvent( QGraphicsSceneHoverEvent* event )
 
     if ( tracksView()->tool() == TOOL_DEFAULT )
     {
-        QPoint mouseMapped = tracksView()->mapFromScene( event->pos() );
-        QPoint sizeMapped = tracksView()->mapFromScene( boundingRect().width(), boundingRect().height() );
-
-        if ( mouseMapped.x() < RESIZE_ZONE ||
-             mouseMapped.x() > ( sizeMapped.x() - RESIZE_ZONE ) )
+        if ( resizeZone( event->pos() ) )
             setCursor( Qt::SizeHorCursor );
         else
             setCursor( Qt::OpenHandCursor );
@@ -208,7 +204,12 @@ void GraphicsMovieItem::mousePressEvent( QGraphicsSceneMouseEvent* event )
     if ( !tracksView() ) return;
 
     if ( tracksView()->tool() == TOOL_DEFAULT )
-        setCursor( Qt::ClosedHandCursor );
+    {
+        if ( resizeZone( event->pos() ) )
+            setCursor( Qt::SizeHorCursor );
+        else
+            setCursor( Qt::ClosedHandCursor );
+    }
     else if ( tracksView()->tool() == TOOL_CUT )
         emit split( this, qRound64( event->pos().x() ) );
 }
@@ -220,4 +221,19 @@ void GraphicsMovieItem::mouseReleaseEvent( QGraphicsSceneMouseEvent*  event )
 
     if ( tracksView()->tool() == TOOL_DEFAULT )
         setCursor( Qt::OpenHandCursor );
+}
+
+bool GraphicsMovieItem::resizeZone( const QPointF& position )
+{
+    // Get the current transformation of the view and invert it.
+    QTransform transform = tracksView()->transform().inverted();
+    // Map the RESIZE_ZONE distance from the view to the item coordinates.
+    QLine line = transform.map( QLine( 0, 0, RESIZE_ZONE, 0 ) );
+
+    if ( position.x() < line.x2() ||
+         position.x() > ( boundingRect().width() - line.x2() ) )
+    {
+        return true;
+    }
+    return false;
 }
