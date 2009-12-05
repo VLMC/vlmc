@@ -42,6 +42,13 @@ EffectNodeFactory::~EffectNodeFactory()
 }
 
 
+// SETTING FATHER
+
+void                        EffectNodeFactory::setFather( EffectNode* father )
+{
+    m_father( father );
+    return ;
+}
 
 // EFFECT TYPES INFORMATION
 

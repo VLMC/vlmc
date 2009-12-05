@@ -39,6 +39,10 @@ class	EffectNodeFactory
     EffectNodeFactory();
     ~EffectNodeFactory();
 
+    // SETTING FATHER
+
+    void                        setFather( EffectNode* father );
+
     // EFFECT TYPES INFORMATION
 
     QList<QString>              getEffectNodeTypesNamesList( void ) const;
