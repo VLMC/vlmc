@@ -46,6 +46,7 @@ public:
     static Timeline*    getInstance() { return m_instance; }
 
 public slots:
+    void clear();
     void changeZoom( int factor );
     void setDuration( int duration );
     void setTool( ToolButtons button );
