@@ -84,14 +84,14 @@ QList<quint32>              EffectNodeFactory::getEffectNodeInstancesIdsList( vo
     return ( m_nameById.keys() );
 }
 
-QString const               EffectNodeFactory::getEffectNodeInstanceNameByInstanceId( quint32 typeId ) const
+QString const               EffectNodeFactory::getEffectNodeInstanceNameByInstanceId( quint32 instanceId ) const
 {
-    return ( m_nameById.value( typeId, "" ) );
+    return ( m_nameById.value( instanceId, "" ) );
 }
 
-quint32                     EffectNodeFactory::getEffectNodeInstanceIdByInstanceName( QString const & typeName ) const
+quint32                     EffectNodeFactory::getEffectNodeInstanceIdByInstanceName( QString const & instanceName ) const
 {
-    return ( m_nameById.key( typeName, 0 ) );
+    return ( m_nameById.key( instanceName, 0 ) );
 }
 
 // CREATE AND DELETE EFFECTS

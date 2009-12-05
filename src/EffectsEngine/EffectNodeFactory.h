@@ -56,8 +56,8 @@ class	EffectNodeFactory
     QList<QString>              getEffectNodeInstancesNamesList( void ) const;
     QList<quint32>              getEffectNodeInstancesIdsList( void ) const;
 
-    QString const               getEffectNodeInstanceNameByInstanceId( quint32 typeId ) const;
-    quint32                     getEffectNodeInstanceIdByInstanceName( QString const & typeName ) const;
+    QString const               getEffectNodeInstanceNameByInstanceId( quint32 instanceId ) const;
+    quint32                     getEffectNodeInstanceIdByInstanceName( QString const & instanceName ) const;
 
     // CREATE AND DELETE EFFECTS
 
