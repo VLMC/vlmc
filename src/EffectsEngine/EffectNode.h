@@ -58,8 +58,7 @@ class	EffectNode : public IEffectNode
     virtual ~EffectNode();
 
     EffectNode( IEffectPlugin* plugin );
-
-    //    EffectNode();
+    EffectNode();
 
     void        init(quint32 const nbvideoinputs,
                      quint32 const nbvideooutputs);

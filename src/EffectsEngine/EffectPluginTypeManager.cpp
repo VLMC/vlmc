@@ -23,7 +23,7 @@
 
 #include "EffectPluginTypeManager.h"
 
-EffectPluginTypeManager::EffectPluginTypeManager() : m_higherFreeId( 1 )
+EffectPluginTypeManager::EffectPluginTypeManager() : m_higherFreeId( 2 )
 {
     QDir                        dir;
     QStringList                 filter;

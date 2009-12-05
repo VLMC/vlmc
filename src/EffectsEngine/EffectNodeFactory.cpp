@@ -46,7 +46,7 @@ EffectNodeFactory::~EffectNodeFactory()
 
 void                        EffectNodeFactory::setFather( EffectNode* father )
 {
-    m_father( father );
+    m_father = father ;
     return ;
 }
 
@@ -95,6 +95,39 @@ quint32                     EffectNodeFactory::getEffectNodeInstanceIdByInstance
 }
 
 // CREATE AND DELETE EFFECTS
+
+void                        EffectNodeFactory::createEmptyEffectNodeInstance( void )
+{
+    EffectNode*         newNode;
+    quint32             instanceId;
+    QString             instanceName;
+    QString             typeName("EmptyEffectNode");
+    quint32             typeId = 1;
+
+    newNode = new EffectNode();
+    if ( m_mapHoles > 0 )
+    {
+        instanceId = m_enById.key( NULL );
+        --m_mapHoles;
+    }
+    else
+    {
+        instanceId = m_higherFreeId;
+        ++m_higherFreeId;
+    }
+    instanceName.setNum( instanceId );
+    instanceName.insert( 0 , typeName + "_" );
+    newNode->setTypeId( typeId );
+    newNode->setTypeName( typeName );
+    newNode->setInstanceId( instanceId );
+    newNode->setInstanceName( instanceName );
+    newNode->setFather( m_father );
+    m_enByName[ instanceName ] = newNode;
+    m_enById[ instanceId ] = newNode;
+    m_nameById[ instanceId ] = instanceName;
+    qDebug() << "New empty EffectNode* created.";
+    return ;
+}
 
 bool                        EffectNodeFactory::createEffectNodeInstance( QString const & typeName )
 {

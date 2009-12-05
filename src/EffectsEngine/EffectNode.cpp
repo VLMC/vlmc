@@ -38,6 +38,13 @@ EffectNode::EffectNode(IEffectPlugin* plugin) : m_father( NULL ), m_plugin( plug
     m_staticVideosOutputs.setFather( this );
 }
 
+
+EffectNode::EffectNode() : m_father( NULL ), m_plugin( NULL ), m_videoInputs( NULL ), m_videoOutputs( NULL )
+{
+    m_staticVideosInputs.setFather( this );
+    m_staticVideosOutputs.setFather( this );
+}
+
 EffectNode::~EffectNode()
 {
     delete m_plugin;

@@ -61,6 +61,8 @@ class	EffectNodeFactory
 
     // CREATE AND DELETE EFFECTS
 
+    void        createEmptyEffectNodeInstance( void );
+
     bool        createEffectNodeInstance( quint32 typeId );
     bool        createEffectNodeInstance( QString const & typeName );
 
