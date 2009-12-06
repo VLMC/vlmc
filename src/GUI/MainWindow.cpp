@@ -54,6 +54,7 @@
 #include "MediaLibraryWidget.h"
 #include "LanguagePreferences.h"
 #include "ProjectManager.h"
+#include "KeyboardShortcut.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
@@ -286,6 +287,10 @@ void	    MainWindow::createProjectPreferences()
                                    new AudioProjectPreferences,
                                    QIcon( ":/images/images/audio.png" ),
                                    "Audio settings" );
+    m_projectPreferences->addWidget( "Keyboard",
+                                     new KeyboardShortcut,
+                                     QIcon( ":/images/images/keyboard.png" ),
+                                     tr( "Keyboard Settings" ) );
     m_projectPreferences->build();
 }
 
