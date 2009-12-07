@@ -65,10 +65,15 @@ void    ProjectManager::loadTimeline()
     emit projectChanged( fInfo.fileName(), true );
 }
 
-void    ProjectManager::loadProject()
+void    ProjectManager::loadProject( const QString& fileName )
 {
-    if ( loadProjectFile() == false )
-        return ;
+    if ( fileName.length() == 0 )
+        return;
+
+    if ( !m_projectFile )
+        delete m_projectFile;
+    m_projectFile = new QFile( fileName );
+
     m_domDocument = new QDomDocument;
     m_projectFile->open( QFile::ReadOnly );
     m_domDocument->setContent( m_projectFile );
@@ -81,17 +86,12 @@ void    ProjectManager::loadProject()
     SettingsManager::getInstance()->loadSettings( "project", root.firstChildElement( "project" ) );
 }
 
-bool    ProjectManager::loadProjectFile()
+QString  ProjectManager::loadProjectFile()
 {
     QString fileName =
             QFileDialog::getOpenFileName( NULL, "Enter the output file name",
                                           QString(), "VLMC project file(*.vlmc)" );
-    if ( fileName.length() == 0 )
-        return false;
-    if ( m_projectFile != NULL )
-        delete m_projectFile;
-    m_projectFile = new QFile( fileName );
-    return true;
+    return fileName;
 }
 
 bool    ProjectManager::checkProjectOpen( bool saveAs )

@@ -109,7 +109,8 @@ void    ProjectWizard::reject()
 
 void    ProjectWizard::loadProject()
 {
-    ProjectManager::getInstance()->loadProject();
+    ProjectManager* pm = ProjectManager::getInstance();
+    pm->loadProject( pm->loadProjectFile() );
     restart();
     QDialog::accept();
 }

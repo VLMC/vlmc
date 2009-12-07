@@ -34,16 +34,16 @@ class   ProjectManager : public QObject, public Singleton<ProjectManager>
     Q_OBJECT
     Q_DISABLE_COPY( ProjectManager );
 public:
-    void        loadProject();
-    void        saveProject( bool saveAs = true );
-    bool        needSave() const;
+    void            loadProject( const QString& fileName );
+    QString         loadProjectFile();
+    void            saveProject( bool saveAs = true );
+    bool            needSave() const;
 
 private:
     ProjectManager();
     ~ProjectManager();
 
-    bool        checkProjectOpen( bool saveAs );
-    bool        loadProjectFile();
+    bool            checkProjectOpen( bool saveAs );
 
 private:
     QFile*          m_projectFile;
