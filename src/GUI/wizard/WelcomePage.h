@@ -49,6 +49,7 @@ class WelcomePage : public QWizardPage
     private slots:
         void loadProject();
         void loadRecentsProjects();
+        void selectOpenRadio();
 
     private:
         Ui::WelcomePage m_ui;
