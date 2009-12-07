@@ -24,7 +24,6 @@
 #include <QtDebug>
 //!DEBUG
 
-#include "ui_ProjectPreferences.h"
 #include "ProjectPreferences.h"
 #include "PreferenceWidget.h"
 #include "SettingsManager.h"
