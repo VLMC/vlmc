@@ -12,8 +12,8 @@ HEADERS += AudioProjectPreferences.h        \
            Settings.h                       \
            KeyboardShortcutInput.h          \
            VLMCPreferences.h                \
-           KeyboardShortcut.h               \
            VideoProjectPreferences.h
+#           KeyboardShortcut.h               \
 
 SOURCES += AudioProjectPreferences.cpp      \
            Panel.cpp                        \
@@ -22,5 +22,5 @@ SOURCES += AudioProjectPreferences.cpp      \
            Settings.cpp                     \
            KeyboardShortcutInput.cpp        \
            VLMCPreferences.cpp              \
-           KeyboardShortcut.cpp             \
            VideoProjectPreferences.cpp
+ #           KeyboardShortcut.cpp             \
