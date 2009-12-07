@@ -27,10 +27,12 @@ class VLMCSettingsDefault
 {
     public:
         static void load( const QString& part );
+        static void loadKeyboardShortcutDefaults();
 
     private:
         static void loadVLMCDefaults( const QString& part );
         static void loadlanguageDefaults( const QString& part );
+        static void loadKeyboardShortcutDefaults( const QString& part );
     private:
         VLMCSettingsDefault();
         ~VLMCSettingsDefault();

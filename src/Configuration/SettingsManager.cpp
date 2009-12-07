@@ -89,6 +89,7 @@ void  SettingsManager::saveSettings( const QString& part, QDomDocument& xmlfile,
     m_globalLock.lockForRead();
     if ( !m_data.contains( part ) )
     {
+        qDebug() << "no part named" << part;
         m_globalLock.unlock();
         return ;
     }

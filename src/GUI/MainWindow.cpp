@@ -67,6 +67,7 @@ MainWindow::MainWindow( QWidget *parent ) :
     // Settings
     VLMCSettingsDefault::load( "default" );
     VLMCSettingsDefault::load( "VLMC" );
+    VLMCSettingsDefault::loadKeyboardShortcutDefaults();
 
     // GUI
     DockWidgetManager::instance( this )->setMainWindow( this );
@@ -269,6 +270,10 @@ void        MainWindow::createGlobalPreferences()
                                    new LanguagePreferences( m_globalPreferences ),
                                    QIcon( ":/images/images/vlmc.png" ),
                                    "Langage settings");
+//    m_projectPreferences->addWidget( "Keyboard",
+//                                     new KeyboardShortcut,
+//                                     QIcon( ":/images/images/keyboard.png" ),
+//                                     tr( "Keyboard Settings" ) );
     m_globalPreferences->build();
 }
 
@@ -287,10 +292,6 @@ void	    MainWindow::createProjectPreferences()
                                    new AudioProjectPreferences,
                                    QIcon( ":/images/images/audio.png" ),
                                    "Audio settings" );
-//    m_projectPreferences->addWidget( "Keyboard",
-//                                     new KeyboardShortcut,
-//                                     QIcon( ":/images/images/keyboard.png" ),
-//                                     tr( "Keyboard Settings" ) );
     m_projectPreferences->build();
 }
 

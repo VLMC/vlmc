@@ -128,6 +128,7 @@ void    ProjectManager::saveProject( bool saveAs /*= true*/ )
     Library::getInstance()->saveProject( doc, rootNode );
     MainWorkflow::getInstance()->saveProject( doc, rootNode );
     SettingsManager::getInstance()->saveSettings( "project", doc, rootNode );
+    SettingsManager::getInstance()->saveSettings( "keyboard_shortcut", doc, rootNode );
 
     doc.appendChild( rootNode );
 

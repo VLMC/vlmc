@@ -61,3 +61,21 @@ void    VLMCSettingsDefault::loadlanguageDefaults( const QString& part )
 
     return ;
 }
+
+void    VLMCSettingsDefault::loadKeyboardShortcutDefaults()
+{
+    SettingsManager::getInstance()->addNewSettingsPart( "keyboard_shortcut" );
+    loadKeyboardShortcutDefaults( "default" );
+    loadKeyboardShortcutDefaults( "keyboard_shortcut" );
+    SettingsManager::getInstance()->commit();
+}
+
+void    VLMCSettingsDefault::loadKeyboardShortcutDefaults( const QString& part )
+{
+    SettingsManager*    setMan = SettingsManager::getInstance();
+
+    setMan->setValue( part, "cut_cursor", QVariant( QObject::tr( "x" ) ) );
+    setMan->setValue( part, "normal_cursor", QVariant( QObject::tr( "n" ) ) );
+
+    return ;
+}
