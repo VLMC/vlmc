@@ -40,6 +40,7 @@ class WelcomePage : public QWizardPage
 
     protected:
         virtual void changeEvent( QEvent *e );
+        virtual bool validatePage();
 
     private:
         Ui::WelcomePage m_ui;

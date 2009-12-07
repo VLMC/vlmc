@@ -23,6 +23,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QMessageBox>
 #include "WelcomePage.h"
 
 WelcomePage::WelcomePage( QWidget* parent )
@@ -32,14 +33,6 @@ WelcomePage::WelcomePage( QWidget* parent )
 
     setTitle( tr( "Project wizard" ) );
     setSubTitle( tr( "Open or create a project" ) );
-}
-
-int WelcomePage::nextId() const
-{
-    if ( m_ui.createRadioButton->isChecked() )
-        return ProjectWizard::Page_General;
-    else
-        return ProjectWizard::Page_Open;
 }
 
 void WelcomePage::changeEvent( QEvent *e )
@@ -52,4 +45,25 @@ void WelcomePage::changeEvent( QEvent *e )
     default:
         break;
     }
+}
+
+int WelcomePage::nextId() const
+{
+    if ( m_ui.createRadioButton->isChecked() )
+        return ProjectWizard::Page_General;
+    else
+        return ProjectWizard::Page_Open;
+}
+
+bool WelcomePage::validatePage()
+{
+    if ( m_ui.openRadioButton->isChecked() &&
+         m_ui.projectsListWidget->count() == 0 )
+    {
+        QMessageBox::information( this, tr( "Sorry" ),
+                                  tr( "You first need to select a project from "
+                                  "the list.\nThen click next to continue..." ) );
+        return false;
+    }
+    return true;
 }
