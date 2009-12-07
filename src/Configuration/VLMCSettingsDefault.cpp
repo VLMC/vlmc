@@ -67,15 +67,23 @@ void    VLMCSettingsDefault::loadKeyboardShortcutDefaults()
     SettingsManager::getInstance()->addNewSettingsPart( "keyboard_shortcut" );
     loadKeyboardShortcutDefaults( "default" );
     loadKeyboardShortcutDefaults( "keyboard_shortcut" );
-    SettingsManager::getInstance()->commit();
+    //Will be committed by the load method
 }
+
+#define ADD_SHORTCUT(NAME, KEYS)    setMan->setValue( part, QObject::tr( NAME ), QVariant( QObject::tr( KEYS ) ) )
 
 void    VLMCSettingsDefault::loadKeyboardShortcutDefaults( const QString& part )
 {
+    QString tmp;
     SettingsManager*    setMan = SettingsManager::getInstance();
 
-    setMan->setValue( part, "cut_cursor", QVariant( QObject::tr( "x" ) ) );
-    setMan->setValue( part, "normal_cursor", QVariant( QObject::tr( "n" ) ) );
+    ADD_SHORTCUT( "Selection mode", "n" );
+    ADD_SHORTCUT( "Cut mode", "x" );
+    ADD_SHORTCUT( "Launch media preview", "Ctrl + Return" );
+    ADD_SHORTCUT( "Start render preview", "Space" );
+    //A bit nasty, but we better use what Qt's providing as default shortcut
+    ADD_SHORTCUT( "Undo", QKeySequence( QKeySequence::Undo ).toString().toLocal8Bit() );
+    ADD_SHORTCUT( "Redo", QKeySequence( QKeySequence::Redo ).toString().toLocal8Bit() );
 
     return ;
 }
