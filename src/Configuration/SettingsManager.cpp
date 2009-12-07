@@ -60,7 +60,7 @@ void  SettingsManager::setValues( const QString& part, QHash<QString, QVariant> 
     return ;
 }
 
-void  SettingsManager::setValue( const QString& part , const QString& key, QVariant& value )
+void  SettingsManager::setValue( const QString& part , const QString& key, const QVariant& value )
 {
     m_globalLock.lockForRead();
     if ( !m_tempData.contains( part ) )

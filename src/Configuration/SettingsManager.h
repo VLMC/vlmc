@@ -54,7 +54,7 @@ class   SettingsManager : public QObject, public QSingleton<SettingsManager>
     friend class QSingleton<SettingsManager>;
     public:
         void                setValues( const QString& part, QHash<QString, QVariant> );
-        void                setValue( const QString& part, const QString& key, QVariant& value );
+        void                setValue( const QString& part, const QString& key, const QVariant& value );
         const QVariant&     getValue( const QString& part, const QString& key ) const;
         void                saveSettings( const QString& part, QDomDocument& xmlfile, QDomElement& root );
         void                loadSettings( const QString& part, const QDomElement& settings );
