@@ -1,10 +1,9 @@
 /*****************************************************************************
- * ProjectWizard.h: Project wizard
+ * OpenPage.h: Wizard project openning page
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Clement CHAVANCE <kinder@vlmc.org>
- *          Ludovic Fauvet <etix@l0cal.com>
+ * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,42 +20,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef PROJECTWIZARD_H
-#define PROJECTWIZARD_H
+#ifndef OPENPAGE_H
+#define OPENPAGE_H
 
-#include <QWizard>
+#include "ui_OpenPage.h"
 
-class WelcomePage;
-
-class ProjectWizard : public QWizard
+class OpenPage : public QWizardPage
 {
     Q_OBJECT
+public:
+    OpenPage( QWidget *parent = 0 );
 
-    public:
-         enum { Page_Welcome,
-                Page_General, Page_Video, Page_Audio,
-                Page_Open };
+protected:
+    void changeEvent( QEvent *e );
+    virtual bool validatePage();
 
-         ProjectWizard( QWidget* parent = 0 );
-         ~ProjectWizard();
-
-        QString         projectFileName() const;
-
-    protected slots:
-        virtual void    accept();
-        virtual void    reject();
-
-    private slots:
-        void            showHelp();
-
-    private:
-        void            setProjectFile( const QString& fileName );
-        QString         m_projectFileName;
-
-    signals:
-        void            flush();
-
-    friend class        WelcomePage;
+private:
+    Ui::OpenPage ui;
 };
 
-#endif
+#endif // OPENPAGE_H

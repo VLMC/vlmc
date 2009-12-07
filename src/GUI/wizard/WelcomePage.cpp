@@ -25,6 +25,7 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <QFileInfo>
+#include <QDebug>
 #include "WelcomePage.h"
 
 WelcomePage::WelcomePage( QWidget* parent )
@@ -64,13 +65,25 @@ int WelcomePage::nextId() const
 
 bool WelcomePage::validatePage()
 {
-    if ( m_ui.openRadioButton->isChecked() &&
-         m_ui.projectsListWidget->count() == 0 )
+    if ( m_ui.openRadioButton->isChecked() )
     {
-        QMessageBox::information( this, tr( "Sorry" ),
-                                  tr( "You first need to select a project from "
-                                  "the list.\nThen click next to continue..." ) );
-        return false;
+        if ( m_ui.projectsListWidget->selectedItems().count() == 0 )
+        {
+            QMessageBox::information( this, tr( "Sorry" ),
+                                      tr( "You first need to select a project from "
+                                      "the list.\nThen click next to continue..." ) );
+            return false;
+        }
+
+        // Pass the project filename to the QWizard
+        // so the next page can load it.
+        ProjectWizard* pw = qobject_cast<ProjectWizard*>( wizard() );
+        if ( pw )
+        {
+            QList<QListWidgetItem*> items = m_ui.projectsListWidget->selectedItems();
+            pw->setProjectFile( items.at( 0 )->data( FilePath ).toString() );
+        }
+        return true;
     }
     return true;
 }
@@ -103,6 +116,7 @@ void WelcomePage::loadProject()
 
     if ( projectPath.isEmpty() ) return;
 
+    // Search if the item is already in the list
     QListWidgetItem* item = NULL;
     for ( int i = 0; i < m_ui.projectsListWidget->count(); ++i )
     {
@@ -112,10 +126,11 @@ void WelcomePage::loadProject()
         item = NULL;
     }
 
+    // Item not in list, insert it temporarily
     if ( !item )
     {
         QFileInfo fi( projectPath );
-        QListWidgetItem* item = new QListWidgetItem( fi.fileName() );
+        item = new QListWidgetItem( fi.fileName() );
         item->setData( FilePath, fi.absoluteFilePath() );
 
         m_ui.projectsListWidget->addItem( item );

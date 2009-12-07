@@ -1,10 +1,9 @@
 /*****************************************************************************
- * ProjectWizard.h: Project wizard
+ * OpenPage.cpp: Wizard project openning page
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Clement CHAVANCE <kinder@vlmc.org>
- *          Ludovic Fauvet <etix@l0cal.com>
+ * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,42 +20,41 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef PROJECTWIZARD_H
-#define PROJECTWIZARD_H
+#include <QDebug>
+#include "OpenPage.h"
+#include "ProjectManager.h"
+#include "ProjectWizard.h"
 
-#include <QWizard>
-
-class WelcomePage;
-
-class ProjectWizard : public QWizard
+OpenPage::OpenPage( QWidget *parent ) :
+    QWizardPage(parent)
 {
-    Q_OBJECT
+    ui.setupUi( this );
 
-    public:
-         enum { Page_Welcome,
-                Page_General, Page_Video, Page_Audio,
-                Page_Open };
+    setTitle( tr( "Project wizard" ) );
+    setSubTitle( tr( "Ready to load this project" ) );
 
-         ProjectWizard( QWidget* parent = 0 );
-         ~ProjectWizard();
+    setFinalPage( true );
+}
 
-        QString         projectFileName() const;
+void OpenPage::changeEvent( QEvent *e )
+{
+    QWizardPage::changeEvent( e );
+    switch ( e->type() ) {
+    case QEvent::LanguageChange:
+        ui.retranslateUi( this );
+        break;
+    default:
+        break;
+    }
+}
 
-    protected slots:
-        virtual void    accept();
-        virtual void    reject();
-
-    private slots:
-        void            showHelp();
-
-    private:
-        void            setProjectFile( const QString& fileName );
-        QString         m_projectFileName;
-
-    signals:
-        void            flush();
-
-    friend class        WelcomePage;
-};
-
-#endif
+bool OpenPage::validatePage()
+{
+    ProjectWizard* pw = qobject_cast<ProjectWizard*>( wizard() );
+    if ( pw )
+    {
+        ProjectManager* pm = ProjectManager::getInstance();
+        pm->loadProject( pw->projectFileName() );
+    }
+    return true;
+}

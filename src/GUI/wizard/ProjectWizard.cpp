@@ -32,6 +32,7 @@
 #include "SettingsManager.h"
 #include "PageFactory.h"
 #include "WelcomePage.h"
+#include "OpenPage.h"
 
 ProjectWizard::ProjectWizard( QWidget* parent )
     : QWizard( parent )
@@ -59,11 +60,13 @@ ProjectWizard::ProjectWizard( QWidget* parent )
     QWizardPage* generalPage = PageFactory::generateWizardPage<ProjectPreferences>( "General Settings", this );
     QWizardPage* videoPage = PageFactory::generateWizardPage<VideoProjectPreferences>( "Video Settings", this );
     QWizardPage* audioPage = PageFactory::generateWizardPage<AudioProjectPreferences>( "Audio Settings", this );
+    QWizardPage* openPage = new OpenPage( this );
 
     setPage( Page_Welcome, welcomePage );
     setPage( Page_General, generalPage );
     setPage( Page_Video, videoPage );
     setPage( Page_Audio, audioPage );
+    setPage( Page_Open, openPage );
 
     // Set the start page
     setStartId( Page_Welcome );
@@ -91,9 +94,11 @@ void    ProjectWizard::showHelp()
 
 void    ProjectWizard::accept()
 {
-    SettingsManager::getInstance()->commit();
+    if ( currentId() == Page_Audio )
+    {
+        SettingsManager::getInstance()->commit();
+    }
     emit flush();
-    restart();
     QDialog::accept();
     return ;
 }
@@ -102,7 +107,16 @@ void    ProjectWizard::reject()
 {
     SettingsManager::getInstance()->flush();
     emit flush();
-    restart();
     QDialog::reject();
     return ;
+}
+
+QString ProjectWizard::projectFileName() const
+{
+    return m_projectFileName;
+}
+
+void    ProjectWizard::setProjectFile( const QString& fileName )
+{
+    m_projectFileName = fileName;
 }
