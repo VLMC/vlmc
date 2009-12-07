@@ -22,6 +22,7 @@
 
 #include <QFileDialog>
 #include <QtDebug>
+#include <QSettings>
 
 #include "ProjectManager.h"
 #include "Library.h"
@@ -30,11 +31,16 @@
 
 ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
 {
-
+    QSettings s;
+    m_recentsProjects = s.value( "RecentsProjects" ).toStringList();
 }
 
 ProjectManager::~ProjectManager()
 {
+    // Write uncommited change to the disk
+    QSettings s;
+    s.sync();
+
     if ( m_projectFile != NULL )
         delete m_projectFile;
 }
@@ -42,6 +48,11 @@ ProjectManager::~ProjectManager()
 bool    ProjectManager::needSave() const
 {
     return m_needSave;
+}
+
+QStringList ProjectManager::recentsProjects() const
+{
+    return m_recentsProjects;
 }
 
 void    ProjectManager::cleanChanged( bool val )
@@ -69,6 +80,16 @@ void    ProjectManager::loadProject( const QString& fileName )
 {
     if ( fileName.length() == 0 )
         return;
+
+    // Append the item to the recents list
+    m_recentsProjects.removeAll( fileName );
+    m_recentsProjects.prepend( fileName );
+    while ( m_recentsProjects.count() > 15 )
+        m_recentsProjects.removeLast();
+
+    QSettings s;
+    s.setValue( "RecentsProjects", m_recentsProjects );
+
 
     if ( !m_projectFile )
         delete m_projectFile;

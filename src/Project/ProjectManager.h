@@ -26,6 +26,7 @@
 #include <QFile>
 #include <QObject>
 #include <QDomDocument>
+#include <QStringList>
 
 #include "Singleton.hpp"
 
@@ -38,6 +39,7 @@ public:
     QString         loadProjectFile();
     void            saveProject( bool saveAs = true );
     bool            needSave() const;
+    QStringList     recentsProjects() const;
 
 private:
     ProjectManager();
@@ -49,6 +51,7 @@ private:
     QFile*          m_projectFile;
     QDomDocument*   m_domDocument;
     bool            m_needSave;
+    QStringList     m_recentsProjects;
 
     friend class    Singleton<ProjectManager>;
 
