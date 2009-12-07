@@ -25,6 +25,7 @@
 
 #include <QWizardPage>
 #include "ProjectWizard.h"
+#include "ProjectManager.h"
 #include "ui_WelcomePage.h"
 
 class   QWizard;
@@ -33,6 +34,8 @@ class WelcomePage : public QWizardPage
 {
     Q_OBJECT
     public:
+        enum { FilePath = Qt::UserRole + 1 };
+
         WelcomePage( QWidget* parent = 0 );
         ~WelcomePage() { }
 
@@ -41,6 +44,11 @@ class WelcomePage : public QWizardPage
     protected:
         virtual void changeEvent( QEvent *e );
         virtual bool validatePage();
+        virtual void cleanupPage();
+
+    private slots:
+        void loadProject();
+        void loadRecentsProjects();
 
     private:
         Ui::WelcomePage m_ui;

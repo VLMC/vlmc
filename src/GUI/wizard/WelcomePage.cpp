@@ -24,6 +24,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QMessageBox>
+#include <QFileInfo>
 #include "WelcomePage.h"
 
 WelcomePage::WelcomePage( QWidget* parent )
@@ -33,6 +34,10 @@ WelcomePage::WelcomePage( QWidget* parent )
 
     setTitle( tr( "Project wizard" ) );
     setSubTitle( tr( "Open or create a project" ) );
+
+    connect( m_ui.openPushButton, SIGNAL( clicked() ),
+             this, SLOT( loadProject() ) );
+    loadRecentsProjects();
 }
 
 void WelcomePage::changeEvent( QEvent *e )
@@ -66,4 +71,51 @@ bool WelcomePage::validatePage()
         return false;
     }
     return true;
+}
+
+void WelcomePage::cleanupPage()
+{
+    loadRecentsProjects();
+}
+
+void WelcomePage::loadRecentsProjects()
+{
+    m_ui.projectsListWidget->clear();
+    ProjectManager* pm = ProjectManager::getInstance();
+    QStringList recents = pm->recentsProjects();
+
+    for ( int i = 0; i < recents.count(); ++i )
+    {
+        QFileInfo fi( recents.at( i ) );
+        QListWidgetItem* item = new QListWidgetItem( fi.fileName() );
+        item->setData( FilePath, fi.absoluteFilePath() );
+
+        m_ui.projectsListWidget->addItem( item );
+    }
+}
+
+void WelcomePage::loadProject()
+{
+    ProjectManager* pm = ProjectManager::getInstance();
+    QString projectPath = pm->loadProjectFile();
+
+    QListWidgetItem* item = NULL;
+    for ( int i = 0; i < m_ui.projectsListWidget->count(); ++i )
+    {
+        item = m_ui.projectsListWidget->item( i );
+        if ( item->data( FilePath ).toString().contains( projectPath ) )
+            break;
+        item = NULL;
+    }
+
+    if ( !item )
+    {
+        QFileInfo fi( projectPath );
+        QListWidgetItem* item = new QListWidgetItem( fi.fileName() );
+        item->setData( FilePath, fi.absoluteFilePath() );
+
+        m_ui.projectsListWidget->addItem( item );
+    }
+
+    item->setSelected( true );
 }
