@@ -347,6 +347,7 @@ void MainWindow::on_actionNew_Project_triggered()
     //TODO : clear the library, the timeline, and show the configuration box
     //of the newly created project
 
+    m_pWizard->restart();
     m_pWizard->show();
 }
 
