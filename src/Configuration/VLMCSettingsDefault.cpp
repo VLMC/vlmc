@@ -20,6 +20,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QtDebug>
 #include <QVariant>
 
 #include "VLMCSettingsDefault.h"
@@ -31,7 +32,6 @@ void    VLMCSettingsDefault::load( const QString& part )
     VLMCSettingsDefault::loadVLMCDefaults( part );
     VLMCSettingsDefault::loadlanguageDefaults( part );
     SettingsManager::getInstance()->commit();
-
     return ;
 }
 
@@ -67,19 +67,18 @@ void    VLMCSettingsDefault::loadKeyboardShortcutDefaults()
     SettingsManager::getInstance()->addNewSettingsPart( "keyboard_shortcut" );
     loadKeyboardShortcutDefaults( "default" );
     loadKeyboardShortcutDefaults( "keyboard_shortcut" );
-    //Will be committed by the load method
+    SettingsManager::getInstance()->commit();
 }
 
 #define ADD_SHORTCUT(NAME, KEYS)    setMan->setValue( part, QObject::tr( NAME ), QVariant( QObject::tr( KEYS ) ) )
 
 void    VLMCSettingsDefault::loadKeyboardShortcutDefaults( const QString& part )
 {
-    QString tmp;
     SettingsManager*    setMan = SettingsManager::getInstance();
 
     ADD_SHORTCUT( "Selection mode", "n" );
     ADD_SHORTCUT( "Cut mode", "x" );
-    ADD_SHORTCUT( "Launch media preview", "Ctrl + Return" );
+    ADD_SHORTCUT( "Launch media preview", "Ctrl+Return" );
     ADD_SHORTCUT( "Start render preview", "Space" );
     //A bit nasty, but we better use what Qt's providing as default shortcut
     ADD_SHORTCUT( "Undo", QKeySequence( QKeySequence::Undo ).toString().toLocal8Bit() );

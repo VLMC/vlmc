@@ -214,3 +214,11 @@ SettingsManager*    SettingsManager::getInstance()
     return ret;
 }
 
+const SettingsPart*     SettingsManager::getConfigPart( const QString& part ) const
+{
+    QHash<QString, SettingsPart*>::const_iterator      it = m_data.find( part );
+
+    if ( it == m_data.end() )
+        return NULL;
+    return it.value();
+}

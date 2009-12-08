@@ -54,7 +54,7 @@
 #include "MediaLibraryWidget.h"
 #include "LanguagePreferences.h"
 #include "ProjectManager.h"
-//#include "KeyboardShortcut.h"
+#include "KeyboardShortcut.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
@@ -271,10 +271,10 @@ void        MainWindow::createGlobalPreferences()
                                    new LanguagePreferences( m_globalPreferences ),
                                    QIcon( ":/images/images/vlmc.png" ),
                                    "Langage settings");
-//    m_projectPreferences->addWidget( "Keyboard",
-//                                     new KeyboardShortcut,
-//                                     QIcon( ":/images/images/keyboard.png" ),
-//                                     tr( "Keyboard Settings" ) );
+    m_globalPreferences->addWidget( "Keyboard",
+                                     new KeyboardShortcut( m_globalPreferences ),
+                                     QIcon( ":/images/keyboard" ),
+                                     tr( "Keyboard Settings" ) );
     m_globalPreferences->build();
 }
 

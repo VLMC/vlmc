@@ -31,7 +31,7 @@ class   KeyboardShortcutInput : public QPushButton
     Q_OBJECT
 
     public:
-        KeyboardShortcutInput( QWidget* parent );
+        KeyboardShortcutInput( const QString& initialValue = QString(), QWidget* parent = NULL );
     protected:
         virtual void    keyPressEvent( QKeyEvent* e );
         virtual void    mousePressEvent( QMouseEvent* e );

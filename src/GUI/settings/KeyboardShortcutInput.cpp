@@ -26,7 +26,7 @@
 
 #include "KeyboardShortcutInput.h"
 
-KeyboardShortcutInput::KeyboardShortcutInput( QWidget* parent ) :
+KeyboardShortcutInput::KeyboardShortcutInput( const QString& initialValue, QWidget* parent ) :
         QPushButton( parent ),
         m_capturing( false ),
         m_current( 0 )
@@ -34,6 +34,7 @@ KeyboardShortcutInput::KeyboardShortcutInput( QWidget* parent ) :
     m_timer = new QTimer( this );
     m_timer->setSingleShot( true );
     connect( m_timer, SIGNAL( timeout() ), this, SLOT( timeout() ) );
+    setText( initialValue );
 }
 
 void    KeyboardShortcutInput::mousePressEvent( QMouseEvent* )

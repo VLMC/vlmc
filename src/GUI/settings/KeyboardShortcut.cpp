@@ -20,14 +20,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QtDebug>
+
 #include "KeyboardShortcut.h"
 #include "KeyboardShortcutInput.h"
+#include "SettingsManager.h"
 
 KeyboardShortcut::KeyboardShortcut( QWidget* parent ) :
         PreferenceWidget( parent )
 {
     m_layout = new QFormLayout( this );
-    m_layout->addRow( tr( "Switch to cut mode" ), new KeyboardShortcutInput( this ) );
+    const SettingsPart*   parts = SettingsManager::getInstance()->getConfigPart( "keyboard_shortcut" );
+    Q_ASSERT( parts != NULL );
+
+    SettingsPart::ConfigPair::const_iterator    it = parts->m_data.begin();
+    SettingsPart::ConfigPair::const_iterator    ite = parts->m_data.end();
+    while ( it != ite )
+    {
+        m_keySeq[it.key()] = new QKeySequence( it.value().toString() );
+        m_layout->addRow( it.key(), new KeyboardShortcutInput( m_keySeq[it.key()]->toString(), this ) );
+        ++it;
+    }
     setLayout( m_layout );
 }
 
