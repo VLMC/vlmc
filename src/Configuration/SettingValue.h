@@ -1,5 +1,5 @@
 /*****************************************************************************
- * KeyboardShortcut.cpp: Keyboard shortcut preferences
+ * SettingValue.h: A setting value that can broadcast its changes
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,38 +20,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <QtDebug>
+#ifndef SETTINGVALUE_H
+#define SETTINGVALUE_H
 
-#include "KeyboardShortcut.h"
-#include "KeyboardShortcutInput.h"
-#include "SettingsManager.h"
+#include <QObject>
+#include <QVariant>
 
-KeyboardShortcut::KeyboardShortcut( QWidget* parent ) :
-        PreferenceWidget( parent )
+class   SettingValue : public QObject
 {
-    m_layout = new QFormLayout( this );
-    const SettingsPart*   parts = SettingsManager::getInstance()->getConfigPart( "keyboard_shortcut" );
-    Q_ASSERT( parts != NULL );
+    Q_OBJECT
+    Q_DISABLE_COPY( SettingValue );
+    public:
+        SettingValue( const QVariant& val );
+        void            set( const QVariant& val );
+        const QVariant& get() const;
+        QVariant&       get();
+    private:
+        QVariant        m_val;
+    signals:
+        void        changed( const QVariant& );
+};
 
-    SettingsPart::ConfigPair::const_iterator    it = parts->m_data.begin();
-    SettingsPart::ConfigPair::const_iterator    ite = parts->m_data.end();
-    while ( it != ite )
-    {
-        m_keySeq[it.key()] = new QKeySequence( it.value()->get().toString() );
-        m_layout->addRow( it.key(), new KeyboardShortcutInput( m_keySeq[it.key()]->toString(), this ) );
-        ++it;
-    }
-    setLayout( m_layout );
-}
-
-KeyboardShortcut::~KeyboardShortcut()
-{
-}
-
-void        KeyboardShortcut::load()
-{
-}
-
-void        KeyboardShortcut::save()
-{
-}
+#endif // SETTINGVALUE_H

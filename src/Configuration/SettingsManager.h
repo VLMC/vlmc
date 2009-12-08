@@ -31,11 +31,12 @@
 #include <QVariant>
 #include <QDomDocument>
 
+#include "SettingValue.h"
 #include "QSingleton.hpp"
 
 struct  SettingsPart
 {
-    typedef QHash<QString, QVariant>    ConfigPair;
+    typedef QHash<QString, SettingValue*>    ConfigPair;
 
     SettingsPart() {}
     ConfigPair                  m_data;
@@ -55,7 +56,7 @@ class   SettingsManager : public QObject, public QSingleton<SettingsManager>
 
     friend class QSingleton<SettingsManager>;
     public:
-        void                setValues( const QString& part, QHash<QString, QVariant> );
+//        void                setValues( const QString& part, SettingsPart::ConfigPair );
         void                setValue( const QString& part, const QString& key, const QVariant& value );
         const QVariant&     getValue( const QString& part, const QString& key ) const;
         const SettingsPart* getConfigPart( const QString& part ) const;
