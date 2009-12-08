@@ -43,6 +43,7 @@ class WelcomePage : public QWizardPage
 
     protected:
         virtual void changeEvent( QEvent *e );
+        virtual void initializePage();
         virtual bool validatePage();
         virtual void cleanupPage();
 

@@ -40,7 +40,6 @@ WelcomePage::WelcomePage( QWidget* parent )
              this, SLOT( loadProject() ) );
     connect( m_ui.projectsListWidget, SIGNAL( itemActivated(QListWidgetItem*) ),
              this, SLOT( selectOpenRadio() ) );
-    loadRecentsProjects();
 }
 
 void WelcomePage::changeEvent( QEvent *e )
@@ -61,6 +60,12 @@ int WelcomePage::nextId() const
         return ProjectWizard::Page_General;
     else
         return ProjectWizard::Page_Open;
+}
+
+void WelcomePage::initializePage()
+{
+    m_ui.createRadioButton->setChecked( true );
+    loadRecentsProjects();
 }
 
 bool WelcomePage::validatePage()
@@ -90,7 +95,7 @@ bool WelcomePage::validatePage()
 
 void WelcomePage::cleanupPage()
 {
-    loadRecentsProjects();
+
 }
 
 void WelcomePage::loadRecentsProjects()
