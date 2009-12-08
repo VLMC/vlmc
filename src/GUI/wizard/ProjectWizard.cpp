@@ -110,13 +110,3 @@ void    ProjectWizard::reject()
     QDialog::reject();
     return ;
 }
-
-QString ProjectWizard::projectFileName() const
-{
-    return m_projectFileName;
-}
-
-void    ProjectWizard::setProjectFile( const QString& fileName )
-{
-    m_projectFileName = fileName;
-}

@@ -50,11 +50,10 @@ void OpenPage::changeEvent( QEvent *e )
 
 bool OpenPage::validatePage()
 {
-    ProjectWizard* pw = qobject_cast<ProjectWizard*>( wizard() );
-    if ( pw )
-    {
-        ProjectManager* pm = ProjectManager::getInstance();
-        pm->loadProject( pw->projectFileName() );
-    }
+    ProjectManager* pm = ProjectManager::getInstance();
+    QStringList recents = pm->recentsProjects();
+
+    pm->loadProject( recents.at( field( "loadProject" ).toInt() ) );
+
     return true;
 }

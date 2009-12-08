@@ -40,6 +40,8 @@ WelcomePage::WelcomePage( QWidget* parent )
              this, SLOT( loadProject() ) );
     connect( m_ui.projectsListWidget, SIGNAL( itemActivated(QListWidgetItem*) ),
              this, SLOT( selectOpenRadio() ) );
+
+    registerField( "loadProject", m_ui.projectsListWidget );
 }
 
 void WelcomePage::changeEvent( QEvent *e )
@@ -78,15 +80,6 @@ bool WelcomePage::validatePage()
                                       tr( "You first need to select a project from "
                                       "the list.\nThen click next to continue..." ) );
             return false;
-        }
-
-        // Pass the project filename to the QWizard
-        // so the next page can load it.
-        ProjectWizard* pw = qobject_cast<ProjectWizard*>( wizard() );
-        if ( pw )
-        {
-            QList<QListWidgetItem*> items = m_ui.projectsListWidget->selectedItems();
-            pw->setProjectFile( items.at( 0 )->data( FilePath ).toString() );
         }
         return true;
     }

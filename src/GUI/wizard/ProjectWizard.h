@@ -40,8 +40,6 @@ class ProjectWizard : public QWizard
          ProjectWizard( QWidget* parent = 0 );
          ~ProjectWizard();
 
-        QString         projectFileName() const;
-
     protected slots:
         virtual void    accept();
         virtual void    reject();
@@ -49,14 +47,8 @@ class ProjectWizard : public QWizard
     private slots:
         void            showHelp();
 
-    private:
-        void            setProjectFile( const QString& fileName );
-        QString         m_projectFileName;
-
     signals:
         void            flush();
-
-    friend class        WelcomePage;
 };
 
 #endif
