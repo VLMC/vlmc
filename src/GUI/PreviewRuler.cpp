@@ -197,18 +197,22 @@ void PreviewRuler::updateTimecode( qint64 frames /*= -1*/ )
     if ( m_renderer->getLength() > 0 )
     {
         int fps = (int)m_renderer->getFps();
-        if ( frames == -1 )
-            frames = m_renderer->getCurrentFrame();
 
-        int h = frames / fps / 60 / 60;
-        frames -= h * fps * 60 * 60;
+        if ( fps > 0 )
+        {
+            if ( frames == -1 )
+                frames = m_renderer->getCurrentFrame();
 
-        int m = frames / fps / 60;
-        frames -= m * fps * 60;
+            int h = frames / fps / 60 / 60;
+            frames -= h * fps * 60 * 60;
 
-        int s = frames / fps;
-        frames -= s * fps;
+            int m = frames / fps / 60;
+            frames -= m * fps * 60;
 
-        emit timeChanged( h, m, s, frames );
+            int s = frames / fps;
+            frames -= s * fps;
+
+            emit timeChanged( h, m, s, frames );
+        }
     }
 }
