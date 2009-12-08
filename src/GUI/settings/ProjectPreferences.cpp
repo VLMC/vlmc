@@ -41,7 +41,7 @@ void    ProjectPreferences::load()
 {
     SettingsManager* settMan = SettingsManager::getInstance();
     const QString& part = m_defaults ? "default" : m_settName;
-    QString  Name = settMan->getValue( part, "ProjectName" ).toString();
+    QString  Name = settMan->getValue( part, "ProjectName" )->get().toString();
 
     m_ui.ProjectNameLineEdit->setText( Name );
 }

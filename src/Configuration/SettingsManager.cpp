@@ -78,14 +78,15 @@ void  SettingsManager::setValue( const QString& part , const QString& key, const
     return ;
 }
 
-const QVariant&   SettingsManager::getValue( const QString& part, const QString& key ) const
+const SettingValue*     SettingsManager::getValue( const QString& part, const QString& key ) const
 {
     if ( !m_data.contains( part ) )
         return getValue( "default", key );
     QReadLocker readLock( &m_globalLock );
     QReadLocker rdLock( &m_data[part]->m_lock );
-    QVariant&  value = m_data[part]->m_data[key]->get();
-    return value;
+    if ( m_data[part]->m_data.contains( key ) == true )
+        return m_data[part]->m_data[key];
+    return NULL;
 }
 
 void  SettingsManager::saveSettings( const QString& part, QDomDocument& xmlfile, QDomElement& root )

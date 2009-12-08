@@ -142,7 +142,7 @@ void        WorkflowRenderer::startPreview()
     m_isRendering = true;
     m_paused = false;
     m_stopping = false;
-    m_outputFps = SettingsManager::getInstance()->getValue( "VLMC", "VLMCOutPutFPS" ).toDouble();
+    m_outputFps = SettingsManager::getInstance()->getValue( "VLMC", "VLMCOutPutFPS" )->get().toDouble();
 }
 
 void        WorkflowRenderer::nextFrame()
