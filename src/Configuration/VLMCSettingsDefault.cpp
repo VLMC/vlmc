@@ -91,6 +91,6 @@ void    VLMCSettingsDefault::loadKeyboardShortcutDefaults( const QString& part )
     ADD_SHORTCUT( "Open project", QKeySequence( QKeySequence::Open ).toString().toLocal8Bit() );
     ADD_SHORTCUT( "Save", QKeySequence( QKeySequence::Save ).toString().toLocal8Bit() );
     ADD_SHORTCUT( "Save as", "Ctrl+Shift+S" );
-    ADD_SHORTCUT( "Close project", "Ctrl+W" );
+    ADD_SHORTCUT( "Close project", QKeySequence( QKeySequence::Close ).toString().toLocal8Bit() );
     return ;
 }
