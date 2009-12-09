@@ -458,16 +458,25 @@ void    MainWindow::projectChanged( const QString& projectName, bool savedStatus
     setWindowTitle( title );
 }
 
-#define GET_SHORTCUT( instName, shortcutName )      \
+#define INIT_SHORTCUT( instName, shortcutName, actionInstance )      \
             const SettingValue* instName = SettingsManager::getInstance()->getValue( "keyboard_shortcut", shortcutName );\
             KeyboardShortcutHelper* helper##instName = new KeyboardShortcutHelper( shortcutName, this, true ); \
-            connect( helper##instName, SIGNAL( changed( const QString&, const QString&) ), this, SLOT( keyboardShortcutChanged(QString,QString)) );
+            connect( helper##instName, SIGNAL( changed( const QString&, const QString&) ), this, SLOT( keyboardShortcutChanged(QString,QString)) ); \
+            m_ui.actionInstance->setShortcut( instName->get().toString() );
 
 void    MainWindow::initializeMenuKeyboardShortcut()
 {
-    GET_SHORTCUT( help, "Help" );
-    m_ui.actionHelp->setShortcut( help->get().toString() );
+    INIT_SHORTCUT( help, "Help", actionHelp );
+    INIT_SHORTCUT( quit, "Quit", actionQuit );
+    INIT_SHORTCUT( preferences, "Preferences", actionPreferences );
+    INIT_SHORTCUT( fullscreen, "Fullscreen", actionFullscreen );
+    INIT_SHORTCUT( newProject, "New project", actionNew_Project );
+    INIT_SHORTCUT( openProject, "Open project", actionLoad_Project );
+    INIT_SHORTCUT( save, "Save", actionSave );
+    INIT_SHORTCUT( saveAs, "Save as", actionSave_As );
 }
+
+#undef INIT_SHORTCUT
 
 void    MainWindow::keyboardShortcutChanged( const QString& name, const QString& val )
 {
