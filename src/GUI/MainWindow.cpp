@@ -458,6 +458,11 @@ void    MainWindow::projectChanged( const QString& projectName, bool savedStatus
     setWindowTitle( title );
 }
 
+void    MainWindow::on_actionClose_Project_triggered()
+{
+    ProjectManager::getInstance()->closeProject();
+}
+
 #define INIT_SHORTCUT( instName, shortcutName, actionInstance )      \
             const SettingValue* instName = SettingsManager::getInstance()->getValue( "keyboard_shortcut", shortcutName );\
             KeyboardShortcutHelper* helper##instName = new KeyboardShortcutHelper( shortcutName, this, true ); \
