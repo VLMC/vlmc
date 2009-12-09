@@ -16,6 +16,5 @@ KeyboardShortcutHelper::KeyboardShortcutHelper( const QString& name, QWidget* pa
 
 void    KeyboardShortcutHelper::shortcutUpdated( const QVariant& value )
 {
-    qDebug() << "Key sequence updated:" << value.toString();
     setKey( QKeySequence( value.toString() ) );
 }

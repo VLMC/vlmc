@@ -61,6 +61,5 @@ void        KeyboardShortcut::save()
 
 void        KeyboardShortcut::shortcutUpdated( const QString& name, const QString& value )
 {
-    qDebug() << "Shortcut updated:" << name << "value:" << value;
     SettingsManager::getInstance()->setValue( "keyboard_shortcut", name, value );
 }

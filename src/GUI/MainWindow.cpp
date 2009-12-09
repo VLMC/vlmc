@@ -240,7 +240,7 @@ void MainWindow::initializeDockWidgets( void )
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
-    QShortcut*  clipShortcut = new QShortcut( QKeySequence( tr( "Ctrl+Return", "Start clip preview" ) ), this );
+    KeyboardShortcutHelper* clipShortcut = new KeyboardShortcutHelper( "Launch media preview", this );
     connect( clipShortcut, SIGNAL( activated() ), m_clipPreview, SLOT( on_pushButtonPlay_clicked() ) );
 
     m_projectPreview = new PreviewWidget( workflowRenderer, this );
@@ -249,7 +249,7 @@ void MainWindow::initializeDockWidgets( void )
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
-    QShortcut*  renderShortcut = new QShortcut( QKeySequence( tr( "Space", "Start render preview" ) ), this );
+    KeyboardShortcutHelper* renderShortcut = new KeyboardShortcutHelper( "Start render preview", this );
     connect( renderShortcut, SIGNAL( activated() ), m_projectPreview, SLOT( on_pushButtonPlay_clicked() ) );
 
     dockManager->addDockedWidget( UndoStack::getInstance( this ),
