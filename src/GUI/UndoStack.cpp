@@ -42,9 +42,15 @@ UndoStack::UndoStack( QWidget* parent ) : QUndoView( parent )
     connect( m_undoShortcut, SIGNAL( activated() ), m_undoStack, SLOT( undo() ) );
     connect( m_redoShortcut, SIGNAL( activated() ), m_undoStack, SLOT( redo() ) );
 
+    connect( ProjectManager::getInstance(), SIGNAL( projectClosed() ), this, SLOT( clear() ) );
 }
 
 void    UndoStack::push( QUndoCommand* command )
 {
     m_undoStack->push( command );
+}
+
+void    UndoStack::clear()
+{
+    m_undoStack->setIndex( 0 );
 }

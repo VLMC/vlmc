@@ -63,7 +63,6 @@ void        Library::metaDataComputed( Media* media )
     emit newMediaLoaded( media );
     Clip* clip = new Clip( media );
     m_clips[media->getUuid()] = clip;
-    emit newClipLoaded( clip );
 }
 
 void        Library::newMediaLoadingAsked( const QString& filePath, const QString& uuid )
@@ -201,4 +200,26 @@ void        Library::saveProject( QDomDocument& doc, QDomElement& rootNode )
         media.appendChild( uuid );
     }
     rootNode.appendChild( medias );
+}
+
+void    Library::clear()
+{
+    QHash<QUuid, Media*>::iterator  it = m_medias.begin();
+    QHash<QUuid, Media*>::iterator  end = m_medias.end();
+
+    while ( it != end )
+    {
+        emit mediaRemoved( it.key() );
+        delete it.value();
+        ++it;
+    }
+    m_medias.clear();
+    QHash<QUuid, Clip*>::iterator  it2 = m_clips.begin();
+    QHash<QUuid, Clip*>::iterator  end2 = m_clips.end();
+    while ( it2 != end2 )
+    {
+        delete it2.value();
+        ++it2;
+    }
+    m_clips.clear();
 }

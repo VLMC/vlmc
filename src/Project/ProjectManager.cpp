@@ -33,6 +33,8 @@ ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
 {
     QSettings s;
     m_recentsProjects = s.value( "RecentsProjects" ).toStringList();
+    connect( this, SIGNAL( projectClosed() ), Library::getInstance(), SLOT( clear() ) );
+    connect( this, SIGNAL( projectClosed() ), MainWorkflow::getInstance(), SLOT( clear() ) );
 }
 
 ProjectManager::~ProjectManager()
@@ -90,9 +92,8 @@ void    ProjectManager::loadProject( const QString& fileName )
     QSettings s;
     s.setValue( "RecentsProjects", m_recentsProjects );
 
+    closeProject();
 
-    if ( !m_projectFile )
-        delete m_projectFile;
     m_projectFile = new QFile( fileName );
 
     m_domDocument = new QDomDocument;
@@ -162,4 +163,14 @@ void    ProjectManager::saveProject( bool saveAs /*= true*/ )
         emit projectChanged( fInfo.fileName(), true );
     }
     emit projectSaved();
+}
+
+void    ProjectManager::closeProject()
+{
+    if ( m_projectFile != NULL )
+    {
+        delete m_projectFile;
+        m_projectFile = NULL;
+    }
+    emit projectClosed();
 }

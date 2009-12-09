@@ -40,6 +40,7 @@ public:
     void            saveProject( bool saveAs = true );
     bool            needSave() const;
     QStringList     recentsProjects() const;
+    void            closeProject();
 
 private:
     ProjectManager();
@@ -62,6 +63,7 @@ private slots:
 signals:
     void            projectChanged( const QString& projectName, bool savedState );
     void            projectSaved();
+    void            projectClosed();
 };
 
 #endif // PROJECTMANAGER_H

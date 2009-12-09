@@ -123,8 +123,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          */
         Clip*                   getClip( const QUuid& uuid, unsigned int trackId, MainWorkflow::TrackType trackType );
 
-        void                    clear();
-
         void                    setFullSpeedRender( bool value );
         int                     getTrackCount( MainWorkflow::TrackType trackType ) const;
 
@@ -168,6 +166,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
     public slots:
         void                            loadProject( const QDomElement& project );
         void                            saveProject( QDomDocument& doc, QDomElement& rootNode );
+        void                            clear();
 
     signals:
         /**

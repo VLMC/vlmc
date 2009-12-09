@@ -45,6 +45,9 @@ class UndoStack : public QUndoView, public QSingleton<UndoStack>
         KeyboardShortcutHelper*     m_undoShortcut;
         KeyboardShortcutHelper*     m_redoShortcut;
 
+    public slots:
+        void            clear();
+
     signals:
         void            cleanChanged( bool val );
 
