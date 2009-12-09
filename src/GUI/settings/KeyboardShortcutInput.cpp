@@ -26,8 +26,10 @@
 
 #include "KeyboardShortcutInput.h"
 
-KeyboardShortcutInput::KeyboardShortcutInput( const QString& initialValue, QWidget* parent ) :
+KeyboardShortcutInput::KeyboardShortcutInput( const QString& name,
+                                              const QString& initialValue, QWidget* parent ) :
         QPushButton( parent ),
+        m_name( name ),
         m_capturing( false ),
         m_current( 0 )
 {
@@ -52,8 +54,11 @@ void    KeyboardShortcutInput::mouseReleaseEvent( QMouseEvent* )
 
 void    KeyboardShortcutInput::release()
 {
+    QKeySequence    seq( m_shortcuts[0], m_shortcuts[1], m_shortcuts[2], m_shortcuts[3] );
+
     m_capturing = false;
     setDown( false );
+    emit changed( m_name, seq.toString() );
 }
 
 void    KeyboardShortcutInput::keyPressEvent( QKeyEvent* e )

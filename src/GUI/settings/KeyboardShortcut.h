@@ -23,6 +23,7 @@
 #ifndef KEYBOARDSHORTCUT_H
 #define KEYBOARDSHORTCUT_H
 
+#include <QObject>
 #include <QFormLayout>
 #include <QHash>
 #include <QString>
@@ -32,11 +33,16 @@
 
 class   KeyboardShortcut : public PreferenceWidget
 {
+    Q_OBJECT
+
     public:
         KeyboardShortcut( QWidget* parent = 0 );
         virtual ~KeyboardShortcut();
         void    load();
         void    save();
+
+    private slots:
+        void    shortcutUpdated( const QString& name, const QString& value );
     private:
         QFormLayout*                    m_layout;
         QHash<QString, QKeySequence*>   m_keySeq;

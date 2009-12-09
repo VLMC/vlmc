@@ -1,10 +1,9 @@
 /*****************************************************************************
- * PreferenceWidget.cpp: Abstract class that will be used to save load / preferences
- * values.
+ * KeyboardShortcutHelper.h: An helper to catch keyboard shortcut modifications
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Clement CHAVANCE <kinder@vlmc.org>
+ * Authors: Hugo Beauzee-Luyssen <beauze.h@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,31 +20,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <QtDebug>
-#include <QWidget>
-#include "PreferenceWidget.h"
+#ifndef KEYBOARDSHORTCUTHELPER_H
+#define KEYBOARDSHORTCUTHELPER_H
 
-PreferenceWidget::PreferenceWidget( QWidget* parent )
-    : QWidget( parent ),
-    m_defaults( false ),
-    m_settName( "" )
-{
-}
+#include <QShortcut>
+#include <QString>
 
-void    PreferenceWidget::setDefaults( bool defaults )
+class   KeyboardShortcutHelper : public QShortcut
 {
-    m_defaults = defaults;
-}
+    Q_OBJECT
 
-void    PreferenceWidget::setName( const QString& name )
-{
-    m_settName = name;
-}
+    public:
+        KeyboardShortcutHelper( const QString& name, QWidget* parent = NULL );
+        virtual ~KeyboardShortcutHelper()
+        {
+        }
 
-void    PreferenceWidget::loadThemAll( const QString& part,
-                                    bool defaults)
-{
-    m_defaults = defaults;
-    m_settName = part;
-    load();
-}
+    private:
+        QString     m_name;
+    private slots:
+        void        shortcutUpdated( const QVariant& value );
+};
+
+#endif // KEYBOARDSHORTCUTHELPER_H

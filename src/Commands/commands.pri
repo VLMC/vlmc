@@ -1,3 +1,4 @@
-HEADERS +=  Commands.h
-
-SOURCES +=  Commands.cpp
+HEADERS += Commands.h \
+    KeyboardShortcutHelper.h
+SOURCES += Commands.cpp \
+    KeyboardShortcutHelper.cpp

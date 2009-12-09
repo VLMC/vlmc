@@ -31,7 +31,7 @@ class   KeyboardShortcutInput : public QPushButton
     Q_OBJECT
 
     public:
-        KeyboardShortcutInput( const QString& initialValue = QString(), QWidget* parent = NULL );
+        KeyboardShortcutInput( const QString& name, const QString& initialValue = QString(), QWidget* parent = NULL );
     protected:
         virtual void    keyPressEvent( QKeyEvent* e );
         virtual void    mousePressEvent( QMouseEvent* e );
@@ -42,10 +42,13 @@ class   KeyboardShortcutInput : public QPushButton
         void            timeout();
 
     private:
+        QString         m_name;
         bool            m_capturing;
         QTimer*         m_timer;
         unsigned int    m_current;
         int             m_shortcuts[4];
+    signals:
+        void            changed( const QString&, const QString& );
 };
 
 #endif // KEYBOARDSHORTCUTINPUT_H

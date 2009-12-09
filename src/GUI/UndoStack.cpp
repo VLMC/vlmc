@@ -4,6 +4,7 @@
  * Copyright (C) 2008-2009 the VLMC team
  *
  * Authors: Christophe Courtaut <christophe.courtaut@gmail.com>
+ *          Hugo Beauzee-Luyssen <beauze.h@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,6 +23,8 @@
 
 #include "UndoStack.h"
 #include "ProjectManager.h"
+#include "SettingsManager.h"
+#include "KeyboardShortcutHelper.h"
 
 UndoStack::UndoStack( QWidget* parent ) : QUndoView( parent )
 {
@@ -34,10 +37,11 @@ UndoStack::UndoStack( QWidget* parent ) : QUndoView( parent )
     connect( ProjectManager::getInstance(), SIGNAL( projectSaved() ),
              m_undoStack, SLOT( setClean() ) );
 
-    m_undoShortcut = new QShortcut( QKeySequence( tr( "Ctrl+z", "Undo" ) ), this );
-    m_redoShortcut = new QShortcut( QKeySequence( tr( "Ctrl+Shift+z", "Redo" ) ), this );
+    m_undoShortcut = new KeyboardShortcutHelper( "Undo", this );
+    m_redoShortcut = new KeyboardShortcutHelper( "Redo", this );
     connect( m_undoShortcut, SIGNAL( activated() ), m_undoStack, SLOT( undo() ) );
     connect( m_redoShortcut, SIGNAL( activated() ), m_undoStack, SLOT( redo() ) );
+
 }
 
 void    UndoStack::push( QUndoCommand* command )

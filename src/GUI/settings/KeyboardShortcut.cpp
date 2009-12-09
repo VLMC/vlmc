@@ -38,7 +38,10 @@ KeyboardShortcut::KeyboardShortcut( QWidget* parent ) :
     while ( it != ite )
     {
         m_keySeq[it.key()] = new QKeySequence( it.value()->get().toString() );
-        m_layout->addRow( it.key(), new KeyboardShortcutInput( m_keySeq[it.key()]->toString(), this ) );
+        KeyboardShortcutInput*  ksi = new KeyboardShortcutInput( it.key(), m_keySeq[it.key()]->toString(), this );
+        m_layout->addRow( it.key(), ksi );
+        connect( ksi, SIGNAL( changed( const QString&, const QString& ) ),
+                 this, SLOT( shortcutUpdated( const QString&, const QString& ) ) );
         ++it;
     }
     setLayout( m_layout );
@@ -54,4 +57,10 @@ void        KeyboardShortcut::load()
 
 void        KeyboardShortcut::save()
 {
+}
+
+void        KeyboardShortcut::shortcutUpdated( const QString& name, const QString& value )
+{
+    qDebug() << "Shortcut updated:" << name << "value:" << value;
+    SettingsManager::getInstance()->setValue( "keyboard_shortcut", name, value );
 }
