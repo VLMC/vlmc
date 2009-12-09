@@ -52,5 +52,5 @@ void    UndoStack::push( QUndoCommand* command )
 
 void    UndoStack::clear()
 {
-    m_undoStack->setIndex( 0 );
+    m_undoStack->clear();
 }
