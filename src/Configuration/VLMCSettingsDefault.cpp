@@ -83,6 +83,7 @@ void    VLMCSettingsDefault::loadKeyboardShortcutDefaults( const QString& part )
     //A bit nasty, but we better use what Qt's providing as default shortcut
     ADD_SHORTCUT( "Undo", QKeySequence( QKeySequence::Undo ).toString().toLocal8Bit() );
     ADD_SHORTCUT( "Redo", QKeySequence( QKeySequence::Redo ).toString().toLocal8Bit() );
+    ADD_SHORTCUT( "Help", QKeySequence( QKeySequence::HelpContents ).toString().toLocal8Bit() );
 
     return ;
 }

@@ -4,6 +4,7 @@
  * Copyright (C) 2008-2009 the VLMC team
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
+ *          Hugo Beauzee-Luyssen <beauze.h@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -55,6 +56,8 @@
 #include "LanguagePreferences.h"
 #include "ProjectManager.h"
 #include "KeyboardShortcut.h"
+#include "SettingValue.h"
+#include "SettingsManager.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
@@ -75,6 +78,7 @@ MainWindow::MainWindow( QWidget *parent ) :
     createStatusBar();
     createGlobalPreferences();
     createProjectPreferences();
+    initializeMenuKeyboardShortcut();
 
     // Wizard
     m_pWizard = new ProjectWizard( this );
@@ -452,4 +456,24 @@ void    MainWindow::projectChanged( const QString& projectName, bool savedStatus
     if ( savedStatus == false )
         title += " *";
     setWindowTitle( title );
+}
+
+#define GET_SHORTCUT( instName, shortcutName )      \
+            const SettingValue* instName = SettingsManager::getInstance()->getValue( "keyboard_shortcut", shortcutName );\
+            KeyboardShortcutHelper* helper##instName = new KeyboardShortcutHelper( shortcutName, this, true ); \
+            connect( helper##instName, SIGNAL( changed( const QString&, const QString&) ), this, SLOT( keyboardShortcutChanged(QString,QString)) );
+
+void    MainWindow::initializeMenuKeyboardShortcut()
+{
+    GET_SHORTCUT( help, "Help" );
+    m_ui.actionHelp->setShortcut( help->get().toString() );
+}
+
+void    MainWindow::keyboardShortcutChanged( const QString& name, const QString& val )
+{
+    qDebug() << "shortcut" << name << "changed to" << val;
+    if ( name == "Help" )
+    {
+        m_ui.actionHelp->setShortcut( val );
+    }
 }

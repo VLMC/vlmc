@@ -66,6 +66,7 @@ private:
     void        createStatusBar();
     void        createGlobalPreferences();
     void        createProjectPreferences();
+    void        initializeMenuKeyboardShortcut();
 
     Ui::MainWindow          m_ui;
     QSlider*                m_zoomSlider;
@@ -95,6 +96,7 @@ private slots:
     void                    on_actionProject_Preferences_triggered();
     void                    toolButtonClicked( int id );
     void                    projectChanged( const QString& projectName, bool savedStatus );
+    void                    keyboardShortcutChanged( const QString&, const QString& );
 
 signals:
     void translateDockWidgetTitle();

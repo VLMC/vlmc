@@ -31,15 +31,18 @@ class   KeyboardShortcutHelper : public QShortcut
     Q_OBJECT
 
     public:
-        KeyboardShortcutHelper( const QString& name, QWidget* parent = NULL );
+        KeyboardShortcutHelper( const QString& name, QWidget* parent = NULL, bool menu = false );
         virtual ~KeyboardShortcutHelper()
         {
         }
 
     private:
         QString     m_name;
+        bool        m_menu;
     private slots:
         void        shortcutUpdated( const QVariant& value );
+    signals:
+        void        changed( const QString&, const QString& );
 };
 
 #endif // KEYBOARDSHORTCUTHELPER_H
