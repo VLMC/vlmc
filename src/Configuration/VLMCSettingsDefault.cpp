@@ -84,6 +84,12 @@ void    VLMCSettingsDefault::loadKeyboardShortcutDefaults( const QString& part )
     ADD_SHORTCUT( "Undo", QKeySequence( QKeySequence::Undo ).toString().toLocal8Bit() );
     ADD_SHORTCUT( "Redo", QKeySequence( QKeySequence::Redo ).toString().toLocal8Bit() );
     ADD_SHORTCUT( "Help", QKeySequence( QKeySequence::HelpContents ).toString().toLocal8Bit() );
-
+    ADD_SHORTCUT( "Quit", QKeySequence( QKeySequence::Close ).toString().toLocal8Bit() );
+    ADD_SHORTCUT( "Preferences", "Alt+P" );
+    ADD_SHORTCUT( "Fullscreen", "F" );
+    ADD_SHORTCUT( "New project", QKeySequence( QKeySequence::New ).toString().toLocal8Bit() );
+    ADD_SHORTCUT( "Open project", QKeySequence( QKeySequence::Open ).toString().toLocal8Bit() );
+    ADD_SHORTCUT( "Save", QKeySequence( QKeySequence::Save ).toString().toLocal8Bit() );
+    ADD_SHORTCUT( "Save as", QKeySequence( QKeySequence::SaveAs ).toString().toLocal8Bit() );
     return ;
 }

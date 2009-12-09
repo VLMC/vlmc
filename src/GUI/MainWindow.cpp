@@ -473,7 +473,21 @@ void    MainWindow::keyboardShortcutChanged( const QString& name, const QString&
 {
     qDebug() << "shortcut" << name << "changed to" << val;
     if ( name == "Help" )
-    {
         m_ui.actionHelp->setShortcut( val );
-    }
+    else if ( name == "Quit" )
+        m_ui.actionQuit->setShortcut( val );
+    else if ( name == "Preferences" )
+        m_ui.actionPreferences->setShortcut( val );
+    else if ( name == "Fullscreen" )
+        m_ui.actionFullscreen->setShortcut( val );
+    else if ( name == "New project" )
+        m_ui.actionNew_Project->setShortcut( val );
+    else if ( name == "Open project" )
+        m_ui.actionLoad_Project->setShortcut( val );
+    else if ( name == "Save" )
+        m_ui.actionSave->setShortcut( val );
+    else if ( name == "Save as" )
+        m_ui.actionSave_As->setShortcut( val );
+    else
+        qWarning() << "Unknown shortcut:" << name;
 }
