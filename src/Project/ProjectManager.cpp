@@ -23,6 +23,7 @@
 #include <QFileDialog>
 #include <QtDebug>
 #include <QSettings>
+#include <QMessageBox>
 
 #include "ProjectManager.h"
 #include "Library.h"
@@ -167,10 +168,38 @@ void    ProjectManager::saveProject( bool saveAs /*= true*/ )
 
 void    ProjectManager::closeProject()
 {
+    if ( askForSaveIfModified() == false )
+        return ;
     if ( m_projectFile != NULL )
     {
         delete m_projectFile;
         m_projectFile = NULL;
     }
     emit projectClosed();
+}
+
+bool    ProjectManager::askForSaveIfModified()
+{
+    if ( m_needSave == true )
+    {
+        QMessageBox msgBox;
+        msgBox.setText( tr( "The project has been modified." ) );
+        msgBox.setInformativeText( tr( "Do you want to save it ?" ) );
+        msgBox.setStandardButtons( QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel );
+        msgBox.setDefaultButton(QMessageBox::Save);
+        int     ret = msgBox.exec();
+
+        switch ( ret )
+        {
+            case QMessageBox::Save:
+                saveProject();
+                break ;
+            case QMessageBox::Discard:
+                break ;
+            case QMessageBox::Cancel:
+            default:
+                return false ;
+        }
+    }
+    return true;
 }

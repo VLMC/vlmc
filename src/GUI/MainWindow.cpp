@@ -421,31 +421,10 @@ void MainWindow::on_actionProject_Preferences_triggered()
 
 void    MainWindow::closeEvent( QCloseEvent* e )
 {
-    if ( ProjectManager::getInstance()->needSave() == true )
-    {
-        QMessageBox msgBox;
-        msgBox.setText( tr( "The project has been modified." ) );
-        msgBox.setInformativeText( tr( "Do you want to save it ?" ) );
-        msgBox.setStandardButtons( QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel );
-        msgBox.setDefaultButton(QMessageBox::Save);
-        int     ret = msgBox.exec();
-
-        switch ( ret )
-        {
-            case QMessageBox::Save:
-                ProjectManager::getInstance()->saveProject();
-                break ;
-            case QMessageBox::Discard:
-                break ;
-            case QMessageBox::Cancel:
-            default:
-                e->ignore();
-                return ;
-            e->accept();
-        }
-    }
-    else
+    if ( ProjectManager::getInstance()->askForSaveIfModified() )
         e->accept();
+    else
+        e->ignore();
 }
 
 void    MainWindow::projectChanged( const QString& projectName, bool savedStatus )

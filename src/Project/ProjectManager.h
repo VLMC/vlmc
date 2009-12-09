@@ -41,6 +41,7 @@ public:
     bool            needSave() const;
     QStringList     recentsProjects() const;
     void            closeProject();
+    bool            askForSaveIfModified();
 
 private:
     ProjectManager();
