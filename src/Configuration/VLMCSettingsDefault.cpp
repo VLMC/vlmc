@@ -76,7 +76,7 @@ void    VLMCSettingsDefault::loadKeyboardShortcutDefaults( const QString& part )
 {
     SettingsManager*    setMan = SettingsManager::getInstance();
 
-    ADD_SHORTCUT( "Selection mode", "n" );
+    ADD_SHORTCUT( "Default mode", "n" );
     ADD_SHORTCUT( "Cut mode", "x" );
     ADD_SHORTCUT( "Launch media preview", "Ctrl+Return" );
     ADD_SHORTCUT( "Start render preview", "Space" );

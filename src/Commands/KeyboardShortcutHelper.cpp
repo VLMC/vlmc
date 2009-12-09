@@ -9,7 +9,6 @@ KeyboardShortcutHelper::KeyboardShortcutHelper( const QString& name, QWidget* pa
         m_name( name )
 {
     const SettingValue*   set = SettingsManager::getInstance()->getValue( "keyboard_shortcut", name );
-    qDebug() << set->get().toString();
     setKey( QKeySequence( set->get().toString() ) );
     connect( set, SIGNAL( changed( const QVariant& ) ), this, SLOT( shortcutUpdated( const QVariant& ) ) );
 }

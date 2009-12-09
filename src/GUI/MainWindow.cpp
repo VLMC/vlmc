@@ -171,12 +171,14 @@ void MainWindow::createStatusBar()
 {
     // Mouse (default) tool
     QToolButton* mouseTool = new QToolButton( this );
+    mouseTool->setAutoRaise( true );
     mouseTool->setCheckable( true );
     mouseTool->setIcon( QIcon( ":/images/mouse" ) );
     m_ui.statusbar->addPermanentWidget( mouseTool );
 
     // Cut/Split tool
     QToolButton* splitTool = new QToolButton( this );
+    splitTool->setAutoRaise( true );
     splitTool->setCheckable( true );
     splitTool->setIcon( QIcon( ":/images/editcut" ) );
     m_ui.statusbar->addPermanentWidget( splitTool );
@@ -187,6 +189,12 @@ void MainWindow::createStatusBar()
     toolButtonGroup->addButton( splitTool, TOOL_CUT );
     toolButtonGroup->setExclusive( true );
     mouseTool->setChecked( true );
+
+    //Shortcut part:
+    KeyboardShortcutHelper* defaultModeShortcut = new KeyboardShortcutHelper( "Default mode", this );
+    KeyboardShortcutHelper* cutModeShortcut = new KeyboardShortcutHelper( "Cut mode", this );
+    connect( defaultModeShortcut, SIGNAL( activated() ), mouseTool, SLOT( click() ) );
+    connect( cutModeShortcut, SIGNAL( activated() ), splitTool, SLOT( click() ) );
 
     connect( toolButtonGroup, SIGNAL( buttonClicked( int ) ),
              this, SLOT( toolButtonClicked( int ) ) );
