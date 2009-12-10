@@ -34,8 +34,8 @@ class ProjectWizard : public QWizard
 
     public:
          enum { Page_Welcome,
-                Page_General, Page_Video, Page_Audio,
-                Page_Open };
+                Page_Open,
+                Page_General, Page_Video, Page_Audio };
 
          ProjectWizard( QWidget* parent = 0 );
          ~ProjectWizard();
