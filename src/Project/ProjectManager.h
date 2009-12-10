@@ -35,6 +35,8 @@ class   ProjectManager : public QObject, public Singleton<ProjectManager>
     Q_OBJECT
     Q_DISABLE_COPY( ProjectManager );
 public:
+    static const QString    unNamedProject;
+
     void            loadProject( const QString& fileName );
     void            newProject( const QString& projectName );
     QString         loadProjectFile();

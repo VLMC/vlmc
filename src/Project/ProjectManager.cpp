@@ -30,6 +30,8 @@
 #include "MainWorkflow.h"
 #include "SettingsManager.h"
 
+const QString   ProjectManager::unNamedProject = tr( "<Unnamed project>" );
+
 ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
 {
     QSettings s;
@@ -83,7 +85,7 @@ void    ProjectManager::loadTimeline()
 void    ProjectManager::parseProjectNode( const QDomElement &node )
 {
     QDomElement     projectNameNode = node.firstChildElement( "ProjectName" );
-    m_projectName = projectNameNode.attribute( "value", tr( "<Unnamed project>" ) );
+    m_projectName = projectNameNode.attribute( "value", ProjectManager::unNamedProject );
 }
 
 void    ProjectManager::loadProject( const QString& fileName )

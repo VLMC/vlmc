@@ -22,6 +22,7 @@
 
 #include "SettingsManager.h"
 #include "ProjectSettingsDefault.h"
+#include "ProjectManager.h"
 
 void    ProjectSettingsDefault::load( const QString& part )
 {
@@ -66,9 +67,7 @@ void    ProjectSettingsDefault::loadVideoDefaults( const QString& part )
 void    ProjectSettingsDefault::loadProjectDefaults( const QString& part )
 {
     SettingsManager*  setMan = SettingsManager::getInstance();
-    QVariant   defaultName = "project";
-
-    setMan->setValue( part, "ProjectName", defaultName );
+    setMan->setValue( part, "ProjectName", ProjectManager::unNamedProject );
 
     return ;
 }
