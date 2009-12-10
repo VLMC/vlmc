@@ -176,3 +176,17 @@ void                        PreviewWidget::markerStopClicked()
 {
     m_ui->rulerWidget->setMarker( PreviewRuler::STOP );
 }
+
+void        PreviewWidget::createNewClipFromMarkers()
+{
+    Media*  selectedMedia = m_renderer->getMedia();
+    qint64  beg = m_ui.rulerWidget->getMarker( PreviewRuler::Start );
+    qint64  end = m_ui.rulerWidget->getMarker( PreviewRuler::Stop );
+
+    beg = beg < 0 ? 0 : beg;
+    Clip*   part = new Clip( selectedMedia, beg, end );
+
+    //Adding the newly created clip to the media
+    selectedMedia->addClip( part );
+    return ;
+}
