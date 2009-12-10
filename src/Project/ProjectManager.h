@@ -40,7 +40,7 @@ public:
     void            loadProject( const QString& fileName );
     void            newProject( const QString& projectName );
     QString         loadProjectFile();
-    void            saveProject( bool saveAs = true );
+    void            saveProject( bool saveAs = false );
     bool            needSave() const;
     QStringList     recentsProjects() const;
     bool            closeProject();
