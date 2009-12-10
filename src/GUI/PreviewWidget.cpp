@@ -72,6 +72,9 @@ PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent 
     connect( m_renderer,     SIGNAL( endReached() ),            this,       SLOT( endReached() ) );
     connect( m_ui->rulerWidget, SIGNAL( frameChanged(qint64, MainWorkflow::FrameChangedReason) ),
              m_renderer,       SLOT( previewWidgetCursorChanged(qint64) ) );
+
+    connect( m_ui->pushButtonMarkerStart, SIGNAL( clicked() ), this, SLOT( markerStartClicked() ) );
+    connect( m_ui->pushButtonMarkerStop, SIGNAL( clicked() ), this, SLOT( markerStopClicked() ) );
 }
 
 PreviewWidget::~PreviewWidget()
@@ -162,4 +165,14 @@ void                        PreviewWidget::stop()
 {
     //Ugly but avoid code dupplication.
     on_pushButtonStop_clicked();
+}
+
+void                        PreviewWidget::markerStartClicked()
+{
+    m_ui->rulerWidget->setMarker( PreviewRuler::START );
+}
+
+void                        PreviewWidget::markerStopClicked()
+{
+    m_ui->rulerWidget->setMarker( PreviewRuler::STOP );
 }

@@ -66,6 +66,8 @@ private slots:
     void            videoPlaying();
     void            videoStopped();
     void            endReached();
+    void            markerStartClicked();
+    void            markerStopClicked();
 };
 
 #endif // PREVIEWWIDGET_H

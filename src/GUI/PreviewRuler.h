@@ -34,13 +34,22 @@
 #define MARK_MEDIUM 8
 #define MARK_LARGE 11
 
+#define MARKER_DEFAULT -1
+
 class PreviewRuler : public QWidget
 {
     Q_OBJECT
 public:
+    enum Marker
+    {
+        START,
+        STOP
+    };
+
     PreviewRuler( QWidget* parent = 0 );
     virtual ~PreviewRuler() { }
     void setRenderer( GenericRenderer* renderer );
+    void setMarker( Marker m );
 
 public slots:
     void setFrame( qint64 frame, bool broadcastEvent = false );
@@ -53,10 +62,13 @@ protected:
 
 private slots:
     void updateTimecode( qint64 frames = -1 );
+    void clear();
 
 private:
     GenericRenderer*    m_renderer;
     qint64              m_frame;
+    qint64              m_markerStart;
+    qint64              m_markerStop;
     bool                m_isSliding;
 
 signals:

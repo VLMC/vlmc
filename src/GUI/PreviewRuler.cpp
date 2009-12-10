@@ -34,6 +34,8 @@ PreviewRuler::PreviewRuler( QWidget* parent ) :
 {
     setMouseTracking( true );
     m_isSliding = false;
+    m_markerStart = MARKER_DEFAULT;
+    m_markerStop = MARKER_DEFAULT;
 }
 
 void PreviewRuler::setRenderer( GenericRenderer* renderer )
@@ -48,6 +50,8 @@ void PreviewRuler::setRenderer( GenericRenderer* renderer )
              this, SLOT( update() ) );
     connect( m_renderer, SIGNAL( frameChanged(qint64, MainWorkflow::FrameChangedReason) ),
              this, SLOT( updateTimecode( qint64 ) ) );
+    connect( m_renderer, SIGNAL( stopped() ),
+             this, SLOT( clear() ) );
 }
 
 void PreviewRuler::paintEvent( QPaintEvent * event )
@@ -56,7 +60,7 @@ void PreviewRuler::paintEvent( QPaintEvent * event )
     Q_ASSERT( m_renderer );
 
     QPainter painter( this );
-    QRect marks( 0, 0, width() - 1, MARK_LARGE + 1 );
+    QRect marks( 0, 3, width() - 1, MARK_LARGE + 1 );
 
     painter.setPen( QPen( QColor( 50, 50, 50 ) ) );
     painter.setBrush( QBrush( QColor( 50, 50, 50 ) ) );
@@ -139,6 +143,32 @@ void PreviewRuler::paintEvent( QPaintEvent * event )
         }
     }
 
+    // Draw the markers (if any)
+    painter.setPen( QPen( Qt::green, 2 ) );
+
+    if ( m_markerStart > MARKER_DEFAULT )
+    {
+        int markerPos = m_markerStart * width() / m_renderer->getLength();
+        QPolygon marker( 4 );
+        marker.setPoints( 4,
+                          markerPos + 8,    1,
+                          markerPos,        1,
+                          markerPos,        20,
+                          markerPos + 8,    20 );
+        painter.drawPolyline( marker );
+    }
+    if ( m_markerStop > MARKER_DEFAULT )
+    {
+        int markerPos = m_markerStop * width() / m_renderer->getLength();
+        QPolygon marker( 4 );
+        marker.setPoints( 4,
+                          markerPos - 8,    1,
+                          markerPos,        1,
+                          markerPos,        20,
+                          markerPos - 8,    20 );
+        painter.drawPolyline( marker );
+    }
+
     // Draw the pointer
     painter.setRenderHint( QPainter::Antialiasing );
     painter.setPen( QPen( Qt::white ) );
@@ -215,4 +245,19 @@ void PreviewRuler::updateTimecode( qint64 frames /*= -1*/ )
             emit timeChanged( h, m, s, frames );
         }
     }
+}
+
+void PreviewRuler::setMarker( Marker m )
+{
+    if ( m == START )
+        m_markerStart = m_frame;
+    else
+        m_markerStop = m_frame;
+}
+
+void PreviewRuler::clear()
+{
+    m_markerStart = MARKER_DEFAULT;
+    m_markerStop = MARKER_DEFAULT;
+    m_frame = 0;
 }
