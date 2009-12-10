@@ -157,7 +157,6 @@ OutSlot<T>&	OutSlot<T>::operator=( T const & val )
 {
     if ( m_bindSrc == NULL )
         (**m_metaPipe) = val;
-    *m_pipe = val;
     return ( *this );
 }
 
@@ -166,7 +165,6 @@ OutSlot<T>&	OutSlot<T>::operator<<( T const & val )
 {
     if ( m_bindSrc == NULL )
         (**m_metaPipe) = val;
-    *m_pipe = val;
     return (*this);
 }
 
@@ -214,7 +212,7 @@ T**     OutSlot<T>::getBinded( OutSlot<T>& src )
     if ( m_bindSrc != NULL )
         return ( NULL );
     m_bindSrc = &src;
-    return ( &m_metaPipe );
+    return ( m_metaPipe );
 }
 
 template<typename T>

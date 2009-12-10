@@ -157,7 +157,6 @@ OutSlot<T>&	OutSlot<T>::operator=( T const & val )
 {
     if ( m_bindSrc == NULL )
         (**m_metaPipe) = val;
-    *m_pipe = val;
     return ( *this );
 }
 
@@ -166,7 +165,6 @@ OutSlot<T>&	OutSlot<T>::operator<<( T const & val )
 {
     if ( m_bindSrc == NULL )
         (**m_metaPipe) = val;
-    *m_pipe = val;
     return (*this);
 }
 
