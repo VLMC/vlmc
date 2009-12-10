@@ -24,7 +24,7 @@
 #include "ImportController.h"
 
 StackViewController::StackViewController( QWidget* parent, bool enableImport ) :
-        QWidget( parent ), m_current( 0 )
+        QWidget( parent ), m_importButton( NULL ), m_current( 0 )
 {
     m_nav     = new StackViewNavController( this );
 
@@ -52,7 +52,8 @@ StackViewController::StackViewController( QWidget* parent, bool enableImport ) :
 StackViewController::~StackViewController()
 {
     delete m_nav;
-    delete m_importButton;
+    if ( m_importButton != NULL )
+        delete m_importButton;
     delete m_layout;
     delete m_controllerStack;
 }
