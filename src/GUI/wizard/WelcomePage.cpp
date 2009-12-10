@@ -40,7 +40,7 @@ WelcomePage::WelcomePage( QWidget* parent )
 
     connect( m_ui.openPushButton, SIGNAL( clicked() ),
              this, SLOT( loadProject() ) );
-    connect( m_ui.projectsListWidget, SIGNAL( itemActivated(QListWidgetItem*) ),
+    connect( m_ui.projectsListWidget, SIGNAL( itemPressed(QListWidgetItem*) ),
              this, SLOT( selectOpenRadio() ) );
     connect( m_ui.projectsListWidget, SIGNAL( itemDoubleClicked(QListWidgetItem*) ),
              this, SLOT( projectDoubleClicked(QListWidgetItem*) ) );
