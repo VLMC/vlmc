@@ -5,17 +5,17 @@
  et le getter pour savoir s'il est en mode conteneur ou pas
 -rendre la classe thread-safe
 -rajouter les commandes suivantes (create, delete, connect, disconnect, set)
--rajouter le chainage pere fils avec les methode pour set et get le pere
+ OK -rajouter le chainage pere fils avec les methode pour set et get le pere
 -rajouter l'interpreteur et l'encodeur
  OK -remplacer les qhash par des tableau statique
 -rajouter les connection dynamique avec une liste
 -rajouter le semaphore pour savoir si le render peut commencer
--remplacer la virtuelle pure render par une virtuelle implemante vide
+ OK -remplacer la virtuelle pure render par une virtuelle implemante vide
 -remplacer tout les connect etrange par un connect unifie avec plus de parametre , rappel des connects possible : stat/stat, dyn/dyn, dyn/stat, stat/dyn
 
--rajouter un nom
--rajouter rajouter 6 booleens pour les 6 types de connections dynamiques possibles activees ou non : AudioIn, VideoIn, ParamIn, AudioOut, VideoOut, ParamOut
--rajouter un id pour pouvoir connaitre le nom d'un module auquelle un autre est connecte( grace a la classe mapping )
+OK -rajouter un nom
+OK -rajouter  6 booleens pour les 6 types de connections dynamiques possibles activees ou non : AudioIn, VideoIn, ParamIn, AudioOut, VideoOut, ParamOut
+OK -rajouter un id pour pouvoir connaitre le nom d'un module auquelle un autre est connecte( grace a la classe mapping )
 
 LISTE DES COMMANDES:
 
@@ -47,12 +47,12 @@ ROUTE		DUMP			NODEINSTANCE-ID
 
     // INTERPRETER AND ITS PRIMITIVE METHODES
 
-    // REPLACE VIRTUAL PURE RENDER METHOD BY VIRTUAL RENDER METHOD WHO RENTER THE SUB-EFFECTS BY DEFAULT
+OK ->    // REPLACE VIRTUAL PURE RENDER METHOD BY VIRTUAL RENDER METHOD WHO RENTER THE SUB-EFFECTS BY DEFAULT
     // WITH THE MULTI-THREAD RENDER CLASS
 
     // EffectsFactory static instance into EffectNode
 
-    // SUB-EFFECTS MANAGEMENT METHODS
+OK ->    // SUB-EFFECTS MANAGEMENT METHODS
 
     // BIEN SEPARER LE DEVELOPPER-LAND ET LE EFFECTSENGINE-LAND, notamment en faisant des interface IPublic*slot
     // DONC TOUT PROXIFIER PAR LE GENERICEFFECT, sauf l'ecriture/lecture dans un slot et le getting de l'id et de l'instance de l'effet et du EffectNode

@@ -38,7 +38,6 @@
 #include "LightVideoFrame.h"
 #include "SemanticObjectManager.hpp"
 
-//class EffectPluginFactory;
 
 class	EffectNode : public IEffectNode
 {
@@ -75,6 +74,8 @@ class	EffectNode : public IEffectNode
     QString const &     getTypeName( void ) const;
     quint32             getInstanceId( void ) const;
     QString const &     getInstanceName( void ) const;
+
+    bool                isAnEmptyNode( void ) const;
 
     // ================================================================= RENDER ========================================================================
 
@@ -206,22 +207,22 @@ class	EffectNode : public IEffectNode
     //     QList<QByteArray> const &	getStaticControlsInputsIdList( void ) const;
     //     QList<QByteArray> const &	getStaticControlsOutputsIdList( void ) const;
 
-    QString const          getStaticVideoInputNameById( quint32 const id ) const;
-    QString const          getStaticVideoOutputNameById( quint32 const id ) const;
+    QString const        getStaticVideoInputNameById( quint32 const id ) const;
+    QString const        getStaticVideoOutputNameById( quint32 const id ) const;
     //     QByteArray const &          getStaticAudioInputNameById( quint32 const id ) const;
     //     QByteArray const &          getStaticAudioOutputNameById( quint32 const id ) const;
     //     QByteArray const &          getStaticControlInputNameById( quint32 const id ) const;
     //     QByteArray const &          getStaticControlOutputNameById( quint32 const id ) const;
 
-    quint32                     getStaticVideoInputIdByName( QString const & name ) const;
-    quint32                     getStaticVideoOutputIdByName( QString const & name ) const;
+    quint32              getStaticVideoInputIdByName( QString const & name ) const;
+    quint32              getStaticVideoOutputIdByName( QString const & name ) const;
     //     quint32                     getStaticAudioInputIdByName( QByteArray const & name ) const;
     //     quint32                     getStaticAudioOutputIdByName( QByteArray const & name ) const;
     //     quint32                     getStaticControlInputIdByName( QByteArray const & name ) const;
     //     quint32                     getStaticControlOutputIdByName( QByteArray const & name ) const;
 
-    quint32                     getNBStaticsVideosInputs( void ) const;
-    quint32                     getNBStaticsVideosOutputs( void ) const;
+    quint32              getNBStaticsVideosInputs( void ) const;
+    quint32              getNBStaticsVideosOutputs( void ) const;
     //     quint32                     getNBStaticAudiosIntputs( void ) const;
     //     quint32                     getNBStaticAudiosOutputs( void ) const;
     //     quint32                     getNBStaticControlsInputs( void ) const;
@@ -290,39 +291,39 @@ class	EffectNode : public IEffectNode
 
     // ----------------  CONNECT STATIC TO STATIC -------------------
 
-    //     bool        connectStaticVideoOutputToStaticVideoInput( QString const & outName, QString const & nodeName, QString const & inName );
-    //     bool        connectStaticVideoOutputToStaticVideoInput( QString const & outName, QString const & nodeName, quint32 inId );
-    //     bool        connectStaticVideoOutputToStaticVideoInput( QString const & outName, quint32 nodeId, QString const & inName );
-    //     bool        connectStaticVideoOutputToStaticVideoInput( QString const & outName, quint32 nodeId, quint32 inId );
-    //     bool        connectStaticVideoOutputToStaticVideoInput( quint32 outId, QString const & nodeName, QString const & inName );
-    //     bool        connectStaticVideoOutputToStaticVideoInput( quint32 outId, QString const & nodeName, quint32 inId );
-    //     bool        connectStaticVideoOutputToStaticVideoInput( quint32 outId, quint32 nodeId, QString const & inName );
-    //     bool        connectStaticVideoOutputToStaticVideoInput( quint32 outId, quint32 nodeId, quint32 inId );
+        bool        connectStaticVideoOutputToStaticVideoInput( QString const & outName, QString const & nodeName, QString const & inName );
+        bool        connectStaticVideoOutputToStaticVideoInput( QString const & outName, QString const & nodeName, quint32 inId );
+        bool        connectStaticVideoOutputToStaticVideoInput( QString const & outName, quint32 nodeId, QString const & inName );
+        bool        connectStaticVideoOutputToStaticVideoInput( QString const & outName, quint32 nodeId, quint32 inId );
+        bool        connectStaticVideoOutputToStaticVideoInput( quint32 outId, QString const & nodeName, QString const & inName );
+        bool        connectStaticVideoOutputToStaticVideoInput( quint32 outId, QString const & nodeName, quint32 inId );
+        bool        connectStaticVideoOutputToStaticVideoInput( quint32 outId, quint32 nodeId, QString const & inName );
+        bool        connectStaticVideoOutputToStaticVideoInput( quint32 outId, quint32 nodeId, quint32 inId );
 
     // ----------------  CONNECT STATIC TO DYNAMIC -------------------
 
-    //     bool        connectStaticVideoOutputToDynamicVideoInput( QString const & outName, quint32 nodeId );
-    //     bool        connectStaticVideoOutputToDynamicVideoInput( QString const & outName, QString const & nodeName );
-    //     bool        connectStaticVideoOutputToDynamicVideoInput( quint32 outId, QString const & nodeName );
-    //     bool        connectStaticVideoOutputToDynamicVideoInput( quint32 outId, quint32 nodeId );
+        /* bool        connectStaticVideoOutputToDynamicVideoInput( QString const & outName, quint32 nodeId ); */
+        /* bool        connectStaticVideoOutputToDynamicVideoInput( QString const & outName, QString const & nodeName ); */
+        /* bool        connectStaticVideoOutputToDynamicVideoInput( quint32 outId, QString const & nodeName ); */
+        /* bool        connectStaticVideoOutputToDynamicVideoInput( quint32 outId, quint32 nodeId ); */
 
     // ----------------  CONNECT DYNAMIC TO STATIC -------------------
 
-    //     bool        connectDynamicVideoOutputToStaticVideoInput( QString const & nodeName, QString const & inName );
-    //     bool        connectDynamicVideoOutputToStaticVideoInput( QString const & nodeName, quint32 inId );
-    //     bool        connectDynamicVideoOutputToStaticVideoInput( quint32 nodeId, QString const & inName );
-    //     bool        connectDynamicVideoOutputToStaticVideoInput( quint32 nodeId, quint32 inId );
+        /* bool        connectDynamicVideoOutputToStaticVideoInput( QString const & nodeName, QString const & inName ); */
+        /* bool        connectDynamicVideoOutputToStaticVideoInput( QString const & nodeName, quint32 inId ); */
+        /* bool        connectDynamicVideoOutputToStaticVideoInput( quint32 nodeId, QString const & inName ); */
+        /* bool        connectDynamicVideoOutputToStaticVideoInput( quint32 nodeId, quint32 inId ); */
 
     // ----------------  CONNECT DYNAMIC TO DYNAMIC -------------------
 
-    //     bool        connectDynamicVideoOutputToDynamicVideoInput( QString const & nodeName );
-    //     bool        connectDynamicVideoOutputToDynamicVideoInput( quint32 nodeId );
+        /* bool        connectDynamicVideoOutputToDynamicVideoInput( QString const & nodeName ); */
+        /* bool        connectDynamicVideoOutputToDynamicVideoInput( quint32 nodeId ); */
 
     // ----------------  DISCONNECT -------------------
 
-    //     bool        disconnectDynamicVideoOutput( void );
-    //     bool        disconnectStaticVideoOutput( quint32 nodeId );
-    //     bool        disconnectStaticVideoOutput( QString const & nodeName );
+        /* bool        disconnectDynamicVideoOutput( void ); */
+        bool        disconnectStaticVideoOutput( quint32 nodeId );
+        bool        disconnectStaticVideoOutput( QString const & nodeName );
 
 
     // ======================================================D3PREC47ED================================================================================
@@ -346,9 +347,6 @@ class	EffectNode : public IEffectNode
     InSlot<LightVideoFrame> &           getVideoInput(quint32 id);
     OutSlot<LightVideoFrame> &          getVideoOutput(quint32 id);
 
-
-
-
     ////
     ////
     ////
@@ -359,9 +357,7 @@ class	EffectNode : public IEffectNode
     ////
     ////
 
-
 private:
-
 
     EffectNodeFactory                   m_enf;
     EffectNode*                         m_father;

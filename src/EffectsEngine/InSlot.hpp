@@ -83,10 +83,10 @@ private:
 
 private:
 
-  static T			m_defaultValue;
-  OutSlot<T>*			m_OutSlotPtr;
-  T				m_shared;
-  T*				m_currentShared;
+    static T			m_defaultValue;
+    OutSlot<T>*			m_OutSlotPtr;
+    T				m_shared;
+    T*				m_currentShared;
 
     quint32                     m_id;
     QString                     m_name;

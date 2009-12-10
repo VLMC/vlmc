@@ -24,9 +24,12 @@
 #ifndef OUTSLOT_HPP_
 #define OUTSLOT_HPP_
 
-#include "InSlot.hpp"
 #include <QDebug>
 
+#include "InSlot.hpp"
+
+class IEffectNode;
+class EffectNode;
 
 template<typename T>
 class   OutSlot
@@ -53,10 +56,32 @@ public:
   bool		connect( InSlot<T>& );
   bool		disconnect( void );
 
+    // BINDING METHODS
+
+    bool	bindOn( OutSlot<T>& dest );
+    bool	unbind( void );
   // GETTING INFOS
 
-  InSlot<T>*	getInSlotPtr( void );
+    InSlot<T>*	getInSlotPtr( void ) const;
+
+    QString const       getName( void ) const;
+    quint32             getId( void ) const;
+    IEffectNode*         getFather( void ) const;
+
+ // SRTTING INFOS
+
+    void          setId( quint32 id );
+    void          setName( QString const & name );
+    void          setFather( EffectNode* father );
+
 private:
+
+    void        getUnbinded( void );
+    T**         getBinded( OutSlot<T>& src );
+
+    // GETTING PRIVATES INFOS
+
+    EffectNode*         getPrivateFather( void ) const;
 
   // OTHERS
 
@@ -67,9 +92,16 @@ private:
 
 private:
 
+    OutSlot<T>*         m_bindDst;
+    OutSlot<T>*         m_bindSrc;
   InSlot<T>*		m_InSlotPtr;
   T			m_junk;
   T*			m_pipe;
+  T**                   m_metaPipe;
+
+    quint32             m_id;
+    QString             m_name;
+    EffectNode*        m_father;
 };
 
 /////////////////////////
@@ -79,14 +111,14 @@ private:
 // CTOR & DTOR
 
 template<typename T>
-OutSlot<T>::OutSlot()
+OutSlot<T>::OutSlot() : m_bindDst( NULL ), m_bindSrc( NULL ), m_metaPipe( &m_pipe ), m_id( 0 ), m_name( "" ), m_father( NULL )
 {
-  resetInSlotPtr();
-  resetPipe();
+    resetInSlotPtr();
+    resetPipe();
 }
 
 template<typename T>
-OutSlot<T>::OutSlot(OutSlot<T> const & tocopy)
+OutSlot<T>::OutSlot(OutSlot<T> const & tocopy) : m_bindDst( NULL ), m_bindSrc( NULL ), m_metaPipe( &m_pipe ), m_id( 0 ), m_name( "" ), m_father( NULL )
 {
   resetInSlotPtr();
   resetPipe();
@@ -95,8 +127,14 @@ OutSlot<T>::OutSlot(OutSlot<T> const & tocopy)
 template<typename T>
 OutSlot<T>&	OutSlot<T>::operator=(OutSlot<T> const & tocopy)
 {
-  resetInSlotPtr();
-  resetPipe();
+    m_bindDst = NULL;
+    m_bindSrc = NULL;
+    m_id = 0;
+    m_metaPipe = &m_pipe;
+    m_name = "";
+    m_father = NULL;
+    resetInSlotPtr();
+    resetPipe();
 }
 
 template<typename T>
@@ -104,6 +142,12 @@ OutSlot<T>::~OutSlot()
 {
   if ( m_InSlotPtr != NULL )
     m_InSlotPtr->disconnect();
+
+  if ( m_bindDst != NULL )
+      unbind();
+  else if ( m_bindSrc != NULL)
+      m_bindSrc->unbind();
+
 }
 
 // WRITING METHODS
@@ -111,15 +155,19 @@ OutSlot<T>::~OutSlot()
 template<typename T>
 OutSlot<T>&	OutSlot<T>::operator=( T const & val )
 {
-  (*m_pipe) = val;
-  return ( *this );
+    if ( m_bindSrc == NULL )
+        (**m_metaPipe) = val;
+    *m_pipe = val;
+    return ( *this );
 }
 
 template<typename T>
 OutSlot<T>&	OutSlot<T>::operator<<( T const & val )
 {
-  (*m_pipe) = val;
-  return (*this);
+    if ( m_bindSrc == NULL )
+        (**m_metaPipe) = val;
+    *m_pipe = val;
+    return (*this);
 }
 
 // CONNECTION METHODS
@@ -127,6 +175,8 @@ OutSlot<T>&	OutSlot<T>::operator<<( T const & val )
 template<typename T>
 bool	OutSlot<T>::connect( InSlot<T>& toconnect )
 {
+    if ( m_bindDst != NULL )
+        return ( false );
   if ( m_InSlotPtr != NULL )
       return ( false );
   if ( toconnect.connect( (*this) ) == false)
@@ -137,23 +187,114 @@ bool	OutSlot<T>::connect( InSlot<T>& toconnect )
 template<typename T>
 bool	OutSlot<T>::disconnect( void )
 {
+    if ( m_bindDst != NULL )
+        return ( false );
   if ( m_InSlotPtr == NULL)
       return ( false );
   m_InSlotPtr->disconnect();
   return ( true );
 }
 
+// BINDING METHODS
+
+template<typename T>
+bool	OutSlot<T>::bindOn( OutSlot<T>& dest )
+{
+    if ( ( m_InSlotPtr != NULL ) || ( m_bindDst != NULL ) )
+        return ( false );
+    if ( ( m_metaPipe = getBinded( *this ) ) == NULL )
+        return ( false );
+    m_bindDst = &dest;
+    return ( true );
+}
+
+template<typename T>
+T**     OutSlot<T>::getBinded( OutSlot<T>& src )
+{
+    if ( m_bindSrc != NULL )
+        return ( NULL );
+    m_bindSrc = &src;
+    return ( &m_metaPipe );
+}
+
+template<typename T>
+bool	OutSlot<T>::unbind( void )
+{
+    if ( ( m_InSlotPtr != NULL ) || ( m_bindDst == NULL ) )
+        return ( false );
+    m_bindDst->m_bindSrc = NULL;
+    m_bindDst = NULL;
+    m_metaPipe = &m_pipe;
+    return ( true );
+}
+
+template<typename T>
+void     OutSlot<T>::getUnbinded( void )
+{
+    m_bindSrc = NULL;
+    return ;
+}
+
 // GETTING INFOS
 
 template<typename T>
-InSlot<T>*	OutSlot<T>::getInSlotPtr( void )
+InSlot<T>*	OutSlot<T>::getInSlotPtr( void ) const
 {
   return ( m_InSlotPtr );
+}
+
+template<typename T>
+quint32                OutSlot<T>::getId( void ) const
+{
+    return ( m_id );
+}
+
+template<typename T>
+QString const          OutSlot<T>::getName( void ) const
+{
+    return ( m_name );
+}
+
+template<typename T>
+IEffectNode*         OutSlot<T>::getFather( void ) const
+{
+    return ( m_father );
+}
+
+// SETTING INFOS
+
+template<typename T>
+void                OutSlot<T>::setId( quint32 id )
+{
+    m_id = id;
+    return ;
+}
+
+template<typename T>
+void                OutSlot<T>::setName( QString const & name )
+{
+    m_name = name;
+    return ;
+}
+
+template<typename T>
+void         OutSlot<T>::setFather( EffectNode* father )
+{
+    m_father = father;
+    return ;
 }
 
 //////////////////////////
 //// PRIVATES METHODS ////
 //////////////////////////
+
+// GETTING PRIVATES INFOS
+
+template<typename T>
+EffectNode*         OutSlot<T>::getPrivateFather( void ) const
+{
+    return ( m_father );
+}
 
 // OTHERS
 
