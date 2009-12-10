@@ -120,6 +120,8 @@ void        ImportController::mediaSelection( const QUuid& uuid )
     m_mediaListController->getCell( uuid )->setPalette( p );
 
     setUIMetaData( m_model->getMedia( uuid ) );
+    if ( uuid != m_currentUuid )
+        m_preview->stop();
     emit mediaSelected( m_model->getMedia( uuid ) );
     m_currentUuid = uuid;
 }
