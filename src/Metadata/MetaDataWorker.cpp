@@ -31,49 +31,6 @@
 #include <QThreadPool>
 #include <QRunnable>
 
-class AudioSpectrumHelper : public QRunnable
-{
-
-    private:
-        QList<int>*     m_audioValueList;
-        QImage*         m_image;
-        QPainter*       m_painter;
-        QPainterPath    m_path;
-
-    public:
-        AudioSpectrumHelper(QList<int>* audioValueList) : m_audioValueList( audioValueList )
-        {
-            int imageHeight = 50;
-            m_image = new QImage( m_audioValueList->count(), imageHeight, QImage::Format_RGB32 );
-            m_image->fill( 0 );
-
-            m_painter = new QPainter( m_image );
-            m_painter->setRenderHint( QPainter::Antialiasing, true );
-            m_painter->setPen( QPen( QColor( 79, 106, 25 ), 1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin ) );
-        }
-
-        void    run()
-        {
-            int averageValue = 0;
-            qreal max = 0;
-            for( int i = 0; i < m_audioValueList->count(); i++ )
-            {
-                averageValue += m_audioValueList->at(i);
-                if ( m_audioValueList->at(i) > max )
-                    max = m_audioValueList->at(i);
-            }
-            averageValue /= m_audioValueList->count();
-
-            for( int x = 0; x < m_audioValueList->count(); x++ )
-            {
-                qreal y = ( (qreal)m_audioValueList->at(x) / max ) * 500;
-                y -= 365;
-                m_path.lineTo( x, y );
-            }
-            m_painter->drawPath( m_path );
-        }
-};
-
 MetaDataWorker::MetaDataWorker( LibVLCpp::MediaPlayer* mediaPlayer, Media* media, MetaDataWorker::MetaDataType type ) :
         m_mediaPlayer( mediaPlayer ),
         m_type( type ),
@@ -200,8 +157,7 @@ void    MetaDataWorker::renderSnapshot()
     connect( m_mediaPlayer, SIGNAL( snapshotTaken() ), this, SLOT( setSnapshot() ), Qt::QueuedConnection );
 
     //The slot should be triggered in this methode
-    m_mediaPlayer->takeSnapshot( m_tmpSnapshotFilename.toStdString().c_str()
-                                 , 0, 0 );
+    m_mediaPlayer->takeSnapshot( m_tmpSnapshotFilename.toStdString().c_str(), 0, 0 );
     //Snapshot slot should has been called (but maybe not in next version...)
 }
 
@@ -221,7 +177,8 @@ void    MetaDataWorker::setSnapshot()
     //CHECKME:
     //This is synchrone, but it may become asynchrone in the future...
 //    connect( m_mediaPlayer, SIGNAL( stopped () ), this, SLOT( mediaPlayerStopped() ), Qt::QueuedConnection );
-    m_mediaPlayer->stop();
+    if ( m_mediaIsPlaying )
+        m_mediaPlayer->stop();
     emit mediaPlayerIdle( m_mediaPlayer );
 
     if ( m_type == Snapshot )
@@ -296,9 +253,10 @@ void    MetaDataWorker::generateAudioSpectrum()
     disconnect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( generateAudioSpectrum() ) );
     m_mediaPlayer->stop();
     emit mediaPlayerIdle( m_mediaPlayer );
-    AudioSpectrumHelper* audioSpectrum = new AudioSpectrumHelper( m_media->getAudioValues() );
-    audioSpectrum->setAutoDelete( true );
-    QThreadPool::globalInstance()->start( audioSpectrum );
+//    AudioSpectrumHelper* audioSpectrum = new AudioSpectrumHelper( m_media->getAudioValues() );
+//    audioSpectrum->setAutoDelete( true );
+//    QThreadPool::globalInstance()->start( audioSpectrum );
+    m_media->emitAudioSpectrumComuted();
     delete this;
 }
 
