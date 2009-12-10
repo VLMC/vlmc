@@ -27,7 +27,7 @@
 using namespace LibVLCpp;
 
 Media::Media( const QString& filename )
-    : m_pixelBuffer( NULL )
+    : m_pixelBuffer( NULL ), m_fileName( filename )
 {
     m_internalPtr = libvlc_media_new( *(LibVLCpp::Instance::getInstance()), filename.toLocal8Bit(), m_ex );
     CheckVlcppException(m_ex);
@@ -108,3 +108,7 @@ uchar*                  Media::getPixelBuffer()
     return m_pixelBuffer;
 }
 
+const QString&          Media::getFileName() const
+{
+    return m_fileName;
+}
