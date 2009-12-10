@@ -255,6 +255,11 @@ void PreviewRuler::setMarker( Marker m )
         m_markerStop = m_frame;
 }
 
+qint64 PreviewRuler::getMarker( Marker m ) const
+{
+    return ( m == START ? m_markerStart : m_markerStop );
+}
+
 void PreviewRuler::clear()
 {
     m_markerStart = MARKER_DEFAULT;
