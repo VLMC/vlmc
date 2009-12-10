@@ -34,6 +34,8 @@
 #include "WelcomePage.h"
 #include "OpenPage.h"
 
+#include <QtDebug>
+
 ProjectWizard::ProjectWizard( QWidget* parent )
     : QWizard( parent )
 {
@@ -98,6 +100,8 @@ void    ProjectWizard::accept()
     {
         SettingsManager::getInstance()->commit();
     }
+    ProjectManager::getInstance()->newProject(
+        SettingsManager::getInstance()->getValue( "project", "ProjectName" )->get().toString() );
     emit flush();
     QDialog::accept();
     return ;

@@ -43,7 +43,7 @@ public:
     void            saveProject( bool saveAs = true );
     bool            needSave() const;
     QStringList     recentsProjects() const;
-    void            closeProject();
+    bool            closeProject();
     bool            askForSaveIfModified();
 
 private:

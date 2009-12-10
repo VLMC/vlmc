@@ -93,6 +93,9 @@ void    ProjectManager::loadProject( const QString& fileName )
     if ( fileName.length() == 0 )
         return;
 
+    if ( closeProject() == false )
+        return ;
+
     // Append the item to the recents list
     m_recentsProjects.removeAll( fileName );
     m_recentsProjects.prepend( fileName );
@@ -101,8 +104,6 @@ void    ProjectManager::loadProject( const QString& fileName )
 
     QSettings s;
     s.setValue( "RecentsProjects", m_recentsProjects );
-
-    closeProject();
 
     m_projectFile = new QFile( fileName );
 
@@ -176,22 +177,25 @@ void    ProjectManager::saveProject( bool saveAs /*= true*/ )
     emit projectSaved();
 }
 
-//void    ProjectManager::newProject( const QString &projectName )
-//{
-//    if ( closeProject()
-//    m_fi
-//}
+void    ProjectManager::newProject( const QString &projectName )
+{
+    if ( closeProject() == false )
+        return ;
+    m_projectName = projectName;
+    emit projectUpdated( m_projectName, true );
+}
 
-void    ProjectManager::closeProject()
+bool    ProjectManager::closeProject()
 {
     if ( askForSaveIfModified() == false )
-        return ;
+        return false;
     if ( m_projectFile != NULL )
     {
         delete m_projectFile;
         m_projectFile = NULL;
     }
     emit projectClosed();
+    return true;
 }
 
 bool    ProjectManager::askForSaveIfModified()
