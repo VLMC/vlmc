@@ -58,3 +58,9 @@ bool OpenPage::validatePage()
 
     return true;
 }
+
+int OpenPage::nextId() const
+{
+    // This an ending page
+    return -1;
+}

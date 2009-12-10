@@ -34,6 +34,7 @@ public:
 protected:
     void changeEvent( QEvent *e );
     virtual bool validatePage();
+    virtual int nextId() const;
 
 private:
     Ui::OpenPage ui;
