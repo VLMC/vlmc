@@ -36,6 +36,9 @@ ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
     m_recentsProjects = s.value( "RecentsProjects" ).toStringList();
     connect( this, SIGNAL( projectClosed() ), Library::getInstance(), SLOT( clear() ) );
     connect( this, SIGNAL( projectClosed() ), MainWorkflow::getInstance(), SLOT( clear() ) );
+    const SettingValue* val = SettingsManager::getInstance()->getValue( "project", "ProjectName");
+    connect( val, SIGNAL( changed( QVariant) ), this, SLOT(nameChanged(QVariant) ) );
+    m_projectName = tr( "<Unsaved project>" );
 }
 
 ProjectManager::~ProjectManager()
@@ -64,10 +67,8 @@ void    ProjectManager::cleanChanged( bool val )
     if ( m_projectFile != NULL )
     {
         QFileInfo   fInfo( *m_projectFile );
-        emit projectChanged( fInfo.fileName(), val );
     }
-    else
-        emit projectChanged( tr( "<Unsaved project>" ), val );
+    emit projectUpdated( m_projectName, val );
 }
 
 void    ProjectManager::loadTimeline()
@@ -76,7 +77,13 @@ void    ProjectManager::loadTimeline()
     QFileInfo       fInfo( *m_projectFile );
 
     MainWorkflow::getInstance()->loadProject( root.firstChildElement( "timeline" ) );
-    emit projectChanged( fInfo.fileName(), true );
+    emit projectUpdated( m_projectName, true );
+}
+
+void    ProjectManager::parseProjectNode( const QDomElement &node )
+{
+    QDomElement     projectNameNode = node.firstChildElement( "ProjectName" );
+    m_projectName = projectNameNode.attribute( "value", tr( "<Unnamed project>" ) );
 }
 
 void    ProjectManager::loadProject( const QString& fileName )
@@ -104,6 +111,7 @@ void    ProjectManager::loadProject( const QString& fileName )
 
     QDomElement     root = m_domDocument->documentElement();
 
+    parseProjectNode( root.firstChildElement( "project" ) );
     connect( Library::getInstance(), SIGNAL( projectLoaded() ), this, SLOT( loadTimeline() ) );
     Library::getInstance()->loadProject( root.firstChildElement( "medias" ) );
     SettingsManager::getInstance()->loadSettings( "project", root.firstChildElement( "project" ) );
@@ -161,10 +169,16 @@ void    ProjectManager::saveProject( bool saveAs /*= true*/ )
     if ( saveAs == true )
     {
         QFileInfo   fInfo( *m_projectFile );
-        emit projectChanged( fInfo.fileName(), true );
+        emit projectUpdated( fInfo.fileName(), true );
     }
     emit projectSaved();
 }
+
+//void    ProjectManager::newProject( const QString &projectName )
+//{
+//    if ( closeProject()
+//    m_fi
+//}
 
 void    ProjectManager::closeProject()
 {
@@ -202,4 +216,9 @@ bool    ProjectManager::askForSaveIfModified()
         }
     }
     return true;
+}
+
+void    ProjectManager::nameChanged( const QVariant& name )
+{
+    m_projectName = name.toString();
 }

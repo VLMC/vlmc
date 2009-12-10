@@ -36,6 +36,7 @@ class   ProjectManager : public QObject, public Singleton<ProjectManager>
     Q_DISABLE_COPY( ProjectManager );
 public:
     void            loadProject( const QString& fileName );
+    void            newProject( const QString& projectName );
     QString         loadProjectFile();
     void            saveProject( bool saveAs = true );
     bool            needSave() const;
@@ -44,6 +45,7 @@ public:
     bool            askForSaveIfModified();
 
 private:
+    void            parseProjectNode( const QDomElement& node );
     ProjectManager();
     ~ProjectManager();
 
@@ -54,15 +56,23 @@ private:
     QDomDocument*   m_domDocument;
     bool            m_needSave;
     QStringList     m_recentsProjects;
+    QString         m_projectName;
 
     friend class    Singleton<ProjectManager>;
 
 private slots:
     void            loadTimeline();
     void            cleanChanged( bool val );
+    void            nameChanged( const QVariant& name );
 
 signals:
-    void            projectChanged( const QString& projectName, bool savedState );
+    /**
+     *  This signal is emitted when :
+     *      - The project name has changed
+     *      - The clean state has changed
+     *      - The revision (if activated) has changed
+     */
+    void            projectUpdated( const QString& projectName, bool savedState );
     void            projectSaved();
     void            projectClosed();
 };

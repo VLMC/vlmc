@@ -96,7 +96,7 @@ private slots:
     void                    on_actionProject_Preferences_triggered();
     void                    on_actionClose_Project_triggered();
     void                    toolButtonClicked( int id );
-    void                    projectChanged( const QString& projectName, bool savedStatus );
+    void                    projectUpdated( const QString& projectName, bool savedStatus );
     void                    keyboardShortcutChanged( const QString&, const QString& );
 
 signals:

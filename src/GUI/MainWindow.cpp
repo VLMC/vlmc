@@ -99,8 +99,8 @@ MainWindow::MainWindow( QWidget *parent ) :
     connect( this, SIGNAL( toolChanged( ToolButtons ) ),
              m_timeline, SLOT( setTool( ToolButtons ) ) );
 
-    connect( ProjectManager::getInstance(), SIGNAL( projectChanged( const QString&, bool ) ),
-             this, SLOT( projectChanged( const QString&, bool ) ) );
+    connect( ProjectManager::getInstance(), SIGNAL( projectUpdated( const QString&, bool ) ),
+             this, SLOT( projectUpdated( const QString&, bool ) ) );
 
     QSettings s;
     // Restore the geometry
@@ -427,7 +427,7 @@ void    MainWindow::closeEvent( QCloseEvent* e )
         e->ignore();
 }
 
-void    MainWindow::projectChanged( const QString& projectName, bool savedStatus )
+void    MainWindow::projectUpdated( const QString& projectName, bool savedStatus )
 {
     QString title = tr( "VideoLAN Movie Creator" );
     title += " - ";
