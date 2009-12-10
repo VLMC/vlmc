@@ -52,6 +52,7 @@ class WelcomePage : public QWizardPage
     private slots:
         void loadProject();
         void loadRecentsProjects();
+        void projectDoubleClicked( QListWidgetItem* item );
         void selectOpenRadio();
 
     private:

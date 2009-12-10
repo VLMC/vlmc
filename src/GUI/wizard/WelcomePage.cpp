@@ -42,6 +42,8 @@ WelcomePage::WelcomePage( QWidget* parent )
              this, SLOT( loadProject() ) );
     connect( m_ui.projectsListWidget, SIGNAL( itemActivated(QListWidgetItem*) ),
              this, SLOT( selectOpenRadio() ) );
+    connect( m_ui.projectsListWidget, SIGNAL( itemDoubleClicked(QListWidgetItem*) ),
+             this, SLOT( projectDoubleClicked(QListWidgetItem*) ) );
 
     registerField( "loadProject", m_ui.projectsListWidget );
     m_projectPath = new QString();
@@ -151,6 +153,13 @@ void WelcomePage::loadProject()
 void WelcomePage::selectOpenRadio()
 {
     m_ui.openRadioButton->setChecked( true );
+}
+
+void WelcomePage::projectDoubleClicked( QListWidgetItem* item )
+{
+    Q_UNUSED( item );
+    if ( wizard() )
+        wizard()->next();
 }
 
 QString WelcomePage::projectPath()
