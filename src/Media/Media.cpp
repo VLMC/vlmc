@@ -205,6 +205,12 @@ void            Media::emitSnapshotComputed()
     emit snapshotComputed( this );
 }
 
+void            Media::emitAudioSpectrumComuted()
+{
+    m_metadataState = ParsedWithAudioSpectrum;
+    emit audioSpectrumComputed( this );
+}
+
 Media::InputType    Media::getInputType() const
 {
     return m_inputType;

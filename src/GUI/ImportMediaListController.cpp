@@ -54,7 +54,14 @@ void    ImportMediaListController::metaDataComputed( Media* media )
 
 ImportMediaCellView* ImportMediaListController::getCell( QUuid uuid ) const
 {
-    return m_mediaCellList->value( uuid );
+    if (m_mediaCellList->contains( uuid ) )
+        return m_mediaCellList->value( uuid );
+    return NULL;
+}
+
+bool    ImportMediaListController::contains( QUuid uuid )
+{
+    return m_mediaCellList->contains( uuid );
 }
 
 void    ImportMediaListController::removeMedia( const QUuid& uuid )

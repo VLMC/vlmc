@@ -46,6 +46,7 @@ class ImportMediaListController : public ListViewController
 
         const QHash<QUuid, ImportMediaCellView*>* getMediaCellList() const { return m_mediaCellList; }
         ImportMediaCellView* getCell( QUuid uuid ) const;
+        bool    contains( QUuid uuid );
 
     private:
         StackViewController*                m_nav;

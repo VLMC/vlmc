@@ -69,7 +69,8 @@ public:
     {
         None,
         ParsedWithoutSnapshot,
-        ParsedWithSnapshot
+        ParsedWithSnapshot,
+        ParsedWithAudioSpectrum
     };
     Media( const QString& filePath, const QString& uuid = QString() );
     virtual ~Media();
@@ -133,6 +134,7 @@ public:
 
     void                        emitMetaDataComputed( bool hasMetadata );
     void                        emitSnapshotComputed();
+    void                        emitAudioSpectrumComuted();
 
 //    bool                        hasMetadata() const;
     MetadataState               getMetadata() const;
