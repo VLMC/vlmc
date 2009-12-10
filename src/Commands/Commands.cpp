@@ -60,14 +60,14 @@ void Commands::MainWorkflow::AddClip::undo()
 }
 
 Commands::MainWorkflow::MoveClip::MoveClip( ::MainWorkflow* workflow, const QUuid& uuid,
-          unsigned int oldTrack, qint64 oldPos, unsigned int newTrack, qint64 newPos,
+          unsigned int oldTrack, unsigned int newTrack, qint64 newPos,
           ::MainWorkflow::TrackType trackType ) :
     m_workflow( workflow ), m_uuid( uuid ), m_oldTrack( oldTrack ),
-    m_newTrack( newTrack ), m_pos( newPos ), m_oldPos( oldPos ),
-    m_trackType( trackType )
+    m_newTrack( newTrack ), m_pos( newPos ), m_trackType( trackType )
 {
     setText( QObject::tr( "Moving clip" ) );
     m_undoRedoAction = false;
+    m_oldPos = m_workflow->getClipPosition( uuid, oldTrack, trackType );
 }
 
 void Commands::MainWorkflow::MoveClip::redo()

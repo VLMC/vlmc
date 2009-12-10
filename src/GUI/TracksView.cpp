@@ -616,7 +616,6 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
             Commands::trigger( new Commands::MainWorkflow::MoveClip( m_mainWorkflow,
                                                                      movieItem->clip()->getUuid(),
                                                                      movieItem->oldTrackNumber,
-                                                                     movieItem->oldPosition,
                                                                      movieItem->trackNumber(),
                                                                      movieItem->startPos(),
                                                                      MainWorkflow::VideoTrack ) );

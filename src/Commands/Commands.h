@@ -67,7 +67,7 @@ namespace Commands
         {
             public:
                 MoveClip( ::MainWorkflow* workflow, const QUuid& uuid,
-                        unsigned int oldTrack, qint64 oldPos, unsigned int newTrack,
+                        unsigned int oldTrack, unsigned int newTrack,
                         qint64 newPos, ::MainWorkflow::TrackType trackType );
                 virtual void    redo();
                 virtual void    undo();
