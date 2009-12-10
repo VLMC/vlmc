@@ -89,6 +89,11 @@ public:
      */
     virtual float                   getFps() const = 0;
 
+    virtual Media*                  getMedia() const
+    {
+        return 0;
+    }
+
     /**
      * \brief Return the length in frames
      * \warning The returned value may not be accurate

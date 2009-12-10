@@ -215,6 +215,11 @@ float       ClipRenderer::getFps() const
     return 0.0f;
 }
 
+Media*      ClipRenderer::getMedia() const
+{
+    return m_selectedMedia;
+}
+
 void        ClipRenderer::previewWidgetCursorChanged( qint64 newFrame )
 {
     if ( m_isRendering == true )
