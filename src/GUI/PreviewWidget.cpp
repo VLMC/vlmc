@@ -27,6 +27,7 @@
 #include "PreviewWidget.h"
 #include "ui_PreviewWidget.h"
 #include "Library.h"
+#include "ClipRenderer.h"
 
 PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent ) :
     QWidget( parent ),
@@ -43,6 +44,13 @@ PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent 
     m_videoPalette = m_ui->renderWidget->palette();
     m_videoPalette.setColor( QPalette::Window, QColor( Qt::black ) );
     m_ui->renderWidget->setPalette( m_videoPalette );
+
+    // Hide markers buttons if we are not using a ClipRenderer
+    if ( !qobject_cast<ClipRenderer*>( genericRenderer ) )
+    {
+        m_ui->pushButtonMarkerStart->hide();
+        m_ui->pushButtonMarkerStop->hide();
+    }
 
     // Give the renderer to the ruler
     m_ui->rulerWidget->setRenderer( m_renderer );
