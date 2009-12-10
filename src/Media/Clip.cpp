@@ -43,9 +43,13 @@ Clip::Clip( Clip* creator, qint64 begin, qint64 end ) : m_parent( creator->getPa
     computeLength();
 }
 
-Clip::Clip( Media* parent, qint64 begin, qint64 end ) : m_parent( parent ), m_begin( begin ), m_end( end )
+Clip::Clip( Media* parent, qint64 begin, qint64 end /*= -1*/ ) : m_parent( parent ), m_begin( begin ), m_end( end )
 {
+    //FIXME: WTF ?
     Q_ASSERT( parent->getInputType() == Media::File || ( begin == 0 && end == m_parent->getNbFrames() ) );
+
+    if ( parent->getInputType() == Media::File && end < 0 )
+        m_end = parent->getNbFrames();
     m_Uuid = QUuid::createUuid();
     computeLength();
 }
