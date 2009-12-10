@@ -28,6 +28,8 @@
 #include <QDebug>
 #include "WelcomePage.h"
 
+QString* WelcomePage::m_projectPath = NULL;
+
 WelcomePage::WelcomePage( QWidget* parent )
     : QWizardPage( parent )
 {
@@ -42,6 +44,12 @@ WelcomePage::WelcomePage( QWidget* parent )
              this, SLOT( selectOpenRadio() ) );
 
     registerField( "loadProject", m_ui.projectsListWidget );
+    m_projectPath = new QString();
+}
+
+WelcomePage::~WelcomePage()
+{
+    delete m_projectPath;
 }
 
 void WelcomePage::changeEvent( QEvent *e )
@@ -81,6 +89,8 @@ bool WelcomePage::validatePage()
                                       "the list.\nThen click next to continue..." ) );
             return false;
         }
+        QList<QListWidgetItem*> selected = m_ui.projectsListWidget->selectedItems();
+        setProjectPath( selected.at( 0 )->data( FilePath ).toString() );
         return true;
     }
     return true;
@@ -141,4 +151,15 @@ void WelcomePage::loadProject()
 void WelcomePage::selectOpenRadio()
 {
     m_ui.openRadioButton->setChecked( true );
+}
+
+QString WelcomePage::projectPath()
+{
+    return *m_projectPath;
+}
+
+void WelcomePage::setProjectPath( const QString& path )
+{
+    m_projectPath->clear();
+    m_projectPath->append( path );
 }

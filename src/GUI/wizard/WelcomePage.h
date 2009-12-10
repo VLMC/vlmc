@@ -37,9 +37,11 @@ class WelcomePage : public QWizardPage
         enum { FilePath = Qt::UserRole + 1 };
 
         WelcomePage( QWidget* parent = 0 );
-        ~WelcomePage() { }
+        ~WelcomePage();
 
         int nextId() const;
+        static QString projectPath();
+        static void setProjectPath( const QString& path );
 
     protected:
         virtual void changeEvent( QEvent *e );
@@ -54,6 +56,7 @@ class WelcomePage : public QWizardPage
 
     private:
         Ui::WelcomePage m_ui;
+        static QString* m_projectPath;
 };
 
 #endif
