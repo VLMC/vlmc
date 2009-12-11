@@ -80,6 +80,12 @@ class	EffectNode : public IEffectNode
     // ================================================================= RENDER ========================================================================
 
     void        render( void );
+    void        renderSubNodes( void );
+    void        transmitDatasFromInputsToInternalsOutputs( void );
+    void        transmitDatasFromInternalsInputsToOutputs( void );
+    void        resetAllChildsNodesVisitState( void );
+    void        nodeVisited( void );
+    void        resetVisitState( void );
 
     // ================================================================= GET WIDGET ========================================================================
 
@@ -410,6 +416,7 @@ private:
     EffectNodeFactory                   m_enf;
     EffectNode*                         m_father;
     IEffectPlugin*                      m_plugin;
+    bool                                m_visited;
     InSlot<LightVideoFrame>*            m_videoInputs;
     OutSlot<LightVideoFrame>*           m_videoOutputs;
 

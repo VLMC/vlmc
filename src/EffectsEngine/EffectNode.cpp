@@ -31,7 +31,7 @@ template class SemanticObjectManager< OutSlot<LightVideoFrame> >;
 // template class SemanticObjectManager<InSlot<qreal> >;
 // template class SemanticObjectManager<OutSlot<qreal> >;
 
-EffectNode::EffectNode(IEffectPlugin* plugin) : m_father( NULL ), m_plugin( plugin ), m_videoInputs( NULL ), m_videoOutputs( NULL )
+EffectNode::EffectNode(IEffectPlugin* plugin) : m_father( NULL ), m_plugin( plugin ), m_visited( false ), m_videoInputs( NULL ), m_videoOutputs( NULL )
 {
     m_plugin->init( this );
     m_staticVideosInputs.setFather( this );
@@ -40,7 +40,7 @@ EffectNode::EffectNode(IEffectPlugin* plugin) : m_father( NULL ), m_plugin( plug
 }
 
 
-EffectNode::EffectNode() : m_father( NULL ), m_plugin( NULL ), m_videoInputs( NULL ), m_videoOutputs( NULL )
+EffectNode::EffectNode() : m_father( NULL ), m_plugin( NULL ), m_visited( false ), m_videoInputs( NULL ), m_videoOutputs( NULL )
 {
     m_staticVideosInputs.setFather( this );
     m_staticVideosOutputs.setFather( this );
@@ -73,7 +73,83 @@ void                                    EffectNode::init( quint32 const nbvideoi
 
 void                                    EffectNode::render( void )
 {
-    m_plugin->render();
+    if ( m_plugin != NULL )
+        m_plugin->render();
+    else
+    {
+        if ( m_father != NULL)
+            transmitDatasFromInputsToInternalsOutputs();
+        renderSubNodes();
+        if ( m_father != NULL)
+            transmitDatasFromInternalsInputsToOutputs();
+        resetAllNodesVisitState();
+    }
+    return ;
+}
+
+void        EffectNode::renderSubNodes( void )
+{
+    return ;
+}
+
+void        EffectNode::transmitDatasFromInputsToInternalsOutputs( void )
+{
+    if ( getNBStaticsVideoInputs() != 0 )
+    {
+        QList<InSlot<LightVideoFrame>*>             ins = getStaticsVideosInputsList();
+        QList<OutSlot<LightVideoFrame>*>            intOuts = getInternalsStaticsVideosOutputsList();;
+        QList<OutSlot<LightVideoFrame>*>::iterator  insIt = ins.begin();
+        QList<OutSlot<LightVideoFrame>*>::iterator  insEnd = ins.end();
+        QList<OutSlot<LightVideoFrame>*>::iterator  intOutsIt = intOuts.begin();
+        QList<OutSlot<LightVideoFrame>*>::iterator  intOutsEnd = intOuts.end();
+
+        for ( ; ( insIt != insEnd ) && ( intOutsIt != intOutsEnd ); ++insIt, ++intOutsIt )
+            *(*intOutsIt) << *(*insIt);
+    }
+    return ;
+}
+
+void        EffectNode::transmitDatasFromInternalsInputsToOutputs( void )
+{
+    if ( getNBStaticsVideoOutputs() != 0 )
+    {
+        QList<InSlot<LightVideoFrame>*>             intIns = getInternalsStaticsVideosInputsList();
+        QList<OutSlot<LightVideoFrame>*>            outs = getStaticsVideosOutputsList();;
+        QList<OutSlot<LightVideoFrame>*>::iterator  intInsIt = intIns.begin();
+        QList<OutSlot<LightVideoFrame>*>::iterator  intInsEnd = intIns.end();
+        QList<OutSlot<LightVideoFrame>*>::iterator  outsIt = outs.begin();
+        QList<OutSlot<LightVideoFrame>*>::iterator  outsEnd = outs.end();
+
+        for ( ; ( intInsIt != intInsEnd ) && ( outsIt != outsEnd ); ++intInsIt, ++outsIt )
+            *(*outsIt) << *(*intInsIt);
+    }
+    return ;
+}
+
+void        EffectNode::resetAllChildsNodesVisitState( void )
+{
+    QList<EffectNode*>            childs = getChildsList();
+
+    if ( childs.empty() == false )
+    {
+        QList<EffectNode*>::iterator  it = childs.begin();
+        QList<EffectNode*>::iterator  end = childs.end();
+
+        for ( ; it != end; ++it)
+            (*it)->resetVisitState();
+    }
+    return ;
+}
+
+void        nodeVisited( void )
+{
+    m_visited = true;
+    return ;
+}
+
+void        resetVisitState( void )
+{
+    m_visited = false;
     return ;
 }
 
