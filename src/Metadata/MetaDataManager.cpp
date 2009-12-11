@@ -160,6 +160,7 @@ void    MetaDataManager::checkMediasToCompute()
         // doesn't change anything so the lock continue to use the old instance even if this method
         // is set with a new instance. It seems that the mediaPlayer instance keept the first value
         // and don't care of the new value.
+        mediaPlayer->stop();
         delete mediaPlayer;
         mediaPlayer = new LibVLCpp::MediaPlayer();
         /******************************************************************************************/
