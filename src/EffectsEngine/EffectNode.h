@@ -115,7 +115,7 @@ class	EffectNode : public IEffectNode
 
     // ------------------- CREATE AND DELETE CHILDS -------------------
 
-    void        createEmptyChild( void );
+    bool        createEmptyChild( void );
 
     bool        createChild( quint32 typeId );
     bool        createChild( QString const & typeName );
@@ -186,6 +186,29 @@ class	EffectNode : public IEffectNode
 
     QList<InSlot<LightVideoFrame>*>		getStaticsVideosInputsList( void ) const;
     QList<OutSlot<LightVideoFrame>*>		getStaticsVideosOutputsList( void ) const;
+    //  QList<InSlot<AudioSoundSample>*>		getStaticsAudiosInputsList( void ) const;
+    //     QList<OutSlot<AudioSoundSample>*>		getStaticsAudiosOutputsList( void ) const;
+    //     QList<InSlot<qreal>*>		getStaticsControlsInputsList( void ) const;
+    //     QList<OutSlot<qreal>*>		getStaticsControlsOutputsList( void ) const;
+
+    // -------------- GET INTERNALS ( JUST FOR EMPTY NODES) --------------
+
+    InSlot<LightVideoFrame>*		getInternalStaticVideoInput( QString const & name ) const;
+    OutSlot<LightVideoFrame>*	        getInternalStaticVideoOutput( QString const & name ) const;
+    //     InSlot<AudioSoundSample>*		getStaticAudioInput( QByteArray const & name ) const;
+    //     OutSlot<AudioSoundSample>*		getStaticAudioOutput( QByteArray const & name ) const;
+    //     InSlot<qreal>*		getStaticControlInput( QByteArray const & name ) const;
+    //     OutSlot<qreal>* 		getStaticControlOutput( QByteArray const & name ) const;
+
+    InSlot<LightVideoFrame>*		getInternalStaticVideoInput( quint32 id ) const;
+    OutSlot<LightVideoFrame>*		getInternalStaticVideoOutput( quint32 id ) const;
+    //  InSlot<AudioSoundSample>*		getStaticAudioInput( quint32 id ) const;
+    //  OutSlot<AudioSoundSample>*		getStaticAudioOutput( quint32 id ) const;
+    //  InSlot<qreal>*		getStaticControlInput( quint32 id ) const;
+    //  OutSlot<qreal>*		getStaticControlOutput( quint32 id ) const;
+
+    QList<InSlot<LightVideoFrame>*>		getInternalsStaticsVideosInputsList( void ) const;
+    QList<OutSlot<LightVideoFrame>*>		getInternalsStaticsVideosOutputsList( void ) const;
     //  QList<InSlot<AudioSoundSample>*>		getStaticsAudiosInputsList( void ) const;
     //     QList<OutSlot<AudioSoundSample>*>		getStaticsAudiosOutputsList( void ) const;
     //     QList<InSlot<qreal>*>		getStaticsControlsInputsList( void ) const;
@@ -285,9 +308,9 @@ class	EffectNode : public IEffectNode
     //     bool                areDynamicControlsInputsEnabled( void ) const;
     //     bool                areDynamicControlsOutputsEnabled( void ) const;
 
-    //------------------------------------------------------------//
-    //      CONNECT/DISCONNECT & BIND/UNBIND DYN/STAT SLOTS       //
-    //------------------------------------------------------------//
+    //--------------------------------------------------------------------//
+    //      NORMALS CONNECT/DISCONNECT & BIND/UNBIND DYN/STAT SLOTS       //
+    //--------------------------------------------------------------------//
 
     // ----------------  CONNECT STATIC TO STATIC -------------------
 
@@ -325,6 +348,31 @@ class	EffectNode : public IEffectNode
         bool        disconnectStaticVideoOutput( quint32 nodeId );
         bool        disconnectStaticVideoOutput( QString const & nodeName );
 
+    //-------------------------------------------------------------------------//
+    //      CONNECT/DISCONNECT & BIND/UNBIND DYN/STAT SLOTS TO PARENTS         //
+    //-------------------------------------------------------------------------//
+
+    // ----------------  CONNECT STATIC TO STATIC -------------------
+
+        bool        connectChildStaticVideoOutputToParentStaticVideoInput( QString const & childOutName,  QString const & fatherInName );
+        bool        connectChildStaticVideoOutputToParentStaticVideoInput( QString const & childOutName, quint32 fatherInId );
+        bool        connectChildStaticVideoOutputToParentStaticVideoInput( quint32 childOutId,  QString const & fatherInName );
+        bool        connectChildStaticVideoOutputToParentStaticVideoInput( quint32 childOutId, quint32 fatherInId );
+
+        bool        connectChildStaticVideoInputToParentStaticVideoOutput( QString const & childInName,  QString const & fatherOutName );
+        bool        connectChildStaticVideoInputToParentStaticVideoOutput( QString const & childInName, quint32 fatherOutId );
+        bool        connectChildStaticVideoInputToParentStaticVideoOutput( quint32 childInId,  QString const & fatherOutName );
+        bool        connectChildStaticVideoInputToParentStaticVideoOutput( quint32 childInId, quint32 fatherOutId );
+
+    // ----------------  CONNECT STATIC TO DYNAMIC -------------------
+
+
+    // ----------------  CONNECT DYNAMIC TO STATIC -------------------
+
+
+    // ----------------  CONNECT DYNAMIC TO DYNAMIC -------------------
+
+    // ---------------- SPECIALS DISCONNECTS --------------------
 
     // ======================================================D3PREC47ED================================================================================
 
@@ -391,7 +439,10 @@ private:
     // VIDEOS SLOTS
 
     SemanticObjectManager< InSlot<LightVideoFrame> >	m_staticVideosInputs;
+    SemanticObjectManager< OutSlot<LightVideoFrame> >	m_internalsStaticVideosOutputs;
+
     SemanticObjectManager< OutSlot<LightVideoFrame> >	m_staticVideosOutputs;
+    SemanticObjectManager< InSlot<LightVideoFrame> >	m_internalsStaticVideosInputs;
 
     // AUDIOS SLOTS
 

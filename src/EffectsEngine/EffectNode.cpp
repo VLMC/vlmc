@@ -454,11 +454,14 @@ quint32                     EffectNode::getChildIdByChildName( QString const & c
 
 // ------------------- CREATE AND DELETE CHILDS -------------------
 
-void        EffectNode::createEmptyChild( void )
+bool        EffectNode::createEmptyChild( void )
 {
     if ( m_plugin != NULL)
+    {
         m_enf.createEmptyEffectNodeInstance();
-    return ;
+        return ( true );
+    }
+    return ( false );
 }
 
 bool        EffectNode::createChild( quint32 typeId )
@@ -528,12 +531,16 @@ QList<EffectNode*>  EffectNode::getChildsList( void ) const
 void		EffectNode::createStaticVideoInput( QString const & name )
 {
     m_staticVideosInputs.createObject( name );
+    if ( m_plugin == NULL )
+        m_internalsStaticVideosOutputs.createObject( name );
     return ;
 }
 
 void		EffectNode::createStaticVideoOutput( QString const & name )
 {
     m_staticVideosOutputs.createObject( name );
+    if ( m_plugin == NULL )
+        m_internalsStaticVideosInputs.createObject( name );
     return ;
 }
 
@@ -545,12 +552,16 @@ void		EffectNode::createStaticVideoOutput( QString const & name )
 void		EffectNode::createStaticVideoInput( void )
 {
     m_staticVideosInputs.createObject();
+    if ( m_plugin == NULL )
+        m_internalsStaticVideosOutputs.createObject();
     return ;
 }
 
 void		EffectNode::createStaticVideoOutput( void )
 {
     m_staticVideosOutputs.createObject();
+    if ( m_plugin == NULL )
+        m_internalsStaticVideosOutputs.createObject();
     return ;
 }
 //     void		addStaticAudioInput( void );
@@ -561,13 +572,28 @@ void		EffectNode::createStaticVideoOutput( void )
 
 bool		EffectNode::removeStaticVideoInput( QString const & name )
 {
-    return ( m_staticVideosInputs.deleteObject( name ) );
+    if ( m_staticVideosInputs.deleteObject( name ) )
+    {
+        if ( m_plugin == NULL )
+            if ( m_internalsStaticVideosOutputs.deleteObject( name ) == false )
+                return ( false ); // IF THIS CAS HAPPEND WE ARE SCREWED
+        return ( true );
+    }
+    return ( false );
 }
 
 bool		EffectNode::removeStaticVideoOutput( QString const & name )
 {
-    return ( m_staticVideosOutputs.deleteObject( name ) );
+    if ( m_staticVideosOutputs.deleteObject( name ) )
+    {
+        if ( m_plugin == NULL )
+            if ( m_internalsStaticVideosInputs.deleteObject( name ) == false )
+                return ( false ); // IF THIS CAS HAPPEND WE ARE SCREWED
+        return ( true );
+    }
+    return ( false );
 }
+
 //     bool		removeStaticAudioInput( QByteArray const & name );
 //     bool		removeStaticAudioOutput( QByteArray const & name );
 //     bool		removeStaticControlInput( QByteArray const & name );
@@ -575,12 +601,26 @@ bool		EffectNode::removeStaticVideoOutput( QString const & name )
 
 bool		EffectNode::removeStaticVideoInput( quint32 id )
 {
-    return ( m_staticVideosInputs.deleteObject( id ) );
+    if ( m_staticVideosInputs.deleteObject( id ) )
+    {
+        if ( m_plugin == NULL )
+            if ( m_internalsStaticVideosOutputs.deleteObject( id ) == false )
+                return ( false ); // IF THIS CAS HAPPEND WE ARE SCREWED
+        return ( true );
+    }
+    return ( false );
 }
 
 bool		EffectNode::removeStaticVideoOutput( quint32 id )
 {
-    return ( m_staticVideosOutputs.deleteObject( id ) );
+    if ( m_staticVideosOutputs.deleteObject( id ) )
+    {
+        if ( m_plugin == NULL )
+            if ( m_internalsStaticVideosInputs.deleteObject( id ) == false )
+                return ( false ); // IF THIS CAS HAPPEND WE ARE SCREWED
+        return ( true );
+    }
+    return ( false );
 }
 
 //     bool		removeStaticAudioInput( quint32 id );
@@ -789,9 +829,172 @@ quint32                     EffectNode::getNBStaticsVideosOutputs( void ) const
 //     bool                areDynamicControlsOutputsEnabled( void ) const;
 
 
+// -------------- GET INTERNALS ( JUST FOR EMPTY NODES) --------------
+
+
+InSlot<LightVideoFrame>*		EffectNode::getInternalStaticVideoInput( QString const & name ) const
+{
+    return ( m_internalsStaticVideosInputs.getObject( name ) );
+}
+
+OutSlot<LightVideoFrame>*	        EffectNode::getInternalStaticVideoOutput( QString const & name ) const
+{
+    return ( m_internalsStaticVideosOutputs.getObject( name ) );
+}
+
+
+InSlot<LightVideoFrame>*		EffectNode::getInternalStaticVideoInput( quint32 id ) const
+{
+    return ( m_internalsStaticVideosInputs.getObject( id ) );
+}
+
+OutSlot<LightVideoFrame>*		EffectNode::getInternalStaticVideoOutput( quint32 id ) const
+{
+    return ( m_internalsStaticVideosOutputs.getObject( id ) );
+}
+
+
+QList<InSlot<LightVideoFrame>*>		EffectNode::getInternalsStaticsVideosInputsList( void ) const
+{
+    return ( m_internalsStaticVideosInputs.getObjectsList() );
+}
+
+QList<OutSlot<LightVideoFrame>*>	EffectNode::getInternalsStaticsVideosOutputsList( void ) const
+{
+    return ( m_internalsStaticVideosOutputs.getObjectsList() );
+}
+
+//-------------------------------------------------------------------------//
+//      CONNECT/DISCONNECT & BIND/UNBIND DYN/STAT SLOTS TO PARENTS         //
+//-------------------------------------------------------------------------//
+
+// ----------------  CONNECT STATIC TO STATIC -------------------
+
+bool        EffectNode::connectChildStaticVideoOutputToParentStaticVideoInput( QString const & childOutName,  QString const & fatherInName )
+{
+    OutSlot<LightVideoFrame>*  out;
+    EffectNode*                father;
+    InSlot<LightVideoFrame>*  in;
+
+    if ( ( out = getStaticVideoOutput( childOutName ) ) == NULL )
+        return ( false );
+    if ( ( father = getPrivateFather() ) == NULL )
+        return ( false );
+    if ( ( in = father->getInternalStaticVideoInput( fatherInName ) ) == NULL )
+        return ( false );
+    return ( out->connect( *in ) );
+}
+
+bool        EffectNode::connectChildStaticVideoOutputToParentStaticVideoInput( QString const & childOutName, quint32 fatherInId )
+{
+    OutSlot<LightVideoFrame>*  out;
+    EffectNode*                father;
+    InSlot<LightVideoFrame>*  in;
+
+    if ( ( out = getStaticVideoOutput( childOutName ) ) == NULL )
+        return ( false );
+    if ( ( father = getPrivateFather() ) == NULL )
+        return ( false );
+    if ( ( in = father->getInternalStaticVideoInput( fatherInId ) ) == NULL )
+        return ( false );
+    return ( out->connect( *in ) );
+}
+
+bool        EffectNode::connectChildStaticVideoOutputToParentStaticVideoInput( quint32 childOutId,  QString const & fatherInName )
+{
+    OutSlot<LightVideoFrame>*  out;
+    EffectNode*                father;
+    InSlot<LightVideoFrame>*  in;
+
+    if ( ( out = getStaticVideoOutput( childOutId ) ) == NULL )
+        return ( false );
+    if ( ( father = getPrivateFather() ) == NULL )
+        return ( false );
+    if ( ( in = father->getInternalStaticVideoInput( fatherInName ) ) == NULL )
+        return ( false );
+    return ( out->connect( *in ) );
+}
+
+bool        EffectNode::connectChildStaticVideoOutputToParentStaticVideoInput( quint32 childOutId, quint32 fatherInId )
+{
+    OutSlot<LightVideoFrame>*  out;
+    EffectNode*                father;
+    InSlot<LightVideoFrame>*  in;
+
+    if ( ( out = getStaticVideoOutput( childOutId ) ) == NULL )
+        return ( false );
+    if ( ( father = getPrivateFather() ) == NULL )
+        return ( false );
+    if ( ( in = father->getInternalStaticVideoInput( fatherInId ) ) == NULL )
+        return ( false );
+    return ( out->connect( *in ) );
+}
+
+
+
+bool        EffectNode::connectChildStaticVideoInputToParentStaticVideoOutput( QString const & childInName,  QString const & fatherOutName )
+{
+    OutSlot<LightVideoFrame>*  out;
+    EffectNode*                father;
+    InSlot<LightVideoFrame>*  in;
+
+    if ( ( in = getStaticVideoInput( childInName ) ) == NULL )
+        return ( false );
+    if ( ( father = getPrivateFather() ) == NULL )
+        return ( false );
+    if ( ( out = father->getInternalStaticVideoOutput( fatherOutName ) ) == NULL )
+        return ( false );
+    return ( out->connect( *in ) );
+}
+
+bool        EffectNode::connectChildStaticVideoInputToParentStaticVideoOutput( QString const & childInName, quint32 fatherOutId )
+{
+    OutSlot<LightVideoFrame>*  out;
+    EffectNode*                father;
+    InSlot<LightVideoFrame>*  in;
+
+    if ( ( in = getStaticVideoInput( childInName ) ) == NULL )
+        return ( false );
+    if ( ( father = getPrivateFather() ) == NULL )
+        return ( false );
+    if ( ( out = father->getInternalStaticVideoOutput( fatherOutId ) ) == NULL )
+        return ( false );
+    return ( out->connect( *in ) );
+}
+
+bool        EffectNode::connectChildStaticVideoInputToParentStaticVideoOutput( quint32 childInId,  QString const & fatherOutName )
+{
+    OutSlot<LightVideoFrame>*  out;
+    EffectNode*                father;
+    InSlot<LightVideoFrame>*  in;
+
+    if ( ( in = getStaticVideoInput( childInId ) ) == NULL )
+        return ( false );
+    if ( ( father = getPrivateFather() ) == NULL )
+        return ( false );
+    if ( ( out = father->getInternalStaticVideoOutput( fatherOutName ) ) == NULL )
+        return ( false );
+    return ( out->connect( *in ) );
+}
+
+bool        EffectNode::connectChildStaticVideoInputToParentStaticVideoOutput( quint32 childInId, quint32 fatherOutId )
+{
+    OutSlot<LightVideoFrame>*  out;
+    EffectNode*                father;
+    InSlot<LightVideoFrame>*  in;
+
+    if ( ( in = getStaticVideoInput( childInId ) ) == NULL )
+        return ( false );
+    if ( ( father = getPrivateFather() ) == NULL )
+        return ( false );
+    if ( ( out = father->getInternalStaticVideoOutput( fatherOutId ) ) == NULL )
+        return ( false );
+    return ( out->connect( *in ) );
+}
+
 
 //
-//
+// DEPRECATED
 //
 
 InSlot<LightVideoFrame> &               EffectNode::getVideoInput(quint32 id)
