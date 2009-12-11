@@ -189,7 +189,7 @@ void        EffectNode::resetVisitState( void )
     return ;
 }
 
-bool        EffectNode::wasItVisited( void )
+bool        EffectNode::wasItVisited( void ) const
 {
     return ( m_visited );
 }

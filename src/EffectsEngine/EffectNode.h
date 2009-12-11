@@ -87,7 +87,7 @@ class	EffectNode : public IEffectNode
     void        resetAllChildsNodesVisitState( void );
     void        setVisited( void );
     void        resetVisitState( void );
-    bool        wasItVisited( void );
+    bool        wasItVisited( void ) const;
 
     // ================================================================= GET WIDGET ========================================================================
 
