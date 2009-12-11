@@ -91,6 +91,8 @@ private:
     quint32                     m_id;
     QString                     m_name;
     EffectNode*                 m_father;
+
+    friend class                EffectNode;
 };
 
 template<typename T>

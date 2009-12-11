@@ -26,6 +26,7 @@
 
 #include <QtGlobal>
 #include <QString>
+#include <QQueue>
 #include <QHash>
 #include <QObject>
 #include <QString>
@@ -84,8 +85,9 @@ class	EffectNode : public IEffectNode
     void        transmitDatasFromInputsToInternalsOutputs( void );
     void        transmitDatasFromInternalsInputsToOutputs( void );
     void        resetAllChildsNodesVisitState( void );
-    void        nodeVisited( void );
+    void        setVisited( void );
     void        resetVisitState( void );
+    bool        wasItVisited( void );
 
     // ================================================================= GET WIDGET ========================================================================
 
@@ -215,7 +217,7 @@ class	EffectNode : public IEffectNode
 
     QList<InSlot<LightVideoFrame>*>		getInternalsStaticsVideosInputsList( void ) const;
     QList<OutSlot<LightVideoFrame>*>		getInternalsStaticsVideosOutputsList( void ) const;
-    //  QList<InSlot<AudioSoundSample>*>		getStaticsAudiosInputsList( void ) const;
+   //  QList<InSlot<AudioSoundSample>*>		getStaticsAudiosInputsList( void ) const;
     //     QList<OutSlot<AudioSoundSample>*>		getStaticsAudiosOutputsList( void ) const;
     //     QList<InSlot<qreal>*>		getStaticsControlsInputsList( void ) const;
     //     QList<OutSlot<qreal>*>		getStaticsControlsOutputsList( void ) const;

@@ -87,8 +87,44 @@ void                                    EffectNode::render( void )
     return ;
 }
 
-void        EffectNode::renderSubNodes( void )
+void                                        EffectNode::renderSubNodes( void )
 {
+    QList<OutSlot<LightVideoFrame>*>        intOuts = getInternalsStaticsVideosOutputsList() ;
+    QList<OutSlot<LightVideoFrame>*>::iterator        intOutsIt = intOuts.begin();
+    QList<OutSlot<LightVideoFrame>*>::iterator        intOutsEnd = intOuts.end();
+    QQueue<EffectNode*>                     nodeQueue;
+    EffectNode*                             toQueueNode;
+    EffectNode*                             currentNode;
+    InSlot<LightVideoFrame>*                currentIn;
+
+    for ( ; intOutsIt != intOutsEnd; ++intOutsIt )
+        if ( ( currentIn = (*intOutsIt)->getInSlotPtr() ) != NULL )
+        {
+            toQueueNode = currentIn->getPrivateFather();
+            if ( toQueueNode != this )
+                nodeQueue.enqueue( toQueueNode );
+        }
+
+    while ( nodeQueue.empty() == false )
+    {
+        currentNode = nodeQueue.dequeue();
+        if ( currentNode->wasItVisited() == false )
+        {
+            QList<OutSlot<LightVideoFrame>*>                  outs = currentNode->getStaticsVideosOutputsList() ;
+            QList<OutSlot<LightVideoFrame>*>::iterator        outsIt = outs.begin();
+            QList<OutSlot<LightVideoFrame>*>::iterator        outsEnd = outs.end();
+
+            for ( ; outsIt != outsEnd; ++outsIt )
+                if ( ( currentIn = (*outsIt)->getInSlotPtr() ) != NULL )
+                {
+                    toQueueNode = currentIn->getPrivateFather();
+                    if ( toQueueNode != this )
+                        nodeQueue.enqueue( toQueueNode );
+                }
+            currentNode->render();
+            currentNode->setVisited();
+        }
+    }
     return ;
 }
 
@@ -141,7 +177,7 @@ void        EffectNode::resetAllChildsNodesVisitState( void )
     return ;
 }
 
-void        EffectNode::nodeVisited( void )
+void        EffectNode::setVisited( void )
 {
     m_visited = true;
     return ;
@@ -151,6 +187,11 @@ void        EffectNode::resetVisitState( void )
 {
     m_visited = false;
     return ;
+}
+
+bool        EffectNode::wasItVisited( void )
+{
+    return ( m_visited );
 }
 
 //
