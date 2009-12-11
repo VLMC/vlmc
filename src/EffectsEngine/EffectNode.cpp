@@ -82,7 +82,7 @@ void                                    EffectNode::render( void )
         renderSubNodes();
         if ( m_father != NULL)
             transmitDatasFromInternalsInputsToOutputs();
-        resetAllNodesVisitState();
+        resetAllChildsNodesVisitState();
     }
     return ;
 }
@@ -94,12 +94,12 @@ void        EffectNode::renderSubNodes( void )
 
 void        EffectNode::transmitDatasFromInputsToInternalsOutputs( void )
 {
-    if ( getNBStaticsVideoInputs() != 0 )
+    if ( getNBStaticsVideosInputs() != 0 )
     {
         QList<InSlot<LightVideoFrame>*>             ins = getStaticsVideosInputsList();
-        QList<OutSlot<LightVideoFrame>*>            intOuts = getInternalsStaticsVideosOutputsList();;
-        QList<OutSlot<LightVideoFrame>*>::iterator  insIt = ins.begin();
-        QList<OutSlot<LightVideoFrame>*>::iterator  insEnd = ins.end();
+        QList<OutSlot<LightVideoFrame>*>            intOuts = getInternalsStaticsVideosOutputsList();
+        QList<InSlot<LightVideoFrame>*>::iterator  insIt = ins.begin();
+        QList<InSlot<LightVideoFrame>*>::iterator  insEnd = ins.end();
         QList<OutSlot<LightVideoFrame>*>::iterator  intOutsIt = intOuts.begin();
         QList<OutSlot<LightVideoFrame>*>::iterator  intOutsEnd = intOuts.end();
 
@@ -111,12 +111,12 @@ void        EffectNode::transmitDatasFromInputsToInternalsOutputs( void )
 
 void        EffectNode::transmitDatasFromInternalsInputsToOutputs( void )
 {
-    if ( getNBStaticsVideoOutputs() != 0 )
+    if ( getNBStaticsVideosOutputs() != 0 )
     {
         QList<InSlot<LightVideoFrame>*>             intIns = getInternalsStaticsVideosInputsList();
-        QList<OutSlot<LightVideoFrame>*>            outs = getStaticsVideosOutputsList();;
-        QList<OutSlot<LightVideoFrame>*>::iterator  intInsIt = intIns.begin();
-        QList<OutSlot<LightVideoFrame>*>::iterator  intInsEnd = intIns.end();
+        QList<OutSlot<LightVideoFrame>*>            outs = getStaticsVideosOutputsList();
+        QList<InSlot<LightVideoFrame>*>::iterator  intInsIt = intIns.begin();
+        QList<InSlot<LightVideoFrame>*>::iterator  intInsEnd = intIns.end();
         QList<OutSlot<LightVideoFrame>*>::iterator  outsIt = outs.begin();
         QList<OutSlot<LightVideoFrame>*>::iterator  outsEnd = outs.end();
 
@@ -141,13 +141,13 @@ void        EffectNode::resetAllChildsNodesVisitState( void )
     return ;
 }
 
-void        nodeVisited( void )
+void        EffectNode::nodeVisited( void )
 {
     m_visited = true;
     return ;
 }
 
-void        resetVisitState( void )
+void        EffectNode::resetVisitState( void )
 {
     m_visited = false;
     return ;
