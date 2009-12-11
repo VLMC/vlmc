@@ -126,8 +126,8 @@ void            ImportModel::audioSpectrumComputed( Media *media )
 
 void            ImportModel::loadMedia( Media* media )
 {
-    connect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ) );
-    connect( media, SIGNAL( snapshotComputed(Media*) ), this, SLOT( snapshotComputed(Media*) ) );
+    connect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ), Qt::QueuedConnection );
+    connect( media, SIGNAL( snapshotComputed(Media*) ), this, SLOT( snapshotComputed(Media*) ), Qt::QueuedConnection );
     connect( media, SIGNAL( audioSpectrumComputed( Media* ) ), this, SLOT( audioSpectrumComputed(Media*) ) );
     MetaDataManager::getInstance()->computeMediaMetadata( media );
 }
