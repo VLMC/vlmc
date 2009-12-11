@@ -65,13 +65,6 @@ public:
     void                setName( QString const & name );
     void                setFather( EffectNode* father );
 
-    // BINDING METHODS
-
-    bool     bindOn( InSlot<T>& dest );
-    T**      getBinded( InSlot<T>& src );
-    bool     unbind( void );
-    void     getUnbinded( void );
-
 private:
 
     // GETTING PRIVATES INFOS
@@ -94,10 +87,7 @@ private:
     OutSlot<T>*			m_OutSlotPtr;
     T				m_shared;
     T*				m_currentShared;
-    T**                         m_metaCurrentShared;
 
-    OutSlot<T>*                 m_bindSrc;
-    OutSlot<T>*                 m_bindDst;
     quint32                     m_id;
     QString                     m_name;
     EffectNode*                 m_father;
@@ -113,14 +103,14 @@ T			InSlot<T>::m_defaultValue = 0;
 // CTOR & DTOR
 
 template<typename T>
-InSlot<T>::InSlot() : m_metaCurrentShared( &m_currentShared ), m_bindSrc( NULL ), m_bindDst( NULL ), m_id( 0 ), m_name( "" ), m_father( NULL )
+InSlot<T>::InSlot() : m_id( 0 ), m_name( "" ), m_father( NULL )
 {
     resetOutSlotPtr();
     setCurrentSharedToDefault();
 }
 
 template<typename T>
-InSlot<T>::InSlot(InSlot const &) : m_metaCurrentShared( &m_currentShared ), m_bindSrc( NULL ), m_bindDst( NULL ), m_id( 0 ), m_name( "" ), m_father( NULL )
+InSlot<T>::InSlot(InSlot const &) : m_id( 0 ), m_name( "" ), m_father( NULL )
 {
     resetOutSlotPtr();
     setCurrentSharedToDefault();
@@ -129,11 +119,8 @@ InSlot<T>::InSlot(InSlot const &) : m_metaCurrentShared( &m_currentShared ), m_b
 template<typename T>
 InSlot<T>&		InSlot<T>::operator=(InSlot const &)
 {
-    m_bindSrc = NULL;
-    m_bindDst = NULL;
     m_id =  0;
     m_name =  "";
-    m_metaCurrentShared = &m_currentShared;
     m_father = NULL;
     resetOutSlotPtr();
     setCurrentSharedToDefault();
@@ -151,17 +138,14 @@ InSlot<T>::~InSlot()
 template<typename T>
 InSlot<T> const &	InSlot<T>::operator>>( T& val ) const
 {
-    if ( m_bindSrc == NULL )
-        val = ( **m_metaCurrentShared );
+    val = (*m_currentShared );
     return ( (*this) );
 }
 
 template<typename T>
 InSlot<T>::operator T const & () const
 {
-    if ( m_bindSrc == NULL )
-        return ( **m_metaCurrentShared );
-    return m_defaultValue;
+    return ( *m_currentShared );
 }
 
 // GETTING INFOS
@@ -230,8 +214,6 @@ EffectNode*          InSlot<T>::getPrivateFather( void ) const
 template<typename T>
 bool	InSlot<T>::connect( OutSlot<T>& toconnect )
 {
-    if ( m_bindDst != NULL )
-        return ( false );
   if ( m_OutSlotPtr != NULL )
     return ( false );
   toconnect.setPipe( &m_shared );
@@ -244,8 +226,6 @@ bool	InSlot<T>::connect( OutSlot<T>& toconnect )
 template<typename T>
 bool	InSlot<T>::disconnect( void )
 {
-    if ( m_bindDst != NULL )
-        return ( false );
   if (m_OutSlotPtr == NULL)
     return ( false );
   m_OutSlotPtr->resetPipe();
@@ -253,46 +233,6 @@ bool	InSlot<T>::disconnect( void )
   resetOutSlotPtr();
   setCurrentSharedToDefault();
   return ( true );
-}
-
-// BINDIND METHODS
-
-template<typename T>
-bool	InSlot<T>::bindOn( InSlot<T>& dest )
-{
-    if ( ( m_OutSlotPtr != NULL ) || ( m_bindDst != NULL ) )
-        return ( false );
-    if ( ( m_metaCurrentShared = getBinded( *this ) ) == NULL )
-        return ( false );
-    m_bindDst = &dest;
-    return ( true );
-}
-
-template<typename T>
-T**     InSlot<T>::getBinded( InSlot<T>& src )
-{
-    if ( m_bindSrc != NULL )
-        return ( NULL );
-    m_bindSrc = &src;
-    return ( m_metaCurrentShared );
-}
-
-template<typename T>
-bool	InSlot<T>::unbind( void )
-{
-    if ( ( m_OutSlotPtr != NULL ) || ( m_bindDst == NULL ) )
-        return ( false );
-    m_bindDst->m_bindSrc = NULL;
-    m_bindDst = NULL;
-    m_metaCurrentShared = &m_currentShared;
-    return ( true );
-}
-
-template<typename T>
-void     InSlot<T>::getUnbinded( void )
-{
-    m_bindSrc = NULL;
-    return ;
 }
 
 // OTHERS
