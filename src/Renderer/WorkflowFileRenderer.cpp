@@ -24,12 +24,12 @@
 #include "SettingsManager.h"
 
 WorkflowFileRenderer::WorkflowFileRenderer( const QString& outputFileName ) :
+        WorkflowRenderer(),
         m_outputFileName( outputFileName )
 {
     m_dialog = new WorkflowFileRendererDialog;
     m_dialog->setModal( true );
     m_dialog->setOutputFileName( outputFileName );
-    m_mediaPlayer = new LibVLCpp::MediaPlayer;
     connect( m_dialog->m_ui.cancelButton, SIGNAL( clicked() ), this, SLOT( cancelButtonClicked() ) );
 }
 
@@ -44,23 +44,18 @@ void        WorkflowFileRenderer::run()
     m_outputFps = SettingsManager::getInstance()->getValue( "VLMC", "VLMCOutPutFPS" )->get().toDouble();
 
     //Media as already been created an mainly initialized by the WorkflowRenderer
-    m_media->addOption( ":no-audio" );
-    m_media->addOption( "no-sout-audio" );
-    m_media->addOption( ":fake" );
-    //sprintf(buffer, ":fake-fps=%i", FPS );
-    //m_media->addOption( buffer );
+    m_media->addOption( ":no-sout-audio" );
     QString     transcodeStr = ":sout=#transcode{vcodec=mp4v,vb=800,acodec=mpga,ab=128,no-hurry-up}"
                                ":standard{access=file,mux=ps,dst=\""
                           + m_outputFileName + "\"}";
     m_media->addOption( transcodeStr.toStdString().c_str() );
 
-    sprintf( buffer, ":sout-transcode-fps=%f", m_outputFps );
-    m_media->addOption( buffer );
+//    sprintf( buffer, ":sout-transcode-fps=%f", m_outputFps );
+//    m_media->addOption( buffer );
 
     m_mediaPlayer->setMedia( m_media );
 
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( stop() ) );
-    connect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( positionChanged( float ) ) );
 
     m_dialog->show();
 
@@ -86,4 +81,9 @@ void    WorkflowFileRenderer::cancelButtonClicked()
 float   WorkflowFileRenderer::getFps() const
 {
     return m_outputFps;
+}
+
+void        WorkflowFileRenderer::__frameChanged( qint64 frame, MainWorkflow::FrameChangedReason reason )
+{
+    m_dialog->setProgressBarValue( frame * 100 / m_mainWorkflow->getLengthFrame() );
 }

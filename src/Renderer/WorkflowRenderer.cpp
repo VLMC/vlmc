@@ -134,15 +134,16 @@ void        WorkflowRenderer::startPreview()
     //Media player part: to update PreviewWidget
     connect( m_mediaPlayer, SIGNAL( playing() ),    this,   SLOT( __videoPlaying() ), Qt::DirectConnection );
     connect( m_mediaPlayer, SIGNAL( paused() ),     this,   SLOT( __videoPaused() ), Qt::DirectConnection );
+    //FIXME:: check if this doesn't require Qt::QueuedConnection
     connect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SLOT( __videoStopped() ) );
 
     m_mainWorkflow->setFullSpeedRender( false );
     m_mainWorkflow->startRender();
-    m_mediaPlayer->play();
     m_isRendering = true;
     m_paused = false;
     m_stopping = false;
     m_outputFps = SettingsManager::getInstance()->getValue( "VLMC", "VLMCOutPutFPS" )->get().toDouble();
+    m_mediaPlayer->play();
 }
 
 void        WorkflowRenderer::nextFrame()
