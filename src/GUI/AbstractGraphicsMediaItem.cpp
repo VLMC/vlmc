@@ -21,6 +21,9 @@
  *****************************************************************************/
 
 #include "AbstractGraphicsMediaItem.h"
+#include "TracksView.h"
+
+#include "Commands.h"
 
 AbstractGraphicsMediaItem::AbstractGraphicsMediaItem() :
         oldTrackNumber( -1 ), oldPosition( -1 ), m_tracksView( NULL ),
@@ -106,7 +109,11 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
     if ( size < 0 ) return;
 
     if ( from == BEGINNING )
-        clip()->setEnd( clip()->getBegin() + size );
+    {
+//        clip()->setEnd( clip()->getBegin() + size );
+        tracksView()->getRenderer()->resizeClip( clip(), clip()->getBegin(), clip()->getBegin() + size, boundingRect().x(),
+                                                 trackNumber(), MainWorkflow::VideoTrack );
+    }
     else
     {
         qint64 oldLength = clip()->getLength();
@@ -115,7 +122,9 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
             qWarning( "Warning: resizing a region with a size below 0" );
             size += clip()->getEnd() - size;
         }
-        clip()->setBegin( qMax( clip()->getEnd() - size, (qint64)0 ) );
+//        clip()->setBegin( qMax( clip()->getEnd() - size, (qint64)0 ) );
+        tracksView()->getRenderer()->resizeClip( clip(), qMax( clip()->getEnd() - size, (qint64)0 ), clip()->getEnd(),
+                                                 startPos() + ( oldLength - size ), trackNumber(), MainWorkflow::VideoTrack );
         setStartPos( startPos() + ( oldLength - size ) );
     }
 

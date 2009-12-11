@@ -95,22 +95,40 @@ namespace Commands
                 QVector<ClipActionInfo>         m_clips;
         };
 
+        /**
+         *  \brief  This command is used to resize a clip.
+         *  \param  renderer: The workflow renderer
+         *  \param  uuid: The clip's uuid
+         *  \param  newBegin: The clip's new beginning
+         *  \param  newEnd: The clip's new end
+         *  \param  newPos: if the clip was resized from the beginning, it is moved
+         *                  so we have to know its new position
+         *  \param  trackId:The track in which the modification occurs. This is only
+         *                  used when the clip is resized from the beginning.
+         *  \param  trackType:  The track's type (Audio or Video)
+        */
         NEW_COMMAND( ResizeClip )
         {
             public:
-                ResizeClip( ::MainWorkflow* mainWorkflow, const QUuid& uuid, unsigned int trackId,
-                            qint64 newBegin, qint64 newEnd,
-                            ::MainWorkflow::TrackType trackType );
+                ResizeClip( WorkflowRenderer* renderer, const QUuid& uuid,
+                            qint64 newBegin, qint64 newEnd, qint64 oldBegin,
+                            qint64 oldEnd, qint64 newPos, qint64 oldPos,
+                            uint32_t trackId, ::MainWorkflow::TrackType trackType );
                 virtual void    redo();
                 virtual void    undo();
             private:
-                ::MainWorkflow*             m_mainWorkflow;
-                qint64                      m_oldBegin;
-                qint64                      m_oldEnd;
+                WorkflowRenderer*           m_renderer;
+                QUuid                       m_uuid;
                 qint64                      m_newBegin;
                 qint64                      m_newEnd;
+                qint64                      m_oldBegin;
+                qint64                      m_oldEnd;
+                qint64                      m_newPos;
+                qint64                      m_oldPos;
+                uint32_t                    m_trackId;
                 Clip*                       m_clip;
                 ::MainWorkflow::TrackType   m_trackType;
+                bool                        m_undoRedoAction;
         };
 
         NEW_COMMAND( SplitClip )

@@ -53,7 +53,12 @@ class   WorkflowRenderer : public GenericRenderer
         void                removeClip( const QUuid& uuid, uint32_t trackId, MainWorkflow::TrackType trackType );
         Clip*               split( Clip* toSplit, uint32_t trackId, qint64 newClipPos, qint64 newClipBegin, MainWorkflow::TrackType trackType );
         void                unsplit( Clip* origin, Clip* splitted, uint32_t trackId, qint64 oldEnd, MainWorkflow::TrackType trackType );
-        void                resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd );
+        /**
+         *  \param  undoRedoAction: if true, the potential move resulting from the resize will be emmited to the GUI.
+         *                          if this is not an undo redo action, the GUI is already aware of the move.
+         */
+        void                resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd, qint64 newPos,
+                                        uint32_t trackId, MainWorkflow::TrackType trackType, bool undoRedoAction = false );
 
         static void*        lock( void* datas );
         static void*        lockAudio( void* datas );

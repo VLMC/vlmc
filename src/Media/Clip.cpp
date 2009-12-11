@@ -184,6 +184,8 @@ void                Clip::setEnd( qint64 end )
 void                Clip::setBoundaries( qint64 newBegin, qint64 newEnd )
 {
     Q_ASSERT( newBegin < newEnd );
+    if ( newBegin == m_begin && m_end == newEnd )
+        return ;
     m_begin = newBegin;
     m_end = newEnd;
     computeLength();

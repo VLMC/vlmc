@@ -99,6 +99,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    previousFrame();
 
         Clip*                   removeClip( const QUuid& uuid, unsigned int trackId, MainWorkflow::TrackType trackType );
+
         void                    moveClip( const QUuid& uuid, unsigned int oldTrack,
                                           unsigned int newTrack, qint64 pos,
                                           MainWorkflow::TrackType trackType, bool undoRedoCommand = false );
