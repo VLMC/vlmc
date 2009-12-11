@@ -39,7 +39,7 @@ WorkflowFileRenderer::~WorkflowFileRenderer()
 
 void        WorkflowFileRenderer::run()
 {
-    char        buffer[256];
+//    char        buffer[256];
 
     m_outputFps = SettingsManager::getInstance()->getValue( "VLMC", "VLMCOutPutFPS" )->get().toDouble();
 
@@ -83,7 +83,7 @@ float   WorkflowFileRenderer::getFps() const
     return m_outputFps;
 }
 
-void        WorkflowFileRenderer::__frameChanged( qint64 frame, MainWorkflow::FrameChangedReason reason )
+void        WorkflowFileRenderer::__frameChanged( qint64 frame, MainWorkflow::FrameChangedReason )
 {
     m_dialog->setProgressBarValue( frame * 100 / m_mainWorkflow->getLengthFrame() );
 }
