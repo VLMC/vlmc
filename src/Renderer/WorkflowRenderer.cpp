@@ -335,6 +335,7 @@ void    WorkflowRenderer::resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd
             m_mainWorkflow->moveClip( clip->getUuid(), trackId, trackId, newPos, trackType, undoRedoAction );
         }
         clip->setBoundaries( newBegin, newEnd );
+
 //    }
 }
 

@@ -132,7 +132,18 @@ void Commands::MainWorkflow::ResizeClip::redo()
 
 void Commands::MainWorkflow::ResizeClip::undo()
 {
-    m_renderer->resizeClip( m_clip, m_oldBegin, m_oldEnd, m_oldPos, m_trackId, m_trackType, m_undoRedoAction );
+    //This code is complete crap.
+    // We need to case, because when we redo a "begin-resize", we need to first resize, then move.
+    //In the other cases, we need to move, then resize.
+    if ( m_oldBegin == m_newBegin )
+    {
+        m_renderer->resizeClip( m_clip, m_oldBegin, m_oldEnd, m_oldPos, m_trackId, m_trackType, m_undoRedoAction );
+    }
+    else
+    {
+        m_clip->setBoundaries( m_oldBegin, m_oldEnd );
+        ::MainWorkflow::getInstance()->moveClip( m_clip->getUuid(), m_trackId, m_trackId, m_oldPos, m_trackType, m_undoRedoAction );
+    }
 }
 
 Commands::MainWorkflow::SplitClip::SplitClip( WorkflowRenderer* renderer, Clip* toSplit, uint32_t trackId,

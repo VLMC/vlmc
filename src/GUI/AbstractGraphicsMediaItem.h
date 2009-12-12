@@ -121,8 +121,10 @@ private:
     /// Pointer used to save the address of a linked item.
     AbstractGraphicsMediaItem* m_group;
 
-    qint64 m_width;
-    qint64 m_height;
+    qint64  m_width;
+    qint64  m_height;
+    //FIXME: this is a nasty forest boolean
+    bool    m_resizeExpected;
 };
 
 #endif // ABSTRACTGRAPHICSMEDIAITEM_H

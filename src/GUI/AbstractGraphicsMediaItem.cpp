@@ -100,27 +100,31 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
 {
     Q_ASSERT( clip() );
 
-    if ( size > clip()->getParent()->getNbFrames() )
-    {
-        qWarning( "AbstractGraphicsMediaItem: Can't expand a clip beyond its original size" );
+    if ( size > clip()->getParent()->getNbFrames() || size < 0 )
         return;
-    }
 
-    if ( size < 0 ) return;
+    qint64  realBegin = startPos() - clip()->getBegin();
+    qint64  realEnd = realBegin + clip()->getParent()->getNbFrames();
 
     if ( from == BEGINNING )
     {
-        tracksView()->getRenderer()->resizeClip( clip(), clip()->getBegin(), clip()->getBegin() + size, boundingRect().x(),
+        if ( clip()->getBegin() + size > realEnd )
+            return ;
+        tracksView()->getRenderer()->resizeClip( clip(), clip()->getBegin(), clip()->getBegin() + size, 0, //This parameter is unused in this case
                                                  trackNumber(), MainWorkflow::VideoTrack );
     }
     else
     {
+        qint64 newBegin = qMax( clip()->getEnd() - size, (qint64)0 );
+        if ( realBegin > newBegin + startPos() )
+            return ;
         qint64 oldLength = clip()->getLength();
         if ( ( clip()->getEnd() - size ) < 0 )
         {
             qWarning( "Warning: resizing a region with a size below 0" );
             size += clip()->getEnd() - size;
         }
+        m_resizeExpected = true;
         tracksView()->getRenderer()->resizeClip( clip(), qMax( clip()->getEnd() - size, (qint64)0 ), clip()->getEnd(),
                                                  startPos() + ( oldLength - size ), trackNumber(), MainWorkflow::VideoTrack );
         setStartPos( startPos() + ( oldLength - size ) );
@@ -131,6 +135,11 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
 
 void AbstractGraphicsMediaItem::adjustLength()
 {
+    if ( m_resizeExpected == true )
+    {
+        m_resizeExpected = false;
+        return ;
+    }
     Q_ASSERT( clip() );
     resize( clip()->getLength() );
 }
