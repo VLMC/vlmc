@@ -76,7 +76,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          *                      The nextFrame() method will always go for the next frame, whereas this one only does when
          *                      rendering isn't paused.
          */
-        void                    goToNextFrame();
+        void                    goToNextFrame( MainWorkflow::TrackType trackype );
 
         /**
          *  \brief              Set the workflow position by the desired frame
@@ -109,8 +109,8 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    pause();
         void                    unpause();
 
-        void                    nextFrame();
-        void                    previousFrame();
+        void                    nextFrame( TrackType trackType );
+        void                    previousFrame( TrackType trackType );
 
         Clip*                   removeClip( const QUuid& uuid, unsigned int trackId, MainWorkflow::TrackType trackType );
 
@@ -151,7 +151,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 
     private:
         QReadWriteLock*                 m_currentFrameLock;
-        qint64                          m_currentFrame;
+        qint64*                         m_currentFrame;
         qint64                          m_lengthFrame;
         /**
          *  This boolean describe is a render has been started

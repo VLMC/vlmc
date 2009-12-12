@@ -94,7 +94,6 @@ WorkflowRenderer::~WorkflowRenderer()
 
 int     WorkflowRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigned int *flags, size_t *bufferSize, void **buffer )
 {
-    static  char    computed = 0;
     int             ret = 1;
 
     EsHandler*  handler = reinterpret_cast<EsHandler*>( datas );
@@ -102,21 +101,16 @@ int     WorkflowRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigne
     *flags = 0;
     if ( handler->type == Video )
     {
-        ++computed;
         ret = lockVideo( handler->self, pts, bufferSize, buffer );
+	handler->self->m_mainWorkflow->goToNextFrame( MainWorkflow::VideoTrack );
     }
     else if ( handler->type == Audio )
     {
-        ++computed;
         ret = lockAudio( handler->self, pts, bufferSize, buffer );
+	handler->self->m_mainWorkflow->goToNextFrame( MainWorkflow::AudioTrack );
     }
     else
         qWarning() << "Invalid ES type";
-    if ( computed == 2 )
-    {
-        handler->self->m_mainWorkflow->goToNextFrame();
-        computed = 0;
-    }
 //    qDebug() << "ES Type:" << handler->type << "pts:" << *pts;
     return ret;
 }
@@ -224,12 +218,13 @@ void        WorkflowRenderer::startPreview()
 
 void        WorkflowRenderer::nextFrame()
 {
-    m_mainWorkflow->nextFrame();
+    //FIXME: won't work, just compile
+    m_mainWorkflow->nextFrame( MainWorkflow::VideoTrack );
 }
 
 void        WorkflowRenderer::previousFrame()
 {
-    m_mainWorkflow->previousFrame();
+    m_mainWorkflow->previousFrame( MainWorkflow::VideoTrack );
 }
 
 void        WorkflowRenderer::mainWorkflowPaused()
