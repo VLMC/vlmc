@@ -96,6 +96,7 @@ EffectsEngine::~EffectsEngine()
         EffectNode::deleteRootNode( "BypassRootNode" );
     delete m_inputLock;
 }
+
 //
 
 EffectNode* EffectsEngine::operator->( void )

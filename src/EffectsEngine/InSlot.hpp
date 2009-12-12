@@ -55,9 +55,9 @@ public:
 
     OutSlot<T>*		getOutSlotPtr( void ) const;
 
-    QString const       getName( void ) const;
-    quint32             getId( void ) const;
-    IEffectNode*        getFather( void ) const;
+    QString const             getName( void ) const;
+    quint32                   getId( void ) const;
+    IEffectNode const*        getFather( void ) const;
 
     // SETTING INFOS
 
@@ -171,7 +171,7 @@ QString const          InSlot<T>::getName( void ) const
 }
 
 template<typename T>
-IEffectNode*          InSlot<T>::getFather( void ) const
+IEffectNode const *          InSlot<T>::getFather( void ) const
 {
     return ( m_father );
 }

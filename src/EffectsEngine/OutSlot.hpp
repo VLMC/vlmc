@@ -62,7 +62,7 @@ public:
 
     QString const       getName( void ) const;
     quint32             getId( void ) const;
-    IEffectNode*         getFather( void ) const;
+    IEffectNode const *         getFather( void ) const;
 
  // SRTTING INFOS
 
@@ -189,7 +189,7 @@ QString const          OutSlot<T>::getName( void ) const
 }
 
 template<typename T>
-IEffectNode*         OutSlot<T>::getFather( void ) const
+IEffectNode const *         OutSlot<T>::getFather( void ) const
 {
     return ( m_father );
 }

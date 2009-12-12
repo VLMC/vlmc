@@ -105,4 +105,7 @@ la methode get default value
 
 ================ Classe de render ================
 
+-FAIRE UNE CLASSE DE RENDU MULTI-THREADE
+-REMPLACER LE BOOL VISIT PAR UN NOMBRE DE VISIT AUTORISE, POUR MODIFIER LA GRANULARITE DU MOTEUR
+
 ================ Classe d'automation ================
