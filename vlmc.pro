@@ -68,9 +68,10 @@ SOURCES += src/main.cpp \
     src/EffectsEngine/EffectPluginTypeManager.cpp \
     src/EffectsEngine/EffectPluginTypeLoader.cpp \
     src/EffectsEngine/EffectsEngine.cpp \
-    src/EffectsEngine/LightVideoFrame.cpp \
+    src/EffectsEngine/PluginsAPI/LightVideoFrame.cpp \
     src/EffectsEngine/EffectNode.cpp \
     src/Configuration/SettingsManager.cpp
+
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -128,16 +129,16 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/VideoProjectPreferences.h \
     src/Project/ProjectManager.h \
     src/EffectsEngine/EffectsEngine.h \
-    src/EffectsEngine/InSlot.hpp \
-    src/EffectsEngine/OutSlot.hpp \
-    src/EffectsEngine/LightVideoFrame.h \
+    src/EffectsEngine/PluginsAPI/InSlot.hpp \
+    src/EffectsEngine/PluginsAPI/OutSlot.hpp \
+    src/EffectsEngine/PluginsAPI/LightVideoFrame.h \
+    src/EffectsEngine/PluginsAPI/IEffectNode.h \
+    src/EffectsEngine/PluginsAPI/IEffectPluginCreator.h \
+    src/EffectsEngine/PluginsAPI/IEffectPlugin.h \
     src/EffectsEngine/EffectNode.h \
-    src/EffectsEngine/IEffectNode.h \
     src/EffectsEngine/EffectNodeFactory.h \
     src/EffectsEngine/EffectPluginTypeManager.h \
     src/EffectsEngine/EffectPluginTypeLoader.h \
-    src/EffectsEngine/IEffectPluginCreator.h \
-    src/EffectsEngine/IEffectPlugin.h \
     src/EffectsEngine/SemanticObjectManager.hpp \
     src/Configuration/SettingsManager.h
 FORMS += src/GUI/ui/MainWindow.ui \
@@ -169,6 +170,7 @@ INCLUDEPATH += src/LibVLCpp \
     src/Media \
     src/Project \
     src/EffectsEngine \
+    src/EffectsEngine/PluginsAPI \
     src/Configuration \
     src
 

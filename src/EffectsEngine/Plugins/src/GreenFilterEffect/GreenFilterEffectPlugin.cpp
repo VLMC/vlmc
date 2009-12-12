@@ -24,7 +24,7 @@
 #include <QtDebug>
 
 
-GreenFilterEffectPlugin::GreenFilterEffectPlugin() : m_enabled( true )
+GreenFilterEffectPlugin::GreenFilterEffectPlugin()
 {
 }
 
@@ -35,7 +35,8 @@ GreenFilterEffectPlugin::~GreenFilterEffectPlugin()
 void            GreenFilterEffectPlugin::init(IEffectNode* ien)
 {
     m_ien = ien;
-    m_ien->init(m_nbVideoInputs, m_nbVideoOutputs);
+    m_ien->createStaticVideoInput();
+    m_ien->createStaticVideoOutput();
     return ;
 }
 
@@ -44,28 +45,15 @@ void    GreenFilterEffectPlugin::render( void )
     quint32		i;
     LightVideoFrame	tmp;
 
-    m_ien->getVideoInput(0) >> tmp;
+    (*m_ien->getStaticVideoInput(1)) >> tmp;
     if (tmp->frame.octets != NULL)
     {
-        if (m_enabled)
-            for ( i = 0; i < tmp->nbpixels; ++i )
-            {
-                tmp->frame.pixels[i].Red = 0;
-                tmp->frame.pixels[i].Blue = 0;
-            }
-        m_ien->getVideoOutput(0) << tmp;
+        for ( i = 0; i < tmp->nbpixels; ++i )
+        {
+            tmp->frame.pixels[i].Red = 0;
+            tmp->frame.pixels[i].Blue = 0;
+        }
+        (*m_ien->getStaticVideoOutput(0)) << tmp;
     }
     return ;
-}
-
-void	GreenFilterEffectPlugin::enable( void )
-{
-  m_enabled = true;
-  return ;
-}
-
-void	GreenFilterEffectPlugin::disable( void )
-{
-  m_enabled = false;
-  return ;
 }

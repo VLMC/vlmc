@@ -42,15 +42,10 @@ class	GreenFilterEffectPlugin : public QObject, public IEffectPlugin
   // RENDER METHOD
 
   void	render( void );
-  void	enable( void );
-  void	disable( void );
 
  private:
 
-  bool                          m_enabled;
   IEffectNode*                  m_ien;
-  static	quint32 const   m_nbVideoInputs = 1;
-  static	quint32 const   m_nbVideoOutputs = 1;
 };
 
 #endif // GREENFILTEREFFECTPLUGIN_H_

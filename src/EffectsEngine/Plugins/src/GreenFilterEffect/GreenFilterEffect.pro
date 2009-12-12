@@ -6,14 +6,14 @@
 TARGET =      VLMC_GreenFilterEffectPlugin
 TEMPLATE      = lib
 CONFIG       += plugin
-INCLUDEPATH  += . ../../../VLMC_Headers
+INCLUDEPATH  += . ../../../PluginsAPI
 HEADERS      += GreenFilterEffectPlugin.h \
                 GreenFilterEffectPluginCreator.h \
-                ../../../VLMC_Headers/IEffectNode.h \
-                ../../../VLMC_Headers/IEffectPlugin.h \
-                ../../../VLMC_Headers/IEffectPluginCreator.h \
-                ../../../VLMC_Headers/InSlot.hpp \
-                ../../../VLMC_Headers/OutSlot.hpp \
-                ../../../VLMC_Headers/LightVideoFrame.h
-SOURCES      += GreenFilterEffectPlugin.cpp GreenFilterEffectPluginCreator.cpp ../../../VLMC_Headers/LightVideoFrame.cpp
+                ../../../PluginsAPI/IEffectNode.h \
+                ../../../PluginsAPI/IEffectPlugin.h \
+                ../../../PluginsAPI/IEffectPluginCreator.h \
+                ../../../PluginsAPI/InSlot.hpp \
+                ../../../PluginsAPI/OutSlot.hpp \
+                ../../../PluginsAPI/LightVideoFrame.h
+SOURCES      += GreenFilterEffectPlugin.cpp GreenFilterEffectPluginCreator.cpp ../../../PluginsAPI/LightVideoFrame.cpp
 DESTDIR       = ../../bin

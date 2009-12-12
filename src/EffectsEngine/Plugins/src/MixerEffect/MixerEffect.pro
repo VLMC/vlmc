@@ -6,14 +6,14 @@
 TARGET =      VLMC_MixerEffectPlugin
 TEMPLATE      = lib
 CONFIG       += plugin
-INCLUDEPATH  += . ../../../VLMC_Headers
+INCLUDEPATH  += . ../../../PluginsAPI
 HEADERS      += MixerEffectPlugin.h \
                 MixerEffectPluginCreator.h \
-                ../../../VLMC_Headers/IEffectNode.h \
-                ../../../VLMC_Headers/IEffectPlugin.h \
-                ../../../VLMC_Headers/IEffectPluginCreator.h \
-                ../../../VLMC_Headers/InSlot.hpp \
-                ../../../VLMC_Headers/OutSlot.hpp \
-                ../../../VLMC_Headers/LightVideoFrame.h
-SOURCES      += MixerEffectPlugin.cpp MixerEffectPluginCreator.cpp ../../../VLMC_Headers/LightVideoFrame.cpp
+                ../../../PluginsAPI/IEffectNode.h \
+                ../../../PluginsAPI/IEffectPlugin.h \
+                ../../../PluginsAPI/IEffectPluginCreator.h \
+                ../../../PluginsAPI/InSlot.hpp \
+                ../../../PluginsAPI/OutSlot.hpp \
+                ../../../PluginsAPI/LightVideoFrame.h
+SOURCES      += MixerEffectPlugin.cpp MixerEffectPluginCreator.cpp ../../../PluginsAPI/LightVideoFrame.cpp
 DESTDIR       = ../../bin

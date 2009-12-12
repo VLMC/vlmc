@@ -17,6 +17,9 @@ OK -rajouter un nom
 OK -rajouter  6 booleens pour les 6 types de connections dynamiques possibles activees ou non : AudioIn, VideoIn, ParamIn, AudioOut, VideoOut, ParamOut
 OK -rajouter un id pour pouvoir connaitre le nom d'un module auquelle un autre est connecte( grace a la classe mapping )
 
+
+ADDING CHILD COUNTING :D
+
 LISTE DES COMMANDES:
 
 ROUTE		CREATE			NODETYPE-ID
