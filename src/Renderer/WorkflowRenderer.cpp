@@ -315,22 +315,27 @@ void    WorkflowRenderer::unsplit( Clip* origin, Clip* splitted, uint32_t trackI
 void    WorkflowRenderer::resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd,
                                       qint64 newPos, uint32_t trackId, MainWorkflow::TrackType trackType, bool undoRedoAction /*= false*/ )
 {
-    if ( m_isRendering == true )
-    {
-        Action::Generic*    act = new Action::ResizeClip( clip, newBegin, newEnd );
-        Action::Generic*    act2 = new Action::MoveClip( m_mainWorkflow, clip->getUuid(), trackId, trackId, newPos, trackType, undoRedoAction );
-        QMutexLocker        lock( m_actionsMutex );
-        m_actions.addAction( act );
-        m_actions.addAction( act2 );
-    }
-    else
-    {
+//    if ( m_isRendering == true )
+//    {
+//        Action::Generic*    act = new Action::ResizeClip( clip, newBegin, newEnd );
+//        Action::Generic*    act2 = new Action::MoveClip( m_mainWorkflow, clip->getUuid(), trackId, trackId, newPos, trackType, undoRedoAction );
+//        QMutexLocker        lock( m_actionsMutex );
+//        if ( newBegin != clip->getBegin() )
+//        {
+//            qDebug() << "Resizing to pos:" << newPos;
+//            m_actions.addAction( act2 );
+//        }
+//        qDebug() << "setting boundaries: newEnd:" << newBegin << "newEnd:" << newEnd;
+//        m_actions.addAction( act );
+//    }
+//    else
+//    {
         if ( newBegin != clip->getBegin() )
         {
             m_mainWorkflow->moveClip( clip->getUuid(), trackId, trackId, newPos, trackType, undoRedoAction );
         }
         clip->setBoundaries( newBegin, newEnd );
-    }
+//    }
 }
 
 /////////////////////////////////////////////////////////////////////
