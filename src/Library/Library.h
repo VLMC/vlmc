@@ -54,6 +54,7 @@ public:
      *  \param  media   The media to add.
      */
     void                    addMedia( Media* media );
+    void                    deleteMedia( Media* media );
 
 private:
     Library();
@@ -67,6 +68,7 @@ private:
 
     QHash<QUuid, Media*>    m_medias;
     QHash<QUuid, Clip*>     m_clips;
+    QList<Media*>           m_mediaToDelete;
     template <typename T>
     T                       getElementByUuid( const QHash<QUuid, T>& container , const QUuid& uuid )
     {
@@ -89,6 +91,7 @@ public slots:
 
 private slots:
     void                    metaDataComputed( Media* );
+    void                    audioSpectrumComputed( Media* media );
 
 signals:
     void                    metadataRequired( Media* );

@@ -33,7 +33,7 @@
 #include "Media.h"
 #include "Singleton.hpp"
 
-#define DEFAULT_MAX_MEDIA_PLAYER 3
+#define DEFAULT_MAX_MEDIA_PLAYER 1
 
 class MetaDataManager : public QObject, public Singleton<MetaDataManager>
 {

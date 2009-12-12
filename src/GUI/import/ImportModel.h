@@ -51,7 +51,7 @@ public:
     void            removeClip( const QUuid& mediaId, const QUuid& clipId );
     QHash<QUuid, Media*>*    getMedias() const { return m_medias; }
     void            setFilter( const QStringList& filter ) { m_filters = filter; }
-    void            deleteAllAddedMedias();
+    void            removeAllMedias();
 
 signals:
     void            newMediaLoaded( Media* media );

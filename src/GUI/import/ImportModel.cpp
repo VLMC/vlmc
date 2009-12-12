@@ -86,7 +86,8 @@ void            ImportModel::metaDataComputed( Media* media )
     {
         Media* media;
         foreach( media, m_invalidMedias )
-            delete media;
+            removeMedia( media->getUuid() );
+            //delete media;
         m_nbLoadedMedias = 0;
         m_invalidMedias.clear();
         return;
@@ -94,7 +95,6 @@ void            ImportModel::metaDataComputed( Media* media )
 
     if ( m_nbLoadedMedias == m_loadingMedias )
     {
-        qDebug() << "Finished";
         if ( m_invalidMedias.count() > 0 )
         {
             QStringList list;
@@ -102,7 +102,8 @@ void            ImportModel::metaDataComputed( Media* media )
             foreach( media, m_invalidMedias )
             {
                 list.append( media->getFileName() );
-                delete media;
+                removeMedia( media->getUuid() );
+                //delete media;
             }
             QMessageBox::warning( NULL, QString( "Error!" ), QString( tr( "Error while loading media(s):\n%0" ) ).arg( list.join( QString("\n") ) ) );
             m_invalidMedias.clear();
@@ -114,14 +115,8 @@ void            ImportModel::metaDataComputed( Media* media )
 void            ImportModel::snapshotComputed( Media *media )
 {
     disconnect( media, SIGNAL( snapshotComputed( Media* ) ), this, SLOT( snapshotComputed( Media* ) ) );
-    emit updateMediaRequested( media );
-}
-
-void            ImportModel::audioSpectrumComputed( Media *media )
-{
-    disconnect( media, SIGNAL( audioSpectrumComputed( Media* ) ), this, SLOT( audioSpectrumComputed( Media* ) ) );
-    if ( m_invalidMedias.contains( media ) )
-        delete media;
+    if ( !m_invalidMedias.contains( media ) )
+        emit updateMediaRequested( media );
 }
 
 void            ImportModel::loadMedia( Media* media )
@@ -173,10 +168,22 @@ void            ImportModel::loadFile( const QFileInfo& fileInfo, int loadingMed
     }
 }
 
-void            ImportModel::removeMedia( const QUuid& mediaId)
+void            ImportModel::removeMedia( const QUuid& mediaId )
 {
-    m_medias->remove( mediaId );
-    deleteAllAddedMedias();
+    if ( m_medias->contains( mediaId ) && m_medias->value( mediaId )->getMetadata() == Media::ParsedWithAudioSpectrum )
+        delete m_medias->take( mediaId );
+    else
+        m_invalidMedias.append( m_medias->take( mediaId ) );
+}
+
+void            ImportModel::audioSpectrumComputed( Media *media )
+{
+    disconnect( media, SIGNAL( audioSpectrumComputed( Media* ) ), this, SLOT( audioSpectrumComputed( Media* ) ) );
+    if ( m_invalidMedias.contains( media ) )
+    {
+        m_invalidMedias.removeAll( media );
+        delete media;
+    }
 }
 
 void            ImportModel::removeClip( const QUuid& mediaId, const QUuid& clipId )
@@ -187,15 +194,9 @@ void            ImportModel::removeClip( const QUuid& mediaId, const QUuid& clip
     m_medias->value( mediaId )->removeClip( clipId );
 }
 
-void            ImportModel::deleteAllAddedMedias()
+void            ImportModel::removeAllMedias()
 {
-    m_invalidMedias.clear();
     QUuid id;
     foreach( id, m_medias->keys() )
-    {
-        if ( m_medias->value( id )->getMetadata() == Media::ParsedWithAudioSpectrum )
-            delete m_medias->value( id );
-        else
-            m_invalidMedias.append( m_medias->value( id ) );
-    }
+        removeMedia( id );
 }

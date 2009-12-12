@@ -51,7 +51,7 @@ class ImportController : public QDialog
         void    setUIMetaData( Media* media );
 
     protected:
-        void changeEvent(QEvent *e);
+        void changeEvent( QEvent *e );
 
     private:
         Ui::ImportController*       m_ui;

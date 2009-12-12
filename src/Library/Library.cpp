@@ -55,7 +55,29 @@ void        Library::removingMediaAsked( const QUuid& uuid )
     //and won't be abble to remove the ListViewMediaItem without it.
     //delete *it;
     m_medias.erase( it );
-    delete media;
+    //delete media;
+    deleteMedia( media );
+}
+
+void        Library::deleteMedia( Media *media )
+{
+    if ( media->getMetadata() == Media::ParsedWithAudioSpectrum )
+        delete media;
+    else
+    {
+        m_mediaToDelete.append( media );
+        connect( media, SIGNAL( audioSpectrumComputed( Media* ) ), this, SLOT( deleteMedia( Media* ) ) );
+    }
+}
+
+void        Library::audioSpectrumComputed( Media *media )
+{
+    disconnect( media, SIGNAL( audioSpectrumComputed( Media* ) ), this, SLOT( audioSpectrumComputed( Media* ) ) );
+    if ( m_mediaToDelete.contains( media ) )
+    {
+        m_mediaToDelete.removeAll( media );
+        delete media;
+    }
 }
 
 void        Library::metaDataComputed( Media* media )
@@ -80,11 +102,15 @@ void        Library::addMedia( Media* media )
 {
     QUuid id;
     foreach( id, m_medias.keys() )
+    {
+        qDebug() << m_medias.value( id )->getFileInfo()->filePath();
+        qDebug() << media->getFileInfo()->filePath();
         if ( m_medias.value( id )->getFileInfo()->filePath() == media->getFileInfo()->filePath() )
         {
-            delete media;
+            deleteMedia( media );
             return;
         }
+    }
     m_medias[media->getUuid()] = media;
     metaDataComputed( media );
 }

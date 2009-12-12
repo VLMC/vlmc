@@ -63,7 +63,7 @@ void    MetaDataWorker::compute()
     m_media->addConstantParam( ":vout=dummy" );
     m_mediaPlayer->setMedia( m_media->getVLCMedia() );
     if ( m_type != Audio )
-        connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( entrypointPlaying() ) );
+        connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( entrypointPlaying() ), Qt::QueuedConnection );
     m_mediaPlayer->play();
     m_media->flushVolatileParameters();
 }
@@ -72,7 +72,7 @@ void    MetaDataWorker::computeVideoMetaData()
 {
     //Disabling audio for this specific use of the media
     m_media->addVolatileParam( ":no-audio", ":audio" );
-    connect( m_mediaPlayer, SIGNAL( lengthChanged() ), this, SLOT( entrypointLengthChanged() ) );
+    connect( m_mediaPlayer, SIGNAL( lengthChanged() ), this, SLOT( entrypointLengthChanged() ), Qt::QueuedConnection );
 }
 
 void    MetaDataWorker::computeImageMetaData()
