@@ -108,7 +108,7 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
 
     if ( from == BEGINNING )
     {
-        if ( clip()->getBegin() + size > realEnd )
+        if ( realBegin + clip()->getBegin() + size > realEnd )
             return ;
         tracksView()->getRenderer()->resizeClip( clip(), clip()->getBegin(), clip()->getBegin() + size, 0, //This parameter is unused in this case
                                                  trackNumber(), MainWorkflow::VideoTrack );
