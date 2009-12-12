@@ -44,6 +44,7 @@ WorkflowRenderer::WorkflowRenderer() :
     m_waitCond = new QWaitCondition;
     m_renderVideoFrame = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes];
 
+
     m_videoEsHandler = new EsHandler;
     m_videoEsHandler->self = this;
     m_videoEsHandler->type = Video;
@@ -52,7 +53,7 @@ WorkflowRenderer::WorkflowRenderer() :
     m_audioEsHandler->self = this;
     m_audioEsHandler->type = Audio;
 
-    m_nbChannels = 1;
+    m_nbChannels = 2;
     m_rate = 48000;
 
     sprintf( videoString, "width=%i:height=%i:dar=%s:fps=%s:data=%lld:codec=%s:cat=2:caching=0",
@@ -122,22 +123,26 @@ int     WorkflowRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigne
 
 int     WorkflowRenderer::lockVideo( WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer )
 {
+    quint64 ptsDiff = 0;
     if ( self->m_stopping == false )
     {
         MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getSynchroneOutput( MainWorkflow::VideoTrack );
         memcpy( self->m_renderVideoFrame, (*(ret->video))->frame.octets, (*(ret->video))->nboctets );
         self->m_videoBuffSize = (*(ret->video))->nboctets;
+        ptsDiff = (*(ret->video))->ptsDiff;
     }
-    *pts = qRound64( (float)( self->m_pts * 1000000.0f ) / self->m_outputFps );
-    ++self->m_pts;
+    self->m_pts = *pts = ptsDiff + self->m_pts;
+    //qDebug() << "Video pts" << self->m_pts << "diff" << ptsDiff;
+    //*pts = qRound64( (float)( self->m_pts * 1000000.0f ) / self->m_outputFps );
+    //++self->m_pts;
     *buffer = self->m_renderVideoFrame;
     *bufferSize = self->m_videoBuffSize;
     return 0;
 }
 
-
 int     WorkflowRenderer::lockAudio(  WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer )
 {
+    quint64 ptsDiff;
     if ( self->m_paused == true )
         return 1;
     if ( self->m_stopping == false )
@@ -151,6 +156,7 @@ int     WorkflowRenderer::lockAudio(  WorkflowRenderer* self, int64_t *pts, size
         nbSample = self->m_renderAudioSample->nbSample;
         *buffer = self->m_renderAudioSample->buff;
         *bufferSize = self->m_renderAudioSample->size;
+        ptsDiff = self->m_renderAudioSample->ptsDiff;
     }
     else
     {
@@ -163,9 +169,12 @@ int     WorkflowRenderer::lockAudio(  WorkflowRenderer* self, int64_t *pts, size
         memset( WorkflowRenderer::m_silencedAudioBuffer, 0, buffSize );
         *buffer = WorkflowRenderer::m_silencedAudioBuffer;
         *bufferSize = buffSize;
+        ptsDiff = self->m_pts - self->m_audioPts;
     }
-    *pts = self->m_audioPts * 1000000.0f / self->m_rate;
-    self->m_audioPts += nbSample * self->m_nbChannels;
+    self->m_audioPts = *pts = self->m_audioPts + ptsDiff;
+    //qDebug() << "Audio pts" << self->m_audioPts << "diff" << ptsDiff;
+    //*pts = self->m_audioPts * 1000000.0f / self->m_rate;
+    //self->m_audioPts += nbSample * self->m_nbChannels;
     return 0;
 }
 

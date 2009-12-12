@@ -99,22 +99,29 @@ void    VideoClipWorkflow::lock( VideoClipWorkflow* cw, void** pp_ret, int size 
 {
     Q_UNUSED( size );
     cw->m_renderLock->lock();
-    *pp_ret = (*(cw->m_buffer))->frame.pixels;
+    *pp_ret = (*(cw->m_buffer))->frame.octets;
 }
 
-void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int width, int height, int bpp, int size )
+void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int width, int height, int bpp, int size, quint64 pts )
 {
     Q_UNUSED( buffer );
     Q_UNUSED( width );
     Q_UNUSED( height );
     Q_UNUSED( bpp );
     Q_UNUSED( size );
+    static quint64 previous_pts = pts;
+    static quint64 current_pts = pts;
     cw->m_renderLock->unlock();
     cw->m_stateLock->lockForWrite();
+
+    previous_pts = current_pts;
+    current_pts = pts;
 
     if ( cw->m_state == Rendering )
     {
         QMutexLocker    lock( cw->m_condMutex );
+
+        (*(cw->m_buffer))->ptsDiff = current_pts - previous_pts;
 
         cw->m_state = Sleeping;
         cw->m_stateLock->unlock();
@@ -123,6 +130,7 @@ void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int widt
             QMutexLocker    lock2( cw->m_renderWaitCond->getMutex() );
             cw->m_renderWaitCond->wake();
         }
+
         cw->emit renderComplete( cw );
 //        qDebug() << "Emmiting render completed";
 

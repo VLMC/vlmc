@@ -92,7 +92,7 @@ void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer
 void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffer,
                                       unsigned int channels, unsigned int rate,
                                       unsigned int nb_samples, unsigned int bits_per_sample,
-                                      unsigned int size, qint64 pts )
+                                      unsigned int size, quint64 pts )
 {
 //    qDebug() << "pts:" << pts << "nb channels" << channels << "rate:" << rate <<
 //            "size:" << size << "nb_samples:" << nb_samples;
@@ -100,12 +100,17 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
     Q_UNUSED( rate );
     Q_UNUSED( bits_per_sample );
     Q_UNUSED( size );
-    Q_UNUSED( pts );
+    static quint64 previous_pts = pts;
+    static quint64 current_pts = pts;
+    //Q_UNUSED( pts );
+    previous_pts = current_pts;
+    current_pts = pts;
 
     if ( cw->m_buffer->buff != NULL )
     {
         cw->m_buffer->nbSample = nb_samples;
         cw->m_buffer->nbChannels = channels;
+        cw->m_buffer->ptsDiff = current_pts - previous_pts;
     }
 
     cw->m_renderLock->unlock();

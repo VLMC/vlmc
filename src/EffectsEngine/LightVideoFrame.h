@@ -58,6 +58,7 @@ struct	VideoFrame : public QSharedData
   RawVideoFrame	frame;
   quint32	nbpixels;
   quint32	nboctets;
+  quint64   ptsDiff;
 };
 
 class	LightVideoFrame
@@ -75,7 +76,7 @@ public:
   VideoFrame const & operator*(void) const;
   VideoFrame* operator->(void);
   VideoFrame& operator*(void);
-  
+
 private:
 
   QSharedDataPointer<VideoFrame>	m_videoFrame;
