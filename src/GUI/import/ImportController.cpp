@@ -5,6 +5,7 @@
  *
  * Authors: Geoffroy Lacarriere <geoffroylaca@gmail.com>
  *          Thomas Boquet <thomas.boquet@gmail.com>
+ *          Clement Chavance <chavance.c@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -153,6 +154,7 @@ void        ImportController::clipSelection( const QUuid& uuid )
         if ( ( clip = media->clip( uuid ) ) != 0 )
             break;
     }
+    setUIMetaData( clip );
     if ( uuid != m_currentUuid )
         m_preview->stop();
     emit clipSelected( clip );
@@ -196,6 +198,26 @@ void    ImportController::setUIMetaData( Media* media )
     }
 }
 
+void        ImportController::setUIMetaData( Clip* clip )
+{
+    //compute clip length
+    QTime   time;
+    qint64  length = clip->getLengthSecond();
+    qDebug() << "Clip Length" << length;
+    time = time.addSecs( length );
+    qDebug() << time;
+    qDebug() << "time :" << time.toString( "hh:mm:ss" );
+    m_ui->durationValueLabel->setText( time.toString( "hh:mm:ss" ) );
+    //Filename || title
+    m_ui->nameValueLabel->setText( clip->getParent()->getFileInfo()->fileName() );
+    m_ui->nameValueLabel->setWordWrap( true );
+    setWindowTitle( clip->getParent()->getFileInfo()->fileName() + " " + tr( "properties" ) );
+    //Resolution
+    m_ui->resolutionValueLabel->setText( QString::number( clip->getParent()->getWidth() )
+            + " x " + QString::number( clip->getParent()->getHeight() ) );
+    //FPS
+    m_ui->fpsValueLabel->setText( QString::number( clip->getParent()->getFps() ) );
+}
 
 void    ImportController::forwardButtonClicked()
 {
@@ -245,7 +267,7 @@ void        ImportController::mediaDeletion( const QUuid& uuid )
 
     if ( uuid == m_currentUuid )
     {
-        setUIMetaData( NULL );
+        setUIMetaData( static_cast<Media*>( 0 ) );
         m_currentUuid = QUuid();
         m_preview->stop();
     }

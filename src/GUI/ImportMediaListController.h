@@ -5,6 +5,7 @@
  *
  * Authors: Geoffroy Lacarriere <geoffroylaca@gmail.com>
  *          Thomas Boquet <thomas.boquet@gmail.com>
+ *          Clement CHAVANCE <chavance.c@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

@@ -5,6 +5,7 @@
  *
  * Authors: Geoffroy Lacarriere <geoffroylaca@gmail.com>
  *          Thomas Boquet <thomas.boquet@gmail.com>
+ *          Clement CHAVANCE <chavance.c@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -79,7 +80,11 @@ void    ImportMediaListController::addClip( Clip* clip )
     connect( cell, SIGNAL( cellSelected( const QUuid& ) ), this, SLOT( clipSelection( const QUuid& ) ) );
     connect( cell, SIGNAL( cellDeleted( const QUuid& ) ), this, SLOT( clipDeletion( const QUuid& ) ) );
 
-    cell->setTitle( clip->getParent()->getFileName() + " " + m_mediaCellList->size() + 1 );
+    QString size;
+
+    size.setNum( m_mediaCellList->size() + 1 );
+
+    cell->setTitle( clip->getParent()->getFileName() + "_" + size );
     cell->setThumbnail( clip->getParent()->getSnapshot() );
     addCell( cell );
 

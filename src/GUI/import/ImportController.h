@@ -5,6 +5,7 @@
  *
  * Authors: Geoffroy Lacarriere <geoffroylaca@gmail.com>
  *          Thomas Boquet <thomas.boquet@gmail.com>
+ *          Clement Chavance <chavance.c@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -49,6 +50,7 @@ class ImportController : public QDialog
         ImportController(QWidget *parent = 0);
         ~ImportController();
         void    setUIMetaData( Media* media );
+        void    setUIMetaData( Clip* clip );
 
     protected:
         void changeEvent( QEvent *e );
