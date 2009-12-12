@@ -46,8 +46,17 @@ public:
     bool            closeProject();
     bool            askForSaveIfModified();
 
+    static void     signalHandler( int sig );
+
 private:
+    /**
+     *  This shouldn't be call directly.
+     *  It's only purpose it to write the project for very specific cases.
+     */
+    void            __saveProject( const QString& fileName );
     void            parseProjectNode( const QDomElement& node );
+    void            emergencyBackup();
+
     ProjectManager();
     ~ProjectManager();
 

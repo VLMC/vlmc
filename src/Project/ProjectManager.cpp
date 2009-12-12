@@ -25,10 +25,24 @@
 #include <QSettings>
 #include <QMessageBox>
 
+#include <signal.h>
+
 #include "ProjectManager.h"
 #include "Library.h"
 #include "MainWorkflow.h"
 #include "SettingsManager.h"
+#include "CrashHandler.h"
+
+void    ProjectManager::signalHandler( int sig )
+{
+    signal( sig, SIG_DFL );
+
+    ProjectManager::getInstance()->emergencyBackup();
+
+//    CrashHandler* ch = new CrashHandler();
+//    ch->exec();
+    raise( sig );
+}
 
 const QString   ProjectManager::unNamedProject = tr( "<Unnamed project>" );
 
@@ -41,6 +55,9 @@ ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
     const SettingValue* val = SettingsManager::getInstance()->getValue( "project", "ProjectName");
     connect( val, SIGNAL( changed( QVariant) ), this, SLOT(nameChanged(QVariant) ) );
     m_projectName = tr( "<Unsaved project>" );
+    signal( SIGSEGV, ProjectManager::signalHandler );
+//    signal( SIGINT, SIG_IGN );
+    signal( SIGFPE, ProjectManager::signalHandler );
 }
 
 ProjectManager::~ProjectManager()
@@ -150,6 +167,17 @@ void    ProjectManager::saveProject( bool saveAs /*= true*/ )
 {
     if ( checkProjectOpen( saveAs ) == false )
         return ;
+    __saveProject( m_projectFile->fileName() );
+    if ( saveAs == true )
+    {
+        QFileInfo   fInfo( *m_projectFile );
+        emit projectUpdated( fInfo.fileName(), true );
+    }
+    emit projectSaved();
+}
+
+void    ProjectManager::__saveProject( const QString &fileName )
+{
     QDomImplementation    implem = QDomDocument().implementation();
     //FIXME: Think about naming the project...
     QString name = "VLMCProject";
@@ -166,15 +194,10 @@ void    ProjectManager::saveProject( bool saveAs /*= true*/ )
 
     doc.appendChild( rootNode );
 
-    m_projectFile->open( QFile::WriteOnly );
-    m_projectFile->write( doc.toString().toAscii() );
-    m_projectFile->close();
-    if ( saveAs == true )
-    {
-        QFileInfo   fInfo( *m_projectFile );
-        emit projectUpdated( fInfo.fileName(), true );
-    }
-    emit projectSaved();
+    QFile   file( fileName );
+    file.open( QFile::WriteOnly );
+    file.write( doc.toString().toAscii() );
+    file.close();
 }
 
 void    ProjectManager::newProject( const QString &projectName )
@@ -227,4 +250,12 @@ bool    ProjectManager::askForSaveIfModified()
 void    ProjectManager::nameChanged( const QVariant& name )
 {
     m_projectName = name.toString();
+}
+
+void    ProjectManager::emergencyBackup()
+{
+    QString name = m_projectFile->fileName();
+    name += "~";
+    __saveProject( name );
+    qDebug() << "Emergency backup succeeded";
 }
