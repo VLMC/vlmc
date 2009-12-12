@@ -25,14 +25,63 @@
 
 // CTOR & DTOR
 
-EffectsEngine::EffectsEngine( void )
+EffectsEngine::EffectsEngine( void ) : m_patch( NULL ), m_bypassPatch( NULL )
 {
-   quint32	i;
-
    m_inputLock = new QReadWriteLock;
+
    m_videoInputs = new OutSlot<LightVideoFrame>[64];
    m_videoOutputs = new InSlot<LightVideoFrame>[64];
    start();
+
+   if ( EffectNode::createRootNode( "RootNode" ) == false )
+       qDebug() << "RootNode creation failed!!!!!!!!!!";
+   else
+   {
+       qDebug() << "RootNode successfully created.";
+       if ( EffectNode::createRootNode( "BypassRootNode" ) == false )
+           qDebug() << "BypassRootNode creation failed!!!!!!!!!!";
+       else
+       {
+           qDebug() << "BypassRootNode successfully created.";
+           m_patch = EffectNode::getRootNode( "RootNode" );
+           m_bypassPatch = EffectNode::getRootNode( "BypassRootNode" );
+           quint32	i;
+
+           for ( i = 0 ; i < 64; ++i)
+           {
+               qDebug() << "PONIES";
+               m_patch->createStaticVideoInput();
+               m_bypassPatch->createStaticVideoInput();
+           }
+           m_patch->createStaticVideoOutput();
+           m_bypassPatch->createStaticVideoOutput();
+
+           QList<QString> fuck = m_patch->getChildsTypesNamesList();
+
+           QList<QString>::iterator fuckit = fuck.begin();
+           QList<QString>::iterator fuckend = fuck.end();
+
+           for ( ; fuckit != fuckend; ++fuckit )
+           {
+               qDebug() << *fuckit;
+           }
+
+           m_patch->createChild( "libVLMC_MixerEffectPlugin" );
+           m_bypassPatch->createChild( "libVLMC_MixerEffectPlugin" );
+
+           EffectNode* tmp;
+
+           if ( ( tmp = m_patch->getChild( 1 ) ) == NULL )
+           {
+               qDebug() << "POJEF";
+           }
+           else
+           {
+               qDebug() << "NAME = " << tmp->getInstanceName();
+               qDebug() << "ID = " << tmp->getInstanceId();
+           }
+       }
+   }
 }
 
 EffectsEngine::~EffectsEngine()
@@ -40,7 +89,37 @@ EffectsEngine::~EffectsEngine()
     stop();
     delete [] m_videoInputs;
     delete [] m_videoOutputs;
+
+    if ( m_patch )
+        EffectNode::deleteRootNode( "RootNode" );
+    if ( m_bypassPatch )
+        EffectNode::deleteRootNode( "BypassRootNode" );
     delete m_inputLock;
+}
+//
+
+EffectNode* EffectsEngine::operator->( void )
+{
+    QWriteLocker    lock( m_inputLock );
+    return ( m_patch );
+}
+
+EffectNode const * EffectsEngine::operator->( void ) const
+{
+    QReadLocker    lock( m_inputLock );
+    return ( m_patch );
+}
+
+EffectNode* EffectsEngine::operator*( void )
+{
+    QWriteLocker    lock( m_inputLock );
+    return ( m_patch );
+}
+
+EffectNode const * EffectsEngine::operator*( void ) const
+{
+    QReadLocker    lock( m_inputLock );
+    return ( m_patch );
 }
 
 // MAIN METHOD
@@ -57,14 +136,12 @@ void	EffectsEngine::render( void )
 
 void		EffectsEngine::enable( void )
 {
-//   QWriteLocker    lock( m_inputLock );
-//   reinterpret_cast<GreenFilterEffectPlugin*>(m_effects[1]->getInternalPlugin())->enable(); // YES, I KNOW, IT'S HUGLY, BUT IT'S TEMPORARY
+    return ;
 }
 
 void		EffectsEngine::disable( void )
 {
-//   QWriteLocker    lock( m_inputLock );
-//   reinterpret_cast<GreenFilterEffectPlugin*>(m_effects[1]->getInternalPlugin())->disable(); // YES, I KNOW, IT'S HUGLY, BUT IT'S TEMPORARY (second time)
+    return ;
 }
 
 // INPUTS & OUTPUTS METHODS

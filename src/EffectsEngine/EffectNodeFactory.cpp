@@ -125,8 +125,43 @@ void                        EffectNodeFactory::createEmptyEffectNodeInstance( vo
     m_enByName[ instanceName ] = newNode;
     m_enById[ instanceId ] = newNode;
     m_nameById[ instanceId ] = instanceName;
-    qDebug() << "New empty EffectNode* created.";
+    qDebug() << "New empty EffectNode* created with name : " << instanceName ;
     return ;
+}
+
+bool                        EffectNodeFactory::createEmptyEffectNodeInstance( QString const & instanceName )
+{
+    if ( m_enByName.find( instanceName ) == m_enByName.end() )
+    {
+        EffectNode*         newNode;
+        quint32             instanceId;
+        QString             typeName("EmptyEffectNode");
+        quint32             typeId = 1;
+
+        newNode = new EffectNode();
+        if ( m_mapHoles > 0 )
+        {
+            instanceId = m_enById.key( NULL );
+            --m_mapHoles;
+        }
+        else
+        {
+            instanceId = m_higherFreeId;
+            ++m_higherFreeId;
+        }
+        newNode->setTypeId( typeId );
+        newNode->setTypeName( typeName );
+        newNode->setInstanceId( instanceId );
+        newNode->setInstanceName( instanceName );
+        newNode->setFather( m_father );
+        m_enByName[ instanceName ] = newNode;
+        m_enById[ instanceId ] = newNode;
+        m_nameById[ instanceId ] = instanceName;
+        qDebug() << "New empty EffectNode* created with name : " << instanceName ;
+        return ( true );
+    }
+    qDebug() << "You can't create a new empty EffectNode with name : " << instanceName << ", it already exist!";
+    return ( false );
 }
 
 bool                        EffectNodeFactory::createEffectNodeInstance( QString const & typeName )

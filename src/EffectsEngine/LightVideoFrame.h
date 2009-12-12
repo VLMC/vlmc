@@ -75,7 +75,7 @@ public:
   VideoFrame const & operator*(void) const;
   VideoFrame* operator->(void);
   VideoFrame& operator*(void);
-  
+
 private:
 
   QSharedDataPointer<VideoFrame>	m_videoFrame;

@@ -103,6 +103,12 @@ class	EffectNode : public IEffectNode
     IEffectNode*        getFather( void ) const;
     EffectNode*         getPrivateFather( void ) const;
 
+    // ================================================================= ROOT NODES ========================================================================
+
+    static bool                createRootNode( QString const & rootNodeName );
+    static bool                deleteRootNode( QString const & rootNodeName );
+    static EffectNode*         getRootNode( QString const & rootNodeName );
+
     // ================================================================= CHILD NODES ========================================================================
 
     // ------------------- CHILDS TYPES INFORMATIONS -------------------
@@ -124,6 +130,7 @@ class	EffectNode : public IEffectNode
     // ------------------- CREATE AND DELETE CHILDS -------------------
 
     bool        createEmptyChild( void );
+    bool        createEmptyChild( QString const & childName );
 
     bool        createChild( quint32 typeId );
     bool        createChild( QString const & typeName );
@@ -414,6 +421,10 @@ class	EffectNode : public IEffectNode
     ////
 
 private:
+
+    static EffectNodeFactory            m_renf;
+
+ private:
 
     EffectNodeFactory                   m_enf;
     EffectNode*                         m_father;

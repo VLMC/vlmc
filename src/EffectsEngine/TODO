@@ -1,8 +1,8 @@
 
 ================= EffectNode =================
 
--rajouter le mode conteneur, avec donc la generation des Out/InSlot necessaire pour proxyfier les infos,
- et le getter pour savoir s'il est en mode conteneur ou pas
+OK -rajouter le mode conteneur, avec donc la generation des Out/InSlot necessaire pour proxyfier les
+    infos, et le getter pour savoir s'il est en mode conteneur ou pas
 -rendre la classe thread-safe
 -rajouter les commandes suivantes (create, delete, connect, disconnect, set)
  OK -rajouter le chainage pere fils avec les methode pour set et get le pere
@@ -43,14 +43,14 @@ ROUTE		DUMP			NODEINSTANCE-ID
 
     // PENSER A POPER UN SLOTDYNAMIQUE QUAND IL SE FAIT DECO BRUTAL :D
 
-    // TO FINISH : CONNECTION AND BINDINDG
+OK ->    // TO FINISH : CONNECTION AND BINDINDG
 
     // INTERPRETER AND ITS PRIMITIVE METHODES
 
 OK ->    // REPLACE VIRTUAL PURE RENDER METHOD BY VIRTUAL RENDER METHOD WHO RENTER THE SUB-EFFECTS BY DEFAULT
     // WITH THE MULTI-THREAD RENDER CLASS
 
-    // EffectsFactory static instance into EffectNode
+OK ->    // EffectsFactory static instance into EffectNode
 
 OK ->    // SUB-EFFECTS MANAGEMENT METHODS
 
@@ -70,7 +70,7 @@ OK ->    // SUB-EFFECTS MANAGEMENT METHODS
 -rajouter le patch sous forme de GenericEffect conteneur
 -rendre la classe thread-safe
 
--rajouter un compteur pour chaque type de slot dynamiques
+OK -> -rajouter un compteur pour chaque type de slot dynamiques
 
 ================= InSlot & OutSlot =================
 
@@ -86,10 +86,8 @@ ou sinon pouvoir definir qu'un slot et persistant ou non
  OK -rajouter un getter pour recuper l'InSlot/OutSlot auquel l'OutSlot/InSlot est connecte
  OK -rajoute la deconnection a la destruction
 
--rajouter un une methode pour binder un InSlot sur un InSlot deja existant et pareil pour le OutSlot
--rajouter un id et des get/set pour pouvoir recuperer l'id (pour par exemple recuperer le nom d'un parametre sur lequel on est connecte via la classe de binding)
--rajouter un parametre template pour stocker le type dans lequel le slot est contenu et des methodes pour set/get le pointeur sur le contenant.
--rajouter le fait de pouvoir connecter, deconnecter, binder, debinder deux slot depuis n'importe lequel de la paire
+OK -> -rajouter un id et des get/set pour pouvoir recuperer l'id (pour par exemple recuperer le nom d'un parametre sur lequel on est connecte via la classe de binding)
+-rajouter le fait de pouvoir connecter, deconnecter, deux slot depuis n'importe lequel de la paire
 
 
 -rajouter un setteur pour setter une deleguate a appeler pour generer la commande quand un InSlot recoit une modification ou un connection/deconnection

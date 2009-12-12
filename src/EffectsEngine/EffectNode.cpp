@@ -22,6 +22,8 @@
 
 #include "EffectNode.h"
 
+EffectNodeFactory              EffectNode::m_renf;
+
 template class SemanticObjectManager< InSlot<LightVideoFrame> >;
 template class SemanticObjectManager< OutSlot<LightVideoFrame> >;
 
@@ -522,6 +524,31 @@ bool                    EffectNode::isAnEmptyNode( void ) const
         return ( false );
     return ( true);
 }
+    // ================================================================= ROOT NODES ========================================================================
+
+bool                EffectNode::createRootNode( QString const & rootNodeName )
+{
+    return ( EffectNode::m_renf.createEmptyEffectNodeInstance( rootNodeName ) );
+}
+
+bool                EffectNode::deleteRootNode( QString const & rootNodeName )
+{
+    return ( EffectNode::m_renf.deleteEffectNodeInstance( rootNodeName ) );
+}
+
+EffectNode*         EffectNode::getRootNode( QString const & rootNodeName )
+{
+    return ( EffectNode::m_renf.getEffectNodeInstance( rootNodeName ) );
+}
+
+//
+//
+//
+// PENSER UN JOUR A FAIRE LE RESTE DES WRAPPER , PAR ID, LIST, TRADUCTION, ETC.
+//
+//
+//
+
 
 // ================================================================= CHILD NODES ========================================================================
 
@@ -573,7 +600,7 @@ quint32                     EffectNode::getChildIdByChildName( QString const & c
 
 bool        EffectNode::createEmptyChild( void )
 {
-    if ( m_plugin != NULL)
+    if ( m_plugin == NULL)
     {
         m_enf.createEmptyEffectNodeInstance();
         return ( true );
@@ -581,30 +608,37 @@ bool        EffectNode::createEmptyChild( void )
     return ( false );
 }
 
+bool        EffectNode::createEmptyChild( QString const & childName )
+{
+    if ( m_plugin == NULL)
+        return ( m_enf.createEmptyEffectNodeInstance( childName ) );
+    return ( false );
+}
+
 bool        EffectNode::createChild( quint32 typeId )
 {
-    if ( m_plugin != NULL)
+    if ( m_plugin == NULL)
         return ( m_enf.createEffectNodeInstance( typeId ) );
     return ( false );
 }
 
 bool        EffectNode::createChild( QString const & typeName )
 {
-    if ( m_plugin != NULL)
+    if ( m_plugin == NULL)
         return ( m_enf.createEffectNodeInstance( typeName ) );
     return ( false );
 }
 
 bool        EffectNode::deleteChild( quint32 childId )
 {
-    if ( m_plugin != NULL)
+    if ( m_plugin == NULL)
         return ( m_enf.deleteEffectNodeInstance( childId ) );
     return ( false );
 }
 
 bool        EffectNode::deleteChild( QString const & childName )
 {
-    if ( m_plugin != NULL)
+    if ( m_plugin == NULL)
         return ( m_enf.deleteEffectNodeInstance( childName ) );
     return ( false );
 }
