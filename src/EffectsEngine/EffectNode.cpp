@@ -75,16 +75,23 @@ void                                    EffectNode::init( quint32 const nbvideoi
 
 void                                    EffectNode::render( void )
 {
+    setVisited();
     if ( m_plugin != NULL )
         m_plugin->render();
     else
     {
         if ( m_father != NULL)
+        {
             transmitDatasFromInputsToInternalsOutputs();
-        renderSubNodes();
-        if ( m_father != NULL)
+            renderSubNodes();
             transmitDatasFromInternalsInputsToOutputs();
-        resetAllChildsNodesVisitState();
+            resetAllChildsNodesVisitState();
+        }
+        else
+        {
+            renderSubNodes();
+            resetAllChildsNodesVisitState();
+        }
     }
     return ;
 }
@@ -94,10 +101,10 @@ void                                        EffectNode::renderSubNodes( void )
     QList<OutSlot<LightVideoFrame>*>        intOuts = getInternalsStaticsVideosOutputsList() ;
     QList<OutSlot<LightVideoFrame>*>::iterator        intOutsIt = intOuts.begin();
     QList<OutSlot<LightVideoFrame>*>::iterator        intOutsEnd = intOuts.end();
-    QQueue<EffectNode*>                     nodeQueue;
-    EffectNode*                             toQueueNode;
-    EffectNode*                             currentNode;
-    InSlot<LightVideoFrame>*                currentIn;
+    QQueue<EffectNode*>                               nodeQueue;
+    EffectNode*                                       toQueueNode;
+    EffectNode*                                       currentNode;
+    InSlot<LightVideoFrame>*                          currentIn;
 
     for ( ; intOutsIt != intOutsEnd; ++intOutsIt )
         if ( ( currentIn = (*intOutsIt)->getInSlotPtr() ) != NULL )
@@ -110,22 +117,18 @@ void                                        EffectNode::renderSubNodes( void )
     while ( nodeQueue.empty() == false )
     {
         currentNode = nodeQueue.dequeue();
-        if ( currentNode->wasItVisited() == false )
-        {
-            QList<OutSlot<LightVideoFrame>*>                  outs = currentNode->getStaticsVideosOutputsList() ;
-            QList<OutSlot<LightVideoFrame>*>::iterator        outsIt = outs.begin();
-            QList<OutSlot<LightVideoFrame>*>::iterator        outsEnd = outs.end();
+        QList<OutSlot<LightVideoFrame>*>                  outs = currentNode->getStaticsVideosOutputsList() ;
+        QList<OutSlot<LightVideoFrame>*>::iterator        outsIt = outs.begin();
+        QList<OutSlot<LightVideoFrame>*>::iterator        outsEnd = outs.end();
 
-            for ( ; outsIt != outsEnd; ++outsIt )
-                if ( ( currentIn = (*outsIt)->getInSlotPtr() ) != NULL )
-                {
-                    toQueueNode = currentIn->getPrivateFather();
-                    if ( toQueueNode != this )
-                        nodeQueue.enqueue( toQueueNode );
-                }
-            currentNode->render();
-            currentNode->setVisited();
-        }
+        currentNode->render();
+        for ( ; outsIt != outsEnd; ++outsIt )
+            if ( ( currentIn = (*outsIt)->getInSlotPtr() ) != NULL )
+            {
+                toQueueNode = currentIn->getPrivateFather();
+                if ( toQueueNode->wasItVisited() == false )
+                    nodeQueue.enqueue( toQueueNode );
+            }
     }
     return ;
 }
