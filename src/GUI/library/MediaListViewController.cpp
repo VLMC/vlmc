@@ -42,6 +42,7 @@ void        MediaListViewController::newMediaLoaded( Media* media )
 
     connect( cell, SIGNAL ( cellSelected( QUuid ) ), this, SLOT ( cellSelection( QUuid ) ) );
     connect( cell, SIGNAL ( cellDeleted( QUuid ) ), this, SLOT( mediaDeletion( QUuid ) ) );
+    connect( cell, SIGNAL ( arrowClicked( QUuid ) ), this, SLOT( showClipList( QUuid ) ) );
 
     if ( media->getMetadata() != Media::ParsedWithSnapshot )
         connect( media, SIGNAL( snapshotComputed( Media* ) ), this, SLOT( updateCell( Media* ) ) );
@@ -88,4 +89,9 @@ void    MediaListViewController::updateCell( Media* media )
     MediaCellView* cell = dynamic_cast<MediaCellView*>( m_cells->value( media->getUuid(), NULL ) );
     if ( cell != NULL )
         cell->setThumbnail( media->getSnapshot() );
+}
+
+void    MediaListViewController::showClipList( const QUuid& uuid )
+{
+    qDebug() << "need to show the clip list of " << uuid;
 }

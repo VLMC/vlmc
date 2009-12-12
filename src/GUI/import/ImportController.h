@@ -74,6 +74,7 @@ class ImportController : public QDialog
         void        clipSelection( const QUuid& uuid );
         void        mediaDeletion( const QUuid& uuid );
         void        clipDeletion( const QUuid& uuid );
+        void        showClipList( const QUuid& uuid );
 
     private slots:
         void        forwardButtonClicked();

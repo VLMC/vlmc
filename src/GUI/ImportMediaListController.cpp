@@ -39,6 +39,7 @@ void    ImportMediaListController::addMedia( Media* media )
     ImportMediaCellView* cell = new ImportMediaCellView( media->getUuid() );
     connect( cell, SIGNAL( cellSelected( const QUuid& ) ), this, SLOT( mediaSelection( const QUuid& ) ) );
     connect( cell, SIGNAL( cellDeleted( const QUuid& ) ), this, SLOT( mediaDeletion( const QUuid& ) ) );
+    connect( cell, SIGNAL( arrowClicked( const QUuid& ) ), this, SIGNAL( showClipListAsked( const QUuid& ) ) );
 
     cell->setTitle( media->getFileName() );
     cell->setThumbnail( media->getSnapshot() );
@@ -130,3 +131,4 @@ void    ImportMediaListController::mediaDeletion( const QUuid& uuid )
 {
     emit mediaDeleted( uuid );
 }
+

@@ -4,6 +4,7 @@
  * Copyright (C) 2008-2009 the VLMC team
  *
  * Authors: Thomas Boquet <thomas.boquet@gmail.com>
+ * Authors: Clement CHAVANCE <chavance.c@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -35,6 +36,10 @@ MediaCellView::MediaCellView( const QUuid& uuid, QWidget *parent ) :
     setFocusPolicy( Qt::ClickFocus );
     setAutoFillBackground( true );
     connect( m_ui->delLabel, SIGNAL( clicked( QWidget*, QMouseEvent* ) ), this, SLOT( deleteButtonClicked( QWidget*, QMouseEvent* ) ) );
+    //TODO : if it's a clip, disable the arrow
+    connect( m_ui->arrow,
+             SIGNAL( clicked( QWidget*, QMouseEvent* ) ),
+             SLOT( arrowButtonClicked( QWidget*, QMouseEvent* ) ) );
 }
 
 MediaCellView::~MediaCellView()
@@ -134,6 +139,12 @@ const ClickableLabel*   MediaCellView::deleteButton() const
 void        MediaCellView::deleteButtonClicked( QWidget*, QMouseEvent* )
 {
     emit cellDeleted( uuid() );
+}
+
+void        MediaCellView::arrowButtonClicked( QWidget*, QMouseEvent* )
+{
+    qDebug() << "arrow clicked for uuid" << uuid();
+    emit arrowClicked( uuid() );
 }
 
 void        MediaCellView::setLength( qint64 length )

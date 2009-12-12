@@ -81,8 +81,13 @@ ImportController::ImportController(QWidget *parent) :
     connect( this, SIGNAL( mediaSelected( Media* ) ), m_preview->getGenericRenderer(), SLOT( setMedia( Media* ) ) );
     connect( this, SIGNAL( mediaSelected( Media* ) ), m_tag, SLOT( mediaSelected( Media* ) ) );
 
+    //Media
     connect( m_mediaListController, SIGNAL( mediaSelected( QUuid ) ), this, SLOT( mediaSelection( QUuid ) ) );
     connect( m_mediaListController, SIGNAL( mediaDeleted( QUuid ) ), this, SLOT( mediaDeletion( QUuid ) ) );
+    //Clips
+    connect( m_mediaListController, SIGNAL( showClipListAsked( const QUuid& ) ), this, SLOT( showClipList( const QUuid& ) ) );
+    connect( m_mediaListController, SIGNAL( clipSelected( const QUuid& ) ), this, SLOT( clipSelection( const QUuid& ) ) );
+    connect( m_mediaListController, SIGNAL( clipDeleted( const QUuid& ) ), this, SLOT( clipDeletion( const QUuid& ) ) );
 }
 
 ImportController::~ImportController()
@@ -131,7 +136,18 @@ void        ImportController::mediaSelection( const QUuid& uuid )
 
 void        ImportController::clipSelection( const QUuid& uuid )
 {
-    Q_UNUSED( uuid );
+    if ( !m_currentUuid.isNull() )
+        m_mediaListController->getCell( m_currentUuid )->setPalette( palette() );
+    QPalette p = m_mediaListController->getCell( uuid )->palette();
+    p.setColor( QPalette::Window, QColor( Qt::darkBlue ) );
+    m_mediaListController->getCell( uuid )->setPalette( p );
+    foreach(QUuid id, m_model->getMedias()->keys() )
+    {
+        Media* media = m_model->getMedias()->value( id );
+        if (media->clip( uuid ) )
+        {
+        }
+    }
 }
 
 void        ImportController::updateMediaRequested( Media* media )
@@ -236,4 +252,16 @@ void        ImportController::clipDeletion( const QUuid& uuid )
         if (media->clip( uuid) )
             media->removeClip( uuid );
     }
+}
+
+void        ImportController::showClipList( const QUuid& uuid )
+{
+    qDebug() << "Showing clip list for" << uuid;
+    Media*  media = m_model->getMedia( uuid );
+
+    if ( media->clips()->size() == 0 )
+        return ;
+    ImportMediaListController*  view = new ImportMediaListController( m_stackNav );
+    view->addClipsFromMedia( media );
+    m_stackNav->pushViewController( view );
 }

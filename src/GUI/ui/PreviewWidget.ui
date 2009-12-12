@@ -226,6 +226,13 @@
       </spacer>
      </item>
      <item>
+      <widget class="QPushButton" name="pushButtonCreateClip">
+       <property name="text">
+        <string>Create Clip</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="pushButtonStop">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">

@@ -64,6 +64,8 @@ class ImportMediaListController : public ListViewController
         void    clipSelected( const QUuid& uuid );
         void    mediaDeleted( const QUuid& uuid );
         void    clipDeleted( const QUuid& uuid );
+        void    showClipListAsked( const QUuid& uuid );
+
 };
 
 #endif // IMPORTMEDIALISTCONTROLLER_H
