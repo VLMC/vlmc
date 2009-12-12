@@ -100,7 +100,7 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
 {
     Q_ASSERT( clip() );
 
-    if ( size > clip()->getParent()->getNbFrames() || size < 0 )
+    if ( size > clip()->getParent()->getNbFrames() || size < 1 )
         return;
 
     qint64  realBegin = startPos() - clip()->getBegin();
