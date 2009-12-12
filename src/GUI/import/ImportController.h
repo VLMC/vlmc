@@ -60,10 +60,13 @@ class ImportController : public QDialog
         StackViewController*        m_stackNav;
         TagWidget*                  m_tag;
         ImportMediaListController*  m_mediaListController;
+        ImportMediaListController*  m_clipListController;
         QDirModel*                  m_filesModel;
         QFileSystemWatcher*         m_fsWatcher;
         QString                     m_currentlyWatchedDir;
         QUuid                       m_currentUuid;
+        QUuid                       m_savedUuid;
+        bool                        m_controllerSwitched;
 
     public slots:
         void        newMediaLoaded( Media* media );
@@ -75,6 +78,7 @@ class ImportController : public QDialog
         void        mediaDeletion( const QUuid& uuid );
         void        clipDeletion( const QUuid& uuid );
         void        showClipList( const QUuid& uuid );
+        void        restoreContext();
 
     private slots:
         void        forwardButtonClicked();
