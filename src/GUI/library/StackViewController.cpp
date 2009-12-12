@@ -105,6 +105,7 @@ void        StackViewController::popViewController( bool animated )
 void        StackViewController::previous()
 {
     popViewController();
+    emit previousButtonPushed();
 }
 
 const ViewController*   StackViewController::getCurrentViewController() const

@@ -61,6 +61,7 @@ public slots:
 
 signals:
     void                        importRequired();
+    void                        previousButtonPushed();
 
 };
 
