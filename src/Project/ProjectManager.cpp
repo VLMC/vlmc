@@ -24,6 +24,7 @@
 #include <QtDebug>
 #include <QSettings>
 #include <QMessageBox>
+#include <QApplication>
 
 #include <signal.h>
 
@@ -39,9 +40,9 @@ void    ProjectManager::signalHandler( int sig )
 
     ProjectManager::getInstance()->emergencyBackup();
 
-    CrashHandler* ch = new CrashHandler();
+    CrashHandler* ch = new CrashHandler( sig );
     ch->exec();
-    raise( sig );
+    QApplication::exit(1);
 }
 
 const QString   ProjectManager::unNamedProject = tr( "<Unnamed project>" );

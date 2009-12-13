@@ -25,10 +25,10 @@
 #include "ui_CrashHandler.h"
 
 #include <execinfo.h>
+#include <signal.h>
 
 
-
-CrashHandler::CrashHandler( QWidget *parent ) :
+CrashHandler::CrashHandler( int sig, QWidget *parent ) :
         QDialog( parent ),
         ui( new Ui::CrashHandler )
 {
@@ -37,9 +37,18 @@ CrashHandler::CrashHandler( QWidget *parent ) :
     void    *buff[CrashHandler::backtraceSize];
     int     nbSymb = backtrace( buff, CrashHandler::backtraceSize );
     char**  backtraceStr = backtrace_symbols( buff, nbSymb );
-    for ( unsigned int i = 0; i < nbSymb; ++i )
+    for ( int i = 0; i < nbSymb; ++i )
         ui->backtraceDisplay->insertPlainText( QString( backtraceStr[i]) + "\n" );
     free(backtraceStr);
+
+    QString sigName = tr( "Unknown signal" );
+    if ( sig == SIGSEGV )
+        sigName = "SIGSEGV (Segmentation Fault)";
+    if ( sig == SIGFPE )
+        sigName = "SIGFPE (Floating Exception)";
+    else
+        sigName = "Unknown";
+    ui->crashDescriptionLabel->setText( tr("A crash occured. Signal received: ") + sigName );
 }
 
 CrashHandler::~CrashHandler()

@@ -487,3 +487,8 @@ void    MainWindow::keyboardShortcutChanged( const QString& name, const QString&
     else
         qWarning() << "Unknown shortcut:" << name;
 }
+
+void    MainWindow::on_actionCrash_triggered()
+{
+    int test = 1 / 0;
+}

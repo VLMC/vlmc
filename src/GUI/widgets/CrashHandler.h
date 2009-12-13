@@ -35,7 +35,7 @@ class CrashHandler : public QDialog
 {
     Q_OBJECT
     public:
-        CrashHandler(QWidget *parent = 0);
+        CrashHandler(  int sig, QWidget *parent = 0 );
         ~CrashHandler();
 
     protected:

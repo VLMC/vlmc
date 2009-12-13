@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>512</width>
+    <height>370</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -99,39 +99,6 @@
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="1" column="1">
-       <widget class="QLabel" name="titleLabel">
-        <property name="text">
-         <string>VLMC Crash handler</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <spacer name="verticalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="0" column="1">
-       <spacer name="verticalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
       <item row="0" column="0" rowspan="3">
        <widget class="QLabel" name="logoLabel">
         <property name="sizePolicy">
@@ -148,10 +115,27 @@
         </property>
        </widget>
       </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="titleLabel">
+        <property name="text">
+         <string>VLMC Crash handler</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" rowspan="2">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>An error occured. We're sorry for the inconvenient, though we saved your project. It will be reopened next time you open VLMC.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="3" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <spacer name="horizontalSpacer">
@@ -175,26 +159,26 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
    <item row="2" column="0">
-    <widget class="QTextEdit" name="backtraceDisplay"/>
+    <widget class="QTextEdit" name="backtraceDisplay">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="lineWrapMode">
+      <enum>QTextEdit::NoWrap</enum>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="crashDescriptionLabel">
      <property name="text">
-      <string>TextLabel</string>
+      <string>Crash_Description</string>
      </property>
     </widget>
    </item>
