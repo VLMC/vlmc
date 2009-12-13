@@ -31,12 +31,12 @@
 #include "MetaDataManager.h"
 
 QPixmap*        Media::defaultSnapshot = NULL;
-const QString   Media::VideoExtensions = "*.mov *.avi *.mkv *.mpg *.mpeg *.wmv *.mp4";
+const QString   Media::VideoExtensions = "*.mov *.avi *.mkv *.mpg *.mpeg *.wmv *.mp4 *.ogg *.ogv";
 const QString   Media::ImageExtensions = "*.gif *.png *.jpg *.jpeg";
 const QString   Media::AudioExtensions = "*.mp3 *.oga *.flac *.aac *.wav";
 const QString   Media::streamPrefix = "stream://";
 
-Media::Media( const QString& filePath, const QString& uuid )
+Media::Media( const QString& filePath, const QString& uuid /*= QString()*/ )
     : m_vlcMedia( NULL ),
     m_snapshot( NULL ),
     m_fileInfo( NULL ),
@@ -71,6 +71,8 @@ Media::Media( const QString& filePath, const QString& uuid )
         m_fileName = m_mrl;
         qDebug() << "Loading a stream";
     }
+
+    m_audioValueList = new QList<int>();
     m_vlcMedia = new LibVLCpp::Media( m_mrl );
 }
 
@@ -189,37 +191,6 @@ Media::FileType     Media::getFileType() const
     return m_fileType;
 }
 
-void                Media::initAudioData( void* datas, unsigned int* freq, unsigned int* nbChannels, unsigned int* fourCCFormat, unsigned int* frameSize )
-{
-    m_audioData.freq = freq;
-    m_audioData.nbChannels = nbChannels;
-    m_audioData.frameSize = frameSize;
-    m_audioData.fourCCFormat = fourCCFormat;
-    m_audioData.datas = datas;
-}
-
-void                Media::addAudioFrame( void* datas, unsigned char* buffer, size_t buffSize, unsigned int nbSample )
-{
-    Q_UNUSED( datas );
-    m_audioData.nbSample = nbSample;
-    m_audioData.buffSize = buffSize;
-
-    int* frame = new int[ m_audioData.buffSize ];
-    for (unsigned int i = 0, u = 0; u < m_audioData.nbSample; i += 4, u++)
-    {
-        int value = buffer[i];
-        value <<= 8;
-        value += buffer[i + 1];
-        value <<= 8;
-        value += buffer[i + 2];
-        value <<= 8;
-        value += buffer[i + 3];
-        frame[u] = value;
-    }
-    m_audioData.frameList.append( frame );
-//    qDebug() << m_audioData.frameList.size();
-}
-
 void            Media::emitMetaDataComputed( bool hasMetadata )
 {
     if ( hasMetadata == true )
@@ -232,6 +203,12 @@ void            Media::emitSnapshotComputed()
     if ( m_metadataState == ParsedWithoutSnapshot )
         m_metadataState = ParsedWithSnapshot;
     emit snapshotComputed( this );
+}
+
+void            Media::emitAudioSpectrumComuted()
+{
+    m_metadataState = ParsedWithAudioSpectrum;
+    emit audioSpectrumComputed( this );
 }
 
 Media::InputType    Media::getInputType() const

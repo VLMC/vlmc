@@ -39,6 +39,7 @@ namespace Action
                 Resize,
                 Remove,
                 Add,
+                Move,
             };
             Generic( Type type ) : m_type( type ) {}
             virtual ~Generic(){}
@@ -106,6 +107,27 @@ namespace Action
             }
         protected:
             QUuid       m_uuid;
+    };
+
+    class   MoveClip : public Track
+    {
+        public:
+            MoveClip( MainWorkflow* mainWorkflow, const QUuid& uuid, uint32_t oldTrack,
+                      uint32_t newTrack, qint64 newPos, MainWorkflow::TrackType trackType, bool undoRedoAction ) :
+                    Track( mainWorkflow, oldTrack, trackType, Move ),
+                    m_uuid( uuid ), m_newTrack( newTrack ),
+                    m_newPos( newPos ), m_undoRedoAction( undoRedoAction )
+            {
+            }
+            void    execute()
+            {
+                m_mainWorkflow->moveClip( m_uuid, m_trackId, m_newTrack, m_newPos, m_trackType, m_undoRedoAction );
+            }
+        private:
+            QUuid       m_uuid;
+            uint32_t    m_newTrack;
+            qint64      m_newPos;
+            bool        m_undoRedoAction;
     };
 
     class   ResizeClip : public Generic

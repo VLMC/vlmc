@@ -30,14 +30,14 @@
 ImportModel::ImportModel()
 {
     m_medias = new QHash<QUuid, Media*>();
+    m_progressDialog = new QProgressDialog("Importing files...", "Cancel", 0, m_loadingMedias, NULL);
+    m_progressDialog->setWindowModality( Qt::WindowModal );
+    m_progressDialog->setMinimumDuration( 1000 );
+    m_nbLoadedMedias = 0;
 }
 
 ImportModel::~ImportModel()
 {
-    QUuid id;
-
-    foreach ( id, m_medias->keys() )
-        delete m_medias->value( id );
 }
 
 Media*    ImportModel::getMedia( const QUuid& mediaId ) const
@@ -79,16 +79,15 @@ void            ImportModel::metaDataComputed( Media* media )
     }
     else
         m_invalidMedias.append( media );
-    m_nbLoadedMedias++;
 
-
-    m_progressDialog->setValue( m_nbLoadedMedias );
+    m_progressDialog->setValue( ++m_nbLoadedMedias );
 
     if( m_progressDialog->wasCanceled() )
     {
         Media* media;
         foreach( media, m_invalidMedias )
-            delete media;
+            removeMedia( media->getUuid() );
+            //delete media;
         m_nbLoadedMedias = 0;
         m_invalidMedias.clear();
         return;
@@ -103,7 +102,8 @@ void            ImportModel::metaDataComputed( Media* media )
             foreach( media, m_invalidMedias )
             {
                 list.append( media->getFileName() );
-                delete media;
+                removeMedia( media->getUuid() );
+                //delete media;
             }
             QMessageBox::warning( NULL, QString( "Error!" ), QString( tr( "Error while loading media(s):\n%0" ) ).arg( list.join( QString("\n") ) ) );
             m_invalidMedias.clear();
@@ -115,13 +115,15 @@ void            ImportModel::metaDataComputed( Media* media )
 void            ImportModel::snapshotComputed( Media *media )
 {
     disconnect( media, SIGNAL( snapshotComputed( Media* ) ), this, SLOT( snapshotComputed( Media* ) ) );
-    emit updateMediaRequested( media );
+    if ( !m_invalidMedias.contains( media ) )
+        emit updateMediaRequested( media );
 }
 
 void            ImportModel::loadMedia( Media* media )
 {
-    connect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ) );
-    connect( media, SIGNAL( snapshotComputed(Media*) ), this, SLOT( snapshotComputed(Media*) ) );
+    connect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ), Qt::QueuedConnection );
+    connect( media, SIGNAL( snapshotComputed(Media*) ), this, SLOT( snapshotComputed(Media*) ), Qt::QueuedConnection );
+    connect( media, SIGNAL( audioSpectrumComputed( Media* ) ), this, SLOT( audioSpectrumComputed(Media*) ) );
     MetaDataManager::getInstance()->computeMediaMetadata( media );
 }
 
@@ -140,22 +142,16 @@ void            ImportModel::loadFile( const QFileInfo& fileInfo, int loadingMed
 
     if ( !fileInfo.isDir() )
     {
-        if ( loadingMedias == 0)
-        {
-            m_loadingMedias = 1;
-            m_progressDialog = new QProgressDialog("Importing files...", "Cancel", 0, m_loadingMedias, NULL);
-            m_progressDialog->setWindowModality( Qt::WindowModal );
-            m_progressDialog->setMinimumDuration( 1000 );
-            m_progressDialog->setValue( 0 );
-            m_nbLoadedMedias = 0;
-        }
+        if ( loadingMedias == 1 )
+            m_progressDialog->setMaximum( 1 );
+
         if ( !mediaAlreadyLoaded( fileInfo ) )
         {
            media = new Media( fileInfo.filePath() );
            loadMedia( media );
         }
         else
-            m_nbLoadedMedias++;
+            m_progressDialog->setValue( ++m_nbLoadedMedias );
     }
     else
     {
@@ -165,18 +161,29 @@ void            ImportModel::loadFile( const QFileInfo& fileInfo, int loadingMed
 
         m_loadingMedias = list.count();
         m_nbLoadedMedias = 0;
-        m_progressDialog = new QProgressDialog("Importing files...", "Cancel", 0, m_loadingMedias, NULL);
-        m_progressDialog->setWindowModality(Qt::WindowModal);
-        m_progressDialog->setMinimumDuration( 1000 );
         m_progressDialog->setValue( 0 );
+        m_progressDialog->setMaximum( m_loadingMedias );
         foreach( file, list )
             loadFile( file, m_loadingMedias );
     }
 }
 
-void            ImportModel::removeMedia( const QUuid& mediaId)
+void            ImportModel::removeMedia( const QUuid& mediaId )
 {
-    m_medias->remove( mediaId );
+    if ( m_medias->contains( mediaId ) && m_medias->value( mediaId )->getMetadata() == Media::ParsedWithAudioSpectrum )
+        delete m_medias->take( mediaId );
+    else
+        m_invalidMedias.append( m_medias->take( mediaId ) );
+}
+
+void            ImportModel::audioSpectrumComputed( Media *media )
+{
+    disconnect( media, SIGNAL( audioSpectrumComputed( Media* ) ), this, SLOT( audioSpectrumComputed( Media* ) ) );
+    if ( m_invalidMedias.contains( media ) )
+    {
+        m_invalidMedias.removeAll( media );
+        delete media;
+    }
 }
 
 void            ImportModel::removeClip( const QUuid& mediaId, const QUuid& clipId )
@@ -185,4 +192,11 @@ void            ImportModel::removeClip( const QUuid& mediaId, const QUuid& clip
         return ;
 
     m_medias->value( mediaId )->removeClip( clipId );
+}
+
+void            ImportModel::removeAllMedias()
+{
+    QUuid id;
+    foreach( id, m_medias->keys() )
+        removeMedia( id );
 }

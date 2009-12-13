@@ -113,6 +113,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    previousFrame();
 
         Clip*                   removeClip( const QUuid& uuid, unsigned int trackId, MainWorkflow::TrackType trackType );
+
         void                    moveClip( const QUuid& uuid, unsigned int oldTrack,
                                           unsigned int newTrack, qint64 pos,
                                           MainWorkflow::TrackType trackType, bool undoRedoCommand = false );
@@ -136,8 +137,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          *  \returns    The clip that matches the given UUID.
          */
         Clip*                   getClip( const QUuid& uuid, unsigned int trackId, MainWorkflow::TrackType trackType );
-
-        void                    clear();
 
         void                    setFullSpeedRender( bool value );
         int                     getTrackCount( MainWorkflow::TrackType trackType ) const;
@@ -182,6 +181,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
     public slots:
         void                            loadProject( const QDomElement& project );
         void                            saveProject( QDomDocument& doc, QDomElement& rootNode );
+        void                            clear();
 
     signals:
         /**

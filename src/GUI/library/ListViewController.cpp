@@ -71,5 +71,4 @@ void                ListViewController::addCell( QWidget* cell )
 void            ListViewController::removeCell( QWidget* cell )
 {
     m_layout->removeWidget( cell );
-    delete cell;
 }

@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>333</width>
+    <width>444</width>
     <height>341</height>
    </rect>
   </property>
@@ -29,6 +29,12 @@
    <string>Preview</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <property name="spacing">
+    <number>0</number>
+   </property>
    <item row="3" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -41,14 +47,14 @@
        </property>
        <property name="minimumSize">
         <size>
-         <width>40</width>
-         <height>33</height>
+         <width>34</width>
+         <height>30</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>40</width>
-         <height>33</height>
+         <width>34</width>
+         <height>30</height>
         </size>
        </property>
        <property name="text">
@@ -60,8 +66,8 @@
        </property>
        <property name="iconSize">
         <size>
-         <width>24</width>
-         <height>24</height>
+         <width>20</width>
+         <height>20</height>
         </size>
        </property>
       </widget>
@@ -76,14 +82,14 @@
        </property>
        <property name="minimumSize">
         <size>
-         <width>40</width>
-         <height>33</height>
+         <width>34</width>
+         <height>30</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>40</width>
-         <height>33</height>
+         <width>34</width>
+         <height>30</height>
         </size>
        </property>
        <property name="text">
@@ -95,8 +101,8 @@
        </property>
        <property name="iconSize">
         <size>
-         <width>24</width>
-         <height>24</height>
+         <width>20</width>
+         <height>20</height>
         </size>
        </property>
       </widget>
@@ -111,14 +117,14 @@
        </property>
        <property name="minimumSize">
         <size>
-         <width>40</width>
-         <height>33</height>
+         <width>34</width>
+         <height>30</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>40</width>
-         <height>33</height>
+         <width>34</width>
+         <height>30</height>
         </size>
        </property>
        <property name="text">
@@ -130,8 +136,78 @@
        </property>
        <property name="iconSize">
         <size>
-         <width>24</width>
-         <height>24</height>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonMarkerStart">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>34</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>34</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../../ressources.qrc">
+         <normaloff>:/images/marker_start</normaloff>:/images/marker_start</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonMarkerStop">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>34</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>34</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../../ressources.qrc">
+         <normaloff>:/images/marker_stop</normaloff>:/images/marker_stop</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>20</width>
+         <height>20</height>
         </size>
        </property>
       </widget>
@@ -159,14 +235,14 @@
        </property>
        <property name="minimumSize">
         <size>
-         <width>40</width>
-         <height>33</height>
+         <width>34</width>
+         <height>30</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>40</width>
-         <height>33</height>
+         <width>34</width>
+         <height>30</height>
         </size>
        </property>
        <property name="text">
@@ -178,8 +254,8 @@
        </property>
        <property name="iconSize">
         <size>
-         <width>24</width>
-         <height>24</height>
+         <width>20</width>
+         <height>20</height>
         </size>
        </property>
       </widget>

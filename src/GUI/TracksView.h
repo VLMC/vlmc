@@ -62,6 +62,7 @@ public:
     void                    removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items );
     void                    setTool( ToolButtons button );
     ToolButtons             tool() { return m_tool; }
+    WorkflowRenderer*       getRenderer() { return m_renderer; }
 
 public slots:
     void                    clear();
@@ -114,6 +115,7 @@ private:
     bool                    m_actionResize;
     qint64                  m_actionResizeStart;
     qint64                  m_actionResizeBase;
+    qint64                  m_actionResizeOldBegin;
     AbstractGraphicsMediaItem::From m_actionResizeType;
     int                     m_actionRelativeX;
     AbstractGraphicsMediaItem* m_actionItem;

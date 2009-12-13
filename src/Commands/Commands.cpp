@@ -60,14 +60,14 @@ void Commands::MainWorkflow::AddClip::undo()
 }
 
 Commands::MainWorkflow::MoveClip::MoveClip( ::MainWorkflow* workflow, const QUuid& uuid,
-          unsigned int oldTrack, qint64 oldPos, unsigned int newTrack, qint64 newPos,
+          unsigned int oldTrack, unsigned int newTrack, qint64 newPos,
           ::MainWorkflow::TrackType trackType ) :
     m_workflow( workflow ), m_uuid( uuid ), m_oldTrack( oldTrack ),
-    m_newTrack( newTrack ), m_pos( newPos ), m_oldPos( oldPos ),
-    m_trackType( trackType )
+    m_newTrack( newTrack ), m_pos( newPos ), m_trackType( trackType )
 {
     setText( QObject::tr( "Moving clip" ) );
     m_undoRedoAction = false;
+    m_oldPos = m_workflow->getClipPosition( uuid, oldTrack, trackType );
 }
 
 void Commands::MainWorkflow::MoveClip::redo()
@@ -102,28 +102,48 @@ void Commands::MainWorkflow::RemoveClips::undo()
         m_renderer->addClip( m_clips.at( i ).clip, m_clips.at( i ).trackNumber, m_clips.at( i ).pos, m_clips.at( i ).trackType );
 }
 
-Commands::MainWorkflow::ResizeClip::ResizeClip( ::MainWorkflow* mainWorkflow, const QUuid& uuid, unsigned int trackId,
-            qint64 newBegin, qint64 newEnd, ::MainWorkflow::TrackType trackType ) :
-    m_mainWorkflow( mainWorkflow ),
+Commands::MainWorkflow::ResizeClip::ResizeClip( WorkflowRenderer* renderer, const QUuid& uuid,
+                                                qint64 newBegin, qint64 newEnd,
+                                                qint64 oldBegin, qint64 oldEnd,
+                                                qint64 newPos, qint64 oldPos,
+                                                uint32_t trackId,
+                                                ::MainWorkflow::TrackType trackType ) :
+    m_renderer( renderer ),
+    m_uuid( uuid ),
     m_newBegin( newBegin ),
     m_newEnd( newEnd ),
-    m_trackType( trackType )
+    m_oldBegin( oldBegin ),
+    m_oldEnd( oldEnd ),
+    m_newPos( newPos ),
+    m_oldPos( oldPos ),
+    m_trackId( trackId ),
+    m_trackType( trackType ),
+    m_undoRedoAction( false )
 {
-    m_clip = mainWorkflow->getClip( uuid, trackId, m_trackType );
-    m_oldBegin = m_clip->getBegin();
-    m_oldEnd = m_clip->getEnd();
+    m_clip = ::MainWorkflow::getInstance()->getClip( uuid, trackId, m_trackType );
+    setText( QObject::tr( "Resizing clip" ) );
 }
 
 void Commands::MainWorkflow::ResizeClip::redo()
 {
-    m_clip->setBegin( m_newBegin );
-    m_clip->setEnd( m_newEnd );
+    m_renderer->resizeClip( m_clip, m_newBegin, m_newEnd, m_newPos, m_trackId, m_trackType, m_undoRedoAction );
+    m_undoRedoAction = true;
 }
 
 void Commands::MainWorkflow::ResizeClip::undo()
 {
-    m_clip->setBegin( m_oldBegin );
-    m_clip->setEnd( m_oldEnd );
+    //This code is complete crap.
+    // We need to case, because when we redo a "begin-resize", we need to first resize, then move.
+    //In the other cases, we need to move, then resize.
+    if ( m_oldBegin == m_newBegin )
+    {
+        m_renderer->resizeClip( m_clip, m_oldBegin, m_oldEnd, m_oldPos, m_trackId, m_trackType, m_undoRedoAction );
+    }
+    else
+    {
+        m_clip->setBoundaries( m_oldBegin, m_oldEnd );
+        ::MainWorkflow::getInstance()->moveClip( m_clip->getUuid(), m_trackId, m_trackId, m_oldPos, m_trackType, m_undoRedoAction );
+    }
 }
 
 Commands::MainWorkflow::SplitClip::SplitClip( WorkflowRenderer* renderer, Clip* toSplit, uint32_t trackId,

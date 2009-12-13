@@ -26,6 +26,7 @@
 #include <QFile>
 #include <QObject>
 #include <QDomDocument>
+#include <QStringList>
 
 #include "Singleton.hpp"
 
@@ -34,31 +35,57 @@ class   ProjectManager : public QObject, public Singleton<ProjectManager>
     Q_OBJECT
     Q_DISABLE_COPY( ProjectManager );
 public:
-    void        loadProject();
-    void        saveProject( bool saveAs = true );
-    bool        needSave() const;
+    static const QString    unNamedProject;
+
+    void            loadProject( const QString& fileName );
+    void            newProject( const QString& projectName );
+    QString         loadProjectFile();
+    void            saveProject( bool saveAs = false );
+    bool            needSave() const;
+    QStringList     recentsProjects() const;
+    bool            closeProject();
+    bool            askForSaveIfModified();
+
+    static void     signalHandler( int sig );
 
 private:
+    /**
+     *  This shouldn't be call directly.
+     *  It's only purpose it to write the project for very specific cases.
+     */
+    void            __saveProject( const QString& fileName );
+    void            parseProjectNode( const QDomElement& node );
+    void            emergencyBackup();
+
     ProjectManager();
     ~ProjectManager();
 
-    bool        checkProjectOpen( bool saveAs );
-    bool        loadProjectFile();
+    bool            checkProjectOpen( bool saveAs );
 
 private:
     QFile*          m_projectFile;
     QDomDocument*   m_domDocument;
     bool            m_needSave;
+    QStringList     m_recentsProjects;
+    QString         m_projectName;
 
     friend class    Singleton<ProjectManager>;
 
 private slots:
     void            loadTimeline();
     void            cleanChanged( bool val );
+    void            nameChanged( const QVariant& name );
 
 signals:
-    void            projectChanged( const QString& projectName, bool savedState );
+    /**
+     *  This signal is emitted when :
+     *      - The project name has changed
+     *      - The clean state has changed
+     *      - The revision (if activated) has changed
+     */
+    void            projectUpdated( const QString& projectName, bool savedState );
     void            projectSaved();
+    void            projectClosed();
 };
 
 #endif // PROJECTMANAGER_H

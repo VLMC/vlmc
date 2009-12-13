@@ -46,6 +46,7 @@ public:
     virtual qint64          getLengthMs() const;
     virtual qint64          getCurrentFrame() const;
     virtual float           getFps() const;
+    virtual Media*          getMedia() const;
 
 private:
     void                    startPreview();

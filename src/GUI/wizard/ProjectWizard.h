@@ -4,6 +4,7 @@
  * Copyright (C) 2008-2009 the VLMC team
  *
  * Authors: Clement CHAVANCE <kinder@vlmc.org>
+ *          Ludovic Fauvet <etix@l0cal.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,21 +26,29 @@
 
 #include <QWizard>
 
+class WelcomePage;
+
 class ProjectWizard : public QWizard
 {
     Q_OBJECT
-    public:
-        ProjectWizard( QWidget* parent = 0 );
-        ~ProjectWizard();
 
-        void    accept();
-        void    reject();
+    public:
+         enum { Page_Welcome,
+                Page_Open,
+                Page_General, Page_Video, Page_Audio };
+
+         ProjectWizard( QWidget* parent = 0 );
+         ~ProjectWizard();
+
+    protected slots:
+        virtual void    accept();
+        virtual void    reject();
 
     private slots:
-        void    loadProject();
+        void            showHelp();
 
     signals:
-        void    flush();
+        void            flush();
 };
 
 #endif

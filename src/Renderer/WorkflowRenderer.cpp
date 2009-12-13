@@ -199,6 +199,7 @@ void        WorkflowRenderer::startPreview()
     //Media player part: to update PreviewWidget
     connect( m_mediaPlayer, SIGNAL( playing() ),    this,   SLOT( __videoPlaying() ), Qt::DirectConnection );
     connect( m_mediaPlayer, SIGNAL( paused() ),     this,   SLOT( __videoPaused() ), Qt::DirectConnection );
+    //FIXME:: check if this doesn't require Qt::QueuedConnection
     connect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SLOT( __videoStopped() ) );
 
     m_mainWorkflow->setFullSpeedRender( false );
@@ -208,8 +209,8 @@ void        WorkflowRenderer::startPreview()
     m_stopping = false;
     m_pts = 0;
     m_audioPts = 0;
+    m_outputFps = SettingsManager::getInstance()->getValue( "VLMC", "VLMCOutPutFPS" )->get().toDouble();
     m_mediaPlayer->play();
-    m_outputFps = SettingsManager::getInstance()->getValue( "VLMC", "VLMCOutPutFPS" ).toDouble();
 }
 
 void        WorkflowRenderer::nextFrame()
@@ -378,16 +379,31 @@ void    WorkflowRenderer::unsplit( Clip* origin, Clip* splitted, uint32_t trackI
     }
 }
 
-void    WorkflowRenderer::resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd )
+void    WorkflowRenderer::resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd,
+                                      qint64 newPos, uint32_t trackId, MainWorkflow::TrackType trackType, bool undoRedoAction /*= false*/ )
 {
-    if ( m_isRendering == true )
-    {
-        Action::Generic*    act = new Action::ResizeClip(  clip, newBegin, newEnd );
-        QMutexLocker        lock( m_actionsMutex );
-        m_actions.addAction( act );
-    }
-    else
+//    if ( m_isRendering == true )
+//    {
+//        Action::Generic*    act = new Action::ResizeClip( clip, newBegin, newEnd );
+//        Action::Generic*    act2 = new Action::MoveClip( m_mainWorkflow, clip->getUuid(), trackId, trackId, newPos, trackType, undoRedoAction );
+//        QMutexLocker        lock( m_actionsMutex );
+//        if ( newBegin != clip->getBegin() )
+//        {
+//            qDebug() << "Resizing to pos:" << newPos;
+//            m_actions.addAction( act2 );
+//        }
+//        qDebug() << "setting boundaries: newEnd:" << newBegin << "newEnd:" << newEnd;
+//        m_actions.addAction( act );
+//    }
+//    else
+//    {
+        if ( newBegin != clip->getBegin() )
+        {
+            m_mainWorkflow->moveClip( clip->getUuid(), trackId, trackId, newPos, trackType, undoRedoAction );
+        }
         clip->setBoundaries( newBegin, newEnd );
+
+//    }
 }
 
 /////////////////////////////////////////////////////////////////////

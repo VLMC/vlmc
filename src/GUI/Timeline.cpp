@@ -110,6 +110,12 @@ void Timeline::changeEvent( QEvent *e )
     }
 }
 
+void Timeline::clear()
+{
+    // The main workflow will ask the GUI to clear itself.
+    m_mainWorkflow->clear();
+}
+
 void Timeline::changeZoom( int factor )
 {
     m_tracksRuler->setPixelPerMark( factor );

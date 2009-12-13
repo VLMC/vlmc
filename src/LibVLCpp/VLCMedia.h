@@ -51,6 +51,7 @@ namespace LibVLCpp
         void                outputInWindow();
         void                setPixelBuffer( uchar* buffer );
         uchar*              getPixelBuffer();
+        const QString&      getFileName() const;
 
     private:
 
@@ -58,6 +59,7 @@ namespace LibVLCpp
 
         Exception           m_ex;
         uchar*              m_pixelBuffer;
+        QString             m_fileName;
     };
 }
 

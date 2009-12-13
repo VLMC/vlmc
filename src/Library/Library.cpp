@@ -55,7 +55,29 @@ void        Library::removingMediaAsked( const QUuid& uuid )
     //and won't be abble to remove the ListViewMediaItem without it.
     //delete *it;
     m_medias.erase( it );
-    delete media;
+    //delete media;
+    deleteMedia( media );
+}
+
+void        Library::deleteMedia( Media *media )
+{
+    if ( media->getMetadata() == Media::ParsedWithAudioSpectrum )
+        delete media;
+    else
+    {
+        m_mediaToDelete.append( media );
+        connect( media, SIGNAL( audioSpectrumComputed( Media* ) ), this, SLOT( deleteMedia( Media* ) ) );
+    }
+}
+
+void        Library::audioSpectrumComputed( Media *media )
+{
+    disconnect( media, SIGNAL( audioSpectrumComputed( Media* ) ), this, SLOT( audioSpectrumComputed( Media* ) ) );
+    if ( m_mediaToDelete.contains( media ) )
+    {
+        m_mediaToDelete.removeAll( media );
+        delete media;
+    }
 }
 
 void        Library::metaDataComputed( Media* media )
@@ -63,7 +85,6 @@ void        Library::metaDataComputed( Media* media )
     emit newMediaLoaded( media );
     Clip* clip = new Clip( media );
     m_clips[media->getUuid()] = clip;
-    emit newClipLoaded( clip );
 }
 
 void        Library::newMediaLoadingAsked( const QString& filePath, const QString& uuid )
@@ -81,11 +102,15 @@ void        Library::addMedia( Media* media )
 {
     QUuid id;
     foreach( id, m_medias.keys() )
+    {
+        qDebug() << m_medias.value( id )->getFileInfo()->filePath();
+        qDebug() << media->getFileInfo()->filePath();
         if ( m_medias.value( id )->getFileInfo()->filePath() == media->getFileInfo()->filePath() )
         {
-            delete media;
+            deleteMedia( media );
             return;
         }
+    }
     m_medias[media->getUuid()] = media;
     metaDataComputed( media );
 }
@@ -201,4 +226,26 @@ void        Library::saveProject( QDomDocument& doc, QDomElement& rootNode )
         media.appendChild( uuid );
     }
     rootNode.appendChild( medias );
+}
+
+void    Library::clear()
+{
+    QHash<QUuid, Media*>::iterator  it = m_medias.begin();
+    QHash<QUuid, Media*>::iterator  end = m_medias.end();
+
+    while ( it != end )
+    {
+        emit mediaRemoved( it.key() );
+        delete it.value();
+        ++it;
+    }
+    m_medias.clear();
+    QHash<QUuid, Clip*>::iterator  it2 = m_clips.begin();
+    QHash<QUuid, Clip*>::iterator  end2 = m_clips.end();
+    while ( it2 != end2 )
+    {
+        delete it2.value();
+        ++it2;
+    }
+    m_clips.clear();
 }

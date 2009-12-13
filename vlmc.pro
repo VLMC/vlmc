@@ -36,7 +36,6 @@ include(src/Project/projectManager.pri)
 include(src/Renderer/Renderer.pri)
 include(src/Tools/Tools.pri)
 include(src/Workflow/Workflow.pri)
-
 INCLUDEPATH += src/LibVLCpp \
     src/GUI \
     src/GUI/widgets \
@@ -57,7 +56,6 @@ INCLUDEPATH += src/LibVLCpp \
     src/EffectsEngine \
     src/Actions \
     src
-
 DEPENDPATH += src/LibVLCpp \
     src/GUI \
     src/GUI/import \
@@ -78,7 +76,6 @@ DEPENDPATH += src/LibVLCpp \
     src/EffectsEngine \
     src/Actions \
     src
-
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts

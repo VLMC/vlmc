@@ -60,6 +60,8 @@ namespace   LibVLCpp
         float                               getFps();
         void                                nextFrame();
         bool                                hasVout();
+        const QString&                      getLoadedFileName() const;
+        QString                             getLoadedMRL();
 
     private:
         static void                         callbacks( const libvlc_event_t* event, void* self );
@@ -67,6 +69,7 @@ namespace   LibVLCpp
 
         Exception                           m_ex;
         libvlc_event_manager_t*             p_em;
+        Media*                              m_media;
 
     signals:
         void                                snapshotTaken();

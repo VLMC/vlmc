@@ -25,8 +25,9 @@
 
 #include <QUndoStack>
 #include <QUndoView>
-#include <QShortcut>
 #include <QUndoCommand>
+
+#include "KeyboardShortcutHelper.h"
 #include "QSingleton.hpp"
 
 class UndoStack : public QUndoView, public QSingleton<UndoStack>
@@ -40,9 +41,12 @@ class UndoStack : public QUndoView, public QSingleton<UndoStack>
     private:
         UndoStack( QWidget* parent );
 
-        QUndoStack*     m_undoStack;
-        QShortcut*      m_undoShortcut;
-        QShortcut*      m_redoShortcut;
+        QUndoStack*                 m_undoStack;
+        KeyboardShortcutHelper*     m_undoShortcut;
+        KeyboardShortcutHelper*     m_redoShortcut;
+
+    public slots:
+        void            clear();
 
     signals:
         void            cleanChanged( bool val );

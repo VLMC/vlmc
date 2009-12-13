@@ -35,13 +35,16 @@ void    MediaListViewController::cellSelection( const QUuid& uuid )
     if ( m_currentUuid == uuid )
         return;
 
-    if ( !m_currentUuid.isNull() )
-        m_cells->value( m_currentUuid )->setPalette( m_cells->value( uuid )->palette() );
-    QPalette p = m_cells->value( uuid )->palette();
-    p.setColor( QPalette::Window, QColor( Qt::darkBlue ) );
-    m_cells->value( uuid )->setPalette( p );
-    m_currentUuid = uuid;
-    emit mediaSelected( Library::getInstance()->getMedia( uuid ) );
+    if ( m_cells->contains( uuid ) )
+    {
+        if ( !m_currentUuid.isNull() && m_cells->contains( m_currentUuid ) )
+            m_cells->value( m_currentUuid )->setPalette( m_cells->value( uuid )->palette() );
+        QPalette p = m_cells->value( uuid )->palette();
+        p.setColor( QPalette::Window, QColor( Qt::darkBlue ) );
+        m_cells->value( uuid )->setPalette( p );
+        m_currentUuid = uuid;
+        emit mediaSelected( Library::getInstance()->getMedia( uuid ) );
+    }
 }
 
 void    MediaListViewController::mediaDeletion( const QUuid& uuid )

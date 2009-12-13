@@ -49,6 +49,7 @@ private:
 private slots:
     void                        stop();
     void                        cancelButtonClicked();
+    void                        __frameChanged( qint64 frame, MainWorkflow::FrameChangedReason reason );
 };
 
 #endif // WORKFLOWFILERENDERER_H

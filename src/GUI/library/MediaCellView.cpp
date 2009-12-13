@@ -117,7 +117,6 @@ void    MediaCellView::mouseMoveEvent( QMouseEvent* event )
     mimeData->setData( "vlmc/uuid", m_uuid.toString().toAscii() );
     QDrag* drag = new QDrag( this );
     drag->setMimeData( mimeData );
-
     drag->setPixmap( Library::getInstance()->getClip( m_uuid )->getParent()->getSnapshot().scaled( 100, 100, Qt::KeepAspectRatio ) );
     drag->exec( Qt::CopyAction | Qt::MoveAction, Qt::CopyAction );
 }

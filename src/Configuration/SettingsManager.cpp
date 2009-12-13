@@ -44,23 +44,23 @@ SettingsManager::~SettingsManager()
 {
 }
 
-void  SettingsManager::setValues( const QString& part, QHash<QString, QVariant> values )
-{
-    if ( !m_tempData.contains( part ) )
-        addNewSettingsPart( part );
-    m_globalLock.lockForRead();
-    SettingsPart* sett = m_tempData[part];
-    m_globalLock.unlock();
-    QHash<QString, QVariant>::iterator  it = values.begin();
-    QHash<QString, QVariant>::iterator  end = values.end();
+//void  SettingsManager::setValues( const QString& part, SettingsPart::ConfigPair values )
+//{
+//    if ( !m_tempData.contains( part ) )
+//        addNewSettingsPart( part );
+//    m_globalLock.lockForRead();
+//    SettingsPart* sett = m_tempData[part];
+//    m_globalLock.unlock();
+//    SettingsPart::ConfigPair::iterator  it = values.begin();
+//    SettingsPart::ConfigPair::iterator  end = values.end();
+//
+//    QWriteLocker    lock( &sett->m_lock );
+//    for ( ; it != end; ++it  )
+//        sett->m_data.insert( it.key(), it.value() );
+//    return ;
+//}
 
-    QWriteLocker    lock( &sett->m_lock );
-    for ( ; it != end; ++it  )
-        sett->m_data.insert( it.key(), it.value() );
-    return ;
-}
-
-void  SettingsManager::setValue( const QString& part , const QString& key, QVariant& value )
+void  SettingsManager::setValue( const QString& part , const QString& key, const QVariant& value )
 {
     m_globalLock.lockForRead();
     if ( !m_tempData.contains( part ) )
@@ -70,18 +70,23 @@ void  SettingsManager::setValue( const QString& part , const QString& key, QVari
     m_globalLock.unlock();
     QWriteLocker    lock( &m_globalLock );
     SettingsPart*   tmp = m_tempData[part];
-    tmp->m_data.insert( key, value );
+    SettingsPart::ConfigPair::iterator it = tmp->m_data.find( key );
+    if ( it == tmp->m_data.end() )
+        tmp->m_data[key] = new SettingValue( value );
+    else
+        it.value()->set( value );
     return ;
 }
 
-const QVariant&   SettingsManager::getValue( const QString& part, const QString& key ) const
+const SettingValue*     SettingsManager::getValue( const QString& part, const QString& key ) const
 {
     if ( !m_data.contains( part ) )
         return getValue( "default", key );
     QReadLocker readLock( &m_globalLock );
     QReadLocker rdLock( &m_data[part]->m_lock );
-    QVariant&  value = m_data[part]->m_data[key];
-    return value;
+    if ( m_data[part]->m_data.contains( key ) == true )
+        return m_data[part]->m_data[key];
+    return NULL;
 }
 
 void  SettingsManager::saveSettings( const QString& part, QDomDocument& xmlfile, QDomElement& root )
@@ -89,6 +94,7 @@ void  SettingsManager::saveSettings( const QString& part, QDomDocument& xmlfile,
     m_globalLock.lockForRead();
     if ( !m_data.contains( part ) )
     {
+        qDebug() << "no part named" << part;
         m_globalLock.unlock();
         return ;
     }
@@ -96,13 +102,13 @@ void  SettingsManager::saveSettings( const QString& part, QDomDocument& xmlfile,
     m_globalLock.unlock();
     //SAVE SETTINGS TO DomDocument
     QReadLocker     lock( &sett->m_lock );
-    QHash<QString, QVariant>::iterator  it = sett->m_data.begin();
-    QHash<QString, QVariant>::iterator  end = sett->m_data.end();
+    SettingsPart::ConfigPair::const_iterator  it = sett->m_data.begin();
+    SettingsPart::ConfigPair::const_iterator  end = sett->m_data.end();
     QDomElement settingsNode = xmlfile.createElement( part );
     for ( ; it != end; ++it )
     {
         QDomElement elem = xmlfile.createElement( it.key() );
-        elem.setAttribute( "value", it.value().toString() );
+        elem.setAttribute( "value", it.value()->get().toString() );
         settingsNode.appendChild( elem );
     }
 
@@ -139,7 +145,7 @@ void  SettingsManager::loadSettings( const QString& part, const QDomElement& set
             return ;
         }
         sett->m_data.insert( list.at( idx ).toElement().tagName(),
-                QVariant( attrMap.item( 0 ).nodeValue() ));
+                new SettingValue( QVariant( attrMap.item( 0 ).nodeValue() ) ) );
     }
     sett->m_lock.unlock();
     m_globalLock.unlock();
@@ -170,11 +176,17 @@ void    SettingsManager::commit()
         SettingsPart*   sett = it.value();
 
         QReadLocker rLock( &sett->m_lock );
-        QHash<QString, QVariant>::iterator iter = sett->m_data.begin();
-        QHash<QString, QVariant>::iterator ed = sett->m_data.end();
+        SettingsPart::ConfigPair::iterator iter = sett->m_data.begin();
+        SettingsPart::ConfigPair::iterator end = sett->m_data.end();
         QWriteLocker    wLock( &m_data[it.key()]->m_lock );
-        for ( ; iter != ed; ++iter )
-            m_data[it.key()]->m_data.insert( iter.key(), iter.value() );
+        for ( ; iter != end; ++iter )
+        {
+            SettingsPart::ConfigPair::iterator    insert_it = m_data[it.key()]->m_data.find( iter.key() );
+            if ( insert_it == m_data[it.key()]->m_data.end() )
+                m_data[it.key()]->m_data.insert( iter.key(), new SettingValue( iter.value()->get() ) );
+            else
+                m_data[it.key()]->m_data[ iter.key() ]->set( iter.value()->get() );
+        }
     }
     lock.unlock();
     flush();
@@ -213,3 +225,11 @@ SettingsManager*    SettingsManager::getInstance()
     return ret;
 }
 
+const SettingsPart*     SettingsManager::getConfigPart( const QString& part ) const
+{
+    QHash<QString, SettingsPart*>::const_iterator      it = m_data.find( part );
+
+    if ( it == m_data.end() )
+        return NULL;
+    return it.value();
+}

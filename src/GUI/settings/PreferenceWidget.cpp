@@ -25,7 +25,6 @@
 #include <QWidget>
 #include "PreferenceWidget.h"
 
-
 PreferenceWidget::PreferenceWidget( QWidget* parent )
     : QWidget( parent ),
     m_defaults( false ),

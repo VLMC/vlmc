@@ -46,11 +46,12 @@ public:
     Clip*           getClip( const QUuid& mediaId, const QUuid& clipId ) const;
     void            cutMedia( const QUuid& mediaId, int frame );
     void            cutClip( const QUuid& mediaId, const QUuid& clipId, int frame );
-    void            loadFile( const QFileInfo& fileInfo, int loadingMedias = 0 );
+    void            loadFile( const QFileInfo& fileInfo, int loadingMedias = 1 );
     void            removeMedia( const QUuid& mediaId );
     void            removeClip( const QUuid& mediaId, const QUuid& clipId );
     QHash<QUuid, Media*>*    getMedias() const { return m_medias; }
     void            setFilter( const QStringList& filter ) { m_filters = filter; }
+    void            removeAllMedias();
 
 signals:
     void            newMediaLoaded( Media* media );
@@ -70,6 +71,7 @@ private:
 private slots:
     void        metaDataComputed( Media* media );
     void        snapshotComputed( Media* media );
+    void        audioSpectrumComputed( Media* media );
 };
 
 #endif // IMPORTMODEL_H

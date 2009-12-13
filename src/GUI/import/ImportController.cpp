@@ -45,7 +45,7 @@ ImportController::ImportController(QWidget *parent) :
 
     QStringList filters;
     //Video
-    filters << "*.mov" << "*.avi" << "*.mkv" << "*.mpg" << "*.mpeg" << "*.wmv" << "*.mp4";
+    filters << "*.mov" << "*.avi" << "*.mkv" << "*.mpg" << "*.mpeg" << "*.wmv" << "*.mp4" << "*.ogg" << "*.ogv";
     //Audio
     filters << "*.mp3" << "*.oga" << "*.flac" << "*.aac" << "*.wav";
     //Picture
@@ -113,15 +113,20 @@ void        ImportController::newMediaLoaded( Media* media )
 
 void        ImportController::mediaSelection( const QUuid& uuid )
 {
-    if ( !m_currentUuid.isNull() )
-        m_mediaListController->getCell( m_currentUuid )->setPalette( palette() );
-    QPalette p = m_mediaListController->getCell( uuid )->palette();
-    p.setColor( QPalette::Window, QColor( Qt::darkBlue ) );
-    m_mediaListController->getCell( uuid )->setPalette( p );
+    if ( m_mediaListController->contains( uuid ) )
+    {
+        if ( !m_currentUuid.isNull() && m_mediaListController->contains( m_currentUuid ) )
+            m_mediaListController->getCell( m_currentUuid )->setPalette( palette() );
+        QPalette p = m_mediaListController->getCell( uuid )->palette();
+        p.setColor( QPalette::Window, QColor( Qt::darkBlue ) );
+        m_mediaListController->getCell( uuid )->setPalette( p );
 
-    setUIMetaData( m_model->getMedia( uuid ) );
-    emit mediaSelected( m_model->getMedia( uuid ) );
-    m_currentUuid = uuid;
+        setUIMetaData( m_model->getMedia( uuid ) );
+        if ( uuid != NULL && uuid != m_currentUuid )
+            m_preview->stop();
+        m_currentUuid = uuid;
+        emit mediaSelected( m_model->getMedia( uuid ) );
+    }
 }
 
 void        ImportController::clipSelection( const QUuid& uuid )
@@ -131,10 +136,14 @@ void        ImportController::clipSelection( const QUuid& uuid )
 
 void        ImportController::updateMediaRequested( Media* media )
 {
-    ImportMediaCellView*    cell = m_mediaListController->getCell( media->getUuid() );
-    cell->setThumbnail( media->getSnapshot() );
-    cell->setLength( media->getLengthMS() );
+    if ( m_mediaListController->contains( media->getUuid() ) )
+    {
+        ImportMediaCellView*    cell = m_mediaListController->getCell( media->getUuid() );
+        cell->setThumbnail( media->getSnapshot() );
+        cell->setLength( media->getLengthMS() );
+    }
 }
+
 void    ImportController::setUIMetaData( Media* media )
 {
     if ( media != NULL )
@@ -188,6 +197,7 @@ void    ImportController::treeViewDoubleClicked( const QModelIndex& index )
 void    ImportController::reject()
 {
     m_preview->stop();
+    m_model->removeAllMedias();
     done( Rejected );
 }
 
@@ -206,7 +216,8 @@ void    ImportController::accept()
 void        ImportController::mediaDeletion( const QUuid& uuid )
 {
     m_mediaListController->removeMedia( uuid );
-    delete m_model->getMedias()->take( uuid );
+    m_model->removeMedia( uuid );
+
     if ( uuid == m_currentUuid )
     {
         setUIMetaData( NULL );
@@ -219,7 +230,7 @@ void        ImportController::clipDeletion( const QUuid& uuid )
 {
     m_mediaListController->removeClip( uuid );
     QUuid id;
-    foreach(id, m_model->getMedias()->keys() )
+    foreach( id, m_model->getMedias()->keys() )
     {
         Media* media = m_model->getMedias()->value( id );
         if (media->clip( uuid) )

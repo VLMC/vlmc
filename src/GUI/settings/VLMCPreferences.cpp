@@ -38,8 +38,8 @@ void    VLMCPreferences::load()
     SettingsManager* settMan = SettingsManager::getInstance();
     const QString& part = m_defaults ? "default" : m_settName;
 
-    QString  outputFPS = settMan->getValue( part, "VLMCOutPutFPS" ).toString();
-    QString  tracksNb = settMan->getValue( part, "VLMCTracksNb" ).toString();
+    QString  outputFPS = settMan->getValue( part, "VLMCOutPutFPS" )->get().toString();
+    QString  tracksNb = settMan->getValue( part, "VLMCTracksNb" )->get().toString();
 
     m_ui.outputFPS->setText( outputFPS );
     m_ui.tracksNb->setText( tracksNb );

@@ -27,7 +27,7 @@
 
 using namespace LibVLCpp;
 
-MediaPlayer::MediaPlayer()
+MediaPlayer::MediaPlayer() : m_media( NULL )
 {
     m_internalPtr = libvlc_media_player_new( LibVLCpp::Instance::getInstance()->getInternalPtr(), m_ex );
     CheckVlcppException( m_ex );
@@ -46,7 +46,7 @@ MediaPlayer::MediaPlayer()
     libvlc_event_attach( p_em, libvlc_MediaPlayerLengthChanged, callbacks,this,m_ex );
 }
 
-MediaPlayer::MediaPlayer( Media* media )
+MediaPlayer::MediaPlayer( Media* media ) : m_media( media )
 {
     m_internalPtr = libvlc_media_player_new_from_media( media->getInternalPtr(), m_ex );
     CheckVlcppException( m_ex );
@@ -258,4 +258,17 @@ bool                                MediaPlayer::hasVout()
     bool    res = libvlc_media_player_has_vout( m_internalPtr, m_ex );
     CheckVlcppException( m_ex );
     return res;
+}
+
+const QString&                      MediaPlayer::getLoadedFileName() const
+{
+    return m_media->getFileName();
+}
+
+QString                             MediaPlayer::getLoadedMRL()
+{
+    Media::internalPtr     media = libvlc_media_player_get_media( m_internalPtr, m_ex );
+    CheckVlcppException( m_ex );
+    char* str = libvlc_media_get_mrl( media );
+    return QString( str );
 }

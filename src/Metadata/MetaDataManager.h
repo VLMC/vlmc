@@ -33,7 +33,7 @@
 #include "Media.h"
 #include "Singleton.hpp"
 
-#define DEFAULT_MAX_MEDIA_PLAYER 2
+#define DEFAULT_MAX_MEDIA_PLAYER 1
 
 class MetaDataManager : public QObject, public Singleton<MetaDataManager>
 {
@@ -62,9 +62,11 @@ class MetaDataManager : public QObject, public Singleton<MetaDataManager>
     private:
         QQueue<Media*>                                          m_mediasToComputeMetaData;
         QQueue<Media*>                                          m_mediasToComputeSnapshot;
+        QQueue<Media*>                                          m_mediasToComputeAudioSpectrum;
         QMultiMap<MediaPlayerState, LibVLCpp::MediaPlayer*>     m_mediaPlayers;
         QMutex                                                  m_mediasToComputeMetaDataMutex;
         QMutex                                                  m_mediasToComputeSnapshotMutex;
+        QMutex                                                  m_mediasToComputeAudioSpectrumMutex;
         QMutex                                                  m_mediaPlayersMutex;
         int                                                     m_mediaPlayersMaxCount;
         int                                                     m_mediaPlayersToRemove;

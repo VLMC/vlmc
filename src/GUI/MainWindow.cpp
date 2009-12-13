@@ -4,6 +4,7 @@
  * Copyright (C) 2008-2009 the VLMC team
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
+ *          Hugo Beauzee-Luyssen <beauze.h@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -54,21 +55,35 @@
 #include "MediaLibraryWidget.h"
 #include "LanguagePreferences.h"
 #include "ProjectManager.h"
+#include "KeyboardShortcut.h"
+#include "SettingValue.h"
+#include "SettingsManager.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
 {
     m_ui.setupUi( this );
+
     qRegisterMetaType<MainWorkflow::TrackType>( "MainWorkflow::TrackType" );
     qRegisterMetaType<MainWorkflow::FrameChangedReason>( "MainWorkflow::FrameChangedReason" );
+
+    // Settings
+    VLMCSettingsDefault::load( "default" );
+    VLMCSettingsDefault::load( "VLMC" );
+    VLMCSettingsDefault::loadKeyboardShortcutDefaults();
+
+    // GUI
     DockWidgetManager::instance( this )->setMainWindow( this );
     initializeDockWidgets();
     createStatusBar();
-    VLMCSettingsDefault::load( "default" );
-    VLMCSettingsDefault::load( "VLMC" );
-    m_pWizard = new ProjectWizard( this );
     createGlobalPreferences();
     createProjectPreferences();
+    initializeMenuKeyboardShortcut();
+
+    // Wizard
+    m_pWizard = new ProjectWizard( this );
+    m_pWizard->setModal( true );
+    m_pWizard->show();
 
     // Translations
     connect( this, SIGNAL( translateDockWidgetTitle() ),
@@ -84,8 +99,8 @@ MainWindow::MainWindow( QWidget *parent ) :
     connect( this, SIGNAL( toolChanged( ToolButtons ) ),
              m_timeline, SLOT( setTool( ToolButtons ) ) );
 
-    connect( ProjectManager::getInstance(), SIGNAL( projectChanged( const QString&, bool ) ),
-             this, SLOT( projectChanged( const QString&, bool ) ) );
+    connect( ProjectManager::getInstance(), SIGNAL( projectUpdated( const QString&, bool ) ),
+             this, SLOT( projectUpdated( const QString&, bool ) ) );
 
     QSettings s;
     // Restore the geometry
@@ -152,19 +167,22 @@ void    MainWindow::on_actionSave_As_triggered()
 
 void    MainWindow::on_actionLoad_Project_triggered()
 {
-    ProjectManager::getInstance()->loadProject();
+    ProjectManager* pm = ProjectManager::getInstance();
+    pm->loadProject( pm->loadProjectFile() );
 }
 
 void MainWindow::createStatusBar()
 {
     // Mouse (default) tool
     QToolButton* mouseTool = new QToolButton( this );
+    mouseTool->setAutoRaise( true );
     mouseTool->setCheckable( true );
     mouseTool->setIcon( QIcon( ":/images/mouse" ) );
     m_ui.statusbar->addPermanentWidget( mouseTool );
 
     // Cut/Split tool
     QToolButton* splitTool = new QToolButton( this );
+    splitTool->setAutoRaise( true );
     splitTool->setCheckable( true );
     splitTool->setIcon( QIcon( ":/images/editcut" ) );
     m_ui.statusbar->addPermanentWidget( splitTool );
@@ -175,6 +193,12 @@ void MainWindow::createStatusBar()
     toolButtonGroup->addButton( splitTool, TOOL_CUT );
     toolButtonGroup->setExclusive( true );
     mouseTool->setChecked( true );
+
+    //Shortcut part:
+    KeyboardShortcutHelper* defaultModeShortcut = new KeyboardShortcutHelper( "Default mode", this );
+    KeyboardShortcutHelper* cutModeShortcut = new KeyboardShortcutHelper( "Cut mode", this );
+    connect( defaultModeShortcut, SIGNAL( activated() ), mouseTool, SLOT( click() ) );
+    connect( cutModeShortcut, SIGNAL( activated() ), splitTool, SLOT( click() ) );
 
     connect( toolButtonGroup, SIGNAL( buttonClicked( int ) ),
              this, SLOT( toolButtonClicked( int ) ) );
@@ -228,7 +252,7 @@ void MainWindow::initializeDockWidgets( void )
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
-    QShortcut*  clipShortcut = new QShortcut( QKeySequence( tr( "Ctrl+Return", "Start clip preview" ) ), this );
+    KeyboardShortcutHelper* clipShortcut = new KeyboardShortcutHelper( "Launch media preview", this );
     connect( clipShortcut, SIGNAL( activated() ), m_clipPreview, SLOT( on_pushButtonPlay_clicked() ) );
 
     m_projectPreview = new PreviewWidget( workflowRenderer, this );
@@ -237,7 +261,7 @@ void MainWindow::initializeDockWidgets( void )
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
-    QShortcut*  renderShortcut = new QShortcut( QKeySequence( tr( "Space", "Start render preview" ) ), this );
+    KeyboardShortcutHelper* renderShortcut = new KeyboardShortcutHelper( "Start render preview", this );
     connect( renderShortcut, SIGNAL( activated() ), m_projectPreview, SLOT( on_pushButtonPlay_clicked() ) );
 
     dockManager->addDockedWidget( UndoStack::getInstance( this ),
@@ -259,6 +283,10 @@ void        MainWindow::createGlobalPreferences()
                                    new LanguagePreferences( m_globalPreferences ),
                                    QIcon( ":/images/images/vlmc.png" ),
                                    "Langage settings");
+    m_globalPreferences->addWidget( "Keyboard",
+                                     new KeyboardShortcut( m_globalPreferences ),
+                                     QIcon( ":/images/keyboard" ),
+                                     tr( "Keyboard Settings" ) );
     m_globalPreferences->build();
 }
 
@@ -331,7 +359,8 @@ void MainWindow::on_actionNew_Project_triggered()
     //TODO : clear the library, the timeline, and show the configuration box
     //of the newly created project
 
-    m_projectPreferences->show();
+    m_pWizard->restart();
+    m_pWizard->show();
 }
 
 void    MainWindow::on_actionHelp_triggered()
@@ -390,41 +419,15 @@ void MainWindow::on_actionProject_Preferences_triggered()
   m_projectPreferences->show( "project" );
 }
 
-void MainWindow::on_actionProject_Wizard_triggered()
-{
-    m_pWizard->show();
-}
-
 void    MainWindow::closeEvent( QCloseEvent* e )
 {
-    if ( ProjectManager::getInstance()->needSave() == true )
-    {
-        QMessageBox msgBox;
-        msgBox.setText( tr( "The project has been modified." ) );
-        msgBox.setInformativeText( tr( "Do you want to save it ?" ) );
-        msgBox.setStandardButtons( QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel );
-        msgBox.setDefaultButton(QMessageBox::Save);
-        int     ret = msgBox.exec();
-
-        switch ( ret )
-        {
-            case QMessageBox::Save:
-                ProjectManager::getInstance()->saveProject();
-                break ;
-            case QMessageBox::Discard:
-                break ;
-            case QMessageBox::Cancel:
-            default:
-                e->ignore();
-                return ;
-            e->accept();
-        }
-    }
-    else
+    if ( ProjectManager::getInstance()->askForSaveIfModified() )
         e->accept();
+    else
+        e->ignore();
 }
 
-void    MainWindow::projectChanged( const QString& projectName, bool savedStatus )
+void    MainWindow::projectUpdated( const QString& projectName, bool savedStatus )
 {
     QString title = tr( "VideoLAN Movie Creator" );
     title += " - ";
@@ -432,4 +435,55 @@ void    MainWindow::projectChanged( const QString& projectName, bool savedStatus
     if ( savedStatus == false )
         title += " *";
     setWindowTitle( title );
+}
+
+void    MainWindow::on_actionClose_Project_triggered()
+{
+    ProjectManager::getInstance()->closeProject();
+}
+
+#define INIT_SHORTCUT( instName, shortcutName, actionInstance )      \
+            const SettingValue* instName = SettingsManager::getInstance()->getValue( "keyboard_shortcut", shortcutName );\
+            KeyboardShortcutHelper* helper##instName = new KeyboardShortcutHelper( shortcutName, this, true ); \
+            connect( helper##instName, SIGNAL( changed( const QString&, const QString&) ), this, SLOT( keyboardShortcutChanged(QString,QString)) ); \
+            m_ui.actionInstance->setShortcut( instName->get().toString() );
+
+void    MainWindow::initializeMenuKeyboardShortcut()
+{
+    INIT_SHORTCUT( help, "Help", actionHelp );
+    INIT_SHORTCUT( quit, "Quit", actionQuit );
+    INIT_SHORTCUT( preferences, "Preferences", actionPreferences );
+    INIT_SHORTCUT( fullscreen, "Fullscreen", actionFullscreen );
+    INIT_SHORTCUT( newProject, "New project", actionNew_Project );
+    INIT_SHORTCUT( openProject, "Open project", actionLoad_Project );
+    INIT_SHORTCUT( save, "Save", actionSave );
+    INIT_SHORTCUT( saveAs, "Save as", actionSave_As );
+    INIT_SHORTCUT( closeProject, "Close project", actionClose_Project );
+}
+
+#undef INIT_SHORTCUT
+
+void    MainWindow::keyboardShortcutChanged( const QString& name, const QString& val )
+{
+    qDebug() << "shortcut" << name << "changed to" << val;
+    if ( name == "Help" )
+        m_ui.actionHelp->setShortcut( val );
+    else if ( name == "Quit" )
+        m_ui.actionQuit->setShortcut( val );
+    else if ( name == "Preferences" )
+        m_ui.actionPreferences->setShortcut( val );
+    else if ( name == "Fullscreen" )
+        m_ui.actionFullscreen->setShortcut( val );
+    else if ( name == "New project" )
+        m_ui.actionNew_Project->setShortcut( val );
+    else if ( name == "Open project" )
+        m_ui.actionLoad_Project->setShortcut( val );
+    else if ( name == "Save" )
+        m_ui.actionSave->setShortcut( val );
+    else if ( name == "Save as" )
+        m_ui.actionSave_As->setShortcut( val );
+    else if ( name == "Close project" )
+        m_ui.actionClose_Project->setShortcut( val );
+    else
+        qWarning() << "Unknown shortcut:" << name;
 }

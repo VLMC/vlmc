@@ -22,19 +22,50 @@
 
 #include <QFileDialog>
 #include <QtDebug>
+#include <QSettings>
+#include <QMessageBox>
+
+#include <signal.h>
 
 #include "ProjectManager.h"
 #include "Library.h"
 #include "MainWorkflow.h"
 #include "SettingsManager.h"
+#include "CrashHandler.h"
+
+void    ProjectManager::signalHandler( int sig )
+{
+    signal( sig, SIG_DFL );
+
+    ProjectManager::getInstance()->emergencyBackup();
+
+//    CrashHandler* ch = new CrashHandler();
+//    ch->exec();
+    raise( sig );
+}
+
+const QString   ProjectManager::unNamedProject = tr( "<Unnamed project>" );
 
 ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
 {
-
+    QSettings s;
+    m_recentsProjects = s.value( "RecentsProjects" ).toStringList();
+    connect( this, SIGNAL( projectClosed() ), Library::getInstance(), SLOT( clear() ) );
+    connect( this, SIGNAL( projectClosed() ), MainWorkflow::getInstance(), SLOT( clear() ) );
+    const SettingValue* val = SettingsManager::getInstance()->getValue( "project", "ProjectName");
+    connect( val, SIGNAL( changed( QVariant) ), this, SLOT(nameChanged(QVariant) ) );
+    m_projectName = tr( "<Unsaved project>" );
+    signal( SIGSEGV, ProjectManager::signalHandler );
+//    signal( SIGINT, SIG_IGN );
+    signal( SIGFPE, ProjectManager::signalHandler );
 }
 
 ProjectManager::~ProjectManager()
 {
+    // Write uncommited change to the disk
+    QSettings s;
+    s.sync();
+
     if ( m_projectFile != NULL )
         delete m_projectFile;
 }
@@ -44,16 +75,19 @@ bool    ProjectManager::needSave() const
     return m_needSave;
 }
 
+QStringList ProjectManager::recentsProjects() const
+{
+    return m_recentsProjects;
+}
+
 void    ProjectManager::cleanChanged( bool val )
 {
     m_needSave = !val;
     if ( m_projectFile != NULL )
     {
         QFileInfo   fInfo( *m_projectFile );
-        emit projectChanged( fInfo.fileName(), val );
     }
-    else
-        emit projectChanged( tr( "<Unsaved project>" ), val );
+    emit projectUpdated( m_projectName, val );
 }
 
 void    ProjectManager::loadTimeline()
@@ -62,13 +96,34 @@ void    ProjectManager::loadTimeline()
     QFileInfo       fInfo( *m_projectFile );
 
     MainWorkflow::getInstance()->loadProject( root.firstChildElement( "timeline" ) );
-    emit projectChanged( fInfo.fileName(), true );
+    emit projectUpdated( m_projectName, true );
 }
 
-void    ProjectManager::loadProject()
+void    ProjectManager::parseProjectNode( const QDomElement &node )
 {
-    if ( loadProjectFile() == false )
+    QDomElement     projectNameNode = node.firstChildElement( "ProjectName" );
+    m_projectName = projectNameNode.attribute( "value", ProjectManager::unNamedProject );
+}
+
+void    ProjectManager::loadProject( const QString& fileName )
+{
+    if ( fileName.length() == 0 )
+        return;
+
+    if ( closeProject() == false )
         return ;
+
+    // Append the item to the recents list
+    m_recentsProjects.removeAll( fileName );
+    m_recentsProjects.prepend( fileName );
+    while ( m_recentsProjects.count() > 15 )
+        m_recentsProjects.removeLast();
+
+    QSettings s;
+    s.setValue( "RecentsProjects", m_recentsProjects );
+
+    m_projectFile = new QFile( fileName );
+
     m_domDocument = new QDomDocument;
     m_projectFile->open( QFile::ReadOnly );
     m_domDocument->setContent( m_projectFile );
@@ -76,22 +131,18 @@ void    ProjectManager::loadProject()
 
     QDomElement     root = m_domDocument->documentElement();
 
+    parseProjectNode( root.firstChildElement( "project" ) );
     connect( Library::getInstance(), SIGNAL( projectLoaded() ), this, SLOT( loadTimeline() ) );
     Library::getInstance()->loadProject( root.firstChildElement( "medias" ) );
     SettingsManager::getInstance()->loadSettings( "project", root.firstChildElement( "project" ) );
 }
 
-bool    ProjectManager::loadProjectFile()
+QString  ProjectManager::loadProjectFile()
 {
     QString fileName =
             QFileDialog::getOpenFileName( NULL, "Enter the output file name",
                                           QString(), "VLMC project file(*.vlmc)" );
-    if ( fileName.length() == 0 )
-        return false;
-    if ( m_projectFile != NULL )
-        delete m_projectFile;
-    m_projectFile = new QFile( fileName );
-    return true;
+    return fileName;
 }
 
 bool    ProjectManager::checkProjectOpen( bool saveAs )
@@ -116,6 +167,17 @@ void    ProjectManager::saveProject( bool saveAs /*= true*/ )
 {
     if ( checkProjectOpen( saveAs ) == false )
         return ;
+    __saveProject( m_projectFile->fileName() );
+    if ( saveAs == true )
+    {
+        QFileInfo   fInfo( *m_projectFile );
+        emit projectUpdated( fInfo.fileName(), true );
+    }
+    emit projectSaved();
+}
+
+void    ProjectManager::__saveProject( const QString &fileName )
+{
     QDomImplementation    implem = QDomDocument().implementation();
     //FIXME: Think about naming the project...
     QString name = "VLMCProject";
@@ -128,16 +190,72 @@ void    ProjectManager::saveProject( bool saveAs /*= true*/ )
     Library::getInstance()->saveProject( doc, rootNode );
     MainWorkflow::getInstance()->saveProject( doc, rootNode );
     SettingsManager::getInstance()->saveSettings( "project", doc, rootNode );
+    SettingsManager::getInstance()->saveSettings( "keyboard_shortcut", doc, rootNode );
 
     doc.appendChild( rootNode );
 
-    m_projectFile->open( QFile::WriteOnly );
-    m_projectFile->write( doc.toString().toAscii() );
-    m_projectFile->close();
-    if ( saveAs == true )
+    QFile   file( fileName );
+    file.open( QFile::WriteOnly );
+    file.write( doc.toString().toAscii() );
+    file.close();
+}
+
+void    ProjectManager::newProject( const QString &projectName )
+{
+    if ( closeProject() == false )
+        return ;
+    m_projectName = projectName;
+    emit projectUpdated( m_projectName, true );
+}
+
+bool    ProjectManager::closeProject()
+{
+    if ( askForSaveIfModified() == false )
+        return false;
+    if ( m_projectFile != NULL )
     {
-        QFileInfo   fInfo( *m_projectFile );
-        emit projectChanged( fInfo.fileName(), true );
+        delete m_projectFile;
+        m_projectFile = NULL;
     }
-    emit projectSaved();
+    emit projectClosed();
+    return true;
+}
+
+bool    ProjectManager::askForSaveIfModified()
+{
+    if ( m_needSave == true )
+    {
+        QMessageBox msgBox;
+        msgBox.setText( tr( "The project has been modified." ) );
+        msgBox.setInformativeText( tr( "Do you want to save it ?" ) );
+        msgBox.setStandardButtons( QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel );
+        msgBox.setDefaultButton(QMessageBox::Save);
+        int     ret = msgBox.exec();
+
+        switch ( ret )
+        {
+            case QMessageBox::Save:
+                saveProject();
+                break ;
+            case QMessageBox::Discard:
+                break ;
+            case QMessageBox::Cancel:
+            default:
+                return false ;
+        }
+    }
+    return true;
+}
+
+void    ProjectManager::nameChanged( const QVariant& name )
+{
+    m_projectName = name.toString();
+}
+
+void    ProjectManager::emergencyBackup()
+{
+    QString name = m_projectFile->fileName();
+    name += "~";
+    __saveProject( name );
+    qDebug() << "Emergency backup succeeded";
 }

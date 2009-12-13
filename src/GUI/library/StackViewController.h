@@ -33,6 +33,8 @@
 #include "StackViewNavController.h"
 #include "ViewController.h"
 
+class ImportController;
+
 class StackViewController : public QWidget
 {
     Q_OBJECT
@@ -52,6 +54,7 @@ private:
     QVBoxLayout*                m_layout;
     ViewController*             m_current;
     QStack<ViewController*>*    m_controllerStack;
+    ImportController*           m_importController;
 
 public slots:
     void                        previous();
