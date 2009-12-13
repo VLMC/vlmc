@@ -146,6 +146,7 @@ void    PreviewWidget::endReached()
 
 void        PreviewWidget::on_pushButtonNextFrame_clicked()
 {
+    int test = 1 / 0;
     if ( m_previewStopped == false )
         m_renderer->nextFrame();
 }
