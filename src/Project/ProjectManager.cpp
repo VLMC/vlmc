@@ -122,6 +122,7 @@ void    ProjectManager::loadProject( const QString& fileName )
 
     QSettings s;
     s.setValue( "RecentsProjects", m_recentsProjects );
+    s.sync();
 
     m_projectFile = new QFile( fileName );
 

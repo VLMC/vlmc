@@ -67,6 +67,13 @@ private:
     void        createGlobalPreferences();
     void        createProjectPreferences();
     void        initializeMenuKeyboardShortcut();
+    /**
+     *  \brief  Will check if vlmc closed nicely or crashed.
+     *          If so, the emergency backup will be opened.
+     *  \return true if a project was restored. If so, the wizzard should
+     *          not be opened.
+     */
+    bool        restoreSession();
 
     Ui::MainWindow          m_ui;
     QSlider*                m_zoomSlider;
