@@ -38,6 +38,7 @@ Instance::Instance()
         //"--plugin-path", VLC_TREE "/modules",
         "--disable-screensaver",
         "--ignore-config", //Don't use VLC's config files
+        "--no-overlay",
     };
     int argc = sizeof( argv ) / sizeof( *argv );
 

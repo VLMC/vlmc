@@ -40,7 +40,7 @@ struct  SettingsPart
 
     SettingsPart() {}
     ConfigPair                  m_data;
-    mutable QReadWriteLock      m_lock;
+    QReadWriteLock              m_lock;
     bool                        m_rdOnly;
 
     private:
