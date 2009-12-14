@@ -255,8 +255,15 @@ void    ProjectManager::nameChanged( const QVariant& name )
 
 void    ProjectManager::emergencyBackup()
 {
-    QString name = m_projectFile->fileName();
-    name += "~";
-    __saveProject( name );
-    qDebug() << "Emergency backup succeeded";
+    if ( m_projectFile != NULL )
+    {
+        QString name = m_projectFile->fileName();
+        name += "backup";
+        __saveProject( name );
+    }
+    else
+    {
+        QString name = QDir::currentPath() + "unsavedproject.vlmcbackup";
+        __saveProject( name );
+    }
 }
