@@ -266,6 +266,9 @@ Clip*       MainWorkflow::getClip( const QUuid& uuid, unsigned int trackId, Main
     return m_tracks[trackType]->getClip( uuid, trackId );
 }
 
+/**
+ *  \warning    The mainworkflow is expected to be cleared already by the ProjectManager
+ */
 void        MainWorkflow::loadProject( const QDomElement& project )
 {
     if ( project.isNull() == true || project.tagName() != "timeline" )
@@ -273,8 +276,6 @@ void        MainWorkflow::loadProject( const QDomElement& project )
         qWarning() << "Invalid timeline node (" << project.tagName() << ')';
         return ;
     }
-
-    clear();
 
     QDomElement elem = project.firstChild().toElement();
 
@@ -370,6 +371,7 @@ void        MainWorkflow::saveProject( QDomDocument& doc, QDomElement& rootNode 
 
 void        MainWorkflow::clear()
 {
+    qDebug() << "main workflow cleared";
     for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         m_tracks[i]->clear();
     emit cleared();

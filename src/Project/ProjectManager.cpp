@@ -124,15 +124,7 @@ void    ProjectManager::loadProject( const QString& fileName )
 
     if ( ProjectManager::isBackupFile( fileName ) == false )
     {
-        // Append the item to the recents list
-        m_recentsProjects.removeAll( fileName );
-        m_recentsProjects.prepend( fileName );
-        while ( m_recentsProjects.count() > 15 )
-            m_recentsProjects.removeLast();
-
-        QSettings s;
-        s.setValue( "RecentsProjects", m_recentsProjects );
-        s.sync();
+        appendToRecentProject( fileName );
     }
     else
     {
@@ -158,7 +150,7 @@ QString  ProjectManager::loadProjectFile()
     return fileName;
 }
 
-bool    ProjectManager::checkProjectOpen( bool saveAs )
+bool    ProjectManager::createNewProjectFile( bool saveAs )
 {
     if ( m_projectFile == NULL || saveAs == true )
     {
@@ -172,13 +164,16 @@ bool    ProjectManager::checkProjectOpen( bool saveAs )
         if ( outputFileName.endsWith( ".vlmc" ) == false )
             outputFileName += ".vlmc";
         m_projectFile = new QFile( outputFileName );
+        appendToRecentProject( outputFileName );
     }
     return true;
 }
 
 void    ProjectManager::saveProject( bool saveAs /*= true*/ )
 {
-    if ( checkProjectOpen( saveAs ) == false )
+    //If the project is still unsaved, or if we want to
+    //save the project with a new name
+    if ( createNewProjectFile( saveAs ) == false )
         return ;
     __saveProject( m_projectFile->fileName() );
     if ( saveAs == true )
@@ -286,6 +281,7 @@ bool    ProjectManager::loadEmergencyBackup( const QString& projectName )
     if ( QFile::exists( lastProject ) == true )
     {
         loadProject(  lastProject );
+        m_needSave = true;
         return true;
     }
     return false;
@@ -294,4 +290,17 @@ bool    ProjectManager::loadEmergencyBackup( const QString& projectName )
 bool    ProjectManager::isBackupFile( const QString& projectFile )
 {
     return projectFile.endsWith( "backup" );
+}
+
+void    ProjectManager::appendToRecentProject( const QString& projectFile )
+{
+        // Append the item to the recents list
+        m_recentsProjects.removeAll( projectFile );
+        m_recentsProjects.prepend( projectFile );
+        while ( m_recentsProjects.count() > 15 )
+            m_recentsProjects.removeLast();
+
+        QSettings s;
+        s.setValue( "RecentsProjects", m_recentsProjects );
+        s.sync();
 }
