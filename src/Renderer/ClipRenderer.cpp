@@ -39,7 +39,6 @@ ClipRenderer::ClipRenderer() :
     connect( m_mediaPlayer,     SIGNAL( stopped() ),            this,   SLOT( __videoStopped() ) );
     connect( m_mediaPlayer,     SIGNAL( paused() ),             this,   SLOT( __videoPaused() ) );
     connect( m_mediaPlayer,     SIGNAL( playing() ),            this,   SLOT( __videoPlaying() ) );
-    connect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,   SLOT( __positionChanged() ) );
     connect( m_mediaPlayer,     SIGNAL( timeChanged() ),        this,   SLOT( __timeChanged() ) );
     connect( m_mediaPlayer,     SIGNAL( endReached() ),         this,   SLOT( __endReached() ) );
 }
@@ -248,21 +247,27 @@ void        ClipRenderer::__videoPlaying()
     emit playing();
 }
 
-void        ClipRenderer::__positionChanged()
-{
-    if ( m_clipLoaded == false)
-        return ;
-
-    float   begin = m_begin / ( m_end - m_begin );
-    float   end = m_end / ( m_end - m_begin );
-    float pos = ( m_mediaPlayer->getPosition() - begin ) /
-                ( end - begin );
-    emit frameChanged( pos, MainWorkflow::Renderer );
-}
+//void        ClipRenderer::__positionChanged()
+//{
+//    if ( m_clipLoaded == false)
+//        return ;
+//
+//    qDebug() << "begin:" << m_begin << "end:" << m_end;
+//    qDebug() << "position:" << m_mediaPlayer->getPosition();
+//    float   begin = m_begin / ( m_end - m_begin );
+//    float   end = m_end / ( m_end - m_begin );
+//    float pos = ( m_mediaPlayer->getPosition() - begin ) /
+//                ( end - begin );
+//    qDebug() << pos;
+//    emit frameChanged( pos, MainWorkflow::Renderer );
+//}
 
 void        ClipRenderer::__timeChanged()
 {
-    qint64 f = qRound64( (qreal)m_mediaPlayer->getTime() / 1000.0 * (qreal)m_mediaPlayer->getFps() );
+    float   fps = (qreal)m_mediaPlayer->getFps();
+    if ( fps < 0.1f )
+        fps = m_selectedMedia->getFps();
+    qint64 f = qRound64( (qreal)m_mediaPlayer->getTime() / 1000.0 * fps );
     emit frameChanged( f, MainWorkflow::Renderer );
 }
 
