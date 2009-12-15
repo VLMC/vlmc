@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>VLMC Crash handler</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="margin">
@@ -151,9 +151,16 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="closeButton">
+      <widget class="QPushButton" name="okButton">
        <property name="text">
-        <string>PushButton</string>
+        <string>Ok</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="restartButton">
+       <property name="text">
+        <string>Restart</string>
        </property>
       </widget>
      </item>

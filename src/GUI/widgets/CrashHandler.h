@@ -41,6 +41,10 @@ class CrashHandler : public QDialog
     protected:
         void                    changeEvent(QEvent *e);
 
+    private slots:
+        void                    close();
+        void                    restart();
+
     private:
         Ui::CrashHandler*       ui;
         static const int        backtraceSize = 256;

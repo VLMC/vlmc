@@ -26,7 +26,7 @@
 #endif
 
 #include <signal.h>
-
+#include <QProcess>
 
 #include "CrashHandler.h"
 #include "ui_CrashHandler.h"
@@ -36,6 +36,8 @@ CrashHandler::CrashHandler( int sig, QWidget *parent ) :
         ui( new Ui::CrashHandler )
 {
     ui->setupUi( this );
+    connect( ui->okButton, SIGNAL( clicked() ), this, SLOT( close() ) );
+    connect( ui->restartButton, SIGNAL( clicked() ), this, SLOT( restart() ) );
 
 #ifndef WIN32
     void    *buff[CrashHandler::backtraceSize];
@@ -63,7 +65,7 @@ CrashHandler::~CrashHandler()
     delete ui;
 }
 
-void CrashHandler::changeEvent(QEvent *e)
+void    CrashHandler::changeEvent(QEvent *e)
 {
     QWidget::changeEvent(e);
     switch ( e->type() )
@@ -74,4 +76,16 @@ void CrashHandler::changeEvent(QEvent *e)
     default:
         break;
     }
+}
+
+void    CrashHandler::close()
+{
+    accept();
+}
+
+void    CrashHandler::restart()
+{
+    QProcess*   p = new QProcess();
+    p->start( "./vlmc" );
+    close();
 }
