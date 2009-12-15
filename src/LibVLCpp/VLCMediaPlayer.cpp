@@ -100,10 +100,10 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
         self->emit endReached();
         break;
     case libvlc_MediaPlayerTimeChanged:
-        self->emit timeChanged();
+        self->emit timeChanged( event->u.media_player_time_changed.new_time / 1000 );
         break;
     case libvlc_MediaPlayerPositionChanged:
-        self->emit positionChanged();
+        self->emit positionChanged( event->u.media_player_position_changed.new_position );
         break;
     case libvlc_MediaPlayerLengthChanged:
         self->emit lengthChanged();
@@ -207,17 +207,6 @@ void                                MediaPlayer::setDrawable( uint32_t drawable 
 {
     libvlc_media_player_set_xwindow( m_internalPtr, drawable, m_ex );
     CheckVlcppException( m_ex );
-}
-
-void                                MediaPlayer::timeChangedFilter()
-{
-    // Don't flood the gui with too many signals
-    qint64 currentTime = getTime() / 100;
-    static qint64 lastTime = 0;
-
-    if ( currentTime != lastTime )
-        emit timeChanged();
-    lastTime = currentTime;
 }
 
 void                                MediaPlayer::setMedia( Media* media )
