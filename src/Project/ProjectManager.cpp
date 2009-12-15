@@ -26,6 +26,7 @@
 #include <QMessageBox>
 #include <QApplication>
 
+#include <errno.h>
 #include <signal.h>
 
 #include "ProjectManager.h"

@@ -135,7 +135,6 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
 
 void AbstractGraphicsMediaItem::adjustLength()
 {
-    qDebug() << "Resize event. m_resizeExpected:" << m_resizeExpected;
     if ( m_resizeExpected == true )
     {
         m_resizeExpected = false;

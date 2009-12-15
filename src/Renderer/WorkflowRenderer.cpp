@@ -266,9 +266,10 @@ void        WorkflowRenderer::rulerCursorChanged( qint64 newFrame )
     m_mainWorkflow->setCurrentFrame( newFrame, MainWorkflow::RulerCursor );
 }
 
-Clip*       WorkflowRenderer::split( Clip* toSplit, uint32_t trackId, qint64 newClipPos, qint64 newClipBegin, MainWorkflow::TrackType trackType )
+Clip*       WorkflowRenderer::split( Clip* toSplit, Clip* newClip, uint32_t trackId, qint64 newClipPos, qint64 newClipBegin, MainWorkflow::TrackType trackType )
 {
-    Clip*   newClip = new Clip( toSplit, newClipBegin, toSplit->getEnd() );
+    if ( newClip == NULL )
+        newClip = new Clip( toSplit, newClipBegin, toSplit->getEnd() );
 
     if ( m_isRendering == true )
     {
@@ -307,7 +308,7 @@ void    WorkflowRenderer::unsplit( Clip* origin, Clip* splitted, uint32_t trackI
     }
     else
     {
-        delete m_mainWorkflow->removeClip( splitted->getUuid(), trackId, trackType );
+        m_mainWorkflow->removeClip( splitted->getUuid(), trackId, trackType );
         origin->setEnd( oldEnd );
     }
 }
