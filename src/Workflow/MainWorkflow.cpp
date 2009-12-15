@@ -26,6 +26,7 @@
 #include "MainWorkflow.h"
 #include "TrackWorkflow.h"
 #include "TrackHandler.h"
+#include "Library.h"
 
 //JUST FOR THE DEFINES !
 //TODO:
@@ -350,8 +351,11 @@ void        MainWorkflow::loadProject( const QDomElement& project )
                 clipProperty = clipProperty.nextSibling().toElement();
             }
 
-            Clip*       c = new Clip( parent, begin, end );
-            addClip( c, trackId, startPos, trackType );
+            if ( Library::getInstance()->getMedia( parent ) != NULL )
+            {
+                Clip*       c = new Clip( parent, begin, end );
+                addClip( c, trackId, startPos, trackType );
+            }
 
             clip = clip.nextSibling().toElement();
         }
@@ -371,7 +375,6 @@ void        MainWorkflow::saveProject( QDomDocument& doc, QDomElement& rootNode 
 
 void        MainWorkflow::clear()
 {
-    qDebug() << "main workflow cleared";
     for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         m_tracks[i]->clear();
     emit cleared();
