@@ -27,6 +27,8 @@
   */
 
 #include <QtDebug>
+#include <QMessageBox>
+
 #include "Library.h"
 #include "MetaDataManager.h"
 
@@ -127,6 +129,11 @@ void        Library::loadMedia( const QString& path, const QUuid& uuid )
             it->setUuid( uuid );
             return ;
         }
+    }
+    if ( QFile::exists( path ) == false )
+    {
+        QMessageBox::warning( NULL, tr( "Import error" ), tr( "Can't open file :" ) + path );
+        return ;
     }
     Media*  media = new Media( path, uuid );
     connect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ) );

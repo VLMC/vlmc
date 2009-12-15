@@ -73,6 +73,7 @@
      <string>Tools</string>
     </property>
     <addaction name="actionTranscode"/>
+    <addaction name="actionCrash"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
@@ -210,6 +211,11 @@
   <action name="actionClose_Project">
    <property name="text">
     <string>Close Project</string>
+   </property>
+  </action>
+  <action name="actionCrash">
+   <property name="text">
+    <string>Crash</string>
    </property>
   </action>
  </widget>

@@ -67,6 +67,13 @@ private:
     void        createGlobalPreferences();
     void        createProjectPreferences();
     void        initializeMenuKeyboardShortcut();
+    /**
+     *  \brief  Will check if vlmc closed nicely or crashed.
+     *          If so, the emergency backup will be opened.
+     *  \return true if a project was restored. If so, the wizzard should
+     *          not be opened.
+     */
+    bool        restoreSession();
 
     Ui::MainWindow          m_ui;
     QSlider*                m_zoomSlider;
@@ -95,6 +102,7 @@ private slots:
     void                    on_actionHelp_triggered();
     void                    on_actionProject_Preferences_triggered();
     void                    on_actionClose_Project_triggered();
+    void                    on_actionCrash_triggered();
     void                    toolButtonClicked( int id );
     void                    projectUpdated( const QString& projectName, bool savedStatus );
     void                    keyboardShortcutChanged( const QString&, const QString& );

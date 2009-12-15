@@ -26,6 +26,7 @@
 #include "MainWorkflow.h"
 #include "TrackWorkflow.h"
 #include "TrackHandler.h"
+#include "Library.h"
 
 //JUST FOR THE DEFINES !
 //TODO:
@@ -290,6 +291,9 @@ Clip*       MainWorkflow::getClip( const QUuid& uuid, unsigned int trackId, Main
     return m_tracks[trackType]->getClip( uuid, trackId );
 }
 
+/**
+ *  \warning    The mainworkflow is expected to be cleared already by the ProjectManager
+ */
 void        MainWorkflow::loadProject( const QDomElement& project )
 {
     if ( project.isNull() == true || project.tagName() != "timeline" )
@@ -297,8 +301,6 @@ void        MainWorkflow::loadProject( const QDomElement& project )
         qWarning() << "Invalid timeline node (" << project.tagName() << ')';
         return ;
     }
-
-    clear();
 
     QDomElement elem = project.firstChild().toElement();
 
@@ -373,8 +375,11 @@ void        MainWorkflow::loadProject( const QDomElement& project )
                 clipProperty = clipProperty.nextSibling().toElement();
             }
 
-            Clip*       c = new Clip( parent, begin, end );
-            addClip( c, trackId, startPos, trackType );
+            if ( Library::getInstance()->getMedia( parent ) != NULL )
+            {
+                Clip*       c = new Clip( parent, begin, end );
+                addClip( c, trackId, startPos, trackType );
+            }
 
             clip = clip.nextSibling().toElement();
         }

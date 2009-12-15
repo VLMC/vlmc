@@ -94,3 +94,5 @@ void    VLMCSettingsDefault::loadKeyboardShortcutDefaults( const QString& part )
     ADD_SHORTCUT( "Close project", QKeySequence( QKeySequence::Close ).toString().toLocal8Bit() );
     return ;
 }
+
+#undef ADD_SHORTCUT

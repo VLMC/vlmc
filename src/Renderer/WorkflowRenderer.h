@@ -65,7 +65,18 @@ class   WorkflowRenderer : public GenericRenderer
         virtual float       getFps() const;
         void                addClip( Clip* clip, uint32_t trackId, qint64 startingPos, MainWorkflow::TrackType trackType );
         void                removeClip( const QUuid& uuid, uint32_t trackId, MainWorkflow::TrackType trackType );
-        Clip*               split( Clip* toSplit, uint32_t trackId, qint64 newClipPos, qint64 newClipBegin, MainWorkflow::TrackType trackType );
+        /**
+         *  \brief                  Will split a clip and return the created clip, resulting of the split operation.
+         *  \param  toSplit         The clip to split
+         *  \param  newClip         If the "toSplit" clip already has been splitted, this is the clip resulting
+         *                          from the previous split operation. This prevent creating and deleting clip that could be used elsewhere.
+         *  \param  trackId         The track containing the clip
+         *  \param  newClipPos      The position of the "newClip" on the timeline.
+         *  \param  newClipBegin    The starting frame (from the beginning of the clip's parent media)
+         *  \param  trackType       The track type (audio or video)
+         *  \return                 The newly created clip if "newClip" was NULL; else, newClip is returned.
+         */
+        Clip*               split( Clip* toSplit, Clip* newClip, uint32_t trackId, qint64 newClipPos, qint64 newClipBegin, MainWorkflow::TrackType trackType );
         void                unsplit( Clip* origin, Clip* splitted, uint32_t trackId, qint64 oldEnd, MainWorkflow::TrackType trackType );
         /**
          *  \param  undoRedoAction: if true, the potential move resulting from the resize will be emmited to the GUI.

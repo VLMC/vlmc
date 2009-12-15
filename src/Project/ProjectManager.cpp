@@ -24,7 +24,9 @@
 #include <QtDebug>
 #include <QSettings>
 #include <QMessageBox>
+#include <QApplication>
 
+#include <errno.h>
 #include <signal.h>
 
 #include "ProjectManager.h"
@@ -39,9 +41,9 @@ void    ProjectManager::signalHandler( int sig )
 
     ProjectManager::getInstance()->emergencyBackup();
 
-//    CrashHandler* ch = new CrashHandler();
-//    ch->exec();
-    raise( sig );
+    CrashHandler* ch = new CrashHandler( sig );
+    ch->exec();
+    QApplication::exit(1);
 }
 
 const QString   ProjectManager::unNamedProject = tr( "<Unnamed project>" );
@@ -55,9 +57,11 @@ ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
     const SettingValue* val = SettingsManager::getInstance()->getValue( "project", "ProjectName");
     connect( val, SIGNAL( changed( QVariant) ), this, SLOT(nameChanged(QVariant) ) );
     m_projectName = tr( "<Unsaved project>" );
-    signal( SIGSEGV, ProjectManager::signalHandler );
+//    signal( SIGSEGV, ProjectManager::signalHandler );
 //    signal( SIGINT, SIG_IGN );
     signal( SIGFPE, ProjectManager::signalHandler );
+    signal( SIGABRT, ProjectManager::signalHandler );
+    signal( SIGILL, ProjectManager::signalHandler );
 }
 
 ProjectManager::~ProjectManager()
@@ -93,7 +97,6 @@ void    ProjectManager::cleanChanged( bool val )
 void    ProjectManager::loadTimeline()
 {
     QDomElement     root = m_domDocument->documentElement();
-    QFileInfo       fInfo( *m_projectFile );
 
     MainWorkflow::getInstance()->loadProject( root.firstChildElement( "timeline" ) );
     emit projectUpdated( m_projectName, true );
@@ -113,21 +116,24 @@ void    ProjectManager::loadProject( const QString& fileName )
     if ( closeProject() == false )
         return ;
 
-    // Append the item to the recents list
-    m_recentsProjects.removeAll( fileName );
-    m_recentsProjects.prepend( fileName );
-    while ( m_recentsProjects.count() > 15 )
-        m_recentsProjects.removeLast();
-
-    QSettings s;
-    s.setValue( "RecentsProjects", m_recentsProjects );
-
     m_projectFile = new QFile( fileName );
 
     m_domDocument = new QDomDocument;
     m_projectFile->open( QFile::ReadOnly );
     m_domDocument->setContent( m_projectFile );
     m_projectFile->close();
+
+    if ( ProjectManager::isBackupFile( fileName ) == false )
+    {
+        appendToRecentProject( fileName );
+    }
+    else
+    {
+        //Delete the project file representation, so the next time the user
+        //saves its project, vlmc will ask him where to save it.
+        delete m_projectFile;
+        m_projectFile = NULL;
+    }
 
     QDomElement     root = m_domDocument->documentElement();
 
@@ -145,7 +151,7 @@ QString  ProjectManager::loadProjectFile()
     return fileName;
 }
 
-bool    ProjectManager::checkProjectOpen( bool saveAs )
+bool    ProjectManager::createNewProjectFile( bool saveAs )
 {
     if ( m_projectFile == NULL || saveAs == true )
     {
@@ -159,13 +165,16 @@ bool    ProjectManager::checkProjectOpen( bool saveAs )
         if ( outputFileName.endsWith( ".vlmc" ) == false )
             outputFileName += ".vlmc";
         m_projectFile = new QFile( outputFileName );
+        appendToRecentProject( outputFileName );
     }
     return true;
 }
 
 void    ProjectManager::saveProject( bool saveAs /*= true*/ )
 {
-    if ( checkProjectOpen( saveAs ) == false )
+    //If the project is still unsaved, or if we want to
+    //save the project with a new name
+    if ( createNewProjectFile( saveAs ) == false )
         return ;
     __saveProject( m_projectFile->fileName() );
     if ( saveAs == true )
@@ -254,8 +263,51 @@ void    ProjectManager::nameChanged( const QVariant& name )
 
 void    ProjectManager::emergencyBackup()
 {
-    QString name = m_projectFile->fileName();
-    name += "~";
-    __saveProject( name );
-    qDebug() << "Emergency backup succeeded";
+    QString     name;
+
+    if ( m_projectFile != NULL )
+    {
+        name = m_projectFile->fileName();
+        name += "backup";
+        __saveProject( name );
+    }
+    else
+    {
+       name = QDir::currentPath() + "/unsavedproject.vlmcbackup";
+        __saveProject( name );
+    }
+    QSettings   s;
+    s.setValue( "EmergencyBackup", name );
+    s.sync();
+}
+
+bool    ProjectManager::loadEmergencyBackup()
+{
+    QSettings   s;
+    QString lastProject = s.value( "EmergencyBackup" ).toString();
+    if ( QFile::exists( lastProject ) == true )
+    {
+        loadProject(  lastProject );
+        m_needSave = true;
+        return true;
+    }
+    return false;
+}
+
+bool    ProjectManager::isBackupFile( const QString& projectFile )
+{
+    return projectFile.endsWith( "backup" );
+}
+
+void    ProjectManager::appendToRecentProject( const QString& projectFile )
+{
+        // Append the item to the recents list
+        m_recentsProjects.removeAll( projectFile );
+        m_recentsProjects.prepend( projectFile );
+        while ( m_recentsProjects.count() > 15 )
+            m_recentsProjects.removeLast();
+
+        QSettings s;
+        s.setValue( "RecentsProjects", m_recentsProjects );
+        s.sync();
 }

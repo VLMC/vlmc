@@ -1,5 +1,6 @@
 /*****************************************************************************
- * VLCInstance.cpp: Binding for libvlc instances
+ * CrashHandler.h: Display the backtrace and some other information when a
+ *                      crash occurs
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,33 +21,33 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <cassert>
-#include "VLCInstance.h"
-#include <QtDebug>
+#ifndef CRASHHANDLER_H
+#define CRASHHANDLER_H
 
-using namespace LibVLCpp;
+#include <QDialog>
 
-Instance::Instance()
+namespace Ui
 {
-    char const *argv[] =
-    {
-//        "-vvvvv",
-        "--no-skip-frames",
-//        "--intf", "dummy",
-        "--text-renderer", "dummy",
-        //"--no-audio",
-        //"--plugin-path", VLC_TREE "/modules",
-        "--disable-screensaver",
-        "--ignore-config", //Don't use VLC's config files
-        "--no-overlay",
-    };
-    int argc = sizeof( argv ) / sizeof( *argv );
-
-    m_internalPtr = libvlc_new( argc, argv, m_ex );
-    CheckVlcppException(m_ex);
+    class CrashHandler;
 }
 
-Instance::~Instance()
+class CrashHandler : public QDialog
 {
-    libvlc_release( m_internalPtr );
-}
+    Q_OBJECT
+    public:
+        CrashHandler(  int sig, QWidget *parent = 0 );
+        ~CrashHandler();
+
+    protected:
+        void                    changeEvent(QEvent *e);
+
+    private slots:
+        void                    close();
+        void                    restart();
+
+    private:
+        Ui::CrashHandler*       ui;
+        static const int        backtraceSize = 256;
+};
+
+#endif // CRASHHANDLER_H

@@ -136,6 +136,7 @@ namespace Commands
             public:
                 SplitClip( WorkflowRenderer* renderer, Clip* toSplit, uint32_t trackId,
                            qint64 newClipPos, qint64 newClipBegin, ::MainWorkflow::TrackType trackType );
+                ~SplitClip();
                 virtual void    redo();
                 virtual void    undo();
             private:

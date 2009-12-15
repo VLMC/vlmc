@@ -100,8 +100,11 @@ void    ProjectWizard::accept()
     {
         SettingsManager::getInstance()->commit();
     }
-    ProjectManager::getInstance()->newProject(
-        SettingsManager::getInstance()->getValue( "project", "ProjectName" )->get().toString() );
+    if ( WelcomePage::projectPath().length() == 0 )
+    {
+        ProjectManager::getInstance()->newProject(
+            SettingsManager::getInstance()->getValue( "project", "ProjectName" )->get().toString() );
+    }
     emit flush();
     QDialog::accept();
     return ;

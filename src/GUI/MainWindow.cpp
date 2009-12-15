@@ -80,11 +80,6 @@ MainWindow::MainWindow( QWidget *parent ) :
     createProjectPreferences();
     initializeMenuKeyboardShortcut();
 
-    // Wizard
-    m_pWizard = new ProjectWizard( this );
-    m_pWizard->setModal( true );
-    m_pWizard->show();
-
     // Translations
     connect( this, SIGNAL( translateDockWidgetTitle() ),
              DockWidgetManager::instance(), SLOT( transLateWidgetTitle() ) );
@@ -102,11 +97,14 @@ MainWindow::MainWindow( QWidget *parent ) :
     connect( ProjectManager::getInstance(), SIGNAL( projectUpdated( const QString&, bool ) ),
              this, SLOT( projectUpdated( const QString&, bool ) ) );
 
-    QSettings s;
-    // Restore the geometry
-    restoreGeometry( s.value( "MainWindowGeometry" ).toByteArray() );
-    // Restore the layout
-    restoreState( s.value( "MainWindowState" ).toByteArray() );
+    // Wizard
+    m_pWizard = new ProjectWizard( this );
+    m_pWizard->setModal( true );
+
+    if ( restoreSession() == false )
+    {
+        m_pWizard->show();
+    }
 }
 
 MainWindow::~MainWindow()
@@ -116,6 +114,7 @@ MainWindow::~MainWindow()
     s.setValue( "MainWindowGeometry", saveGeometry() );
     // Save the current layout
     s.setValue( "MainWindowState", saveState() );
+    s.setValue( "CleanQuit", true );
     s.sync();
 
     if ( m_renderer )
@@ -486,4 +485,38 @@ void    MainWindow::keyboardShortcutChanged( const QString& name, const QString&
         m_ui.actionClose_Project->setShortcut( val );
     else
         qWarning() << "Unknown shortcut:" << name;
+}
+
+void    MainWindow::on_actionCrash_triggered()
+{
+    int test = 1 / 0;
+}
+
+bool    MainWindow::restoreSession()
+{
+    QSettings   s;
+    bool        cleanQuit = s.value( "CleanQuit", false ).toBool();
+    bool        ret = false;
+
+    // Restore the geometry
+    restoreGeometry( s.value( "MainWindowGeometry" ).toByteArray() );
+    // Restore the layout
+    restoreState( s.value( "MainWindowState" ).toByteArray() );
+
+    if ( cleanQuit == false )
+    {
+        QMessageBox::StandardButton res = QMessageBox::question( this, tr( "Crash recovery" ), tr( "VLMC didn't closed nicely. Do you wan't to recover your project ?" ),
+                               QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes );
+        if ( res == QMessageBox::Yes )
+        {
+            if ( ProjectManager::getInstance()->loadEmergencyBackup() == true )
+                ret = true;
+            else
+                QMessageBox::warning( this, tr( "Can't restore project" ), tr( "VLMC didn't manage to restore your project. We appology for the inconvenience" ) );
+        }
+    }
+
+    s.setValue( "CleanQuit", false );
+    s.sync();
+    return ret;
 }

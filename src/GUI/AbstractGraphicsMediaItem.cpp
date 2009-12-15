@@ -27,7 +27,7 @@
 
 AbstractGraphicsMediaItem::AbstractGraphicsMediaItem() :
         oldTrackNumber( -1 ), oldPosition( -1 ), m_tracksView( NULL ),
-        m_group( NULL ), m_width( 0 ), m_height( 0 )
+        m_group( NULL ), m_width( 0 ), m_height( 0 ), m_resizeExpected( false )
 {
 
 }
