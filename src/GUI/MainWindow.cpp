@@ -509,18 +509,10 @@ bool    MainWindow::restoreSession()
                                QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes );
         if ( res == QMessageBox::Yes )
         {
-            QStringList recentProjects = s.value( "RecentsProjects" ).toStringList();
-            if ( recentProjects.count() == 0 )
-            {
-                qDebug() << "No old project";
-            }
+            if ( ProjectManager::getInstance()->loadEmergencyBackup() == true )
+                ret = true;
             else
-            {
-                if ( ProjectManager::getInstance()->loadEmergencyBackup( recentProjects.first() ) == true )
-                    ret = true;
-                else
-                    QMessageBox::warning( this, tr( "Can't restore project" ), tr( "VLMC didn't manage to restore your project. We appology for the inconvenience" ) );
-            }
+                QMessageBox::warning( this, tr( "Can't restore project" ), tr( "VLMC didn't manage to restore your project. We appology for the inconvenience" ) );
         }
     }
 

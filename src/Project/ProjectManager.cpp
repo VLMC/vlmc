@@ -262,22 +262,28 @@ void    ProjectManager::nameChanged( const QVariant& name )
 
 void    ProjectManager::emergencyBackup()
 {
+    QString     name;
+
     if ( m_projectFile != NULL )
     {
-        QString name = m_projectFile->fileName();
+        name = m_projectFile->fileName();
         name += "backup";
         __saveProject( name );
     }
     else
     {
-        QString name = QDir::currentPath() + "unsavedproject.vlmcbackup";
+       name = QDir::currentPath() + "/unsavedproject.vlmcbackup";
         __saveProject( name );
     }
+    QSettings   s;
+    s.setValue( "EmergencyBackup", name );
+    s.sync();
 }
 
-bool    ProjectManager::loadEmergencyBackup( const QString& projectName )
+bool    ProjectManager::loadEmergencyBackup()
 {
-    QString lastProject = projectName + "backup";
+    QSettings   s;
+    QString lastProject = s.value( "EmergencyBackup" ).toString();
     if ( QFile::exists( lastProject ) == true )
     {
         loadProject(  lastProject );

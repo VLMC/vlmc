@@ -45,7 +45,7 @@ public:
     QStringList     recentsProjects() const;
     bool            closeProject();
     bool            askForSaveIfModified();
-    bool            loadEmergencyBackup( const QString& projectFile );
+    bool            loadEmergencyBackup();
 
     static void     signalHandler( int sig );
 
