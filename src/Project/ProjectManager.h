@@ -45,6 +45,7 @@ public:
     QStringList     recentsProjects() const;
     bool            closeProject();
     bool            askForSaveIfModified();
+    bool            loadEmergencyBackup( const QString& projectFile );
 
     static void     signalHandler( int sig );
 
@@ -56,6 +57,7 @@ private:
     void            __saveProject( const QString& fileName );
     void            parseProjectNode( const QDomElement& node );
     void            emergencyBackup();
+    static bool     isBackupFile( const QString& projectFile );
 
     ProjectManager();
     ~ProjectManager();

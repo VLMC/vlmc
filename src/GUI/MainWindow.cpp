@@ -516,12 +516,8 @@ bool    MainWindow::restoreSession()
             }
             else
             {
-                QString lastProject = recentProjects.first() + "backup";
-                if ( QFile::exists( lastProject ) == true )
-                {
-                    ProjectManager::getInstance()->loadProject(  lastProject );
+                if ( ProjectManager::getInstance()->loadEmergencyBackup( recentProjects.first() ) == true )
                     ret = true;
-                }
                 else
                     QMessageBox::warning( this, tr( "Can't restore project" ), tr( "VLMC didn't manage to restore your project. We appology for the inconvenience" ) );
             }

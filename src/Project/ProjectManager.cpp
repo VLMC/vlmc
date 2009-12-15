@@ -96,7 +96,6 @@ void    ProjectManager::cleanChanged( bool val )
 void    ProjectManager::loadTimeline()
 {
     QDomElement     root = m_domDocument->documentElement();
-    QFileInfo       fInfo( *m_projectFile );
 
     MainWorkflow::getInstance()->loadProject( root.firstChildElement( "timeline" ) );
     emit projectUpdated( m_projectName, true );
@@ -116,22 +115,32 @@ void    ProjectManager::loadProject( const QString& fileName )
     if ( closeProject() == false )
         return ;
 
-    // Append the item to the recents list
-    m_recentsProjects.removeAll( fileName );
-    m_recentsProjects.prepend( fileName );
-    while ( m_recentsProjects.count() > 15 )
-        m_recentsProjects.removeLast();
-
-    QSettings s;
-    s.setValue( "RecentsProjects", m_recentsProjects );
-    s.sync();
-
     m_projectFile = new QFile( fileName );
 
     m_domDocument = new QDomDocument;
     m_projectFile->open( QFile::ReadOnly );
     m_domDocument->setContent( m_projectFile );
     m_projectFile->close();
+
+    if ( ProjectManager::isBackupFile( fileName ) == false )
+    {
+        // Append the item to the recents list
+        m_recentsProjects.removeAll( fileName );
+        m_recentsProjects.prepend( fileName );
+        while ( m_recentsProjects.count() > 15 )
+            m_recentsProjects.removeLast();
+
+        QSettings s;
+        s.setValue( "RecentsProjects", m_recentsProjects );
+        s.sync();
+    }
+    else
+    {
+        //Delete the project file representation, so the next time the user
+        //saves its project, vlmc will ask him where to save it.
+        delete m_projectFile;
+        m_projectFile = NULL;
+    }
 
     QDomElement     root = m_domDocument->documentElement();
 
@@ -269,4 +278,20 @@ void    ProjectManager::emergencyBackup()
         QString name = QDir::currentPath() + "unsavedproject.vlmcbackup";
         __saveProject( name );
     }
+}
+
+bool    ProjectManager::loadEmergencyBackup( const QString& projectName )
+{
+    QString lastProject = projectName + "backup";
+    if ( QFile::exists( lastProject ) == true )
+    {
+        loadProject(  lastProject );
+        return true;
+    }
+    return false;
+}
+
+bool    ProjectManager::isBackupFile( const QString& projectFile )
+{
+    return projectFile.endsWith( "backup" );
 }
