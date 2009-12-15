@@ -85,7 +85,6 @@ void    CrashHandler::close()
 
 void    CrashHandler::restart()
 {
-    QProcess*   p = new QProcess();
-    p->start( "./vlmc" );
+    QProcess::startDetached( "./vlmc" );
     close();
 }
