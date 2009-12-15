@@ -27,7 +27,7 @@
 
 AbstractGraphicsMediaItem::AbstractGraphicsMediaItem() :
         oldTrackNumber( -1 ), oldPosition( -1 ), m_tracksView( NULL ),
-        m_group( NULL ), m_width( 0 ), m_height( 0 )
+        m_group( NULL ), m_width( 0 ), m_height( 0 ), m_resizeExpected( false )
 {
 
 }
@@ -135,6 +135,7 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
 
 void AbstractGraphicsMediaItem::adjustLength()
 {
+    qDebug() << "Resize event. m_resizeExpected:" << m_resizeExpected;
     if ( m_resizeExpected == true )
     {
         m_resizeExpected = false;
