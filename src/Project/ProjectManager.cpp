@@ -59,6 +59,8 @@ ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
 //    signal( SIGSEGV, ProjectManager::signalHandler );
 //    signal( SIGINT, SIG_IGN );
     signal( SIGFPE, ProjectManager::signalHandler );
+    signal( SIGABRT, ProjectManager::signalHandler );
+    signal( SIGILL, ProjectManager::signalHandler );
 }
 
 ProjectManager::~ProjectManager()

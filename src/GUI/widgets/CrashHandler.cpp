@@ -21,12 +21,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "CrashHandler.h"
-#include "ui_CrashHandler.h"
+#ifndef WIN32
+    #include <execinfo.h>
+#endif
 
-#include <execinfo.h>
 #include <signal.h>
 
+
+#include "CrashHandler.h"
+#include "ui_CrashHandler.h"
 
 CrashHandler::CrashHandler( int sig, QWidget *parent ) :
         QDialog( parent ),
@@ -34,13 +37,17 @@ CrashHandler::CrashHandler( int sig, QWidget *parent ) :
 {
     ui->setupUi( this );
 
+#ifndef WIN32
     void    *buff[CrashHandler::backtraceSize];
+
     int     nbSymb = backtrace( buff, CrashHandler::backtraceSize );
     char**  backtraceStr = backtrace_symbols( buff, nbSymb );
     for ( int i = 0; i < nbSymb; ++i )
         ui->backtraceDisplay->insertPlainText( QString( backtraceStr[i]) + "\n" );
     free(backtraceStr);
-
+#else    
+    ui->backtraceDisplay->insertPlainText( tr( "Unable to get backtrace." ) );
+#endif
     QString sigName = tr( "Unknown signal" );
     if ( sig == SIGSEGV )
         sigName = "SIGSEGV (Segmentation Fault)";
