@@ -58,7 +58,7 @@ struct	VideoFrame : public QSharedData
   RawVideoFrame	frame;
   quint32	nbpixels;
   quint32	nboctets;
-  quint64   ptsDiff;
+  qint64        ptsDiff;
 };
 
 class	LightVideoFrame

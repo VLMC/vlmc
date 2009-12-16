@@ -102,15 +102,15 @@ void    VideoClipWorkflow::lock( VideoClipWorkflow* cw, void** pp_ret, int size 
     *pp_ret = (*(cw->m_buffer))->frame.octets;
 }
 
-void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int width, int height, int bpp, int size, quint64 pts )
+void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int width, int height, int bpp, int size, qint64 pts )
 {
     Q_UNUSED( buffer );
     Q_UNUSED( width );
     Q_UNUSED( height );
     Q_UNUSED( bpp );
     Q_UNUSED( size );
-    static quint64 previous_pts = pts;
-    static quint64 current_pts = pts;
+    static qint64 previous_pts = pts;
+    static qint64 current_pts = pts;
     cw->m_renderLock->unlock();
     cw->m_stateLock->lockForWrite();
 

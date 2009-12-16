@@ -115,7 +115,7 @@ int     WorkflowRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigne
 
 int     WorkflowRenderer::lockVideo( WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer )
 {
-    quint64 ptsDiff = 0;
+    qint64 ptsDiff = 0;
 
     if ( self->m_stopping == false && self->m_paused == false )
     {
@@ -135,7 +135,7 @@ int     WorkflowRenderer::lockVideo( WorkflowRenderer* self, int64_t *pts, size_
 
 int     WorkflowRenderer::lockAudio(  WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer )
 {
-    quint64 ptsDiff;
+    qint64 ptsDiff;
     if ( self->m_paused == true )
         return 1;
     if ( self->m_stopping == false )

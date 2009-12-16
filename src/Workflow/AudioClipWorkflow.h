@@ -34,7 +34,7 @@ class   AudioClipWorkflow : public ClipWorkflow
             size_t          size;
             unsigned int    nbSample;
             unsigned int    nbChannels;
-            quint64         ptsDiff;
+            qint64          ptsDiff;
         };
         AudioClipWorkflow( Clip* clip );
         ~AudioClipWorkflow();
@@ -50,7 +50,7 @@ class   AudioClipWorkflow : public ClipWorkflow
         static void             unlock( AudioClipWorkflow* clipWorkflow, uint8_t* pcm_buffer,
                                       unsigned int channels, unsigned int rate,
                                       unsigned int nb_samples, unsigned int bits_per_sample,
-                                      unsigned int size, quint64 pts );
+                                      unsigned int size, qint64 pts );
 };
 
 #endif // AUDIOCLIPWORKFLOW_H
