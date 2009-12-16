@@ -146,7 +146,6 @@ namespace Commands
                 uint32_t                    m_trackId;
                 qint64                      m_newClipPos;
                 qint64                      m_newClipBegin;
-                qint64                      m_clipOldEnd;
                 ::MainWorkflow::TrackType   m_trackType;
         };
     }
