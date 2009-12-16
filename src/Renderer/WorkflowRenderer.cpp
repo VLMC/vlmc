@@ -278,16 +278,16 @@ Clip*       WorkflowRenderer::split( Clip* toSplit, Clip* newClip, uint32_t trac
         //thus potentially breaking the synchrone way of doing this
         Action::Generic*    act = new Action::AddClip( m_mainWorkflow, trackId, trackType, newClip, newClipPos );
         //resizing it
-        Action::Generic*    act2 = new Action::ResizeClip( toSplit, toSplit->getBegin(), newClipBegin );
+        Action::Generic*    act2 = new Action::ResizeClip( toSplit, toSplit->getBegin(), newClipBegin, true );
 
         //Push the actions onto the action stack
         QMutexLocker    lock( m_actionsMutex );
         m_actions.addAction( act );
-        m_actions.push( act2 );
+        m_actions.addAction( act2 );
     }
     else
     {
-        toSplit->setEnd( newClipBegin );
+        toSplit->setEnd( newClipBegin, true );
         m_mainWorkflow->addClip( newClip, trackId, newClipPos, trackType );
     }
     return newClip;
@@ -300,7 +300,7 @@ void    WorkflowRenderer::unsplit( Clip* origin, Clip* splitted, uint32_t trackI
         //removing clip
         Action::Generic*    act = new Action::RemoveClip( m_mainWorkflow, trackId, trackType, splitted->getUuid() );
         //resizing it
-        Action::Generic*    act2 = new Action::ResizeClip( origin, splitted->getBegin(), oldEnd );
+        Action::Generic*    act2 = new Action::ResizeClip( origin, splitted->getBegin(), oldEnd, true );
         //Push the actions onto the action stack
         QMutexLocker        lock( m_actionsMutex );
         m_actions.addAction( act );
@@ -309,7 +309,7 @@ void    WorkflowRenderer::unsplit( Clip* origin, Clip* splitted, uint32_t trackI
     else
     {
         m_mainWorkflow->removeClip( splitted->getUuid(), trackId, trackType );
-        origin->setEnd( oldEnd );
+        origin->setEnd( oldEnd, true );
     }
 }
 

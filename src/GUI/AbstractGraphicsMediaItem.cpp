@@ -100,15 +100,12 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
 {
     Q_ASSERT( clip() );
 
-    if ( size > clip()->getParent()->getNbFrames() || size < 1 )
+    if ( size > clip()->getMaxEnd() || size < 1 )
         return;
-
-    qint64  realBegin = startPos() - clip()->getBegin();
-    qint64  realEnd = realBegin + clip()->getParent()->getNbFrames();
 
     if ( from == BEGINNING )
     {
-        if ( realBegin + clip()->getBegin() + size > realEnd )
+        if ( clip()->getBegin() + size > clip()->getMaxEnd() )
             return ;
         tracksView()->getRenderer()->resizeClip( clip(), clip()->getBegin(), clip()->getBegin() + size, 0, //This parameter is unused in this case
                                                  trackNumber(), MainWorkflow::VideoTrack );
@@ -116,14 +113,14 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
     else
     {
         qint64 newBegin = qMax( clip()->getEnd() - size, (qint64)0 );
-        if ( realBegin > newBegin + startPos() )
+        if ( clip()->getMaxBegin() > newBegin )
             return ;
         qint64 oldLength = clip()->getLength();
-        if ( ( clip()->getEnd() - size ) < 0 )
-        {
-            qWarning( "Warning: resizing a region with a size below 0" );
-            size += clip()->getEnd() - size;
-        }
+//        if ( ( clip()->getEnd() - size ) < 0 )
+//        {
+//            qWarning( "Warning: resizing a region with a size below 0" );
+//            size += clip()->getEnd() - size;
+//        }
         m_resizeExpected = true;
         tracksView()->getRenderer()->resizeClip( clip(), qMax( clip()->getEnd() - size, (qint64)0 ), clip()->getEnd(),
                                                  startPos() + ( oldLength - size ), trackNumber(), MainWorkflow::VideoTrack );

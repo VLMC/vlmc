@@ -52,9 +52,9 @@ class   Clip : public QObject
         qint64              getBegin() const;
         qint64              getEnd() const;
 
-        void                setBegin( qint64 begin );
-        void                setEnd( qint64 end );
-        void                setBoundaries( qint64 newBegin, qint64 newEnd );
+        void                setBegin( qint64 begin, bool updateMax = false );
+        void                setEnd( qint64 end, bool updateMax = false );
+        void                setBoundaries( qint64 newBegin, qint64 newEnd, bool updateMax = false );
 
         /**
             \return         Returns the clip length in frame.
@@ -87,6 +87,9 @@ class   Clip : public QObject
         const QString&      getNotes() const;
         void                setNotes( const QString& notes );
 
+        qint64              getMaxBegin() const;
+        qint64              getMaxEnd() const;
+
     private:
         void        computeLength();
 
@@ -118,6 +121,18 @@ class   Clip : public QObject
         QUuid       m_Uuid;
         QStringList m_metaTags;
         QString     m_notes;
+
+        /**
+         *  This is used for the resize. The clip won't be abble to be resized beyond this value.
+         *  ie this clip won't start before m_maxBegin.
+         */
+        qint64      m_maxBegin;
+
+        /**
+         *  This is used for the resize. The clip won't be abble to be resized beyond this value
+         *  ie this clip won't end before m_maxEnd.
+         */
+        qint64      m_maxEnd;
 
     signals:
         void        lengthUpdated();

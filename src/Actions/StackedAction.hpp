@@ -133,18 +133,19 @@ namespace Action
     class   ResizeClip : public Generic
     {
         public:
-            ResizeClip( Clip* clip, qint64 newBegin, qint64 newEnd ) : Generic( Resize ),
-                    m_clip( clip ), m_newBegin( newBegin ), m_newEnd( newEnd )
+            ResizeClip( Clip* clip, qint64 newBegin, qint64 newEnd, bool resizeForSplit ) : Generic( Resize ),
+                    m_clip( clip ), m_newBegin( newBegin ), m_newEnd( newEnd ), m_resizeForSplit( resizeForSplit )
             {
             }
             void    execute()
             {
-                m_clip->setBoundaries( m_newBegin, m_newEnd );
+                m_clip->setBoundaries( m_newBegin, m_newEnd, m_resizeForSplit );
             }
         protected:
             Clip*   m_clip;
             qint64  m_newBegin;
             qint64  m_newEnd;
+            bool    m_resizeForSplit;
     };
 
     class   Pause : public Workflow
