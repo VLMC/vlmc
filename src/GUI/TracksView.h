@@ -63,6 +63,14 @@ public:
     void                    setTool( ToolButtons button );
     ToolButtons             tool() { return m_tool; }
     WorkflowRenderer*       getRenderer() { return m_renderer; }
+    //MEGAFIXME
+    //FIXME
+    //REMOVEME
+    //TODO
+    //YOU'RE HIDING A BUG
+    //WRONG
+    //Ugly method provided by etix :)
+    bool                    setItemOldTrack( const QUuid& uuid, uint32_t oldTrackNumber );
 
 public slots:
     void                    clear();

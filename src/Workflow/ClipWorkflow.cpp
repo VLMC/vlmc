@@ -53,6 +53,7 @@ ClipWorkflow::~ClipWorkflow()
     delete m_initWaitCond;
     delete m_condMutex;
     delete m_waitCond;
+    delete m_renderWaitCond;
     delete m_requiredStateLock;
     delete m_stateLock;
 }
@@ -281,7 +282,7 @@ void            ClipWorkflow::unpause()
 void        ClipWorkflow::waitForCompleteRender( bool dontCheckRenderStarted /*= false*/ )
 {
     if ( isRendering() == true || dontCheckRenderStarted == true )
-        m_renderWaitCond->wait();
+        m_renderWaitCond->waitLocked();
 }
 
 void        ClipWorkflow::waitForCompleteInit()
@@ -321,3 +322,7 @@ void        ClipWorkflow::setFullSpeedRender( bool value )
     m_fullSpeedRender = value;
 }
 
+WaitCondition*  ClipWorkflow::getRenderCondWait()
+{
+    return m_renderWaitCond;
+}

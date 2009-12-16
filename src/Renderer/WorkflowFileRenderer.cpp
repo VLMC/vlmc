@@ -41,6 +41,7 @@ void        WorkflowFileRenderer::run()
 {
 //    char        buffer[256];
 
+    m_mainWorkflow->setCurrentFrame( 0, MainWorkflow::Renderer );
     m_outputFps = SettingsManager::getInstance()->getValue( "VLMC", "VLMCOutPutFPS" )->get().toDouble();
 
     //Media as already been created an mainly initialized by the WorkflowRenderer

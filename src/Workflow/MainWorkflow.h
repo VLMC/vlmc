@@ -30,6 +30,7 @@
 #include <QDomElement>
 #include <QWaitCondition>
 
+#include "WaitCondition.hpp"
 #include "Singleton.hpp"
 #include "Clip.h"
 #include "LightVideoFrame.h"
@@ -164,6 +165,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         QMutex*                         m_synchroneRenderWaitConditionMutex;
         unsigned int                    m_nbTrackHandlerToRender;
         QMutex*                         m_nbTrackHandlerToRenderMutex;
+        WaitCondition*                  m_pauseWaitCond;
         bool                            m_paused;
         TrackHandler**                  m_tracks;
         OutputBuffers*                  m_outputBuffers;

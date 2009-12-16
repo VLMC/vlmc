@@ -43,6 +43,7 @@ void    Stack::addAction( Action::Generic* act )
     {
         if ( (*it)->isOpposite( act ) == true )
         {
+            qDebug() << "is opposite == true";
             delete *it;
             it = erase( it );
             delete act;

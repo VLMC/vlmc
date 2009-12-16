@@ -131,7 +131,10 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
         //The rendering state meens... whell it means that the frame is
         //beeing rendered, so we wait.
         cw->getStateLock()->unlock();
-        cw->waitForCompleteRender();
+        {
+            QMutexLocker    lock( cw->getRenderCondWait()->getMutex() );
+            cw->waitForCompleteRender();
+        }
         //This way we can trigger the appropriate if just below.
         //by restoring the initial state of the function, and just pretend that
         //nothing happened.
@@ -232,7 +235,10 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
     else if ( cw->getState() == ClipWorkflow::Rendering )
     {
         cw->getStateLock()->unlock();
-        cw->waitForCompleteRender();
+        {
+            QMutexLocker    lock( cw->getRenderCondWait()->getMutex() );
+            cw->waitForCompleteRender();
+        }
         {
             QMutexLocker    lock( cw->getSleepMutex() );
             cw->queryStateChange( ClipWorkflow::Stopping );

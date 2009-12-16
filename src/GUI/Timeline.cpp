@@ -142,6 +142,7 @@ void Timeline::actionAddClip( Clip* clip, unsigned int track, qint64 start, Main
 void Timeline::actionMoveClip( const QUuid& uuid, unsigned int track, qint64 time, MainWorkflow::TrackType )
 {
     tracksView()->moveMediaItem( uuid, track, time );
+    Q_ASSERT( tracksView()->setItemOldTrack( uuid, track ) == true );
     tracksView()->updateDuration();
     tracksRuler()->update();
 }

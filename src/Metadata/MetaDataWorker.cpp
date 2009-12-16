@@ -135,7 +135,7 @@ void    MetaDataWorker::getMetaData()
         //Setting time for snapshot :
         if ( m_media->getFileType() == Media::Video )
         {
-            connect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( renderSnapshot() ) );
+            connect( m_mediaPlayer, SIGNAL( positionChanged( float ) ), this, SLOT( renderSnapshot() ) );
             m_mediaPlayer->setTime( m_mediaPlayer->getLength() / 3 );
         }
         else
@@ -146,7 +146,7 @@ void    MetaDataWorker::getMetaData()
 void    MetaDataWorker::renderSnapshot()
 {
     if ( m_media->getFileType() == Media::Video )
-        disconnect( m_mediaPlayer, SIGNAL( positionChanged() ), this, SLOT( renderSnapshot() ) );
+        disconnect( m_mediaPlayer, SIGNAL( positionChanged( float ) ), this, SLOT( renderSnapshot() ) );
     else
         disconnect( this, SIGNAL( snapshotRequested() ), this, SLOT( renderSnapshot() ) );
     QTemporaryFile tmp;

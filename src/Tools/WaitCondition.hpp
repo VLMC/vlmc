@@ -39,11 +39,6 @@ class   WaitCondition
             delete m_waitCond;
             delete m_mutex;
         }
-        void            wait()
-        {
-            QMutexLocker    lock( m_mutex );
-            m_waitCond->wait( m_mutex );
-        }
         void            waitLocked()
         {
             m_waitCond->wait( m_mutex );

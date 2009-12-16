@@ -40,7 +40,6 @@ WorkflowRenderer::WorkflowRenderer() :
     char        callbacks[64];
 
     m_actionsMutex = new QMutex;
-    m_condMutex = new QMutex;
     m_waitCond = new QWaitCondition;
     m_renderVideoFrame = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes];
 
@@ -72,8 +71,8 @@ WorkflowRenderer::WorkflowRenderer() :
     m_media->addOption( callbacks );
 
      //Workflow part
-    connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ) );
-    connect( m_mainWorkflow, SIGNAL( mainWorkflowUnpaused() ), this, SLOT( mainWorkflowUnpaused() ) );
+    connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ), Qt::QueuedConnection );
+    connect( m_mainWorkflow, SIGNAL( mainWorkflowUnpaused() ), this, SLOT( mainWorkflowUnpaused() ), Qt::QueuedConnection );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
     connect( m_mainWorkflow, SIGNAL( frameChanged( qint64, MainWorkflow::FrameChangedReason ) ),
              this, SLOT( __frameChanged( qint64, MainWorkflow::FrameChangedReason ) ) );
@@ -88,7 +87,6 @@ WorkflowRenderer::~WorkflowRenderer()
     delete m_audioEsHandler;
     delete m_actionsMutex;
     delete m_media;
-    delete m_condMutex;
     delete m_waitCond;
 }
 
@@ -118,7 +116,10 @@ int     WorkflowRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigne
 int     WorkflowRenderer::lockVideo( WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer )
 {
     quint64 ptsDiff = 0;
-    if ( self->m_stopping == false )
+    WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
+
+    //FIXME: when frame by frame will work again, we will probably have to remove the m_paused check.
+    if ( self->m_stopping == false && self->m_paused == false )
     {
         MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getSynchroneOutput( MainWorkflow::VideoTrack );
         memcpy( self->m_renderVideoFrame, (*(ret->video))->frame.octets, (*(ret->video))->nboctets );
@@ -230,9 +231,6 @@ void        WorkflowRenderer::previousFrame()
 void        WorkflowRenderer::mainWorkflowPaused()
 {
     m_paused = true;
-    {
-        QMutexLocker    lock( m_condMutex );
-    }
     emit paused();
 }
 
@@ -349,29 +347,29 @@ Clip*       WorkflowRenderer::split( Clip* toSplit, Clip* newClip, uint32_t trac
         //thus potentially breaking the synchrone way of doing this
         Action::Generic*    act = new Action::AddClip( m_mainWorkflow, trackId, trackType, newClip, newClipPos );
         //resizing it
-        Action::Generic*    act2 = new Action::ResizeClip( toSplit, toSplit->getBegin(), newClipBegin );
+        Action::Generic*    act2 = new Action::ResizeClip( toSplit, toSplit->getBegin(), newClipBegin, true );
 
         //Push the actions onto the action stack
         QMutexLocker    lock( m_actionsMutex );
         m_actions.addAction( act );
-        m_actions.push( act2 );
+        m_actions.addAction( act2 );
     }
     else
     {
-        toSplit->setEnd( newClipBegin );
+        toSplit->setEnd( newClipBegin, true );
         m_mainWorkflow->addClip( newClip, trackId, newClipPos, trackType );
     }
     return newClip;
 }
 
-void    WorkflowRenderer::unsplit( Clip* origin, Clip* splitted, uint32_t trackId, qint64 oldEnd, MainWorkflow::TrackType trackType )
+void    WorkflowRenderer::unsplit( Clip* origin, Clip* splitted, uint32_t trackId, MainWorkflow::TrackType trackType )
 {
     if ( m_isRendering == true )
     {
         //removing clip
         Action::Generic*    act = new Action::RemoveClip( m_mainWorkflow, trackId, trackType, splitted->getUuid() );
         //resizing it
-        Action::Generic*    act2 = new Action::ResizeClip( origin, splitted->getBegin(), oldEnd );
+        Action::Generic*    act2 = new Action::ResizeClip( origin, origin->getBegin(), splitted->getEnd(), true );
         //Push the actions onto the action stack
         QMutexLocker        lock( m_actionsMutex );
         m_actions.addAction( act );
@@ -380,7 +378,7 @@ void    WorkflowRenderer::unsplit( Clip* origin, Clip* splitted, uint32_t trackI
     else
     {
         m_mainWorkflow->removeClip( splitted->getUuid(), trackId, trackType );
-        origin->setEnd( oldEnd );
+        origin->setEnd( splitted->getEnd(), true );
     }
 }
 

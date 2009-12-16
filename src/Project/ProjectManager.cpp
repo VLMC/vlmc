@@ -122,11 +122,10 @@ void    ProjectManager::loadProject( const QString& fileName )
     m_projectFile->open( QFile::ReadOnly );
     m_domDocument->setContent( m_projectFile );
     m_projectFile->close();
+    m_needSave = false;
 
     if ( ProjectManager::isBackupFile( fileName ) == false )
-    {
         appendToRecentProject( fileName );
-    }
     else
     {
         //Delete the project file representation, so the next time the user
@@ -214,7 +213,7 @@ void    ProjectManager::newProject( const QString &projectName )
     if ( closeProject() == false )
         return ;
     m_projectName = projectName;
-    emit projectUpdated( m_projectName, true );
+    emit projectUpdated( m_projectName, false );
 }
 
 bool    ProjectManager::closeProject()

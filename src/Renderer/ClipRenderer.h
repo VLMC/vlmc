@@ -70,8 +70,8 @@ public slots:
     virtual void            mediaUnloaded( const QUuid& );
     virtual void            previewWidgetCursorChanged( qint64 newFrame );
 
-    void                    __positionChanged();
-    void                    __timeChanged();
+//    void                    __positionChanged();
+    void                    __timeChanged( qint64 time );
     void                    __videoPaused();
     void                    __videoPlaying();
     void                    __endReached();

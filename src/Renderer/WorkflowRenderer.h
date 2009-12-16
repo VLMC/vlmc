@@ -77,7 +77,7 @@ class   WorkflowRenderer : public GenericRenderer
          *  \return                 The newly created clip if "newClip" was NULL; else, newClip is returned.
          */
         Clip*               split( Clip* toSplit, Clip* newClip, uint32_t trackId, qint64 newClipPos, qint64 newClipBegin, MainWorkflow::TrackType trackType );
-        void                unsplit( Clip* origin, Clip* splitted, uint32_t trackId, qint64 oldEnd, MainWorkflow::TrackType trackType );
+        void                unsplit( Clip* origin, Clip* splitted, uint32_t trackId, MainWorkflow::TrackType trackType );
         /**
          *  \param  undoRedoAction: if true, the potential move resulting from the resize will be emmited to the GUI.
          *                          if this is not an undo redo action, the GUI is already aware of the move.
@@ -112,7 +112,6 @@ class   WorkflowRenderer : public GenericRenderer
         AudioClipWorkflow::AudioSample*     m_renderAudioSample;
         Action::Stack       m_actions;
         QMutex*             m_actionsMutex;
-        QMutex*             m_condMutex;
         QWaitCondition*     m_waitCond;
         EsHandler*          m_videoEsHandler;
         EsHandler*          m_audioEsHandler;

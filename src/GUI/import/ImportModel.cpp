@@ -74,7 +74,6 @@ void            ImportModel::metaDataComputed( Media* media )
     if ( media->getMetadata() == Media::ParsedWithoutSnapshot )
     {
         m_medias->insert( media->getUuid(), media );
-        emit newMediaLoaded( media );
         emit updateMediaRequested( media );
     }
     else
@@ -125,6 +124,7 @@ void            ImportModel::loadMedia( Media* media )
     connect( media, SIGNAL( snapshotComputed(Media*) ), this, SLOT( snapshotComputed(Media*) ), Qt::QueuedConnection );
     connect( media, SIGNAL( audioSpectrumComputed( Media* ) ), this, SLOT( audioSpectrumComputed(Media*) ) );
     MetaDataManager::getInstance()->computeMediaMetadata( media );
+    emit newMediaLoaded( media );
 }
 
 bool        ImportModel::mediaAlreadyLoaded( const QFileInfo& fileInfo )
