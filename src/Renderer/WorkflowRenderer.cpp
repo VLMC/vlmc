@@ -93,7 +93,6 @@ void*   WorkflowRenderer::lock( void* datas )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
-    //FIXME: when frame by frame will work again, we will probably have to remove the m_paused check.
     if ( self->m_stopping == false && self->m_paused == false )
     {
         MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getSynchroneOutput();
