@@ -118,7 +118,6 @@ int     WorkflowRenderer::lockVideo( WorkflowRenderer* self, int64_t *pts, size_
     quint64 ptsDiff = 0;
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
-    //FIXME: when frame by frame will work again, we will probably have to remove the m_paused check.
     if ( self->m_stopping == false && self->m_paused == false )
     {
         MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getSynchroneOutput( MainWorkflow::VideoTrack );
