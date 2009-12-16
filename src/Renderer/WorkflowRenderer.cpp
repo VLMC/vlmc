@@ -116,7 +116,6 @@ int     WorkflowRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigne
 int     WorkflowRenderer::lockVideo( WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer )
 {
     quint64 ptsDiff = 0;
-    WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
     if ( self->m_stopping == false && self->m_paused == false )
     {
