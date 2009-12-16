@@ -300,7 +300,7 @@ void    WorkflowRenderer::unsplit( Clip* origin, Clip* splitted, uint32_t trackI
         //removing clip
         Action::Generic*    act = new Action::RemoveClip( m_mainWorkflow, trackId, trackType, splitted->getUuid() );
         //resizing it
-        Action::Generic*    act2 = new Action::ResizeClip( origin, splitted->getBegin(), oldEnd, true );
+        Action::Generic*    act2 = new Action::ResizeClip( origin, origin->getBegin(), oldEnd, true );
         //Push the actions onto the action stack
         QMutexLocker        lock( m_actionsMutex );
         m_actions.addAction( act );
