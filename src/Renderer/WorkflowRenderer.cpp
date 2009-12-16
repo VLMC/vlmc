@@ -59,7 +59,6 @@ WorkflowRenderer::WorkflowRenderer() :
 //    sprintf( buffer, ":inamem-callback=%lld", (qint64)WorkflowRenderer::lock );
 //    m_media->addOption( buffer );
 
-    m_condMutex = new QMutex;
     m_waitCond = new QWaitCondition;
 
     m_renderVideoFrame = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes];
@@ -79,7 +78,6 @@ WorkflowRenderer::~WorkflowRenderer()
 
     delete m_actionsMutex;
     delete m_media;
-    delete m_condMutex;
     delete m_waitCond;
 }
 
@@ -107,6 +105,7 @@ void*   WorkflowRenderer::lock( void* datas )
 void    WorkflowRenderer::unlock( void* datas )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
+    qDebug() << ""
     self->checkActions();
 }
 
@@ -159,9 +158,6 @@ void        WorkflowRenderer::previousFrame()
 void        WorkflowRenderer::mainWorkflowPaused()
 {
     m_paused = true;
-    {
-        QMutexLocker    lock( m_condMutex );
-    }
     emit paused();
 }
 

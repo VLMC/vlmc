@@ -90,7 +90,6 @@ class   WorkflowRenderer : public GenericRenderer
         unsigned char*	    m_renderAudioSample;
         Action::Stack       m_actions;
         QMutex*             m_actionsMutex;
-        QMutex*             m_condMutex;
         QWaitCondition*     m_waitCond;
 
     public slots:
