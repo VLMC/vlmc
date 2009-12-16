@@ -45,6 +45,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     m_renderMutex = new QMutex;
     m_synchroneRenderWaitCondition = new QWaitCondition;
     m_synchroneRenderWaitConditionMutex = new QMutex;
+    m_pauseWaitCond = new WaitCondition;
 
     m_effectEngine = new EffectsEngine;
     m_effectEngine->disable();
@@ -70,6 +71,7 @@ MainWorkflow::~MainWorkflow()
     //FIXME: this is probably useless, since already done by the renderer
     stop();
 
+    delete m_pauseWaitCond;
     delete m_effectEngine;
     delete m_synchroneRenderWaitConditionMutex;
     delete m_synchroneRenderWaitCondition;
@@ -136,10 +138,14 @@ void                    MainWorkflow::getOutput()
 
 void        MainWorkflow::pause()
 {
-    QMutexLocker    lock( m_renderMutex );
+    //Just wait for the current render to finish
+    m_renderMutex->lock();
+    QMutexLocker    lock( m_pauseWaitCond->getMutex() );
+    m_renderMutex->unlock();
 
     for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         m_tracks[i]->pause();
+    m_pauseWaitCond->waitLocked();
 }
 
 void        MainWorkflow::unpause()
@@ -392,6 +398,10 @@ void        MainWorkflow::tracksPaused()
         if ( m_tracks[i]->isPaused() == false )
             return ;
     m_paused = true;
+    {
+        QMutexLocker    lock( m_pauseWaitCond->getMutex() );
+        m_pauseWaitCond->wake();
+    }
     emit mainWorkflowPaused();
 }
 

@@ -64,8 +64,8 @@ WorkflowRenderer::WorkflowRenderer() :
     m_renderVideoFrame = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes];
 
      //Workflow part
-    connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ) );
-    connect( m_mainWorkflow, SIGNAL( mainWorkflowUnpaused() ), this, SLOT( mainWorkflowUnpaused() ) );
+    connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ), Qt::QueuedConnection );
+    connect( m_mainWorkflow, SIGNAL( mainWorkflowUnpaused() ), this, SLOT( mainWorkflowUnpaused() ), Qt::QueuedConnection );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
     connect( m_mainWorkflow, SIGNAL( frameChanged( qint64, MainWorkflow::FrameChangedReason ) ),
              this, SLOT( __frameChanged( qint64, MainWorkflow::FrameChangedReason ) ) );
@@ -93,7 +93,8 @@ void*   WorkflowRenderer::lock( void* datas )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
 
-    if ( self->m_stopping == false )
+    //FIXME: when frame by frame will work again, we will probably have to remove the m_paused check.
+    if ( self->m_stopping == false && self->m_paused == false )
     {
         MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getSynchroneOutput();
         memcpy( self->m_renderVideoFrame, (*(ret->video))->frame.octets, (*(ret->video))->nboctets );
@@ -105,7 +106,6 @@ void*   WorkflowRenderer::lock( void* datas )
 void    WorkflowRenderer::unlock( void* datas )
 {
     WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
-    qDebug() << ""
     self->checkActions();
 }
 
