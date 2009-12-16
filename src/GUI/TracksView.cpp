@@ -209,6 +209,21 @@ void TracksView::dragMoveEvent( QDragMoveEvent* event )
     moveMediaItem( m_dragItem, event->pos() );
 }
 
+bool TracksView::setItemOldTrack( const QUuid &uuid, uint32_t oldTrackNumber )
+{
+    QList<QGraphicsItem*> sceneItems = m_scene->items();
+
+    for ( int i = 0; i < sceneItems.size(); ++i )
+    {
+        AbstractGraphicsMediaItem* item =
+                dynamic_cast<AbstractGraphicsMediaItem*>( sceneItems.at( i ) );
+        if ( !item || item->uuid() != uuid ) continue;
+        item->oldTrackNumber = oldTrackNumber;
+        return true;
+    }
+    return false;
+}
+
 void TracksView::moveMediaItem( const QUuid& uuid, unsigned int track, qint64 time )
 {
     QList<QGraphicsItem*> sceneItems = m_scene->items();
