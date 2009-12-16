@@ -148,6 +148,12 @@ class   ClipWorkflow : public QObject
         void                    unpause();
 
         void                    waitForCompleteInit();
+
+        /**
+         *  \brief      Return the wait condition associated to the render.
+         *              It's used when waiting for a render to terminate.
+         */
+        WaitCondition*          getRenderCondWait();
         void                    waitForCompleteRender( bool dontCheckRenderStarted = false );
         QMutex*                 getSleepMutex();
 
