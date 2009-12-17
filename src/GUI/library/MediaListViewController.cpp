@@ -93,19 +93,17 @@ void    MediaListViewController::updateCell( Media* media )
 
 void    MediaListViewController::showClipList( const QUuid& uuid )
 {
+    qDebug() << Library::getInstance()->getMedia( uuid )->clips()->size();
     if ( Library::getInstance()->getMedia( uuid )->clips()->size() == 0 )
         return ;
     m_clipsListView = new ClipListViewController( m_nav, uuid );
     m_clipsListView->addClipsFromMedia( Library::getInstance()->getMedia( uuid ) );
-    qDebug() << "Clips added";
     connect( m_clipsListView, SIGNAL( clipSelected( const QUuid& ) ), this, SIGNAL( clipSelected( const QUuid& ) ) );
     m_nav->pushViewController( m_clipsListView );
-    qDebug() << "View Pushed";
 }
 
 void    MediaListViewController::restoreContext()
 {
-    qDebug() << "context restored";
     if ( m_clipsListView != 0 )
         delete m_clipsListView;
     m_clipsListView = 0;

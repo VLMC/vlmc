@@ -38,8 +38,8 @@ MediaLibraryWidget::MediaLibraryWidget( QWidget* parent ) : QWidget( parent )
     connect( library, SIGNAL( mediaRemoved( QUuid ) ), list, SLOT( mediaRemoved( const QUuid& ) ) );
     connect( m_nav, SIGNAL( importRequired() ), this, SIGNAL( importRequired() ) );
     //Clip
-    connect( list, SIGNAL( clipSelected( Clip* clip ) ), this, SIGNAL( clipSelected( Clip* ) ) );
-    connect( list, SIGNAL( clipRemoved( const QUuid&, const QUuid& ) ), library, SLOT( removeClip( const QUuid&, const QUuid& ) ) );
+    //connect( list, SIGNAL( clipSelected( Clip* clip ) ), this, SIGNAL( clipSelected( Clip* ) ) );
+    //connect( list, SIGNAL( clipRemoved( const QUuid&, const QUuid& ) ), library, SLOT( removeClip( const QUuid&, const QUuid& ) ) );
     m_nav->pushViewController( list );
 }
 
