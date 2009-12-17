@@ -105,6 +105,7 @@ bool VideoPage::validatePage()
     sManager->setValue( "project", "VideoProjectFPS", projectFps );
     sManager->setValue( "project", "VideoProjectHeight", projectHeight );
     sManager->setValue( "project", "VideoProjectWidth", projectWidth);
+    sManager->commit();
 
     return true;
 }

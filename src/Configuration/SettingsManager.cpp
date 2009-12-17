@@ -64,9 +64,7 @@ void  SettingsManager::setValue( const QString& part , const QString& key, const
 {
     m_globalLock.lockForRead();
     if ( !m_tempData.contains( part ) )
-    {
         addNewSettingsPart( part );
-    }
     m_globalLock.unlock();
     QWriteLocker    lock( &m_globalLock );
     SettingsPart*   tmp = m_tempData[part];
@@ -94,7 +92,6 @@ void  SettingsManager::saveSettings( const QString& part, QDomDocument& xmlfile,
     m_globalLock.lockForRead();
     if ( !m_data.contains( part ) )
     {
-        qDebug() << "no part named" << part;
         m_globalLock.unlock();
         return ;
     }
@@ -176,7 +173,6 @@ void    SettingsManager::commit()
         {
             SettingsPart*   sett = it.value();
             QString         part = it.key();
-            qDebug() << ">>>>Commiting part:" << part;
 
             QReadLocker rLock( &sett->m_lock );
             SettingsPart::ConfigPair::iterator iter = sett->m_data.begin();
@@ -188,15 +184,9 @@ void    SettingsManager::commit()
                 SettingsPart::ConfigPair::iterator      insert_it = m_data[part]->m_data.find( settingName );
 
                 if ( insert_it == m_data[part]->m_data.end() )
-                {
-                    qDebug() << "Inserting new value:" << settingName;
                     m_data[part]->m_data.insert( settingName, new SettingValue( iter.value()->get() ) );
-                }
                 else
-                {
-                    qDebug() << "Modifying new value:" << settingName;
                     m_data[part]->m_data[ settingName ]->set( iter.value()->get() );
-                }
             }
         }
     }
