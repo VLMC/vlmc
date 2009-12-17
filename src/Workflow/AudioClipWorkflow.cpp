@@ -113,6 +113,7 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
         cw->m_buffer->ptsDiff = current_pts - previous_pts;
     }
 
+    current_pts = qMax( current_pts, previous_pts );
     cw->m_renderLock->unlock();
     cw->m_stateLock->lockForWrite();
 

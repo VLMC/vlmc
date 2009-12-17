@@ -144,6 +144,7 @@ void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int widt
     }
     else
         cw->m_stateLock->unlock();
+    current_pts = qMax( current_pts, previous_pts );
 //    qDebug() << '[' << (void*)cw << "] ClipWorkflow::unlock";
     cw->checkStateChange();
 }
