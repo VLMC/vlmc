@@ -174,18 +174,21 @@ void    SettingsManager::commit()
     for ( ; it != ed; ++it )
     {
         SettingsPart*   sett = it.value();
+        QString         part = it.key();
 
         QReadLocker rLock( &sett->m_lock );
         SettingsPart::ConfigPair::iterator iter = sett->m_data.begin();
         SettingsPart::ConfigPair::iterator end = sett->m_data.end();
-        QWriteLocker    wLock( &m_data[it.key()]->m_lock );
+        QWriteLocker    wLock( &m_data[part]->m_lock );
         for ( ; iter != end; ++iter )
         {
-            SettingsPart::ConfigPair::iterator    insert_it = m_data[it.key()]->m_data.find( iter.key() );
-            if ( insert_it == m_data[it.key()]->m_data.end() )
-                m_data[it.key()]->m_data.insert( iter.key(), new SettingValue( iter.value()->get() ) );
+            QString                                 settingName = iter.key();
+            SettingsPart::ConfigPair::iterator      insert_it = m_data[part]->m_data.find( settingName );
+
+            if ( insert_it == m_data[part]->m_data.end() )
+                m_data[part]->m_data.insert( settingName, new SettingValue( iter.value()->get() ) );
             else
-                m_data[it.key()]->m_data[ iter.key() ]->set( iter.value()->get() );
+                m_data[part]->m_data[ settingName ]->set( iter.value()->get() );
         }
     }
     flush();
