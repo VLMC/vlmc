@@ -426,6 +426,7 @@ private:
 
  private:
 
+    QReadWriteLock                      m_rwl;
     EffectNodeFactory                   m_enf;
     EffectNode*                         m_father;
     IEffectPlugin*                      m_plugin;
