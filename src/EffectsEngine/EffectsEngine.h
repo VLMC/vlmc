@@ -85,6 +85,7 @@ class	EffectsEngine
 
  private:
 
+  QReadWriteLock                                m_rwl;
   EffectNodeFactory                             m_enf;
   EffectNode*                                   m_patch;
   EffectNode*                                   m_bypassPatch;

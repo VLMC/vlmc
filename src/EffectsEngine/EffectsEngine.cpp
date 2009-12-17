@@ -101,25 +101,25 @@ EffectsEngine::~EffectsEngine()
 
 EffectNode* EffectsEngine::operator->( void )
 {
-    QWriteLocker    lock( m_inputLock );
+    QReadLocker    rl( &m_rwl );
     return ( m_patch );
 }
 
 EffectNode const * EffectsEngine::operator->( void ) const
 {
-    QReadLocker    lock( m_inputLock );
+    QReadLocker    rl( &m_rwl );
     return ( m_patch );
 }
 
 EffectNode* EffectsEngine::operator*( void )
 {
-    QWriteLocker    lock( m_inputLock );
+    QReadLocker    rl( &m_rwl );
     return ( m_patch );
 }
 
 EffectNode const * EffectsEngine::operator*( void ) const
 {
-    QReadLocker    lock( m_inputLock );
+    QReadLocker    rl( &m_rwl );
     return ( m_patch );
 }
 
