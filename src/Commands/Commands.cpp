@@ -65,7 +65,11 @@ Commands::MainWorkflow::MoveClip::MoveClip( ::MainWorkflow* workflow, const QUui
     m_workflow( workflow ), m_uuid( uuid ), m_oldTrack( oldTrack ),
     m_newTrack( newTrack ), m_pos( newPos ), m_trackType( trackType )
 {
-    setText( QObject::tr( "Moving clip" ) );
+    if ( oldTrack != newTrack )
+        setText( QObject::tr( "Moving clip from track %1 to %2" ).arg(
+                QString::number( oldTrack ), QString::number( newTrack ) ) );
+    else
+        setText( QObject::tr( "Moving clip" ) );
     m_undoRedoAction = false;
     m_oldPos = m_workflow->getClipPosition( uuid, oldTrack, trackType );
 }
