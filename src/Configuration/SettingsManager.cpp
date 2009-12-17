@@ -188,7 +188,6 @@ void    SettingsManager::commit()
                 m_data[it.key()]->m_data[ iter.key() ]->set( iter.value()->get() );
         }
     }
-    lock.unlock();
     flush();
 }
 
