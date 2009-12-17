@@ -25,6 +25,9 @@
 #define INSLOT_HPP_
 
 #include <QDebug>
+#include <QReadWriteLock>
+#include <QReadLocker>
+#include <QWriteLocker>
 
 class EffectNode;
 class IEffectNode;

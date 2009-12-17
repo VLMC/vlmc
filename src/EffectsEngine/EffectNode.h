@@ -30,6 +30,9 @@
 #include <QHash>
 #include <QObject>
 #include <QString>
+#include <QReadWriteLock>
+#include <QReadLocker>
+#include <QWriteLocker>
 
 #include "EffectNodeFactory.h"
 #include "IEffectNode.h"

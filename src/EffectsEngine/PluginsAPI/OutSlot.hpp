@@ -25,6 +25,9 @@
 #define OUTSLOT_HPP_
 
 #include <QDebug>
+#include <QReadWriteLock>
+#include <QReadLocker>
+#include <QWriteLocker>
 
 #include "InSlot.hpp"
 
