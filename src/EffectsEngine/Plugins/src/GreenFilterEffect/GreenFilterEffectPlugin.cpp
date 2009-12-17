@@ -53,7 +53,7 @@ void    GreenFilterEffectPlugin::render( void )
             tmp->frame.pixels[i].Red = 0;
             tmp->frame.pixels[i].Blue = 0;
         }
-        (*m_ien->getStaticVideoOutput(0)) << tmp;
+        (*m_ien->getStaticVideoOutput(1)) << tmp;
     }
     return ;
 }

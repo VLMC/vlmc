@@ -34,30 +34,27 @@ EffectsEngine::EffectsEngine( void ) : m_patch( NULL ), m_bypassPatch( NULL )
    else
    {
        qDebug() << "RootNode successfully created.";
-       if ( EffectNode::createRootNode( "BypassRootNode" ) == false )
-           qDebug() << "BypassRootNode creation failed!!!!!!!!!!";
-       else
-       {
-           qDebug() << "BypassRootNode successfully created.";
-           m_patch = EffectNode::getRootNode( "RootNode" );
-           m_bypassPatch = EffectNode::getRootNode( "BypassRootNode" );
-           quint32	i;
-           EffectNode* tmp;
+       m_patch = EffectNode::getRootNode( "RootNode" );
+       quint32	i;
+       EffectNode* tmp;
 
-           m_patch->createChild( "libVLMC_MixerEffectPlugin" );
-           m_bypassPatch->createChild( "libVLMC_MixerEffectPlugin" );
-           for ( i = 0 ; i < 64; ++i)
-           {
-               m_patch->createStaticVideoInput();
-               m_bypassPatch->createStaticVideoInput();
-               tmp = m_patch->getChild( 1 );
-               tmp->connectChildStaticVideoInputToParentStaticVideoOutput( ( i + 1 ), ( i + 1 ) );
-           }
-           m_patch->createStaticVideoOutput();
-           m_bypassPatch->createStaticVideoOutput();
+       m_patch->createChild( "libVLMC_MixerEffectPlugin" );
+       m_patch->createChild( "libVLMC_GreenFilterEffectPlugin" );
+       for ( i = 0 ; i < 64; ++i)
+       {
+           m_patch->createStaticVideoInput();
            tmp = m_patch->getChild( 1 );
-           tmp->connectChildStaticVideoOutputToParentStaticVideoInput( 1, 1 );
+           if ( tmp->connectChildStaticVideoInputToParentStaticVideoOutput( ( i + 1 ), ( i + 1 ) ) == false )
+               qDebug() << "La connection n'a pas reussie";
        }
+       m_patch->createStaticVideoOutput();
+       tmp = m_patch->getChild( 1 );
+       if ( tmp->connectStaticVideoOutputToStaticVideoInput( 1, 2, 1 ) == false )
+           qDebug() << "La connection de la sortie n'as pas reussie HAHA";
+       tmp = m_patch->getChild( 2 );
+       qDebug() << "NAME : " << tmp->getInstanceName();
+       if ( tmp->connectChildStaticVideoOutputToParentStaticVideoInput( 1, 1 ) == false )
+           qDebug() << "La connection de la sortie n'as pas reussie";
    }
 }
 
@@ -67,8 +64,6 @@ EffectsEngine::~EffectsEngine()
 
     if ( m_patch )
         EffectNode::deleteRootNode( "RootNode" );
-    if ( m_bypassPatch )
-        EffectNode::deleteRootNode( "BypassRootNode" );
     delete m_inputLock;
 }
 

@@ -34,7 +34,6 @@ MixerEffectPlugin::~MixerEffectPlugin()
 void    MixerEffectPlugin::init( IEffectNode* ien )
 {
     m_ien = ien;
-    m_ien->createStaticVideoInput("BITE DE CHAMEAU");
     m_ien->createStaticVideoInput();
     m_ien->createStaticVideoInput();
     m_ien->createStaticVideoInput();
@@ -98,9 +97,8 @@ void    MixerEffectPlugin::init( IEffectNode* ien )
     m_ien->createStaticVideoInput();
     m_ien->createStaticVideoInput();
     m_ien->createStaticVideoInput();
-
+    m_ien->createStaticVideoInput();
     m_ien->createStaticVideoOutput();
-
     return ;
 }
 

@@ -62,13 +62,13 @@ EffectNode::~EffectNode()
 void                                    EffectNode::render( void )
 {
     setVisited();
-    QWriteLocker                        wl( &m_rwl );
     if ( m_plugin != NULL )
         m_plugin->render();
     else
     {
         if ( m_father != NULL)
         {
+            QWriteLocker                        wl( &m_rwl );
             transmitDatasFromInputsToInternalsOutputs();
             renderSubNodes();
             transmitDatasFromInternalsInputsToOutputs();
@@ -76,6 +76,7 @@ void                                    EffectNode::render( void )
         }
         else
         {
+            QWriteLocker                        wl( &m_rwl );
             renderSubNodes();
             resetAllChildsNodesVisitState();
         }
@@ -85,7 +86,7 @@ void                                    EffectNode::render( void )
 
 void                                        EffectNode::renderSubNodes( void )
 {
-    QList<OutSlot<LightVideoFrame>*>        intOuts = m_internalsStaticVideosOutputs.getObjectsList() ;
+    QList<OutSlot<LightVideoFrame>*>                  intOuts = m_internalsStaticVideosOutputs.getObjectsList() ;
     QList<OutSlot<LightVideoFrame>*>::iterator        intOutsIt = intOuts.begin();
     QList<OutSlot<LightVideoFrame>*>::iterator        intOutsEnd = intOuts.end();
     QQueue<EffectNode*>                               nodeQueue;
@@ -746,7 +747,7 @@ void		EffectNode::createStaticVideoOutput( void )
     QWriteLocker                        wl( &m_rwl );
     m_staticVideosOutputs.createObject();
     if ( m_plugin == NULL )
-        m_internalsStaticVideosOutputs.createObject();
+        m_internalsStaticVideosInputs.createObject();
     return ;
 }
 //     void		addStaticAudioInput( void );
