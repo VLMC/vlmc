@@ -71,6 +71,7 @@ private:
     bool            m_needSave;
     QStringList     m_recentsProjects;
     QString         m_projectName;
+    QString         m_projectDescription;
 
     friend class    Singleton<ProjectManager>;
 

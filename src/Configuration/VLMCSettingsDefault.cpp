@@ -22,6 +22,7 @@
 
 #include <QtDebug>
 #include <QVariant>
+#include <QDir>
 
 #include "VLMCSettingsDefault.h"
 #include "SettingsManager.h"
@@ -45,7 +46,10 @@ void    VLMCSettingsDefault::loadVLMCDefaults( const QString& part )
                            "VLMCOutPutFPS", defaultOutputPFS  );
     settingsMan->setValue( part,
                            "VLMCTracksNb",
-                           defaultTrackNb  );
+                           defaultTrackNb );
+    settingsMan->setValue( part,
+                           "VLMCWorkspace",
+                           QDir::homePath() );
 
     return ;
 }

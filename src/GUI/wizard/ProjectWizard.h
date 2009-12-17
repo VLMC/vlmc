@@ -35,7 +35,7 @@ class ProjectWizard : public QWizard
     public:
          enum { Page_Welcome,
                 Page_Open,
-                Page_General, Page_Video, Page_Audio };
+                Page_General, Page_Video };
 
          ProjectWizard( QWidget* parent = 0 );
          ~ProjectWizard();
@@ -46,9 +46,6 @@ class ProjectWizard : public QWizard
 
     private slots:
         void            showHelp();
-
-    signals:
-        void            flush();
 };
 
 #endif

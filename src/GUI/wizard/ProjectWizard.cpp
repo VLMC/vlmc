@@ -24,6 +24,7 @@
 #include <QString>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QWizardPage>
 #include "ProjectManager.h"
 #include "ProjectWizard.h"
 #include "ProjectPreferences.h"
@@ -33,6 +34,8 @@
 #include "PageFactory.h"
 #include "WelcomePage.h"
 #include "OpenPage.h"
+#include "GeneralPage.h"
+#include "VideoPage.h"
 
 #include <QtDebug>
 
@@ -50,6 +53,7 @@ ProjectWizard::ProjectWizard( QWidget* parent )
 
     setPixmap( QWizard::LogoPixmap, logo );
     setPixmap( QWizard::WatermarkPixmap, QPixmap( ":/images/wizard_watermark" ) );
+    setOption( QWizard::IndependentPages );
     setWindowTitle( tr( "Project wizard" ) );
 
     // Show and connect the help button
@@ -59,15 +63,13 @@ ProjectWizard::ProjectWizard( QWidget* parent )
     // Create pages
 
     QWizardPage* welcomePage = new WelcomePage( this );
-    QWizardPage* generalPage = PageFactory::generateWizardPage<ProjectPreferences>( "General Settings", this );
-    QWizardPage* videoPage = PageFactory::generateWizardPage<VideoProjectPreferences>( "Video Settings", this );
-    QWizardPage* audioPage = PageFactory::generateWizardPage<AudioProjectPreferences>( "Audio Settings", this );
+    QWizardPage* generalPage = new GeneralPage( this );
+    QWizardPage* videoPage = new VideoPage( this );
     QWizardPage* openPage = new OpenPage( this );
 
     setPage( Page_Welcome, welcomePage );
     setPage( Page_General, generalPage );
     setPage( Page_Video, videoPage );
-    setPage( Page_Audio, audioPage );
     setPage( Page_Open, openPage );
 
     // Set the start page
@@ -96,24 +98,16 @@ void    ProjectWizard::showHelp()
 
 void    ProjectWizard::accept()
 {
-    if ( currentId() == Page_Audio )
+    if ( currentId() == Page_Video )
     {
+        ProjectManager::getInstance()->newProject( field( "projectName" ).toString() );
         SettingsManager::getInstance()->commit();
     }
-    if ( WelcomePage::projectPath().length() == 0 )
-    {
-        ProjectManager::getInstance()->newProject(
-            SettingsManager::getInstance()->getValue( "project", "ProjectName" )->get().toString() );
-    }
-    emit flush();
     QDialog::accept();
-    return ;
 }
 
 void    ProjectWizard::reject()
 {
     SettingsManager::getInstance()->flush();
-    emit flush();
     QDialog::reject();
-    return ;
 }
