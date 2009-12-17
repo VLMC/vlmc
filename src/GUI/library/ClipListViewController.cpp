@@ -36,7 +36,6 @@ ClipListViewController::ClipListViewController( StackViewController* nav, const 
 
 ClipListViewController::~ClipListViewController()
 {
-    clean();
 }
 
 void    ClipListViewController::addClipsFromMedia( Media* media )

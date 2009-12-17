@@ -80,7 +80,6 @@ void    MediaListViewController::mediaRemoved( const QUuid& uuid )
     QWidget* cell = m_cells->value( uuid );
     removeCell( cell );
     m_cells->remove( uuid );
-    delete cell;
     m_currentUuid = QUuid();
 }
 
