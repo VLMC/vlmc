@@ -203,7 +203,11 @@ void PreviewRuler::mouseMoveEvent( QMouseEvent* event )
     if ( m_isSliding )
     {
         if ( m_renderer->getLength() > 0 )
-            setFrame( (qreal)(event->pos().x() * m_renderer->getLength() ) / width(), true );
+        {
+            qint64 pos = event->pos().x();
+            pos = qBound( (qint64)0, m_renderer->getLength(), pos );
+            setFrame( (qreal)(pos * m_renderer->getLength() ) / width(), true );
+        }
     }
 }
 
