@@ -7,12 +7,13 @@ HEADERS	+=	ListViewController.h	\
 		MediaListViewController.h	\
 		StackViewController.h	\
 		StackViewNavController.h	\
-		ViewController.h
+		ViewController.h            \
+        ClipListViewController.h
 
 SOURCES	+=	ListViewController.cpp	\
 		MediaCellView.cpp	\
 		MediaLibraryWidget.cpp	\
 		MediaListViewController.cpp	\
 		StackViewController.cpp	\
-		StackViewNavController.cpp
-
+		StackViewNavController.cpp \
+        ClipListViewController.cpp

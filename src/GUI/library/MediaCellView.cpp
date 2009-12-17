@@ -109,6 +109,7 @@ void            MediaCellView::mousePressEvent( QMouseEvent* event )
 
 void    MediaCellView::mouseMoveEvent( QMouseEvent* event )
 {
+    qDebug() << "in MediaCellView::mouseMoveEvent";
     if ( ( event->buttons() | Qt::LeftButton ) != Qt::LeftButton )
          return;
 
@@ -147,9 +148,12 @@ void        MediaCellView::arrowButtonClicked( QWidget*, QMouseEvent* )
     emit arrowClicked( uuid() );
 }
 
-void        MediaCellView::setLength( qint64 length )
+void        MediaCellView::setLength( qint64 length, bool mSecs )
 {
     QTime   duration;
-    duration = duration.addMSecs( length );
+    if ( mSecs )
+        duration = duration.addMSecs( length );
+    else
+        duration = duration.addSecs( length );
     m_ui->length->setText( duration.toString( "hh:mm:ss" ) );
 }

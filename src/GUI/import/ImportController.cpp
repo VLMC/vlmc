@@ -139,7 +139,6 @@ void        ImportController::mediaSelection( const QUuid& uuid )
 
 void        ImportController::clipSelection( const QUuid& uuid )
 {
-    qDebug() << m_clipListController;
     if ( !m_currentUuid.isNull() && !m_controllerSwitched )
         m_clipListController->getCell( m_currentUuid )->setPalette( palette() );
     else
@@ -203,10 +202,8 @@ void        ImportController::setUIMetaData( Clip* clip )
     //compute clip length
     QTime   time;
     qint64  length = clip->getLengthSecond();
-    qDebug() << "Clip Length" << length;
     time = time.addSecs( length );
     qDebug() << time;
-    qDebug() << "time :" << time.toString( "hh:mm:ss" );
     m_ui->durationValueLabel->setText( time.toString( "hh:mm:ss" ) );
     //Filename || title
     m_ui->nameValueLabel->setText( clip->getParent()->getFileInfo()->fileName() );
@@ -275,13 +272,15 @@ void        ImportController::mediaDeletion( const QUuid& uuid )
 
 void        ImportController::clipDeletion( const QUuid& uuid )
 {
-    m_mediaListController->removeClip( uuid );
+    m_clipListController->removeClip( uuid );
     QUuid id;
     foreach( id, m_model->getMedias()->keys() )
     {
         Media* media = m_model->getMedias()->value( id );
-        if (media->clip( uuid) )
+        if ( media->clip( uuid ) )
+        {
             media->removeClip( uuid );
+        }
     }
 }
 

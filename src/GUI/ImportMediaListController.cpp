@@ -68,10 +68,8 @@ bool    ImportMediaListController::contains( QUuid uuid )
 
 void    ImportMediaListController::removeMedia( const QUuid& uuid )
 {
-    ImportMediaCellView* cell = m_mediaCellList->value( uuid );
-    removeCell( cell );
+    removeCell( m_mediaCellList->value( uuid ) );
     m_mediaCellList->remove( uuid );
-    delete cell;
 }
 
 void    ImportMediaListController::addClip( Clip* clip )
