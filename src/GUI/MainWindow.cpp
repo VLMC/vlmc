@@ -489,7 +489,11 @@ void    MainWindow::keyboardShortcutChanged( const QString& name, const QString&
 
 void    MainWindow::on_actionCrash_triggered()
 {
-    int test = 1 / 0;
+    //WARNING: read this part at your own risk !!
+    //I'm not responsible if you puke while reading this :D
+    QString str;
+    int test = 1 / str.length();
+    Q_UNUSED( test );
 }
 
 bool    MainWindow::restoreSession()
