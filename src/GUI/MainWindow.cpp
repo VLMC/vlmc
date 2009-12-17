@@ -140,6 +140,7 @@ void        MainWindow::setupLibrary()
     //GUI part :
 
     MediaLibraryWidget* mediaLibraryWidget = new MediaLibraryWidget( this );
+    m_importController = new ImportController( this );
 
     DockWidgetManager::instance()->addDockedWidget( mediaLibraryWidget,
                                                     tr( "Media Library" ),
@@ -152,6 +153,8 @@ void        MainWindow::setupLibrary()
 
     connect( Library::getInstance(), SIGNAL( mediaRemoved( const QUuid& ) ),
              m_clipPreview->getGenericRenderer(), SLOT( mediaUnloaded( QUuid ) ) );
+
+    connect( mediaLibraryWidget, SIGNAL( importRequired() ), this, SLOT( on_actionImport_triggered() ) );
 }
 
 void    MainWindow::on_actionSave_triggered()
@@ -367,12 +370,6 @@ void    MainWindow::on_actionHelp_triggered()
     QDesktopServices::openUrl( QUrl( "http://vlmc.org" ) );
 }
 
-void    MainWindow::on_actionImport_triggered()
-{
-    //Import* import = new Import( );
-    //import->exec();
-}
-
 void    MainWindow::zoomIn()
 {
     m_zoomSlider->setValue( m_zoomSlider->value() - 1 );
@@ -458,6 +455,7 @@ void    MainWindow::initializeMenuKeyboardShortcut()
     INIT_SHORTCUT( save, "Save", actionSave );
     INIT_SHORTCUT( saveAs, "Save as", actionSave_As );
     INIT_SHORTCUT( closeProject, "Close project", actionClose_Project );
+    INIT_SHORTCUT( importProject, "Import media", actionImport );
 }
 
 #undef INIT_SHORTCUT
@@ -483,6 +481,8 @@ void    MainWindow::keyboardShortcutChanged( const QString& name, const QString&
         m_ui.actionSave_As->setShortcut( val );
     else if ( name == "Close project" )
         m_ui.actionClose_Project->setShortcut( val );
+    else if ( name == "Import media" )
+        m_ui.actionImport->setShortcut( val );
     else
         qWarning() << "Unknown shortcut:" << name;
 }
@@ -528,4 +528,9 @@ bool    MainWindow::restoreSession()
     s.setValue( "CleanQuit", false );
     s.sync();
     return ret;
+}
+
+void    MainWindow::on_actionImport_triggered()
+{
+    m_importController->exec();
 }

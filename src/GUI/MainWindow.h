@@ -40,6 +40,7 @@
 #include "EffectsEngine.h"
 #include "MainWorkflow.h"
 #include "ProjectWizard.h"
+#include "ImportController.h"
 
 class MainWindow : public QMainWindow
 {
@@ -85,6 +86,7 @@ private:
     Settings*               m_DefaultProjectPreferences;
     Settings*               m_projectPreferences;
     ProjectWizard*          m_pWizard;
+    ImportController*       m_importController;
 
 private slots:
     void                    on_actionBypass_effects_engine_toggled(bool );
@@ -98,11 +100,11 @@ private slots:
     void                    on_actionLoad_Project_triggered();
     void                    on_actionSave_triggered();
     void                    on_actionSave_As_triggered();
-    void                    on_actionImport_triggered();
     void                    on_actionHelp_triggered();
     void                    on_actionProject_Preferences_triggered();
     void                    on_actionClose_Project_triggered();
     void                    on_actionCrash_triggered();
+    void                    on_actionImport_triggered();
     void                    toolButtonClicked( int id );
     void                    projectUpdated( const QString& projectName, bool savedStatus );
     void                    keyboardShortcutChanged( const QString&, const QString& );

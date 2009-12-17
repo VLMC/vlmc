@@ -49,6 +49,7 @@ private slots:
 signals:
     void    mediaSelected( Media* media );
     void    clipSelected( Clip* clip );
+    void    importRequired();
 };
 
 #endif // MEDIALIBRARYWIDGET_H
