@@ -57,8 +57,7 @@ ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
     const SettingValue* val = SettingsManager::getInstance()->getValue( "project", "ProjectName");
     connect( val, SIGNAL( changed( QVariant) ), this, SLOT(nameChanged(QVariant) ) );
     m_projectName = tr( "<Unsaved project>" );
-//    signal( SIGSEGV, ProjectManager::signalHandler );
-//    signal( SIGINT, SIG_IGN );
+    signal( SIGSEGV, ProjectManager::signalHandler );
     signal( SIGFPE, ProjectManager::signalHandler );
     signal( SIGABRT, ProjectManager::signalHandler );
     signal( SIGILL, ProjectManager::signalHandler );

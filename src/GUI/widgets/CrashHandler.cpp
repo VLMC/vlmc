@@ -53,8 +53,12 @@ CrashHandler::CrashHandler( int sig, QWidget *parent ) :
     QString sigName = tr( "Unknown signal" );
     if ( sig == SIGSEGV )
         sigName = "SIGSEGV (Segmentation Fault)";
-    if ( sig == SIGFPE )
+    else if ( sig == SIGFPE )
         sigName = "SIGFPE (Floating Exception)";
+    else if ( sig == SIGABRT )
+        sigName = "SIGABRT (Aborted)";
+    else if ( sig == SIGILL )
+        sigName = "SIGILL (Illegal Instruction)";
     else
         sigName = "Unknown";
     ui->crashDescriptionLabel->setText( tr("A crash occured. Signal received: ") + sigName );
