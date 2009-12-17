@@ -32,9 +32,12 @@ WorkflowRenderer::WorkflowRenderer() :
             m_mainWorkflow( MainWorkflow::getInstance() ),
             m_stopping( false )
 {
-    char        buffer[64];
-
     m_actionsMutex = new QMutex;
+}
+
+void    WorkflowRenderer::initializeRenderer()
+{
+    char        buffer[64];
     m_media = new LibVLCpp::Media( "fake://" );
 
     sprintf( buffer, ":invmem-width=%i", VIDEOWIDTH );
@@ -42,9 +45,9 @@ WorkflowRenderer::WorkflowRenderer() :
     m_media->addOption( buffer );
     sprintf( buffer, ":invmem-height=%i", VIDEOHEIGHT );
     m_media->addOption( buffer );
-    sprintf( buffer, ":invmem-lock=%lld", (qint64)WorkflowRenderer::lock );
+    sprintf( buffer, ":invmem-lock=%lld", (qint64)getLockCallback() );
     m_media->addOption( buffer );
-    sprintf( buffer, ":invmem-unlock=%lld", (qint64)WorkflowRenderer::unlock );
+    sprintf( buffer, ":invmem-unlock=%lld", (qint64)getUnlockCallback() );
     m_media->addOption( buffer );
     sprintf( buffer, ":invmem-data=%lld", (qint64)this );
     m_media->addOption( buffer );
@@ -70,7 +73,6 @@ WorkflowRenderer::WorkflowRenderer() :
     connect( m_mainWorkflow, SIGNAL( frameChanged( qint64, MainWorkflow::FrameChangedReason ) ),
              this, SLOT( __frameChanged( qint64, MainWorkflow::FrameChangedReason ) ) );
 }
-
 
 WorkflowRenderer::~WorkflowRenderer()
 {
@@ -335,6 +337,16 @@ void    WorkflowRenderer::resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd
 //    }
 }
 
+void*   WorkflowRenderer::getLockCallback()
+{
+    return (void*)&WorkflowRenderer::lock;
+}
+
+void*   WorkflowRenderer::getUnlockCallback()
+{
+    return (void*)&WorkflowRenderer::unlock;
+}
+
 /////////////////////////////////////////////////////////////////////
 /////SLOTS :
 /////////////////////////////////////////////////////////////////////
@@ -364,3 +376,4 @@ void        WorkflowRenderer::__videoPaused()
 {
     emit paused();
 }
+

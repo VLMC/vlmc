@@ -76,12 +76,14 @@ Commands::MainWorkflow::MoveClip::MoveClip( ::MainWorkflow* workflow, const QUui
 
 void Commands::MainWorkflow::MoveClip::redo()
 {
+//    qDebug() << "Moving clip from track" << m_oldTrack << "to" << m_newTrack << "at position:" << m_pos;
     m_workflow->moveClip( m_uuid, m_oldTrack, m_newTrack, m_pos, m_trackType, m_undoRedoAction );
     m_undoRedoAction = true;
 }
 
 void Commands::MainWorkflow::MoveClip::undo()
 {
+//    qDebug() << "Undo moving clip from track" << m_newTrack << "to" << m_oldTrack << "at position:" << m_oldPos;
     m_workflow->moveClip( m_uuid, m_newTrack, m_oldTrack, m_oldPos, m_trackType, m_undoRedoAction );
     m_undoRedoAction = true;
 }

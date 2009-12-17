@@ -241,6 +241,7 @@ void MainWindow::createStatusBar()
 void MainWindow::initializeDockWidgets( void )
 {
     WorkflowRenderer*    workflowRenderer = new WorkflowRenderer();
+    workflowRenderer->initializeRenderer();
     m_timeline = new Timeline( workflowRenderer, this );
     m_timeline->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_timeline->show();
@@ -352,6 +353,7 @@ void    MainWindow::on_actionRender_triggered()
         if ( m_renderer )
             delete m_renderer;
         m_renderer = new WorkflowFileRenderer( outputFileName );
+        m_renderer->initializeRenderer();
         m_renderer->run();
     }
 }

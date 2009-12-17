@@ -37,6 +37,9 @@ public:
 private:
     Ui::WorkflowFileRendererDialog      m_ui;
 
+public slots:
+    void    updatePreview( const uchar* buff );
+
     friend class    WorkflowFileRenderer;
 };
 

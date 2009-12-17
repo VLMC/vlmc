@@ -27,14 +27,18 @@ WorkflowFileRenderer::WorkflowFileRenderer( const QString& outputFileName ) :
         WorkflowRenderer(),
         m_outputFileName( outputFileName )
 {
+    m_image = NULL;
+    m_timer.setSingleShot( true );
     m_dialog = new WorkflowFileRendererDialog;
     m_dialog->setModal( true );
     m_dialog->setOutputFileName( outputFileName );
     connect( m_dialog->m_ui.cancelButton, SIGNAL( clicked() ), this, SLOT( cancelButtonClicked() ) );
+    connect( this, SIGNAL( imageUpdated( const uchar* ) ), m_dialog, SLOT( updatePreview( const uchar* ) ) );
 }
 
 WorkflowFileRenderer::~WorkflowFileRenderer()
 {
+    delete m_image;
 }
 
 void        WorkflowFileRenderer::run()
@@ -84,7 +88,35 @@ float   WorkflowFileRenderer::getFps() const
     return m_outputFps;
 }
 
+void*       WorkflowFileRenderer::lock( void *datas )
+{
+    WorkflowFileRenderer* self = reinterpret_cast<WorkflowFileRenderer*>( datas );
+    void*   ret = WorkflowRenderer::lock( datas );
+
+    if ( self->m_timer.isActive() == false )
+    {
+        self->emit imageUpdated( (uchar*)ret );
+        self->m_timer.start( 1000 );
+    }
+    return ret;
+}
+
+void        WorkflowFileRenderer::unlock( void *datas )
+{
+    WorkflowRenderer::unlock( datas );
+}
+
 void        WorkflowFileRenderer::__frameChanged( qint64 frame, MainWorkflow::FrameChangedReason )
 {
     m_dialog->setProgressBarValue( frame * 100 / m_mainWorkflow->getLengthFrame() );
+}
+
+void*       WorkflowFileRenderer::getLockCallback()
+{
+    return (void*)&WorkflowFileRenderer::lock;
+}
+
+void*       WorkflowFileRenderer::getUnlockCallback()
+{
+    return (void*)&WorkflowFileRenderer::unlock;
 }

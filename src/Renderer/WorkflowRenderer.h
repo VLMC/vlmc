@@ -42,6 +42,7 @@ class   WorkflowRenderer : public GenericRenderer
         WorkflowRenderer();
         ~WorkflowRenderer();
 
+        void                initializeRenderer();
         virtual void        togglePlayPause( bool forcePause );
         virtual void        stop();
         virtual void        nextFrame();
@@ -78,6 +79,10 @@ class   WorkflowRenderer : public GenericRenderer
         void                internalPlayPause( bool forcePause );
         virtual void        startPreview();
         void                checkActions();
+
+    protected:
+        virtual void*       getLockCallback();
+        virtual void*       getUnlockCallback();
 
     protected:
         MainWorkflow*       m_mainWorkflow;
