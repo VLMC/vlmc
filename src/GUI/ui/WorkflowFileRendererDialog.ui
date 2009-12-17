@@ -20,6 +20,44 @@
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="renderInProgress">
+       <property name="text">
+        <string>Render in progress...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="frameCounter">
+       <property name="text">
+        <string>Frame</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="previewLabel">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="0">
     <widget class="QProgressBar" name="progressBar">
      <property name="value">
@@ -57,20 +95,6 @@
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Render in progress...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="previewLabel">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>

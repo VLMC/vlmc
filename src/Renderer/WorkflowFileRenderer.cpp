@@ -29,10 +29,11 @@ WorkflowFileRenderer::WorkflowFileRenderer( const QString& outputFileName ) :
 {
     m_image = NULL;
     m_timer.setSingleShot( true );
-    m_dialog = new WorkflowFileRendererDialog;
+    m_dialog = new WorkflowFileRendererDialog();
     m_dialog->setModal( true );
     m_dialog->setOutputFileName( outputFileName );
     connect( m_dialog->m_ui.cancelButton, SIGNAL( clicked() ), this, SLOT( cancelButtonClicked() ) );
+    connect( m_dialog, SIGNAL( finished(int) ), this, SLOT( stop() ) );
     connect( this, SIGNAL( imageUpdated( const uchar* ) ), m_dialog, SLOT( updatePreview( const uchar* ) ) );
 }
 
@@ -75,12 +76,12 @@ void        WorkflowFileRenderer::run()
 void    WorkflowFileRenderer::stop()
 {
     WorkflowRenderer::stop();
-    m_dialog->done( 0 );
 }
 
 void    WorkflowFileRenderer::cancelButtonClicked()
 {
     stop();
+    m_dialog->done( 0 );
 }
 
 float   WorkflowFileRenderer::getFps() const

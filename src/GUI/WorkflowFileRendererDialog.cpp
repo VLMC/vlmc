@@ -29,6 +29,9 @@
 WorkflowFileRendererDialog::WorkflowFileRendererDialog()
 {
     m_ui.setupUi( this );
+    m_workflow = MainWorkflow::getInstance();
+    connect( m_workflow, SIGNAL( frameChanged( qint64, MainWorkflow::FrameChangedReason ) ),
+             this, SLOT( frameChanged( qint64, MainWorkflow::FrameChangedReason ) ) );
 }
 
 void    WorkflowFileRendererDialog::setOutputFileName( const QString& outputFileName )
@@ -46,4 +49,11 @@ void    WorkflowFileRendererDialog::setProgressBarValue( int val )
 void    WorkflowFileRendererDialog::updatePreview( const uchar* buff )
 {
     m_ui.previewLabel->setPixmap( QPixmap::fromImage( QImage( buff, VIDEOWIDTH, VIDEOHEIGHT, QImage::Format_RGB888 ).rgbSwapped() ) );
+}
+
+void    WorkflowFileRendererDialog::frameChanged( qint64 frame, MainWorkflow::FrameChangedReason reason )
+{
+    if ( reason == MainWorkflow::Renderer )
+        m_ui.frameCounter->setText( tr("Rendering frame %1 / %2").arg(QString::number( frame ),
+                                                                QString::number(m_workflow->getLengthFrame() ) ) );
 }

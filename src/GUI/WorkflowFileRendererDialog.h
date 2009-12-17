@@ -26,6 +26,8 @@
 #include <QDialog>
 #include "ui_WorkflowFileRendererDialog.h"
 
+#include "MainWorkflow.h"
+
 class   WorkflowFileRendererDialog : public QDialog
 {
     Q_OBJECT
@@ -34,11 +36,16 @@ public:
     WorkflowFileRendererDialog();
     void    setOutputFileName( const QString& filename );
     void    setProgressBarValue( int val );
+
 private:
     Ui::WorkflowFileRendererDialog      m_ui;
+    MainWorkflow*                       m_workflow;
 
 public slots:
     void    updatePreview( const uchar* buff );
+
+private slots:
+    void    frameChanged( qint64, MainWorkflow::FrameChangedReason );
 
     friend class    WorkflowFileRenderer;
 };
