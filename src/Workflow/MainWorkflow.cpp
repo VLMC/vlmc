@@ -137,6 +137,7 @@ void                    MainWorkflow::getOutput()
             if ( m_tracks[i].activated() == false )
             {
                 m_effectEngine->setInputFrame( *MainWorkflow::nullOutput, i );
+                // (*(*m_effectEngine)->getInternalStaticVideoOutput( i )) << *MainWorkflow::nullOutput;
                 continue ;
             }
 
