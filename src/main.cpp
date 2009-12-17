@@ -27,6 +27,8 @@
  */
 
 #include <QApplication>
+#include <QSettings>
+
 #include "MainWindow.h"
 
 #ifndef VLMC_VERSION
@@ -84,6 +86,8 @@ int main( int argc, char **argv )
     app.setPalette( p );
 
     MainWindow w;
+    QSettings   s;
+    s.setValue( "VlmcVersion", STRINGIFY(VLMC_VERSION) );
     w.show();
     return app.exec();
 }

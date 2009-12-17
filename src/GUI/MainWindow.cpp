@@ -495,27 +495,32 @@ void    MainWindow::on_actionCrash_triggered()
 bool    MainWindow::restoreSession()
 {
     QSettings   s;
-    bool        cleanQuit = s.value( "CleanQuit", false ).toBool();
+    bool        fileCreated = false;
     bool        ret = false;
 
-    // Restore the geometry
-    restoreGeometry( s.value( "MainWindowGeometry" ).toByteArray() );
-    // Restore the layout
-    restoreState( s.value( "MainWindowState" ).toByteArray() );
-
-    if ( cleanQuit == false )
+    fileCreated = s.contains( "VlmcVersion" );
+    if ( fileCreated == true )
     {
-        QMessageBox::StandardButton res = QMessageBox::question( this, tr( "Crash recovery" ), tr( "VLMC didn't closed nicely. Do you wan't to recover your project ?" ),
-                               QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes );
-        if ( res == QMessageBox::Yes )
+        bool        cleanQuit = s.value( "CleanQuit", false ).toBool();
+
+        // Restore the geometry
+        restoreGeometry( s.value( "MainWindowGeometry" ).toByteArray() );
+        // Restore the layout
+        restoreState( s.value( "MainWindowState" ).toByteArray() );
+
+        if ( cleanQuit == false )
         {
-            if ( ProjectManager::getInstance()->loadEmergencyBackup() == true )
-                ret = true;
-            else
-                QMessageBox::warning( this, tr( "Can't restore project" ), tr( "VLMC didn't manage to restore your project. We appology for the inconvenience" ) );
+            QMessageBox::StandardButton res = QMessageBox::question( this, tr( "Crash recovery" ), tr( "VLMC didn't closed nicely. Do you wan't to recover your project ?" ),
+                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes );
+            if ( res == QMessageBox::Yes )
+            {
+                if ( ProjectManager::getInstance()->loadEmergencyBackup() == true )
+                    ret = true;
+                else
+                    QMessageBox::warning( this, tr( "Can't restore project" ), tr( "VLMC didn't manage to restore your project. We appology for the inconvenience" ) );
+            }
         }
     }
-
     s.setValue( "CleanQuit", false );
     s.sync();
     return ret;
