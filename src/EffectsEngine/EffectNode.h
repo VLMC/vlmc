@@ -64,9 +64,6 @@ class	EffectNode : public IEffectNode
     EffectNode( IEffectPlugin* plugin );
     EffectNode();
 
-    void        init(quint32 const nbvideoinputs,
-                     quint32 const nbvideooutputs);
-
     // ================================================================= INFOS ========================================================================
 
     void        setTypeId( quint32 typeId );
@@ -392,27 +389,6 @@ class	EffectNode : public IEffectNode
 
     // ---------------- SPECIALS DISCONNECTS --------------------
 
-    // ======================================================D3PREC47ED================================================================================
-
-    //
-    // CONNECTIONS BETWEEN GENERICEFFECTS
-    //
-
-    /*   void				connectDynOutToStatIn( EffectNode* destinationeffect, QString const & inslotname ); */
-    /*   void				connectDynOutToDynIn( EffectNode* destinationeffect ); */
-    void                                connectOutput( quint32 outIndex, EffectNode* destEffect, quint32 inIndex );
-    /*   void				connectStatOutToDynIn( QString const & outslotname, EffectNode* destinationeffect ); */
-
-    //
-    // CONNECTIONS BETWEEN GENERICEFFECT & OUTSLOTS/INSLOTS
-    //
-
-    void                                connect( OutSlot<LightVideoFrame> & out, quint32 inIndex );
-    void                                connect( quint32 outIndex, InSlot<LightVideoFrame> & in);
-
-    InSlot<LightVideoFrame> &           getVideoInput(quint32 id);
-    OutSlot<LightVideoFrame> &          getVideoOutput(quint32 id);
-
     ////
     ////
     ////
@@ -435,8 +411,6 @@ private:
     EffectNode*                         m_father;
     IEffectPlugin*                      m_plugin;
     bool                                m_visited;
-    InSlot<LightVideoFrame>*            m_videoInputs;
-    OutSlot<LightVideoFrame>*           m_videoOutputs;
 
     //
     //

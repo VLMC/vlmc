@@ -136,8 +136,8 @@ void                    MainWorkflow::getOutput()
         {
             if ( m_tracks[i].activated() == false )
             {
-                m_effectEngine->setInputFrame( *MainWorkflow::nullOutput, i );
-                // (*(*m_effectEngine)->getInternalStaticVideoOutput( i )) << *MainWorkflow::nullOutput;
+                // m_effectEngine->setInputFrame( *MainWorkflow::nullOutput, i );
+                (*((*m_effectEngine)->getInternalStaticVideoOutput( i + 1 ))) << *MainWorkflow::nullOutput;
                 continue ;
             }
 
@@ -338,9 +338,9 @@ void        MainWorkflow::tracksRenderCompleted( unsigned int trackId )
     {
         LightVideoFrame*     buff = m_tracks[trackId]->getSynchroneOutput();
         if ( buff == NULL )
-            m_effectEngine->setInputFrame( *MainWorkflow::nullOutput, trackId );
+            (*((*m_effectEngine)->getInternalStaticVideoOutput( trackId + 1 ))) << *MainWorkflow::nullOutput;
         else
-            m_effectEngine->setInputFrame( *buff, trackId );
+            (*((*m_effectEngine)->getInternalStaticVideoOutput( trackId + 1 ))) << *buff;
     }
     //We check for minus or equal, since we can have 0 frame to compute,
     //therefore, m_nbTracksToRender will be equal to -1
@@ -363,8 +363,10 @@ const LightVideoFrame*  MainWorkflow::getSynchroneOutput()
 //    qDebug() << "Waiting for sync output";
     m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
 //    qDebug() << "Got it";
-    m_effectEngine->render();
-    m_synchroneRenderingBuffer = &( m_effectEngine->getOutputFrame( 0 ) );
+    (*m_effectEngine)->render();
+    //    m_effectEngine->render();
+    (*((*m_effectEngine)->getInternalStaticVideoInput( 1 )) ) >> *m_synchroneRenderingBuffer;
+    //    m_synchroneRenderingBuffer = &( m_effectEngine->getOutputFrame( 0 ) );
     m_synchroneRenderWaitConditionMutex->unlock();
 
     if ( (*m_synchroneRenderingBuffer)->frame.octets == NULL )

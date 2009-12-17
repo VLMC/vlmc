@@ -59,21 +59,6 @@ EffectNode::~EffectNode()
         delete [] m_videoOutputs;
 }
 
-
-//-------------------------------------------------------------------
-//
-// DEPRECATED
-//
-//
-
-void                                    EffectNode::init( quint32 const nbvideoinputs,
-                                                             quint32 const nbvideooutputs )
-{
-    m_videoInputs = new InSlot<LightVideoFrame>[nbvideoinputs];
-    m_videoOutputs = new OutSlot<LightVideoFrame>[nbvideooutputs];
-    return ;
-}
-
 void                                    EffectNode::render( void )
 {
     QWriteLocker                        wl( &m_rwl );
@@ -1245,31 +1230,3 @@ OutSlot<LightVideoFrame> &              EffectNode::getVideoOutput(quint32 id)
 }
 
 
-//-------------------------------------------------------------------
-//
-// DEPRECATED
-//
-//
-
-// CONNECTIONS BETWEEN GENERICEFFECTS
-
-void				EffectNode::connectOutput( quint32 outIndex, EffectNode* destEffect, quint32 inIndex)
-{
-  // THINK TO CHECK IF THE SLOTS EXISTS BY CALLING THE PRIVATES METHODS!!!
-  ( m_videoOutputs[outIndex] ).connect( destEffect->m_videoInputs[inIndex] );
-  return ;
-}
-
-// CONNECTIONS DETWEEN GENERICEFFECT & OUTSLOT/INSLOT
-
-void				EffectNode::connect( OutSlot<LightVideoFrame> & out, quint32 inIndex )
-{
-  out.connect( m_videoInputs[inIndex] );
-  return ;
-}
-
-void				EffectNode::connect( quint32 outIndex, InSlot<LightVideoFrame> & in )
-{
-  ( m_videoOutputs[outIndex] ).connect( in );
-  return ;
-}
