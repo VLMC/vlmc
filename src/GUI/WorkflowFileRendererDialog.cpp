@@ -26,8 +26,6 @@
 #define VIDEOWIDTH 640
 #define VIDEOHEIGHT 480
 
-#include <QDebug>
-
 WorkflowFileRendererDialog::WorkflowFileRendererDialog()
 {
     m_ui.setupUi( this );
@@ -36,6 +34,7 @@ WorkflowFileRendererDialog::WorkflowFileRendererDialog()
 void    WorkflowFileRendererDialog::setOutputFileName( const QString& outputFileName )
 {
     m_ui.nameLabel->setText( outputFileName );
+    m_ui.previewLabel->setMinimumSize( VIDEOWIDTH, VIDEOHEIGHT);
     setWindowTitle( "Rendering to " + outputFileName );
 }
 
