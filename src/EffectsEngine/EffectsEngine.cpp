@@ -29,10 +29,6 @@ EffectsEngine::EffectsEngine( void ) : m_patch( NULL ), m_bypassPatch( NULL )
 {
    m_inputLock = new QReadWriteLock;
 
-   m_videoInputs = new OutSlot<LightVideoFrame>[64];
-   m_videoOutputs = new InSlot<LightVideoFrame>[64];
-   start();
-
    if ( EffectNode::createRootNode( "RootNode" ) == false )
        qDebug() << "RootNode creation failed!!!!!!!!!!";
    else
@@ -46,40 +42,21 @@ EffectsEngine::EffectsEngine( void ) : m_patch( NULL ), m_bypassPatch( NULL )
            m_patch = EffectNode::getRootNode( "RootNode" );
            m_bypassPatch = EffectNode::getRootNode( "BypassRootNode" );
            quint32	i;
-
-           for ( i = 0 ; i < 64; ++i)
-           {
-               qDebug() << "PONIES";
-               m_patch->createStaticVideoInput();
-               m_bypassPatch->createStaticVideoInput();
-           }
-           m_patch->createStaticVideoOutput();
-           m_bypassPatch->createStaticVideoOutput();
-
-           QList<QString> fuck = m_patch->getChildsTypesNamesList();
-
-           QList<QString>::iterator fuckit = fuck.begin();
-           QList<QString>::iterator fuckend = fuck.end();
-
-           for ( ; fuckit != fuckend; ++fuckit )
-           {
-               qDebug() << *fuckit;
-           }
+           EffectNode* tmp;
 
            m_patch->createChild( "libVLMC_MixerEffectPlugin" );
            m_bypassPatch->createChild( "libVLMC_MixerEffectPlugin" );
-
-           EffectNode* tmp;
-
-           if ( ( tmp = m_patch->getChild( 1 ) ) == NULL )
+           for ( i = 0 ; i < 64; ++i)
            {
-               qDebug() << "POJEF";
+               m_patch->createStaticVideoInput();
+               m_bypassPatch->createStaticVideoInput();
+               tmp = m_patch->getChild( 1 );
+               tmp->connectChildStaticVideoInputToParentStaticVideoOutput( ( i + 1 ), ( i + 1 ) );
            }
-           else
-           {
-               qDebug() << "NAME = " << tmp->getInstanceName();
-               qDebug() << "ID = " << tmp->getInstanceId();
-           }
+           m_patch->createStaticVideoOutput();
+           m_bypassPatch->createStaticVideoOutput();
+           tmp = m_patch->getChild( 1 );
+           tmp->connectChildStaticVideoOutputToParentStaticVideoInput( 1, 1 );
        }
    }
 }
@@ -87,8 +64,6 @@ EffectsEngine::EffectsEngine( void ) : m_patch( NULL ), m_bypassPatch( NULL )
 EffectsEngine::~EffectsEngine()
 {
     stop();
-    delete [] m_videoInputs;
-    delete [] m_videoOutputs;
 
     if ( m_patch )
         EffectNode::deleteRootNode( "RootNode" );
@@ -185,30 +160,10 @@ void	EffectsEngine::stop( void )
 
 void	EffectsEngine::loadEffects( void )
 {
-    QList<QString> list = m_enf.getEffectNodeTypesNamesList();
-    quint32     i;
-    quint32     size = list.size();
-
-
-    for ( i = 0; i < size; ++i )
-        qDebug() << "typename : " << list.at( i );
-    m_enf.createEffectNodeInstance( "libVLMC_GreenFilterEffectPlugin" );
-    m_enf.createEffectNodeInstance( "libVLMC_MixerEffectPlugin" );
-
-    list = m_enf.getEffectNodeInstancesNamesList();
-    size = list.size();
-    for ( i = 0; i < size; ++i )
-        qDebug() << "instancename : " << list.at( i );
-
-    m_effects[0] = m_enf.getEffectNodeInstance( "libVLMC_MixerEffectPlugin_2" );
-    m_effects[1] = m_enf.getEffectNodeInstance( "libVLMC_GreenFilterEffectPlugin_1" );
-    return ;
 }
 
 void	EffectsEngine::unloadEffects( void )
 {
-    m_enf.deleteEffectNodeInstance( "libVLMC_GreenFilterEffectPlugin_1" );
-    m_enf.deleteEffectNodeInstance( "libVLMC_MixerEffectPlugin_2" );
     return ;
 }
 
@@ -216,14 +171,4 @@ void	EffectsEngine::unloadEffects( void )
 
 void	EffectsEngine::patchEffects( void )
 {
-    quint32	i;
-
-    QReadLocker lock( m_inputLock );
-    for ( i = 0; i < 64; ++i )
-    {
-        m_effects[0]->connect( m_videoInputs[i], i );
-    }
-    m_effects[0]->connectOutput( 0 , m_effects[1], 0 );
-    m_effects[1]->connect( 0, m_videoOutputs[0] );
-    return ;
 }

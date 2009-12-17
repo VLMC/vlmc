@@ -59,7 +59,7 @@ class	EffectNode : public IEffectNode
 
     // ================================================================= CTORS, DTOR & INIT ========================================================================
 
-    virtual ~EffectNode();
+    ~EffectNode();
 
     EffectNode( IEffectPlugin* plugin );
     EffectNode();

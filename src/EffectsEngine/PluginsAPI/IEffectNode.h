@@ -32,9 +32,6 @@ class	IEffectNode
     public:
 
     virtual ~IEffectNode() {};
-    virtual void                                init( quint32 const nbvideoinputs, quint32 const nbvideooutputs ) = 0;
-    virtual InSlot<LightVideoFrame> &           getVideoInput(quint32 id) = 0;
-    virtual OutSlot<LightVideoFrame> &          getVideoOutput(quint32 id) = 0;
 
     virtual quint32             getTypeId( void ) const = 0;
     virtual QString const &     getTypeName( void ) const = 0;

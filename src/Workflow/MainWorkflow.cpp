@@ -365,7 +365,8 @@ const LightVideoFrame*  MainWorkflow::getSynchroneOutput()
 //    qDebug() << "Got it";
     (*m_effectEngine)->render();
     //    m_effectEngine->render();
-    (*((*m_effectEngine)->getInternalStaticVideoInput( 1 )) ) >> *m_synchroneRenderingBuffer;
+    LightVideoFrame const & tmp = (*((*m_effectEngine)->getInternalStaticVideoInput( 1 )) );
+    m_synchroneRenderingBuffer = &tmp;
     //    m_synchroneRenderingBuffer = &( m_effectEngine->getOutputFrame( 0 ) );
     m_synchroneRenderWaitConditionMutex->unlock();
 

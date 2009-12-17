@@ -136,7 +136,6 @@ public:
         newObject->setId( objectId );
         newObject->setName( objectName );
         newObject->setFather( m_father );
-
         m_objectByName[ objectName ] = newObject;
         m_objectById[ objectId ] = newObject;
         m_nameById[ objectId ] = objectName;

@@ -234,7 +234,7 @@ bool        EffectNodeFactory::createEffectNodeInstance( quint32 typeId )
         m_enById[ instanceId ] = newNode;
         m_nameById[ instanceId ] = instanceName;
         return ( true );
-    qDebug() << "EffectNode* with typeId[" << typeId << "] created.";
+        qDebug() << "EffectNode* with typeId[" << typeId << "] created.";
     }
     qDebug() << "Can't create EffectNode* with typeId[" << typeId << "]!";
     return ( false );
