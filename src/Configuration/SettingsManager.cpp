@@ -166,29 +166,38 @@ void  SettingsManager::addNewSettingsPart( const QString& name )
 
 void    SettingsManager::commit()
 {
-    QWriteLocker     lock( &m_globalLock );
-
-    QHash<QString, SettingsPart*>::iterator it = m_tempData.begin();
-    QHash<QString, SettingsPart*>::iterator ed = m_tempData.end();
-
-    for ( ; it != ed; ++it )
     {
-        SettingsPart*   sett = it.value();
-        QString         part = it.key();
+        QWriteLocker     lock( &m_globalLock );
 
-        QReadLocker rLock( &sett->m_lock );
-        SettingsPart::ConfigPair::iterator iter = sett->m_data.begin();
-        SettingsPart::ConfigPair::iterator end = sett->m_data.end();
-        QWriteLocker    wLock( &m_data[part]->m_lock );
-        for ( ; iter != end; ++iter )
+        QHash<QString, SettingsPart*>::iterator it = m_tempData.begin();
+        QHash<QString, SettingsPart*>::iterator ed = m_tempData.end();
+
+        for ( ; it != ed; ++it )
         {
-            QString                                 settingName = iter.key();
-            SettingsPart::ConfigPair::iterator      insert_it = m_data[part]->m_data.find( settingName );
+            SettingsPart*   sett = it.value();
+            QString         part = it.key();
+            qDebug() << ">>>>Commiting part:" << part;
 
-            if ( insert_it == m_data[part]->m_data.end() )
-                m_data[part]->m_data.insert( settingName, new SettingValue( iter.value()->get() ) );
-            else
-                m_data[part]->m_data[ settingName ]->set( iter.value()->get() );
+            QReadLocker rLock( &sett->m_lock );
+            SettingsPart::ConfigPair::iterator iter = sett->m_data.begin();
+            SettingsPart::ConfigPair::iterator end = sett->m_data.end();
+            QWriteLocker    wLock( &m_data[part]->m_lock );
+            for ( ; iter != end; ++iter )
+            {
+                QString                                 settingName = iter.key();
+                SettingsPart::ConfigPair::iterator      insert_it = m_data[part]->m_data.find( settingName );
+
+                if ( insert_it == m_data[part]->m_data.end() )
+                {
+                    qDebug() << "Inserting new value:" << settingName;
+                    m_data[part]->m_data.insert( settingName, new SettingValue( iter.value()->get() ) );
+                }
+                else
+                {
+                    qDebug() << "Modifying new value:" << settingName;
+                    m_data[part]->m_data[ settingName ]->set( iter.value()->get() );
+                }
+            }
         }
     }
     flush();
