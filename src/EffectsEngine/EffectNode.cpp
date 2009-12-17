@@ -23,6 +23,7 @@
 #include "EffectNode.h"
 
 EffectNodeFactory              EffectNode::m_renf;
+QReadWriteLock                 EffectNode::m_srwl( QReadWriteLock::Recursive );
 
 template class SemanticObjectManager< InSlot<LightVideoFrame> >;
 template class SemanticObjectManager< OutSlot<LightVideoFrame> >;
@@ -555,19 +556,19 @@ bool                    EffectNode::isAnEmptyNode( void ) const
 
 bool                EffectNode::createRootNode( QString const & rootNodeName )
 {
-    QWriteLocker                        wl( &m_rwl );
+    QWriteLocker                        wl( &m_srwl );
     return ( EffectNode::m_renf.createEmptyEffectNodeInstance( rootNodeName ) );
 }
 
 bool                EffectNode::deleteRootNode( QString const & rootNodeName )
 {
-    QWriteLocker                        wl( &m_rwl );
+    QWriteLocker                        wl( &m_srwl );
     return ( EffectNode::m_renf.deleteEffectNodeInstance( rootNodeName ) );
 }
 
 EffectNode*         EffectNode::getRootNode( QString const & rootNodeName )
 {
-    QReadLocker                        rl( &m_rwl );
+    QReadLocker                        rl( &m_srwl );
     return ( EffectNode::m_renf.getEffectNodeInstance( rootNodeName ) );
 }
 

@@ -426,10 +426,11 @@ class	EffectNode : public IEffectNode
 private:
 
     static EffectNodeFactory            m_renf;
+    static QReadWriteLock               m_srwl;
 
  private:
 
-    QReadWriteLock                      m_rwl;
+    mutable QReadWriteLock                      m_rwl;
     EffectNodeFactory                   m_enf;
     EffectNode*                         m_father;
     IEffectPlugin*                      m_plugin;

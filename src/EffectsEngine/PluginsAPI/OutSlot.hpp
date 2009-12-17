@@ -88,7 +88,7 @@ private:
 
 private:
 
-    QReadWriteLock      m_rwl;
+    mutable QReadWriteLock      m_rwl;
     InSlot<T>*		m_InSlotPtr;
     T			m_junk;
     T*			m_pipe;

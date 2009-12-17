@@ -86,7 +86,7 @@ private:
 
 private:
 
-    QReadWriteLock              m_rwl;
+    mutable QReadWriteLock              m_rwl;
     static T			m_defaultValue;
     OutSlot<T>*			m_OutSlotPtr;
     T				m_shared;
