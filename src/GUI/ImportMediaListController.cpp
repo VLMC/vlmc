@@ -84,6 +84,7 @@ void    ImportMediaListController::addClip( Clip* clip )
 
     cell->setTitle( clip->getParent()->getFileName() + "_" + size );
     cell->setThumbnail( clip->getParent()->getSnapshot() );
+    cell->setLength( clip->getLengthSecond(), false  );
     addCell( cell );
 
     m_mediaCellList->insert( clip->getUuid(), cell );
