@@ -97,8 +97,6 @@ void                                        EffectNode::renderSubNodes( void )
         if ( ( currentIn = (*intOutsIt)->getInSlotPtr() ) != NULL )
         {
             toQueueNode = currentIn->getPrivateFather();
-            //            qDebug() << "currentIn->getName() : " << currentIn->getName()
-            //        << "currentIn->getPrivateFather() : " << currentIn->getPrivateFather();
             if ((toQueueNode != this) && ( toQueueNode->wasItVisited() == false ))
             {
                 toQueueNode->setVisited();

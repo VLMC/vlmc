@@ -39,7 +39,7 @@ EffectsEngine::EffectsEngine( void ) : m_patch( NULL ), m_bypassPatch( NULL )
        EffectNode* tmp;
 
        m_patch->createChild( "libVLMC_MixerEffectPlugin" );
-       m_patch->createChild( "libVLMC_GreenFilterEffectPlugin" );
+       m_patch->createChild( "libVLMC_InvertRNBEffectPlugin" );
        for ( i = 0 ; i < 64; ++i)
        {
            m_patch->createStaticVideoInput();
