@@ -65,7 +65,6 @@ void                                    EffectNode::render( void )
         m_plugin->render();
     else
     {
-        qDebug() << "POUIK";
         if ( m_father != NULL)
         {
             QWriteLocker                        wl( &m_rwl );
@@ -94,9 +93,7 @@ void                                        EffectNode::renderSubNodes( void )
     EffectNode*                                       currentNode;
     InSlot<LightVideoFrame>*                          currentIn;
 
-    quint32 i;
-    qDebug() << "MUK";
-    for ( i = 0 ; intOutsIt != intOutsEnd; ++intOutsIt, ++i )
+    for ( ; intOutsIt != intOutsEnd; ++intOutsIt )
         if ( ( currentIn = (*intOutsIt)->getInSlotPtr() ) != NULL )
         {
             toQueueNode = currentIn->getPrivateFather();
@@ -108,7 +105,6 @@ void                                        EffectNode::renderSubNodes( void )
                 nodeQueue.enqueue( toQueueNode );
             }
         }
-    qDebug() << "NB ITERATIONS = " << i;
 
     while ( nodeQueue.empty() == false )
     {
@@ -118,7 +114,7 @@ void                                        EffectNode::renderSubNodes( void )
         QList<OutSlot<LightVideoFrame>*>::iterator        outsEnd = outs.end();
 
         currentNode->render();
-        for ( i = 0; outsIt != outsEnd; ++outsIt, ++i )
+        for ( ; outsIt != outsEnd; ++outsIt )
             if ( ( currentIn = (*outsIt)->getInSlotPtr() ) != NULL )
             {
                 toQueueNode = currentIn->getPrivateFather();
@@ -128,7 +124,6 @@ void                                        EffectNode::renderSubNodes( void )
                     nodeQueue.enqueue( toQueueNode );
                 }
             }
-        qDebug() << "NB ITERATIONS = " << i;
     }
     return ;
 }
