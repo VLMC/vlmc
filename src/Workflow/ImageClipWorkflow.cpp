@@ -1,5 +1,5 @@
 /*****************************************************************************
- * VideoClipWorkflow.h : Clip workflow. Will extract a single frame from a VLCMedia
+ * ImageClipWorkflow.cpp : Will extract a frame from an image
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,28 +20,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef VIDEOCLIPWORKFLOW_H
-#define VIDEOCLIPWORKFLOW_H
+#include "ImageClipWorkflow.h"
 
-#include "ClipWorkflow.h"
-#include "Clip.h"
+#define IMAGE_DURATION  10000
 
-class   VideoClipWorkflow : public ClipWorkflow
+ImageClipWorkflow::ImageClipWorkflow( Clip* clip ) : VideoClipWorkflow( clip )
 {
-    public:
-        VideoClipWorkflow( Clip* clip );
-        ~VideoClipWorkflow();
-        void*                   getLockCallback();
-        void*                   getUnlockCallback();
-        virtual void*           getOutput();
+}
 
-    protected:
-        virtual void            initVlcOutput();
+void    ImageClipWorkflow::initVlcOutput()
+{
+    char    buffer[32];
 
-    private:
-        LightVideoFrame*        m_buffer;
-        static void             lock( VideoClipWorkflow* clipWorkflow, void** pp_ret, int size );
-        static void             unlock( VideoClipWorkflow* clipWorkflow, void* buffer, int width, int height, int bpp, int size );
-};
+    sprintf( buffer, ":fake-duration=%d", IMAGE_DURATION );
+    m_vlcMedia->addOption( buffer );
+    sprintf( buffer, ":fake-fps=%f", m_clip->getParent()->getFps() );
+    m_vlcMedia->addOption( buffer );
 
-#endif // VIDEOCLIPWORKFLOW_H
+    VideoClipWorkflow::initVlcOutput();
+}

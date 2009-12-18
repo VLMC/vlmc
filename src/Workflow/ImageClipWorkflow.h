@@ -1,5 +1,5 @@
 /*****************************************************************************
- * VideoClipWorkflow.h : Clip workflow. Will extract a single frame from a VLCMedia
+ * ImageClipWorkflow.h : Will extract a frame from an image
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,28 +20,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef VIDEOCLIPWORKFLOW_H
-#define VIDEOCLIPWORKFLOW_H
+#ifndef IMAGECLIPWORKFLOW_H
+#define IMAGECLIPWORKFLOW_H
 
-#include "ClipWorkflow.h"
-#include "Clip.h"
+#include "VideoClipWorkflow.h"
 
-class   VideoClipWorkflow : public ClipWorkflow
+class   ImageClipWorkflow : public VideoClipWorkflow
 {
-    public:
-        VideoClipWorkflow( Clip* clip );
-        ~VideoClipWorkflow();
-        void*                   getLockCallback();
-        void*                   getUnlockCallback();
-        virtual void*           getOutput();
-
-    protected:
-        virtual void            initVlcOutput();
-
-    private:
-        LightVideoFrame*        m_buffer;
-        static void             lock( VideoClipWorkflow* clipWorkflow, void** pp_ret, int size );
-        static void             unlock( VideoClipWorkflow* clipWorkflow, void* buffer, int width, int height, int bpp, int size );
+public:
+    ImageClipWorkflow( Clip* clip );
+    virtual void    initVlcOutput();
+private:
 };
 
-#endif // VIDEOCLIPWORKFLOW_H
+#endif // IMAGECLIPWORKFLOW_H
