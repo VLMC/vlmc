@@ -42,11 +42,11 @@ VideoFrame::VideoFrame(VideoFrame const & tocopy) : QSharedData( tocopy )
   if ( tocopy.frame.octets != NULL )
     {
       quint32	i;
-	
+
       nboctets = tocopy.nboctets;
       nbpixels = tocopy.nboctets / Pixel::NbComposantes;
       frame.octets = new quint8[tocopy.nboctets];
-	
+
       for ( i = 0; i < nboctets; ++i )
 	frame.octets[i] = tocopy.frame.octets[i];
     }
@@ -103,7 +103,7 @@ LightVideoFrame::LightVideoFrame(quint8 const * tocopy, quint32 nboctets)
 LightVideoFrame::~LightVideoFrame()
 {
 };
-  
+
 VideoFrame const * LightVideoFrame::operator->(void) const
 {
   return ( m_videoFrame.data() );

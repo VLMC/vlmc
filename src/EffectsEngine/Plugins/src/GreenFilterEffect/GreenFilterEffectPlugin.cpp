@@ -44,7 +44,6 @@ void    GreenFilterEffectPlugin::render( void )
 {
     quint32		i;
     LightVideoFrame	tmp;
-
     (*m_ien->getStaticVideoInput(1)) >> tmp;
     if (tmp->frame.octets != NULL)
     {

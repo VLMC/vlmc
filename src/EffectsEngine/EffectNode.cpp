@@ -61,11 +61,11 @@ EffectNode::~EffectNode()
 
 void                                    EffectNode::render( void )
 {
-    setVisited();
     if ( m_plugin != NULL )
         m_plugin->render();
     else
     {
+        qDebug() << "POUIK";
         if ( m_father != NULL)
         {
             QWriteLocker                        wl( &m_rwl );
@@ -94,15 +94,21 @@ void                                        EffectNode::renderSubNodes( void )
     EffectNode*                                       currentNode;
     InSlot<LightVideoFrame>*                          currentIn;
 
-    for ( ; intOutsIt != intOutsEnd; ++intOutsIt )
+    quint32 i;
+    qDebug() << "MUK";
+    for ( i = 0 ; intOutsIt != intOutsEnd; ++intOutsIt, ++i )
         if ( ( currentIn = (*intOutsIt)->getInSlotPtr() ) != NULL )
         {
             toQueueNode = currentIn->getPrivateFather();
             //            qDebug() << "currentIn->getName() : " << currentIn->getName()
             //        << "currentIn->getPrivateFather() : " << currentIn->getPrivateFather();
             if ((toQueueNode != this) && ( toQueueNode->wasItVisited() == false ))
+            {
+                toQueueNode->setVisited();
                 nodeQueue.enqueue( toQueueNode );
+            }
         }
+    qDebug() << "NB ITERATIONS = " << i;
 
     while ( nodeQueue.empty() == false )
     {
@@ -112,13 +118,17 @@ void                                        EffectNode::renderSubNodes( void )
         QList<OutSlot<LightVideoFrame>*>::iterator        outsEnd = outs.end();
 
         currentNode->render();
-        for ( ; outsIt != outsEnd; ++outsIt )
+        for ( i = 0; outsIt != outsEnd; ++outsIt, ++i )
             if ( ( currentIn = (*outsIt)->getInSlotPtr() ) != NULL )
             {
                 toQueueNode = currentIn->getPrivateFather();
                 if ((toQueueNode != this) && ( toQueueNode->wasItVisited() == false ))
+                {
+                    toQueueNode->setVisited();
                     nodeQueue.enqueue( toQueueNode );
+                }
             }
+        qDebug() << "NB ITERATIONS = " << i;
     }
     return ;
 }
