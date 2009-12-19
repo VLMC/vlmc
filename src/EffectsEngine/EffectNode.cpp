@@ -232,8 +232,16 @@ bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( QString cons
         return ( false );
     if ( ( brother = m_father->getChild( nodeName ) ) == NULL )
         return ( false );
-    if ( ( in = brother->getStaticVideoInput( inName ) ) == NULL )
-        return ( false );
+    if ( brother == this )
+    {
+        if ( ( in = m_staticVideosInputs.getObject( inName ) ) == NULL )
+            return ( false );
+    }
+    else
+    {
+        if ( ( in = brother->getStaticVideoInput( inName ) ) == NULL )
+            return ( false );
+    }
     return ( out->connect( *in ) );
 }
 
@@ -250,8 +258,16 @@ bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( QString cons
         return ( false );
     if ( ( brother = m_father->getChild( nodeName ) ) == NULL )
         return ( false );
-    if ( ( in = brother->getStaticVideoInput( inId ) ) == NULL )
-        return ( false );
+    if ( brother == this )
+    {
+        if ( ( in = m_staticVideosInputs.getObject( inId ) ) == NULL )
+            return ( false );
+    }
+    else
+    {
+        if ( ( in = brother->getStaticVideoInput( inId ) ) == NULL )
+            return ( false );
+    }
     return ( out->connect( *in ) );
 }
 
@@ -268,8 +284,16 @@ bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( QString cons
         return ( false );
     if ( ( brother = m_father->getChild( nodeId ) ) == NULL )
         return ( false );
-    if ( ( in = brother->getStaticVideoInput( inName ) ) == NULL )
-        return ( false );
+    if ( brother == this )
+    {
+        if ( ( in = m_staticVideosInputs.getObject( inName ) ) == NULL )
+            return ( false );
+    }
+    else
+    {
+        if ( ( in = brother->getStaticVideoInput( inName ) ) == NULL )
+            return ( false );
+    }
     return ( out->connect( *in ) );
 }
 
@@ -286,8 +310,16 @@ bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( QString cons
         return ( false );
     if ( ( brother = m_father->getChild( nodeId ) ) == NULL )
         return ( false );
-    if ( ( in = brother->getStaticVideoInput( inId ) ) == NULL )
-        return ( false );
+    if ( brother == this )
+    {
+        if ( ( in = m_staticVideosInputs.getObject( inId ) ) == NULL )
+            return ( false );
+    }
+    else
+    {
+        if ( ( in = brother->getStaticVideoInput( inId ) ) == NULL )
+            return ( false );
+    }
     return ( out->connect( *in ) );
 }
 
@@ -304,8 +336,16 @@ bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( quint32 outI
         return ( false );
     if ( ( brother = m_father->getChild( nodeName ) ) == NULL )
         return ( false );
-    if ( ( in = brother->getStaticVideoInput( inName ) ) == NULL )
-        return ( false );
+    if ( brother == this )
+    {
+        if ( ( in = m_staticVideosInputs.getObject( inName ) ) == NULL )
+            return ( false );
+    }
+    else
+    {
+        if ( ( in = brother->getStaticVideoInput( inName ) ) == NULL )
+            return ( false );
+    }
     return ( out->connect( *in ) );
 }
 
@@ -322,8 +362,16 @@ bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( quint32 outI
         return ( false );
     if ( ( brother = m_father->getChild( nodeName ) ) == NULL )
         return ( false );
-    if ( ( in = brother->getStaticVideoInput( inId ) ) == NULL )
-        return ( false );
+    if ( brother == this )
+    {
+        if ( ( in = m_staticVideosInputs.getObject( inId ) ) == NULL )
+            return ( false );
+    }
+    else
+    {
+        if ( ( in = brother->getStaticVideoInput( inId ) ) == NULL )
+            return ( false );
+    }
     return ( out->connect( *in ) );
 }
 
@@ -340,8 +388,16 @@ bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( quint32 outI
         return ( false );
     if ( ( brother = m_father->getChild( nodeId ) ) == NULL )
         return ( false );
-    if ( ( in = brother->getStaticVideoInput( inName ) ) == NULL )
-        return ( false );
+    if ( brother == this )
+    {
+        if ( ( in = m_staticVideosInputs.getObject( inName ) ) == NULL )
+            return ( false );
+    }
+    else
+    {
+        if ( ( in = brother->getStaticVideoInput( inName ) ) == NULL )
+            return ( false );
+    }
     return ( out->connect( *in ) );
 }
 
@@ -358,8 +414,16 @@ bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( quint32 outI
         return ( false );
     if ( ( brother = m_father->getChild( nodeId ) ) == NULL )
         return ( false );
-    if ( ( in = brother->getStaticVideoInput( inId ) ) == NULL )
-        return ( false );
+    if ( brother == this )
+    {
+        if ( ( in = m_staticVideosInputs.getObject( inId ) ) == NULL )
+            return ( false );
+    }
+    else
+    {
+        if ( ( in = brother->getStaticVideoInput( inId ) ) == NULL )
+            return ( false );
+    }
     return ( out->connect( *in ) );
 }
 
