@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BIN="bin/vlmc"
+BIN="bin/launcher"
 if [ -f $BIN ]; then
     exec $BIN "$@"
 else

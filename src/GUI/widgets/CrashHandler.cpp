@@ -84,11 +84,10 @@ void    CrashHandler::changeEvent(QEvent *e)
 
 void    CrashHandler::close()
 {
-    accept();
+    done(1);
 }
 
 void    CrashHandler::restart()
 {
-    QProcess::startDetached( "./vlmc" );
-    close();
+    done(2);
 }

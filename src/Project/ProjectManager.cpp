@@ -28,6 +28,7 @@
 
 #include <errno.h>
 #include <signal.h>
+#include <wait.h>
 
 #include "ProjectManager.h"
 #include "Library.h"
@@ -42,8 +43,7 @@ void    ProjectManager::signalHandler( int sig )
     ProjectManager::getInstance()->emergencyBackup();
 
     CrashHandler* ch = new CrashHandler( sig );
-    ch->exec();
-    QApplication::exit(1);
+    ::exit( ch->exec() );
 }
 
 const QString   ProjectManager::unNamedProject = tr( "<Unnamed project>" );
