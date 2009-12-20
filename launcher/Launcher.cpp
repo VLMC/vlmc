@@ -25,11 +25,13 @@
 
 #include "Launcher.h"
 
-Launcher::Launcher( QObject* parent ) : QObject( parent )
+Launcher::Launcher( int argc, char** argv, QObject* parent ) : QObject( parent )
 {
     m_process = new QProcess;
     connect( m_process, SIGNAL( finished( int, QProcess::ExitStatus ) ),
              this, SLOT( stopped( int, QProcess::ExitStatus ) ) );
+    for ( int i = 1; i < argc; ++i )
+        m_argv << argv[i];
 }
 
 void    Launcher::start()
@@ -47,7 +49,7 @@ void    Launcher::stopped( int exitCode, QProcess::ExitStatus )
         QCoreApplication::exit( exitCode );
         break ;
     case    Launcher::crashWithRestart:
-        m_process->start( "bin/vlmc" );
+        m_process->start( "bin/vlmc", m_argv );
         return ;
     }
 }

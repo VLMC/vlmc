@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    Launcher    l;
+    Launcher    l(argc, argv);
     l.start();
     return a.exec();
 }

@@ -24,6 +24,7 @@
 #define LAUNCHER_H
 
 #include <QProcess>
+#include <QStringList>
 
 class   Launcher : public QObject
 {
@@ -34,12 +35,13 @@ class   Launcher : public QObject
         static const int    crashExit = 1;
         static const int    crashWithRestart = 2;
 
-        Launcher( QObject* parent = NULL );
+        Launcher( int argc, char** argv, QObject* parent = NULL );
         void        start();
     public slots:
         void        stopped( int retCode, QProcess::ExitStatus exitType );
     private:
         QProcess*   m_process;
+        QStringList m_argv;
 };
 
 #endif // LAUNCHER_H
