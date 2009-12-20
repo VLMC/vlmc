@@ -1,6 +1,6 @@
+TEMPLATE = app
 TARGET = vlmc
 DESTDIR = ../bin
-TEMPLATE = app
 CONFIG += debug
 VERSION = 0.0.1
 OBJECTS_DIR = ../build
