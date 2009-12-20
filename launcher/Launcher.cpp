@@ -32,6 +32,7 @@ Launcher::Launcher( int argc, char** argv, QObject* parent ) : QObject( parent )
              this, SLOT( stopped( int, QProcess::ExitStatus ) ) );
     for ( int i = 1; i < argc; ++i )
         m_argv << argv[i];
+    m_process->setReadChannelMode( QProcess::ForwardedChannels );
 }
 
 void    Launcher::start()
