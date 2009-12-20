@@ -38,7 +38,7 @@ void    Launcher::start()
     m_process->start( "bin/vlmc" );
 }
 
-void    Launcher::stopped( int exitCode, QProcess::ExitStatus exitStatus )
+void    Launcher::stopped( int exitCode, QProcess::ExitStatus )
 {
     switch ( exitCode )
     {
