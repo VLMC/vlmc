@@ -39,17 +39,17 @@ void    VLMCSettingsDefault::load( const QString& part )
 void    VLMCSettingsDefault::loadVLMCDefaults( const QString& part )
 {
     SettingsManager*  settingsMan = SettingsManager::getInstance();
-    QVariant defaultOutputPFS = "30";
-    QVariant defaultTrackNb = "64";
 
     settingsMan->setValue( part,
-                           "VLMCOutPutFPS", defaultOutputPFS  );
+                           "VLMCOutPutFPS", "30" );
     settingsMan->setValue( part,
                            "VLMCTracksNb",
-                           defaultTrackNb );
+                           "64" );
     settingsMan->setValue( part,
                            "VLMCWorkspace",
                            QDir::homePath() );
+    settingsMan->setValue( part, "AutomaticBackup", true );
+    settingsMan->setValue( part, "AutomaticBackupInterval", 5 );
 
     return ;
 }

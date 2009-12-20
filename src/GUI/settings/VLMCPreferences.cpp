@@ -29,21 +29,41 @@ VLMCPreferences::VLMCPreferences( QWidget *parent )
         : PreferenceWidget( parent )
 {
     m_ui.setupUi(this);
+    setAutomaticSaveLabelVisiblity( m_ui.automaticSave->isChecked() );
+    connect( m_ui.automaticSave, SIGNAL( stateChanged(int) ), this, SLOT( setAutomaticSaveLabelVisiblity( int ) ) );
 }
 
-VLMCPreferences::~VLMCPreferences() { }
+VLMCPreferences::~VLMCPreferences()
+{
+}
+
+void    VLMCPreferences::setAutomaticSaveLabelVisiblity( int visible )
+{
+    setAutomaticSaveLabelVisiblity( visible != 0 );
+}
+
+void    VLMCPreferences::setAutomaticSaveLabelVisiblity( bool visible )
+{
+    m_ui.automaticSaveInterval->setVisible( visible );
+    m_ui.automaticSaveIntervalLabel->setVisible( visible );
+    m_ui.minutesLabel->setVisible( visible );
+}
 
 void    VLMCPreferences::load()
 {
     SettingsManager* settMan = SettingsManager::getInstance();
     const QString& part = m_defaults ? "default" : m_settName;
 
-    QString  outputFPS = settMan->getValue( part, "VLMCOutPutFPS" )->get().toString();
-    QString  tracksNb = settMan->getValue( part, "VLMCTracksNb" )->get().toString();
+    QString     outputFPS = settMan->getValue( part, "VLMCOutPutFPS" )->get().toString();
+    QString     tracksNb = settMan->getValue( part, "VLMCTracksNb" )->get().toString();
+    bool        autoSave = settMan->getValue( part, "AutomaticBackup" )->get().toBool();
+    QString     autoSaveInterval = settMan->getValue( part, "AutomaticBackupInterval" )->get().toString();
 
     m_ui.outputFPS->setText( outputFPS );
     m_ui.tracksNb->setText( tracksNb );
-
+    m_ui.automaticSave->setChecked( autoSave );
+    m_ui.automaticSaveInterval->setText( autoSaveInterval );
+    setAutomaticSaveLabelVisiblity( autoSave );
 }
 
 void    VLMCPreferences::save()
@@ -51,7 +71,11 @@ void    VLMCPreferences::save()
     SettingsManager* settMan = SettingsManager::getInstance();
     QVariant outputFPS( m_ui.outputFPS->text() );
     QVariant tracksNb( m_ui.tracksNb->text() );
+    QVariant autoSave( m_ui.automaticSave->isChecked() );
+    QVariant autoSaveInterval( m_ui.automaticSaveInterval->text() );
 
     settMan->setValue( m_settName, "VLMCOutPutFPS", outputFPS );
     settMan->setValue( m_settName, "VLMCTracksNb", tracksNb );
+    settMan->setValue( m_settName, "AutomaticBackup", autoSave );
+    settMan->setValue( m_settName, "AutomaticBackupInterval", autoSaveInterval );
 }
