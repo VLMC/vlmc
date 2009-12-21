@@ -64,8 +64,12 @@ void  SettingsManager::setValue( const QString& part , const QString& key, const
 {
     m_globalLock.lockForRead();
     if ( !m_tempData.contains( part ) )
+    {
+        m_globalLock.unlock();
         addNewSettingsPart( part );
-    m_globalLock.unlock();
+    }
+    else
+        m_globalLock.unlock();
     QWriteLocker    lock( &m_globalLock );
     SettingsPart*   tmp = m_tempData[part];
     SettingsPart::ConfigPair::iterator it = tmp->m_data.find( key );
