@@ -66,6 +66,7 @@ MainWindow::MainWindow( QWidget *parent ) :
 
     qRegisterMetaType<MainWorkflow::TrackType>( "MainWorkflow::TrackType" );
     qRegisterMetaType<MainWorkflow::FrameChangedReason>( "MainWorkflow::FrameChangedReason" );
+    qRegisterMetaType<QVariant>( "QVariant" );
 
     // Settings
     VLMCSettingsDefault::load( "default" );

@@ -52,15 +52,27 @@ ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
 {
     QSettings s;
     m_recentsProjects = s.value( "RecentsProjects" ).toStringList();
-    connect( this, SIGNAL( projectClosed() ), Library::getInstance(), SLOT( clear() ) );
-    connect( this, SIGNAL( projectClosed() ), MainWorkflow::getInstance(), SLOT( clear() ) );
-    const SettingValue* val = SettingsManager::getInstance()->getValue( "project", "ProjectName");
-    connect( val, SIGNAL( changed( QVariant) ), this, SLOT(nameChanged(QVariant) ) );
+
     m_projectName = tr( "<Unsaved project>" );
     signal( SIGSEGV, ProjectManager::signalHandler );
     signal( SIGFPE, ProjectManager::signalHandler );
     signal( SIGABRT, ProjectManager::signalHandler );
     signal( SIGILL, ProjectManager::signalHandler );
+
+    connect( this, SIGNAL( projectClosed() ), Library::getInstance(), SLOT( clear() ) );
+    connect( this, SIGNAL( projectClosed() ), MainWorkflow::getInstance(), SLOT( clear() ) );
+
+    const SettingValue* val = SettingsManager::getInstance()->getValue( "project", "ProjectName");
+    connect( val, SIGNAL( changed( QVariant) ), this, SLOT(nameChanged(QVariant) ) );
+
+    //Automatic save part :
+    m_timer = new QTimer( this );
+    connect( m_timer, SIGNAL( timeout() ), this, SLOT( autoSaveRequired() ) );
+    const SettingValue* autoSaveEnabled = SettingsManager::getInstance()->getValue( "VLMC", "AutomaticBackup" );
+    connect( autoSaveEnabled, SIGNAL( changed( QVariant ) ), this, SLOT( automaticSaveEnabledChanged( QVariant ) ), Qt::QueuedConnection );
+    const SettingValue* autoSaveInterval = SettingsManager::getInstance()->getValue( "VLMC", "AutomaticBackupInterval" );
+    connect( autoSaveInterval, SIGNAL( changed( QVariant ) ), this, SLOT( automaticSaveIntervalChanged(QVariant) ), Qt::QueuedConnection );
+    automaticSaveEnabledChanged( autoSaveEnabled->get() );
 }
 
 ProjectManager::~ProjectManager()
@@ -308,4 +320,31 @@ void    ProjectManager::appendToRecentProject( const QString& projectFile )
         QSettings s;
         s.setValue( "RecentsProjects", m_recentsProjects );
         s.sync();
+}
+
+void    ProjectManager::automaticSaveEnabledChanged( const QVariant& val )
+{
+    bool    enabled = val.toBool();
+
+    if ( enabled == true )
+    {
+        const SettingValue* interval = SettingsManager::getInstance()->getValue( "VLMC", "AutomaticBackupInterval" );
+        m_timer->start( interval->get().toInt() * 1000 /** 60*/ );
+    }
+    else
+        m_timer->stop();
+}
+
+void    ProjectManager::automaticSaveIntervalChanged( const QVariant& val )
+{
+    const SettingValue* enabled = SettingsManager::getInstance()->getValue( "VLMC", "AutomaticBackup" );
+
+    if ( enabled->get().toBool() == false )
+        return ;
+    m_timer->start( val.toInt() * 1000 /** 60*/ );
+}
+
+void    ProjectManager::autoSaveRequired()
+{
+    qWarning() << "Autosave required";
 }

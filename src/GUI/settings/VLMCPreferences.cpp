@@ -78,4 +78,5 @@ void    VLMCPreferences::save()
     settMan->setValue( m_settName, "VLMCTracksNb", tracksNb );
     settMan->setValue( m_settName, "AutomaticBackup", autoSave );
     settMan->setValue( m_settName, "AutomaticBackupInterval", autoSaveInterval );
+    settMan->commit();
 }

@@ -27,6 +27,7 @@
 #include <QObject>
 #include <QDomDocument>
 #include <QStringList>
+#include <QTimer>
 
 #include "Singleton.hpp"
 
@@ -72,6 +73,7 @@ private:
     QStringList     m_recentsProjects;
     QString         m_projectName;
     QString         m_projectDescription;
+    QTimer*         m_timer;
 
     friend class    Singleton<ProjectManager>;
 
@@ -79,6 +81,9 @@ private slots:
     void            loadTimeline();
     void            cleanChanged( bool val );
     void            nameChanged( const QVariant& name );
+    void            automaticSaveEnabledChanged( const QVariant& enabled );
+    void            automaticSaveIntervalChanged( const QVariant& interval );
+    void            autoSaveRequired();
 
 signals:
     /**
