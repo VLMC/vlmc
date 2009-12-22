@@ -329,7 +329,7 @@ void    ProjectManager::automaticSaveEnabledChanged( const QVariant& val )
     if ( enabled == true )
     {
         const SettingValue* interval = SettingsManager::getInstance()->getValue( "VLMC", "AutomaticBackupInterval" );
-        m_timer->start( interval->get().toInt() * 1000 /** 60*/ );
+        m_timer->start( interval->get().toInt() * 1000 * 60 );
     }
     else
         m_timer->stop();
@@ -341,10 +341,12 @@ void    ProjectManager::automaticSaveIntervalChanged( const QVariant& val )
 
     if ( enabled->get().toBool() == false )
         return ;
-    m_timer->start( val.toInt() * 1000 /** 60*/ );
+    m_timer->start( val.toInt() * 1000 * 60 );
 }
 
 void    ProjectManager::autoSaveRequired()
 {
-    qWarning() << "Autosave required";
+    if ( m_projectFile == NULL )
+        return ;
+    saveProject( false );
 }

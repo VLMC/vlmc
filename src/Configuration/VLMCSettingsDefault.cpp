@@ -48,7 +48,7 @@ void    VLMCSettingsDefault::loadVLMCDefaults( const QString& part )
     settingsMan->setValue( part,
                            "VLMCWorkspace",
                            QDir::homePath() );
-    settingsMan->setValue( part, "AutomaticBackup", true );
+    settingsMan->setValue( part, "AutomaticBackup", false );
     settingsMan->setValue( part, "AutomaticBackupInterval", 5 );
 
     return ;
