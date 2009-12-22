@@ -51,6 +51,9 @@ void    VLMCSettingsDefault::loadVLMCDefaults( const QString& part )
     settingsMan->setValue( part, "AutomaticBackup", false );
     settingsMan->setValue( part, "AutomaticBackupInterval", 5 );
 
+    settingsMan->setValue( "private", "LogLevel", QtWarningMsg );
+    settingsMan->setValue( "private", "LogFile", "vlmc.log" );
+
     return ;
 }
 

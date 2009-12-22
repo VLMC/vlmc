@@ -15,7 +15,6 @@ QT += gui \
     network \
     svg \
     xml
-HEADERS += vlmc.h
 
 SOURCES += main.cpp
 

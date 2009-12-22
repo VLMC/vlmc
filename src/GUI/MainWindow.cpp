@@ -58,6 +58,7 @@
 #include "KeyboardShortcut.h"
 #include "SettingValue.h"
 #include "SettingsManager.h"
+#include "VlmcDebug.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
@@ -72,6 +73,8 @@ MainWindow::MainWindow( QWidget *parent ) :
     VLMCSettingsDefault::load( "default" );
     VLMCSettingsDefault::load( "VLMC" );
     VLMCSettingsDefault::loadKeyboardShortcutDefaults();
+    //We only install message handler here cause it uses configuration.
+    qInstallMsgHandler( VlmcDebug::vlmcMessageHandler );
 
     // GUI
     DockWidgetManager::instance( this )->setMainWindow( this );
