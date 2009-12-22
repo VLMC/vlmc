@@ -38,7 +38,7 @@ Launcher::Launcher( int argc, char** argv, QObject* parent ) : QObject( parent )
 void    Launcher::start()
 {
     //If you put "vlmc" here, it will probably result in a fork bomb :)
-    m_process->start( "bin/vlmc" );
+    m_process->start( "bin/vlmc", m_argv );
 }
 
 void    Launcher::stopped( int exitCode, QProcess::ExitStatus )
