@@ -326,3 +326,34 @@ WaitCondition*  ClipWorkflow::getRenderCondWait()
 {
     return m_renderWaitCond;
 }
+
+void        ClipWorkflow::commonUnlock()
+{
+    if ( m_state == Rendering )
+    {
+        QMutexLocker    lock( m_condMutex );
+
+        m_state = Sleeping;
+        m_stateLock->unlock();
+
+        {
+            QMutexLocker    lock2( m_renderWaitCond->getMutex() );
+            m_renderWaitCond->wake();
+        }
+
+        emit renderComplete( this );
+//        qDebug() << "Emmiting render completed";
+
+//        qDebug() << "Entering cond wait";
+        m_waitCond->wait( m_condMutex );
+//        qDebug() << "Leaving condwait";
+        m_stateLock->lockForWrite();
+        if ( m_state == Sleeping )
+            m_state = Rendering;
+        m_stateLock->unlock();
+    }
+    else
+        m_stateLock->unlock();
+//    qDebug() << '[' << (void*)this << "] ClipWorkflow::unlock";
+    checkStateChange();
+}

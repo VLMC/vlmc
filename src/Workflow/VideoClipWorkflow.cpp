@@ -102,40 +102,15 @@ void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int widt
     Q_UNUSED( size );
     static qint64 previous_pts = pts;
     static qint64 current_pts = pts;
+
     cw->m_renderLock->unlock();
     cw->m_stateLock->lockForWrite();
 
     previous_pts = current_pts;
     current_pts = pts;
-
-    if ( cw->m_state == Rendering )
-    {
-        QMutexLocker    lock( cw->m_condMutex );
-
-        (*(cw->m_buffer))->ptsDiff = current_pts - previous_pts;
-
-        cw->m_state = Sleeping;
-        cw->m_stateLock->unlock();
-
-        {
-            QMutexLocker    lock2( cw->m_renderWaitCond->getMutex() );
-            cw->m_renderWaitCond->wake();
-        }
-
-        cw->emit renderComplete( cw );
-//        qDebug() << "Emmiting render completed";
-
-//        qDebug() << "Entering cond wait";
-        cw->m_waitCond->wait( cw->m_condMutex );
-//        qDebug() << "Leaving condwait";
-        cw->m_stateLock->lockForWrite();
-        if ( cw->m_state == Sleeping )
-            cw->m_state = Rendering;
-        cw->m_stateLock->unlock();
-    }
-    else
-        cw->m_stateLock->unlock();
     current_pts = qMax( current_pts, previous_pts );
-//    qDebug() << '[' << (void*)cw << "] ClipWorkflow::unlock";
-    cw->checkStateChange();
+
+    (*(cw->m_buffer))->ptsDiff = current_pts - previous_pts;
+
+    cw->commonUnlock();
 }

@@ -163,6 +163,9 @@ class   ClipWorkflow : public QObject
         void                    checkSynchronisation( State newState );
         void                    adjustBegin();
 
+    protected:
+        void                    commonUnlock();
+
     private:
         LibVLCpp::MediaPlayer*  m_mediaPlayer;
 
