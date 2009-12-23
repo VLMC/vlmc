@@ -100,21 +100,15 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
     Q_UNUSED( rate );
     Q_UNUSED( bits_per_sample );
     Q_UNUSED( size );
-    static qint64 previous_pts = pts;
-    static qint64 current_pts = pts;
 
     cw->m_renderLock->unlock();
-    cw->m_stateLock->lockForWrite();
 
-    previous_pts = current_pts;
-    current_pts = pts;
-    current_pts = qMax( current_pts, previous_pts );
-
+    cw->computePtsDiff( pts );
     if ( cw->m_buffer->buff != NULL )
     {
         cw->m_buffer->nbSample = nb_samples;
         cw->m_buffer->nbChannels = channels;
-        cw->m_buffer->ptsDiff = current_pts - previous_pts;
+        cw->m_buffer->ptsDiff = cw->m_currentPts - cw->m_previousPts;
     }
 
     cw->commonUnlock();

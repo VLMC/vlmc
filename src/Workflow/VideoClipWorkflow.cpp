@@ -100,17 +100,11 @@ void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int widt
     Q_UNUSED( height );
     Q_UNUSED( bpp );
     Q_UNUSED( size );
-    static qint64 previous_pts = pts;
-    static qint64 current_pts = pts;
 
     cw->m_renderLock->unlock();
-    cw->m_stateLock->lockForWrite();
 
-    previous_pts = current_pts;
-    current_pts = pts;
-    current_pts = qMax( current_pts, previous_pts );
-
-    (*(cw->m_buffer))->ptsDiff = current_pts - previous_pts;
+    cw->computePtsDiff( pts );
+    (*(cw->m_buffer))->ptsDiff = cw->m_currentPts - cw->m_previousPts;
 
     cw->commonUnlock();
 }

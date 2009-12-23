@@ -164,6 +164,7 @@ class   ClipWorkflow : public QObject
         void                    adjustBegin();
 
     protected:
+        void                    computePtsDiff( qint64 pts );
         void                    commonUnlock();
 
     private:
@@ -196,6 +197,8 @@ class   ClipWorkflow : public QObject
         WaitCondition*          m_renderWaitCond;
         QWaitCondition*         m_waitCond;
         bool                    m_fullSpeedRender;
+        qint64                  m_previousPts;
+        qint64                  m_currentPts;
         /**
          *  \brief  The VLC media used to render
          */
@@ -203,7 +206,7 @@ class   ClipWorkflow : public QObject
 
     protected:
         /**
-         *  Don't ever call this method from anywhere else than the unlock() method
+         *  \warning    Don't ever call this method from anywhere else than the unlock() method
          */
         void                    checkStateChange();
 

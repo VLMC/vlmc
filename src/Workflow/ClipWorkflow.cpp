@@ -80,6 +80,8 @@ void    ClipWorkflow::initialize( bool preloading /*= false*/ )
         m_vlcMedia = new LibVLCpp::Media( "fake:///" + m_clip->getParent()->getFileInfo()->absoluteFilePath() );
     else
         m_vlcMedia = new LibVLCpp::Media( "file:///" + m_clip->getParent()->getFileInfo()->absoluteFilePath() );
+    m_currentPts = -1;
+    m_previousPts = -1;
     initVlcOutput();
     m_mediaPlayer = Pool<LibVLCpp::MediaPlayer>::getInstance()->get();
     m_mediaPlayer->setMedia( m_vlcMedia );
@@ -329,6 +331,8 @@ WaitCondition*  ClipWorkflow::getRenderCondWait()
 
 void        ClipWorkflow::commonUnlock()
 {
+    m_stateLock->lockForWrite();
+
     if ( m_state == Rendering )
     {
         QMutexLocker    lock( m_condMutex );
@@ -356,4 +360,14 @@ void        ClipWorkflow::commonUnlock()
         m_stateLock->unlock();
 //    qDebug() << '[' << (void*)this << "] ClipWorkflow::unlock";
     checkStateChange();
+}
+
+void    ClipWorkflow::computePtsDiff( qint64 pts )
+{
+    if ( m_previousPts == -1 )
+        m_previousPts = pts;
+    if ( m_currentPts == -1 )
+        m_currentPts = pts;
+    m_previousPts = m_currentPts;
+    m_currentPts = qMax( pts, m_previousPts );
 }
