@@ -112,7 +112,7 @@ class   WorkflowRenderer : public GenericRenderer
          *  \brief          When there's no sound to play, this is the buffer that'll
          *                  be injected
          */
-        static uint8_t*     m_silencedAudioBuffer;
+        static uint8_t*             silencedAudioBuffer;
         size_t              m_videoBuffSize;
         AudioClipWorkflow::AudioSample*     m_renderAudioSample;
         Action::Stack       m_actions;

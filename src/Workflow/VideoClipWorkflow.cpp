@@ -21,10 +21,13 @@
  *****************************************************************************/
 
 #include "VideoClipWorkflow.h"
+#include "MainWorkflow.h"
 
 VideoClipWorkflow::VideoClipWorkflow( Clip* clip ) : ClipWorkflow( clip )
 {
-    m_buffer = new LightVideoFrame( VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes );
+    m_buffer = new LightVideoFrame( MainWorkflow::getInstance()->getWidth()
+                                    * MainWorkflow::getInstance()->getHeight()
+                                    * Pixel::NbComposantes );
 }
 
 VideoClipWorkflow::~VideoClipWorkflow()
@@ -53,18 +56,15 @@ void            VideoClipWorkflow::initVlcOutput()
     else
         m_vlcMedia->addOption( ":sout-smem-time-sync" );
 
-    sprintf( buffer, ":sout-transcode-width=%i", VIDEOWIDTH );
+    sprintf( buffer, ":sout-transcode-width=%i", MainWorkflow::getInstance()->getWidth() );
     m_vlcMedia->addOption( buffer );
 
-    sprintf( buffer, ":sout-transcode-height=%i", VIDEOHEIGHT );
+    sprintf( buffer, ":sout-transcode-height=%i", MainWorkflow::getInstance()->getHeight() );
     m_vlcMedia->addOption( buffer );
 
     //Forced output fps
     sprintf( buffer, ":sout-transcode-fps=%f", (float)Clip::DefaultFPS );
     m_vlcMedia->addOption( buffer );
-
-    //sprintf( buffer, "sout-smem-video-pitch=%i", VIDEOWIDTH * 3 );
-    //m_vlcMedia->addOption( buffer );
 }
 
 void*       VideoClipWorkflow::getLockCallback()

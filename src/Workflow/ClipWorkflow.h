@@ -1,4 +1,4 @@
-/*****************************************************************************
+ /*****************************************************************************
  * ClipWorkflow.h : Clip workflow. Will extract a single frame from a VLCMedia
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
@@ -22,12 +22,6 @@
 
 #ifndef CLIPWORKFLOW_H
 #define CLIPWORKFLOW_H
-
-//TODO: THIS HAS TO GO REALLY REALLY REALLY SOON !!!!
-//FIXME:
-//UGLY:
-#define VIDEOWIDTH 640
-#define VIDEOHEIGHT 480
 
 #include <QReadWriteLock>
 #include <QMutex>

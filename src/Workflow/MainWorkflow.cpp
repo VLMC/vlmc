@@ -27,13 +27,9 @@
 #include "TrackWorkflow.h"
 #include "TrackHandler.h"
 #include "Library.h"
+#include "SettingsManager.h"
 
-//JUST FOR THE DEFINES !
-//TODO:
-//FIXME: remove this !
-#include "ClipWorkflow.h"
-
-LightVideoFrame*     MainWorkflow::blackOutput = NULL;
+LightVideoFrame*    MainWorkflow::blackOutput = NULL;
 
 MainWorkflow::MainWorkflow( int trackCount ) :
         m_lengthFrame( 0 ),
@@ -45,6 +41,13 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     m_synchroneRenderWaitCondition = new QWaitCondition;
     m_synchroneRenderWaitConditionMutex = new QMutex;
     m_pauseWaitCond = new WaitCondition;
+
+    const SettingValue* width = SettingsManager::getInstance()->getValue( "project", "VideoProjectWidth" );
+    connect( width, SIGNAL( changed( QVariant ) ), this, SLOT( widthChanged( QVariant ) ) );
+    m_width = width->get().toUInt();
+    const SettingValue* height = SettingsManager::getInstance()->getValue( "project", "VideoProjectHeight" );
+    connect( height, SIGNAL( changed( QVariant ) ), this, SLOT( widthChanged( QVariant ) ) );
+    m_height = height->get().toUInt();
 
     m_effectEngine = new EffectsEngine;
     m_effectEngine->disable();
@@ -62,9 +65,10 @@ MainWorkflow::MainWorkflow( int trackCount ) :
 	m_currentFrame[i] = 0;
     }
     m_outputBuffers = new OutputBuffers;
-    blackOutput = new LightVideoFrame( VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes );
-    memset( (*blackOutput)->frame.octets, 0, (*blackOutput)->nboctets );
     m_nbTrackHandlerToRenderMutex = new QMutex;
+
+    blackOutput = new LightVideoFrame( m_width * m_height * Pixel::NbComposantes );
+    memset( (*blackOutput)->frame.octets, 0, (*blackOutput)->nboctets );
 }
 
 MainWorkflow::~MainWorkflow()
@@ -471,4 +475,25 @@ qint64      MainWorkflow::getCurrentFrame() const
     QReadLocker     lock( m_currentFrameLock );
 
     return m_currentFrame[MainWorkflow::VideoTrack];
+}
+
+
+void        MainWorkflow::widthChanged( const QVariant& width )
+{
+    m_width = width.toUInt();
+}
+
+void        MainWorkflow::heightChanged( const QVariant& height )
+{
+    m_height = height.toUInt();
+}
+
+uint32_t    MainWorkflow::getWidth() const
+{
+    return m_width;
+}
+
+uint32_t    MainWorkflow::getHeight() const
+{
+    return m_height;
 }

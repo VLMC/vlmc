@@ -142,13 +142,14 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    setFullSpeedRender( bool value );
         int                     getTrackCount( MainWorkflow::TrackType trackType ) const;
 
+        uint32_t                getWidth() const;
+        uint32_t                getHeight() const;
+
     private:
         MainWorkflow( int trackCount = 64 );
         ~MainWorkflow();
         void                    computeLength();
         void                    activateTrack( unsigned int trackId );
-
-        static LightVideoFrame* blackOutput;
 
     private:
         QReadWriteLock*                 m_currentFrameLock;
@@ -171,6 +172,10 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         OutputBuffers*                  m_outputBuffers;
 
         EffectsEngine*                  m_effectEngine;
+        uint32_t                        m_width;
+        uint32_t                        m_height;
+
+        static LightVideoFrame*         blackOutput;
 
         friend class    Singleton<MainWorkflow>;
 
@@ -179,6 +184,9 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                            tracksUnpaused();
         void                            tracksRenderCompleted();
         void                            tracksEndReached();
+        void                            widthChanged( const QVariant& );
+        void                            heightChanged( const QVariant& );
+
 
     public slots:
         void                            loadProject( const QDomElement& project );

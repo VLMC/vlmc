@@ -28,7 +28,7 @@
 #include "Timeline.h"
 #include "SettingsManager.h"
 
-uint8_t*    WorkflowRenderer::m_silencedAudioBuffer = NULL;
+uint8_t*            WorkflowRenderer::silencedAudioBuffer = NULL;
 
 WorkflowRenderer::WorkflowRenderer() :
             m_mainWorkflow( MainWorkflow::getInstance() ),
@@ -44,9 +44,9 @@ void    WorkflowRenderer::initializeRenderer()
     char        audioParameters[256];
     char        callbacks[64];
 
-
     m_waitCond = new QWaitCondition;
-    m_renderVideoFrame = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes];
+    m_renderVideoFrame = new unsigned char[m_mainWorkflow->getWidth()
+                                           * m_mainWorkflow->getHeight() * Pixel::NbComposantes];
 
     m_videoEsHandler = new EsHandler;
     m_videoEsHandler->self = this;
@@ -60,7 +60,7 @@ void    WorkflowRenderer::initializeRenderer()
     m_rate = 48000;
 
     sprintf( videoString, "width=%i:height=%i:dar=%s:fps=%s:data=%lld:codec=%s:cat=2:caching=0",
-             VIDEOWIDTH, VIDEOHEIGHT, "4/3", "30/1", (qint64)m_videoEsHandler, "RV24" );
+             m_mainWorkflow->getWidth(), m_mainWorkflow->getHeight(), "4/3", "30/1", (qint64)m_videoEsHandler, "RV24" );
     sprintf( audioParameters, "data=%lld:cat=1:codec=s16l:samplerate=%u:channels=%u",
              (qint64)m_audioEsHandler, m_rate, m_nbChannels );
     strcpy( inputSlave, ":input-slave=imem://" );
@@ -160,10 +160,10 @@ int     WorkflowRenderer::lockAudio(  WorkflowRenderer* self, int64_t *pts, size
         //by 100.
         nbSample = self->m_rate / self->m_outputFps;
         unsigned int    buffSize = self->m_nbChannels * 2 * nbSample;
-        if ( WorkflowRenderer::m_silencedAudioBuffer == NULL )
-            WorkflowRenderer::m_silencedAudioBuffer = new uint8_t[ buffSize ];
-        memset( WorkflowRenderer::m_silencedAudioBuffer, 0, buffSize );
-        *buffer = WorkflowRenderer::m_silencedAudioBuffer;
+        if ( WorkflowRenderer::silencedAudioBuffer == NULL )
+            WorkflowRenderer::silencedAudioBuffer = new uint8_t[ buffSize ];
+        memset( WorkflowRenderer::silencedAudioBuffer, 0, buffSize );
+        *buffer = WorkflowRenderer::silencedAudioBuffer;
         *bufferSize = buffSize;
         ptsDiff = self->m_pts - self->m_audioPts;
     }
@@ -449,4 +449,3 @@ void        WorkflowRenderer::__videoPaused()
 {
     emit paused();
 }
-
