@@ -52,6 +52,17 @@ class   ClipWorkflow : public QObject
             EndReached,     //8
         };
 
+        /**
+         *  \brief  Used to know which way you want to get a computed output.
+         *          Pop: the buffer is popped and returned
+         *          Get: the buffer is just returned (for paused mode for instance)
+         */
+        enum        GetMode
+        {
+            Pop,
+            Get,
+        };
+
         ClipWorkflow( Clip* clip );
         virtual ~ClipWorkflow();
 

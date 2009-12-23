@@ -70,12 +70,7 @@ void        AudioClipWorkflow::initVlcOutput()
     m_vlcMedia->addOption( ":sout-transcode-acodec=s16l" );
     m_vlcMedia->addOption( ":sout-transcode-samplerate=48000" );
     m_vlcMedia->addOption( ":sout-transcode-channels=2" );
-    if ( m_fullSpeedRender == true )
-    {
-        m_vlcMedia->addOption( ":no-sout-smem-time-sync" );
-    }
-    else
-        m_vlcMedia->addOption( ":sout-smem-time-sync" );
+    m_vlcMedia->addOption( ":no-sout-smem-time-sync" );
 }
 
 void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer , unsigned int size )

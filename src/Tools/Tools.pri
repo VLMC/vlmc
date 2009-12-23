@@ -1,7 +1,8 @@
-HEADERS += Pool.hpp \
+HEADERS += MemoryPool.hpp \
     QSingleton.hpp \
     Singleton.hpp \
     Toggleable.hpp \
     WaitCondition.hpp \
-    VlmcDebug.h
+    VlmcDebug.h \
+    Pool.hpp
 SOURCES += VlmcDebug.cpp

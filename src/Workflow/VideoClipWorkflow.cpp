@@ -49,12 +49,7 @@ void            VideoClipWorkflow::initVlcOutput()
     m_vlcMedia->addOption( ":sout-transcode-acodec=s16l" );
 //    m_vlcMedia->addOption( ":no-sout-keep" );
 
-    if ( m_fullSpeedRender == true )
-    {
-        m_vlcMedia->addOption( ":no-sout-smem-time-sync" );
-    }
-    else
-        m_vlcMedia->addOption( ":sout-smem-time-sync" );
+    m_vlcMedia->addOption( ":no-sout-smem-time-sync" );
 
     sprintf( buffer, ":sout-transcode-width=%i", MainWorkflow::getInstance()->getWidth() );
     m_vlcMedia->addOption( buffer );

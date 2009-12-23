@@ -1,5 +1,6 @@
 /*****************************************************************************
- * Pool.hpp: Generic pool
+ * MemoryPool.hpp: Generic memory pool, that will reinstantiate
+ * a new object each time
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,46 +21,55 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef POOL_HPP
-#define POOL_HPP
+#ifndef MEMORYPOOL_HPP
+#define MEMORYPOOL_HPP
 
 #include <QMutex>
 #include <QQueue>
 
 #include "Singleton.hpp"
 
-template <typename T>
-class       Pool
+template <typename T, size_t NB_ELEM = 5>
+class       MemoryPool : public Singleton< MemoryPool<T, NB_ELEM> >
 {
 public:
-    T       get()
+    T*      get()
     {
         QMutexLocker    lock( m_mutex );
         if ( m_pool.size() == 0 )
         {
             qCritical() << "Pool is empty !!";
-            return NULL;
+            return new T;
         }
-        T  ret = m_pool.dequeue();
+        uint8_t*    ptr = m_pool.dequeue();
+        T*  ret = new (ptr) T;
         return ret;
     }
-    void    release( T toRelease )
+    void    release( T* toRelease )
     {
         QMutexLocker    lock( m_mutex );
-        m_pool.enqueue( toRelease );
+        toRelease->~T();
+        m_pool.enqueue( reinterpret_cast<uint8_t*>( toRelease ) );
     }
 private:
-    Pool()
+    MemoryPool()
     {
+        for ( size_t i = 0; i < NB_ELEM; ++i )
+            m_pool.enqueue( new uint8_t[ sizeof(T) ] );
         m_mutex = new QMutex;
     }
-    ~Pool()
+    ~MemoryPool()
     {
-        Q_ASSERT( m_pool.empty() == true );
+        while ( m_pool.size() != 0 )
+        {
+            uint8_t*  ptr = m_pool.dequeue();
+            delete ptr;
+        }
         delete m_mutex;
     }
     QQueue<uint8_t*>    m_pool;
     QMutex*             m_mutex;
+    friend class Singleton< MemoryPool<T> >;
 };
 
 #endif // MEMORYPOOL_HPP

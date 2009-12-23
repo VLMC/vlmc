@@ -25,6 +25,8 @@
 
 #include "ClipWorkflow.h"
 #include "Clip.h"
+#include "StackedBuffer.hpp"
+#include "Pool.hpp"
 
 class   VideoClipWorkflow : public ClipWorkflow
 {
@@ -34,6 +36,8 @@ class   VideoClipWorkflow : public ClipWorkflow
         void*                   getLockCallback();
         void*                   getUnlockCallback();
         virtual void*           getOutput();
+
+        static const uint32_t   nbBuffers = 3 * 30; //3 seconds with an average fps of 30
 
     protected:
         virtual void            initVlcOutput();

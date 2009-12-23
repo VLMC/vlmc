@@ -24,7 +24,7 @@
 
 #include "vlmc.h"
 #include "ClipWorkflow.h"
-#include "Pool.hpp"
+#include "MemoryPool.hpp"
 #include "LightVideoFrame.h"
 
 ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
@@ -83,7 +83,7 @@ void    ClipWorkflow::initialize( bool preloading /*= false*/ )
     m_currentPts = -1;
     m_previousPts = -1;
     initVlcOutput();
-    m_mediaPlayer = Pool<LibVLCpp::MediaPlayer>::getInstance()->get();
+    m_mediaPlayer = MemoryPool<LibVLCpp::MediaPlayer>::getInstance()->get();
     m_mediaPlayer->setMedia( m_vlcMedia );
 
     if ( preloading == true )
@@ -187,7 +187,7 @@ void            ClipWorkflow::stop()
     {
         m_mediaPlayer->stop();
         disconnect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( clipEndReached() ) );
-        Pool<LibVLCpp::MediaPlayer>::getInstance()->release( m_mediaPlayer );
+        MemoryPool<LibVLCpp::MediaPlayer>::getInstance()->release( m_mediaPlayer );
 //        qDebug() << "Setting media player to NULL";
         m_mediaPlayer = NULL;
         setState( Stopped );
