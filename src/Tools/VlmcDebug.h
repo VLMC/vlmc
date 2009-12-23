@@ -39,6 +39,7 @@ class   VlmcDebug : public QObject, public Singleton<VlmcDebug>
 
     public:
         static void     vlmcMessageHandler( QtMsgType type, const char* msg );
+        void            setup();
     private:
         VlmcDebug();
         virtual ~VlmcDebug();
