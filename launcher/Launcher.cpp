@@ -1,5 +1,5 @@
 /*****************************************************************************
- * WorkflowFileRenderer.h: Output the workflow to a file
+ * Launcher.cpp : Will launch VLMC and watch for events
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,34 +20,37 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef WORKFLOWFILERENDERERDIALOG_H
-#define WORKFLOWFILERENDERERDIALOG_H
+#include <QtDebug>
+#include <QCoreApplication>
 
-#include <QDialog>
-#include "ui_WorkflowFileRendererDialog.h"
+#include "Launcher.h"
 
-#include "MainWorkflow.h"
-
-class   WorkflowFileRendererDialog : public QDialog
+Launcher::Launcher( int argc, char** argv, QObject* parent ) : QObject( parent )
 {
-    Q_OBJECT
-    Q_DISABLE_COPY( WorkflowFileRendererDialog );
-public:
-    WorkflowFileRendererDialog();
-    void    setOutputFileName( const QString& filename );
-    void    setProgressBarValue( int val );
+    m_process = new QProcess;
+    connect( m_process, SIGNAL( finished( int, QProcess::ExitStatus ) ),
+             this, SLOT( stopped( int, QProcess::ExitStatus ) ) );
+    for ( int i = 1; i < argc; ++i )
+        m_argv << argv[i];
+    m_process->setReadChannelMode( QProcess::ForwardedChannels );
+}
 
-private:
-    Ui::WorkflowFileRendererDialog      m_ui;
-    MainWorkflow*                       m_workflow;
+void    Launcher::start()
+{
+    //If you put "vlmc" here, it will probably result in a fork bomb :)
+    m_process->start( "bin/vlmc", m_argv );
+}
 
-public slots:
-    void    updatePreview( const uchar* buff );
-
-private slots:
-    void    frameChanged( qint64, MainWorkflow::FrameChangedReason );
-
-    friend class    WorkflowFileRenderer;
-};
-
-#endif // WORKFLOWFILERENDERERDIALOG_H
+void    Launcher::stopped( int exitCode, QProcess::ExitStatus )
+{
+    switch ( exitCode )
+    {
+    case    Launcher::cleanExit:
+    case    Launcher::crashExit:
+        QCoreApplication::exit( exitCode );
+        break ;
+    case    Launcher::crashWithRestart:
+        m_process->start( "bin/vlmc", m_argv );
+        return ;
+    }
+}

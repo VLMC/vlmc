@@ -35,9 +35,11 @@ class   VideoClipWorkflow : public ClipWorkflow
         void*                   getUnlockCallback();
         virtual void*           getOutput();
 
+    protected:
+        virtual void            initVlcOutput();
+
     private:
         LightVideoFrame*        m_buffer;
-        virtual void            initVlcOutput();
         static void             lock( VideoClipWorkflow* clipWorkflow, void** pp_ret, int size );
         static void             unlock( VideoClipWorkflow* clipWorkflow, void* buffer, int width, int height, int bpp, int size, qint64 pts );
 };

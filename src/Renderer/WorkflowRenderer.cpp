@@ -34,15 +34,19 @@ WorkflowRenderer::WorkflowRenderer() :
             m_mainWorkflow( MainWorkflow::getInstance() ),
             m_stopping( false )
 {
+    m_actionsMutex = new QMutex;
+}
+
+void    WorkflowRenderer::initializeRenderer()
+{
     char        videoString[512];
     char        inputSlave[256];
     char        audioParameters[256];
     char        callbacks[64];
 
-    m_actionsMutex = new QMutex;
+
     m_waitCond = new QWaitCondition;
     m_renderVideoFrame = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes];
-
 
     m_videoEsHandler = new EsHandler;
     m_videoEsHandler->self = this;
@@ -77,7 +81,6 @@ WorkflowRenderer::WorkflowRenderer() :
     connect( m_mainWorkflow, SIGNAL( frameChanged( qint64, MainWorkflow::FrameChangedReason ) ),
              this, SLOT( __frameChanged( qint64, MainWorkflow::FrameChangedReason ) ) );
 }
-
 
 WorkflowRenderer::~WorkflowRenderer()
 {
@@ -407,6 +410,16 @@ void    WorkflowRenderer::resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd
 //    }
 }
 
+void*   WorkflowRenderer::getLockCallback()
+{
+    return (void*)&WorkflowRenderer::lock;
+}
+
+void*   WorkflowRenderer::getUnlockCallback()
+{
+    return (void*)&WorkflowRenderer::unlock;
+}
+
 /////////////////////////////////////////////////////////////////////
 /////SLOTS :
 /////////////////////////////////////////////////////////////////////
@@ -436,3 +449,4 @@ void        WorkflowRenderer::__videoPaused()
 {
     emit paused();
 }
+

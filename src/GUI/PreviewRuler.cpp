@@ -30,7 +30,7 @@
 PreviewRuler::PreviewRuler( QWidget* parent ) :
         QWidget( parent ),
         m_renderer( NULL ),
-        m_frame( NULL )
+        m_frame( 0 )
 {
     setMouseTracking( true );
     m_isSliding = false;
@@ -141,33 +141,34 @@ void PreviewRuler::paintEvent( QPaintEvent * event )
                     painter.drawLine( QLineF( r.left() + step * spacing, r.height() - MARK_LARGE, r.left() + step * spacing, r.bottom() ) );
             }
         }
+
+        // Draw the markers (if any)
+        painter.setPen( QPen( Qt::green, 2 ) );
+
+        if ( m_markerStart > MARKER_DEFAULT )
+        {
+            int markerPos = m_markerStart * width() / m_renderer->getLength();
+            QPolygon marker( 4 );
+            marker.setPoints( 4,
+                              markerPos + 8,    1,
+                              markerPos,        1,
+                              markerPos,        20,
+                              markerPos + 8,    20 );
+            painter.drawPolyline( marker );
+        }
+        if ( m_markerStop > MARKER_DEFAULT )
+        {
+            int markerPos = m_markerStop * width() / m_renderer->getLength();
+            QPolygon marker( 4 );
+            marker.setPoints( 4,
+                              markerPos - 8,    1,
+                              markerPos,        1,
+                              markerPos,        20,
+                              markerPos - 8,    20 );
+            painter.drawPolyline( marker );
+        }
     }
 
-    // Draw the markers (if any)
-    painter.setPen( QPen( Qt::green, 2 ) );
-
-    if ( m_markerStart > MARKER_DEFAULT )
-    {
-        int markerPos = m_markerStart * width() / m_renderer->getLength();
-        QPolygon marker( 4 );
-        marker.setPoints( 4,
-                          markerPos + 8,    1,
-                          markerPos,        1,
-                          markerPos,        20,
-                          markerPos + 8,    20 );
-        painter.drawPolyline( marker );
-    }
-    if ( m_markerStop > MARKER_DEFAULT )
-    {
-        int markerPos = m_markerStop * width() / m_renderer->getLength();
-        QPolygon marker( 4 );
-        marker.setPoints( 4,
-                          markerPos - 8,    1,
-                          markerPos,        1,
-                          markerPos,        20,
-                          markerPos - 8,    20 );
-        painter.drawPolyline( marker );
-    }
 
     // Draw the pointer
     painter.setRenderHint( QPainter::Antialiasing );
@@ -203,7 +204,11 @@ void PreviewRuler::mouseMoveEvent( QMouseEvent* event )
     if ( m_isSliding )
     {
         if ( m_renderer->getLength() > 0 )
-            setFrame( (qreal)(event->pos().x() * m_renderer->getLength() ) / width(), true );
+        {
+            qint64 pos = event->pos().x();
+            pos = qBound( (qint64)0, m_renderer->getLength(), pos );
+            setFrame( (qreal)(pos * m_renderer->getLength() ) / width(), true );
+        }
     }
 }
 

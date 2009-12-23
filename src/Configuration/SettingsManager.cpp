@@ -65,9 +65,11 @@ void  SettingsManager::setValue( const QString& part , const QString& key, const
     m_globalLock.lockForRead();
     if ( !m_tempData.contains( part ) )
     {
+        m_globalLock.unlock();
         addNewSettingsPart( part );
     }
-    m_globalLock.unlock();
+    else
+        m_globalLock.unlock();
     QWriteLocker    lock( &m_globalLock );
     SettingsPart*   tmp = m_tempData[part];
     SettingsPart::ConfigPair::iterator it = tmp->m_data.find( key );
@@ -94,7 +96,6 @@ void  SettingsManager::saveSettings( const QString& part, QDomDocument& xmlfile,
     m_globalLock.lockForRead();
     if ( !m_data.contains( part ) )
     {
-        qDebug() << "no part named" << part;
         m_globalLock.unlock();
         return ;
     }
@@ -166,29 +167,33 @@ void  SettingsManager::addNewSettingsPart( const QString& name )
 
 void    SettingsManager::commit()
 {
-    QWriteLocker     lock( &m_globalLock );
-
-    QHash<QString, SettingsPart*>::iterator it = m_tempData.begin();
-    QHash<QString, SettingsPart*>::iterator ed = m_tempData.end();
-
-    for ( ; it != ed; ++it )
     {
-        SettingsPart*   sett = it.value();
+        QWriteLocker     lock( &m_globalLock );
 
-        QReadLocker rLock( &sett->m_lock );
-        SettingsPart::ConfigPair::iterator iter = sett->m_data.begin();
-        SettingsPart::ConfigPair::iterator end = sett->m_data.end();
-        QWriteLocker    wLock( &m_data[it.key()]->m_lock );
-        for ( ; iter != end; ++iter )
+        QHash<QString, SettingsPart*>::iterator it = m_tempData.begin();
+        QHash<QString, SettingsPart*>::iterator ed = m_tempData.end();
+
+        for ( ; it != ed; ++it )
         {
-            SettingsPart::ConfigPair::iterator    insert_it = m_data[it.key()]->m_data.find( iter.key() );
-            if ( insert_it == m_data[it.key()]->m_data.end() )
-                m_data[it.key()]->m_data.insert( iter.key(), new SettingValue( iter.value()->get() ) );
-            else
-                m_data[it.key()]->m_data[ iter.key() ]->set( iter.value()->get() );
+            SettingsPart*   sett = it.value();
+            QString         part = it.key();
+
+            QReadLocker rLock( &sett->m_lock );
+            SettingsPart::ConfigPair::iterator iter = sett->m_data.begin();
+            SettingsPart::ConfigPair::iterator end = sett->m_data.end();
+            QWriteLocker    wLock( &m_data[part]->m_lock );
+            for ( ; iter != end; ++iter )
+            {
+                QString                                 settingName = iter.key();
+                SettingsPart::ConfigPair::iterator      insert_it = m_data[part]->m_data.find( settingName );
+
+                if ( insert_it == m_data[part]->m_data.end() )
+                    m_data[part]->m_data.insert( settingName, new SettingValue( iter.value()->get() ) );
+                else
+                    m_data[part]->m_data[ settingName ]->set( iter.value()->get() );
+            }
         }
     }
-    lock.unlock();
     flush();
 }
 

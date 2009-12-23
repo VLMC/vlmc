@@ -65,19 +65,25 @@ Commands::MainWorkflow::MoveClip::MoveClip( ::MainWorkflow* workflow, const QUui
     m_workflow( workflow ), m_uuid( uuid ), m_oldTrack( oldTrack ),
     m_newTrack( newTrack ), m_pos( newPos ), m_trackType( trackType )
 {
-    setText( QObject::tr( "Moving clip" ) );
+    if ( oldTrack != newTrack )
+        setText( QObject::tr( "Moving clip from track %1 to %2" ).arg(
+                QString::number( oldTrack ), QString::number( newTrack ) ) );
+    else
+        setText( QObject::tr( "Moving clip" ) );
     m_undoRedoAction = false;
     m_oldPos = m_workflow->getClipPosition( uuid, oldTrack, trackType );
 }
 
 void Commands::MainWorkflow::MoveClip::redo()
 {
+//    qDebug() << "Moving clip from track" << m_oldTrack << "to" << m_newTrack << "at position:" << m_pos;
     m_workflow->moveClip( m_uuid, m_oldTrack, m_newTrack, m_pos, m_trackType, m_undoRedoAction );
     m_undoRedoAction = true;
 }
 
 void Commands::MainWorkflow::MoveClip::undo()
 {
+//    qDebug() << "Undo moving clip from track" << m_newTrack << "to" << m_oldTrack << "at position:" << m_oldPos;
     m_workflow->moveClip( m_uuid, m_newTrack, m_oldTrack, m_oldPos, m_trackType, m_undoRedoAction );
     m_undoRedoAction = true;
 }

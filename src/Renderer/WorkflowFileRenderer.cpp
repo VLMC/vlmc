@@ -27,14 +27,19 @@ WorkflowFileRenderer::WorkflowFileRenderer( const QString& outputFileName ) :
         WorkflowRenderer(),
         m_outputFileName( outputFileName )
 {
-    m_dialog = new WorkflowFileRendererDialog;
+    m_image = NULL;
+    m_timer.setSingleShot( true );
+    m_dialog = new WorkflowFileRendererDialog();
     m_dialog->setModal( true );
     m_dialog->setOutputFileName( outputFileName );
     connect( m_dialog->m_ui.cancelButton, SIGNAL( clicked() ), this, SLOT( cancelButtonClicked() ) );
+    connect( m_dialog, SIGNAL( finished(int) ), this, SLOT( stop() ) );
+    connect( this, SIGNAL( imageUpdated( const uchar* ) ), m_dialog, SLOT( updatePreview( const uchar* ) ) );
 }
 
 WorkflowFileRenderer::~WorkflowFileRenderer()
 {
+    delete m_image;
 }
 
 void        WorkflowFileRenderer::run()
@@ -71,12 +76,12 @@ void        WorkflowFileRenderer::run()
 void    WorkflowFileRenderer::stop()
 {
     WorkflowRenderer::stop();
-    m_dialog->done( 0 );
 }
 
 void    WorkflowFileRenderer::cancelButtonClicked()
 {
     stop();
+    m_dialog->done( 0 );
 }
 
 float   WorkflowFileRenderer::getFps() const
@@ -84,7 +89,35 @@ float   WorkflowFileRenderer::getFps() const
     return m_outputFps;
 }
 
+int     WorkflowFileRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigned int *flags, size_t *bufferSize, void **buffer )
+{
+    WorkflowFileRenderer* self = reinterpret_cast<WorkflowFileRenderer*>( datas );
+    int     ret = WorkflowRenderer::lock( datas, dts, pts, flags, bufferSize, buffer );
+
+    if ( self->m_timer.isActive() == false )
+    {
+        self->emit imageUpdated( (uchar*)ret );
+        self->m_timer.start( 1000 );
+    }
+    return ret;
+}
+
+void        WorkflowFileRenderer::unlock( void *datas, size_t size, void* buff )
+{
+    WorkflowRenderer::unlock( datas, size, buff );
+}
+
 void        WorkflowFileRenderer::__frameChanged( qint64 frame, MainWorkflow::FrameChangedReason )
 {
     m_dialog->setProgressBarValue( frame * 100 / m_mainWorkflow->getLengthFrame() );
+}
+
+void*       WorkflowFileRenderer::getLockCallback()
+{
+    return (void*)&WorkflowFileRenderer::lock;
+}
+
+void*       WorkflowFileRenderer::getUnlockCallback()
+{
+    return (void*)&WorkflowFileRenderer::unlock;
 }

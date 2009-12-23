@@ -58,6 +58,7 @@
 #include "KeyboardShortcut.h"
 #include "SettingValue.h"
 #include "SettingsManager.h"
+#include "VlmcDebug.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
@@ -66,11 +67,14 @@ MainWindow::MainWindow( QWidget *parent ) :
 
     qRegisterMetaType<MainWorkflow::TrackType>( "MainWorkflow::TrackType" );
     qRegisterMetaType<MainWorkflow::FrameChangedReason>( "MainWorkflow::FrameChangedReason" );
+    qRegisterMetaType<QVariant>( "QVariant" );
 
     // Settings
     VLMCSettingsDefault::load( "default" );
     VLMCSettingsDefault::load( "VLMC" );
     VLMCSettingsDefault::loadKeyboardShortcutDefaults();
+    //We only install message handler here cause it uses configuration.
+    VlmcDebug::getInstance()->setup();
 
     // GUI
     DockWidgetManager::instance( this )->setMainWindow( this );
@@ -140,6 +144,7 @@ void        MainWindow::setupLibrary()
     //GUI part :
 
     MediaLibraryWidget* mediaLibraryWidget = new MediaLibraryWidget( this );
+    m_importController = new ImportController( this );
 
     DockWidgetManager::instance()->addDockedWidget( mediaLibraryWidget,
                                                     tr( "Media Library" ),
@@ -152,6 +157,8 @@ void        MainWindow::setupLibrary()
 
     connect( Library::getInstance(), SIGNAL( mediaRemoved( const QUuid& ) ),
              m_clipPreview->getGenericRenderer(), SLOT( mediaUnloaded( QUuid ) ) );
+
+    connect( mediaLibraryWidget, SIGNAL( importRequired() ), this, SLOT( on_actionImport_triggered() ) );
 }
 
 void    MainWindow::on_actionSave_triggered()
@@ -238,6 +245,7 @@ void MainWindow::createStatusBar()
 void MainWindow::initializeDockWidgets( void )
 {
     WorkflowRenderer*    workflowRenderer = new WorkflowRenderer();
+    workflowRenderer->initializeRenderer();
     m_timeline = new Timeline( workflowRenderer, this );
     m_timeline->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_timeline->show();
@@ -349,6 +357,7 @@ void    MainWindow::on_actionRender_triggered()
         if ( m_renderer )
             delete m_renderer;
         m_renderer = new WorkflowFileRenderer( outputFileName );
+        m_renderer->initializeRenderer();
         m_renderer->run();
     }
 }
@@ -365,12 +374,6 @@ void MainWindow::on_actionNew_Project_triggered()
 void    MainWindow::on_actionHelp_triggered()
 {
     QDesktopServices::openUrl( QUrl( "http://vlmc.org" ) );
-}
-
-void    MainWindow::on_actionImport_triggered()
-{
-    //Import* import = new Import( );
-    //import->exec();
 }
 
 void    MainWindow::zoomIn()
@@ -458,6 +461,7 @@ void    MainWindow::initializeMenuKeyboardShortcut()
     INIT_SHORTCUT( save, "Save", actionSave );
     INIT_SHORTCUT( saveAs, "Save as", actionSave_As );
     INIT_SHORTCUT( closeProject, "Close project", actionClose_Project );
+    INIT_SHORTCUT( importProject, "Import media", actionImport );
 }
 
 #undef INIT_SHORTCUT
@@ -483,40 +487,56 @@ void    MainWindow::keyboardShortcutChanged( const QString& name, const QString&
         m_ui.actionSave_As->setShortcut( val );
     else if ( name == "Close project" )
         m_ui.actionClose_Project->setShortcut( val );
+    else if ( name == "Import media" )
+        m_ui.actionImport->setShortcut( val );
     else
         qWarning() << "Unknown shortcut:" << name;
 }
 
 void    MainWindow::on_actionCrash_triggered()
 {
-    int test = 1 / 0;
+    //WARNING: read this part at your own risk !!
+    //I'm not responsible if you puke while reading this :D
+    QString str;
+    int test = 1 / str.length();
+    Q_UNUSED( test );
 }
 
 bool    MainWindow::restoreSession()
 {
     QSettings   s;
-    bool        cleanQuit = s.value( "CleanQuit", false ).toBool();
+    bool        fileCreated = false;
     bool        ret = false;
 
-    // Restore the geometry
-    restoreGeometry( s.value( "MainWindowGeometry" ).toByteArray() );
-    // Restore the layout
-    restoreState( s.value( "MainWindowState" ).toByteArray() );
-
-    if ( cleanQuit == false )
+    fileCreated = s.contains( "VlmcVersion" );
+    if ( fileCreated == true )
     {
-        QMessageBox::StandardButton res = QMessageBox::question( this, tr( "Crash recovery" ), tr( "VLMC didn't closed nicely. Do you wan't to recover your project ?" ),
-                               QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes );
-        if ( res == QMessageBox::Yes )
+        bool        cleanQuit = s.value( "CleanQuit", false ).toBool();
+
+        // Restore the geometry
+        restoreGeometry( s.value( "MainWindowGeometry" ).toByteArray() );
+        // Restore the layout
+        restoreState( s.value( "MainWindowState" ).toByteArray() );
+
+        if ( cleanQuit == false )
         {
-            if ( ProjectManager::getInstance()->loadEmergencyBackup() == true )
-                ret = true;
-            else
-                QMessageBox::warning( this, tr( "Can't restore project" ), tr( "VLMC didn't manage to restore your project. We appology for the inconvenience" ) );
+            QMessageBox::StandardButton res = QMessageBox::question( this, tr( "Crash recovery" ), tr( "VLMC didn't closed nicely. Do you wan't to recover your project ?" ),
+                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes );
+            if ( res == QMessageBox::Yes )
+            {
+                if ( ProjectManager::getInstance()->loadEmergencyBackup() == true )
+                    ret = true;
+                else
+                    QMessageBox::warning( this, tr( "Can't restore project" ), tr( "VLMC didn't manage to restore your project. We appology for the inconvenience" ) );
+            }
         }
     }
-
     s.setValue( "CleanQuit", false );
     s.sync();
     return ret;
+}
+
+void    MainWindow::on_actionImport_triggered()
+{
+    m_importController->exec();
 }

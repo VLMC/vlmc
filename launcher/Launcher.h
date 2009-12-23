@@ -1,5 +1,5 @@
 /*****************************************************************************
- * WorkflowFileRenderer.h: Output the workflow to a file
+ * Launcher.h: Will launch vlmc and watch for events.
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,34 +20,28 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef WORKFLOWFILERENDERERDIALOG_H
-#define WORKFLOWFILERENDERERDIALOG_H
+#ifndef LAUNCHER_H
+#define LAUNCHER_H
 
-#include <QDialog>
-#include "ui_WorkflowFileRendererDialog.h"
+#include <QProcess>
+#include <QStringList>
 
-#include "MainWorkflow.h"
-
-class   WorkflowFileRendererDialog : public QDialog
+class   Launcher : public QObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY( WorkflowFileRendererDialog );
-public:
-    WorkflowFileRendererDialog();
-    void    setOutputFileName( const QString& filename );
-    void    setProgressBarValue( int val );
 
-private:
-    Ui::WorkflowFileRendererDialog      m_ui;
-    MainWorkflow*                       m_workflow;
+    public:
+        static const int    cleanExit = 0;
+        static const int    crashExit = 1;
+        static const int    crashWithRestart = 2;
 
-public slots:
-    void    updatePreview( const uchar* buff );
-
-private slots:
-    void    frameChanged( qint64, MainWorkflow::FrameChangedReason );
-
-    friend class    WorkflowFileRenderer;
+        Launcher( int argc, char** argv, QObject* parent = NULL );
+        void        start();
+    public slots:
+        void        stopped( int retCode, QProcess::ExitStatus exitType );
+    private:
+        QProcess*   m_process;
+        QStringList m_argv;
 };
 
-#endif // WORKFLOWFILERENDERERDIALOG_H
+#endif // LAUNCHER_H

@@ -30,6 +30,7 @@ MediaLibraryWidget::MediaLibraryWidget( QWidget* parent ) : QWidget( parent )
     connect( list, SIGNAL( mediaSelected( Media* ) ), this, SLOT( mediaSelection( Media* ) ) );
     connect( list, SIGNAL( mediaDeleted( const QUuid& ) ), library, SLOT( removingMediaAsked( const QUuid& ) ) );
     connect( library, SIGNAL( mediaRemoved( QUuid ) ), list, SLOT( mediaRemoved( const QUuid& ) ) );
+    connect( m_nav, SIGNAL( importRequired() ), this, SIGNAL( importRequired() ) );
     m_nav->pushViewController( list );
 }
 

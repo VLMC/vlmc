@@ -1,5 +1,5 @@
 /*****************************************************************************
- * WorkflowFileRenderer.h: Output the workflow to a file
+ * VlmcDebug.h: Debug tools for VLMC
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,34 +20,36 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef WORKFLOWFILERENDERERDIALOG_H
-#define WORKFLOWFILERENDERERDIALOG_H
+#ifndef VLMCDEBUG_H
+#define VLMCDEBUG_H
 
-#include <QDialog>
-#include "ui_WorkflowFileRendererDialog.h"
+#include <QObject>
+#include <QDebug>
+#include <QFile>
 
-#include "MainWorkflow.h"
+#include "Singleton.hpp"
 
-class   WorkflowFileRendererDialog : public QDialog
+/**
+ *  \warning    Do not use qDebug() qWarning() etc... from here, unless you know exactly what you're doing
+ *              Chances are very high that you end up with a stack overflow !!
+ */
+class   VlmcDebug : public QObject, public Singleton<VlmcDebug>
 {
     Q_OBJECT
-    Q_DISABLE_COPY( WorkflowFileRendererDialog );
-public:
-    WorkflowFileRendererDialog();
-    void    setOutputFileName( const QString& filename );
-    void    setProgressBarValue( int val );
 
-private:
-    Ui::WorkflowFileRendererDialog      m_ui;
-    MainWorkflow*                       m_workflow;
+    public:
+        static void     vlmcMessageHandler( QtMsgType type, const char* msg );
+        void            setup();
+    private:
+        VlmcDebug();
+        virtual ~VlmcDebug();
 
-public slots:
-    void    updatePreview( const uchar* buff );
+        QFile*          m_logFile;
 
-private slots:
-    void    frameChanged( qint64, MainWorkflow::FrameChangedReason );
+    private slots:
+        void            logFileChanged( const QVariant& logFile );
 
-    friend class    WorkflowFileRenderer;
+        friend class    Singleton<VlmcDebug>;
 };
 
-#endif // WORKFLOWFILERENDERERDIALOG_H
+#endif // VLMCDEBUG_H

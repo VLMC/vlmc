@@ -1,5 +1,5 @@
 /*****************************************************************************
- * WorkflowFileRenderer.h: Output the workflow to a file
+ * main.cpp: Creates the launcher
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,34 +20,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef WORKFLOWFILERENDERERDIALOG_H
-#define WORKFLOWFILERENDERERDIALOG_H
+#include <QtCore/QCoreApplication>
+#include "Launcher.h"
 
-#include <QDialog>
-#include "ui_WorkflowFileRendererDialog.h"
-
-#include "MainWorkflow.h"
-
-class   WorkflowFileRendererDialog : public QDialog
+int main(int argc, char *argv[])
 {
-    Q_OBJECT
-    Q_DISABLE_COPY( WorkflowFileRendererDialog );
-public:
-    WorkflowFileRendererDialog();
-    void    setOutputFileName( const QString& filename );
-    void    setProgressBarValue( int val );
+    QCoreApplication a(argc, argv);
 
-private:
-    Ui::WorkflowFileRendererDialog      m_ui;
-    MainWorkflow*                       m_workflow;
-
-public slots:
-    void    updatePreview( const uchar* buff );
-
-private slots:
-    void    frameChanged( qint64, MainWorkflow::FrameChangedReason );
-
-    friend class    WorkflowFileRenderer;
-};
-
-#endif // WORKFLOWFILERENDERERDIALOG_H
+    Launcher    l(argc, argv);
+    l.start();
+    return a.exec();
+}

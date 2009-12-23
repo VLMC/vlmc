@@ -1,5 +1,5 @@
 /*****************************************************************************
- * WorkflowFileRenderer.h: Output the workflow to a file
+ * ImageClipWorkflow.h : Will extract a frame from an image
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,34 +20,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef WORKFLOWFILERENDERERDIALOG_H
-#define WORKFLOWFILERENDERERDIALOG_H
+#ifndef IMAGECLIPWORKFLOW_H
+#define IMAGECLIPWORKFLOW_H
 
-#include <QDialog>
-#include "ui_WorkflowFileRendererDialog.h"
+#include "VideoClipWorkflow.h"
 
-#include "MainWorkflow.h"
-
-class   WorkflowFileRendererDialog : public QDialog
+class   ImageClipWorkflow : public VideoClipWorkflow
 {
-    Q_OBJECT
-    Q_DISABLE_COPY( WorkflowFileRendererDialog );
 public:
-    WorkflowFileRendererDialog();
-    void    setOutputFileName( const QString& filename );
-    void    setProgressBarValue( int val );
-
+    ImageClipWorkflow( Clip* clip );
+    virtual void    initVlcOutput();
 private:
-    Ui::WorkflowFileRendererDialog      m_ui;
-    MainWorkflow*                       m_workflow;
-
-public slots:
-    void    updatePreview( const uchar* buff );
-
-private slots:
-    void    frameChanged( qint64, MainWorkflow::FrameChangedReason );
-
-    friend class    WorkflowFileRenderer;
 };
 
-#endif // WORKFLOWFILERENDERERDIALOG_H
+#endif // IMAGECLIPWORKFLOW_H

@@ -22,6 +22,7 @@
 
 #include <QtDebug>
 #include <QVariant>
+#include <QDir>
 
 #include "VLMCSettingsDefault.h"
 #include "SettingsManager.h"
@@ -38,14 +39,20 @@ void    VLMCSettingsDefault::load( const QString& part )
 void    VLMCSettingsDefault::loadVLMCDefaults( const QString& part )
 {
     SettingsManager*  settingsMan = SettingsManager::getInstance();
-    QVariant defaultOutputPFS = "30";
-    QVariant defaultTrackNb = "64";
 
     settingsMan->setValue( part,
-                           "VLMCOutPutFPS", defaultOutputPFS  );
+                           "VLMCOutPutFPS", "30" );
     settingsMan->setValue( part,
                            "VLMCTracksNb",
-                           defaultTrackNb  );
+                           "64" );
+    settingsMan->setValue( part,
+                           "VLMCWorkspace",
+                           QDir::homePath() );
+    settingsMan->setValue( part, "AutomaticBackup", false );
+    settingsMan->setValue( part, "AutomaticBackupInterval", 5 );
+
+    settingsMan->setValue( "private", "LogLevel", QtWarningMsg );
+    settingsMan->setValue( "private", "LogFile", "vlmc.log" );
 
     return ;
 }
@@ -92,6 +99,7 @@ void    VLMCSettingsDefault::loadKeyboardShortcutDefaults( const QString& part )
     ADD_SHORTCUT( "Save", QKeySequence( QKeySequence::Save ).toString().toLocal8Bit() );
     ADD_SHORTCUT( "Save as", "Ctrl+Shift+S" );
     ADD_SHORTCUT( "Close project", QKeySequence( QKeySequence::Close ).toString().toLocal8Bit() );
+    ADD_SHORTCUT( "Import media", "Ctrl+I" );
     return ;
 }
 

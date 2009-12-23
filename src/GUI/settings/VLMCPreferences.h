@@ -30,12 +30,18 @@
 
 class VLMCPreferences : public PreferenceWidget
 {
-    //Q_OBJECT
+    Q_OBJECT
+
     public:
         VLMCPreferences( QWidget *parent = 0 );
         ~VLMCPreferences();
         void    load();
         void    save();
+
+    private slots:
+        void    setAutomaticSaveLabelVisiblity( bool visible );
+        void    setAutomaticSaveLabelVisiblity( int visible );
+
     private:
         Ui::VLMCPreferences m_ui;
 };

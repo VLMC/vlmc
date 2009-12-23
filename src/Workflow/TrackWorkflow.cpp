@@ -25,6 +25,7 @@
 #include "vlmc.h"
 #include "TrackWorkflow.h"
 #include "VideoClipWorkflow.h"
+#include "ImageClipWorkflow.h"
 #include "AudioClipWorkflow.h"
 
 TrackWorkflow::TrackWorkflow( unsigned int trackId, MainWorkflow::TrackType type  ) :
@@ -59,7 +60,12 @@ void    TrackWorkflow::addClip( Clip* clip, qint64 start )
 {
     ClipWorkflow* cw;
     if ( m_trackType == MainWorkflow::VideoTrack )
-        cw = new VideoClipWorkflow( clip );
+    {
+        if ( clip->getParent()->getFileType() == Media::Video )
+            cw = new VideoClipWorkflow( clip );
+        else
+            cw = new ImageClipWorkflow( clip );
+    }
     else
         cw = new AudioClipWorkflow( clip );
     addClip( cw, start );
@@ -601,8 +607,8 @@ void    TrackWorkflow::clear()
 
     for ( ; it != end; ++it )
     {
+        //The clip contained in the trackworkflow will be delete by the undo stack.
         ClipWorkflow*   cw = it.value();
-        delete cw->getClip();
         delete cw;
     }
     m_clips.clear();
