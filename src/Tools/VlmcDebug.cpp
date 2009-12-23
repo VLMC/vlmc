@@ -29,16 +29,26 @@ VlmcDebug::VlmcDebug() : m_logFile( NULL )
 {
     //setup log level :
     QStringList args = qApp->arguments();
-    if ( args.contains( "-vv" ) == true )
+    if ( args.indexOf( QRegExp( "-vvv*" ) ) >= 0 )
         SettingsManager::getInstance()->setValue( "private", "LogLevel", QtDebugMsg );
     else if ( args.contains( "-v" ) == true )
         SettingsManager::getInstance()->setValue( "private", "LogLevel", QtWarningMsg );
     else
         SettingsManager::getInstance()->setValue( "private", "LogLevel", QtCriticalMsg );
+
+    int pos = args.indexOf( QRegExp( "--logfile=.*" ) );
+    if ( pos > 0 )
+    {
+        QString arg = args[pos];
+        QString logFile = arg.mid( 10 );
+        if ( logFile.length() <= 0 )
+            qWarning() << tr("Invalid value supplied for argument --logfile" );
+        else
+            SettingsManager::getInstance()->setValue( "private", "LogFile", logFile );
+    }
+
     //Yeah I just changed preferences, but I have to commit. Though I don't feel like a widget...
     SettingsManager::getInstance()->commit();
-
-    fprintf( stderr, "%d\n", SettingsManager::getInstance()->getValue( "private", "LogLevel" )->get().toInt() );
 
     const SettingValue* setVal = SettingsManager::getInstance()->getValue( "private", "LogFile" );
     connect( setVal, SIGNAL( changed( QVariant ) ),  this, SLOT( logFileChanged( const QVariant& ) ) );
