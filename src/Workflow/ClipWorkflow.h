@@ -139,11 +139,6 @@ class   ClipWorkflow : public QObject
         void                    queryStateChange( State newState );
 
         /**
-         *  This method will wake the renderer thread for one iteration.
-         */
-        void                    wake();
-
-        /**
          *  This returns the QReadWriteLock that protects the ClipWorkflow's state.
          *  It should be use to lock the value when checking states from outside this
          *  class.
@@ -154,20 +149,10 @@ class   ClipWorkflow : public QObject
 
         void                    waitForCompleteInit();
 
-        /**
-         *  \brief      Return the wait condition associated to the render.
-         *              It's used when waiting for a render to terminate.
-         */
-        WaitCondition*          getRenderCondWait();
-        void                    waitForCompleteRender( bool dontCheckRenderStarted = false );
-        QMutex*                 getSleepMutex();
-
         virtual void*           getLockCallback() = 0;
         virtual void*           getUnlockCallback() = 0;
 
         LibVLCpp::MediaPlayer*  getMediaPlayer();
-
-        void                    setFullSpeedRender( bool value );
 
     private:
         void                    setState( State state );
@@ -203,11 +188,7 @@ class   ClipWorkflow : public QObject
         Clip*                   m_clip;
         QMutex*                 m_renderLock;
         QReadWriteLock*         m_stateLock;
-        QMutex*                 m_condMutex;
         State                   m_state;
-        WaitCondition*          m_renderWaitCond;
-        QWaitCondition*         m_waitCond;
-        bool                    m_fullSpeedRender;
         qint64                  m_previousPts;
         qint64                  m_currentPts;
         /**
@@ -238,7 +219,6 @@ class   ClipWorkflow : public QObject
         void                    clipEndReached();
 
     signals:
-        void                    renderComplete( ClipWorkflow* );
         void                    paused();
         void                    unpaused();
 };

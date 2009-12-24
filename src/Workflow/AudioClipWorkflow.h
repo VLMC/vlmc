@@ -48,12 +48,12 @@ class   AudioClipWorkflow : public ClipWorkflow
         Pool<AudioSample*>          m_computedBuffers;
         QReadWriteLock*             m_availableBuffersLock;
         Pool<AudioSample*>          m_availableBuffers;
-        void                    initVlcOutput();
-        static void             lock( AudioClipWorkflow* clipWorkflow, uint8_t** pcm_buffer , unsigned int size );
-        static void             unlock( AudioClipWorkflow* clipWorkflow, uint8_t* pcm_buffer,
-                                      unsigned int channels, unsigned int rate,
-                                      unsigned int nb_samples, unsigned int bits_per_sample,
-                                      unsigned int size, qint64 pts );
+        void                        initVlcOutput();
+        static void                 lock( AudioClipWorkflow* clipWorkflow, uint8_t** pcm_buffer , unsigned int size );
+        static void                 unlock( AudioClipWorkflow* clipWorkflow, uint8_t* pcm_buffer,
+                                            unsigned int channels, unsigned int rate,
+                                            unsigned int nb_samples, unsigned int bits_per_sample,
+                                            unsigned int size, qint64 pts );
 
         //FIXME: this is totally random powered ! Please adjust with a value that does make sense...
         static const uint32_t   nbBuffers = 128;
