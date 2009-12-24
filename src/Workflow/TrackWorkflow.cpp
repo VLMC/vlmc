@@ -476,7 +476,7 @@ void        TrackWorkflow::clipWorkflowRenderCompleted( ClipWorkflow* cw )
 //    qDebug() << "Clip [" << QObject::sender() << "] render is completed on track" << m_trackId;
     if ( cw != NULL )
     {
-        m_synchroneRenderBuffer = cw->getOutput();
+        m_synchroneRenderBuffer = cw->getOutput( ClipWorkflow::Pop );
     }
     else
     {

@@ -35,7 +35,7 @@ class   VideoClipWorkflow : public ClipWorkflow
         ~VideoClipWorkflow();
         void*                   getLockCallback();
         void*                   getUnlockCallback();
-        virtual void*           getOutput();
+        virtual void*           getOutput( ClipWorkflow::GetMode mode );
 
         static const uint32_t   nbBuffers = 3 * 30; //3 seconds with an average fps of 30
 
@@ -43,7 +43,11 @@ class   VideoClipWorkflow : public ClipWorkflow
         virtual void            initVlcOutput();
 
     private:
-        LightVideoFrame*        m_buffer;
+//        Pool<LightVideoFrame*>  m_pool;
+//        QReadWriteLock*         m_computedBuffersLock;
+        Pool<LightVideoFrame*>  m_computedBuffers;
+//        QReadWriteLock*         m_availableBuffersLock;
+        Pool<LightVideoFrame*>  m_availableBuffers;
         static void             lock( VideoClipWorkflow* clipWorkflow, void** pp_ret, int size );
         static void             unlock( VideoClipWorkflow* clipWorkflow, void* buffer, int width, int height, int bpp, int size, qint64 pts );
 };

@@ -23,19 +23,23 @@
 #include <QtDebug>
 
 #include "AudioClipWorkflow.h"
+#include "StackedBuffer.hpp"
 
 AudioClipWorkflow::AudioClipWorkflow( Clip* clip ) :
         ClipWorkflow( clip )
 {
-    m_buffer = new AudioSample;
-    m_buffer->buff = NULL;
+    m_availableBuffersLock = new QReadWriteLock;
+    m_computedBuffersLock = new QReadWriteLock;
 }
 
 AudioClipWorkflow::~AudioClipWorkflow()
 {
-    if ( m_buffer->buff != NULL )
-        delete[] m_buffer->buff;
-    delete m_buffer;
+    while ( m_availableBuffers.isEmpty() == false )
+        delete m_availableBuffers.pop();
+    while ( m_computedBuffers.isEmpty() == false )
+        delete m_computedBuffers.pop();
+    delete m_availableBuffersLock;
+    delete m_computedBuffersLock;
 }
 
 void*       AudioClipWorkflow::getLockCallback()
@@ -48,7 +52,7 @@ void*       AudioClipWorkflow::getUnlockCallback()
     return reinterpret_cast<void*>(&AudioClipWorkflow::unlock);
 }
 
-void*       AudioClipWorkflow::getOutput()
+void*       AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 {
     QMutexLocker    lock( m_renderLock );
 
@@ -57,7 +61,10 @@ void*       AudioClipWorkflow::getOutput()
         qDebug() << "Audio end reached";
         return NULL;
     }
-    return m_buffer;
+    if ( mode == ClipWorkflow::Get )
+        qCritical() << "A sound buffer should never be asked with 'Get' mode";
+    StackedBuffer<AudioSample*>* buff = new StackedBuffer<AudioSample*>( m_computedBuffers.pop(), &m_availableBuffers, true );
+    return buff;
 }
 
 void        AudioClipWorkflow::initVlcOutput()
@@ -75,13 +82,21 @@ void        AudioClipWorkflow::initVlcOutput()
 
 void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer , unsigned int size )
 {
-    if ( cw->m_buffer->buff == NULL )
+    //If there's no buffer at all, it must be the first render
+    if ( cw->m_availableBuffers.count() == 0 && cw->m_computedBuffers.count() == 0 )
     {
-        cw->m_buffer->buff = new unsigned char[size];
-        cw->m_buffer->size = size;
+        for ( unsigned int i = 0; i < AudioClipWorkflow::nbBuffers; ++i )
+        {
+            AudioSample* as = new AudioSample;
+            as->buff = new uchar[size];
+            as->size = size;
+            cw->m_availableBuffers.push_back( as );
+        }
     }
     cw->m_renderLock->lock();
-    *pcm_buffer = cw->m_buffer->buff;
+    AudioSample* as = cw->m_availableBuffers.pop();
+    cw->m_computedBuffers.push_back( as );
+    *pcm_buffer = as->buff;
 }
 
 void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffer,
@@ -96,15 +111,15 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
     Q_UNUSED( bits_per_sample );
     Q_UNUSED( size );
 
-    cw->m_renderLock->unlock();
-
     cw->computePtsDiff( pts );
-    if ( cw->m_buffer->buff != NULL )
+    AudioSample* as = cw->m_computedBuffers.head();
+    if ( as->buff != NULL )
     {
-        cw->m_buffer->nbSample = nb_samples;
-        cw->m_buffer->nbChannels = channels;
-        cw->m_buffer->ptsDiff = cw->m_currentPts - cw->m_previousPts;
+        as->nbSample = nb_samples;
+        as->nbChannels = channels;
+        as->ptsDiff = cw->m_currentPts - cw->m_previousPts;
     }
+    cw->m_renderLock->unlock();
 
     cw->commonUnlock();
 }

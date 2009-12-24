@@ -25,11 +25,6 @@
 
 #include "Pool.hpp"
 
-/**
- *  This class is to be used closely with the templated Pool.
- *  When release, the buffer will automatically pushed itself back into the appropriate pool.
- */
-
 template <typename T>
 class   StackedBuffer
 {
@@ -37,18 +32,16 @@ class   StackedBuffer
         StackedBuffer( T buff, Pool<T>* pool, bool mustBeReleased  = true ) :
                 m_buff( buff ),
                 m_pool( pool ),
-                m_released( false ),
                 m_mustRelease( mustBeReleased )
         {
         }
 
+        /// \warning    Calling this method will definitely invalidate the pointer;
         void    release()
         {
-            Q_ASSERT( m_released == false );
-            Q_ASSERT( m_mustRelease == true );
-
-            m_released = true;
-            m_pool->release( m_buff );
+            if ( m_mustRelease == true )
+                m_pool->release( m_buff );
+            delete this;
         }
         const   T&   get() const
         {
@@ -70,7 +63,6 @@ class   StackedBuffer
     private:
         T           m_buff;
         Pool<T>*    m_pool;
-        bool        m_released;
         bool        m_mustRelease;
 };
 

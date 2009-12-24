@@ -71,7 +71,7 @@ class   ClipWorkflow : public QObject
          *  therefore, you can call this method blindly, without taking care
          *  of the rendering process advancement.
          */
-        virtual void*           getOutput() = 0;
+        virtual void*           getOutput( ClipWorkflow::GetMode mode ) = 0;
         virtual void            initVlcOutput() = 0;
         void                    initialize( bool preloading = false );
 

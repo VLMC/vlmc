@@ -32,7 +32,16 @@ template <typename T>
 class       Pool
 {
 public:
-    T       get()
+    Pool()
+    {
+        m_mutex = new QMutex;
+    }
+    ~Pool()
+    {
+        Q_ASSERT( m_pool.empty() == true );
+        delete m_mutex;
+    }
+    T       pop()
     {
         QMutexLocker    lock( m_mutex );
         if ( m_pool.size() == 0 )
@@ -43,22 +52,32 @@ public:
         T  ret = m_pool.dequeue();
         return ret;
     }
+    T       head()
+    {
+        QMutexLocker    lock( m_mutex );
+        return m_pool.head();
+    }
+    int     count() const
+    {
+        return m_pool.count();
+    }
+
     void    release( T toRelease )
     {
         QMutexLocker    lock( m_mutex );
         m_pool.enqueue( toRelease );
     }
+    bool    isEmpty() const
+    {
+        return m_pool.empty();
+    }
+    void    push_back( const T& val )
+    {
+        m_pool.push_back( val );
+    }
+
 private:
-    Pool()
-    {
-        m_mutex = new QMutex;
-    }
-    ~Pool()
-    {
-        Q_ASSERT( m_pool.empty() == true );
-        delete m_mutex;
-    }
-    QQueue<uint8_t*>    m_pool;
+    QQueue<T>           m_pool;
     QMutex*             m_mutex;
 };
 

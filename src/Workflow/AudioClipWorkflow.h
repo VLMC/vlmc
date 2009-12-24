@@ -24,6 +24,7 @@
 #define AUDIOCLIPWORKFLOW_H
 
 #include "ClipWorkflow.h"
+#include "Pool.hpp"
 
 class   AudioClipWorkflow : public ClipWorkflow
 {
@@ -40,17 +41,22 @@ class   AudioClipWorkflow : public ClipWorkflow
         ~AudioClipWorkflow();
         void*                   getLockCallback();
         void*                   getUnlockCallback();
-        virtual void*           getOutput();
+        virtual void*           getOutput( ClipWorkflow::GetMode mode );
 
     private:
-        //FIXME: this should be temporary
-        AudioSample*            m_buffer;
+        QReadWriteLock*             m_computedBuffersLock;
+        Pool<AudioSample*>          m_computedBuffers;
+        QReadWriteLock*             m_availableBuffersLock;
+        Pool<AudioSample*>          m_availableBuffers;
         void                    initVlcOutput();
         static void             lock( AudioClipWorkflow* clipWorkflow, uint8_t** pcm_buffer , unsigned int size );
         static void             unlock( AudioClipWorkflow* clipWorkflow, uint8_t* pcm_buffer,
                                       unsigned int channels, unsigned int rate,
                                       unsigned int nb_samples, unsigned int bits_per_sample,
                                       unsigned int size, qint64 pts );
+
+        //FIXME: this is totally random powered ! Please adjust with a value that does make sense...
+        static const uint32_t   nbBuffers = 128;
 };
 
 #endif // AUDIOCLIPWORKFLOW_H

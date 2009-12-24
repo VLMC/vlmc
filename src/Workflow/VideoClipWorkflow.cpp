@@ -22,17 +22,29 @@
 
 #include "VideoClipWorkflow.h"
 #include "MainWorkflow.h"
+#include "StackedBuffer.hpp"
 
 VideoClipWorkflow::VideoClipWorkflow( Clip* clip ) : ClipWorkflow( clip )
 {
-    m_buffer = new LightVideoFrame( MainWorkflow::getInstance()->getWidth()
+    for ( unsigned int i = 0; i < VideoClipWorkflow::nbBuffers; ++i )
+    {
+        //Actually we don't release, we extend pool, but the release method do exactly what we want.
+        m_availableBuffers.push_back( new LightVideoFrame( MainWorkflow::getInstance()->getWidth()
                                     * MainWorkflow::getInstance()->getHeight()
-                                    * Pixel::NbComposantes );
+                                    * Pixel::NbComposantes ) );
+    }
+//    m_availableBuffersLock = new QReadWriteLock;
+//    m_computedBuffersLock = new QReadWriteLock;
 }
 
 VideoClipWorkflow::~VideoClipWorkflow()
 {
-    delete m_buffer;
+    while ( m_availableBuffers.isEmpty() == false )
+        delete m_availableBuffers.pop();
+    while ( m_computedBuffers.isEmpty() == false )
+        delete m_computedBuffers.pop();
+//    delete m_availableBuffersLock;
+//    delete m_computedBuffersLock;
 }
 
 void            VideoClipWorkflow::initVlcOutput()
@@ -72,20 +84,27 @@ void*       VideoClipWorkflow::getUnlockCallback()
     return reinterpret_cast<void*>( &VideoClipWorkflow::unlock );
 }
 
-void*    VideoClipWorkflow::getOutput()
+void*       VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 {
     QMutexLocker    lock( m_renderLock );
 
     if ( isEndReached() == true )
         return NULL;
-    return m_buffer;
+    StackedBuffer<LightVideoFrame*>* buff;
+    if ( mode == ClipWorkflow::Pop )
+        buff = new StackedBuffer<LightVideoFrame*>( m_computedBuffers.pop(), &m_availableBuffers, true );
+    else if ( mode == ClipWorkflow::Get )
+        buff = new StackedBuffer<LightVideoFrame*>( m_computedBuffers.head(), NULL, false );
+    return buff;
 }
 
 void    VideoClipWorkflow::lock( VideoClipWorkflow* cw, void** pp_ret, int size )
 {
     Q_UNUSED( size );
     cw->m_renderLock->lock();
-    *pp_ret = (*(cw->m_buffer))->frame.octets;
+    LightVideoFrame*    lvf = cw->m_availableBuffers.pop();
+    cw->m_computedBuffers.push_back( lvf );
+    *pp_ret = (*(lvf))->frame.octets;
 }
 
 void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int width, int height, int bpp, int size, qint64 pts )
@@ -96,10 +115,10 @@ void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int widt
     Q_UNUSED( bpp );
     Q_UNUSED( size );
 
-    cw->m_renderLock->unlock();
-
     cw->computePtsDiff( pts );
-    (*(cw->m_buffer))->ptsDiff = cw->m_currentPts - cw->m_previousPts;
+    LightVideoFrame*    lvf = cw->m_computedBuffers.head();
+    (*(lvf))->ptsDiff = cw->m_currentPts - cw->m_previousPts;
+    cw->m_renderLock->unlock();
 
     cw->commonUnlock();
 }
