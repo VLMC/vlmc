@@ -1,8 +1,8 @@
 TEMPLATE = subdirs
-SUBDIRS = src/ \
+SUBDIRS = src \
             launcher
 CONFIG += ordered
 
-DEPENDPATH += src/ \
+DEPENDPATH += src \
             launcher
 
