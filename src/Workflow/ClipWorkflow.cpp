@@ -40,6 +40,7 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
     m_initWaitCond = new WaitCondition;
     m_pausingStateWaitCond = new WaitCondition;
     m_renderLock = new QMutex;
+    m_feedingCondWait = new WaitCondition;
 }
 
 ClipWorkflow::~ClipWorkflow()
@@ -186,7 +187,7 @@ LibVLCpp::MediaPlayer*       ClipWorkflow::getMediaPlayer()
     return m_mediaPlayer;
 }
 
-void*       ClipWorkflow::getOutput( ClipWorkflow::GetMode )
+void        ClipWorkflow::postGetOutput()
 {
     //If we have more empty buffers than computed ones, refill our stack.
     if ( getComputedBuffers() > getAvailableBuffers() )
@@ -195,14 +196,29 @@ void*       ClipWorkflow::getOutput( ClipWorkflow::GetMode )
         //FIXME: this is probably a very bad idea...
         m_mediaPlayer->pause();
     }
-    //Keep the compiler happy, but we don't use this return value.
-    return NULL;
+}
+
+void        ClipWorkflow::preGetOutput()
+{
+    QMutexLocker    lock( m_feedingCondWait->getMutex() );
+
+    if ( getComputedBuffers() == 0 )
+    {
+        qWarning() << "Waiting for buffer to be fed";
+        m_feedingCondWait->waitLocked();
+    }
 }
 
 void        ClipWorkflow::commonUnlock()
 {
     if ( getAvailableBuffers() == 0 )
         m_mediaPlayer->pause();
+    if ( getComputedBuffers() == 1 )
+    {
+        QMutexLocker    lock( m_feedingCondWait->getMutex() );
+        qWarning() << "Just rendered the first buffer.";
+        m_feedingCondWait->wake();
+    }
     checkStateChange();
 }
 

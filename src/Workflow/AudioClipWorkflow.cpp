@@ -56,6 +56,7 @@ void*       AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 {
     QMutexLocker    lock( m_renderLock );
 
+    preGetOutput();
     if ( isEndReached() == true )
     {
         qDebug() << "Audio end reached";
@@ -64,7 +65,7 @@ void*       AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
     if ( mode == ClipWorkflow::Get )
         qCritical() << "A sound buffer should never be asked with 'Get' mode";
     StackedBuffer<AudioSample*>* buff = new StackedBuffer<AudioSample*>( m_computedBuffers.pop(), &m_availableBuffers, true );
-    ClipWorkflow::getOutput( mode );
+    postGetOutput();
     return buff;
 }
 

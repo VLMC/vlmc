@@ -75,9 +75,6 @@ void    TrackWorkflow::addClip( Clip* clip, qint64 start )
 void    TrackWorkflow::addClip( ClipWorkflow* cw, qint64 start )
 {
     QWriteLocker    lock( m_clipsLock );
-    connect( cw, SIGNAL( renderComplete( ClipWorkflow* ) ), this, SLOT( clipWorkflowRenderCompleted( ClipWorkflow* ) ), Qt::DirectConnection );
-    connect( cw, SIGNAL( paused() ), this, SLOT( clipWorkflowPaused() ) );
-    connect( cw, SIGNAL( unpaused() ), this, SLOT( clipWorkflowUnpaused() ) );
     m_clips.insert( start, cw );
     computeLength();
 }

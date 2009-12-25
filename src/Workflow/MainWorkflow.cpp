@@ -55,9 +55,6 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     {
         MainWorkflow::TrackType trackType = (i == 0 ? MainWorkflow::VideoTrack : MainWorkflow::AudioTrack );
         m_tracks[i] = new TrackHandler( trackCount, trackType, m_effectEngine );
-        connect( m_tracks[i], SIGNAL( tracksPaused() ), this, SLOT( tracksPaused() ) );
-        connect( m_tracks[i], SIGNAL( tracksUnpaused() ), this, SLOT( tracksUnpaused() ) );
-        connect( m_tracks[i], SIGNAL( allTracksRenderCompleted() ), this, SLOT( tracksRenderCompleted() ) );
         connect( m_tracks[i], SIGNAL( tracksEndReached() ), this, SLOT( tracksEndReached() ) );
 	m_currentFrame[i] = 0;
     }
@@ -145,21 +142,27 @@ MainWorkflow::OutputBuffers*    MainWorkflow::getOutput( TrackType trackType )
 
 void        MainWorkflow::pause()
 {
-    //Just wait for the current render to finish
-    //TODO:
-    //FIXME: check if this is not alreay handled by the stacked actions system.
-    QMutexLocker    lock( m_renderMutex );
+    {
+        //Just wait for the current render to finish
+        //TODO:
+        //FIXME: check if this is not alreay handled by the stacked actions system.
+        QMutexLocker    lock( m_renderMutex );
 
-    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
-        m_tracks[i]->pause();
+        for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
+            m_tracks[i]->pause();
+    }
+    emit mainWorkflowPaused();
 }
 
 void        MainWorkflow::unpause()
 {
-    QMutexLocker    lock( m_renderMutex );
+    {
+        QMutexLocker    lock( m_renderMutex );
 
-    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
-        m_tracks[i]->unpause();
+        for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
+            m_tracks[i]->unpause();
+    }
+    emit mainWorkflowUnpaused();
 }
 
 void        MainWorkflow::goToNextFrame( MainWorkflow::TrackType trackType )

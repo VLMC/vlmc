@@ -71,7 +71,9 @@ class   ClipWorkflow : public QObject
          *  therefore, you can call this method blindly, without taking care
          *  of the rendering process advancement.
          */
-        virtual void*           getOutput( ClipWorkflow::GetMode mode );
+        virtual void*           getOutput( ClipWorkflow::GetMode mode ) = 0;
+        void                    preGetOutput();
+        void                    postGetOutput();
         virtual void            initVlcOutput() = 0;
         void                    initialize();
 
@@ -178,6 +180,12 @@ class   ClipWorkflow : public QObject
          *  \brief  The VLC media used to render
          */
         LibVLCpp::Media*        m_vlcMedia;
+        /**
+         *  \brief  This is used for basic synchronisation when
+         *          the clipworkflow hasn't generate a frame yet,
+         *          while the renderer asks for one.
+         */
+        WaitCondition*          m_feedingCondWait;
 
     protected:
         /**
@@ -187,8 +195,6 @@ class   ClipWorkflow : public QObject
 
     private slots:
         void                    loadingComplete();
-
-    public slots:
         void                    clipEndReached();
 };
 

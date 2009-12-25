@@ -88,6 +88,8 @@ void*       VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 {
     QMutexLocker    lock( m_renderLock );
 
+    preGetOutput();
+
     qWarning() << "poping buffer";
     if ( isEndReached() == true )
         return NULL;
@@ -96,7 +98,7 @@ void*       VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
         buff = new StackedBuffer<LightVideoFrame*>( m_computedBuffers.pop(), &m_availableBuffers, true );
     else if ( mode == ClipWorkflow::Get )
         buff = new StackedBuffer<LightVideoFrame*>( m_computedBuffers.head(), NULL, false );
-    ClipWorkflow::getOutput( mode );
+    ClipWorkflow::postGetOutput();
     return buff;
 }
 
@@ -122,7 +124,7 @@ void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int widt
     LightVideoFrame*    lvf = cw->m_computedBuffers.head();
     (*(lvf))->ptsDiff = cw->m_currentPts - cw->m_previousPts;
     cw->m_renderLock->unlock();
-
+    //If this is the first buffer that has been rendered, there may be a waiting TrackWorkflow.
     cw->commonUnlock();
 }
 
