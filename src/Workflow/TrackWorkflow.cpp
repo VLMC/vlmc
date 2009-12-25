@@ -219,8 +219,17 @@ void                    TrackWorkflow::stop()
     m_lastFrame = 0;
 }
 
+void                TrackWorkflow::releasePreviousRender()
+{
+    if ( m_audioStackedBuffer != NULL )
+        m_audioStackedBuffer->release();
+    if ( m_videoStackedBuffer != NULL )
+        m_videoStackedBuffer->release();
+}
+
 void*               TrackWorkflow::getOutput( qint64 currentFrame )
 {
+    releasePreviousRender();
     QReadLocker     lock( m_clipsLock );
 
     QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();

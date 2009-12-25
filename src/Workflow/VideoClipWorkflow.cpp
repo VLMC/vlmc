@@ -86,9 +86,10 @@ void*       VideoClipWorkflow::getUnlockCallback()
 
 void*       VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 {
-    QMutexLocker    lock( m_renderLock );
-
     preGetOutput();
+    //Don't lock before preGetOutput() : it can eventually waits for the clipworkflow to render a frame
+    //which requires the renderLock to be unheld.
+    QMutexLocker    lock( m_renderLock );
 
     qWarning() << "poping buffer";
     if ( isEndReached() == true )

@@ -78,6 +78,7 @@ void    ClipWorkflow::initialize()
 
     connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( loadingComplete() ), Qt::DirectConnection );
     connect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( clipEndReached() ), Qt::DirectConnection );
+    qDebug() << "Starting clipworkflow playback";
     m_mediaPlayer->play();
 }
 
@@ -85,8 +86,10 @@ void    ClipWorkflow::loadingComplete()
 {
     adjustBegin();
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( loadingComplete() ) );
+    qDebug() << "Setting state to Rendering";
     QMutexLocker    lock( m_initWaitCond->getMutex() );
     setState( Rendering );
+    qDebug() << "Waking init wait cond";
     m_initWaitCond->wake();
 }
 

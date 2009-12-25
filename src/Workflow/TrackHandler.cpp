@@ -115,7 +115,9 @@ void        TrackHandler::getOutput( qint64 currentFrame )
         {
             StackedBuffer<AudioClipWorkflow::AudioSample*>* stackedBuffer =
                     reinterpret_cast<StackedBuffer<AudioClipWorkflow::AudioSample*>*> (m_tracks[i]->getOutput( currentFrame ) );
-            m_tmpAudioBuffer = stackedBuffer->get();
+            if ( stackedBuffer != NULL )
+                m_tmpAudioBuffer = stackedBuffer->get();
+            //else if will remain NULL
         }
     }
 }
