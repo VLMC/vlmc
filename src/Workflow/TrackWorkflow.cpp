@@ -33,9 +33,10 @@ TrackWorkflow::TrackWorkflow( unsigned int trackId, MainWorkflow::TrackType type
         m_length( 0 ),
         m_forceRepositionning( false ),
         m_paused( false ),
-        m_synchroneRenderBuffer( NULL ),
         m_trackType( type ),
-        m_lastFrame( 0 )
+        m_lastFrame( 0 ),
+        m_videoStackedBuffer( NULL ),
+        m_audioStackedBuffer( NULL )
 {
     m_forceRepositionningMutex = new QMutex;
     m_clipsLock = new QReadWriteLock;
@@ -259,6 +260,10 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame )
             if ( ret != NULL )
                 qCritical() << "There's more than one clip to render here. Undefined behaviour !";
             ret = renderClip( cw, currentFrame, start, needRepositioning );
+            if ( m_trackType == MainWorkflow::VideoTrack )
+                m_videoStackedBuffer = reinterpret_cast<StackedBuffer<LightVideoFrame*>*>( ret );
+            else
+                m_audioStackedBuffer = reinterpret_cast<StackedBuffer<AudioClipWorkflow::AudioSample*>*>( ret );
         }
         //Is it about to be rendered ?
         else if ( start > currentFrame &&

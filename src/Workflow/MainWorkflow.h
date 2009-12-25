@@ -52,7 +52,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         };
         enum    TrackType
         {
-            BothTrackType = -1,
             VideoTrack,
             AudioTrack,
             NbTrackType,
@@ -68,8 +67,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         void                    addClip( Clip* clip, unsigned int trackId, qint64 start, TrackType type );
 
         void                    startRender();
-        void                    getOutput( TrackType trackType );
-        OutputBuffers*          getSynchroneOutput( TrackType trackType );
+        OutputBuffers*          getOutput( TrackType trackType );
         EffectsEngine*          getEffectsEngine();
 
         /**
@@ -120,12 +118,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
                                           MainWorkflow::TrackType trackType, bool undoRedoCommand = false );
         qint64                  getClipPosition( const QUuid& uuid, unsigned int trackId, MainWorkflow::TrackType trackType ) const;
 
-        /**
-         *  \brief  This method will wake every wait condition, so that threads won't
-         *          be waiting anymore, thus avoiding dead locks.
-         */
-        void                    cancelSynchronisation();
-
         void                    muteTrack( unsigned int trackId, MainWorkflow::TrackType );
         void                    unmuteTrack( unsigned int trackId, MainWorkflow::TrackType );
 
@@ -161,11 +153,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         QReadWriteLock*                 m_renderStartedLock;
 
         QMutex*                         m_renderMutex;
-        QWaitCondition*                 m_synchroneRenderWaitCondition;
-        QMutex*                         m_synchroneRenderWaitConditionMutex;
-        unsigned int                    m_nbTrackHandlerToRender;
-        QMutex*                         m_nbTrackHandlerToRenderMutex;
-        WaitCondition*                  m_pauseWaitCond;
         bool                            m_paused;
         TrackHandler**                  m_tracks;
         OutputBuffers*                  m_outputBuffers;
@@ -179,9 +166,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         friend class    Singleton<MainWorkflow>;
 
     private slots:
-        void                            tracksPaused();
-        void                            tracksUnpaused();
-        void                            tracksRenderCompleted();
         void                            tracksEndReached();
         void                            widthChanged( const QVariant& );
         void                            heightChanged( const QVariant& );
@@ -200,8 +184,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
                                               MainWorkflow::FrameChangedReason );
 
         void                    mainWorkflowEndReached();
-        void                    mainWorkflowPaused();
-        void                    mainWorkflowUnpaused();
         void                    clipAdded( Clip*, unsigned int, qint64, MainWorkflow::TrackType );
         void                    clipRemoved( Clip*, unsigned int, MainWorkflow::TrackType );
         void                    clipMoved( QUuid, unsigned int, qint64, MainWorkflow::TrackType );

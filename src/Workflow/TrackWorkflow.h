@@ -34,6 +34,7 @@
 #include "ClipWorkflow.h"
 #include "LightVideoFrame.h"
 #include "MainWorkflow.h"
+#include "StackedBuffer.hpp"
 
 //TODO: REMOVE THIS
 #ifndef FPS
@@ -75,7 +76,7 @@ class   TrackWorkflow : public QObject
 
     private:
         void                                    computeLength();
-        void                                    renderClip( ClipWorkflow* cw, qint64 currentFrame,
+        void*                                   renderClip( ClipWorkflow* cw, qint64 currentFrame,
                                                             qint64 start, bool needRepositioning );
         void                                    preloadClip( ClipWorkflow* cw );
         void                                    stopClipWorkflow( ClipWorkflow* cw );
@@ -105,10 +106,11 @@ class   TrackWorkflow : public QObject
 
         bool                                    m_paused;
 
-        void*                                   m_output;
-
         MainWorkflow::TrackType                 m_trackType;
         qint64                                  m_lastFrame;
+        //Damn i wish this could be a meta-if :D (ho wait... it could be ! once the code will be cleaned)
+        StackedBuffer<LightVideoFrame*>*        m_videoStackedBuffer;
+        StackedBuffer<AudioClipWorkflow::AudioSample*> *    m_audioStackedBuffer;
 
     signals:
         void                                    trackEndReached( unsigned int );

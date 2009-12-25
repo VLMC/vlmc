@@ -66,7 +66,6 @@ class   TrackHandler : public QObject
 
         bool                    isPaused() const;
         bool                    endIsReached() const;
-        bool                    allTracksRendered() const;
 
         void                    save( QDomDocument& doc, QDomElement& timelineNode ) const;
 
@@ -78,33 +77,19 @@ class   TrackHandler : public QObject
         static LightVideoFrame*         nullOutput;
         Toggleable<TrackWorkflow*>*     m_tracks;
         unsigned int                    m_trackCount;
-        QAtomicInt                      m_nbTracksToPause;
-        QAtomicInt                      m_nbTracksToUnpause;
         MainWorkflow::TrackType         m_trackType;
         qint64                          m_length;
         unsigned int                    m_highestTrackNumber;
         bool                            m_paused;
         bool                            m_endReached;
-        /**
-         *  \brief  This flag is used to know if all tracks handled
-         *          have been rendered.
-         *          This is for internal synchronisation only.
-         */
-        bool                            m_renderCompleted;
         EffectsEngine*                  m_effectEngine;
         AudioClipWorkflow::AudioSample* m_tmpAudioBuffer;
 
 
     private slots:
         void                            trackEndReached( unsigned int trackId );
-        void                            trackPaused();
-        void                            trackUnpaused();
-        void                            tracksRenderCompleted( unsigned int trackId );
 
     signals:
-        void                            tracksPaused();
-        void                            tracksUnpaused();
-        void                            allTracksRenderCompleted();
         void                            tracksEndReached();
 };
 

@@ -38,9 +38,6 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     m_currentFrameLock = new QReadWriteLock;
     m_renderStartedLock = new QReadWriteLock;
     m_renderMutex = new QMutex;
-    m_synchroneRenderWaitCondition = new QWaitCondition;
-    m_synchroneRenderWaitConditionMutex = new QMutex;
-    m_pauseWaitCond = new WaitCondition;
 
     const SettingValue* width = SettingsManager::getInstance()->getValue( "project", "VideoProjectWidth" );
     connect( width, SIGNAL( changed( QVariant ) ), this, SLOT( widthChanged( QVariant ) ) );
@@ -65,7 +62,6 @@ MainWorkflow::MainWorkflow( int trackCount ) :
 	m_currentFrame[i] = 0;
     }
     m_outputBuffers = new OutputBuffers;
-    m_nbTrackHandlerToRenderMutex = new QMutex;
 
     blackOutput = new LightVideoFrame( m_width * m_height * Pixel::NbComposantes );
     memset( (*blackOutput)->frame.octets, 0, (*blackOutput)->nboctets );
@@ -76,11 +72,7 @@ MainWorkflow::~MainWorkflow()
     //FIXME: this is probably useless, since already done by the renderer
     stop();
 
-    delete m_nbTrackHandlerToRenderMutex;
-    delete m_pauseWaitCond;
     delete m_effectEngine;
-    delete m_synchroneRenderWaitConditionMutex;
-    delete m_synchroneRenderWaitCondition;
     delete m_renderMutex;
     delete m_renderStartedLock;
     delete m_currentFrameLock;
@@ -125,7 +117,7 @@ void    MainWorkflow::startRender()
     computeLength();
 }
 
-void                    MainWorkflow::getOutput( TrackType trackType )
+MainWorkflow::OutputBuffers*    MainWorkflow::getOutput( TrackType trackType )
 {
     QReadLocker         lock( m_renderStartedLock );
     QMutexLocker        lock2( m_renderMutex );
@@ -133,33 +125,33 @@ void                    MainWorkflow::getOutput( TrackType trackType )
     if ( m_renderStarted == true )
     {
         QReadLocker         lock3( m_currentFrameLock );
-        QMutexLocker        lock4( m_nbTrackHandlerToRenderMutex );
 
-	//This has probably no reason for existing... and therefore shouldn't
-        if ( trackType == BothTrackType )
+        m_tracks[trackType]->getOutput( m_currentFrame[trackType] );
+        if ( trackType == MainWorkflow::VideoTrack )
         {
-            m_nbTrackHandlerToRender = MainWorkflow::NbTrackType;
-            for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
-                m_tracks[i]->getOutput( m_currentFrame[i] );
+            m_effectEngine->render();
+            if ( m_effectEngine->getOutputFrame( 0 )->nboctets == 0 )
+                m_outputBuffers->video = MainWorkflow::blackOutput;
+            else
+                m_outputBuffers->video = &( m_effectEngine->getOutputFrame( 0 ) );
         }
         else
         {
-            m_nbTrackHandlerToRender = 1;
-            m_tracks[trackType]->getOutput( m_currentFrame[trackType] );
+            m_outputBuffers->audio = m_tracks[MainWorkflow::AudioTrack]->getTmpAudioBuffer();
         }
     }
+    return m_outputBuffers;
 }
 
 void        MainWorkflow::pause()
 {
     //Just wait for the current render to finish
-    m_renderMutex->lock();
-    QMutexLocker    lock( m_pauseWaitCond->getMutex() );
-    m_renderMutex->unlock();
+    //TODO:
+    //FIXME: check if this is not alreay handled by the stacked actions system.
+    QMutexLocker    lock( m_renderMutex );
 
     for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         m_tracks[i]->pause();
-    m_pauseWaitCond->waitLocked();
 }
 
 void        MainWorkflow::unpause()
@@ -237,37 +229,6 @@ Clip*       MainWorkflow::removeClip( const QUuid& uuid, unsigned int trackId, M
     computeLength();
     emit clipRemoved( clip, trackId, trackType );
     return clip;
-}
-
-MainWorkflow::OutputBuffers*  MainWorkflow::getSynchroneOutput( MainWorkflow::TrackType trackType )
-{
-    m_synchroneRenderWaitConditionMutex->lock();
-    getOutput( trackType );
-//    qDebug() << "Waiting for sync output";
-    m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
-//    qDebug() << "Got it";
-    if ( trackType == BothTrackType || trackType == VideoTrack )
-    {
-        m_effectEngine->render();
-        if ( m_effectEngine->getOutputFrame( 0 )->nboctets == 0 )
-            m_outputBuffers->video = MainWorkflow::blackOutput;
-        else
-            m_outputBuffers->video = &( m_effectEngine->getOutputFrame( 0 ) );
-    }
-    if ( trackType == BothTrackType || trackType == AudioTrack )
-    {
-        m_outputBuffers->audio = m_tracks[MainWorkflow::AudioTrack]->getTmpAudioBuffer();
-    }
-    m_synchroneRenderWaitConditionMutex->unlock();
-    return m_outputBuffers;
-}
-
-void        MainWorkflow::cancelSynchronisation()
-{
-    {
-        QMutexLocker    lock( m_synchroneRenderWaitConditionMutex );
-    }
-    m_synchroneRenderWaitCondition->wakeAll();
 }
 
 void        MainWorkflow::muteTrack( unsigned int trackId, MainWorkflow::TrackType trackType )
@@ -414,49 +375,12 @@ void        MainWorkflow::clear()
     emit cleared();
 }
 
-void        MainWorkflow::tracksPaused()
-{
-    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
-        if ( m_tracks[i]->isPaused() == false )
-            return ;
-    m_paused = true;
-    {
-        QMutexLocker    lock( m_pauseWaitCond->getMutex() );
-        m_pauseWaitCond->wake();
-    }
-    emit mainWorkflowPaused();
-}
-
 void        MainWorkflow::tracksEndReached()
 {
     for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         if ( m_tracks[i]->endIsReached() == false )
             return ;
     emit mainWorkflowEndReached();
-}
-
-void        MainWorkflow::tracksUnpaused()
-{
-    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
-        if ( m_tracks[i]->isPaused() == true )
-            return ;
-    m_paused = false;
-    emit mainWorkflowUnpaused();
-}
-
-void        MainWorkflow::tracksRenderCompleted()
-{
-    {
-        QMutexLocker    lock( m_nbTrackHandlerToRenderMutex );
-
-        --m_nbTrackHandlerToRender;
-        if ( m_nbTrackHandlerToRender > 0 )
-            return ;
-    }
-    {
-        QMutexLocker    lock( m_synchroneRenderWaitConditionMutex );
-    }
-    m_synchroneRenderWaitCondition->wakeAll();
 }
 
 int         MainWorkflow::getTrackCount( MainWorkflow::TrackType trackType ) const
@@ -470,7 +394,6 @@ qint64      MainWorkflow::getCurrentFrame() const
 
     return m_currentFrame[MainWorkflow::VideoTrack];
 }
-
 
 void        MainWorkflow::widthChanged( const QVariant& width )
 {

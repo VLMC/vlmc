@@ -122,7 +122,7 @@ int     WorkflowRenderer::lockVideo( WorkflowRenderer* self, int64_t *pts, size_
 
     if ( self->m_stopping == false && self->m_paused == false )
     {
-        MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getSynchroneOutput( MainWorkflow::VideoTrack );
+        MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getOutput( MainWorkflow::VideoTrack );
         memcpy( self->m_renderVideoFrame, (*(ret->video))->frame.octets, (*(ret->video))->nboctets );
         self->m_videoBuffSize = (*(ret->video))->nboctets;
         ptsDiff = (*(ret->video))->ptsDiff;
@@ -143,7 +143,7 @@ int     WorkflowRenderer::lockAudio(  WorkflowRenderer* self, int64_t *pts, size
         return 1;
     if ( self->m_stopping == false )
     {
-        MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getSynchroneOutput( MainWorkflow::AudioTrack );
+        MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getOutput( MainWorkflow::AudioTrack );
         self->m_renderAudioSample = ret->audio;
     }
     uint32_t    nbSample;
@@ -276,7 +276,6 @@ void        WorkflowRenderer::stop()
     m_isRendering = false;
     m_paused = false;
     m_stopping = true;
-    m_mainWorkflow->cancelSynchronisation();
     m_mediaPlayer->stop();
     m_mainWorkflow->stop();
 }

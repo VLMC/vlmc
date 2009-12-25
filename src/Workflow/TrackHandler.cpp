@@ -38,11 +38,7 @@ TrackHandler::TrackHandler( unsigned int nbTracks, MainWorkflow::TrackType track
     {
         m_tracks[i].setPtr( new TrackWorkflow( i, trackType ) );
         connect( m_tracks[i], SIGNAL( trackEndReached( unsigned int ) ), this, SLOT( trackEndReached(unsigned int) ) );
-        connect( m_tracks[i], SIGNAL( trackPaused() ), this, SLOT( trackPaused() ) );
-        connect( m_tracks[i], SIGNAL( trackUnpaused() ), this, SLOT( trackUnpaused() ) );
-        connect( m_tracks[i], SIGNAL( renderCompleted( unsigned int ) ), this,  SLOT( tracksRenderCompleted( unsigned int ) ), Qt::QueuedConnection );
     }
-    m_nbTracksToRenderMutex = new QMutex;
 }
 
 TrackHandler::~TrackHandler()
@@ -52,7 +48,6 @@ TrackHandler::~TrackHandler()
         delete nullOutput;
         nullOutput = NULL;
     }
-    delete m_nbTracksToRenderMutex;
 
     for (unsigned int i = 0; i < m_trackCount; ++i)
         delete m_tracks[i];
@@ -102,10 +97,6 @@ qint64      TrackHandler::getLength() const
 
 void        TrackHandler::getOutput( qint64 currentFrame )
 {
-    QMutexLocker    lockNbTracks( m_nbTracksToRenderMutex );
-
-    m_renderCompleted = false;
-    m_nbTracksToRender = 0;
     m_tmpAudioBuffer = NULL;
     for ( unsigned int i = 0; i < m_trackCount; ++i )
     {
@@ -114,34 +105,36 @@ void        TrackHandler::getOutput( qint64 currentFrame )
             if ( m_tracks[i].activated() == false )
                 m_effectEngine->setInputFrame( *TrackHandler::nullOutput, i );
             else
-                m_effectEngine->setInputFrame( m_tracks[i]->getOutput( currentFrame ), i );
+            {
+                StackedBuffer<LightVideoFrame*>* stackedBuffer =
+                        reinterpret_cast<StackedBuffer<LightVideoFrame*>*>( m_tracks[i]->getOutput( currentFrame ) );
+                m_effectEngine->setInputFrame( *(stackedBuffer->get()), i );
+            }
+        }
+        else
+        {
+            StackedBuffer<AudioClipWorkflow::AudioSample*>* stackedBuffer =
+                    reinterpret_cast<StackedBuffer<AudioClipWorkflow::AudioSample*>*> (m_tracks[i]->getOutput( currentFrame ) );
+            m_tmpAudioBuffer = stackedBuffer->get();
         }
     }
 }
 
 void        TrackHandler::pause()
 {
-    m_nbTracksToPause = 0;
     for ( unsigned int i = 0; i < m_trackCount; ++i )
     {
         if ( m_tracks[i].activated() == true )
-        {
-            m_nbTracksToPause.fetchAndAddAcquire( 1 );
             m_tracks[i]->pause();
-        }
     }
 }
 
 void        TrackHandler::unpause()
 {
-    m_nbTracksToUnpause = 0;
     for ( unsigned int i = 0; i < m_trackCount; ++i )
     {
-        if ( m_tracks[i].activated() == true )
-        {
-            m_nbTracksToUnpause.fetchAndAddAcquire( 1 );
-            m_tracks[i]->unpause();
-        }
+        //Don't check for track activation, as it could have change from the time we paused.
+        m_tracks[i]->unpause();
     }
 }
 
@@ -248,11 +241,6 @@ bool        TrackHandler::endIsReached() const
     return m_endReached;
 }
 
-bool        TrackHandler::allTracksRendered() const
-{
-    return m_renderCompleted;
-}
-
 void        TrackHandler::trackEndReached( unsigned int trackId )
 {
     m_tracks[trackId].deactivate();
@@ -264,58 +252,6 @@ void        TrackHandler::trackEndReached( unsigned int trackId )
     }
     m_endReached = true;
     emit tracksEndReached();
-}
-
-void        TrackHandler::trackPaused()
-{
-    m_nbTracksToPause.fetchAndAddAcquire( -1 );
-    if ( m_nbTracksToPause <= 0 )
-    {
-        m_paused = true;
-        emit tracksPaused();
-    }
-}
-
-void        TrackHandler::trackUnpaused()
-{
-    m_nbTracksToUnpause.fetchAndAddAcquire( -1 );
-    if ( m_nbTracksToUnpause <= 0 )
-    {
-        m_paused = false;
-        emit tracksUnpaused();
-    }
-}
-
-void        TrackHandler::tracksRenderCompleted( unsigned int trackId )
-{
-    QMutexLocker    lockNbTracks( m_nbTracksToRenderMutex );
-    --m_nbTracksToRender;
-
-    {
-        if ( m_trackType == MainWorkflow::VideoTrack )
-        {
-            LightVideoFrame* buff = reinterpret_cast<LightVideoFrame*>( m_tracks[trackId]->getSynchroneOutput() );
-            if ( buff == NULL )
-            {
-                m_effectEngine->setInputFrame( *TrackHandler::nullOutput, trackId );
-            }
-            else
-                m_effectEngine->setInputFrame( *buff, trackId );
-        }
-        else
-        {
-           AudioClipWorkflow::AudioSample* buff = reinterpret_cast<AudioClipWorkflow::AudioSample*>( m_tracks[trackId]->getOutput() );
-           m_tmpAudioBuffer = buff;
-        }
-    }
-    //We check for minus or equal, since we can have 0 frame to compute,
-    //therefore, m_nbTracksToRender will be equal to -1
-    if ( m_nbTracksToRender <= 0 )
-    {
-        //Just a synchronisation barriere
-        m_renderCompleted = true;
-        emit allTracksRenderCompleted();
-    }
 }
 
 unsigned int    TrackHandler::getTrackCount() const
