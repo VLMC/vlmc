@@ -109,19 +109,13 @@ void        TrackHandler::getOutput( qint64 currentFrame )
     m_tmpAudioBuffer = NULL;
     for ( unsigned int i = 0; i < m_trackCount; ++i )
     {
-        if ( m_tracks[i].activated() == false )
+        if ( m_trackType == MainWorkflow::VideoTrack )
         {
-            if ( m_tracks[i].hardDeactivated() == true )
-            {
-                ++m_nbTracksToRender;
-                m_tracks[i]->simulateBlackOutputRender();
-            }
-            else
+            if ( m_tracks[i].activated() == false )
                 m_effectEngine->setInputFrame( *TrackHandler::nullOutput, i );
-            continue ;
+            else
+                m_effectEngine->setInputFrame( m_tracks[i]->getOutput( currentFrame ), i );
         }
-        ++m_nbTracksToRender;
-        m_tracks[i]->getOutput( currentFrame );
     }
 }
 
@@ -310,7 +304,7 @@ void        TrackHandler::tracksRenderCompleted( unsigned int trackId )
         }
         else
         {
-           AudioClipWorkflow::AudioSample* buff = reinterpret_cast<AudioClipWorkflow::AudioSample*>( m_tracks[trackId]->getSynchroneOutput() );
+           AudioClipWorkflow::AudioSample* buff = reinterpret_cast<AudioClipWorkflow::AudioSample*>( m_tracks[trackId]->getOutput() );
            m_tmpAudioBuffer = buff;
         }
     }

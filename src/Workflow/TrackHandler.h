@@ -83,8 +83,6 @@ class   TrackHandler : public QObject
         MainWorkflow::TrackType         m_trackType;
         qint64                          m_length;
         unsigned int                    m_highestTrackNumber;
-        unsigned int                    m_nbTracksToRender;
-        QMutex*                         m_nbTracksToRenderMutex;
         bool                            m_paused;
         bool                            m_endReached;
         /**

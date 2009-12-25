@@ -88,6 +88,7 @@ void*       VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 {
     QMutexLocker    lock( m_renderLock );
 
+    qWarning() << "poping buffer";
     if ( isEndReached() == true )
         return NULL;
     StackedBuffer<LightVideoFrame*>* buff;
@@ -105,6 +106,7 @@ void    VideoClipWorkflow::lock( VideoClipWorkflow* cw, void** pp_ret, int size 
     cw->m_renderLock->lock();
     LightVideoFrame*    lvf = cw->m_availableBuffers.pop();
     cw->m_computedBuffers.push_back( lvf );
+    qWarning() << "feeding video buffer";
     *pp_ret = (*(lvf))->frame.octets;
 }
 

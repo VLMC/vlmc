@@ -126,7 +126,7 @@ Clip*               TrackWorkflow::getClip( const QUuid& uuid )
     return NULL;
 }
 
-void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
+void*       TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
                                         qint64 start , bool needRepositioning )
 {
     cw->getStateLock()->lockForRead();
@@ -137,6 +137,7 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
         cw->getStateLock()->unlock();
         if ( needRepositioning == true )
             adjustClipTime( currentFrame, start, cw );
+        return cw->getOutput( ClipWorkflow::Pop );
     }
     else if ( cw->getState() == ClipWorkflow::Stopped )
     {
@@ -146,20 +147,19 @@ void        TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
         {
             adjustClipTime( currentFrame, start, cw );
         }
-        //FIXME: comment this part ?!
-        if ( m_paused == true )
-            clipWorkflowRenderCompleted( cw );
+        cw->waitForCompleteInit();
+        return cw->getOutput( ClipWorkflow::Pop );
     }
     else if ( cw->getState() == ClipWorkflow::EndReached )
     {
         cw->getStateLock()->unlock();
-        clipWorkflowRenderCompleted( cw );
         //The stopClipWorkflow() method will take care of that.
     }
     else
     {
         cw->getStateLock()->unlock();
     }
+    return NULL;
 }
 
 void                TrackWorkflow::preloadClip( ClipWorkflow* cw )
@@ -221,14 +221,14 @@ void                    TrackWorkflow::stop()
     m_lastFrame = 0;
 }
 
-bool                TrackWorkflow::getOutput( qint64 currentFrame )
+void*               TrackWorkflow::getOutput( qint64 currentFrame )
 {
     QReadLocker     lock( m_clipsLock );
 
     QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
     QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
     bool                                        needRepositioning;
-    bool                                        hasRendered = false;
+    void*                                       ret = NULL;
 
     if ( checkEnd( currentFrame ) == true )
     {
@@ -247,7 +247,6 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
         else
             needRepositioning = ( abs( currentFrame - m_lastFrame ) > 1 ) ? true : false;
     }
-    m_nbClipToRender = 0;
 
     while ( it != end )
     {
@@ -257,9 +256,9 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
 //        qDebug() << "Start:" << start << "Current Frame:" << currentFrame;
         if ( start <= currentFrame && currentFrame <= start + cw->getClip()->getLength() )
         {
-            m_nbClipToRender.fetchAndAddAcquire( 1 );
-            renderClip( cw, currentFrame, start, needRepositioning );
-            hasRendered = true;
+            if ( ret != NULL )
+                qCritical() << "There's more than one clip to render here. Undefined behaviour !";
+            ret = renderClip( cw, currentFrame, start, needRepositioning );
         }
         //Is it about to be rendered ?
         else if ( start > currentFrame &&
@@ -275,12 +274,8 @@ bool                TrackWorkflow::getOutput( qint64 currentFrame )
 
         ++it;
     }
-    if ( hasRendered == false )
-    {
-        clipWorkflowRenderCompleted( NULL );
-    }
     m_lastFrame = currentFrame;
-    return hasRendered;
+    return ret;
 }
 
 void                TrackWorkflow::pause()
@@ -361,34 +356,6 @@ ClipWorkflow*       TrackWorkflow::removeClipWorkflow( const QUuid& id )
         ++it;
     }
     return NULL;
-}
-
-void        TrackWorkflow::clipWorkflowRenderCompleted( ClipWorkflow* cw )
-{
-//    qDebug() << "Clip [" << QObject::sender() << "] render is completed on track" << m_trackId;
-    if ( cw != NULL )
-    {
-        m_synchroneRenderBuffer = cw->getOutput( ClipWorkflow::Pop );
-    }
-    else
-    {
-        m_synchroneRenderBuffer = NULL;
-    }
-    m_nbClipToRender.fetchAndAddAcquire( -1 );
-    //When there is nothing to render, m_nbClipToRender will be equal to one here, so we check for minus
-    //or equal to 0
-    if ( m_nbClipToRender <= 0 )
-    {
-//        qDebug() << "Track render completed";
-        emit renderCompleted( m_trackId );
-    }
-//    else
-//        qDebug() << "Track render not completed yet";
-}
-
-void*       TrackWorkflow::getSynchroneOutput()
-{
-    return m_synchroneRenderBuffer;
 }
 
 void    TrackWorkflow::unpause()
@@ -481,9 +448,4 @@ void    TrackWorkflow::forceRepositionning()
 {
     QMutexLocker    lock( m_forceRepositionningMutex );
     m_forceRepositionning = true;
-}
-
-void    TrackWorkflow::simulateBlackOutputRender()
-{
-    clipWorkflowRenderCompleted( NULL );
 }

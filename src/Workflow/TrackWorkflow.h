@@ -52,7 +52,7 @@ class   TrackWorkflow : public QObject
         TrackWorkflow( unsigned int trackId, MainWorkflow::TrackType type );
         ~TrackWorkflow();
 
-        bool                                    getOutput( qint64 currentFrame );
+        void*                                   getOutput( qint64 currentFrame );
         qint64                                  getLength() const;
         void                                    stop();
         void                                    pause();
@@ -65,11 +65,6 @@ class   TrackWorkflow : public QObject
         qint64                                  getClipPosition( const QUuid& uuid ) const;
         Clip*                                   getClip( const QUuid& uuid );
 
-        /**
-         *  Returns the output that has been computed in synchrone mode.
-         */
-        void*                                   getSynchroneOutput();
-
         //FIXME: this won't be reliable as soon as we change the fps from the configuration
         static const unsigned int               nbFrameBeforePreload = 60;
 
@@ -77,12 +72,6 @@ class   TrackWorkflow : public QObject
         void                                    clear();
 
         void                                    forceRepositionning();
-
-        /**
-         *  \brief          This method is only to simulate a track render, which will render a black output.
-         *                  this is meant to render a muted track, though the Qt event loop (QueuedConnection signal)
-         */
-        void                                    simulateBlackOutputRender();
 
     private:
         void                                    computeLength();
@@ -116,23 +105,13 @@ class   TrackWorkflow : public QObject
 
         bool                                    m_paused;
 
-        QAtomicInt                              m_nbClipToPause;
-        QAtomicInt                              m_nbClipToUnpause;
-        QAtomicInt                              m_nbClipToRender;
-
-        void*                                   m_synchroneRenderBuffer;
+        void*                                   m_output;
 
         MainWorkflow::TrackType                 m_trackType;
         qint64                                  m_lastFrame;
 
-    private slots:
-        void                                    clipWorkflowRenderCompleted( ClipWorkflow* );
-
     signals:
         void                                    trackEndReached( unsigned int );
-        void                                    trackPaused();
-        void                                    trackUnpaused();
-        void                                    renderCompleted( unsigned int );
 };
 
 #endif // TRACKWORKFLOW_H
