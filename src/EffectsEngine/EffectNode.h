@@ -387,7 +387,10 @@ class	EffectNode : public IEffectNode
 
     // ----------------  CONNECT DYNAMIC TO DYNAMIC -------------------
 
-    // ---------------- SPECIALS DISCONNECTS --------------------
+    // ---------------- INTERNALS SLOTS DISCONNECTS --------------------
+
+        bool         disconnectInternalStaticVideoOutput( quint32 nodeId );
+        bool         disconnectInternalStaticVideoOutput( QString const & nodeName );
 
     ////
     ////
@@ -438,10 +441,14 @@ private:
     // VIDEOS SLOTS
 
     SemanticObjectManager< InSlot<LightVideoFrame> >	m_staticVideosInputs;
+    QMap< quint32, InSlot<LightVideoFrame>*>            m_connectedStaticVideosInputs;
     SemanticObjectManager< OutSlot<LightVideoFrame> >	m_internalsStaticVideosOutputs;
+    QMap< quint32, OutSlot<LightVideoFrame>*>           m_connectedInternalsStaticVideosOutputs;
 
     SemanticObjectManager< OutSlot<LightVideoFrame> >	m_staticVideosOutputs;
+    QMap< quint32, OutSlot<LightVideoFrame>*>            m_connectedStaticVideosOutputs;
     SemanticObjectManager< InSlot<LightVideoFrame> >	m_internalsStaticVideosInputs;
+    QMap< quint32, InSlot<LightVideoFrame>*>           m_connectedInternalsStaticVideosInputs;
 
     // AUDIOS SLOTS
 
