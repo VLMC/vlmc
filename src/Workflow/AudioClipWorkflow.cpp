@@ -64,6 +64,7 @@ void*       AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
     if ( mode == ClipWorkflow::Get )
         qCritical() << "A sound buffer should never be asked with 'Get' mode";
     StackedBuffer<AudioSample*>* buff = new StackedBuffer<AudioSample*>( m_computedBuffers.pop(), &m_availableBuffers, true );
+    ClipWorkflow::getOutput( mode );
     return buff;
 }
 
@@ -122,4 +123,14 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
     cw->m_renderLock->unlock();
 
     cw->commonUnlock();
+}
+
+uint32_t    AudioClipWorkflow::getAvailableBuffers() const
+{
+    return m_availableBuffers.count();
+}
+
+uint32_t    AudioClipWorkflow::getComputedBuffers() const
+{
+    return m_computedBuffers.count();
 }

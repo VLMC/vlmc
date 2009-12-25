@@ -95,6 +95,7 @@ void*       VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
         buff = new StackedBuffer<LightVideoFrame*>( m_computedBuffers.pop(), &m_availableBuffers, true );
     else if ( mode == ClipWorkflow::Get )
         buff = new StackedBuffer<LightVideoFrame*>( m_computedBuffers.head(), NULL, false );
+    ClipWorkflow::getOutput( mode );
     return buff;
 }
 
@@ -121,4 +122,14 @@ void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int widt
     cw->m_renderLock->unlock();
 
     cw->commonUnlock();
+}
+
+uint32_t    VideoClipWorkflow::getAvailableBuffers() const
+{
+    return m_availableBuffers.count();
+}
+
+uint32_t    VideoClipWorkflow::getComputedBuffers() const
+{
+    return m_computedBuffers.count();
 }

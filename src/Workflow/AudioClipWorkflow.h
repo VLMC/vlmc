@@ -43,6 +43,10 @@ class   AudioClipWorkflow : public ClipWorkflow
         void*                   getUnlockCallback();
         virtual void*           getOutput( ClipWorkflow::GetMode mode );
 
+    protected:
+        virtual uint32_t        getAvailableBuffers() const;
+        virtual uint32_t        getComputedBuffers() const;
+
     private:
         QReadWriteLock*             m_computedBuffersLock;
         Pool<AudioSample*>          m_computedBuffers;

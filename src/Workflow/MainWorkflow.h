@@ -139,7 +139,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          */
         Clip*                   getClip( const QUuid& uuid, unsigned int trackId, MainWorkflow::TrackType trackType );
 
-        void                    setFullSpeedRender( bool value );
         int                     getTrackCount( MainWorkflow::TrackType trackType ) const;
 
         uint32_t                getWidth() const;

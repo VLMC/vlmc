@@ -76,7 +76,6 @@ class   TrackWorkflow : public QObject
         void                                    save( QDomDocument& doc, QDomElement& trackNode ) const;
         void                                    clear();
 
-        void                                    setFullSpeedRender( bool value );
         void                                    forceRepositionning();
 
         /**
@@ -127,8 +126,6 @@ class   TrackWorkflow : public QObject
         qint64                                  m_lastFrame;
 
     private slots:
-        void                                    clipWorkflowPaused();
-        void                                    clipWorkflowUnpaused();
         void                                    clipWorkflowRenderCompleted( ClipWorkflow* );
 
     signals:

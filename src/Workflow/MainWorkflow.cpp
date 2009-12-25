@@ -414,12 +414,6 @@ void        MainWorkflow::clear()
     emit cleared();
 }
 
-void        MainWorkflow::setFullSpeedRender( bool value )
-{
-    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
-        m_tracks[i]->setFullSpeedRender( value );
-}
-
 void        MainWorkflow::tracksPaused()
 {
     for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )

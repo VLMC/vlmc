@@ -244,12 +244,6 @@ void        TrackHandler::clear()
     m_length = 0;
 }
 
-void        TrackHandler::setFullSpeedRender( bool value )
-{
-    for ( unsigned int i = 0; i < m_trackCount; ++i )
-        m_tracks[i]->setFullSpeedRender( value );
-}
-
 bool        TrackHandler::isPaused() const
 {
     return m_paused;

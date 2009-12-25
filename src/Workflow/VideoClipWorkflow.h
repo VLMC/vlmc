@@ -41,6 +41,8 @@ class   VideoClipWorkflow : public ClipWorkflow
 
     protected:
         virtual void            initVlcOutput();
+        virtual uint32_t        getAvailableBuffers() const;
+        virtual uint32_t        getComputedBuffers() const;
 
     private:
 //        Pool<LightVideoFrame*>  m_pool;

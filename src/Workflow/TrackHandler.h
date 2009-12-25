@@ -60,7 +60,6 @@ class   TrackHandler : public QObject
         void                    unmuteTrack( unsigned int trackId );
         Clip*                   getClip( const QUuid& uuid, unsigned int trackId );
         void                    clear();
-        void                    setFullSpeedRender( bool value );
 
         //FIXME: remove this. This should go by the effect engine.
         AudioClipWorkflow::AudioSample* getTmpAudioBuffer() { return m_tmpAudioBuffer; }

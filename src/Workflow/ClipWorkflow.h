@@ -41,15 +41,15 @@ class   ClipWorkflow : public QObject
         enum        State
         {
             None = -1,
+            /// \brief  Used when the clipworkflow hasn't been started yet
             Stopped,        //0
-            Initializing,   //1
-            Ready,          //2
-            Rendering,      //3
-            Sleeping,       //4
-            Pausing,        //5
-            Paused,         //6
-            Stopping,       //7
-            EndReached,     //8
+            /// \brief  Used when the clipworkflow is launched and active
+            Rendering,      //1
+            /// \brief  Used when stopping
+            Stopping,       //2
+            /// \brief  Used when end is reached, IE no more frame has to be rendered, but the trackworkflow
+            ///         may eventually ask for some.
+            EndReached,     //3
         };
 
         /**
@@ -71,16 +71,10 @@ class   ClipWorkflow : public QObject
          *  therefore, you can call this method blindly, without taking care
          *  of the rendering process advancement.
          */
-        virtual void*           getOutput( ClipWorkflow::GetMode mode ) = 0;
+        virtual void*           getOutput( ClipWorkflow::GetMode mode );
         virtual void            initVlcOutput() = 0;
-        void                    initialize( bool preloading = false );
+        void                    initialize();
 
-        /**
-         *  Return true ONLY if the state is equal to Ready.
-         *  If the state is Rendering, EndReached or anything else, this will
-         *  return false.
-         */
-        bool                    isReady() const;
         /**
          *  Return true ONLY if the state is equal to EndReached.
          *  In any other cases, this will return false.
@@ -99,8 +93,6 @@ class   ClipWorkflow : public QObject
          */
         bool                    isRendering() const;
 
-        bool                    isSleeping() const;
-
         /**
          *  Returns the current workflow state.
          *  Be carrefull, as this function is NOT thread safe, and return the
@@ -108,13 +100,6 @@ class   ClipWorkflow : public QObject
          *  It's your job to do it, by calling the getStateLock() method.
          */
         State                   getState() const;
-
-        /**
-         *  This method start the effective render, ie calling the play() method
-         *  on the media player.
-         *  If the media player isn't ready, this method waits.
-         */
-        void                    startRender( bool startInPausedMode );
 
         /**
             \brief              Returns the Clip this workflow instance is based
@@ -126,7 +111,6 @@ class   ClipWorkflow : public QObject
             \brief  Stop this workflow.
         */
         void                    stop();
-        void                    pause();
         void                    setTime( qint64 time );
 
         /**
@@ -145,8 +129,6 @@ class   ClipWorkflow : public QObject
          */
         QReadWriteLock*         getStateLock();
 
-        void                    unpause();
-
         void                    waitForCompleteInit();
 
         virtual void*           getLockCallback() = 0;
@@ -156,12 +138,13 @@ class   ClipWorkflow : public QObject
 
     private:
         void                    setState( State state );
-        void                    checkSynchronisation( State newState );
         void                    adjustBegin();
 
     protected:
         void                    computePtsDiff( qint64 pts );
         void                    commonUnlock();
+        virtual uint32_t        getAvailableBuffers() const = 0;
+        virtual uint32_t        getComputedBuffers() const = 0;
 
     private:
         LibVLCpp::MediaPlayer*  m_mediaPlayer;
@@ -203,24 +186,10 @@ class   ClipWorkflow : public QObject
         void                    checkStateChange();
 
     private slots:
-        /**
-         *  \brief  This slot is used when preloading, to pause the mediaplayer once fully loaded.
-         */
-        void                    pauseAfterPlaybackStarted();
-        /**
-         *  \brief  When preloading, this slot is used to mark that the media player has been paused again.
-         */
-        void                    initializedMediaPlayer();
         void                    loadingComplete();
-        void                    pausedMediaPlayer();
-        void                    unpausedMediaPlayer();
 
     public slots:
         void                    clipEndReached();
-
-    signals:
-        void                    paused();
-        void                    unpaused();
 };
 
 #endif // CLIPWORKFLOW_H

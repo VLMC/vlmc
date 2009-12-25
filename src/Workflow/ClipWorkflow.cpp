@@ -60,15 +60,11 @@ void    ClipWorkflow::checkStateChange()
         m_state = m_requiredState;
 //        qDebug() << '[' << (void*)this << "] Applying required state change:" << m_state;
         m_requiredState = ClipWorkflow::None;
-        checkSynchronisation( m_state );
     }
 }
 
-void    ClipWorkflow::initialize( bool preloading /*= false*/ )
+void    ClipWorkflow::initialize()
 {
-//    qDebug() << "Setting state to initializing";
-    setState( Initializing );
-//    qDebug() << "State is Initializing.";
     if ( m_clip->getParent()->getFileType() == Media::Image )
         m_vlcMedia = new LibVLCpp::Media( "fake:///" + m_clip->getParent()->getFileInfo()->absoluteFilePath() );
     else
@@ -79,48 +75,24 @@ void    ClipWorkflow::initialize( bool preloading /*= false*/ )
     m_mediaPlayer = MemoryPool<LibVLCpp::MediaPlayer>::getInstance()->get();
     m_mediaPlayer->setMedia( m_vlcMedia );
 
-    if ( preloading == true )
-        connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( pauseAfterPlaybackStarted() ), Qt::DirectConnection );
-    else
-        connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( loadingComplete() ), Qt::DirectConnection );
+    connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( loadingComplete() ), Qt::DirectConnection );
     connect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( clipEndReached() ), Qt::DirectConnection );
     m_mediaPlayer->play();
 }
 
-void    ClipWorkflow::pauseAfterPlaybackStarted()
-{
-    adjustBegin();
-    disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( pauseAfterPlaybackStarted() ) );
-    connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( initializedMediaPlayer() ), Qt::DirectConnection );
-
-    m_mediaPlayer->pause();
-}
-
 void    ClipWorkflow::loadingComplete()
 {
-//    qDebug() << "Loading complete, setting begin.";
     adjustBegin();
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( loadingComplete() ) );
-    setState( Ready );
-//    qDebug() << "State is Ready";
-}
-
-void    ClipWorkflow::initializedMediaPlayer()
-{
-    disconnect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( initializedMediaPlayer() ) );
-    setState( Ready );
+    QMutexLocker    lock( m_initWaitCond->getMutex() );
+    setState( Rendering );
+    m_initWaitCond->wake();
 }
 
 void    ClipWorkflow::adjustBegin()
 {
     if ( m_clip->getParent()->getFileType() == Media::Video || m_clip->getParent()->getFileType() == Media::Audio )
         m_mediaPlayer->setTime( m_clip->getBegin() / m_clip->getParent()->getFps() * 1000 );
-}
-
-bool    ClipWorkflow::isReady() const
-{
-    QReadLocker lock( m_stateLock );
-    return m_state == ClipWorkflow::Ready;
 }
 
 bool    ClipWorkflow::isEndReached() const
@@ -138,29 +110,6 @@ bool    ClipWorkflow::isStopped() const
 ClipWorkflow::State     ClipWorkflow::getState() const
 {
     return m_state;
-}
-
-void    ClipWorkflow::startRender( bool startInPausedMode )
-{
-    {
-        QMutexLocker    lock( m_initWaitCond->getMutex() );
-        if ( isReady() == false )
-        {
-    //        qDebug() << "Waiting for clipworkflow to be ready";
-            m_initWaitCond->waitLocked();
-        }
-    }
-//    qDebug() << "ClipWorkflow is ready";
-    if ( startInPausedMode == false )
-    {
-        m_mediaPlayer->play();
-//        qDebug() << "Setting state: Rendering";
-        setState( Rendering );
-    }
-    else
-    {
-        setState( Paused );
-    }
 }
 
 void    ClipWorkflow::clipEndReached()
@@ -205,35 +154,11 @@ bool            ClipWorkflow::isRendering() const
     return m_state == ClipWorkflow::Rendering;
 }
 
-bool            ClipWorkflow::isSleeping() const
-{
-    QReadLocker lock( m_stateLock );
-    return m_state == ClipWorkflow::Sleeping;
-}
-
-void            ClipWorkflow::checkSynchronisation( State newState )
-{
-    switch ( newState )
-    {
-        case Ready:
-        {
-            QMutexLocker    lock( m_initWaitCond->getMutex() );
-            m_initWaitCond->wake();
-            break ;
-        }
-        default:
-            break ;
-    }
-}
-
 void            ClipWorkflow::setState( State state )
 {
-    {
-        QWriteLocker    lock( m_stateLock );
+    QWriteLocker    lock( m_stateLock );
 //        qDebug() << '[' << (void*)this << "] Setting state to" << state;
-        m_state = state;
-    }
-    checkSynchronisation( state );
+    m_state = state;
 }
 
 void            ClipWorkflow::queryStateChange( State newState )
@@ -247,25 +172,9 @@ QReadWriteLock* ClipWorkflow::getStateLock()
     return m_stateLock;
 }
 
-void            ClipWorkflow::pause()
-{
-    connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( pausedMediaPlayer() ), Qt::DirectConnection );
-    setState( Pausing );
-    m_mediaPlayer->pause();
-    QMutexLocker    lock( m_requiredStateLock );
-    m_requiredState = ClipWorkflow::None;
-}
-
-void            ClipWorkflow::unpause()
-{
-    queryStateChange( ClipWorkflow::Rendering );
-    connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( unpausedMediaPlayer() ), Qt::DirectConnection );
-    m_mediaPlayer->pause();
-}
-
 void        ClipWorkflow::waitForCompleteInit()
 {
-    if ( isReady() == false )
+    if ( isRendering() == false )
     {
         QMutexLocker    lock( m_initWaitCond->getMutex() );
         m_initWaitCond->waitLocked();
@@ -277,35 +186,23 @@ LibVLCpp::MediaPlayer*       ClipWorkflow::getMediaPlayer()
     return m_mediaPlayer;
 }
 
-void        ClipWorkflow::pausedMediaPlayer()
+void*       ClipWorkflow::getOutput( ClipWorkflow::GetMode )
 {
-    disconnect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( pausedMediaPlayer() ) );
-    setState( Paused );
-    emit paused();
-}
-
-void        ClipWorkflow::unpausedMediaPlayer()
-{
-    disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( unpausedMediaPlayer() ) );
-    emit unpaused();
+    //If we have more empty buffers than computed ones, refill our stack.
+    if ( getComputedBuffers() > getAvailableBuffers() )
+    {
+        //Assume the media player was paused in this case...
+        //FIXME: this is probably a very bad idea...
+        m_mediaPlayer->pause();
+    }
+    //Keep the compiler happy, but we don't use this return value.
+    return NULL;
 }
 
 void        ClipWorkflow::commonUnlock()
 {
-    m_stateLock->lockForWrite();
-
-    if ( m_state == Rendering )
-    {
-        m_state = Sleeping;
-        m_stateLock->unlock();
-
-        m_stateLock->lockForWrite();
-        if ( m_state == Sleeping )
-            m_state = Rendering;
-        m_stateLock->unlock();
-    }
-    else
-        m_stateLock->unlock();
+    if ( getAvailableBuffers() == 0 )
+        m_mediaPlayer->pause();
     checkStateChange();
 }
 
