@@ -46,6 +46,7 @@ class   AudioClipWorkflow : public ClipWorkflow
     protected:
         virtual uint32_t        getAvailableBuffers() const;
         virtual uint32_t        getComputedBuffers() const;
+        virtual uint32_t        getMaxComputedBuffers() const;
 
     private:
         QReadWriteLock*             m_computedBuffersLock;

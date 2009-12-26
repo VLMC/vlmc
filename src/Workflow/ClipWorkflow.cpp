@@ -192,12 +192,16 @@ LibVLCpp::MediaPlayer*       ClipWorkflow::getMediaPlayer()
 
 void        ClipWorkflow::postGetOutput()
 {
-    //If we have more empty buffers than computed ones, refill our stack.
-    if ( getComputedBuffers() > getAvailableBuffers() )
+    //If we're running out of computed buffers, refill our stack.
+    if ( getComputedBuffers() < getMaxComputedBuffers() / 3 )
     {
-        //Assume the media player was paused in this case...
-        //FIXME: this is probably a very bad idea...
-        m_mediaPlayer->pause();
+        if ( m_mediaPlayer->isPlaying() == false )
+        {
+            qWarning() << "Unpausing media player";
+            m_mediaPlayer->pause();
+        }
+        else
+            qCritical() << "Running out of output buffers !";
     }
 }
 
@@ -208,21 +212,28 @@ void        ClipWorkflow::preGetOutput()
     if ( getComputedBuffers() == 0 )
     {
         qWarning() << "Waiting for buffer to be fed";
+        m_renderLock->unlock();
         m_feedingCondWait->waitLocked();
+        m_renderLock->lock();
     }
 }
 
 void        ClipWorkflow::commonUnlock()
 {
     if ( getAvailableBuffers() == 0 )
+    {
+        qDebug() << "No more available buffers : pausing";
         m_mediaPlayer->pause();
+    }
     if ( getComputedBuffers() == 1 )
     {
+        qDebug() << "trying  to inform of first buffer";
         QMutexLocker    lock( m_feedingCondWait->getMutex() );
         qWarning() << "Just rendered the first buffer.";
         m_feedingCondWait->wake();
     }
     checkStateChange();
+    qDebug() << "exited from common unlock";
 }
 
 void    ClipWorkflow::computePtsDiff( qint64 pts )

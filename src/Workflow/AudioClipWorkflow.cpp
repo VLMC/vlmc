@@ -55,8 +55,9 @@ void*       AudioClipWorkflow::getUnlockCallback()
 void*       AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 {
     QMutexLocker    lock( m_renderLock );
-
     preGetOutput();
+
+    qWarning() << "Audio. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
     if ( isEndReached() == true )
     {
         qDebug() << "Audio end reached";
@@ -134,4 +135,9 @@ uint32_t    AudioClipWorkflow::getAvailableBuffers() const
 uint32_t    AudioClipWorkflow::getComputedBuffers() const
 {
     return m_computedBuffers.count();
+}
+
+uint32_t    AudioClipWorkflow::getMaxComputedBuffers() const
+{
+    return AudioClipWorkflow::nbBuffers;
 }

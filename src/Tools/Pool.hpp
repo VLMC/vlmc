@@ -59,6 +59,7 @@ public:
     }
     int     count() const
     {
+        QMutexLocker    lock( m_mutex );
         return m_pool.count();
     }
 
@@ -69,10 +70,12 @@ public:
     }
     bool    isEmpty() const
     {
+        QMutexLocker    lock( m_mutex );
         return m_pool.empty();
     }
     void    push_back( const T& val )
     {
+        QMutexLocker    lock( m_mutex );
         m_pool.push_back( val );
     }
 

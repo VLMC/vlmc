@@ -86,12 +86,10 @@ void*       VideoClipWorkflow::getUnlockCallback()
 
 void*       VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 {
-    preGetOutput();
-    //Don't lock before preGetOutput() : it can eventually waits for the clipworkflow to render a frame
-    //which requires the renderLock to be unheld.
     QMutexLocker    lock( m_renderLock );
 
-    qWarning() << "poping buffer";
+    preGetOutput();
+    qWarning() << "Video. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
     if ( isEndReached() == true )
         return NULL;
     StackedBuffer<LightVideoFrame*>* buff;
@@ -106,10 +104,13 @@ void*       VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 void    VideoClipWorkflow::lock( VideoClipWorkflow* cw, void** pp_ret, int size )
 {
     Q_UNUSED( size );
+    qDebug() << "trying to lock renderlock";
     cw->m_renderLock->lock();
+    qDebug() << "trying to pop available buffer";
     LightVideoFrame*    lvf = cw->m_availableBuffers.pop();
     cw->m_computedBuffers.push_back( lvf );
-    qWarning() << "feeding video buffer";
+    qWarning() << ">>>VideoGeneration. Available:" << cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count();
+//    qWarning() << "feeding video buffer";
     *pp_ret = (*(lvf))->frame.octets;
 }
 
@@ -122,11 +123,14 @@ void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int widt
     Q_UNUSED( size );
 
     cw->computePtsDiff( pts );
+    qDebug() << "getting computed buffers head";
     LightVideoFrame*    lvf = cw->m_computedBuffers.head();
     (*(lvf))->ptsDiff = cw->m_currentPts - cw->m_previousPts;
-    cw->m_renderLock->unlock();
     //If this is the first buffer that has been rendered, there may be a waiting TrackWorkflow.
+    qDebug() << "calling commonUnlock";
     cw->commonUnlock();
+    qDebug() << "unlocking render lock";
+    cw->m_renderLock->unlock();
 }
 
 uint32_t    VideoClipWorkflow::getAvailableBuffers() const
@@ -137,4 +141,9 @@ uint32_t    VideoClipWorkflow::getAvailableBuffers() const
 uint32_t    VideoClipWorkflow::getComputedBuffers() const
 {
     return m_computedBuffers.count();
+}
+
+uint32_t    VideoClipWorkflow::getMaxComputedBuffers() const
+{
+    return VideoClipWorkflow::nbBuffers;
 }

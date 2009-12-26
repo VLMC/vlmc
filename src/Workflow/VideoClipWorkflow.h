@@ -43,7 +43,7 @@ class   VideoClipWorkflow : public ClipWorkflow
         virtual void            initVlcOutput();
         virtual uint32_t        getAvailableBuffers() const;
         virtual uint32_t        getComputedBuffers() const;
-
+        virtual uint32_t        getMaxComputedBuffers() const;
     private:
 //        Pool<LightVideoFrame*>  m_pool;
 //        QReadWriteLock*         m_computedBuffersLock;

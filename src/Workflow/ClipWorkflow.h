@@ -147,6 +147,7 @@ class   ClipWorkflow : public QObject
         void                    commonUnlock();
         virtual uint32_t        getAvailableBuffers() const = 0;
         virtual uint32_t        getComputedBuffers() const = 0;
+        virtual uint32_t        getMaxComputedBuffers() const = 0;
 
     private:
         LibVLCpp::MediaPlayer*  m_mediaPlayer;
