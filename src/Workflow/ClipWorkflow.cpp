@@ -227,13 +227,11 @@ void        ClipWorkflow::commonUnlock()
     }
     if ( getComputedBuffers() == 1 )
     {
-        qDebug() << "trying  to inform of first buffer";
         QMutexLocker    lock( m_feedingCondWait->getMutex() );
         qWarning() << "Just rendered the first buffer.";
         m_feedingCondWait->wake();
     }
     checkStateChange();
-    qDebug() << "exited from common unlock";
 }
 
 void    ClipWorkflow::computePtsDiff( qint64 pts )

@@ -83,21 +83,35 @@ void        AudioClipWorkflow::initVlcOutput()
     m_vlcMedia->addOption( ":no-sout-smem-time-sync" );
 }
 
+AudioClipWorkflow::AudioSample*    AudioClipWorkflow::createBuffer( size_t size )
+{
+    AudioSample* as = new AudioSample;
+    as->buff = new uchar[size];
+    as->size = size;
+    return as;
+}
+
 void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer , unsigned int size )
 {
+    cw->m_renderLock->lock();
     //If there's no buffer at all, it must be the first render
     if ( cw->m_availableBuffers.count() == 0 && cw->m_computedBuffers.count() == 0 )
     {
         for ( unsigned int i = 0; i < AudioClipWorkflow::nbBuffers; ++i )
         {
-            AudioSample* as = new AudioSample;
-            as->buff = new uchar[size];
-            as->size = size;
+            AudioSample* as = cw->createBuffer( size );
             cw->m_availableBuffers.push_back( as );
         }
     }
-    cw->m_renderLock->lock();
-    AudioSample* as = cw->m_availableBuffers.pop();
+    qWarning() << ">>>AudioGeneration. Available:" << cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count();
+    AudioSample* as = NULL;
+    if ( cw->m_availableBuffers.isEmpty() == true )
+    {
+        qCritical() << cw << "Late buffer generation ! Spawning new buffer.";
+        as = cw->createBuffer( size );
+    }
+    else
+        as = cw->m_availableBuffers.pop();
     cw->m_computedBuffers.push_back( as );
     *pcm_buffer = as->buff;
 }
@@ -122,9 +136,8 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
         as->nbChannels = channels;
         as->ptsDiff = cw->m_currentPts - cw->m_previousPts;
     }
-    cw->m_renderLock->unlock();
-
     cw->commonUnlock();
+    cw->m_renderLock->unlock();
 }
 
 uint32_t    AudioClipWorkflow::getAvailableBuffers() const
