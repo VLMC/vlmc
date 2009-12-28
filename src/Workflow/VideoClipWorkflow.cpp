@@ -103,9 +103,19 @@ void*       VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 
 void    VideoClipWorkflow::lock( VideoClipWorkflow* cw, void** pp_ret, int size )
 {
+    qDebug() << "video lock";
     Q_UNUSED( size );
     cw->m_renderLock->lock();
-    LightVideoFrame*    lvf = cw->m_availableBuffers.pop();
+    LightVideoFrame*    lvf = NULL;
+    if ( cw->m_availableBuffers.isEmpty() == true )
+    {
+        qCritical() << "Late buffer generation. Spawning new video buffer";
+        lvf = new LightVideoFrame( MainWorkflow::getInstance()->getWidth()
+                                   * MainWorkflow::getInstance()->getHeight()
+                                   * Pixel::NbComposantes );
+    }
+    else
+        lvf = cw->m_availableBuffers.pop();
     cw->m_computedBuffers.push_back( lvf );
 //    qWarning() << ">>>VideoGeneration. Available:" << cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count();
 //    qWarning() << "feeding video buffer";
@@ -114,6 +124,7 @@ void    VideoClipWorkflow::lock( VideoClipWorkflow* cw, void** pp_ret, int size 
 
 void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int width, int height, int bpp, int size, qint64 pts )
 {
+    qDebug() << "video unlock";
     Q_UNUSED( buffer );
     Q_UNUSED( width );
     Q_UNUSED( height );

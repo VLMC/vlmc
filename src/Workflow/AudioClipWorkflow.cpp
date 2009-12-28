@@ -103,11 +103,11 @@ void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer
             cw->m_availableBuffers.push_back( as );
         }
     }
-    qWarning() << ">>>AudioGeneration. Available:" << cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count();
+//    qWarning() << ">>>AudioGeneration. Available:" << cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count();
     AudioSample* as = NULL;
     if ( cw->m_availableBuffers.isEmpty() == true )
     {
-        qCritical() << cw << "Late buffer generation ! Spawning new buffer.";
+        qCritical() << cw << "Late buffer generation. Spawning new audio buffer.";
         as = cw->createBuffer( size );
     }
     else

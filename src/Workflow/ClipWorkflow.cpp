@@ -220,15 +220,16 @@ void        ClipWorkflow::preGetOutput()
 
 void        ClipWorkflow::commonUnlock()
 {
-    if ( getAvailableBuffers() == 0 )
+    //Don't test using availableBuffer, as it may evolve if a buffer is required while
+    //no one is available : we would spawn a new buffer, thus modifying the number of available buffers
+    if ( getComputedBuffers() == getMaxComputedBuffers() )
     {
-        qDebug() << "No more available buffers : pausing";
+        qWarning() << "Pausing media player";
         m_mediaPlayer->pause();
     }
     if ( getComputedBuffers() == 1 )
     {
         QMutexLocker    lock( m_feedingCondWait->getMutex() );
-        qWarning() << "Just rendered the first buffer.";
         m_feedingCondWait->wake();
     }
     checkStateChange();
