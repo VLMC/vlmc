@@ -392,6 +392,32 @@ class	EffectNode : public IEffectNode
         bool         disconnectInternalStaticVideoOutput( quint32 nodeId );
         bool         disconnectInternalStaticVideoOutput( QString const & nodeName );
 
+ private:
+
+        //-------------------------------------------------------------------------//
+        //                     CONNECTED SLOTS MAP MANAGEMENT                      //
+        //-------------------------------------------------------------------------//
+
+        void             storeStaticVideoInputInConnectedMap( InSlot<LightVideoFrame>* in );
+        void             storeInternalStaticVideoOutputInConnectedMap( OutSlot<LightVideoFrame>* out );
+        void             storeStaticVideoOutputInConnectedMap( OutSlot<LightVideoFrame>* out );
+        void             storeInternalStaticVideoInputInConnectedMap( InSlot<LightVideoFrame>* in );
+
+        void             deleteStaticVideoInputToConnectedMap( quint32 inId );
+        void             deleteInternalStaticVideoOutputToConnectedMap( quint32 outId );
+        void             deleteStaticVideoOutputToConnectedMap( quint32 outId );
+        void             deleteInternalStaticVideoInputToConnectedMap( quint32 inId );
+
+        QList<InSlot<LightVideoFrame>*>  getConnectedStaticsVideosInputsList( void ) const;
+        QList<OutSlot<LightVideoFrame>*> getConnectedInternalsStaticsVideosOutputsList( void ) const;
+        QList<OutSlot<LightVideoFrame>*> getConnectedStaticsVideosOutputsList( void ) const;
+        QList<InSlot<LightVideoFrame>*>  getConnectedInternalsStaticsVideosInputsList( void ) const;
+
+        quint32                          getNBConnectedStaticsVideosInputs( void ) const;
+        quint32                          getNBConnectedInternalsStaticsVideosInputs( void ) const;
+        quint32                          getNBConnectedStaticsVideosOutputs( void ) const;
+        quint32                          getNBConnectedInternalsStaticsVideosInputs( void ) const;
+
     ////
     ////
     ////
@@ -446,9 +472,9 @@ private:
     QMap< quint32, OutSlot<LightVideoFrame>*>           m_connectedInternalsStaticVideosOutputs;
 
     SemanticObjectManager< OutSlot<LightVideoFrame> >	m_staticVideosOutputs;
-    QMap< quint32, OutSlot<LightVideoFrame>*>            m_connectedStaticVideosOutputs;
+    QMap< quint32, OutSlot<LightVideoFrame>*>           m_connectedStaticVideosOutputs;
     SemanticObjectManager< InSlot<LightVideoFrame> >	m_internalsStaticVideosInputs;
-    QMap< quint32, InSlot<LightVideoFrame>*>           m_connectedInternalsStaticVideosInputs;
+    QMap< quint32, InSlot<LightVideoFrame>*>            m_connectedInternalsStaticVideosInputs;
 
     // AUDIOS SLOTS
 

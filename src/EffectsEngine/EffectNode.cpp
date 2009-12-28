@@ -1407,3 +1407,108 @@ bool        EffectNode::disconnectInternalStaticVideoOutput( QString const & nod
         father->m_connectedStaticVideosInputs.erase( father->m_connectedStaticVideosInputs.find( in->getId() ) );
     return ( true );
 }
+
+void             storeStaticVideoInputInConnectedMap( InSlot<LightVideoFrame>* in )
+{
+    QWriteLocker                        wl( &m_rwl );
+    m_connectedStaticVideosInputs[ in->getId() ] = in;
+    return ;
+}
+
+void             storeInternalStaticVideoOutputInConnectedMap( OutSlot<LightVideoFrame>* out )
+{
+    QWriteLocker                        wl( &m_rwl );
+    m_connectedInternalsStaticVideosOutputs[ out->getId() ] = out;
+    return ;
+}
+
+void             storeStaticVideoOutputInConnectedMap( OutSlot<LightVideoFrame>* out )
+{
+    QWriteLocker                        wl( &m_rwl );
+    m_connectedStaticVideosOutputs[ out->getId() ] = out;
+    return ;
+}
+
+void             storeInternalStaticVideoInputInConnectedMap( InSlot<LightVideoFrame>* in )
+{
+    QWriteLocker                        wl( &m_rwl );
+    m_connectedInternalsStaticVideosInputs[ in->getId() ] = in;
+    return ;
+}
+
+void             deleteStaticVideoInputToConnectedMap( quint32 inId )
+{
+    QWriteLocker                        wl( &m_rwl );
+    m_connectedStaticVideosInputs.erase( m_connectedStaticVideosInputs.find( inId ) );
+    return ;
+}
+
+void             deleteInternalStaticVideoOutputToConnectedMap( quint32 outId )
+{
+    QWriteLocker                        wl( &m_rwl );
+    m_connectedInternalsStaticVideosOutputs.erase( m_connectedInternalsStaticVideosOutputs.find( outId ) );
+    return ;
+}
+
+void             deleteStaticVideoOutputToConnectedMap( quint32 outId )
+{
+    QWriteLocker                        wl( &m_rwl );
+    m_connectedStaticVideosOutputs.erase( m_connectedStaticVideosOutputs.find( outId ) );
+    return ;
+}
+
+void             deleteInternalStaticVideoInputToConnectedMap( quint32 inId )
+{
+    QWriteLocker                        wl( &m_rwl );
+    m_connectedInternalsStaticVideosInputs.erase( m_connectedInternalsStaticVideosInputs.find( inId ) );
+    return ;
+}
+
+QList<InSlot<LightVideoFrame>*>  getConnectedStaticsVideosInputsList( void ) const
+{
+    QReadLocker                        rl( &m_rwl );
+    m_connectedStaticVideosInputs.values();
+}
+
+QList<OutSlot<LightVideoFrame>*> getConnectedInternalsStaticsVideosOutputsList( void ) const
+{
+    QReadLocker                        rl( &m_rwl );
+    m_connectedInternalsStaticVideosOutputs.values();
+}
+
+QList<OutSlot<LightVideoFrame>*> getConnectedStaticsVideosOutputsList( void ) const
+{
+    QReadLocker                        rl( &m_rwl );
+    m_connectedStaticVideosOutputs.values();
+}
+
+QList<InSlot<LightVideoFrame>*>  getConnectedInternalsStaticsVideosInputsList( void ) const
+{
+    QReadLocker                        rl( &m_rwl );
+    m_connectedInternalsStaticVideosInputs.values();
+}
+
+
+quint32                          getNBConnectedStaticsVideosInputs( void ) const
+{
+    QReadLocker                        rl( &m_rwl );
+    return ( m_connectedStaticVideosInputs.size() );
+}
+
+quint32                          getNBConnectedInternalsStaticsVideosInputs( void ) const
+{
+    QReadLocker                        rl( &m_rwl );
+    return ( m_connectedInternalsStaticVideosOutputs.size() );
+}
+
+quint32                          getNBConnectedStaticsVideosOutputs( void ) const
+{
+    QReadLocker                        rl( &m_rwl );
+    return ( m_connectedStaticVideosOutputs.size() );
+}
+
+quint32                          getNBConnectedInternalsStaticsVideosInputs( void ) const
+{
+    QReadLocker                        rl( &m_rwl );
+    return ( m_connectedInternalsStaticVideosInputs.size() );
+}
