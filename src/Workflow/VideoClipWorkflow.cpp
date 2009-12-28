@@ -116,7 +116,7 @@ void    VideoClipWorkflow::lock( VideoClipWorkflow* cw, void** pp_ret, int size 
     }
     else
         lvf = cw->m_availableBuffers.pop();
-    cw->m_computedBuffers.push_back( lvf );
+    cw->m_computedBuffers.push_front( lvf );
 //    qWarning() << ">>>VideoGeneration. Available:" << cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count();
 //    qWarning() << "feeding video buffer";
     *pp_ret = (*(lvf))->frame.octets;

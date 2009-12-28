@@ -100,6 +100,7 @@ void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer
         for ( unsigned int i = 0; i < AudioClipWorkflow::nbBuffers; ++i )
         {
             AudioSample* as = cw->createBuffer( size );
+            as->debugId = i;
             cw->m_availableBuffers.push_back( as );
         }
     }
@@ -112,7 +113,7 @@ void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer
     }
     else
         as = cw->m_availableBuffers.pop();
-    cw->m_computedBuffers.push_back( as );
+    cw->m_computedBuffers.push_front( as );
     *pcm_buffer = as->buff;
 }
 
@@ -130,12 +131,15 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
 
     cw->computePtsDiff( pts );
     AudioSample* as = cw->m_computedBuffers.head();
+    qWarning() << "Computing audio PTS: pts:" << pts << "m_currentPts:" << cw->m_currentPts << "m_previousPts:" << cw->m_previousPts << "for buffer#" << as->debugId;
     if ( as->buff != NULL )
     {
         as->nbSample = nb_samples;
         as->nbChannels = channels;
         as->ptsDiff = cw->m_currentPts - cw->m_previousPts;
     }
+    else
+        qCritical() << "Got NULL audio buffer";
     cw->commonUnlock();
     cw->m_renderLock->unlock();
 }

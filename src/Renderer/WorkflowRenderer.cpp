@@ -153,7 +153,7 @@ int     WorkflowRenderer::lockAudio(  WorkflowRenderer* self, int64_t *pts, size
         *buffer = self->m_renderAudioSample->buff;
         *bufferSize = self->m_renderAudioSample->size;
         ptsDiff = self->m_renderAudioSample->ptsDiff;
-        qWarning() << "injecting audio sample";
+        qWarning() << "injecting audio sample from sample #" << self->m_renderAudioSample->debugId;
     }
     else
     {

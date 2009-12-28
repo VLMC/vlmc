@@ -78,6 +78,11 @@ public:
         QMutexLocker    lock( m_mutex );
         m_pool.push_back( val );
     }
+    void    push_front( const T& val )
+    {
+        QMutexLocker    lock( m_mutex );
+        m_pool.push_front( val );
+    }
 
 private:
     QQueue<T>           m_pool;

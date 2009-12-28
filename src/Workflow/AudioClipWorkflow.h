@@ -36,6 +36,7 @@ class   AudioClipWorkflow : public ClipWorkflow
             unsigned int    nbSample;
             unsigned int    nbChannels;
             qint64          ptsDiff;
+            uint32_t        debugId;
         };
         AudioClipWorkflow( Clip* clip );
         ~AudioClipWorkflow();
