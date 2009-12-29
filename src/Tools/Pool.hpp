@@ -52,7 +52,7 @@ public:
         T  ret = m_pool.dequeue();
         return ret;
     }
-    T       head()
+    const T&        head() const
     {
         QMutexLocker    lock( m_mutex );
         return m_pool.head();
@@ -82,6 +82,11 @@ public:
     {
         QMutexLocker    lock( m_mutex );
         m_pool.push_front( val );
+    }
+    const T&        last() const
+    {
+        QMutexLocker    lock( m_mutex );
+        return m_pool.last();
     }
 
 private:

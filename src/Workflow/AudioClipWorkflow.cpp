@@ -57,12 +57,9 @@ void*       AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
     QMutexLocker    lock( m_renderLock );
     preGetOutput();
 
-    qWarning() << "Audio. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
+//    qWarning() << "Audio. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
     if ( isEndReached() == true )
-    {
-        qDebug() << "Audio end reached";
         return NULL;
-    }
     if ( mode == ClipWorkflow::Get )
         qCritical() << "A sound buffer should never be asked with 'Get' mode";
     StackedBuffer<AudioSample*>* buff = new StackedBuffer<AudioSample*>( m_computedBuffers.pop(), &m_availableBuffers, true );
@@ -113,7 +110,7 @@ void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer
     }
     else
         as = cw->m_availableBuffers.pop();
-    cw->m_computedBuffers.push_front( as );
+    cw->m_computedBuffers.push_back( as );
     *pcm_buffer = as->buff;
 }
 
@@ -130,7 +127,7 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
     Q_UNUSED( size );
 
     cw->computePtsDiff( pts );
-    AudioSample* as = cw->m_computedBuffers.head();
+    AudioSample* as = cw->m_computedBuffers.last();
 //    qWarning() << "Computing audio PTS: pts:" << pts << "m_currentPts:" << cw->m_currentPts << "m_previousPts:" << cw->m_previousPts << "for buffer#" << as->debugId;
     if ( as->buff != NULL )
     {
@@ -138,8 +135,6 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
         as->nbChannels = channels;
         as->ptsDiff = cw->m_currentPts - cw->m_previousPts;
     }
-    else
-        qCritical() << "Got NULL audio buffer";
     cw->commonUnlock();
     cw->m_renderLock->unlock();
 }

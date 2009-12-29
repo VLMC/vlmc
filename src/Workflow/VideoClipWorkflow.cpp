@@ -122,7 +122,7 @@ void    VideoClipWorkflow::lock( VideoClipWorkflow* cw, void** pp_ret, int size 
     }
     else
         lvf = cw->m_availableBuffers.pop();
-    cw->m_computedBuffers.push_front( lvf );
+    cw->m_computedBuffers.push_back( lvf );
 //    qWarning() << ">>>VideoGeneration. Available:" << cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count();
 //    qWarning() << "feeding video buffer";
     *pp_ret = (*(lvf))->frame.octets;
@@ -138,7 +138,7 @@ void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int widt
     Q_UNUSED( size );
 
     cw->computePtsDiff( pts );
-    LightVideoFrame*    lvf = cw->m_computedBuffers.head();
+    LightVideoFrame*    lvf = cw->m_computedBuffers.last();
     (*(lvf))->ptsDiff = cw->m_currentPts - cw->m_previousPts;
     //If this is the first buffer that has been rendered, there may be a waiting TrackWorkflow.
     cw->commonUnlock();
