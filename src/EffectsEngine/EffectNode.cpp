@@ -93,6 +93,9 @@ void                                    EffectNode::render( void )
 
 void                                        EffectNode::renderSubNodes( void )
 {
+    QList<EffectNode*>                                effectsNodes = m_enf.getEffectNodeInstancesList();
+    QList<EffectNode*>::iterator                      effectsNodesIt = effectsNodes.begin();
+    QList<EffectNode*>::iterator                      effectsNodesEnd = effectsNodes.end();
     QList<OutSlot<LightVideoFrame>*>                  intOuts = m_connectedInternalsStaticVideosOutputs.getObjectsReferencesList() ;
     QList<OutSlot<LightVideoFrame>*>::iterator        intOutsIt = intOuts.begin();
     QList<OutSlot<LightVideoFrame>*>::iterator        intOutsEnd = intOuts.end();
@@ -101,6 +104,17 @@ void                                        EffectNode::renderSubNodes( void )
     EffectNode*                                       currentNode;
     InSlot<LightVideoFrame>*                          currentIn;
 
+    for ( ; effectsNodesIt != effectsNodesEnd; ++effectsNodesIt )
+    {
+        if (
+            ( (*effectsNodesIt)->getNBConnectedStaticsVideosInputs() == 0 ) &&
+            ( (*effectsNodesIt)->getNBConnectedStaticsVideosOutputs() > 0 )
+            )
+        {
+            (*effectsNodesIt)->setVisited();
+            nodeQueue.enqueue( (*effectsNodesIt) );
+        }
+    }
     for ( ; intOutsIt != intOutsEnd; ++intOutsIt )
     {
         currentIn = (*intOutsIt)->getInSlotPtr();
