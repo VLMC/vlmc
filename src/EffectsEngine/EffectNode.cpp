@@ -564,14 +564,14 @@ bool        EffectNode::disconnectStaticVideoOutput( quint32 nodeId )
     in = out->getInSlotPtr();
     if ( out->disconnect() == false )
         return ( false );
-    m_connectedStaticVideosOutputs.erase( m_connectedStaticVideosOutputs.find( out->getId() ) );
-
+    m_connectedStaticVideosOutputs.delObjectReference( out->getId() );
     father = in->getPrivateFather();
     if ( father == m_father )
-        father->m_connectedInternalsStaticVideosInputs.erase( father->m_connectedInternalsStaticVideosInputs.find( in->getId() ) );
+        father->dereferenceInternalStaticVideoInputAsConnected( in->getId() );
+    else ( father == this )
+        m_connectedStaticVideosInputs.delObjectReference( in->getId() );
     else
-        // POTENTIAL RACE-CONDITION
-        father->m_connectedStaticVideosInputs.erase( father->m_connectedStaticVideosInputs.find( in->getId() ) );
+        father->dereferenceStaticVideoInputAsConnected( in->getId() );
     return ( true );
 }
 
@@ -587,14 +587,14 @@ bool        EffectNode::disconnectStaticVideoOutput( QString const & nodeName )
     in = out->getInSlotPtr();
     if ( out->disconnect() == false )
         return ( false );
-    m_connectedStaticVideosOutputs.erase( m_connectedStaticVideosOutputs.find( out->getId() ) );
-
+    m_connectedStaticVideosOutputs.delObjectReference( out->getId() );
     father = in->getPrivateFather();
     if ( father == m_father )
-        father->m_connectedInternalsStaticVideosInputs.erase( father->m_connectedInternalsStaticVideosInputs.find( in->getId() ) );
+        father->dereferenceInternalStaticVideoInputAsConnected( in->getId() );
+    else ( father == this )
+        m_connectedStaticVideosInputs.delObjectReference( in->getId() );
     else
-        // POTENTIAL RACE-CONDITION
-        father->m_connectedStaticVideosInputs.erase( father->m_connectedStaticVideosInputs.find( in->getId() ) );
+        father->dereferenceStaticVideoInputAsConnected( in->getId() );
     return ( true );
 }
 
@@ -1414,13 +1414,9 @@ bool        EffectNode::disconnectInternalStaticVideoOutput( quint32 nodeId )
     in = out->getInSlotPtr();
     if ( out->disconnect() == false )
         return ( false );
-    m_connectedInternalsStaticVideosOutputs.erase( m_connectedInternalsStaticVideosOutputs.find( out->getId() ) );
+    m_connectedInternalsStaticVideosOutputs.delObjectReference( out->getId() );
     father = in->getPrivateFather();
-    if ( father == this )
-        m_connectedInternalsStaticVideosInputs.erase( m_connectedInternalsStaticVideosInputs.find( in->getId() ) );
-    else
-        // POTENTIAL RACE-CONDITION
-        father->m_connectedStaticVideosInputs.erase( father->m_connectedStaticVideosInputs.find( in->getId() ) );
+    father->dereferenceStaticVideoInputAsConnected( in->getId() );
     return ( true );
 }
 
@@ -1436,15 +1432,9 @@ bool        EffectNode::disconnectInternalStaticVideoOutput( QString const & nod
     in = out->getInSlotPtr();
     if ( out->disconnect() == false )
         return ( false );
-    m_connectedInternalsStaticVideosOutputs.erase( m_connectedInternalsStaticVideosOutputs.find( out->getId() ) );
+    m_connectedInternalsStaticVideosOutputs.delObjectReference( out->getId() );
     father = in->getPrivateFather();
-
-
-    if ( father == this )
-        m_connectedInternalsStaticVideosInputs.erase( m_connectedInternalsStaticVideosInputs.find( in->getId() ) );
-    else
-        // POTENTIAL RACE-CONDITION
-        father->m_connectedStaticVideosInputs.erase( father->m_connectedStaticVideosInputs.find( in->getId() ) );
+    father->dereferenceStaticVideoInputAsConnected( in->getId() );
     return ( true );
 }
 
