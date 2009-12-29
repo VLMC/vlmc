@@ -28,6 +28,8 @@
 
 #include <QApplication>
 #include <QSettings>
+#include <QPalette>
+#include <QColor>
 
 #include "MainWindow.h"
 
