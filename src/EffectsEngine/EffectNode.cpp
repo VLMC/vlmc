@@ -1544,28 +1544,28 @@ bool             EffectNode::referenceInternalStaticVideoInputAsConnected( InSlo
     return ( m_connectedInternalsStaticVideosInputs.addObjectReference( in, in->getId() ) );
 }
 
-bool             EffectNode::dereferenceStaticVideoInputToConnectedMap( quint32 inId )
+bool             EffectNode::dereferenceStaticVideoInputAsConnected( quint32 inId )
 {
     QWriteLocker                        wl( &m_rwl );
 
     return ( m_connectedStaticVideosInputs.delObjectReference( inId ) );
 }
 
-bool             EffectNode::dereferenceInternalStaticVideoOutputToConnectedMap( quint32 outId )
+bool             EffectNode::dereferenceInternalStaticVideoOutputAsConnected( quint32 outId )
 {
     QWriteLocker                        wl( &m_rwl );
 
     return ( m_connectedInternalsStaticVideosOutputs.delObjectReference(  outId ) );
 }
 
-bool             EffectNode::dereferenceStaticVideoOutputToConnectedMap( quint32 outId )
+bool             EffectNode::dereferenceStaticVideoOutputAsConnected( quint32 outId )
 {
     QWriteLocker                        wl( &m_rwl );
 
     return ( m_connectedStaticVideosOutputs.delObjectReference(  outId ) );
 }
 
-bool             EffectNode::dereferenceInternalStaticVideoInputToConnectedMap( quint32 inId )
+bool             EffectNode::dereferenceInternalStaticVideoInputAsConnected( quint32 inId )
 {
     QWriteLocker                        wl( &m_rwl );
 
@@ -1607,7 +1607,7 @@ quint32                          EffectNode::getNBConnectedStaticsVideosInputs( 
     return ( m_connectedStaticVideosInputs.getNBObjectsReferences() );
 }
 
-quint32                          EffectNode::getNBConnectedInternalsStaticsVideosInputs( void ) const
+quint32                          EffectNode::getNBConnectedInternalsStaticsVideosOutputs( void ) const
 {
     QReadLocker                        rl( &m_rwl );
 

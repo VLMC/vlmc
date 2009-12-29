@@ -35,7 +35,7 @@ class SemanticObjectManager
 {
 public:
 
-    SemanticObjectManager() : m_higherFreeId( 1 ), m_mapHoles( 0 ), m_father( NULL )
+    SemanticObjectManager() : m_higherFreeId( 1 ), m_mapHoles( 0 ), m_father( NULL ), m_isItInternal( false )
     {
     }
 
@@ -59,7 +59,7 @@ public:
 
     inline void                        setScope( bool isItInternal )
     {
-        m_isItInternal = isItInternal
+        m_isItInternal = isItInternal;
         return ;
     }
 
@@ -278,7 +278,8 @@ private:
     QMap<quint32, QString>      m_nameById;
     quint32                     m_higherFreeId;
     quint32                     m_mapHoles;
-    EffectNode*                m_father;
+    EffectNode*                 m_father;
+    bool                        m_isItInternal;
 };
 
 #endif // SEMANTICOBJECTMANAGER_H_

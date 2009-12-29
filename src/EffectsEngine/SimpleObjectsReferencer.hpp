@@ -50,7 +50,7 @@ public:
 
     bool     delObjectReference( quint32 objId )
     {
-        QMap<quint32, T*>::iterator it = m_objRefs.find( objId );
+        typename QMap<quint32, T*>::iterator it = m_objRefs.find( objId );
 
         if ( it != m_objRefs.end() )
         {

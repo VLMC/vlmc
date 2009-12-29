@@ -413,7 +413,7 @@ class	EffectNode : public IEffectNode
         QList<InSlot<LightVideoFrame>*>  getConnectedInternalsStaticsVideosInputsList( void ) const;
 
         quint32                          getNBConnectedStaticsVideosInputs( void ) const;
-        quint32                          getNBConnectedInternalsStaticsVideosInputs( void ) const;
+        quint32                          getNBConnectedInternalsStaticsVideosOutputs( void ) const;
         quint32                          getNBConnectedStaticsVideosOutputs( void ) const;
         quint32                          getNBConnectedInternalsStaticsVideosInputs( void ) const;
 

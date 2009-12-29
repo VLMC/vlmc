@@ -140,6 +140,7 @@ HEADERS += src/GUI/MainWindow.h \
     src/EffectsEngine/EffectPluginTypeManager.h \
     src/EffectsEngine/EffectPluginTypeLoader.h \
     src/EffectsEngine/SemanticObjectManager.hpp \
+    src/EffectsEngine/SimpleObjectsReferencer.hpp \
     src/Configuration/SettingsManager.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
