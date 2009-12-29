@@ -1,6 +1,5 @@
 /*****************************************************************************
- * EffectNode.h: Abstract class you must inherit from, when you program
- * an effect module
+ * EffectNode.h: Node of the patch
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -27,7 +26,6 @@
 #include <QtGlobal>
 #include <QString>
 #include <QQueue>
-#include <QHash>
 #include <QObject>
 #include <QString>
 #include <QReadWriteLock>
@@ -41,6 +39,7 @@
 #include "OutSlot.hpp"
 #include "LightVideoFrame.h"
 #include "SemanticObjectManager.hpp"
+#include "SimpleObjectsReferencer.hpp"
 
 
 class	EffectNode : public IEffectNode
@@ -398,15 +397,15 @@ class	EffectNode : public IEffectNode
         //                     CONNECTED SLOTS MAP MANAGEMENT                      //
         //-------------------------------------------------------------------------//
 
-        void             storeStaticVideoInputInConnectedMap( InSlot<LightVideoFrame>* in );
-        void             storeInternalStaticVideoOutputInConnectedMap( OutSlot<LightVideoFrame>* out );
-        void             storeStaticVideoOutputInConnectedMap( OutSlot<LightVideoFrame>* out );
-        void             storeInternalStaticVideoInputInConnectedMap( InSlot<LightVideoFrame>* in );
+        bool             referenceStaticVideoInputAsConnected( InSlot<LightVideoFrame>* in );
+        bool             referenceInternalStaticVideoOutputAsConnected( OutSlot<LightVideoFrame>* out );
+        bool             referenceStaticVideoOutputAsConnected( OutSlot<LightVideoFrame>* out );
+        bool             referenceInternalStaticVideoInputAsConnected( InSlot<LightVideoFrame>* in );
 
-        void             deleteStaticVideoInputToConnectedMap( quint32 inId );
-        void             deleteInternalStaticVideoOutputToConnectedMap( quint32 outId );
-        void             deleteStaticVideoOutputToConnectedMap( quint32 outId );
-        void             deleteInternalStaticVideoInputToConnectedMap( quint32 inId );
+        bool             dereferenceStaticVideoInputAsConnected( quint32 inId );
+        bool             dereferenceInternalStaticVideoOutputAsConnected( quint32 outId );
+        bool             dereferenceStaticVideoOutputAsConnected( quint32 outId );
+        bool             dereferenceInternalStaticVideoInputAsConnected( quint32 inId );
 
         QList<InSlot<LightVideoFrame>*>  getConnectedStaticsVideosInputsList( void ) const;
         QList<OutSlot<LightVideoFrame>*> getConnectedInternalsStaticsVideosOutputsList( void ) const;
@@ -467,14 +466,14 @@ private:
     // VIDEOS SLOTS
 
     SemanticObjectManager< InSlot<LightVideoFrame> >	m_staticVideosInputs;
-    QMap< quint32, InSlot<LightVideoFrame>*>            m_connectedStaticVideosInputs;
     SemanticObjectManager< OutSlot<LightVideoFrame> >	m_internalsStaticVideosOutputs;
-    QMap< quint32, OutSlot<LightVideoFrame>*>           m_connectedInternalsStaticVideosOutputs;
-
     SemanticObjectManager< OutSlot<LightVideoFrame> >	m_staticVideosOutputs;
-    QMap< quint32, OutSlot<LightVideoFrame>*>           m_connectedStaticVideosOutputs;
     SemanticObjectManager< InSlot<LightVideoFrame> >	m_internalsStaticVideosInputs;
-    QMap< quint32, InSlot<LightVideoFrame>*>            m_connectedInternalsStaticVideosInputs;
+
+    SimpleObjectsReferencer<InSlot<LightVideoFrame> >   m_connectedStaticVideosInputs;
+    SimpleObjectsReferencer<OutSlot<LightVideoFrame> >  m_connectedInternalsStaticVideosOutputs;
+    SimpleObjectsReferencer<OutSlot<LightVideoFrame> >  m_connectedStaticVideosOutputs;
+    SimpleObjectsReferencer<InSlot<LightVideoFrame> >   m_connectedInternalsStaticVideosInputs;
 
     // AUDIOS SLOTS
 

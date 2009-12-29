@@ -1417,107 +1417,114 @@ bool        EffectNode::disconnectInternalStaticVideoOutput( QString const & nod
 //-------------------------------------------------------------------------//
 
 
-void             storeStaticVideoInputInConnectedMap( InSlot<LightVideoFrame>* in )
+bool             EffectNode::referenceStaticVideoInputAsConnected( InSlot<LightVideoFrame>* in )
 {
     QWriteLocker                        wl( &m_rwl );
-    m_connectedStaticVideosInputs[ in->getId() ] = in;
-    return ;
+
+    return ( m_connectedStaticVideosInputs.addObjectReference( in, in->getId() ) );
 }
 
-void             storeInternalStaticVideoOutputInConnectedMap( OutSlot<LightVideoFrame>* out )
+bool             EffectNode::referenceInternalStaticVideoOutputAsConnected( OutSlot<LightVideoFrame>* out )
 {
     QWriteLocker                        wl( &m_rwl );
-    m_connectedInternalsStaticVideosOutputs[ out->getId() ] = out;
-    return ;
+
+    return ( m_connectedInternalsStaticVideosOutputs.addObjectReference( out, out->getId() ) );
 }
 
-void             storeStaticVideoOutputInConnectedMap( OutSlot<LightVideoFrame>* out )
+bool             EffectNode::referenceStaticVideoOutputAsConnected( OutSlot<LightVideoFrame>* out )
 {
     QWriteLocker                        wl( &m_rwl );
-    m_connectedStaticVideosOutputs[ out->getId() ] = out;
-    return ;
+
+    return ( m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() ) );
 }
 
-void             storeInternalStaticVideoInputInConnectedMap( InSlot<LightVideoFrame>* in )
+bool             EffectNode::referenceInternalStaticVideoInputAsConnected( InSlot<LightVideoFrame>* in )
 {
     QWriteLocker                        wl( &m_rwl );
-    m_connectedInternalsStaticVideosInputs[ in->getId() ] = in;
-    return ;
+
+    return ( m_connectedInternalsStaticVideosInputs.addObjectReference( in, in->getId() ) );
 }
 
-void             deleteStaticVideoInputToConnectedMap( quint32 inId )
+bool             EffectNode::dereferenceStaticVideoInputToConnectedMap( quint32 inId )
 {
     QWriteLocker                        wl( &m_rwl );
-    m_connectedStaticVideosInputs.erase( m_connectedStaticVideosInputs.find( inId ) );
-    return ;
+
+    return ( m_connectedStaticVideosInputs.delObjectReference( inId ) );
 }
 
-void             deleteInternalStaticVideoOutputToConnectedMap( quint32 outId )
+bool             EffectNode::dereferenceInternalStaticVideoOutputToConnectedMap( quint32 outId )
 {
     QWriteLocker                        wl( &m_rwl );
-    m_connectedInternalsStaticVideosOutputs.erase( m_connectedInternalsStaticVideosOutputs.find( outId ) );
-    return ;
+
+    return ( m_connectedInternalsStaticVideosOutputs.delObjectReference(  outId ) );
 }
 
-void             deleteStaticVideoOutputToConnectedMap( quint32 outId )
+bool             EffectNode::dereferenceStaticVideoOutputToConnectedMap( quint32 outId )
 {
     QWriteLocker                        wl( &m_rwl );
-    m_connectedStaticVideosOutputs.erase( m_connectedStaticVideosOutputs.find( outId ) );
-    return ;
+
+    return ( m_connectedStaticVideosOutputs.delObjectReference(  outId ) );
 }
 
-void             deleteInternalStaticVideoInputToConnectedMap( quint32 inId )
+bool             EffectNode::dereferenceInternalStaticVideoInputToConnectedMap( quint32 inId )
 {
     QWriteLocker                        wl( &m_rwl );
-    m_connectedInternalsStaticVideosInputs.erase( m_connectedInternalsStaticVideosInputs.find( inId ) );
-    return ;
+
+    return ( m_connectedInternalsStaticVideosInputs.delObjectReference( inId ) );
 }
 
-QList<InSlot<LightVideoFrame>*>  getConnectedStaticsVideosInputsList( void ) const
+QList<InSlot<LightVideoFrame>*>  EffectNode::getConnectedStaticsVideosInputsList( void ) const
 {
     QReadLocker                        rl( &m_rwl );
-    m_connectedStaticVideosInputs.values();
+
+    return ( m_connectedStaticVideosInputs.getObjectsReferencesList() );
 }
 
-QList<OutSlot<LightVideoFrame>*> getConnectedInternalsStaticsVideosOutputsList( void ) const
+QList<OutSlot<LightVideoFrame>*> EffectNode::getConnectedInternalsStaticsVideosOutputsList( void ) const
 {
     QReadLocker                        rl( &m_rwl );
-    m_connectedInternalsStaticVideosOutputs.values();
+
+    return ( m_connectedInternalsStaticVideosOutputs.getObjectsReferencesList() );
 }
 
-QList<OutSlot<LightVideoFrame>*> getConnectedStaticsVideosOutputsList( void ) const
+QList<OutSlot<LightVideoFrame>*> EffectNode::getConnectedStaticsVideosOutputsList( void ) const
 {
     QReadLocker                        rl( &m_rwl );
-    m_connectedStaticVideosOutputs.values();
+
+    return ( m_connectedStaticVideosOutputs.getObjectsReferencesList() );
 }
 
-QList<InSlot<LightVideoFrame>*>  getConnectedInternalsStaticsVideosInputsList( void ) const
+QList<InSlot<LightVideoFrame>*>  EffectNode::getConnectedInternalsStaticsVideosInputsList( void ) const
 {
     QReadLocker                        rl( &m_rwl );
-    m_connectedInternalsStaticVideosInputs.values();
+
+    return ( m_connectedInternalsStaticVideosInputs.getObjectsReferencesList() );
 }
 
-
-quint32                          getNBConnectedStaticsVideosInputs( void ) const
+quint32                          EffectNode::getNBConnectedStaticsVideosInputs( void ) const
 {
     QReadLocker                        rl( &m_rwl );
-    return ( m_connectedStaticVideosInputs.size() );
+
+    return ( m_connectedStaticVideosInputs.getNBObjectsReferences() );
 }
 
-quint32                          getNBConnectedInternalsStaticsVideosInputs( void ) const
+quint32                          EffectNode::getNBConnectedInternalsStaticsVideosInputs( void ) const
 {
     QReadLocker                        rl( &m_rwl );
-    return ( m_connectedInternalsStaticVideosOutputs.size() );
+
+    return ( m_connectedInternalsStaticVideosOutputs.getNBObjectsReferences() );
 }
 
-quint32                          getNBConnectedStaticsVideosOutputs( void ) const
+quint32                          EffectNode::getNBConnectedStaticsVideosOutputs( void ) const
 {
     QReadLocker                        rl( &m_rwl );
-    return ( m_connectedStaticVideosOutputs.size() );
+
+    return ( m_connectedStaticVideosOutputs.getNBObjectsReferences() );
 }
 
-quint32                          getNBConnectedInternalsStaticsVideosInputs( void ) const
+quint32                          EffectNode::getNBConnectedInternalsStaticsVideosInputs( void ) const
 {
     QReadLocker                        rl( &m_rwl );
-    return ( m_connectedInternalsStaticVideosInputs.size() );
+
+    return ( m_connectedInternalsStaticVideosInputs.getNBObjectsReferences() );
 }
