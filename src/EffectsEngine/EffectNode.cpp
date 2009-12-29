@@ -1262,8 +1262,8 @@ bool        EffectNode::connectChildStaticVideoOutputToParentStaticVideoInput( Q
         return ( false );
     if ( out->connect( *in ) == false )
         return ( false );
-    m_connectedStaticVideosOutputs[ out->getId() ] = out;
-    m_father->storeInternalStaticVideoInputInConnectedMap( in );
+    m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+    m_father->referenceInternalStaticVideoInputAsConnected( in );
     return ( true );
 }
 
@@ -1281,8 +1281,8 @@ bool        EffectNode::connectChildStaticVideoOutputToParentStaticVideoInput( Q
         return ( false );
     if ( out->connect( *in ) == false )
         return ( false );
-    m_connectedStaticVideosOutputs[ out->getId() ] = out;
-    m_father->storeInternalStaticVideoInputInConnectedMap( in );
+    m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+    m_father->referenceInternalStaticVideoInputAsConnected( in );
     return ( true );
 }
 
@@ -1300,8 +1300,8 @@ bool        EffectNode::connectChildStaticVideoOutputToParentStaticVideoInput( q
         return ( false );
     if ( out->connect( *in ) == false )
         return ( false );
-    m_connectedStaticVideosOutputs[ out->getId() ] = out;
-    m_father->storeInternalStaticVideoInputInConnectedMap( in );
+    m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+    m_father->referenceInternalStaticVideoInputAsConnected( in );
     return ( true );
 }
 
@@ -1319,12 +1319,10 @@ bool        EffectNode::connectChildStaticVideoOutputToParentStaticVideoInput( q
         return ( false );
     if ( out->connect( *in ) == false )
         return ( false );
-    m_connectedStaticVideosOutputs[ out->getId() ] = out;
-    m_father->storeInternalStaticVideoInputInConnectedMap( in );
+    m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+    m_father->referenceInternalStaticVideoInputAsConnected( in );
     return ( true );
 }
-
-
 
 bool        EffectNode::connectChildStaticVideoInputToParentStaticVideoOutput( QString const & childInName,  QString const & fatherOutName )
 {
@@ -1340,8 +1338,8 @@ bool        EffectNode::connectChildStaticVideoInputToParentStaticVideoOutput( Q
         return ( false );
     if ( out->connect( *in ) == false )
         return ( false );
-    m_connectedStaticVideosInputs[ in->getId() ] = in;
-    m_father->storeInternalStaticVideoOutputInConnectedMap( out );
+    m_connectedStaticVideosInputs.addObjectReference( in, in->getId() );
+    m_father->referenceInternalStaticVideoOutputAsConnected( out );
     return ( true );
 }
 
@@ -1359,8 +1357,8 @@ bool        EffectNode::connectChildStaticVideoInputToParentStaticVideoOutput( Q
         return ( false );
     if ( out->connect( *in ) == false )
         return ( false );
-    m_connectedStaticVideosInputs[ in->getId() ] = in;
-    m_father->storeInternalStaticVideoOutputInConnectedMap( out );
+    m_connectedStaticVideosInputs.addObjectReference( in, in->getId() );
+    m_father->referenceInternalStaticVideoOutputAsConnected( out );
     return ( true );
 }
 
@@ -1378,8 +1376,8 @@ bool        EffectNode::connectChildStaticVideoInputToParentStaticVideoOutput( q
         return ( false );
     if ( out->connect( *in ) == false )
         return ( false );
-    m_connectedStaticVideosInputs[ in->getId() ] = in;
-    m_father->storeInternalStaticVideoOutputInConnectedMap( out );
+    m_connectedStaticVideosInputs.addObjectReference( in, in->getId() );
+    m_father->referenceInternalStaticVideoOutputAsConnected( out );
     return ( true );
 }
 
@@ -1397,8 +1395,8 @@ bool        EffectNode::connectChildStaticVideoInputToParentStaticVideoOutput( q
         return ( false );
     if ( out->connect( *in ) == false )
         return ( false );
-    m_connectedStaticVideosInputs[ in->getId() ] = in;
-    m_father->storeInternalStaticVideoOutputInConnectedMap( out );
+    m_connectedStaticVideosInputs.addObjectReference( in, in->getId() );
+    m_father->referenceInternalStaticVideoOutputAsConnected( out );
     return ( true );
 }
 
