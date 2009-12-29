@@ -38,11 +38,11 @@ public:
     ~SimpleObjectsReferencer()
     {}
 
-    bool     addObjectReference( T * obj, quint32 objId )
+    bool     addObjectReference( T * obj )
     {
-        if ( m_objRefs.find( objId ) == m_objRefs.end() )
+        if ( m_objRefs.find( obj->getId() ) == m_objRefs.end() )
         {
-            m_objRefs[ objId ] = obj;
+            m_objRefs[ obj->getId() ] = obj;
             return ( true );
         }
         return ( false );
