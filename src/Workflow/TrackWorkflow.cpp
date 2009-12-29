@@ -129,7 +129,7 @@ void*       TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
 {
     cw->getStateLock()->lockForRead();
 
-    qDebug() << "Rendering clip" << cw << "state:" << cw->getState() << "Type:" << m_trackType;
+//    qDebug() << "Rendering clip" << cw << "state:" << cw->getState() << "Type:" << m_trackType;
     if ( cw->getState() == ClipWorkflow::Rendering ||
          cw->getState() == ClipWorkflow::Paused ||
          cw->getState() == ClipWorkflow::PauseRequired ||
@@ -153,7 +153,6 @@ void*       TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
     }
     else if ( cw->getState() == ClipWorkflow::EndReached )
     {
-        qDebug() << "State is endreached";
         cw->getStateLock()->unlock();
         //The stopClipWorkflow() method will take care of that.
     }

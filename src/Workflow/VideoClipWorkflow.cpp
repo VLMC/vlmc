@@ -109,7 +109,6 @@ void*       VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 
 void    VideoClipWorkflow::lock( VideoClipWorkflow* cw, void** pp_ret, int size )
 {
-    qDebug() << "video lock";
     Q_UNUSED( size );
     cw->m_renderLock->lock();
     LightVideoFrame*    lvf = NULL;
@@ -130,7 +129,6 @@ void    VideoClipWorkflow::lock( VideoClipWorkflow* cw, void** pp_ret, int size 
 
 void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int width, int height, int bpp, int size, qint64 pts )
 {
-    qDebug() << "video unlock";
     Q_UNUSED( buffer );
     Q_UNUSED( width );
     Q_UNUSED( height );

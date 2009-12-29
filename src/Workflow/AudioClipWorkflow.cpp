@@ -57,7 +57,7 @@ void*       AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
     QMutexLocker    lock( m_renderLock );
     preGetOutput();
 
-//    qWarning() << "Audio. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
+    qWarning() << "Audio. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
     if ( isEndReached() == true )
         return NULL;
     if ( mode == ClipWorkflow::Get )

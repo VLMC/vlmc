@@ -87,7 +87,7 @@ void    ClipWorkflow::loadingComplete()
     adjustBegin();
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( loadingComplete() ) );
     connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( mediaPlayerUnpaused() ), Qt::DirectConnection );
-    connect( m_mediaPlayer, SIGNAL( pause() ), this, SLOT( mediaPlayerPaused() ), Qt::DirectConnection );
+    connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( mediaPlayerPaused() ), Qt::DirectConnection );
     QMutexLocker    lock( m_initWaitCond->getMutex() );
     setState( Rendering );
     qDebug() << "Waking init wait cond";
@@ -255,7 +255,7 @@ void    ClipWorkflow::computePtsDiff( qint64 pts )
 
 void    ClipWorkflow::mediaPlayerPaused()
 {
-    qWarning() << "Media player paused, waiting for buffers to be consumed";
+    qWarning() << "\n\n\n\nMedia player paused, waiting for buffers to be consumed\n\n\n\n";
     setState( ClipWorkflow::Paused );
 }
 
