@@ -47,7 +47,15 @@ class   TrackHandler : public QObject
         unsigned int            getTrackCount() const;
         qint64                  getLength() const;
         void                    startRender();
-        void                    getOutput( qint64 currentFrame );
+        /**
+         *  \param      currentFrame    The current rendering frame (ie the video frame, in all case)
+         *  \param      subFrame        The underlying system frame. For video TrackWorkflow, it's the same
+         *                              as the currentFrame. For an Audio TrackWorkflow, it is the current
+         *                              "audio frame"
+         *  \todo       This should probably be partialy handled by the trackHandler, as the work
+         *              is exactly the same for both audio and video trackWorkflow in most of the case... or not.
+         */
+        void                    getOutput( qint64 currentFrame, qint64 subFrame );
         void                    pause();
         void                    unpause();
         void                    activateAll();

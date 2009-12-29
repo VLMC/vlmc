@@ -250,6 +250,7 @@ void        MetaDataWorker::unlock( MetaDataWorker* metaDataWorker, uint8_t* pcm
 
 void    MetaDataWorker::generateAudioSpectrum()
 {
+    qWarning() << "Generating audio spectrum";
     disconnect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( generateAudioSpectrum() ) );
     m_mediaPlayer->stop();
     emit mediaPlayerIdle( m_mediaPlayer );

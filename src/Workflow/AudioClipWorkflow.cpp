@@ -131,7 +131,7 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
 
     cw->computePtsDiff( pts );
     AudioSample* as = cw->m_computedBuffers.head();
-    qWarning() << "Computing audio PTS: pts:" << pts << "m_currentPts:" << cw->m_currentPts << "m_previousPts:" << cw->m_previousPts << "for buffer#" << as->debugId;
+//    qWarning() << "Computing audio PTS: pts:" << pts << "m_currentPts:" << cw->m_currentPts << "m_previousPts:" << cw->m_previousPts << "for buffer#" << as->debugId;
     if ( as->buff != NULL )
     {
         as->nbSample = nb_samples;

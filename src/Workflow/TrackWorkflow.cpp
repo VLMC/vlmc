@@ -129,8 +129,11 @@ void*       TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
 {
     cw->getStateLock()->lockForRead();
 
-//    qDebug() << "Rendering clip" << cw << "state:" << cw->getState() << "Type:" << m_trackType;
-    if ( cw->getState() == ClipWorkflow::Rendering )
+    qDebug() << "Rendering clip" << cw << "state:" << cw->getState() << "Type:" << m_trackType;
+    if ( cw->getState() == ClipWorkflow::Rendering ||
+         cw->getState() == ClipWorkflow::Paused ||
+         cw->getState() == ClipWorkflow::PauseRequired ||
+         cw->getState() == ClipWorkflow::UnpauseRequired )
     {
         cw->getStateLock()->unlock();
         if ( needRepositioning == true )
@@ -150,11 +153,13 @@ void*       TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
     }
     else if ( cw->getState() == ClipWorkflow::EndReached )
     {
+        qDebug() << "State is endreached";
         cw->getStateLock()->unlock();
         //The stopClipWorkflow() method will take care of that.
     }
     else
     {
+        qCritical() << "Unexpected state:" << cw->getState();
         cw->getStateLock()->unlock();
     }
     return NULL;
@@ -227,7 +232,7 @@ void                TrackWorkflow::releasePreviousRender()
         m_videoStackedBuffer->release();
 }
 
-void*               TrackWorkflow::getOutput( qint64 currentFrame )
+void*               TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFrame )
 {
     releasePreviousRender();
     QReadLocker     lock( m_clipsLock );
@@ -249,10 +254,10 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame )
             needRepositioning = true;
             m_forceRepositionning = false;
         }
-        else if ( m_paused == true && currentFrame != m_lastFrame )
+        else if ( m_paused == true && subFrame != m_lastFrame )
             needRepositioning = true;
         else
-            needRepositioning = ( abs( currentFrame - m_lastFrame ) > 1 ) ? true : false;
+            needRepositioning = ( abs( subFrame - m_lastFrame ) > 1 ) ? true : false;
     }
 
     while ( it != end )
@@ -263,6 +268,7 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame )
 //        qDebug() << "Start:" << start << "Current Frame:" << currentFrame;
         if ( start <= currentFrame && currentFrame <= start + cw->getClip()->getLength() )
         {
+            qDebug() << "Rendering clip... type:" << m_trackType;
             if ( ret != NULL )
                 qCritical() << "There's more than one clip to render here. Undefined behaviour !";
             ret = renderClip( cw, currentFrame, start, needRepositioning );
@@ -270,22 +276,24 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame )
                 m_videoStackedBuffer = reinterpret_cast<StackedBuffer<LightVideoFrame*>*>( ret );
             else
                 m_audioStackedBuffer = reinterpret_cast<StackedBuffer<AudioClipWorkflow::AudioSample*>*>( ret );
+            qDebug() << "Rendered buffer. Type:" << m_trackType << "ret:" << (void*)ret;
         }
         //Is it about to be rendered ?
         else if ( start > currentFrame &&
                 start - currentFrame < TrackWorkflow::nbFrameBeforePreload )
         {
+            qDebug() << "Preloading clip.";
             preloadClip( cw );
         }
         //Is it supposed to be stopped ?
         else
         {
+            qDebug() << "Stopping clip";
             stopClipWorkflow( cw );
         }
-
         ++it;
     }
-    m_lastFrame = currentFrame;
+    m_lastFrame = subFrame;
     return ret;
 }
 

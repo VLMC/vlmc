@@ -50,6 +50,16 @@ class   ClipWorkflow : public QObject
             /// \brief  Used when end is reached, IE no more frame has to be rendered, but the trackworkflow
             ///         may eventually ask for some.
             EndReached,     //3
+            // Here starts internal states :
+            /// \brief  This state will be used when an unpause
+            ///         has been required
+            UnpauseRequired,
+            /// \brief  This state will be used when a pause
+            ///         has been required
+            PauseRequired,
+            /// \brief  This state will be used when the media player is paused,
+            ///         because of a sufficient number of computed buffers
+            Paused,
         };
 
         /**
@@ -197,6 +207,8 @@ class   ClipWorkflow : public QObject
     private slots:
         void                    loadingComplete();
         void                    clipEndReached();
+        void                    mediaPlayerPaused();
+        void                    mediaPlayerUnpaused();
 };
 
 #endif // CLIPWORKFLOW_H

@@ -107,13 +107,12 @@ int     WorkflowRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigne
     }
     else if ( handler->type == Audio )
     {
-        qWarning() << "got audio type <<<<<<<<<<<<<<<<<<<<<<<<<<<<";
         ret = lockAudio( handler->self, pts, bufferSize, buffer );
         handler->self->m_mainWorkflow->goToNextFrame( MainWorkflow::AudioTrack );
     }
     else
         qWarning() << "Invalid ES type";
-    qDebug() << "ES Type:" << handler->type << "pts:" << *pts;
+//    qDebug() << "ES Type:" << handler->type << "pts:" << *pts;
     return ret;
 }
 
@@ -153,7 +152,6 @@ int     WorkflowRenderer::lockAudio(  WorkflowRenderer* self, int64_t *pts, size
         *buffer = self->m_renderAudioSample->buff;
         *bufferSize = self->m_renderAudioSample->size;
         ptsDiff = self->m_renderAudioSample->ptsDiff;
-        qWarning() << "injecting audio sample from sample #" << self->m_renderAudioSample->debugId;
     }
     else
     {
@@ -167,7 +165,6 @@ int     WorkflowRenderer::lockAudio(  WorkflowRenderer* self, int64_t *pts, size
         *buffer = WorkflowRenderer::silencedAudioBuffer;
         *bufferSize = buffSize;
         ptsDiff = self->m_pts - self->m_audioPts;
-        qWarning() << "injecting silence buffer";
     }
     self->m_audioPts = *pts = self->m_audioPts + ptsDiff;
     //qDebug() << "Audio pts" << self->m_audioPts << "diff" << ptsDiff;

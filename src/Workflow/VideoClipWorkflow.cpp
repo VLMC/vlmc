@@ -91,10 +91,16 @@ void*       VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
     preGetOutput();
 //    qWarning() << "Video. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
     if ( isEndReached() == true )
+    {
+        qWarning() << "End is reached. returning NULL";
         return NULL;
+    }
     StackedBuffer<LightVideoFrame*>* buff;
     if ( mode == ClipWorkflow::Pop )
+    {
         buff = new StackedBuffer<LightVideoFrame*>( m_computedBuffers.pop(), &m_availableBuffers, true );
+        qDebug() << "buff:" << (void*)buff;
+    }
     else if ( mode == ClipWorkflow::Get )
         buff = new StackedBuffer<LightVideoFrame*>( m_computedBuffers.head(), NULL, false );
     postGetOutput();

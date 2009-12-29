@@ -86,7 +86,8 @@ void    ClipWorkflow::loadingComplete()
 {
     adjustBegin();
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( loadingComplete() ) );
-    qDebug() << "Setting state to Rendering";
+    connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( mediaPlayerUnpaused() ), Qt::DirectConnection );
+    connect( m_mediaPlayer, SIGNAL( pause() ), this, SLOT( mediaPlayerPaused() ), Qt::DirectConnection );
     QMutexLocker    lock( m_initWaitCond->getMutex() );
     setState( Rendering );
     qDebug() << "Waking init wait cond";
@@ -190,21 +191,6 @@ LibVLCpp::MediaPlayer*       ClipWorkflow::getMediaPlayer()
     return m_mediaPlayer;
 }
 
-void        ClipWorkflow::postGetOutput()
-{
-    //If we're running out of computed buffers, refill our stack.
-    if ( getComputedBuffers() < getMaxComputedBuffers() / 3 )
-    {
-        if ( m_mediaPlayer->isPlaying() == false )
-        {
-            qWarning() << "Unpausing media player";
-            m_mediaPlayer->pause();
-        }
-        else
-            qCritical() << "Running out of output buffers !";
-    }
-}
-
 void        ClipWorkflow::preGetOutput()
 {
     QMutexLocker    lock( m_feedingCondWait->getMutex() );
@@ -213,8 +199,27 @@ void        ClipWorkflow::preGetOutput()
     {
         qWarning() << "Waiting for buffer to be fed";
         m_renderLock->unlock();
+        qDebug() << "Unlocked render lock, entering cond wait";
         m_feedingCondWait->waitLocked();
         m_renderLock->lock();
+    }
+}
+
+void        ClipWorkflow::postGetOutput()
+{
+    //If we're running out of computed buffers, refill our stack.
+    if ( getComputedBuffers() < getMaxComputedBuffers() / 3 )
+    {
+        QWriteLocker        lock( m_stateLock );
+        if ( m_state == ClipWorkflow::Paused )
+        {
+            qWarning() << "Unpausing media player";
+            m_state = ClipWorkflow::UnpauseRequired;
+            //This will act like an "unpause";
+            m_mediaPlayer->pause();
+        }
+        else
+            qCritical() << "Running out of output buffers !";
     }
 }
 
@@ -225,11 +230,14 @@ void        ClipWorkflow::commonUnlock()
     if ( getComputedBuffers() == getMaxComputedBuffers() )
     {
         qWarning() << "Pausing media player";
+        setState( ClipWorkflow::PauseRequired );
         m_mediaPlayer->pause();
     }
     if ( getComputedBuffers() == 1 )
     {
+        qDebug() << "Waking feeding cont wait... acquiring lock";
         QMutexLocker    lock( m_feedingCondWait->getMutex() );
+        qDebug() << "feeding cont wait mutex acquired";
         m_feedingCondWait->wake();
     }
     checkStateChange();
@@ -243,4 +251,16 @@ void    ClipWorkflow::computePtsDiff( qint64 pts )
         m_currentPts = pts;
     m_previousPts = m_currentPts;
     m_currentPts = qMax( pts, m_previousPts );
+}
+
+void    ClipWorkflow::mediaPlayerPaused()
+{
+    qWarning() << "Media player paused, waiting for buffers to be consumed";
+    setState( ClipWorkflow::Paused );
+}
+
+void    ClipWorkflow::mediaPlayerUnpaused()
+{
+    qWarning() << "Media player unpaused. Go back to rendering";
+    setState( ClipWorkflow::Rendering );
 }
