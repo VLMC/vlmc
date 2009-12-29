@@ -23,7 +23,6 @@
 #ifndef GRAPHICSMOVIEITEM_H
 #define GRAPHICSMOVIEITEM_H
 
-#include <QFontMetrics>
 #include "AbstractGraphicsMediaItem.h"
 #include "Clip.h"
 #include "TracksView.h"

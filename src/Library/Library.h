@@ -32,14 +32,14 @@
 #include <QObject>
 #include <QHash>
 #include <QUuid>
-#include <QFileInfo>
-#include <QMutex>
-#include <QMutexLocker>
-#include <QDomElement>
 
-#include "Media.h"
-#include "Clip.h"
 #include "Singleton.hpp"
+
+class QDomDocument;
+class QDomElement;
+
+class Media;
+class Clip;
 
 class   Library : public QObject, public Singleton<Library>
 {

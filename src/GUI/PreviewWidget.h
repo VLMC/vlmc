@@ -26,8 +26,9 @@
 
 #include <QWidget>
 #include "Workflow/MainWorkflow.h"
-#include "GenericRenderer.h"
 #include "PreviewRuler.h"
+
+class GenericRenderer;
 
 namespace Ui {
     class PreviewWidget;

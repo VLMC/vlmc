@@ -22,8 +22,10 @@
 #include <QtDebug>
 #include <QApplication>
 #include <QMap>
+#include <QDockWidget>
 
 #include "DockWidgetManager.h"
+#include "MainWindow.h"
 
 DockWidgetManager *DockWidgetManager::m_instance = 0;
 

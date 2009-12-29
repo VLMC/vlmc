@@ -21,6 +21,11 @@
  *****************************************************************************/
 
 #include "MediaLibraryWidget.h"
+#include "StackViewController.h"
+#include "MediaListViewController.h"
+
+#include "Media.h"
+#include "Clip.h"
 
 MediaLibraryWidget::MediaLibraryWidget( QWidget* parent ) : QWidget( parent )
 {

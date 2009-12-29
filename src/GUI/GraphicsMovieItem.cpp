@@ -24,6 +24,7 @@
 #include <QLinearGradient>
 #include <QDebug>
 #include <QTime>
+#include <QFontMetrics>
 #include "GraphicsMovieItem.h"
 #include "TracksView.h"
 #include "Timeline.h"

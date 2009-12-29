@@ -25,10 +25,10 @@
 
 #include <QWidget>
 
-#include "StackViewController.h"
-#include "MediaListViewController.h"
-#include "Media.h"
-#include "Clip.h"
+class StackViewController;
+class ViewController;
+class Media;
+class Clip;
 
 class MediaLibraryWidget : public QWidget
 {

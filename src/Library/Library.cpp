@@ -28,8 +28,13 @@
 
 #include <QtDebug>
 #include <QMessageBox>
+#include <QDomElement>
+#include <QUuid>
+#include <QHash>
 
 #include "Library.h"
+#include "Media.h"
+#include "Clip.h"
 #include "MetaDataManager.h"
 
 Library::Library()
