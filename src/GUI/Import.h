@@ -24,10 +24,11 @@
 #define IMPORT_H
 
 #include <QDialog>
-#include "PreviewWidget.h"
-#include "Media.h"
-#include "TagWidget.h"
-#include "ImportMediaCellView.h"
+
+class PreviewWidget;
+class TagWidget;
+class ImportMediaCellView;
+class Media;
 
 namespace Ui
 {

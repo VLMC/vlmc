@@ -25,13 +25,12 @@
 
 #include <QGraphicsItem>
 #include <QUuid>
-#include <QCursor>
 #include "GraphicsTrack.hpp"
-#include "Clip.h"
 
 #define RESIZE_ZONE 7
 
 class TracksView;
+class Clip;
 
 class AbstractGraphicsMediaItem : public QObject, public QGraphicsItem
 {

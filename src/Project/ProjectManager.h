@@ -23,13 +23,14 @@
 #ifndef PROJECTMANAGER_H
 #define PROJECTMANAGER_H
 
-#include <QFile>
 #include <QObject>
 #include <QDomDocument>
 #include <QStringList>
 #include <QTimer>
 
 #include "Singleton.hpp"
+
+class QFile;
 
 class   ProjectManager : public QObject, public Singleton<ProjectManager>
 {

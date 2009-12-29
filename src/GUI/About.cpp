@@ -20,10 +20,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QApplication>
 #include <QFile>
 #include <QString>
-#include <QCoreApplication>
-#include <QtDebug>
+#include <QPlainTextEdit>
 #include "About.h"
 
 About* About::m_instance = NULL;

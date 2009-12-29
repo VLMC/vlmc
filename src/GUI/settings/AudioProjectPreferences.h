@@ -24,7 +24,6 @@
 #define AUDIOPROJECTPREFERENCES_H
 
 #include <QWidget>
-#include <QSettings>
 #include "PreferenceWidget.h"
 #include "ui_AudioProjectPreferences.h"
 

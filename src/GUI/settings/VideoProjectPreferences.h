@@ -24,7 +24,6 @@
 #define VIDEOPROJECTPREFERENCES_H
 
 #include <QWidget>
-#include <QSettings>
 #include "PreferenceWidget.h"
 #include "ui_VideoProjectPreferences.h"
 

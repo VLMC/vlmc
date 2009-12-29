@@ -20,11 +20,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QTime>
+
 #include "Import.h"
 #include "ui_Import.h"
+#include "PreviewWidget.h"
+#include "TagWidget.h"
+#include "ImportMediaCellView.h"
+#include "Media.h"
 #include "ClipRenderer.h"
 #include "Library.h"
-#include "QTime"
 
 Import::Import(QWidget *parent) :
     QDialog( parent ), m_ui( new Ui::Import )

@@ -25,13 +25,13 @@
 
 #include "vlmc.h"
 #include "ui_Timeline.h"
-#include "TracksRuler.h"
-#include "TracksControls.h"
 #include "Workflow/MainWorkflow.h"
-#include "WorkflowRenderer.h"
 
 class TracksScene;
 class TracksView;
+class TracksControls;
+class TracksRuler;
+class WorkflowRenderer;
 
 class Timeline : public QWidget
 {
