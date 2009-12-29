@@ -244,17 +244,20 @@ bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( QString cons
     {
         if ( ( in = m_staticVideosInputs.getObject( inName ) ) == NULL )
             return ( false );
+        if ( out->connect( *in ) == false )
+            return ( false );
+        m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+        m_connectedStaticVideosInputs.addObjectReference( in, in->getId() );
     }
     else
     {
         if ( ( in = brother->getStaticVideoInput( inName ) ) == NULL )
             return ( false );
+        if ( out->connect( *in ) == false )
+            return ( false );
+        m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+        brother->referenceStaticVideoInputAsConnected( in );
     }
-    if ( out->connect( *in ) == false )
-        return ( false );
-
-    m_connectedStaticVideosOutputs[ out->getId() ] = out;
-    brother->storeStaticVideoInputInConnectedMap( in );
     return ( true );
 }
 
@@ -275,16 +278,20 @@ bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( QString cons
     {
         if ( ( in = m_staticVideosInputs.getObject( inId ) ) == NULL )
             return ( false );
+        if ( out->connect( *in ) == false )
+            return ( false );
+        m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+        m_connectedStaticVideosInputs.addObjectReference( in, in->getId() );
     }
     else
     {
         if ( ( in = brother->getStaticVideoInput( inId ) ) == NULL )
             return ( false );
+        if ( out->connect( *in ) == false )
+            return ( false );
+        m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+        brother->referenceStaticVideoInputAsConnected( in );
     }
-    if ( out->connect( *in ) == false )
-        return ( false );
-    m_connectedStaticVideosOutputs[ out->getId() ] = out;
-    brother->storeStaticVideoInputInConnectedMap( in );
     return ( true );
 }
 
@@ -305,16 +312,20 @@ bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( QString cons
     {
         if ( ( in = m_staticVideosInputs.getObject( inName ) ) == NULL )
             return ( false );
+        if ( out->connect( *in ) == false )
+            return ( false );
+        m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+        m_connectedStaticVideosInputs.addObjectReference( in, in->getId() );
     }
     else
     {
         if ( ( in = brother->getStaticVideoInput( inName ) ) == NULL )
             return ( false );
+        if ( out->connect( *in ) == false )
+            return ( false );
+        m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+        brother->referenceStaticVideoInputAsConnected( in );
     }
-    if ( out->connect( *in ) == false )
-        return ( false );
-    m_connectedStaticVideosOutputs[ out->getId() ] = out;
-    brother->storeStaticVideoInputInConnectedMap( in );
     return ( true );
 }
 
@@ -335,16 +346,20 @@ bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( QString cons
     {
         if ( ( in = m_staticVideosInputs.getObject( inId ) ) == NULL )
             return ( false );
+        if ( out->connect( *in ) == false )
+            return ( false );
+        m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+        m_connectedStaticVideosInputs.addObjectReference( in, in->getId() );
     }
     else
     {
         if ( ( in = brother->getStaticVideoInput( inId ) ) == NULL )
             return ( false );
+        if ( out->connect( *in ) == false )
+            return ( false );
+        m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+        brother->referenceStaticVideoInputAsConnected( in );
     }
-    if ( out->connect( *in ) == false )
-        return ( false );
-    m_connectedStaticVideosOutputs[ out->getId() ] = out;
-    brother->storeStaticVideoInputInConnectedMap( in );
     return ( true );
 }
 
@@ -365,16 +380,20 @@ bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( quint32 outI
     {
         if ( ( in = m_staticVideosInputs.getObject( inName ) ) == NULL )
             return ( false );
+        if ( out->connect( *in ) == false )
+            return ( false );
+        m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+        m_connectedStaticVideosInputs.addObjectReference( in, in->getId() );
     }
     else
     {
         if ( ( in = brother->getStaticVideoInput( inName ) ) == NULL )
             return ( false );
+        if ( out->connect( *in ) == false )
+            return ( false );
+        m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+        brother->referenceStaticVideoInputAsConnected( in );
     }
-    if ( out->connect( *in ) == false )
-        return ( false );
-    m_connectedStaticVideosOutputs[ out->getId() ] = out;
-    brother->storeStaticVideoInputInConnectedMap( in );
     return ( true );
 }
 
@@ -395,16 +414,20 @@ bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( quint32 outI
     {
         if ( ( in = m_staticVideosInputs.getObject( inId ) ) == NULL )
             return ( false );
+        if ( out->connect( *in ) == false )
+            return ( false );
+        m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+        m_connectedStaticVideosInputs.addObjectReference( in, in->getId() );
     }
     else
     {
         if ( ( in = brother->getStaticVideoInput( inId ) ) == NULL )
             return ( false );
+        if ( out->connect( *in ) == false )
+            return ( false );
+        m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+        brother->referenceStaticVideoInputAsConnected( in );
     }
-    if ( out->connect( *in ) == false )
-        return ( false );
-    m_connectedStaticVideosOutputs[ out->getId() ] = out;
-    brother->storeStaticVideoInputInConnectedMap( in );
     return ( true );
 }
 
@@ -425,16 +448,20 @@ bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( quint32 outI
     {
         if ( ( in = m_staticVideosInputs.getObject( inName ) ) == NULL )
             return ( false );
+        if ( out->connect( *in ) == false )
+            return ( false );
+        m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+        m_connectedStaticVideosInputs.addObjectReference( in, in->getId() );
     }
     else
     {
         if ( ( in = brother->getStaticVideoInput( inName ) ) == NULL )
             return ( false );
+        if ( out->connect( *in ) == false )
+            return ( false );
+        m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+        brother->referenceStaticVideoInputAsConnected( in );
     }
-    if ( out->connect( *in ) == false )
-        return ( false );
-    m_connectedStaticVideosOutputs[ out->getId() ] = out;
-    brother->storeStaticVideoInputInConnectedMap( in );
     return ( true );
 }
 
@@ -455,16 +482,20 @@ bool        EffectNode::connectStaticVideoOutputToStaticVideoInput( quint32 outI
     {
         if ( ( in = m_staticVideosInputs.getObject( inId ) ) == NULL )
             return ( false );
+        if ( out->connect( *in ) == false )
+            return ( false );
+        m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+        m_connectedStaticVideosInputs.addObjectReference( in, in->getId() );
     }
     else
     {
         if ( ( in = brother->getStaticVideoInput( inId ) ) == NULL )
             return ( false );
+        if ( out->connect( *in ) == false )
+            return ( false );
+        m_connectedStaticVideosOutputs.addObjectReference( out, out->getId() );
+        brother->referenceStaticVideoInputAsConnected( in );
     }
-    if ( out->connect( *in ) == false )
-        return ( false );
-    m_connectedStaticVideosOutputs[ out->getId() ] = out;
-    brother->storeStaticVideoInputInConnectedMap( in );
     return ( true );
 }
 
