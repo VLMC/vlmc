@@ -89,7 +89,7 @@ void*       VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
     QMutexLocker    lock( m_renderLock );
 
     preGetOutput();
-//    qWarning() << "Video. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
+    qWarning() << "Video::getOutput(). Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
     if ( isEndReached() == true )
     {
         qWarning() << "End is reached. returning NULL";
@@ -97,13 +97,11 @@ void*       VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
     }
     StackedBuffer<LightVideoFrame*>* buff;
     if ( mode == ClipWorkflow::Pop )
-    {
         buff = new StackedBuffer<LightVideoFrame*>( m_computedBuffers.pop(), &m_availableBuffers, true );
-        qDebug() << "buff:" << (void*)buff;
-    }
     else if ( mode == ClipWorkflow::Get )
         buff = new StackedBuffer<LightVideoFrame*>( m_computedBuffers.head(), NULL, false );
     postGetOutput();
+    qDebug() << "End of getoutput computation";
     return buff;
 }
 
@@ -122,7 +120,7 @@ void    VideoClipWorkflow::lock( VideoClipWorkflow* cw, void** pp_ret, int size 
     else
         lvf = cw->m_availableBuffers.pop();
     cw->m_computedBuffers.push_back( lvf );
-//    qWarning() << ">>>VideoGeneration. Available:" << cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count();
+    qWarning() << ">>>VideoGeneration. Available:" << cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count();
 //    qWarning() << "feeding video buffer";
     *pp_ret = (*(lvf))->frame.octets;
 }

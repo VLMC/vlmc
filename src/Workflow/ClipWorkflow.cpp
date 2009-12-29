@@ -86,8 +86,8 @@ void    ClipWorkflow::loadingComplete()
 {
     adjustBegin();
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( loadingComplete() ) );
-    connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( mediaPlayerUnpaused() ), Qt::DirectConnection );
-    connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( mediaPlayerPaused() ), Qt::DirectConnection );
+    connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( mediaPlayerUnpaused() ) );
+    connect( m_mediaPlayer, SIGNAL( paused() ), this, SLOT( mediaPlayerPaused() ) );
     QMutexLocker    lock( m_initWaitCond->getMutex() );
     setState( Rendering );
     qDebug() << "Waking init wait cond";
@@ -219,7 +219,7 @@ void        ClipWorkflow::postGetOutput()
             m_mediaPlayer->pause();
         }
         else
-            qCritical() << "Running out of output buffers !";
+            qCritical() << "Running out of computed buffers !";
     }
 }
 
@@ -231,7 +231,9 @@ void        ClipWorkflow::commonUnlock()
     {
         qWarning() << "Pausing media player";
         setState( ClipWorkflow::PauseRequired );
+        qDebug() << "State has been set...calling pause method.";
         m_mediaPlayer->pause();
+        qDebug() << "Pause method has been called";
     }
     if ( getComputedBuffers() == 1 )
     {

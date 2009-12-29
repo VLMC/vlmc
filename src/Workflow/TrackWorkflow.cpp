@@ -135,6 +135,7 @@ void*       TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
          cw->getState() == ClipWorkflow::PauseRequired ||
          cw->getState() == ClipWorkflow::UnpauseRequired )
     {
+        qDebug() << "Asking for output";
         cw->getStateLock()->unlock();
         if ( needRepositioning == true )
             adjustClipTime( currentFrame, start, cw );

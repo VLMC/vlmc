@@ -30,7 +30,7 @@ Instance::Instance()
 {
     char const *argv[] =
     {
-//        "-vvvvv",
+        "-vvvvv",
         "--no-skip-frames",
 //        "--intf", "dummy",
         "--text-renderer", "dummy",
