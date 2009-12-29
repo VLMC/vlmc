@@ -23,15 +23,11 @@
 
 #include <QtDebug>
 
+#include "vlmc.h"
 #include "MainWorkflow.h"
 #include "TrackWorkflow.h"
 #include "TrackHandler.h"
 #include "Library.h"
-
-//JUST FOR THE DEFINES !
-//TODO:
-//FIXME: remove this !
-#include "ClipWorkflow.h"
 
 LightVideoFrame*     MainWorkflow::blackOutput = NULL;
 

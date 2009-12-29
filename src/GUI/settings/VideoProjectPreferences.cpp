@@ -20,10 +20,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QDebug>
+
 #include "VideoProjectPreferences.h"
 #include "SettingsManager.h"
-
-#include "QDebug"
 
 VideoProjectPreferences::VideoProjectPreferences( QWidget *parent )
     : PreferenceWidget( parent )

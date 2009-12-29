@@ -23,9 +23,10 @@
 #ifndef ABOUT_H
 #define ABOUT_H
 
-#include <QApplication>
-#include <QPlainTextEdit>
+#include <QDialog>
 #include "ui_About.h"
+
+class QPlainTextEdit;
 
 class About : public QDialog
 {

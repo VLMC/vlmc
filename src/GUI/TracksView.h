@@ -25,22 +25,18 @@
 
 #include <QWidget>
 #include <QGraphicsView>
-#include <QGraphicsLineItem>
-#include <QGraphicsLinearLayout>
-#include <QGraphicsWidget>
-#include <QWheelEvent>
-#include <QGraphicsSceneDragDropEvent>
-#include <QApplication>
-#include <QVector>
 #include "vlmc.h"
-#include "GraphicsCursorItem.h"
 #include "MainWorkflow.h"
-#include "TrackWorkflow.h"
 #include "AbstractGraphicsMediaItem.h"
-#include "WorkflowRenderer.h"
+#include "GraphicsCursorItem.h"
 
-class GraphicsMovieItem;
+class QWheelEvent;
+class QGraphicsWidget;
+class QGraphicsLinearLayout;
+
 class TracksScene;
+class GraphicsMovieItem;
+class WorkflowRenderer;
 
 class TracksView : public QGraphicsView
 {

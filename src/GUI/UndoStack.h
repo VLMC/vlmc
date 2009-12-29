@@ -23,12 +23,13 @@
 #ifndef UNDOSTACK_H
 #define UNDOSTACK_H
 
-#include <QUndoStack>
 #include <QUndoView>
-#include <QUndoCommand>
 
 #include "KeyboardShortcutHelper.h"
 #include "QSingleton.hpp"
+
+class QUndoStack;
+class QUndoCommand;
 
 class UndoStack : public QUndoView, public QSingleton<UndoStack>
 {

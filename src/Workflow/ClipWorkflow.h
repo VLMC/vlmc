@@ -23,12 +23,6 @@
 #ifndef CLIPWORKFLOW_H
 #define CLIPWORKFLOW_H
 
-//TODO: THIS HAS TO GO REALLY REALLY REALLY SOON !!!!
-//FIXME:
-//UGLY:
-#define VIDEOWIDTH 640
-#define VIDEOHEIGHT 480
-
 #include <QReadWriteLock>
 #include <QMutex>
 #include <QObject>

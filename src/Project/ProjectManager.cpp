@@ -20,11 +20,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <QFileDialog>
 #include <QtDebug>
+#include <QFileDialog>
 #include <QSettings>
 #include <QMessageBox>
-#include <QApplication>
+#include <QTimer>
 
 #include <errno.h>
 #include <signal.h>

@@ -21,6 +21,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QUndoStack>
+#include <QUndoCommand>
+
 #include "UndoStack.h"
 #include "ProjectManager.h"
 #include "SettingsManager.h"

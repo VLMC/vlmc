@@ -23,6 +23,7 @@
 #include "AbstractGraphicsMediaItem.h"
 #include "TracksView.h"
 
+#include "Clip.h"
 #include "Commands.h"
 
 AbstractGraphicsMediaItem::AbstractGraphicsMediaItem() :

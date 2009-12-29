@@ -24,11 +24,8 @@
 #ifndef PREFERENCEWIDGET_H
 #define PREFERENCEWIDGET_H
 
-#include <QHash>
-#include <QVariant>
-#include <QString>
 #include <QWidget>
-#include <QVariant>
+#include <QString>
 
 class   PreferenceWidget : public QWidget
 {

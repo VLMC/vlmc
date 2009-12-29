@@ -28,7 +28,6 @@
 #include <QDockWidget>
 #include <QString>
 #include <QMap>
-#include "MainWindow.h"
 
 class MainWindow;
 

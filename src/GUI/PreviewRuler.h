@@ -1,6 +1,5 @@
 /*****************************************************************************
  * PreviewRuler.h : Slider/Ruler used into the PreviewWidget
- * with backward compatibility with QAbstractSlider.
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -24,9 +23,8 @@
 #ifndef PREVIEWRULER_H
 #define PREVIEWRULER_H
 
-#include <QAbstractSlider>
+#include <QWidget>
 #include <QPaintEvent>
-#include <QPainter>
 #include "GenericRenderer.h"
 
 #define MARK_XSMALL 3

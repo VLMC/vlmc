@@ -21,10 +21,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include "vlmc.h"
 #include "WorkflowFileRendererDialog.h"
-
-#define VIDEOWIDTH 640
-#define VIDEOHEIGHT 480
 
 WorkflowFileRendererDialog::WorkflowFileRendererDialog()
 {

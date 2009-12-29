@@ -25,7 +25,6 @@
 #include <QWheelEvent>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsWidget>
-#include <QGraphicsSceneDragDropEvent>
 #include <QtDebug>
 #include "TracksView.h"
 #include "Library.h"
@@ -33,6 +32,7 @@
 #include "GraphicsCursorItem.h"
 #include "Commands.h"
 #include "GraphicsTrack.hpp"
+#include "WorkflowRenderer.h"
 
 TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, WorkflowRenderer* renderer, QWidget* parent )
         : QGraphicsView( scene, parent ), m_scene( scene ), m_mainWorkflow( mainWorkflow ),

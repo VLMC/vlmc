@@ -21,12 +21,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <QUrl>
 #include <QtDebug>
-#include <QMetaMethod>
 #include "PreviewWidget.h"
 #include "ui_PreviewWidget.h"
-#include "Library.h"
 #include "ClipRenderer.h"
 
 PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent ) :

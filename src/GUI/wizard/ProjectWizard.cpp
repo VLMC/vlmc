@@ -22,16 +22,11 @@
  *****************************************************************************/
 
 #include <QString>
-#include <QFileDialog>
 #include <QMessageBox>
 #include <QWizardPage>
 #include "ProjectManager.h"
 #include "ProjectWizard.h"
-#include "ProjectPreferences.h"
-#include "VideoProjectPreferences.h"
-#include "AudioProjectPreferences.h"
 #include "SettingsManager.h"
-#include "PageFactory.h"
 #include "WelcomePage.h"
 #include "OpenPage.h"
 #include "GeneralPage.h"

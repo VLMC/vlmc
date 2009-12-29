@@ -31,16 +31,12 @@
 #include "vlmc.h"
 #include "ui_MainWindow.h"
 
-#include "DockWidgetManager.h"
-#include "LanguagePreferences.h"
-#include "Timeline.h"
-#include "WorkflowFileRenderer.h"
-#include "PreviewWidget.h"
-#include "Settings.h"
-#include "EffectsEngine.h"
-#include "MainWorkflow.h"
-#include "ProjectWizard.h"
-#include "ImportController.h"
+class Timeline;
+class PreviewWidget;
+class Settings;
+class ProjectWizard;
+class ImportController;
+class WorkflowFileRenderer;
 
 class MainWindow : public QMainWindow
 {
