@@ -5,8 +5,7 @@ HEADERS += AudioClipWorkflow.h \
     TrackWorkflow.h \
     VideoClipWorkflow.h \
     ImageClipWorkflow.h \
-    StackedBuffer.hpp \
-    IStackedBuffer.h
+    StackedBuffer.hpp
 SOURCES += AudioClipWorkflow.cpp \
     ClipWorkflow.cpp \
     MainWorkflow.cpp \
