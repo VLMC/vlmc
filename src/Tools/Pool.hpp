@@ -41,7 +41,9 @@ public:
         Q_ASSERT( m_pool.empty() == true );
         delete m_mutex;
     }
-    T       pop()
+    //Yes, this is a const T, not a const T&
+    //This is usefull when manipulating copy on write :)
+    const T        pop()
     {
         QMutexLocker    lock( m_mutex );
         if ( m_pool.size() == 0 )
@@ -49,8 +51,7 @@ public:
             qCritical() << "Pool is empty !!";
             return NULL;
         }
-        T  ret = m_pool.dequeue();
-        return ret;
+        return m_pool.dequeue();
     }
     const T&        head() const
     {
