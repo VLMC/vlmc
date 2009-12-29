@@ -72,8 +72,7 @@ public:
     void          setId( quint32 id );
     void          setName( QString const & name );
     void          setFather( EffectNode* father );
-    void          setAsInternal( void );
-    void          setAsExternal( void );
+    void          setScope( bool isItAnInternalSlot );
 
 private:
 
@@ -246,18 +245,10 @@ void         OutSlot<T>::setFather( EffectNode* father )
 }
 
 template<typename T>
-void         OutSlot<T>::setAsInternal( void )
+void         OutSlot<T>::setScope( bool isItAnInternalSlot )
 {
     QWriteLocker  wl( &m_rwl );
-    m_isItAnInternalSlot = true;
-    return ;
-}
-
-template<typename T>
-void         OutSlot<T>::setAsExternal( void )
-{
-    QWriteLocker  wl( &m_rwl );
-    m_isItAnInternalSlot = false;
+    m_isItAnInternalSlot = isItAnInternalSlot;
     return ;
 }
 

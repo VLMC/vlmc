@@ -57,6 +57,12 @@ public:
         return ;
     }
 
+    inline void                        setScope( bool isItInternal )
+    {
+        m_isItInternal = isItInternal
+        return ;
+    }
+
     // OBJECTS INFORMATIONS
 
     inline QList<QString>              getObjectsNamesList( void ) const
@@ -109,6 +115,7 @@ public:
         newObject->setId( objectId );
         newObject->setName( objectName );
         newObject->setFather( m_father );
+        newObject->setScope( m_isItInternal );
 
         m_objectByName[ objectName ] = newObject;
         m_objectById[ objectId ] = newObject;
@@ -136,6 +143,8 @@ public:
         newObject->setId( objectId );
         newObject->setName( objectName );
         newObject->setFather( m_father );
+        newObject->setScope( m_isItInternal );
+
         m_objectByName[ objectName ] = newObject;
         m_objectById[ objectId ] = newObject;
         m_nameById[ objectId ] = objectName;

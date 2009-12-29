@@ -38,8 +38,12 @@ EffectNode::EffectNode(IEffectPlugin* plugin) : m_rwl( QReadWriteLock::Recursive
 {
     m_staticVideosInputs.setFather( this );
     m_staticVideosOutputs.setFather( this );
+    m_staticVideosInputs.setScope( false );
+    m_staticVideosOutputs.setScope( false );
     m_internalsStaticVideosInputs.setFather( this );
     m_internalsStaticVideosOutputs.setFather( this );
+    m_internalsStaticVideosInputs.setScope( true );
+    m_internalsStaticVideosOutputs.setScope( true );
     m_enf.setFather( this );
     m_plugin->init( this );
 }
@@ -49,8 +53,12 @@ EffectNode::EffectNode() : m_father( NULL ), m_plugin( NULL ), m_visited( false 
 {
     m_staticVideosInputs.setFather( this );
     m_staticVideosOutputs.setFather( this );
+    m_staticVideosInputs.setScope( false );
+    m_staticVideosOutputs.setScope( false );
     m_internalsStaticVideosInputs.setFather( this );
     m_internalsStaticVideosOutputs.setFather( this );
+    m_internalsStaticVideosInputs.setScope( true );
+    m_internalsStaticVideosOutputs.setScope( true );
     m_enf.setFather( this );
 }
 
