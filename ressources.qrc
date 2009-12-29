@@ -1,9 +1,4 @@
 <RCC>
-    <qresource prefix="/Lang">
-        <file alias="es">ts/vlmc_es.qm</file>
-        <file alias="fr">ts/vlmc_fr.qm</file>
-        <file alias="sv">ts/vlmc_sv.qm</file>
-    </qresource>
     <qresource prefix="/images">
         <file>images/vlmc.png</file>
         <file alias="play">images/play.png</file>

@@ -77,8 +77,14 @@ DEPENDPATH += LibVLCpp \
     Actions
 TRANSLATIONS = ../ts/vlmc_es.ts \
     ../ts/vlmc_fr.ts \
-    ../ts/vlmc_sv.ts
+    ../ts/vlmc_sv.ts \
+    ../ts/vlmc_jp.ts
 RESOURCES += ../ressources.qrc
+
+exists( ../ts/*.qm ) {
+    RESOURCES += ../ressources-ts.qrc
+}
+
 LIBS += -L/usr/local/lib \
     -lvlc \
     $$[VLMC_ADDITIONAL_LIBS]
