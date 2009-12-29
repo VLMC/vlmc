@@ -62,16 +62,18 @@ public:
   // GETTING INFOS
 
     InSlot<T>*	getInSlotPtr( void ) const;
-
     QString const       getName( void ) const;
     quint32             getId( void ) const;
     IEffectNode const *         getFather( void ) const;
+    bool                        isItAnInternalSlot( void ) const;
 
  // SRTTING INFOS
 
     void          setId( quint32 id );
     void          setName( QString const & name );
     void          setFather( EffectNode* father );
+    void          setAsInternal( void );
+    void          setAsExternal( void );
 
 private:
 
@@ -95,7 +97,8 @@ private:
 
     quint32             m_id;
     QString             m_name;
-    EffectNode*        m_father;
+    EffectNode*         m_father;
+    bool                m_isItAnInternalSlot;
 };
 
 /////////////////////////
@@ -105,14 +108,14 @@ private:
 // CTOR & DTOR
 
 template<typename T>
-OutSlot<T>::OutSlot() : m_rwl( QReadWriteLock::Recursive ), m_id( 0 ), m_name( "" ), m_father( NULL )
+OutSlot<T>::OutSlot() : m_rwl( QReadWriteLock::Recursive ), m_id( 0 ), m_name( "" ), m_father( NULL ), m_isItAnInternalSlot( false )
 {
     resetInSlotPtr();
     resetPipe();
 }
 
 template<typename T>
-OutSlot<T>::OutSlot(OutSlot<T> const & tocopy) : m_rwl( QReadWriteLock::Recursive ), m_id( 0 ), m_name( "" ), m_father( NULL )
+OutSlot<T>::OutSlot(OutSlot<T> const & tocopy) : m_rwl( QReadWriteLock::Recursive ), m_id( 0 ), m_name( "" ), m_father( NULL ), m_isItAnInternalSlot( false )
 {
   resetInSlotPtr();
   resetPipe();
@@ -126,6 +129,7 @@ OutSlot<T>&	OutSlot<T>::operator=(OutSlot<T> const & tocopy)
     m_id = 0;
     m_name = "";
     m_father = NULL;
+    m_isItAnInternalSlot = false;
     resetInSlotPtr();
     resetPipe();
 }
@@ -208,6 +212,13 @@ IEffectNode const *         OutSlot<T>::getFather( void ) const
     return ( m_father );
 }
 
+template<typename T>
+bool         OutSlot<T>::isItAnInternalSlot( void ) const
+{
+    QReadLocker  rl( &m_rwl );
+    return ( m_isItAnInternalSlot );
+}
+
 // SETTING INFOS
 
 template<typename T>
@@ -231,6 +242,22 @@ void         OutSlot<T>::setFather( EffectNode* father )
 {
     QWriteLocker  wl( &m_rwl );
     m_father = father;
+    return ;
+}
+
+template<typename T>
+void         OutSlot<T>::setAsInternal( void )
+{
+    QWriteLocker  wl( &m_rwl );
+    m_isItAnInternalSlot = true;
+    return ;
+}
+
+template<typename T>
+void         OutSlot<T>::setAsExternal( void )
+{
+    QWriteLocker  wl( &m_rwl );
+    m_isItAnInternalSlot = false;
     return ;
 }
 
