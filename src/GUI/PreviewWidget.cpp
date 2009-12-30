@@ -185,7 +185,8 @@ void        PreviewWidget::createNewClipFromMarkers()
     if ( beg == -1 && end == -1 )
         return ;
 
-    qDebug() << "Creating new Clip beg:" << beg << "end" << end;
+    if ( end < beg )
+        return ;
 
     beg = beg < 0 ? 0 : beg;
     Clip*   part = new Clip( selectedMedia, beg, end );
