@@ -32,12 +32,24 @@
 
 class   PreferenceWidget : public QWidget
 {
+    Q_OBJECT
     public:
         PreferenceWidget( QWidget* parent = 0 );
         virtual ~PreferenceWidget() {}
 
+        void            setDefaults( bool defaults );
+        void            setName( const QString& name );
+
         virtual void    load() = 0;
-        virtual void    save( QHash<QString, QVariant>& settings ) = 0;
+        virtual void    save() = 0;
+
+    protected:
+        bool            m_defaults;
+        QString         m_settName;
+
+    protected slots:
+        void            loadThemAll( const QString& part = "default",
+                                   bool defaults = false );
 };
 
 #endif

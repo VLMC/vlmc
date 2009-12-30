@@ -49,6 +49,12 @@ public:
     Media*                  getMedia( const QUuid& uuid );
     Clip*                   getClip( const QUuid& uudi );
 
+    /**
+     *  \brief  Add Media with already computed metadatas
+     *  \param  media   The media to add.
+     */
+    void                    addMedia( Media* media );
+
 private:
     Library();
     bool                    mediaAlreadyLoaded( const QString& filePath );
@@ -77,6 +83,7 @@ private slots:
 
 signals:
     void                    newClipLoaded( Clip* );
+    void                    metadataRequired( Media* );
     void                    newMediaLoaded( Media* );
     void                    mediaRemoved( const QUuid& );
     void                    projectLoaded();

@@ -60,6 +60,7 @@ void        Library::removingMediaAsked( const QUuid& uuid )
 
 void        Library::metaDataComputed( Media* media )
 {
+    emit newMediaLoaded( media );
     Clip* clip = new Clip( media );
     m_clips[media->getUuid()] = clip;
     emit newClipLoaded( clip );
@@ -81,7 +82,20 @@ void        Library::newMediaLoadingAsked( const QString& filePath, const QStrin
     media = new Media( filePath, uuid );
     m_medias[media->getUuid()] = media;
     connect( media, SIGNAL( metaDataComputed( Media* ) ), this, SLOT( metaDataComputed( Media* ) ), Qt::DirectConnection );
-    emit newMediaLoaded( media );
+    emit metadataRequired( media );
+}
+
+void        Library::addMedia( Media* media )
+{
+    QUuid id;
+    foreach( id, m_medias.keys() )
+        if ( m_medias.value( id )->getFileInfo()->filePath() == media->getFileInfo()->filePath() )
+        {
+            delete media;
+            return;
+        }
+    m_medias[media->getUuid()] = media;
+    metaDataComputed( media );
 }
 
 bool        Library::mediaAlreadyLoaded( const QString& filePath )

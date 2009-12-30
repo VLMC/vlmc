@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Geoffroy Lacarriere <geoffroylaca@gmail.com>
+ * Authors: Clement CHAVANCE <kinder@vlmc.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -36,7 +36,7 @@ class   ProjectPreferences : public PreferenceWidget
         ProjectPreferences( QWidget* parent = 0 );
         virtual ~ProjectPreferences();
         void    load();
-        void    save( QHash<QString, QVariant>& settings );
+        void    save();
     private:
         Ui::ProjectPreferences  m_ui;
 };

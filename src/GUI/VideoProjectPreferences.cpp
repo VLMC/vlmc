@@ -35,20 +35,26 @@ VideoProjectPreferences::~VideoProjectPreferences() { }
 
 void    VideoProjectPreferences::load()
 {
-    qDebug() << "Loading Prefs : VideoProject";
-    int projectFps = SettingsManager::getInstance()->getValue( "VideoProjectFPS" ).toInt();
-    int projectHeight = SettingsManager::getInstance()->getValue( "VideoProjectHeight" ).toInt();
-    int projectWidth = SettingsManager::getInstance()->getValue( "VideoProjectWidth" ).toInt();
+    SettingsManager* setMan = SettingsManager::getInstance();
+    const QString& part = m_defaults ? "default" : m_settName;
+    int projectFps = setMan->getValue( part, "VideoProjectFPS" ).toInt();
+    int projectHeight = setMan->getValue( part, "VideoProjectHeight" ).toInt();
+    int projectWidth = setMan->getValue( part, "VideoProjectWidth" ).toInt();
 
     m_ui.FPSSpinBox->setValue( projectFps );
     m_ui.HeightSpinBox->setValue( projectHeight );
     m_ui.WidthSpinBox->setValue( projectWidth );
 }
 
-void    VideoProjectPreferences::save( QHash<QString, QVariant>& settings )
+void    VideoProjectPreferences::save()
 {
-    settings.insert( "VideoProjectFPS", QVariant( m_ui.FPSSpinBox->value() ) );
-    settings.insert( "VideoProjectHeight", QVariant( m_ui.HeightSpinBox->value() ) );
-    settings.insert( "VideoProjectWidth", QVariant( m_ui.WidthSpinBox->value() ));
+    SettingsManager* settMan = SettingsManager::getInstance();
+    QVariant    projectFps( m_ui.FPSSpinBox->value() );
+    QVariant    projectHeight( m_ui.HeightSpinBox->value() );
+    QVariant    projectWidth( m_ui.WidthSpinBox->value() );
+
+    settMan->setValue( m_settName,"VideoProjectFPS", projectFps );
+    settMan->setValue( m_settName,"VideoProjectHeight", projectHeight );
+    settMan->setValue( m_settName,"VideoProjectWidth", projectWidth);
     return ;
 }

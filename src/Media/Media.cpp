@@ -31,7 +31,7 @@
 
 QPixmap*        Media::defaultSnapshot = NULL;
 const QString   Media::VideoExtensions = "*.mov *.avi *.mkv *.mpg *.mpeg *.wmv *.mp4";
-const QString   Media::ImageExtensions = "*.gif *.png *.jpg";
+const QString   Media::ImageExtensions = "*.gif *.png *.jpg *.jpeg";
 const QString   Media::AudioExtensions = "*.mp3 *.oga *.flac *.aac *.wav";
 const QString   Media::streamPrefix = "stream://";
 
@@ -39,10 +39,11 @@ Media::Media( const QString& filePath, const QString& uuid )
     : m_vlcMedia( NULL ),
     m_snapshot( NULL ),
     m_fileInfo( NULL ),
-    m_length( 0 ),
+    m_lengthMS( 0 ),
     m_nbFrames( 0 ),
     m_width( 0 ),
-    m_height( 0 )
+    m_height( 0 ),
+    m_metadataParsed( false )
 {
     if ( uuid.length() == 0 )
         m_uuid = QUuid::createUuid();
@@ -144,12 +145,12 @@ const QFileInfo*    Media::getFileInfo() const
 
 void                Media::setLength( qint64 length )
 {
-    m_length = length;
+    m_lengthMS = length;
 }
 
-qint64              Media::getLength() const
+qint64              Media::getLengthMS() const
 {
-    return m_length;
+    return m_lengthMS;
 }
 
 int                 Media::getWidth() const
@@ -220,7 +221,7 @@ void                Media::addAudioFrame( void* datas, unsigned char* buffer, si
 
 void            Media::emitMetaDataComputed()
 {
-    emit metaDataComputed();
+    m_metadataParsed = true;
     emit metaDataComputed( this );
 }
 
@@ -232,6 +233,11 @@ Media::InputType    Media::getInputType() const
 void                Media::setUuid( const QUuid& uuid )
 {
     m_uuid = uuid;
+}
+
+bool                Media::hasMetadata() const
+{
+    return m_metadataParsed;
 }
 
 void                Media::setNbFrames( qint64 nbFrames )
@@ -254,17 +260,17 @@ const QString&      Media::getFileName() const
     return m_fileName;
 }
 
-const QStringList&      Media::getMetaTags() const
+const QStringList&  Media::getMetaTags() const
 {
     return m_metaTags;
 }
 
-void            Media::setMetaTags( const QStringList& tags )
+void                Media::setMetaTags( const QStringList& tags )
 {
     m_metaTags = tags;
 }
 
-bool            Media::matchMetaTag( const QString& tag ) const
+bool                Media::matchMetaTag( const QString& tag ) const
 {
     if ( tag.length() == 0 )
         return true;
@@ -275,4 +281,14 @@ bool            Media::matchMetaTag( const QString& tag ) const
             return true;
     }
     return false;
+}
+
+void            Media::addClip( Clip* clip )
+{
+    m_clips.insert( clip->getUuid(), clip );
+}
+
+void            Media::removeClip( const QUuid& uuid )
+{
+    m_clips.remove( uuid );
 }

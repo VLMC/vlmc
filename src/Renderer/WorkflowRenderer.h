@@ -55,8 +55,12 @@ class   WorkflowRenderer : public GenericRenderer
         virtual void        stop();
         virtual void        nextFrame();
         virtual void        previousFrame();
+        virtual qint64      getLengthMs() const;
+        virtual qint64      getCurrentFrame() const;
+        virtual float       getFps() const;
 
         static void*        lock( void* datas );
+        static void*        lockAudio( void* datas );
         static void         unlock( void* datas );
 
     private:
@@ -70,9 +74,11 @@ class   WorkflowRenderer : public GenericRenderer
         MainWorkflow*       m_mainWorkflow;
         LibVLCpp::Media*    m_media;
         bool                m_stopping;
+        float               m_outputFps;
 
     private:
-        unsigned char*	    m_renderFrame;
+        unsigned char*	    m_renderVideoFrame;
+        unsigned char*	    m_renderAudioSample;
         QStack<Actions>     m_actions;
         QReadWriteLock*     m_actionsLock;
         bool                m_pauseAsked;
@@ -88,6 +94,7 @@ class   WorkflowRenderer : public GenericRenderer
 
         void                __positionChanged();
         void                __positionChanged( float pos );
+        void                __frameChanged( qint64 frame );
         void                __videoPaused();
         void                __videoStopped();
         void                __videoPlaying();

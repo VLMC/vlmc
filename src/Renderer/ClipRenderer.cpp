@@ -22,6 +22,7 @@
  *****************************************************************************/
 
 #include <QtDebug>
+#include <QtGlobal>
 
 #include "ClipRenderer.h"
 
@@ -38,6 +39,7 @@ ClipRenderer::ClipRenderer() :
     connect( m_mediaPlayer,     SIGNAL( paused() ),             this,   SLOT( __videoPaused() ) );
     connect( m_mediaPlayer,     SIGNAL( playing() ),            this,   SLOT( __videoPlaying() ) );
     connect( m_mediaPlayer,     SIGNAL( positionChanged() ),    this,   SLOT( __positionChanged() ) );
+    connect( m_mediaPlayer,     SIGNAL( timeChanged() ),        this,   SLOT( __timeChanged() ) );
     connect( m_mediaPlayer,     SIGNAL( endReached() ),         this,   SLOT( __endReached() ) );
 }
 
@@ -51,29 +53,52 @@ ClipRenderer::~ClipRenderer()
 void        ClipRenderer::setMedia( Media* media )
 {
     m_selectedMedia = media;
+    if ( media == NULL )
+    {
+        m_previewLabel->clear();
+        return ;
+    }
     m_begin = 0;
     m_end = media->getNbFrames();
     if ( m_isRendering == true )
         m_mediaChanged = true;
     else
+    {
+        setSnapshotVisibility( true );
+        m_previewLabel->setPixmap( media->getSnapshot().scaled( m_previewLabel->size(),
+                                                                            Qt::KeepAspectRatio ) );
         m_clipLoaded = false;
+    }
 }
 
 void        ClipRenderer::setClip( Clip* clip )
 {
+    if ( clip == NULL )
+    {
+        m_selectedMedia = NULL;
+        m_previewLabel->clear();
+        return ;
+    }
     m_selectedMedia = clip->getParent();
     m_begin = clip->getBegin();
     m_end = clip->getEnd();
     if ( m_isRendering == true )
         m_mediaChanged = true;
     else
+    {
+        setSnapshotVisibility( true );
+        m_previewLabel->setPixmap( clip->getParent()->getSnapshot().scaled( m_previewLabel->size(),
+                                                                            Qt::KeepAspectRatio ) );
         m_clipLoaded = false;
+    }
 }
 
 void        ClipRenderer::startPreview()
 {
     if ( m_selectedMedia == NULL )
         return ;
+    setSnapshotVisibility( false );
+
     //If an old media is found, we delete it, and disconnect
     if ( m_vlcMedia != NULL )
         delete m_vlcMedia;
@@ -159,6 +184,15 @@ void        ClipRenderer::previousFrame()
     }
 }
 
+qint64      ClipRenderer::getLengthMs() const
+{
+    if ( m_clipLoaded )
+        return qMax( m_end - m_begin, (qint64)0 );
+    else if ( m_selectedMedia )
+        return m_selectedMedia->getLengthMS();
+    return 0;
+}
+
 //FIXME: this won't work with clips !
 void        ClipRenderer::mediaUnloaded( const QUuid& uuid )
 {
@@ -170,6 +204,26 @@ void        ClipRenderer::mediaUnloaded( const QUuid& uuid )
         m_isRendering = false;
         m_paused = false;
     }
+}
+
+void        ClipRenderer::setSnapshotVisibility( bool val )
+{
+   m_previewLabel->setVisible( val );
+   m_renderWidget->setVisible( !val );
+}
+
+qint64      ClipRenderer::getCurrentFrame() const
+{
+    if ( m_clipLoaded == false || m_isRendering == false || m_selectedMedia == NULL )
+        return 0;
+    return qRound64( (qreal)m_mediaPlayer->getTime() / 1000 * (qreal)m_selectedMedia->getFps() );
+}
+
+float       ClipRenderer::getFps() const
+{
+    if ( m_selectedMedia != NULL )
+        return m_selectedMedia->getFps();
+    return 0.0f;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -194,7 +248,7 @@ void        ClipRenderer::__positionChanged()
 {
     if ( m_clipLoaded == false)
         return ;
-    
+
     float   begin = m_begin / ( m_end - m_begin );
     float   end = m_end / ( m_end - m_begin );
     float pos = ( m_mediaPlayer->getPosition() - begin ) /
@@ -202,9 +256,17 @@ void        ClipRenderer::__positionChanged()
     emit positionChanged( pos );
 }
 
+void        ClipRenderer::__timeChanged()
+{
+    qint64 f = qRound64( (qreal)m_mediaPlayer->getTime() / 1000 * (qreal)m_mediaPlayer->getFps() );
+    emit frameChanged( f );
+}
+
 void        ClipRenderer::__endReached()
 {
     m_mediaPlayer->stop();
     m_isRendering = false;
+    if ( m_mediaChanged == true )
+        m_clipLoaded = false;
     emit endReached();
 }

@@ -27,8 +27,6 @@
 
 EffectsEngine::EffectsEngine( void ) : m_patch( NULL ), m_bypassPatch( NULL )
 {
-   m_inputLock = new QReadWriteLock;
-
    if ( EffectNode::createRootNode( "RootNode" ) == false )
        qDebug() << "RootNode creation failed!!!!!!!!!!";
    else
@@ -76,11 +74,8 @@ EffectsEngine::EffectsEngine( void ) : m_patch( NULL ), m_bypassPatch( NULL )
 
 EffectsEngine::~EffectsEngine()
 {
-    stop();
-
     if ( m_patch )
         EffectNode::deleteRootNode( "RootNode" );
-    delete m_inputLock;
 }
 
 //
@@ -109,16 +104,6 @@ EffectNode const * EffectsEngine::operator*( void ) const
     return ( m_patch );
 }
 
-// MAIN METHOD
-
-void	EffectsEngine::render( void )
-{
-  QWriteLocker    lock( m_inputLock );
-  ( m_effects[0] )->render();
-  ( m_effects[1] )->render();
-  return ;
-}
-
 // BYPASSING
 
 void		EffectsEngine::enable( void )
@@ -129,57 +114,4 @@ void		EffectsEngine::enable( void )
 void		EffectsEngine::disable( void )
 {
     return ;
-}
-
-// INPUTS & OUTPUTS METHODS
-
-
-void	EffectsEngine::setInputFrame( LightVideoFrame& frame, quint32 tracknumber )
-{
-    QWriteLocker    lock( m_inputLock );
-
-    m_videoInputs[tracknumber] = frame;
-    return ;
-}
-
-
-LightVideoFrame const &	EffectsEngine::getOutputFrame( quint32 tracknumber ) const
-{
-  return ( m_videoOutputs[tracknumber] );
-}
-
-//
-// PRIVATES METHODS
-//
-
-// START & STOP
-
-void	EffectsEngine::start( void )
-{
-  loadEffects();
-  patchEffects();
-  return ;
-}
-
-void	EffectsEngine::stop( void )
-{
-  unloadEffects();
-  return ;
-}
-
-// EFFECTS LOADING & UNLOADING
-
-void	EffectsEngine::loadEffects( void )
-{
-}
-
-void	EffectsEngine::unloadEffects( void )
-{
-    return ;
-}
-
-// EFFECTS PATCHING
-
-void	EffectsEngine::patchEffects( void )
-{
 }

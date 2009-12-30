@@ -33,8 +33,6 @@ SOURCES += src/main.cpp \
     src/GUI/MediaListWidget.cpp \
     src/Media/Clip.cpp \
     src/GUI/About.cpp \
-#    src/GUI/Transcode.cpp \
-    src/GUI/Slider.cpp \
     src/Metadata/MetaDataWorker.cpp \
     src/Library/Library.cpp \
     src/GUI/GraphicsMovieItem.cpp \
@@ -46,10 +44,8 @@ SOURCES += src/main.cpp \
     src/Workflow/TrackWorkflow.cpp \
     src/Workflow/MainWorkflow.cpp \
     src/GUI/PreviewWidget.cpp \
+    src/GUI/PreviewRuler.cpp \
     src/Renderer/WorkflowRenderer.cpp \
-    src/API/vlmc_module_variables.cpp \
-    src/API/Module.cpp \
-    src/API/ModuleManager.cpp \
     src/Renderer/WorkflowFileRenderer.cpp \
     src/GUI/UndoStack.cpp \
     src/Metadata/MetaDataManager.cpp \
@@ -70,8 +66,27 @@ SOURCES += src/main.cpp \
     src/EffectsEngine/EffectsEngine.cpp \
     src/EffectsEngine/PluginsAPI/LightVideoFrame.cpp \
     src/EffectsEngine/EffectNode.cpp \
-    src/Configuration/SettingsManager.cpp
-
+    src/Configuration/SettingsManager.cpp \
+    src/GUI/TagWidget.cpp \
+    src/GUI/Library/StackViewController.cpp \
+    src/GUI/Library/StackViewNavController.cpp \
+    src/GUI/Library/ListViewController.cpp \
+    src/GUI/Library/MediaCellView.cpp \
+    src/GUI/Library/MediaLibraryWidget.cpp \
+    src/GUI/Library/MediaListViewController.cpp \
+    src/GUI/ImportMediaListController.cpp \
+    src/GUI/ImportMediaCellView.cpp \
+    src/GUI/ClickableLabel.cpp \
+    src/GUI/Import/ImportModel.cpp \
+    src/GUI/Import/ImportController.cpp \
+    src/Workflow/VideoClipWorkflow.cpp \
+    src/Workflow/TrackHandler.cpp \
+    src/Workflow/AudioClipWorkflow.cpp \
+    src/GUI/LCDTimecode.cpp \
+    src/Configuration/VLMCSettingsDefault.cpp \
+    src/Configuration/ProjectSettingsDefault.cpp \
+    src/GUI/TracksControls.cpp \
+    src/GUI/widgets/TrackControls.cpp
 HEADERS += src/GUI/MainWindow.h \
     src/GUI/DockWidgetManager.h \
     src/GUI/LibraryWidget.h \
@@ -90,8 +105,6 @@ HEADERS += src/GUI/MainWindow.h \
     src/Media/Clip.h \
     src/GUI/MediaListWidget.h \
     src/GUI/About.h \
-#    src/GUI/Transcode.h \
-    src/GUI/Slider.h \
     src/Metadata/MetaDataWorker.h \
     src/Tools/Singleton.hpp \
     src/Library/Library.h \
@@ -104,13 +117,10 @@ HEADERS += src/GUI/MainWindow.h \
     src/Workflow/TrackWorkflow.h \
     src/Workflow/MainWorkflow.h \
     src/GUI/PreviewWidget.h \
+    src/GUI/PreviewRuler.h \
     src/Renderer/WorkflowRenderer.h \
     src/Renderer/GenericRenderer.h \
     src/Tools/Toggleable.hpp \
-    src/API/vlmc_module.h \
-    src/API/Module.h \
-    src/API/ModuleManager.h \
-    src/API/vlmc_module_internal.h \
     src/Renderer/WorkflowFileRenderer.h \
     src/vlmc.h \
     src/Tools/Pool.hpp \
@@ -128,6 +138,23 @@ HEADERS += src/GUI/MainWindow.h \
     src/GUI/AudioProjectPreferences.h \
     src/GUI/VideoProjectPreferences.h \
     src/Project/ProjectManager.h \
+    src/Configuration/SettingsManager.h \
+    src/GUI/TagWidget.h \
+    src/GUI/Library/StackViewController.h \
+    src/GUI/Library/StackViewNavController.h \
+    src/GUI/Library/ListViewController.h \
+    src/GUI/Library/MediaCellView.h \
+    src/GUI/Library/MediaLibraryWidget.h \
+    src/GUI/Library/MediaListViewController.h \
+    src/GUI/Library/ViewController.h \
+    src/GUI/ImportMediaListController.h \
+    src/GUI/ImportMediaCellView.h \
+    src/GUI/ClickableLabel.h \
+    src/GUI/Import/ImportModel.h \
+    src/GUI/Import/ImportController.h \
+    src/Workflow/VideoClipWorkflow.h \
+    src/Workflow/TrackHandler.h \
+    src/Workflow/AudioClipWorkflow.h \
     src/EffectsEngine/EffectsEngine.h \
     src/EffectsEngine/PluginsAPI/InSlot.hpp \
     src/EffectsEngine/PluginsAPI/OutSlot.hpp \
@@ -141,27 +168,39 @@ HEADERS += src/GUI/MainWindow.h \
     src/EffectsEngine/EffectPluginTypeLoader.h \
     src/EffectsEngine/SemanticObjectManager.hpp \
     src/EffectsEngine/SimpleObjectsReferencer.hpp \
-    src/Configuration/SettingsManager.h
+    src/GUI/LCDTimecode.h \
+    src/Configuration/VLMCSettingsDefault.h \
+    src/Configuration/ProjectSettingsDefault.h \
+    src/GUI/PreferenceWidget.h \
+    src/GUI/TracksControls.h \
+    src/GUI/widgets/TrackControls.h
 FORMS += src/GUI/ui/MainWindow.ui \
     src/GUI/ui/PreviewWidget.ui \
     src/GUI/ui/LanguagePreferences.ui \
     src/GUI/ui/Timeline.ui \
     src/GUI/ui/LibraryWidget.ui \
     src/GUI/ui/About.ui \
-#    src/GUI/ui/Transcode.ui \
     src/GUI/ui/FileBrowser.ui \
     src/GUI/ui/WorkflowFileRendererDialog.ui \
     src/GUI/ui/ClipProperty.ui \
     src/GUI/ui/ProjectPreferences.ui \
     src/GUI/ui/VLMCPreferences.ui \
     src/GUI/ui/VideoProjectPreferences.ui \
-    src/GUI/ui/AudioProjectPreferences.ui
+    src/GUI/ui/AudioProjectPreferences.ui \
+    src/GUI/ui/TagWidget.ui \
+    src/GUI/Library/ui/StackViewNavController.ui \
+    src/GUI/Library/ui/MediaCellView.ui \
+    src/GUI/Import/ui/ImportController.ui \
+    src/GUI/widgets/TrackControls.ui
 TRANSLATIONS = ts/vlmc_es.ts \
     ts/vlmc_fr.ts \
     ts/vlmc_sv.ts
 RESOURCES += ressources.qrc
 INCLUDEPATH += src/LibVLCpp \
     src/GUI \
+    src/GUI/widgets \
+    src/GUI/Library \
+    src/GUI/Import \
     src/Tools \
     src/Renderer \
     src/Metadata \
@@ -173,6 +212,7 @@ INCLUDEPATH += src/LibVLCpp \
     src/EffectsEngine \
     src/EffectsEngine/PluginsAPI \
     src/Configuration \
+    src/EffectsEngine \
     src
 
 # QMAKE_CFLAGS+=-pg
@@ -182,7 +222,6 @@ INCLUDEPATH += src/LibVLCpp \
 LIBS += -L/usr/local/lib \
     -lvlc \
     $$[VLMC_ADDITIONAL_LIBS]
-SUBDIRS += modules
 DEFINES += VLMC_VERSION="$$VERSION"
 CODECFORTR = UTF-8
 include(locale.pri)

@@ -50,6 +50,7 @@ void    MetaDataWorker::run()
     {
         computeImageMetaData();
     }
+    m_currentMedia->addConstantParam( ":vout=dummy" );
     m_mediaPlayer->setMedia( m_currentMedia->getVLCMedia() );
     connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( entrypointPlaying() ) );
     m_mediaPlayer->play();
@@ -60,8 +61,6 @@ void    MetaDataWorker::computeVideoMetaData()
 {
     //Disabling audio for this specific use of the media
     m_currentMedia->addVolatileParam( ":no-audio", ":audio" );
-    m_currentMedia->addConstantParam( ":vout=dummy" );
-
     connect( m_mediaPlayer, SIGNAL( lengthChanged() ), this, SLOT( entrypointLengthChanged() ) );
 }
 
@@ -69,6 +68,8 @@ void    MetaDataWorker::computeImageMetaData()
 {
     m_currentMedia->addVolatileParam( ":access=fake", ":access=''" );
     m_currentMedia->addVolatileParam( ":fake-duration=10000", ":fake-duration=''" );
+    //There can't be a length for an image file, so we don't have to wait for it to be updated.
+    m_lengthHasChanged = true;
 }
 
 void    MetaDataWorker::getMetaData()
@@ -94,7 +95,7 @@ void    MetaDataWorker::getMetaData()
         qWarning() << "Invalid FPS for media:" << m_currentMedia->getFileInfo()->absoluteFilePath();
         m_currentMedia->setFps( FPS );
     }
-    m_currentMedia->setNbFrames( m_currentMedia->getLength() / 1000 * m_currentMedia->getFps() );
+    m_currentMedia->setNbFrames( m_currentMedia->getLengthMS() / 1000 * m_currentMedia->getFps() );
 
     //Setting time for snapshot :
     if ( m_currentMedia->getFileType() == Media::Video )

@@ -33,6 +33,7 @@
 
 #include "ClipWorkflow.h"
 #include "LightVideoFrame.h"
+#include "MainWorkflow.h"
 
 //TODO: REMOVE THIS
 #ifndef FPS
@@ -48,7 +49,7 @@ class   TrackWorkflow : public QObject
     Q_OBJECT
 
     public:
-        TrackWorkflow( unsigned int trackId );
+        TrackWorkflow( unsigned int trackId, MainWorkflow::TrackType type );
         ~TrackWorkflow();
 
         bool                                    getOutput( qint64 currentFrame );
@@ -67,7 +68,7 @@ class   TrackWorkflow : public QObject
         /**
          *  Returns the output that has been computed in synchrone mode.
          */
-        LightVideoFrame*                        getSynchroneOutput();
+        void*                                   getSynchroneOutput();
 
         //FIXME: this won't be reliable as soon as we change the fps from the configuration
         static const unsigned int               nbFrameBeforePreload = 60;
@@ -77,6 +78,12 @@ class   TrackWorkflow : public QObject
 
         void                                    setFullSpeedRender( bool value );
         void                                    forceRepositionning();
+
+        /**
+         *  \brief          This method is only to simulate a track render, which will render a black output.
+         *                  this is meant to render a muted track, though the Qt event loop (QueuedConnection signal)
+         */
+        void                                    simulateBlackOutputRender();
 
     private:
         void                                    computeLength();
@@ -114,7 +121,9 @@ class   TrackWorkflow : public QObject
         QAtomicInt                              m_nbClipToUnpause;
         QAtomicInt                              m_nbClipToRender;
 
-        LightVideoFrame*                        m_synchroneRenderBuffer;
+        void*                                   m_synchroneRenderBuffer;
+
+        MainWorkflow::TrackType                 m_trackType;
 
     private slots:
         void                                    clipWorkflowPaused();

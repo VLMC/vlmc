@@ -36,7 +36,7 @@ Timeline::Timeline( QWidget *parent ) :
     m_instance = this;
     m_ui.setupUi( this );
 
-    m_mainWorkflow = new MainWorkflow( MAX_TRACKS );
+    m_mainWorkflow = MainWorkflow::getInstance();
 
     m_tracksScene = new TracksScene( this );
     m_tracksView = new TracksView( m_tracksScene, m_mainWorkflow, m_ui.tracksFrame );
@@ -54,19 +54,38 @@ Timeline::Timeline( QWidget *parent ) :
     m_ui.rulerFrame->setLayout( tracksRulerLayout );
     tracksRulerLayout->addWidget( m_tracksRuler );
 
+    m_tracksControls = new TracksControls( this );
+    QHBoxLayout* tracksControlsLayout = new QHBoxLayout();
+    tracksControlsLayout->setContentsMargins( 0, 0, 0, 0 );
+    m_ui.controlsFrame->setLayout( tracksControlsLayout );
+    tracksControlsLayout->addWidget( m_tracksControls );
+
+
     changeZoom( 10 );
     setDuration( 0 );
-    connect( m_tracksView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), m_tracksRuler, SLOT( moveRuler( int ) ) );
+    connect( m_tracksView->horizontalScrollBar(), SIGNAL( valueChanged(int) ),
+             m_tracksRuler, SLOT( moveRuler(int) ) );
+    connect( m_tracksView->verticalScrollBar(), SIGNAL( valueChanged(int) ),
+             m_tracksControls->verticalScrollBar(), SLOT( setValue(int) ) );
+    connect( m_tracksControls->verticalScrollBar(), SIGNAL( valueChanged(int) ),
+             m_tracksView->verticalScrollBar(), SLOT( setValue(int) ) );
     connect( m_tracksView, SIGNAL( durationChanged(int) ), this, SLOT( setDuration(int) ) );
-    connect( m_mainWorkflow, SIGNAL( clipAdded(Clip*,uint,qint64) ), this, SLOT( actionAddClip(Clip*,uint,qint64) ) );
-    connect( m_mainWorkflow, SIGNAL( clipMoved(QUuid, uint, qint64 ) ), this, SLOT( actionMoveClip(QUuid,uint,qint64) ) );
-    connect( m_mainWorkflow, SIGNAL( clipRemoved(QUuid,uint) ), this, SLOT( actionRemoveClip(QUuid,uint)) );
+    connect( m_mainWorkflow, SIGNAL( clipAdded(Clip*,uint,qint64,MainWorkflow::TrackType ) ), this, SLOT( actionAddClip(Clip*,uint,qint64,MainWorkflow::TrackType ) ) );
+    connect( m_mainWorkflow, SIGNAL( clipMoved(QUuid, uint, qint64,MainWorkflow::TrackType ) ), this, SLOT( actionMoveClip(QUuid,uint,qint64,MainWorkflow::TrackType ) ) );
+    connect( m_mainWorkflow, SIGNAL( clipRemoved(QUuid,uint,MainWorkflow::TrackType ) ), this, SLOT( actionRemoveClip(QUuid,uint,MainWorkflow::TrackType )) );
     connect( m_mainWorkflow, SIGNAL( cleared() ), tracksView(), SLOT( clear() ) );
+
+    connect( m_tracksView, SIGNAL( videoTrackAdded(GraphicsTrack*) ),
+             m_tracksControls, SLOT( addVideoTrack(GraphicsTrack*) ) );
+    connect( m_tracksView, SIGNAL( audioTrackAdded(GraphicsTrack*) ),
+             m_tracksControls, SLOT( addAudioTrack(GraphicsTrack*) ) );
+
+    m_tracksView->createLayout();
 }
 
 Timeline::~Timeline()
 {
-    delete m_mainWorkflow;
+    MainWorkflow::destroyInstance();
 }
 
 void Timeline::changeEvent( QEvent *e )
@@ -99,19 +118,19 @@ void Timeline::setTool( ToolButtons button )
     tracksView()->setTool( button );
 }
 
-void Timeline::actionAddClip( Clip* clip, unsigned int track, qint64 start )
+void Timeline::actionAddClip( Clip* clip, unsigned int track, qint64 start, MainWorkflow::TrackType )
 {
     tracksView()->addMediaItem( clip, track, start );
 }
 
-void Timeline::actionMoveClip( const QUuid& uuid, unsigned int track, qint64 time )
+void Timeline::actionMoveClip( const QUuid& uuid, unsigned int track, qint64 time, MainWorkflow::TrackType )
 {
     tracksView()->moveMediaItem( uuid, track, time );
     tracksView()->updateDuration();
     tracksRuler()->update();
 }
 
-void Timeline::actionRemoveClip( const QUuid& uuid, unsigned int track )
+void Timeline::actionRemoveClip( const QUuid& uuid, unsigned int track, MainWorkflow::TrackType )
 {
     tracksView()->removeMediaItem( uuid, track );
 }

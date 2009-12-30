@@ -95,7 +95,6 @@ private:
     int                     m_tracksHeight;
     unsigned int            m_tracksCount;
     int                     m_projectDuration;
-    int                     m_fps;
     GraphicsCursorItem*     m_cursorLine;
     QGraphicsLinearLayout*  m_layout;
     quint32                 m_numVideoTrack;
@@ -115,6 +114,8 @@ signals:
     void                    zoomIn();
     void                    zoomOut();
     void                    durationChanged( int duration );
+    void                    videoTrackAdded( GraphicsTrack* );
+    void                    audioTrackAdded( GraphicsTrack* );
 
 friend class Timeline;
 friend class TracksScene;

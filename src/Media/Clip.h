@@ -38,6 +38,8 @@
 #define FPS     30
 #endif
 
+class Media;
+
 class   Clip : public QObject
 {
     Q_OBJECT

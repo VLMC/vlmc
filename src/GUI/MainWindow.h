@@ -66,6 +66,7 @@ private:
     void        createStatusBar();
     void        createGlobalPreferences();
     void        createProjectPreferences();
+    void        loadDefaults();
 
     Ui::MainWindow          m_ui;
     MetaDataManager*        m_metaDataManager;
@@ -75,6 +76,7 @@ private:
     PreviewWidget*          m_projectPreview;
     WorkflowFileRenderer*   m_renderer;
     Settings*               m_globalPreferences;
+    Settings*               m_DefaultProjectPreferences;
     Settings*               m_projectPreferences;
 
 private slots:
@@ -88,6 +90,7 @@ private slots:
     void on_actionNew_Project_triggered();
     void on_actionLoad_Project_triggered();
     void on_actionSave_triggered();
+    void on_actionImport_triggered();
     void on_actionHelp_triggered();
     void on_actionProject_Preferences_triggered();
     void mediaListItemDoubleClicked( QListWidgetItem* );

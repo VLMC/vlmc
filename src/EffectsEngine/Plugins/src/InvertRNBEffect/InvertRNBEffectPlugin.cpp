@@ -23,7 +23,6 @@
 #include "InvertRNBEffectPlugin.h"
 #include <QtDebug>
 
-
 InvertRNBEffectPlugin::InvertRNBEffectPlugin()
 {
 }

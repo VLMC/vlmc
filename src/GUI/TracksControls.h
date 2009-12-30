@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Slider.h: Enhanced slider for user interactions
+ * TracksControls.cpp: Left panel of the timeline
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,30 +20,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef SLIDER_H
-#define SLIDER_H
+#ifndef TRACKSCONTROLS_H
+#define TRACKSCONTROLS_H
 
-#include <QSlider>
-#include <QMouseEvent>
+#include <QScrollArea>
+#include <QVBoxLayout>
+#include "GraphicsTrack.hpp"
+#include "TrackControls.h"
 
-class Slider : public QSlider
+class TracksControls : public QScrollArea
 {
     Q_OBJECT
 public:
-    Slider( QWidget* parent = 0 );
+    TracksControls( QWidget* parent = 0 );
 
-protected:
-    void mousePressEvent( QMouseEvent* event );
-    void mouseReleaseEvent( QMouseEvent* event );
-
-private slots:
-    void sliderChanged( int value );
-
-signals:
-    void sliderPosChanged( int value );
+public slots:
+    void addVideoTrack( GraphicsTrack* track );
+    void addAudioTrack( GraphicsTrack* track );
 
 private:
-    bool m_isSliding;
+    QWidget* m_centralWidget;
+    QVBoxLayout* m_layout;
 };
 
-#endif // SLIDER_H
+#endif // TRACKSCONTROLS_H

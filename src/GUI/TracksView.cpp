@@ -29,7 +29,6 @@
 #include <QtDebug>
 #include <cmath>
 #include "TracksView.h"
-#include "Media.h"
 #include "Library.h"
 #include "GraphicsMovieItem.h"
 #include "GraphicsCursorItem.h"
@@ -42,8 +41,7 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
     //TODO should be defined by the settings
     m_tracksHeight = 25;
 
-    m_tracksCount = mainWorkflow->getTrackCount();
-    m_fps = FPS;
+    m_tracksCount = mainWorkflow->getTrackCount( MainWorkflow::VideoTrack );
 
     m_numAudioTrack = 0;
     m_numVideoTrack = 0;
@@ -62,8 +60,6 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, QWidg
     m_cursorLine = new GraphicsCursorItem( QPen( QColor( 220, 30, 30 ) ) );
 
     m_scene->addItem( m_cursorLine );
-
-    createLayout();
 
     connect( m_cursorLine, SIGNAL( cursorPositionChanged(qint64) ),
              this, SLOT( ensureCursorVisible() ) );
@@ -112,6 +108,7 @@ void TracksView::addVideoTrack()
     m_cursorLine->setHeight( m_layout->contentsRect().height() );
     m_scene->invalidate(); // Redraw the background
     m_numVideoTrack++;
+    emit videoTrackAdded( track );
 }
 
 void TracksView::addAudioTrack()
@@ -123,6 +120,7 @@ void TracksView::addAudioTrack()
     m_cursorLine->setHeight( m_layout->contentsRect().height() );
     m_scene->invalidate(); // Redraw the background
     m_numAudioTrack++;
+    emit audioTrackAdded( track );
 }
 
 void TracksView::clear()
@@ -426,7 +424,13 @@ void TracksView::dropEvent( QDropEvent* event )
         Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
                                                                 m_dragItem->clip(),
                                                                 m_dragItem->trackNumber(),
-                                                                (qint64)mappedXPos ) );
+                                                                (qint64)mappedXPos,
+                                                                MainWorkflow::VideoTrack ) );
+//        Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
+//                                                                m_dragItem->clip(),
+//                                                                m_dragItem->trackNumber(),
+//                                                                (qint64)mappedXPos,
+//                                                                TrackWorkflow::Audio ) );
         m_dragItem = NULL;
     }
 }
@@ -576,14 +580,16 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
                                                                      movieItem->oldTrackNumber,
                                                                      movieItem->oldPosition,
                                                                      movieItem->trackNumber(),
-                                                                     (qint64)movieItem->pos().x() ) );
+                                                                     (qint64)movieItem->pos().x(),
+                                                                     MainWorkflow::VideoTrack ) );
             movieItem->oldTrackNumber = movieItem->trackNumber();
             movieItem->oldPosition = movieItem->pos().x();
-            m_actionMove = false;
             m_actionRelativeX = -1;
             m_actionItem = NULL;
         }
     }
+
+    m_actionMove = false;
 
     setDragMode( QGraphicsView::NoDrag );
     QGraphicsView::mouseReleaseEvent( event );
@@ -716,5 +722,6 @@ void TracksView::split( GraphicsMovieItem* item, qint64 frame )
     Commands::trigger( new Commands::MainWorkflow::AddClip( m_mainWorkflow,
                                                             newclip,
                                                             item->trackNumber(),
-                                                            item->pos().x() + frame ) );
+                                                            item->pos().x() + frame,
+                                                            MainWorkflow::VideoTrack ) );
 }

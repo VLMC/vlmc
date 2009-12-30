@@ -26,6 +26,7 @@
 #include <QGraphicsWidget>
 #include <QPainter>
 #include <QDebug>
+#include "MainWorkflow.h"
 
 class GraphicsTrack : public QGraphicsWidget
 {
@@ -43,6 +44,7 @@ public:
     {
         m_type = type;
         m_trackNumber = trackNumber;
+        m_enabled = true;
 
         setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
         setContentsMargins( 0, 0, 0, 0 );
@@ -61,46 +63,46 @@ public:
         return preferredHeight();
     }
 
+    void setTrackEnabled( bool enabled )
+    {
+        if ( enabled == m_enabled ) return;
+        m_enabled = enabled;
+
+        MainWorkflow::TrackType type;
+        if ( m_type == Audio )
+            //TODO need audio support
+            //type = MainWorkflow::AudioTrack;
+            return;
+        else
+            type = MainWorkflow::VideoTrack;
+
+        if ( enabled )
+            MainWorkflow::getInstance()->unmuteTrack( m_trackNumber, type );
+        else
+            MainWorkflow::getInstance()->muteTrack( m_trackNumber, type );
+    }
+
+    bool trackEnabled()
+    {
+        return m_enabled;
+    }
+
     quint32 trackNumber()
     {
         return m_trackNumber;
     }
 
-    virtual int type() const { return Type; }
-
-protected:
-    virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* = 0 )
+    MediaType mediaType()
     {
-        painter->setMatrixEnabled( false );
-
-        if ( m_trackNumber == 0 )
-        {
-            QString text;
-            switch ( m_type )
-            {
-            case Video:
-                text = tr( "Video" );
-                break;
-            case Audio:
-                text = tr( "Audio" );
-                break;
-            }
-
-            QRectF mapped = mapRectToScene( boundingRect() ).adjusted( 10, 1, 0, 0 );
-            QFont textFont;
-            textFont.setItalic( true );
-            textFont.setBold( true );
-            textFont.setPixelSize( mapped.height() + 12 );
-
-            painter->setPen( QPen( palette().window().color().lighter( 125 ) ) );
-            painter->setFont( textFont );
-            painter->drawText( mapped, Qt::AlignVCenter, text );
-        }
+        return m_type;
     }
+
+    virtual int type() const { return Type; }
 
 private:
     MediaType m_type;
     quint32 m_trackNumber;
+    bool m_enabled;
 };
 
 #endif // GRAPHICSTRACK_HPP

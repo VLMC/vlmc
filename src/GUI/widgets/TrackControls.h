@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Slider.cpp: Enhanced slider for user interactions
+ * TrackControls.h: Widget used to configure a track
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,39 +20,32 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "Slider.h"
+#ifndef TRACKCONTROLS_H
+#define TRACKCONTROLS_H
 
-Slider::Slider( QWidget* parent ) : QSlider( parent ), m_isSliding( false )
-{
-    connect( this, SIGNAL( valueChanged(int) ), this, SLOT( sliderChanged(int) ) );
+#include <QtGui/QWidget>
+#include "GraphicsTrack.hpp"
+
+namespace Ui {
+    class TrackControls;
 }
 
-void Slider::mousePressEvent( QMouseEvent* event )
+class TrackControls : public QWidget
 {
-    m_isSliding = true;
-    if ( event->button() != Qt::LeftButton &&
-         event->button() != Qt::MidButton )
-    {
-        QSlider::mousePressEvent( event );
-    }
+    Q_OBJECT
+public:
+    TrackControls( GraphicsTrack* track, QWidget *parent = 0 );
+    ~TrackControls();
 
-    QMouseEvent newEvent( event->type(), event->pos(), event->globalPos(),
-        Qt::MouseButton( event->button() ^ Qt::LeftButton ^ Qt::MidButton ),
-        Qt::MouseButtons( event->buttons() ^ Qt::LeftButton ^ Qt::MidButton ),
-        event->modifiers() );
-    QSlider::mousePressEvent( &newEvent );
-}
+protected:
+    void changeEvent( QEvent *e );
 
-void Slider::mouseReleaseEvent( QMouseEvent* event )
-{
-    m_isSliding = false;
-    QSlider::mouseReleaseEvent( event );
-}
+private slots:
+    void setTrackDisabled( bool disable );
 
-void Slider::sliderChanged( int value )
-{
-    if ( m_isSliding )
-    {
-        emit sliderPosChanged( value );
-    }
-}
+private:
+    Ui::TrackControls *m_ui;
+    GraphicsTrack* m_track;
+};
+
+#endif // TRACKCONTROLS_H

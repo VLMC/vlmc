@@ -23,8 +23,14 @@
 #ifndef GREENFILTEREFFECTPLUGIN_H_
 #define GREENFILTEREFFECTPLUGIN_H_
 
+<<<<<<< HEAD:src/EffectsEngine/Plugins/src/GreenFilterEffect/GreenFilterEffectPlugin.h
 #include "IEffectNode.h"
 #include "IEffectPlugin.h"
+=======
+#include "GenericEffect.h"
+#include <QPainter>
+#include <QImage>
+>>>>>>> master:src/EffectsEngine/GreenFilterEffect.h
 
 class	GreenFilterEffectPlugin : public QObject, public IEffectPlugin
 {
@@ -45,7 +51,16 @@ class	GreenFilterEffectPlugin : public QObject, public IEffectPlugin
 
  private:
 
+<<<<<<< HEAD:src/EffectsEngine/Plugins/src/GreenFilterEffect/GreenFilterEffectPlugin.h
   IEffectNode*                  m_ien;
+=======
+  QImage				m_logo;
+  bool					m_enabled;
+  static	quint32 const		m_nbVideoInputs = 1;
+  static	quint32 const		m_nbVideoOutputs = 1;
+  static	char const * 	m_videoInputsNames[m_nbVideoInputs];
+  static	char const *	m_videoOutputsNames[m_nbVideoOutputs];
+>>>>>>> master:src/EffectsEngine/GreenFilterEffect.h
 };
 
 #endif // GREENFILTEREFFECTPLUGIN_H_

@@ -26,6 +26,7 @@
 #include "vlmc.h"
 #include "WorkflowRenderer.h"
 #include "Timeline.h"
+#include "SettingsManager.h"
 
 WorkflowRenderer::WorkflowRenderer() :
             m_mainWorkflow( MainWorkflow::getInstance() ),
@@ -54,14 +55,19 @@ WorkflowRenderer::WorkflowRenderer() :
     m_media->addOption( buffer );
     sprintf( buffer, ":height=%i", VIDEOHEIGHT );
     m_media->addOption( buffer );
+
     m_media->addOption( ":no-audio" );
+//    sprintf( buffer, ":inamem-data=%lld", (qint64)this );
+//    m_media->addOption( buffer );
+//    sprintf( buffer, ":inamem-callback=%lld", (qint64)WorkflowRenderer::lock );
+//    m_media->addOption( buffer );
 
     m_condMutex = new QMutex;
     m_waitCond = new QWaitCondition;
 
-    m_renderFrame = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes];
-   
-        //Workflow part
+    m_renderVideoFrame = new unsigned char[VIDEOHEIGHT * VIDEOWIDTH * Pixel::NbComposantes];
+
+     //Workflow part
     connect( m_mainWorkflow, SIGNAL( frameChanged(qint64) ),
             Timeline::getInstance()->tracksView()->tracksCursor(), SLOT( setCursorPos( qint64 ) ), Qt::QueuedConnection );
     connect( Timeline::getInstance()->tracksView()->tracksCursor(), SIGNAL( cursorPositionChanged( qint64 ) ),
@@ -76,16 +82,26 @@ WorkflowRenderer::~WorkflowRenderer()
     stop();
 
     //FIXME this is probably useless...
+    //etix says: yes it is...
     disconnect( m_mediaPlayer, SIGNAL( playing() ),    this,   SLOT( __videoPlaying() ) );
     disconnect( m_mediaPlayer, SIGNAL( paused() ),     this,   SLOT( __videoPaused() ) );
     disconnect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SLOT( __videoStopped() ) );
     disconnect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
     disconnect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
+    disconnect( m_mainWorkflow, SIGNAL( frameChanged( qint64 ) ), this, SLOT( __frameChanged( qint64 ) ) );
 
     delete m_actionsLock;
     delete m_media;
     delete m_condMutex;
     delete m_waitCond;
+}
+
+void*   WorkflowRenderer::lockAudio( void* datas )
+{
+    WorkflowRenderer* self = reinterpret_cast<WorkflowRenderer*>( datas );
+
+    qDebug() << "Injecting audio data";
+    return self->m_renderAudioSample;
 }
 
 void*   WorkflowRenderer::lock( void* datas )
@@ -94,10 +110,11 @@ void*   WorkflowRenderer::lock( void* datas )
 
     if ( self->m_stopping == false )
     {
-        const LightVideoFrame* ret = self->m_mainWorkflow->getSynchroneOutput();
-	memcpy( self->m_renderFrame, (*ret)->frame.octets, (*ret)->nboctets );
+        MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getSynchroneOutput();
+        memcpy( self->m_renderVideoFrame, (*(ret->video))->frame.octets, (*(ret->video))->nboctets );
+        self->m_renderAudioSample = ret->audio;
     }
-    return (self->m_renderFrame);
+    return self->m_renderVideoFrame;
 }
 
 void    WorkflowRenderer::unlock( void* datas )
@@ -135,7 +152,8 @@ void        WorkflowRenderer::checkActions()
 
 void        WorkflowRenderer::startPreview()
 {
-    if ( m_mainWorkflow->getLength() <= 0 )
+    qDebug() << m_mainWorkflow->getLengthFrame();
+    if ( m_mainWorkflow->getLengthFrame() <= 0 )
         return ;
     m_mediaPlayer->setMedia( m_media );
 
@@ -145,6 +163,7 @@ void        WorkflowRenderer::startPreview()
     connect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SLOT( __videoStopped() ) );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
     connect( m_mainWorkflow, SIGNAL( positionChanged( float ) ), this, SLOT( __positionChanged( float ) ) );
+    connect( m_mainWorkflow, SIGNAL( frameChanged( qint64 ) ), this, SLOT( __frameChanged( qint64 ) ) );
 
     m_mainWorkflow->setFullSpeedRender( false );
     m_mainWorkflow->startRender();
@@ -152,6 +171,7 @@ void        WorkflowRenderer::startPreview()
     m_isRendering = true;
     m_paused = false;
     m_stopping = false;
+    m_outputFps = SettingsManager::getInstance()->getValue( "default", "VLMCPreviewFPS" ).toDouble();
 }
 
 void        WorkflowRenderer::setPosition( float newPos )
@@ -248,6 +268,21 @@ void        WorkflowRenderer::stop()
     m_mainWorkflow->stop();
 }
 
+qint64      WorkflowRenderer::getCurrentFrame() const
+{
+    return m_mainWorkflow->getCurrentFrame();
+}
+
+qint64      WorkflowRenderer::getLengthMs() const
+{
+    return m_mainWorkflow->getLengthFrame() / getFps() * 1000;
+}
+
+float       WorkflowRenderer::getFps() const
+{
+    return m_outputFps;
+}
+
 /////////////////////////////////////////////////////////////////////
 /////SLOTS :
 /////////////////////////////////////////////////////////////////////
@@ -266,6 +301,11 @@ void        WorkflowRenderer::__positionChanged()
 void        WorkflowRenderer::__positionChanged( float pos )
 {
     emit positionChanged( pos );
+}
+
+void        WorkflowRenderer::__frameChanged( qint64 frame )
+{
+    emit frameChanged( frame );
 }
 
 void        WorkflowRenderer::__videoPaused()
@@ -294,3 +334,4 @@ void        WorkflowRenderer::timelineCursorChanged( qint64 newFrame )
 {
     m_mainWorkflow->setCurrentFrame( newFrame );
 }
+

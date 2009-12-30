@@ -66,8 +66,10 @@ class   ClipWorkflow : public QObject
          *  therefore, you can call this method blindly, without taking care
          *  of the rendering process advancement.
          */
-        LightVideoFrame*        getOutput();
+        virtual void*           getOutput() = 0;
+        virtual void            initVlcOutput() = 0;
         void                    initialize( bool preloading = false );
+
         /**
          *  Return true ONLY if the state is equal to Ready.
          *  If the state is Rendering, EndReached or anything else, this will
@@ -154,46 +156,27 @@ class   ClipWorkflow : public QObject
         void                    waitForCompleteRender( bool dontCheckRenderStarted = false );
         QMutex*                 getSleepMutex();
 
+        virtual void*           getLockCallback() = 0;
+        virtual void*           getUnlockCallback() = 0;
+
         LibVLCpp::MediaPlayer*  getMediaPlayer();
 
         void                    setFullSpeedRender( bool value );
 
     private:
-        static void             lock( ClipWorkflow* clipWorkflow, void** pp_ret, int size );
-        static void             unlock( ClipWorkflow* clipWorkflow, void* buffer, int width, int height, int bpp, int size );
-        void                    setVmem();
         void                    setState( State state );
         void                    checkSynchronisation( State newState );
-        /**
-         *  Don't ever call this method from anywhere else than the unlock() method
-         */
-        void                    checkStateChange();
+        void                    adjustBegin();
 
     private:
         Clip*                   m_clip;
 
-        /**
-         *  \brief  The VLC media used to render
-         */
-        LibVLCpp::Media*        m_vlcMedia;
-
-        QMutex*                 m_renderLock;
-//        unsigned char*          m_buffer;
-        LightVideoFrame*        m_frame;
-        //unsigned char*          m_backBuffer;
-
         LibVLCpp::MediaPlayer*  m_mediaPlayer;
 
-        QMutex*                 m_condMutex;
-        QWaitCondition*         m_waitCond;
-
-        State                   m_state;
-        QReadWriteLock*         m_stateLock;
         State                   m_requiredState;
         QMutex*                 m_requiredStateLock;
 
         WaitCondition*          m_initWaitCond;
-        WaitCondition*          m_renderWaitCond;
         WaitCondition*          m_pausingStateWaitCond;
 
         /**
@@ -208,7 +191,24 @@ class   ClipWorkflow : public QObject
          */
         bool                    m_initFlag;
 
+    protected:
+        QMutex*                 m_renderLock;
+        QReadWriteLock*         m_stateLock;
+        QMutex*                 m_condMutex;
+        State                   m_state;
+        WaitCondition*          m_renderWaitCond;
+        QWaitCondition*         m_waitCond;
         bool                    m_fullSpeedRender;
+        /**
+         *  \brief  The VLC media used to render
+         */
+        LibVLCpp::Media*        m_vlcMedia;
+
+    protected:
+        /**
+         *  Don't ever call this method from anywhere else than the unlock() method
+         */
+        void                    checkStateChange();
 
     private slots:
         /**

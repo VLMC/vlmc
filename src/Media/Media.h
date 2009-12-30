@@ -35,8 +35,10 @@
 #include <QUuid>
 #include <QObject>
 #include <QFileInfo>
+#include <QHash>
 
 #include "VLCMedia.h"
+#include "Clip.h"
 
 struct          audioData
 {
@@ -50,6 +52,8 @@ struct          audioData
     size_t              buffSize;
     QVector<int*>       frameList;
 };
+
+class Clip;
 
 /**
   * Represents a basic container for media informations.
@@ -99,7 +103,7 @@ public:
         \return                 Returns the length of this media (ie the
                                 video duration) in milliseconds.
     */
-    qint64                      getLength() const;
+    qint64                      getLengthMS() const;
     /**
         \brief                  This methods is most of an entry point for the
                                 MetadataManager than enything else.
@@ -143,19 +147,26 @@ public:
 
     void                        emitMetaDataComputed();
 
+    bool                        hasMetadata() const;
+
+    void                        addClip( Clip* clip );
+    void                        removeClip( const QUuid& uuid );
+    Clip*                       clip( const QUuid& uuid ) const { return m_clips[uuid]; }
+    const QHash<QUuid, Clip*>*  clips() const { return &m_clips; }
+
+
 private:
     void                        setFileType();
 
 protected:
     static QPixmap*             defaultSnapshot;
-
     LibVLCpp::Media*            m_vlcMedia;
     QString                     m_mrl;
     QList<QString>              m_volatileParameters;
     QPixmap*                    m_snapshot;
     QUuid                       m_uuid;
     QFileInfo*                  m_fileInfo;
-    qint64                      m_length;
+    qint64                      m_lengthMS;
     qint64                      m_nbFrames;
     unsigned int                m_width;
     unsigned int                m_height;
@@ -164,11 +175,12 @@ protected:
     audioData                   m_audioData;
     FileType                    m_fileType;
     InputType                   m_inputType;
+    bool                        m_metadataParsed;
     QString                     m_fileName;
     QStringList                 m_metaTags;
+    QHash<QUuid, Clip*>         m_clips;
 
 signals:
-    void                        metaDataComputed();
     void                        metaDataComputed( Media* );
 };
 

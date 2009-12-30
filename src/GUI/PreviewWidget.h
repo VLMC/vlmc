@@ -27,6 +27,7 @@
 #include <QWidget>
 #include "Workflow/MainWorkflow.h"
 #include "GenericRenderer.h"
+#include "PreviewRuler.h"
 
 namespace Ui {
     class PreviewWidget;
@@ -51,6 +52,9 @@ private:
 
 protected:
     virtual void    changeEvent( QEvent *e );
+
+public slots:
+    void            stop();
 
 private slots:
     void            on_pushButtonPlay_clicked();
