@@ -66,32 +66,48 @@ Timeline::Timeline( WorkflowRenderer* renderer, QWidget *parent ) :
 
     changeZoom( 10 );
     setDuration( 0 );
+
+    // Scroll
     connect( m_tracksView->horizontalScrollBar(), SIGNAL( valueChanged(int) ),
              m_tracksRuler, SLOT( moveRuler(int) ) );
     connect( m_tracksView->verticalScrollBar(), SIGNAL( valueChanged(int) ),
              m_tracksControls->verticalScrollBar(), SLOT( setValue(int) ) );
     connect( m_tracksControls->verticalScrollBar(), SIGNAL( valueChanged(int) ),
              m_tracksView->verticalScrollBar(), SLOT( setValue(int) ) );
+
+    // Project duration change
     connect( m_tracksView, SIGNAL( durationChanged(int) ), this, SLOT( setDuration(int) ) );
-    connect( m_mainWorkflow, SIGNAL( clipAdded(Clip*,uint,qint64,MainWorkflow::TrackType ) ), this, SLOT( actionAddClip(Clip*,uint,qint64,MainWorkflow::TrackType ) ) );
-    connect( m_mainWorkflow, SIGNAL( clipMoved(QUuid, uint, qint64,MainWorkflow::TrackType ) ), this, SLOT( actionMoveClip(QUuid,uint,qint64,MainWorkflow::TrackType ) ) );
-    connect( m_mainWorkflow, SIGNAL( clipRemoved(Clip*,uint,MainWorkflow::TrackType ) ), this, SLOT( actionRemoveClip(Clip*,uint,MainWorkflow::TrackType )) );
+
+    // Clip actions
+    connect( m_mainWorkflow, SIGNAL( clipAdded(Clip*,uint,qint64,MainWorkflow::TrackType ) ),
+             this, SLOT( actionAddClip(Clip*,uint,qint64,MainWorkflow::TrackType ) ) );
+    connect( m_mainWorkflow, SIGNAL( clipMoved(QUuid, uint, qint64,MainWorkflow::TrackType ) ),
+             this, SLOT( actionMoveClip(QUuid,uint,qint64,MainWorkflow::TrackType ) ) );
+    connect( m_mainWorkflow, SIGNAL( clipRemoved(Clip*,uint,MainWorkflow::TrackType ) ),
+             this, SLOT( actionRemoveClip(Clip*,uint,MainWorkflow::TrackType )) );
+
+    // Clear / reset
     connect( m_mainWorkflow, SIGNAL( cleared() ), m_tracksControls, SLOT( clear() ) );
     connect( m_mainWorkflow, SIGNAL( cleared() ), tracksView(), SLOT( clear() ) );
 
+    // Tracks controls
     connect( m_tracksView, SIGNAL( videoTrackAdded(GraphicsTrack*) ),
              m_tracksControls, SLOT( addVideoTrack(GraphicsTrack*) ) );
     connect( m_tracksView, SIGNAL( audioTrackAdded(GraphicsTrack*) ),
              m_tracksControls, SLOT( addAudioTrack(GraphicsTrack*) ) );
 
+    // Frames updates
     connect( m_renderer, SIGNAL( frameChanged(qint64, MainWorkflow::FrameChangedReason) ),
-            m_tracksView->tracksCursor(), SLOT( frameChanged( qint64, MainWorkflow::FrameChangedReason ) ),
-            Qt::QueuedConnection );
-    connect( m_tracksView->tracksCursor(), SIGNAL( cursorPositionChanged( qint64 ) ),
-             m_renderer, SLOT( timelineCursorChanged(qint64) ) );
-    connect( m_renderer, SIGNAL( frameChanged(qint64,MainWorkflow::FrameChangedReason) ), m_tracksRuler, SLOT( update() ) );
+             m_tracksView->tracksCursor(), SLOT( frameChanged( qint64, MainWorkflow::FrameChangedReason ) ),
+             Qt::QueuedConnection );
+    connect( m_renderer, SIGNAL( frameChanged(qint64,MainWorkflow::FrameChangedReason) ),
+             m_tracksRuler, SLOT( update() ) );
     connect( m_tracksRuler, SIGNAL( frameChanged(qint64,MainWorkflow::FrameChangedReason) ),
              m_renderer, SLOT( rulerCursorChanged(qint64)) );
+
+    // Cursor position updates
+    connect( m_tracksView->tracksCursor(), SIGNAL( cursorPositionChanged( qint64 ) ),
+             m_renderer, SLOT( timelineCursorChanged(qint64) ) );
 
     m_tracksView->createLayout();
 }
