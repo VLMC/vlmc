@@ -135,6 +135,11 @@ void        Library::addMedia( Media* media )
     metaDataComputed( media );
 }
 
+void        Library::addClip( Clip* clip )
+{
+    m_clips[clip->getUuid()] = clip;
+}
+
 void        Library::loadMedia( const QString& path, const QUuid& uuid )
 {
     Media*  it;

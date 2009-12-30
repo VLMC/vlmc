@@ -70,6 +70,9 @@ private slots:
     void            markerStartClicked();
     void            markerStopClicked();
     void            createNewClipFromMarkers();
+
+signals:
+    void            addClip( Clip* clip );
 };
 
 #endif // PREVIEWWIDGET_H

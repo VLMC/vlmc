@@ -42,6 +42,9 @@ public:
 
 private:
     StackViewController*    m_nav;
+
+public slots:
+    void    clipAdded( Clip* clip );
 private slots:
     void    mediaSelection( Media* media );
     void    clipSelection( Clip* clip );

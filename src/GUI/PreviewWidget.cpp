@@ -193,5 +193,6 @@ void        PreviewWidget::createNewClipFromMarkers()
 
     //Adding the newly created clip to the media
     selectedMedia->addClip( part );
+    emit addClip( part );
     return ;
 }

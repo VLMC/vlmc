@@ -55,6 +55,7 @@ public:
      */
     void                    addMedia( Media* media );
     void                    deleteMedia( Media* media );
+    void                    addClip( Clip* clip );
 
 private:
     Library();
