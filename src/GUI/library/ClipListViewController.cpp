@@ -71,13 +71,11 @@ void    ClipListViewController::clean()
 
 void    ClipListViewController::cellSelection( const QUuid& uuid )
 {
-    qDebug() << "cell selected";
     if ( m_currentUuid == uuid )
         return;
 
     if ( m_cells.contains( uuid ) )
     {
-        qDebug() << "uuid found" << uuid;
         if ( !m_currentUuid.isNull() && m_cells.contains( m_currentUuid ) )
             m_cells.value( m_currentUuid )->setPalette( m_cells.value( uuid )->palette() );
         QPalette p = m_cells.value( uuid )->palette();

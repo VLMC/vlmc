@@ -48,7 +48,10 @@ Media*          Library::getMedia( const QUuid& uuid )
 
 Clip*           Library::getClip( const QUuid& uuid )
 {
-    return getElementByUuid( m_clips, uuid );
+    Clip*   clip;
+    clip = getElementByUuid( m_clips, uuid );
+
+    return clip;
 }
 
 void        Library::removingMediaAsked( const QUuid& uuid )
@@ -92,6 +95,16 @@ void        Library::metaDataComputed( Media* media )
     emit newMediaLoaded( media );
     Clip* clip = new Clip( media );
     m_clips[media->getUuid()] = clip;
+    //If the media have some clip, add then to m_clips
+    const QHash<QUuid, Clip*>*    clips = media->clips();
+    if ( clips->size() != 0 )
+    {
+        QHash<QUuid, Clip*>::const_iterator   it = clips->begin();
+        QHash<QUuid, Clip*>::const_iterator   ed = clips->end();
+
+        for ( ; it != ed; ++it )
+            m_clips[it.key()] = it.value();
+    }
 }
 
 void        Library::newMediaLoadingAsked( const QString& filePath, const QString& uuid )
