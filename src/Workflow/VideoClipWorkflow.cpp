@@ -34,18 +34,14 @@ VideoClipWorkflow::VideoClipWorkflow( Clip* clip ) : ClipWorkflow( clip )
                                     * MainWorkflow::getInstance()->getHeight()
                                     * Pixel::NbComposantes ) );
     }
-//    m_availableBuffersLock = new QReadWriteLock;
-//    m_computedBuffersLock = new QReadWriteLock;
 }
 
 VideoClipWorkflow::~VideoClipWorkflow()
 {
     while ( m_availableBuffers.isEmpty() == false )
-        delete m_availableBuffers.pop();
+        delete m_availableBuffers.dequeue();
     while ( m_computedBuffers.isEmpty() == false )
-        delete m_computedBuffers.pop();
-//    delete m_availableBuffersLock;
-//    delete m_computedBuffersLock;
+        delete m_computedBuffers.dequeue();
 }
 
 void            VideoClipWorkflow::initVlcOutput()
@@ -88,40 +84,42 @@ void*       VideoClipWorkflow::getUnlockCallback()
 void*       VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 {
     QMutexLocker    lock( m_renderLock );
+    QMutexLocker    lock2( m_computedBuffersMutex );
 
     preGetOutput();
-    qWarning() << "Video::getOutput(). Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
+//    qWarning() << "Video::getOutput(). Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
     if ( isEndReached() == true )
-    {
-        qWarning() << "End is reached. returning NULL";
         return NULL;
-    }
-    StackedBuffer<LightVideoFrame*>* buff;
+    StackedBuffer<LightVideoFrame*, VideoClipWorkflow>* buff;
     if ( mode == ClipWorkflow::Pop )
-        buff = new StackedBuffer<LightVideoFrame*>( m_computedBuffers.pop(), &m_availableBuffers, true );
+    {
+        buff = new StackedBuffer<LightVideoFrame*, VideoClipWorkflow>( m_computedBuffers.dequeue(), this, true );
+    }
     else if ( mode == ClipWorkflow::Get )
-        buff = new StackedBuffer<LightVideoFrame*>( m_computedBuffers.head(), NULL, false );
+        buff = new StackedBuffer<LightVideoFrame*, VideoClipWorkflow>( m_computedBuffers.head(), NULL, false );
     postGetOutput();
-    qDebug() << "End of getoutput computation";
     return buff;
 }
 
 void    VideoClipWorkflow::lock( VideoClipWorkflow* cw, void** pp_ret, int size )
 {
     Q_UNUSED( size );
+    QMutexLocker        lock( cw->m_availableBuffersMutex );
     cw->m_renderLock->lock();
+    cw->m_computedBuffersMutex->lock();
+
     LightVideoFrame*    lvf = NULL;
     if ( cw->m_availableBuffers.isEmpty() == true )
     {
-        qCritical() << "Late buffer generation. Spawning new video buffer";
+//        qCritical() << "Late buffer generation. Spawning new video buffer";
         lvf = new LightVideoFrame( MainWorkflow::getInstance()->getWidth()
                                    * MainWorkflow::getInstance()->getHeight()
                                    * Pixel::NbComposantes );
     }
     else
-        lvf = cw->m_availableBuffers.pop();
-    cw->m_computedBuffers.push_back( lvf );
-    qWarning() << ">>>VideoGeneration. Available:" << cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count();
+        lvf = cw->m_availableBuffers.dequeue();
+    cw->m_computedBuffers.enqueue( lvf );
+//    qWarning() << ">>>VideoGeneration. Available:" << cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count();
 //    qWarning() << "feeding video buffer";
     *pp_ret = (*(lvf))->frame.octets;
 }
@@ -137,14 +135,16 @@ void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int widt
     cw->computePtsDiff( pts );
     LightVideoFrame*    lvf = cw->m_computedBuffers.last();
     (*(lvf))->ptsDiff = cw->m_currentPts - cw->m_previousPts;
+//    qWarning() << "Computed ptsDiff:" << (*(lvf))->ptsDiff;
+//    if ( (*(lvf))->ptsDiff > 100000 )
+//    {
+//        qWarning() << "Probably invalid pts diff. pts:" << pts << "m_currentPts:" << cw->m_currentPts << "m_previousPts:" << cw->m_previousPts
+//                << "state:" << cw->m_state;
+//    }
     //If this is the first buffer that has been rendered, there may be a waiting TrackWorkflow.
     cw->commonUnlock();
     cw->m_renderLock->unlock();
-}
-
-uint32_t    VideoClipWorkflow::getAvailableBuffers() const
-{
-    return m_availableBuffers.count();
+    cw->m_computedBuffersMutex->unlock();
 }
 
 uint32_t    VideoClipWorkflow::getComputedBuffers() const
@@ -155,4 +155,10 @@ uint32_t    VideoClipWorkflow::getComputedBuffers() const
 uint32_t    VideoClipWorkflow::getMaxComputedBuffers() const
 {
     return VideoClipWorkflow::nbBuffers;
+}
+
+void        VideoClipWorkflow::releaseBuffer( LightVideoFrame *lvf )
+{
+    QMutexLocker    lock( m_availableBuffersMutex );
+    m_availableBuffers.enqueue( lvf );
 }

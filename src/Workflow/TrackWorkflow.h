@@ -45,6 +45,9 @@
 #define MAX_TRACKS 64
 #endif
 
+class   VideoClipWorkflow;
+class   AudioClipWorkflow;
+
 class   TrackWorkflow : public QObject
 {
     Q_OBJECT
@@ -110,8 +113,8 @@ class   TrackWorkflow : public QObject
         MainWorkflow::TrackType                 m_trackType;
         qint64                                  m_lastFrame;
         //Damn i wish this could be a meta-if :D (ho wait... it could be ! once the code will be cleaned)
-        StackedBuffer<LightVideoFrame*>*        m_videoStackedBuffer;
-        StackedBuffer<AudioClipWorkflow::AudioSample*> *    m_audioStackedBuffer;
+        StackedBuffer<LightVideoFrame*, VideoClipWorkflow>*                     m_videoStackedBuffer;
+        StackedBuffer<AudioClipWorkflow::AudioSample*, AudioClipWorkflow>*      m_audioStackedBuffer;
 
     signals:
         void                                    trackEndReached( unsigned int );

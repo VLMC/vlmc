@@ -25,6 +25,7 @@
 
 #include "ClipWorkflow.h"
 #include "Pool.hpp"
+#include "StackedBuffer.hpp"
 
 class   AudioClipWorkflow : public ClipWorkflow
 {
@@ -45,15 +46,15 @@ class   AudioClipWorkflow : public ClipWorkflow
         virtual void*           getOutput( ClipWorkflow::GetMode mode );
 
     protected:
-        virtual uint32_t        getAvailableBuffers() const;
         virtual uint32_t        getComputedBuffers() const;
         virtual uint32_t        getMaxComputedBuffers() const;
 
     private:
-        QReadWriteLock*             m_computedBuffersLock;
-        Pool<AudioSample*>          m_computedBuffers;
-        QReadWriteLock*             m_availableBuffersLock;
-        Pool<AudioSample*>          m_availableBuffers;
+        void                    releaseBuffer( AudioSample* sample );
+
+    private:
+        QQueue<AudioSample*>        m_computedBuffers;
+        QQueue<AudioSample*>        m_availableBuffers;
         void                        initVlcOutput();
         AudioSample*                createBuffer( size_t size );
         static void                 lock( AudioClipWorkflow* clipWorkflow, uint8_t** pcm_buffer , unsigned int size );
@@ -64,6 +65,8 @@ class   AudioClipWorkflow : public ClipWorkflow
 
         //FIXME: this is totally random powered ! Please adjust with a value that does make sense...
         static const uint32_t   nbBuffers = 1024;
+
+        friend class    StackedBuffer<AudioSample*, AudioClipWorkflow>;
 };
 
 #endif // AUDIOCLIPWORKFLOW_H

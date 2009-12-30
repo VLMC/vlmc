@@ -23,23 +23,18 @@
 #include <QtDebug>
 
 #include "AudioClipWorkflow.h"
-#include "StackedBuffer.hpp"
 
 AudioClipWorkflow::AudioClipWorkflow( Clip* clip ) :
         ClipWorkflow( clip )
 {
-    m_availableBuffersLock = new QReadWriteLock;
-    m_computedBuffersLock = new QReadWriteLock;
 }
 
 AudioClipWorkflow::~AudioClipWorkflow()
 {
     while ( m_availableBuffers.isEmpty() == false )
-        delete m_availableBuffers.pop();
+        delete m_availableBuffers.dequeue();
     while ( m_computedBuffers.isEmpty() == false )
-        delete m_computedBuffers.pop();
-    delete m_availableBuffersLock;
-    delete m_computedBuffersLock;
+        delete m_computedBuffers.dequeue();
 }
 
 void*       AudioClipWorkflow::getLockCallback()
@@ -55,14 +50,15 @@ void*       AudioClipWorkflow::getUnlockCallback()
 void*       AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 {
     QMutexLocker    lock( m_renderLock );
+    QMutexLocker    lock2( m_computedBuffersMutex );
     preGetOutput();
 
-    qWarning() << "Audio. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
+//    qWarning() << "Audio. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
     if ( isEndReached() == true )
         return NULL;
     if ( mode == ClipWorkflow::Get )
         qCritical() << "A sound buffer should never be asked with 'Get' mode";
-    StackedBuffer<AudioSample*>* buff = new StackedBuffer<AudioSample*>( m_computedBuffers.pop(), &m_availableBuffers, true );
+    StackedBuffer<AudioSample*, AudioClipWorkflow>* buff = new StackedBuffer<AudioSample*, AudioClipWorkflow>( m_computedBuffers.dequeue(), this, true );
     postGetOutput();
     return buff;
 }
@@ -91,6 +87,8 @@ AudioClipWorkflow::AudioSample*    AudioClipWorkflow::createBuffer( size_t size 
 void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer , unsigned int size )
 {
     cw->m_renderLock->lock();
+    cw->m_computedBuffersMutex->lock();
+    QMutexLocker    lock( cw->m_availableBuffersMutex );
     //If there's no buffer at all, it must be the first render
     if ( cw->m_availableBuffers.count() == 0 && cw->m_computedBuffers.count() == 0 )
     {
@@ -109,7 +107,7 @@ void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer
         as = cw->createBuffer( size );
     }
     else
-        as = cw->m_availableBuffers.pop();
+        as = cw->m_availableBuffers.dequeue();
     cw->m_computedBuffers.push_back( as );
     *pcm_buffer = as->buff;
 }
@@ -137,11 +135,7 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
     }
     cw->commonUnlock();
     cw->m_renderLock->unlock();
-}
-
-uint32_t    AudioClipWorkflow::getAvailableBuffers() const
-{
-    return m_availableBuffers.count();
+    cw->m_computedBuffersMutex->unlock();
 }
 
 uint32_t    AudioClipWorkflow::getComputedBuffers() const
@@ -152,4 +146,10 @@ uint32_t    AudioClipWorkflow::getComputedBuffers() const
 uint32_t    AudioClipWorkflow::getMaxComputedBuffers() const
 {
     return AudioClipWorkflow::nbBuffers;
+}
+
+void        AudioClipWorkflow::releaseBuffer( AudioSample *sample )
+{
+    QMutexLocker    lock( m_availableBuffersMutex );
+    m_availableBuffers.enqueue( sample );
 }

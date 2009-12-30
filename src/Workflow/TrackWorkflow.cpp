@@ -135,7 +135,6 @@ void*       TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
          cw->getState() == ClipWorkflow::PauseRequired ||
          cw->getState() == ClipWorkflow::UnpauseRequired )
     {
-        qDebug() << "Asking for output";
         cw->getStateLock()->unlock();
         if ( needRepositioning == true )
             adjustClipTime( currentFrame, start, cw );
@@ -272,9 +271,9 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFra
                 qCritical() << "There's more than one clip to render here. Undefined behaviour !";
             ret = renderClip( cw, currentFrame, start, needRepositioning );
             if ( m_trackType == MainWorkflow::VideoTrack )
-                m_videoStackedBuffer = reinterpret_cast<StackedBuffer<LightVideoFrame*>*>( ret );
+                m_videoStackedBuffer = reinterpret_cast<StackedBuffer<LightVideoFrame*, VideoClipWorkflow>*>( ret );
             else
-                m_audioStackedBuffer = reinterpret_cast<StackedBuffer<AudioClipWorkflow::AudioSample*>*>( ret );
+                m_audioStackedBuffer = reinterpret_cast<StackedBuffer<AudioClipWorkflow::AudioSample*, AudioClipWorkflow>*>( ret );
         }
         //Is it about to be rendered ?
         else if ( start > currentFrame &&

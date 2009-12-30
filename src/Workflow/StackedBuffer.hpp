@@ -23,15 +23,16 @@
 #ifndef STACKEDBUFFER_HPP
 #define STACKEDBUFFER_HPP
 
+#include <QtDebug>
 #include "Pool.hpp"
 
-template <typename T>
+template <typename T, typename U>
 class   StackedBuffer
 {
     public:
-        StackedBuffer( T buff, Pool<T>* pool, bool mustBeReleased  = true ) :
+        StackedBuffer( T buff, U* poolHandler, bool mustBeReleased  = true ) :
                 m_buff( buff ),
-                m_pool( pool ),
+                m_poolHandler( poolHandler ),
                 m_mustRelease( mustBeReleased )
         {
         }
@@ -40,7 +41,7 @@ class   StackedBuffer
         void    release()
         {
             if ( m_mustRelease == true )
-                m_pool->release( m_buff );
+                m_poolHandler->releaseBuffer( m_buff );
             delete this;
         }
         const   T&   get() const
@@ -62,7 +63,7 @@ class   StackedBuffer
 
     private:
         T           m_buff;
-        Pool<T>*    m_pool;
+        U*          m_poolHandler;
         bool        m_mustRelease;
 };
 

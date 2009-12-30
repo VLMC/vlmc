@@ -4,5 +4,6 @@ HEADERS += MemoryPool.hpp \
     Toggleable.hpp \
     WaitCondition.hpp \
     VlmcDebug.h \
-    Pool.hpp
+    Pool.hpp \
+    mdate.h
 SOURCES += VlmcDebug.cpp

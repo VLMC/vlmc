@@ -41,17 +41,16 @@ class   VideoClipWorkflow : public ClipWorkflow
 
     protected:
         virtual void            initVlcOutput();
-        virtual uint32_t        getAvailableBuffers() const;
         virtual uint32_t        getComputedBuffers() const;
         virtual uint32_t        getMaxComputedBuffers() const;
+        void                    releaseBuffer( LightVideoFrame* lvf );
     private:
-//        Pool<LightVideoFrame*>  m_pool;
-//        QReadWriteLock*         m_computedBuffersLock;
-        Pool<LightVideoFrame*>  m_computedBuffers;
-//        QReadWriteLock*         m_availableBuffersLock;
-        Pool<LightVideoFrame*>  m_availableBuffers;
+        QQueue<LightVideoFrame*>    m_computedBuffers;
+        QQueue<LightVideoFrame*>    m_availableBuffers;
         static void             lock( VideoClipWorkflow* clipWorkflow, void** pp_ret, int size );
         static void             unlock( VideoClipWorkflow* clipWorkflow, void* buffer, int width, int height, int bpp, int size, qint64 pts );
+
+        friend class    StackedBuffer<LightVideoFrame*, VideoClipWorkflow>;
 };
 
 #endif // VIDEOCLIPWORKFLOW_H

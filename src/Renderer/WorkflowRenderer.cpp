@@ -67,7 +67,7 @@ void    WorkflowRenderer::initializeRenderer()
     strcat( inputSlave, audioParameters );
 
     m_media = new LibVLCpp::Media( "imem://" + QString( videoString ) );
-//    m_media->addOption( inputSlave );
+    m_media->addOption( inputSlave );
 
     sprintf( callbacks, "imem-get=%lld", (qint64)WorkflowRenderer::lock );
     m_media->addOption( callbacks );
@@ -155,8 +155,6 @@ int     WorkflowRenderer::lockAudio(  WorkflowRenderer* self, int64_t *pts, size
     }
     else
     {
-        //We set the nbSample to 10ms, which is 1/100 of a sec, so we divide the samplerate
-        //by 100.
         nbSample = self->m_rate / self->m_outputFps;
         unsigned int    buffSize = self->m_nbChannels * 2 * nbSample;
         if ( WorkflowRenderer::silencedAudioBuffer == NULL )
