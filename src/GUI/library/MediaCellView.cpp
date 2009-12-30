@@ -165,3 +165,21 @@ void        MediaCellView::setLength( qint64 length, bool mSecs )
         duration = duration.addSecs( length );
     m_ui->length->setText( duration.toString( "hh:mm:ss" ) );
 }
+
+void        MediaCellView::incrementClipCount()
+{
+    int clips = m_ui->clipCount->text().toInt();
+
+    clips += 1;
+    m_ui->clipCount->setText( QString::number( clips ) );
+}
+
+void        MediaCellView::decrementClipCount( const int nb )
+{
+    int clips = m_ui->clipCount->text().toInt();
+
+    clips -= nb;
+    if ( clips < 0 )
+        clips = 0;
+    m_ui->clipCount->setText( QString::number( clips ) );
+}

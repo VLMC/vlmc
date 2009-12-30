@@ -30,7 +30,8 @@ ClipListViewController::ClipListViewController( StackViewController* nav, const 
     : ListViewController( nav ),
     m_nav( nav ),
     m_mediaId( mediaId ),
-    m_currentUuid()
+    m_currentUuid(),
+    m_deletion( 0 )
 {
 }
 
@@ -42,6 +43,11 @@ void    ClipListViewController::addClipsFromMedia( Media* media )
 {
     foreach( Clip* clip, *media->clips() )
         addClip( clip );
+}
+
+const int   ClipListViewController::getNbDeletion() const
+{
+    return m_deletion;
 }
 
 void    ClipListViewController::addClip( Clip* clip )
@@ -90,6 +96,7 @@ void    ClipListViewController::clipDeletion( const QUuid& uuid )
 {
     if ( m_cells.contains( uuid ) )
     {
+        ++m_deletion;
         QWidget* cell = m_cells.value( uuid );
         removeCell( cell );
         m_cells.remove( uuid );

@@ -35,6 +35,7 @@ class ClipListViewController : public ListViewController
         ~ClipListViewController();
 
         void    addClipsFromMedia( Media* media );
+        const int     getNbDeletion() const;
 
     private:
         void    addClip( Clip* clip );
@@ -43,6 +44,7 @@ class ClipListViewController : public ListViewController
         QHash<QUuid, QWidget*>  m_cells;
         QUuid                   m_mediaId;
         QUuid                   m_currentUuid;
+        int                     m_deletion;
 
     public slots:
         void    cellSelection( const QUuid& uuid );

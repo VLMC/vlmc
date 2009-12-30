@@ -53,6 +53,7 @@ signals:
     void    mediaSelected( Media* media );
     void    clipSelected( Clip* clip );
     void    importRequired();
+    void    addClipToViewController( Clip* clip );
 };
 
 #endif // MEDIALIBRARYWIDGET_H
