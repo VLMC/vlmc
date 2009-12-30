@@ -27,6 +27,12 @@
 
 EffectsEngine::EffectsEngine( void ) : m_patch( NULL ), m_bypassPatch( NULL )
 {
+    //
+    //
+    // CREATION OF THE PATCH
+    //
+    //
+
    if ( EffectNode::createRootNode( "RootNode" ) == false )
        qDebug() << "RootNode creation failed!!!!!!!!!!";
    else
@@ -76,7 +82,42 @@ EffectsEngine::EffectsEngine( void ) : m_patch( NULL ), m_bypassPatch( NULL )
            //     qDebug() << "La connection de la sortie n'as pas reussie, MERDE";
        }
        else
-           qDebug() << "There's not the video mixer plugin, so I can't output video";
+           qDebug() << "There's not the video mixer plugin, so the connection with it cannot exist in the BypassRootNode";
+   }
+
+   //
+   //
+   // CREATION OF THE BYPASS PATCH
+   //
+   //
+
+   if ( EffectNode::createRootNode( "BypassRootNode" ) == false )
+       qDebug() << "BypassRootNode creation failed!!!!!!!!!!";
+   else
+   {
+       qDebug() << "BypassRootNode successfully created.";
+       m_bypassPatch = EffectNode::getRootNode( "BypassRootNode" );
+       quint32	i;
+       EffectNode* tmp;
+
+       if ( m_bypassPatch->createChild( "libVLMC_MixerEffectPlugin" ) == true )
+       {
+           for ( i = 0 ; i < 64; ++i)
+           {
+               m_bypassPatch->createStaticVideoInput();
+               tmp = m_bypassPatch->getChild( 1 );
+               if ( tmp->connectChildStaticVideoInputToParentStaticVideoOutput( ( i + 1 ), ( i + 1 ) ) == false )
+                   qDebug() << "La connection n'a pas reussie";
+           }
+           m_bypassPatch->createStaticVideoOutput();
+
+           // RECUP LE MIXER ET CONNECTE SA SORTIE 1 A L'INTERNAL INPUT DU ROOT NODE
+           tmp = m_bypassPatch->getChild( 1 );
+           if ( tmp->connectChildStaticVideoOutputToParentStaticVideoInput( 1, 1 ) == false )
+               qDebug() << "La connection de la sortie n'as pas reussie";
+       }
+       else
+           qDebug() << "There's not the video mixer plugin, so the connection with it cannot exist in the BypassRootNode";
    }
 }
 
@@ -84,6 +125,8 @@ EffectsEngine::~EffectsEngine()
 {
     if ( m_patch )
         EffectNode::deleteRootNode( "RootNode" );
+    if ( m_bypassPatch )
+        EffectNode::deleteRootNode( "BypassRootNode" );
 }
 
 //
