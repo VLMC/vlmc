@@ -36,44 +36,47 @@ EffectsEngine::EffectsEngine( void ) : m_patch( NULL ), m_bypassPatch( NULL )
        quint32	i;
        EffectNode* tmp;
 
-       m_patch->createChild( "libVLMC_MixerEffectPlugin" );
-       m_patch->createChild( "libVLMC_BlitInRectangleEffectPlugin" );
-       m_patch->createChild( "libVLMC_InvertRNBEffectPlugin" );
-       for ( i = 0 ; i < 64; ++i)
+       if ( m_patch->createChild( "libVLMC_MixerEffectPlugin" ) == true )
        {
-           m_patch->createStaticVideoInput();
+           m_patch->createChild( "libVLMC_BlitInRectangleEffectPlugin" );
+           m_patch->createChild( "libVLMC_InvertRNBEffectPlugin" );
+           for ( i = 0 ; i < 64; ++i)
+           {
+               m_patch->createStaticVideoInput();
+               tmp = m_patch->getChild( 1 );
+               if ( tmp->connectChildStaticVideoInputToParentStaticVideoOutput( ( i + 1 ), ( i + 1 ) ) == false )
+                   qDebug() << "La connection n'a pas reussie";
+           }
+           m_patch->createStaticVideoOutput();
+
+           // RECUP LE MIXER ET CONNECTE SA SORTIE 1 A L'INTERNAL INPUT DU ROOT NODE
            tmp = m_patch->getChild( 1 );
-           if ( tmp->connectChildStaticVideoInputToParentStaticVideoOutput( ( i + 1 ), ( i + 1 ) ) == false )
-               qDebug() << "La connection n'a pas reussie";
+           if ( tmp->connectChildStaticVideoOutputToParentStaticVideoInput( 1, 1 ) == false )
+               qDebug() << "La connection de la sortie n'as pas reussie";
+
+           // // RECUP LE MIXER ET CONNECTE SA SORTIE 1 A L'ENTREE 2 DU BLIT
+           // tmp = m_patch->getChild( 1 );
+           // if ( tmp->connectStaticVideoOutputToStaticVideoInput( 1, 2, "dst" ) == false )
+           //     qDebug() << "La connection de la sortie n'as pas reussie HAHA";
+
+
+           // // RECUP LE BLIT ET CONNECT SA SORTIE 2 A L'INTERNAL INPUT DU ROOT NODE
+           // tmp = m_patch->getChild( 2 );
+           // qDebug() << "NAME : " << tmp->getInstanceName();
+           // if ( tmp->connectChildStaticVideoOutputToParentStaticVideoInput( "res", 1 ) == false )
+           //     qDebug() << "La connection de la sortie n'as pas reussie";
+
+           // // CONNECT SA SORTIE 1 A SA L'ENTREE  1 DE L'INVERSEUR DE BLEU ET DE ROUGE
+           // if ( tmp->connectStaticVideoOutputToStaticVideoInput( "aux", 3, 1 ) == false )
+           //     qDebug() << "La connection de la sortie n'as pas reussie, MERDE";
+
+           // // CONNECT LA SORTIE DE L'INVERSEUR A L'ENTREE SRC DU BLIT
+           // tmp = m_patch->getChild( 3 );
+           // if ( tmp->connectStaticVideoOutputToStaticVideoInput( 1, 2, 1 ) == false )
+           //     qDebug() << "La connection de la sortie n'as pas reussie, MERDE";
        }
-       m_patch->createStaticVideoOutput();
-
-
-       // RECUP LE MIXER ET CONNECTE SA SORTIE 1 A L'INTERNAL INPUT DU ROOT NODE
-       tmp = m_patch->getChild( 1 );
-       if ( tmp->connectChildStaticVideoOutputToParentStaticVideoInput( 1, 1 ) == false )
-           qDebug() << "La connection de la sortie n'as pas reussie";
-
-       // // RECUP LE MIXER ET CONNECTE SA SORTIE 1 A L'ENTREE 2 DU BLIT
-       // tmp = m_patch->getChild( 1 );
-       // if ( tmp->connectStaticVideoOutputToStaticVideoInput( 1, 2, "dst" ) == false )
-       //     qDebug() << "La connection de la sortie n'as pas reussie HAHA";
-
-
-       // // RECUP LE BLIT ET CONNECT SA SORTIE 2 A L'INTERNAL INPUT DU ROOT NODE
-       // tmp = m_patch->getChild( 2 );
-       // qDebug() << "NAME : " << tmp->getInstanceName();
-       // if ( tmp->connectChildStaticVideoOutputToParentStaticVideoInput( "res", 1 ) == false )
-       //     qDebug() << "La connection de la sortie n'as pas reussie";
-
-       // // CONNECT SA SORTIE 1 A SA L'ENTREE  1 DE L'INVERSEUR DE BLEU ET DE ROUGE
-       // if ( tmp->connectStaticVideoOutputToStaticVideoInput( "aux", 3, 1 ) == false )
-       //     qDebug() << "La connection de la sortie n'as pas reussie, MERDE";
-
-       // // CONNECT LA SORTIE DE L'INVERSEUR A L'ENTREE SRC DU BLIT
-       // tmp = m_patch->getChild( 3 );
-       // if ( tmp->connectStaticVideoOutputToStaticVideoInput( 1, 2, 1 ) == false )
-       //     qDebug() << "La connection de la sortie n'as pas reussie, MERDE";
+       else
+           qDebug() << "There's not the video mixer plugin, so I can't output video";
    }
 }
 
