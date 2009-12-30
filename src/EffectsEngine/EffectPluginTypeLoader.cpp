@@ -1,5 +1,6 @@
 /*****************************************************************************
- * EffectsEngine.h: Main class of the effects engine
+ * EffectPluginTypeLoader.cpp: this class is used to load a .so and instantiate
+ *                             the IEffectPluginCreator from this
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,45 +21,41 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef EFFECTSENGINE_H_
-#define EFFECTSENGINE_H_
+#include "EffectPluginTypeLoader.h"
 
-#include <QtGlobal>
-#include <QHash>
-#include <iostream>
-#include <QReadWriteLock>
-
-#include "LightVideoFrame.h"
-#include "InSlot.hpp"
-#include "OutSlot.hpp"
-#include "EffectNodeFactory.h"
-
-class	EffectsEngine
+EffectPluginTypeLoader::EffectPluginTypeLoader() : m_iepc( NULL )
 {
+}
 
- public:
+EffectPluginTypeLoader::~EffectPluginTypeLoader()
+{
+}
 
-  // CTOR & DTOR
+IEffectPlugin*   EffectPluginTypeLoader::createIEffectPluginInstance( void ) const
+{
+    if ( m_iepc != NULL )
+        return ( m_iepc->createIEffectPluginInstance() );
+    return ( NULL );
+}
 
-  EffectsEngine( void
-		/* quint32 nbinputs, quint32 nboutputs  */);
-  ~EffectsEngine();
+bool    EffectPluginTypeLoader::load( QString const & fileName )
+{
+    QObject*    tmp;
+    m_qpl.setFileName( fileName );
+    tmp = m_qpl.instance();
 
+    if ( tmp == NULL )
+    {
+        qDebug() << m_qpl.errorString();
+        return ( false );
+    }
 
-  EffectNode*        operator->( void );
-  EffectNode const * operator->( void ) const;
-  EffectNode*        operator*( void );
-  EffectNode const * operator*( void ) const;
+    m_iepc = qobject_cast<IEffectPluginCreator*>( tmp );
+    if ( m_iepc == NULL )
+    {
+        qDebug() << "The type of the created instance of the loaded class isn't IEffectPluginCreator* !";
+        return ( false );
+    }
+    return  ( true );
+}
 
-  void               enable( void );
-  void               disable( void );
-
- private:
-
-  mutable QReadWriteLock                        m_rwl;
-  EffectNodeFactory                             m_enf;
-  EffectNode*                                   m_patch;
-  EffectNode*                                   m_bypassPatch;
-};
-
-#endif // EFFECTSENGINE_H_

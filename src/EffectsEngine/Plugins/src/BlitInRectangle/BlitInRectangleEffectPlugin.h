@@ -1,5 +1,6 @@
 /*****************************************************************************
- * EffectsEngine.h: Main class of the effects engine
+ * BlitInRectangleEffectPlugin.h: blit src video input in a rectangle on dst
+ *                                video input and output the result
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,45 +21,34 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef EFFECTSENGINE_H_
-#define EFFECTSENGINE_H_
+#ifndef BLITINRECTANGLEEFFECTPLUGIN_H_
+#define BLITINRECTANGLEEFFECTPLUGIN_H_
 
-#include <QtGlobal>
-#include <QHash>
-#include <iostream>
-#include <QReadWriteLock>
+#include <QImage>
+#include <QPainter>
+#include "IEffectNode.h"
+#include "IEffectPlugin.h"
 
-#include "LightVideoFrame.h"
-#include "InSlot.hpp"
-#include "OutSlot.hpp"
-#include "EffectNodeFactory.h"
-
-class	EffectsEngine
+class	BlitInRectangleEffectPlugin : public QObject, public IEffectPlugin
 {
-
  public:
 
   // CTOR & DTOR
 
-  EffectsEngine( void
-		/* quint32 nbinputs, quint32 nboutputs  */);
-  ~EffectsEngine();
+  BlitInRectangleEffectPlugin();
+  ~BlitInRectangleEffectPlugin();
 
+  // INIT
 
-  EffectNode*        operator->( void );
-  EffectNode const * operator->( void ) const;
-  EffectNode*        operator*( void );
-  EffectNode const * operator*( void ) const;
+  void  init( IEffectNode* ien );
 
-  void               enable( void );
-  void               disable( void );
+  // RENDER METHOD
+
+  void	render( void );
 
  private:
 
-  mutable QReadWriteLock                        m_rwl;
-  EffectNodeFactory                             m_enf;
-  EffectNode*                                   m_patch;
-  EffectNode*                                   m_bypassPatch;
+  IEffectNode*                  m_ien;
 };
 
-#endif // EFFECTSENGINE_H_
+#endif // BLITINRECTANGLEEFFECTPLUGIN_H_

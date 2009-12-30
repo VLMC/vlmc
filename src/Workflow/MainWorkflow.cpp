@@ -218,12 +218,12 @@ MainWorkflow::OutputBuffers*  MainWorkflow::getSynchroneOutput()
 //    qDebug() << "Waiting for sync output";
     m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
 //    qDebug() << "Got it";
-    m_effectEngine->render();
-    if ( m_effectEngine->getOutputFrame( 0 )->nboctets == 0 )
+    (*m_effectEngine)->render();
+    LightVideoFrame const & tmp = (*((*m_effectEngine)->getInternalStaticVideoInput( 1 )) );
+    if (tmp->nboctets == 0 )
         m_outputBuffers->video = MainWorkflow::blackOutput;
     else
-        m_outputBuffers->video = &( m_effectEngine->getOutputFrame( 0 ) );
-
+        m_outputBuffers->video = &tmp;
     m_synchroneRenderWaitConditionMutex->unlock();
 
     //    m_outputBuffers->video = reinterpret_cast<LightVideoFrame*>( m_tracks[TrackWorkflow::Video]->getSynchroneOutput() );

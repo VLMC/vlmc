@@ -1,5 +1,5 @@
 /*****************************************************************************
- * EffectsEngine.h: Main class of the effects engine
+ * MixerEffectPlugin.h: Effect module to mix multiple frame in one
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,45 +20,32 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef EFFECTSENGINE_H_
-#define EFFECTSENGINE_H_
+#ifndef MIXEREFFECTPLUGIN_H_
+#define MIXEREFFECTPLUGIN_H_
 
-#include <QtGlobal>
-#include <QHash>
-#include <iostream>
-#include <QReadWriteLock>
+#include "IEffectNode.h"
+#include "IEffectPlugin.h"
 
-#include "LightVideoFrame.h"
-#include "InSlot.hpp"
-#include "OutSlot.hpp"
-#include "EffectNodeFactory.h"
-
-class	EffectsEngine
+class	MixerEffectPlugin : public IEffectPlugin
 {
-
- public:
+public:
 
   // CTOR & DTOR
 
-  EffectsEngine( void
-		/* quint32 nbinputs, quint32 nboutputs  */);
-  ~EffectsEngine();
+  MixerEffectPlugin();
+  ~MixerEffectPlugin();
 
+  // INIT
 
-  EffectNode*        operator->( void );
-  EffectNode const * operator->( void ) const;
-  EffectNode*        operator*( void );
-  EffectNode const * operator*( void ) const;
+  void          init( IEffectNode* ien );
 
-  void               enable( void );
-  void               disable( void );
+  // RENDER METHOD
 
- private:
+  void	render( void );
 
-  mutable QReadWriteLock                        m_rwl;
-  EffectNodeFactory                             m_enf;
-  EffectNode*                                   m_patch;
-  EffectNode*                                   m_bypassPatch;
+private:
+
+  IEffectNode*                  m_ien;
 };
 
-#endif // EFFECTSENGINE_H_
+#endif // MIXEREFFECTPLUGIN_H_

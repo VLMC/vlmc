@@ -1,5 +1,6 @@
 /*****************************************************************************
- * EffectsEngine.h: Main class of the effects engine
+ * IEffectPluginCreator.cpp: Interface that must inherit the class who can an
+ *                            instantiate an effect plugin
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,45 +21,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef EFFECTSENGINE_H_
-#define EFFECTSENGINE_H_
+#ifndef IEFFECTPLUGINFACTORY_H_
+#define IEFFECTPLUGINFACTORY_H_
 
-#include <QtGlobal>
-#include <QHash>
-#include <iostream>
-#include <QReadWriteLock>
+#include "IEffectPlugin.h"
 
-#include "LightVideoFrame.h"
-#include "InSlot.hpp"
-#include "OutSlot.hpp"
-#include "EffectNodeFactory.h"
-
-class	EffectsEngine
+class   IEffectPluginCreator
 {
-
- public:
-
-  // CTOR & DTOR
-
-  EffectsEngine( void
-		/* quint32 nbinputs, quint32 nboutputs  */);
-  ~EffectsEngine();
-
-
-  EffectNode*        operator->( void );
-  EffectNode const * operator->( void ) const;
-  EffectNode*        operator*( void );
-  EffectNode const * operator*( void ) const;
-
-  void               enable( void );
-  void               disable( void );
-
- private:
-
-  mutable QReadWriteLock                        m_rwl;
-  EffectNodeFactory                             m_enf;
-  EffectNode*                                   m_patch;
-  EffectNode*                                   m_bypassPatch;
+public:
+    virtual ~IEffectPluginCreator() {};
+    virtual IEffectPlugin*      createIEffectPluginInstance( void ) = 0;
 };
 
-#endif // EFFECTSENGINE_H_
+Q_DECLARE_INTERFACE(IEffectPluginCreator, "IEffectPluginCreator/0.1")
+
+#endif // IEFFECTPLUGINFACTORY_H_

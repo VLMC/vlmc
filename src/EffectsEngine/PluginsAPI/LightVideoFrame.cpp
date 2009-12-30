@@ -97,7 +97,7 @@ LightVideoFrame::LightVideoFrame(quint8 const * tocopy, quint32 nboctets)
 LightVideoFrame::~LightVideoFrame()
 {
 };
-  
+
 VideoFrame const * LightVideoFrame::operator->(void) const
 {
   return ( m_videoFrame.data() );

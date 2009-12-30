@@ -1,5 +1,5 @@
 /*****************************************************************************
- * EffectsEngine.h: Main class of the effects engine
+ * InvertRNBEffectPlugin.cpp: invert red and blue picture composantes
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,45 +20,41 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef EFFECTSENGINE_H_
-#define EFFECTSENGINE_H_
+#include "InvertRNBEffectPlugin.h"
+#include <QtDebug>
 
-#include <QtGlobal>
-#include <QHash>
-#include <iostream>
-#include <QReadWriteLock>
-
-#include "LightVideoFrame.h"
-#include "InSlot.hpp"
-#include "OutSlot.hpp"
-#include "EffectNodeFactory.h"
-
-class	EffectsEngine
+InvertRNBEffectPlugin::InvertRNBEffectPlugin()
 {
+}
 
- public:
+InvertRNBEffectPlugin::~InvertRNBEffectPlugin()
+{
+}
 
-  // CTOR & DTOR
+void            InvertRNBEffectPlugin::init(IEffectNode* ien)
+{
+    m_ien = ien;
+    m_ien->createStaticVideoInput();
+    m_ien->createStaticVideoOutput();
+    return ;
+}
 
-  EffectsEngine( void
-		/* quint32 nbinputs, quint32 nboutputs  */);
-  ~EffectsEngine();
+void    InvertRNBEffectPlugin::render( void )
+{
+    quint32		i;
+    LightVideoFrame	tmp;
+    quint8              tmpay;
 
-
-  EffectNode*        operator->( void );
-  EffectNode const * operator->( void ) const;
-  EffectNode*        operator*( void );
-  EffectNode const * operator*( void ) const;
-
-  void               enable( void );
-  void               disable( void );
-
- private:
-
-  mutable QReadWriteLock                        m_rwl;
-  EffectNodeFactory                             m_enf;
-  EffectNode*                                   m_patch;
-  EffectNode*                                   m_bypassPatch;
-};
-
-#endif // EFFECTSENGINE_H_
+    (*m_ien->getStaticVideoInput(1)) >> tmp;
+    if (tmp->frame.octets != NULL)
+    {
+        for ( i = 0; i < tmp->nbpixels; ++i )
+        {
+            tmpay = tmp->frame.pixels[i].Red;
+            tmp->frame.pixels[i].Red = tmp->frame.pixels[i].Blue;
+            tmp->frame.pixels[i].Blue = tmpay;
+        }
+        (*m_ien->getStaticVideoOutput(1)) << tmp;
+    }
+    return ;
+}
