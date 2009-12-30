@@ -28,7 +28,10 @@
 
 #include <errno.h>
 #include <signal.h>
-#include <wait.h>
+
+#ifndef Q_WS_WIN
+ #include <wait.h>
+#endif
 
 #include "ProjectManager.h"
 #include "Library.h"
