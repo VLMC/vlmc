@@ -34,6 +34,7 @@ VideoClipWorkflow::VideoClipWorkflow( Clip* clip ) : ClipWorkflow( clip )
                                     * MainWorkflow::getInstance()->getHeight()
                                     * Pixel::NbComposantes ) );
     }
+    debugType = 2;
 }
 
 VideoClipWorkflow::~VideoClipWorkflow()

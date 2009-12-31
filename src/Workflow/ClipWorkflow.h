@@ -203,6 +203,7 @@ class   ClipWorkflow : public QObject
         QMutex*                 m_availableBuffersMutex;
         qint64                  m_beginPausePts;
         qint64                  m_pauseDuration;
+        int                     debugType;
 
 
     protected:

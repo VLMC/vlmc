@@ -198,10 +198,10 @@ void        ClipWorkflow::preGetOutput()
 
     if ( getComputedBuffers() == 0 )
     {
-//        qWarning() << "Waiting for buffer to be fed";
+        qWarning() << "Waiting for buffer to be fed";
         m_renderLock->unlock();
         m_computedBuffersMutex->unlock();
-//        qDebug() << "Unlocked render lock, entering cond wait";
+        qDebug() << "Unlocked render lock, entering cond wait";
         m_feedingCondWait->waitLocked();
         m_computedBuffersMutex->lock();
         m_renderLock->lock();
@@ -216,9 +216,9 @@ void        ClipWorkflow::postGetOutput()
         QWriteLocker        lock( m_stateLock );
         if ( m_state == ClipWorkflow::Paused )
         {
-//            qWarning() << "Unpausing media player";
+            qWarning() << "Unpausing media player. type:" << debugType;
             m_state = ClipWorkflow::UnpauseRequired;
-            //This will act like an "unpause";
+//            This will act like an "unpause";
             m_mediaPlayer->pause();
         }
 //        else
@@ -232,17 +232,15 @@ void        ClipWorkflow::commonUnlock()
     //no one is available : we would spawn a new buffer, thus modifying the number of available buffers
     if ( getComputedBuffers() == getMaxComputedBuffers() )
     {
-//        qWarning() << "Pausing media player";
+        qWarning() << "Pausing clip workflow. Type:" << debugType;
         setState( ClipWorkflow::PauseRequired );
-//        qDebug() << "State has been set...calling pause method.";
         m_mediaPlayer->pause();
-//        qDebug() << "Pause method has been called";
     }
     if ( getComputedBuffers() == 1 )
     {
-//        qDebug() << "Waking feeding cont wait... acquiring lock";
+        qDebug() << "Waking feeding cont wait... acquiring lock. Type:" << debugType;
         QMutexLocker    lock( m_feedingCondWait->getMutex() );
-//        qDebug() << "feeding cont wait mutex acquired";
+        qDebug() << "feeding cont wait mutex acquired. Type:" << debugType;
         m_feedingCondWait->wake();
     }
     checkStateChange();
@@ -266,7 +264,7 @@ void    ClipWorkflow::computePtsDiff( qint64 pts )
 
 void    ClipWorkflow::mediaPlayerPaused()
 {
-//    qWarning() << "\n\n\n\nMedia player paused, waiting for buffers to be consumed\n\n\n\n";
+    qWarning() << "\n\n\n\nMedia player paused, waiting for buffers to be consumed.Type:" << debugType << "\n\n\n\n";
     setState( ClipWorkflow::Paused );
     m_beginPausePts = mdate();
 //    qDebug() << "got pause pts:" << m_beginPausePts;
@@ -274,7 +272,7 @@ void    ClipWorkflow::mediaPlayerPaused()
 
 void    ClipWorkflow::mediaPlayerUnpaused()
 {
-//    qWarning() << "Media player unpaused. Go back to rendering";
+    qWarning() << "Media player unpaused. Go back to rendering. Type:" << debugType;
     setState( ClipWorkflow::Rendering );
     m_pauseDuration = mdate() - m_beginPausePts;
 }
