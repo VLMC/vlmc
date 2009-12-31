@@ -5,5 +5,6 @@
         <file alias="fr">ts/vlmc_fr.qm</file>
         <file alias="jp">ts/vlmc_jp.qm</file>
         <file alias="sv">ts/vlmc_sv.qm</file>
+        <file alias="pt_BR">ts/vlmc_pt_BR.qm</file>
     </qresource>
 </RCC>

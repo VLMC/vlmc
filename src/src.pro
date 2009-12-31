@@ -82,7 +82,8 @@ TRANSLATIONS = ../ts/vlmc_cs.ts \
                ../ts/vlmc_es.ts \
                ../ts/vlmc_fr.ts \
                ../ts/vlmc_jp.ts \
-               ../ts/vlmc_sv.ts
+               ../ts/vlmc_sv.ts \
+               ../ts/vlmc_pt_BR.ts
 RESOURCES += ../ressources.qrc
 
 exists( ../ts/*.qm ) {

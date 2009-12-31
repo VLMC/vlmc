@@ -38,6 +38,7 @@ LanguagePreferences::LanguagePreferences( QWidget *parent )
     m_ui.comboBoxLanguage->addItem( tr( "Japanese" ),   "jp" );
     m_ui.comboBoxLanguage->addItem( tr( "Spanish" ),    "es" );
     m_ui.comboBoxLanguage->addItem( tr( "Swedish" ),    "sv" );
+    m_ui.comboBoxLanguage->addItem( tr( "Brazilian Portugese" ),    "pt_BR" );
 }
 
 LanguagePreferences::~LanguagePreferences() {}
