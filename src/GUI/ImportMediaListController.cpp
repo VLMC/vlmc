@@ -25,7 +25,7 @@
 #include "ImportMediaListController.h"
 #include <QDebug>
 
-ImportMediaListController::ImportMediaListController( StackViewController* nav ) : ListViewController( nav ), m_nav( nav )
+ImportMediaListController::ImportMediaListController( StackViewController* nav ) : ListViewController( nav ), m_nav( nav ), m_clipDeleted( 0 )
 {
     m_mediaCellList = new QHash<QUuid, ImportMediaCellView*>();
 }
@@ -128,11 +128,26 @@ void    ImportMediaListController::clipSelection( const QUuid& uuid )
 
 void    ImportMediaListController::clipDeletion( const QUuid& uuid )
 {
+    m_clipDeleted += 1;
     emit clipDeleted( uuid );
 }
 
 void    ImportMediaListController::mediaDeletion( const QUuid& uuid )
 {
     emit mediaDeleted( uuid );
+}
+
+void    ImportMediaListController::clipAdded( Clip* clip )
+{
+    if ( clip->getParent() == 0 )
+        return ;
+    const QUuid& uuid = clip->getParent()->getUuid();
+    if ( m_mediaCellList->contains( uuid ) )
+        m_mediaCellList->value( uuid )->incrementClipCount();
+}
+
+int     ImportMediaListController::getNbDeletions() const
+{
+    return m_clipDeleted;
 }
 

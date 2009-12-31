@@ -89,6 +89,7 @@ ImportController::ImportController(QWidget *parent) :
     connect( m_mediaListController, SIGNAL( mediaDeleted( QUuid ) ), this, SLOT( mediaDeletion( QUuid ) ) );
     //Clips
     connect( m_mediaListController, SIGNAL( showClipListAsked( const QUuid& ) ), this, SLOT( showClipList( const QUuid& ) ) );
+    connect( m_preview, SIGNAL( addClip( Clip* ) ), m_mediaListController, SLOT( clipAdded( Clip* ) ) );
     //StackViewController
     connect( m_stackNav, SIGNAL( previousButtonPushed() ), this, SLOT( restoreContext() ) );
 }
@@ -302,6 +303,11 @@ void        ImportController::showClipList( const QUuid& uuid )
 
 void        ImportController::restoreContext()
 {
+    if ( m_clipListController->getNbDeletions() != 0 )
+    {
+        if ( !m_savedUuid.isNull() )
+            m_mediaListController->getCell( m_savedUuid )->decrementClipCount( m_clipListController->getNbDeletions() );
+    }
     if ( !m_savedUuid.isNull() )
         m_currentUuid = m_savedUuid;
     m_controllerSwitched = false;
