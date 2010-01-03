@@ -145,7 +145,7 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
     cw->m_computedBuffersMutex->unlock();
 }
 
-uint32_t    AudioClipWorkflow::getComputedBuffers() const
+uint32_t    AudioClipWorkflow::getNbComputedBuffers() const
 {
     return m_computedBuffers.count();
 }
@@ -159,4 +159,15 @@ void        AudioClipWorkflow::releaseBuffer( AudioSample *sample )
 {
     QMutexLocker    lock( m_availableBuffersMutex );
     m_availableBuffers.enqueue( sample );
+}
+
+void        AudioClipWorkflow::flushComputedBuffers()
+{
+    QMutexLocker    lock( m_computedBuffersMutex );
+    QMutexLocker    lock2( m_availableBuffersMutex );
+
+    while ( m_computedBuffers.isEmpty() == false )
+    {
+        m_availableBuffers.enqueue( m_computedBuffers.dequeue() );
+    }
 }

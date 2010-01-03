@@ -124,6 +124,10 @@ class   ClipWorkflow : public QObject
             \brief  Stop this workflow.
         */
         void                    stop();
+        /**
+         *  \brief  Set the rendering position
+         *  \param  time    The position in millisecond
+         */
         void                    setTime( qint64 time );
 
         /**
@@ -156,10 +160,19 @@ class   ClipWorkflow : public QObject
     protected:
         void                    computePtsDiff( qint64 pts );
         void                    commonUnlock();
-        /// \warning    Must be called from a thread safe context.
-        ///             This thread safe context has to be set from the underlying ClipWorkflow implementation.
-        virtual uint32_t        getComputedBuffers() const = 0;
+        /**
+         *  \warning    Must be called from a thread safe context.
+         *              This thread safe context has to be set
+         *              from the underlying ClipWorkflow implementation.
+         */
+        virtual uint32_t        getNbComputedBuffers() const = 0;
         virtual uint32_t        getMaxComputedBuffers() const = 0;
+        /**
+         *  \brief  Will empty the computed buffers stack.
+         *          This has to be implemented in the underlying
+         *          clipworkflow implementation.
+         */
+        virtual void            flushComputedBuffers() = 0;
 
     private:
         LibVLCpp::MediaPlayer*  m_mediaPlayer;

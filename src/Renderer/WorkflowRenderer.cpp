@@ -67,7 +67,7 @@ void    WorkflowRenderer::initializeRenderer()
     strcat( inputSlave, audioParameters );
 
     m_media = new LibVLCpp::Media( "imem://" + QString( videoString ) );
-    m_media->addOption( inputSlave );
+//    m_media->addOption( inputSlave );
 
     sprintf( callbacks, "imem-get=%lld", (qint64)WorkflowRenderer::lock );
     m_media->addOption( callbacks );

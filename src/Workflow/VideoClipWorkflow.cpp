@@ -148,7 +148,7 @@ void    VideoClipWorkflow::unlock( VideoClipWorkflow* cw, void* buffer, int widt
     cw->m_computedBuffersMutex->unlock();
 }
 
-uint32_t    VideoClipWorkflow::getComputedBuffers() const
+uint32_t    VideoClipWorkflow::getNbComputedBuffers() const
 {
     return m_computedBuffers.count();
 }
@@ -162,4 +162,15 @@ void        VideoClipWorkflow::releaseBuffer( LightVideoFrame *lvf )
 {
     QMutexLocker    lock( m_availableBuffersMutex );
     m_availableBuffers.enqueue( lvf );
+}
+
+void        VideoClipWorkflow::flushComputedBuffers()
+{
+    QMutexLocker    lock( m_computedBuffersMutex );
+    QMutexLocker    lock2( m_availableBuffersMutex );
+
+    while ( m_computedBuffers.isEmpty() == false )
+    {
+        m_availableBuffers.enqueue( m_computedBuffers.dequeue() );
+    }
 }

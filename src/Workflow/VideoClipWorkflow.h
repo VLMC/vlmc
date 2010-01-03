@@ -41,9 +41,11 @@ class   VideoClipWorkflow : public ClipWorkflow
 
     protected:
         virtual void            initVlcOutput();
-        virtual uint32_t        getComputedBuffers() const;
+        virtual uint32_t        getNbComputedBuffers() const;
         virtual uint32_t        getMaxComputedBuffers() const;
         void                    releaseBuffer( LightVideoFrame* lvf );
+        void                    flushComputedBuffers();
+
     private:
         QQueue<LightVideoFrame*>    m_computedBuffers;
         QQueue<LightVideoFrame*>    m_availableBuffers;

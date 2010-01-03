@@ -46,8 +46,9 @@ class   AudioClipWorkflow : public ClipWorkflow
         virtual void*           getOutput( ClipWorkflow::GetMode mode );
 
     protected:
-        virtual uint32_t        getComputedBuffers() const;
+        virtual uint32_t        getNbComputedBuffers() const;
         virtual uint32_t        getMaxComputedBuffers() const;
+        void                    flushComputedBuffers();
 
     private:
         void                    releaseBuffer( AudioSample* sample );

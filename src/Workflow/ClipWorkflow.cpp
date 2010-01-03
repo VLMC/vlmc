@@ -152,6 +152,7 @@ void            ClipWorkflow::stop()
 void            ClipWorkflow::setTime( qint64 time )
 {
     m_mediaPlayer->setTime( time );
+    flushComputedBuffers();
 }
 
 bool            ClipWorkflow::isRendering() const
@@ -197,7 +198,7 @@ void        ClipWorkflow::preGetOutput()
     QMutexLocker    lock( m_feedingCondWait->getMutex() );
 
     //Computed buffer mutex is already locked by underlying clipworkflow getoutput method
-    if ( getComputedBuffers() == 0 )
+    if ( getNbComputedBuffers() == 0 )
     {
 //        qWarning() << "Waiting for buffer to be fed";
         m_renderLock->unlock();
@@ -212,7 +213,7 @@ void        ClipWorkflow::preGetOutput()
 void        ClipWorkflow::postGetOutput()
 {
     //If we're running out of computed buffers, refill our stack.
-    if ( getComputedBuffers() < getMaxComputedBuffers() / 3 )
+    if ( getNbComputedBuffers() < getMaxComputedBuffers() / 3 )
     {
         QWriteLocker        lock( m_stateLock );
         if ( m_state == ClipWorkflow::Paused )
@@ -231,13 +232,13 @@ void        ClipWorkflow::commonUnlock()
 {
     //Don't test using availableBuffer, as it may evolve if a buffer is required while
     //no one is available : we would spawn a new buffer, thus modifying the number of available buffers
-    if ( getComputedBuffers() == getMaxComputedBuffers() )
+    if ( getNbComputedBuffers() == getMaxComputedBuffers() )
     {
         qWarning() << "Pausing clip workflow. Type:" << debugType;
         setState( ClipWorkflow::PauseRequired );
         m_mediaPlayer->pause();
     }
-    if ( getComputedBuffers() == 1 )
+    if ( getNbComputedBuffers() == 1 )
     {
 //        qDebug() << "Waking feeding cont wait... acquiring lock. Type:" << debugType;
         QMutexLocker    lock( m_feedingCondWait->getMutex() );
