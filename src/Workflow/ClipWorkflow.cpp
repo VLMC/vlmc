@@ -30,8 +30,6 @@
 ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
                 m_mediaPlayer(NULL),
                 m_requiredState( ClipWorkflow::None ),
-                m_rendering( false ),
-                m_initFlag( false ),
                 m_clip( clip ),
                 m_state( ClipWorkflow::Stopped )
 {
@@ -142,8 +140,6 @@ void            ClipWorkflow::stop()
         QMutexLocker    lock( m_requiredStateLock );
         m_requiredState = ClipWorkflow::None;
         delete m_vlcMedia;
-        m_initFlag = false;
-        m_rendering = false;
     }
     else
         qDebug() << "ClipWorkflow has already been stopped";
