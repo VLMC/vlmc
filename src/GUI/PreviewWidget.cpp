@@ -42,11 +42,12 @@ PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent 
     m_videoPalette.setColor( QPalette::Window, QColor( Qt::black ) );
     m_ui->renderWidget->setPalette( m_videoPalette );
 
-    // Hide markers buttons if we are not using a ClipRenderer
+    // Hide markers and createClip buttons if we are not using a ClipRenderer
     if ( !qobject_cast<ClipRenderer*>( genericRenderer ) )
     {
         m_ui->pushButtonMarkerStart->hide();
         m_ui->pushButtonMarkerStop->hide();
+        m_ui->pushButtonCreateClip->hide();
     }
 
     // Give the renderer to the ruler
@@ -72,6 +73,7 @@ PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent 
 
     connect( m_ui->pushButtonMarkerStart, SIGNAL( clicked() ), this, SLOT( markerStartClicked() ) );
     connect( m_ui->pushButtonMarkerStop, SIGNAL( clicked() ), this, SLOT( markerStopClicked() ) );
+    connect( m_ui->pushButtonCreateClip, SIGNAL( clicked() ), this, SLOT( createNewClipFromMarkers() ) );
 }
 
 PreviewWidget::~PreviewWidget()
@@ -180,10 +182,17 @@ void        PreviewWidget::createNewClipFromMarkers()
     qint64  beg = m_ui->rulerWidget->getMarker( PreviewRuler::START );
     qint64  end = m_ui->rulerWidget->getMarker( PreviewRuler::STOP );
 
+    if ( beg == -1 && end == -1 )
+        return ;
+
+    if ( end < beg )
+        return ;
+
     beg = beg < 0 ? 0 : beg;
     Clip*   part = new Clip( selectedMedia, beg, end );
 
     //Adding the newly created clip to the media
     selectedMedia->addClip( part );
+    emit addClip( part );
     return ;
 }

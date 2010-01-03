@@ -1,5 +1,6 @@
 /*****************************************************************************
- * GreenFilterEffect.h: test effect module, just for apply a green filter
+ * InvertRNBEffectPluginCreator.h: this class is used to instantiate
+ *                                   an InvertRNBEffectPlugin
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,36 +21,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef GREENFILTEREFFECT_H_
-#define GREENFILTEREFFECT_H_
+#ifndef INVERTRNBEFFECTPLUGINCREATOR_H_
+#define INVERTRNBEFFECTPLUGINCREATOR_H_
 
-#include "GenericEffect.h"
-#include <QPainter>
-#include <QImage>
+#include <QObject>
+#include <QtPlugin>
+#include "IEffectPluginCreator.h"
+#include "IEffectPlugin.h"
+#include "InvertRNBEffectPlugin.h"
 
-class	GreenFilterEffect : public GenericEffect
+class   InvertRNBEffectPluginCreator : public QObject, public IEffectPluginCreator
 {
- public:
-
-  // CTOR & DTOR
-
-  GreenFilterEffect();
-  ~GreenFilterEffect();
-
-  // RENDER METHOD
-
-  void	render( void );
-  void	enable( void );
-  void	disable( void );
-
- private:
-
-  QImage				m_logo;
-  bool					m_enabled;
-  static	quint32 const		m_nbVideoInputs = 1;
-  static	quint32 const		m_nbVideoOutputs = 1;
-  static	char const * 	m_videoInputsNames[m_nbVideoInputs];
-  static	char const *	m_videoOutputsNames[m_nbVideoOutputs];
+    Q_OBJECT;
+    Q_INTERFACES( IEffectPluginCreator );
+public:
+    IEffectPlugin*      createIEffectPluginInstance( void );
 };
 
-#endif // GREENFILTEREFFECT_H_
+#endif // INVERTRNBEFFECTPLUGINCREATOR_H_

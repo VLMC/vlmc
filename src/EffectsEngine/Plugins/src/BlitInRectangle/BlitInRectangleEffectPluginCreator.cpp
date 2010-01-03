@@ -1,5 +1,6 @@
 /*****************************************************************************
- * MixerEffect.h: Effect module to mix multiple frame in one
+ * BlitInRectangleEffectPluginCreator.cpp: this class is used to instantiate
+ *                                    an BlitInRectangleEffectPlugin
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -20,31 +21,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef MIXEREFFECT_H_
-#define MIXEREFFECT_H_
+#include "BlitInRectangleEffectPluginCreator.h"
 
-#include "GenericEffect.h"
-
-class	MixerEffect : public GenericEffect
+IEffectPlugin*  BlitInRectangleEffectPluginCreator::createIEffectPluginInstance( void )
 {
-public:
+    return (new BlitInRectangleEffectPlugin());
+}
 
-  // CTOR & DTOR
-
-  MixerEffect();
-  ~MixerEffect();
-
-  // RENDER METHOD
-
-  void	render( void );
-
-private:
-
-  static	quint32 const	m_nbVideoInputs = 64;
-  static	quint32 const	m_nbVideoOutputs = 64;
-  static	char const *	m_videoInputsNames[m_nbVideoInputs];
-  static	char const *	m_videoOutputsNames[m_nbVideoOutputs];
-
-};
-
-#endif // MIXEREFFECT_H_
+Q_EXPORT_PLUGIN2( BlitInRectangleEffectPluginCreator, BlitInRectangleEffectPluginCreator );

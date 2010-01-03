@@ -117,7 +117,7 @@ void        TrackHandler::getOutput( qint64 currentFrame )
                 m_tracks[i]->simulateBlackOutputRender();
             }
             else
-                m_effectEngine->setInputFrame( *TrackHandler::nullOutput, i );
+                (*((*m_effectEngine)->getInternalStaticVideoOutput( i + 1 ))) << *TrackHandler::nullOutput;
             continue ;
         }
         ++m_nbTracksToRender;
@@ -308,11 +308,9 @@ void        TrackHandler::tracksRenderCompleted( unsigned int trackId )
         {
             LightVideoFrame* buff = reinterpret_cast<LightVideoFrame*>( m_tracks[trackId]->getSynchroneOutput() );
             if ( buff == NULL )
-            {
-                m_effectEngine->setInputFrame( *TrackHandler::nullOutput, trackId );
-            }
+                (*((*m_effectEngine)->getInternalStaticVideoOutput( trackId + 1 ))) << *TrackHandler::nullOutput;
             else
-                m_effectEngine->setInputFrame( *buff, trackId );
+                (*((*m_effectEngine)->getInternalStaticVideoOutput( trackId + 1 ))) << *buff;
         }
         else
         {

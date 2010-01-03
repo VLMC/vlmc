@@ -20,6 +20,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QtDebug>
 #include <QPushButton>
 
 #include "ListViewController.h"
@@ -31,13 +32,11 @@ ListViewController::ListViewController( StackViewController* nav ) : m_nav( nav 
     m_title      = new QString( "Media List" );
     m_scrollArea = new QScrollArea();
     m_layout     = new QVBoxLayout();
-    m_container  = new QWidget();
 
     m_layout->setAlignment( Qt::AlignTop );
     m_layout->setSpacing( 0 );
     m_layout->setContentsMargins( 0, 0, 0, 0 );
-    m_container->setLayout( m_layout );
-    m_scrollArea->setWidget( m_container );
+    m_scrollArea->setLayout( m_layout );
     m_scrollArea->setWidgetResizable( true );
     m_scrollArea->setAcceptDrops( true );
 
@@ -48,7 +47,6 @@ ListViewController::~ListViewController()
     delete m_title;
     delete m_scrollArea;
     delete m_layout;
-    delete m_container;
 }
 
 // ViewController method implementation
@@ -71,4 +69,5 @@ void                ListViewController::addCell( QWidget* cell )
 void            ListViewController::removeCell( QWidget* cell )
 {
     m_layout->removeWidget( cell );
+    delete cell;
 }

@@ -167,6 +167,8 @@ void        MainWindow::setupLibrary()
              m_clipPreview->getGenericRenderer(), SLOT( mediaUnloaded( QUuid ) ) );
 
     connect( mediaLibraryWidget, SIGNAL( importRequired() ), this, SLOT( on_actionImport_triggered() ) );
+
+    connect( m_clipPreview, SIGNAL( addClip( Clip* ) ), mediaLibraryWidget, SLOT( clipAdded( Clip* ) ) );
 }
 
 void    MainWindow::on_actionSave_triggered()

@@ -48,7 +48,9 @@ public:
      *  \brief  Set the length displayed in the cell
      *  \param  length  The media length, in ms.
      */
-    void                    setLength( qint64 length );
+    void                    setLength( qint64 length, bool mSecs = true );
+    void                    incrementClipCount();
+    void                    decrementClipCount( const int nb );
     QString                 title() const;
     const QUuid&            uuid() const;
     const ClickableLabel*   nextButton() const;
@@ -74,6 +76,7 @@ signals:
 
 public slots:
     void        deleteButtonClicked( QWidget* sender, QMouseEvent* event );
+    void        arrowButtonClicked( QWidget* sender, QMouseEvent* event );
 
 };
 

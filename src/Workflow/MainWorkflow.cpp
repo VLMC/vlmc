@@ -249,11 +249,12 @@ MainWorkflow::OutputBuffers*  MainWorkflow::getSynchroneOutput( MainWorkflow::Tr
 //    qDebug() << "Got it";
     if ( trackType == BothTrackType || trackType == VideoTrack )
     {
-        m_effectEngine->render();
-        if ( m_effectEngine->getOutputFrame( 0 )->nboctets == 0 )
+        (*m_effectEngine)->render();
+        LightVideoFrame const & tmp = (*((*m_effectEngine)->getInternalStaticVideoInput( 1 )) );
+        if (tmp->nboctets == 0 )
             m_outputBuffers->video = MainWorkflow::blackOutput;
         else
-            m_outputBuffers->video = &( m_effectEngine->getOutputFrame( 0 ) );
+            m_outputBuffers->video = &tmp;
     }
     if ( trackType == BothTrackType || trackType == AudioTrack )
     {

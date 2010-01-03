@@ -1,12 +1,13 @@
-HEADERS	+=	EffectsEngine.h	\
-		GenericEffect.h	\
-		GreenFilterEffect.h	\
-		LightVideoFrame.h	\
-		MixerEffect.h
+HEADERS	+=    EffectsEngine.h \
+              EffectNode.h \
+              EffectNodeFactory.h \
+              EffectPluginTypeManager.h \
+              EffectPluginTypeLoader.h \
+              SemanticObjectManager.hpp \
+              SimpleObjectsReferencer.hpp
 
-SOURCES	+=	EffectsEngine.cpp	\
-		GenericEffect.cpp	\
-		GreenFilterEffect.cpp	\
-		LightVideoFrame.cpp	\
-		MixerEffect.cpp
-
+SOURCES	+=    EffectNodeFactory.cpp \
+              EffectPluginTypeManager.cpp \
+              EffectPluginTypeLoader.cpp \
+              EffectsEngine.cpp \
+              EffectNode.cpp

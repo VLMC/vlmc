@@ -25,118 +25,153 @@
 
 // CTOR & DTOR
 
-EffectsEngine::EffectsEngine( void )
-{
-   quint32	i;
+#include <iostream>
 
-   m_inputLock = new QReadWriteLock;
-   m_videoInputs = new OutSlot<LightVideoFrame>[64];
-   m_videoOutputs = new InSlot<LightVideoFrame>[64];       
-   start();
+EffectsEngine::EffectsEngine( void ) : m_patch( NULL ), m_bypassPatch( NULL )
+{
+    //
+    //
+    // CREATION OF THE PATCH
+    //
+    //
+
+   if ( EffectNode::createRootNode( "RootNode" ) == false )
+       qDebug() << "RootNode creation failed!!!!!!!!!!";
+   else
+   {
+       quint32	i;
+       EffectNode* tmp;
+
+       qDebug() << "RootNode successfully created!";
+
+       m_patch = EffectNode::getRootNode( "RootNode" );
+       // CREATION DU ROOTNODE ET DE SES SLOTS
+       for ( i = 0 ; i < 64; ++i)
+           m_patch->createStaticVideoInput();
+       m_patch->createStaticVideoOutput();
+
+
+       if ( m_patch->createChild( "libVLMC_MixerEffectPlugin" ) == true )
+       {
+           tmp = m_patch->getChild( 1 );
+           for ( i = 0 ; i < 64; ++i)
+               if ( tmp->connectChildStaticVideoInputToParentStaticVideoOutput( ( i + 1 ), ( i + 1 ) ) == false )
+                   qDebug() << "The connection of the intput " << i << " of the mixer with the internal " << i << " output of the RootNode failed!";
+               else
+                   qDebug() << "The connection of the intput " << i << " of the mixer with the internal " << i << " output of the RootNode successed!";
+           // RECUP LE MIXER ET CONNECTE SA SORTIE 1 A L'INTERNAL INPUT DU ROOT NODE
+           tmp = m_patch->getChild( 1 );
+           if ( tmp->connectChildStaticVideoOutputToParentStaticVideoInput( 1, 1 ) == false )
+               qDebug() << "The connection of the mixer output with the BypassRootNode internal input failed!";
+           else
+               qDebug() << "The connection of the mixer output with the BypassRootNode internal input successed!";
+
+           //           m_patch->createChild( "libVLMC_BlitInRectangleEffectPlugin" );
+           //           m_patch->createChild( "libVLMC_InvertRNBEffectPlugin" );
+           // // RECUP LE MIXER ET CONNECTE SA SORTIE 1 A L'ENTREE 2 DU BLIT
+           // tmp = m_patch->getChild( 1 );
+           // if ( tmp->connectStaticVideoOutputToStaticVideoInput( 1, 2, "dst" ) == false )
+           //     qDebug() << "La connection de la sortie n'as pas reussie HAHA";
+           // // RECUP LE BLIT ET CONNECT SA SORTIE 2 A L'INTERNAL INPUT DU ROOT NODE
+           // tmp = m_patch->getChild( 2 );
+           // qDebug() << "NAME : " << tmp->getInstanceName();
+           // if ( tmp->connectChildStaticVideoOutputToParentStaticVideoInput( "res", 1 ) == false )
+           //     qDebug() << "La connection de la sortie n'as pas reussie";
+           // // CONNECT SA SORTIE 1 A SA L'ENTREE  1 DE L'INVERSEUR DE BLEU ET DE ROUGE
+           // if ( tmp->connectStaticVideoOutputToStaticVideoInput( "aux", 3, 1 ) == false )
+           //     qDebug() << "La connection de la sortie n'as pas reussie, MERDE";
+           // // CONNECT LA SORTIE DE L'INVERSEUR A L'ENTREE SRC DU BLIT
+           // tmp = m_patch->getChild( 3 );
+           // if ( tmp->connectStaticVideoOutputToStaticVideoInput( 1, 2, 1 ) == false )
+           //     qDebug() << "La connection de la sortie n'as pas reussie, MERDE";
+       }
+       else
+           qDebug() << "There's not the video mixer plugin, so the connection with it cannot exist in the BypassRootNode";
+   }
+
+   //
+   //
+   // CREATION OF THE BYPASS PATCH
+   //
+   //
+
+   if ( EffectNode::createRootNode( "BypassRootNode" ) == false )
+       qDebug() << "BypassRootNode creation failed!!!!!!!!!!";
+   else
+   {
+       quint32	i;
+       EffectNode* tmp;
+
+       qDebug() << "BypassRootNode successfully created!";
+
+       // CREATION DU BYPASSROOTNODE ET DE SES SLOTS
+       m_bypassPatch = EffectNode::getRootNode( "BypassRootNode" );
+       for ( i = 0 ; i < 64; ++i)
+           m_bypassPatch->createStaticVideoInput();
+       m_bypassPatch->createStaticVideoOutput();
+
+       if ( m_bypassPatch->createChild( "libVLMC_MixerEffectPlugin" ) == true )
+       {
+           tmp = m_bypassPatch->getChild( 1 );
+           for ( i = 0 ; i < 64; ++i)
+               if ( tmp->connectChildStaticVideoInputToParentStaticVideoOutput( ( i + 1 ), ( i + 1 ) ) == false )
+                   qDebug() << "The connection of the intput " << i << " of the mixer with the internal " << i << " output of the BypassRootNode failed!";
+               else
+                   qDebug() << "The connection of the intput " << i << " of the mixer with the internal " << i << " output of the BypassRootNode successed!";
+           // RECUP LE MIXER ET CONNECTE SA SORTIE 1 A L'INTERNAL INPUT DU ROOT NODE
+           tmp = m_bypassPatch->getChild( 1 );
+           if ( tmp->connectChildStaticVideoOutputToParentStaticVideoInput( 1, 1 ) == false )
+               qDebug() << "The connection of the mixer output with the BypassRootNode internal input failed!";
+           else
+               qDebug() << "The connection of the mixer output with the BypassRootNode internal input successed!";
+       }
+       else
+           qDebug() << "There's not the video mixer plugin, so the connection with it cannot exist in the BypassRootNode";
+   }
 }
 
 EffectsEngine::~EffectsEngine()
 {
-    stop();
-    delete [] m_videoInputs;
-    delete [] m_videoOutputs;
-    delete m_inputLock;
+    if ( m_patch )
+        EffectNode::deleteRootNode( "RootNode" );
+    if ( m_bypassPatch )
+        EffectNode::deleteRootNode( "BypassRootNode" );
 }
 
-// MAIN METHOD
+//
 
-void	EffectsEngine::render( void )
+EffectNode* EffectsEngine::operator->( void )
 {
-  QWriteLocker    lock( m_inputLock );
-  ( m_effects[0] )->render();
-  ( m_effects[1] )->render();
-  return ;
+    QReadLocker    rl( &m_rwl );
+    return ( m_patch );
+}
+
+EffectNode const * EffectsEngine::operator->( void ) const
+{
+    QReadLocker    rl( &m_rwl );
+    return ( m_patch );
+}
+
+EffectNode* EffectsEngine::operator*( void )
+{
+    QReadLocker    rl( &m_rwl );
+    return ( m_patch );
+}
+
+EffectNode const * EffectsEngine::operator*( void ) const
+{
+    QReadLocker    rl( &m_rwl );
+    return ( m_patch );
 }
 
 // BYPASSING
 
 void		EffectsEngine::enable( void )
 {
-  QWriteLocker    lock( m_inputLock );
-  reinterpret_cast<GreenFilterEffect*>(m_effects[1])->enable(); // YES, I KNOW, IT'S HUGLY, BUT IT'S TEMPORARY
+    return ;
 }
 
 void		EffectsEngine::disable( void )
 {
-  QWriteLocker    lock( m_inputLock );
-  reinterpret_cast<GreenFilterEffect*>(m_effects[1])->disable(); // YES, I KNOW, IT'S HUGLY, BUT IT'S TEMPORARY (second time)
-}
-
-// INPUTS & OUTPUTS METHODS
-
-// void	EffectsEngine::setClock( Parameter currentframenumber )
-// { 
-//  std::cout << "setClock" << std::endl;
-//   return ;
-// }
-
-void	EffectsEngine::setInputFrame( LightVideoFrame& frame, quint32 tracknumber )
-{
-    QWriteLocker    lock( m_inputLock );
-
-    m_videoInputs[tracknumber] = frame;
-    return ;
-}
-
-// TO REPLACE BY A REF
-
-LightVideoFrame const &	EffectsEngine::getOutputFrame( quint32 tracknumber ) const
-{
-  return ( m_videoOutputs[tracknumber] );
-}
-
-//
-// PRIVATES METHODS
-//
-
-// START & STOP
-
-void	EffectsEngine::start( void )
-{
-  loadEffects();
-  patchEffects();
-  return ;
-}
-
-void	EffectsEngine::stop( void )
-{
-  unloadEffects();
-  return ;
-}
-
-// EFFECTS LOADING & UNLOADING
-
-void	EffectsEngine::loadEffects( void )
-{
-  m_effects[0] = new MixerEffect();
-  m_effects[1] = new GreenFilterEffect();
-  return ;
-}
-
-void	EffectsEngine::unloadEffects( void )
-{
-  delete m_effects[0];
-  delete m_effects[1];
-  return ;
-}
-
-// EFFECTS PATCHING
-
-void	EffectsEngine::patchEffects( void )
-{
-    quint32	i;
-
-    QReadLocker lock( m_inputLock );
-    for ( i = 0; i < 64; ++i )
-    {   
-        m_effects[0]->connect( m_videoInputs[i], i );
-    }
-    m_effects[0]->connectOutput( 0 , m_effects[1], 0 );
-    m_effects[1]->connect( 0, m_videoOutputs[0] );
     return ;
 }

@@ -32,11 +32,13 @@ LanguagePreferences::LanguagePreferences( QWidget *parent )
     : PreferenceWidget( parent )
 {
     m_ui.setupUi( this );
+    m_ui.comboBoxLanguage->addItem( tr( "Czech" ),      "cs" );
     m_ui.comboBoxLanguage->addItem( tr( "English" ),    "en" );
     m_ui.comboBoxLanguage->addItem( tr( "French" ),     "fr" );
     m_ui.comboBoxLanguage->addItem( tr( "Japanese" ),   "jp" );
     m_ui.comboBoxLanguage->addItem( tr( "Spanish" ),    "es" );
     m_ui.comboBoxLanguage->addItem( tr( "Swedish" ),    "sv" );
+    m_ui.comboBoxLanguage->addItem( tr( "Brazilian Portugese" ),    "pt_BR" );
 }
 
 LanguagePreferences::~LanguagePreferences() {}

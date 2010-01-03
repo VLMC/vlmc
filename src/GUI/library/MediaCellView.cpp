@@ -4,6 +4,7 @@
  * Copyright (C) 2008-2009 the VLMC team
  *
  * Authors: Thomas Boquet <thomas.boquet@gmail.com>
+ * Authors: Clement CHAVANCE <chavance.c@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -35,6 +36,10 @@ MediaCellView::MediaCellView( const QUuid& uuid, QWidget *parent ) :
     setFocusPolicy( Qt::ClickFocus );
     setAutoFillBackground( true );
     connect( m_ui->delLabel, SIGNAL( clicked( QWidget*, QMouseEvent* ) ), this, SLOT( deleteButtonClicked( QWidget*, QMouseEvent* ) ) );
+    //TODO : if it's a clip, disable the arrow
+    connect( m_ui->arrow,
+             SIGNAL( clicked( QWidget*, QMouseEvent* ) ),
+             SLOT( arrowButtonClicked( QWidget*, QMouseEvent* ) ) );
 }
 
 MediaCellView::~MediaCellView()
@@ -104,6 +109,7 @@ void            MediaCellView::mousePressEvent( QMouseEvent* event )
 
 void    MediaCellView::mouseMoveEvent( QMouseEvent* event )
 {
+    qDebug() << "in MediaCellView::mouseMoveEvent";
     if ( ( event->buttons() | Qt::LeftButton ) != Qt::LeftButton )
          return;
 
@@ -117,6 +123,14 @@ void    MediaCellView::mouseMoveEvent( QMouseEvent* event )
     mimeData->setData( "vlmc/uuid", m_uuid.toString().toAscii() );
     QDrag* drag = new QDrag( this );
     drag->setMimeData( mimeData );
+    //FIXME : change the way the library handles Clips
+    Clip* clip = Library::getInstance()->getClip( m_uuid );
+    if ( 0 == clip )
+        return ;
+    //getting the media from the current Clip
+    Media*  parent = Library::getInstance()->getClip( m_uuid )->getParent();
+    if ( 0 == parent )
+        return ;
     drag->setPixmap( Library::getInstance()->getClip( m_uuid )->getParent()->getSnapshot().scaled( 100, 100, Qt::KeepAspectRatio ) );
     drag->exec( Qt::CopyAction | Qt::MoveAction, Qt::CopyAction );
 }
@@ -136,9 +150,36 @@ void        MediaCellView::deleteButtonClicked( QWidget*, QMouseEvent* )
     emit cellDeleted( uuid() );
 }
 
-void        MediaCellView::setLength( qint64 length )
+void        MediaCellView::arrowButtonClicked( QWidget*, QMouseEvent* )
+{
+    qDebug() << "arrow clicked for uuid" << uuid();
+    emit arrowClicked( uuid() );
+}
+
+void        MediaCellView::setLength( qint64 length, bool mSecs )
 {
     QTime   duration;
-    duration = duration.addMSecs( length );
+    if ( mSecs )
+        duration = duration.addMSecs( length );
+    else
+        duration = duration.addSecs( length );
     m_ui->length->setText( duration.toString( "hh:mm:ss" ) );
+}
+
+void        MediaCellView::incrementClipCount()
+{
+    int clips = m_ui->clipCount->text().toInt();
+
+    clips += 1;
+    m_ui->clipCount->setText( QString::number( clips ) );
+}
+
+void        MediaCellView::decrementClipCount( const int nb )
+{
+    int clips = m_ui->clipCount->text().toInt();
+
+    clips -= nb;
+    if ( clips < 0 )
+        clips = 0;
+    m_ui->clipCount->setText( QString::number( clips ) );
 }
