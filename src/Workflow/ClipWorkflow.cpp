@@ -196,12 +196,13 @@ void        ClipWorkflow::preGetOutput()
 {
     QMutexLocker    lock( m_feedingCondWait->getMutex() );
 
+    //Computed buffer mutex is already locked by underlying clipworkflow getoutput method
     if ( getComputedBuffers() == 0 )
     {
-        qWarning() << "Waiting for buffer to be fed";
+//        qWarning() << "Waiting for buffer to be fed";
         m_renderLock->unlock();
         m_computedBuffersMutex->unlock();
-        qDebug() << "Unlocked render lock, entering cond wait";
+//        qDebug() << "Unlocked render lock, entering cond wait";
         m_feedingCondWait->waitLocked();
         m_computedBuffersMutex->lock();
         m_renderLock->lock();
@@ -238,9 +239,9 @@ void        ClipWorkflow::commonUnlock()
     }
     if ( getComputedBuffers() == 1 )
     {
-        qDebug() << "Waking feeding cont wait... acquiring lock. Type:" << debugType;
+//        qDebug() << "Waking feeding cont wait... acquiring lock. Type:" << debugType;
         QMutexLocker    lock( m_feedingCondWait->getMutex() );
-        qDebug() << "feeding cont wait mutex acquired. Type:" << debugType;
+//        qDebug() << "feeding cont wait mutex acquired. Type:" << debugType;
         m_feedingCondWait->wake();
     }
     checkStateChange();

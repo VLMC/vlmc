@@ -60,7 +60,7 @@ void*       AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
     QMutexLocker    lock2( m_computedBuffersMutex );
     preGetOutput();
 
-    qWarning() << "Audio. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
+//    qWarning() << "Audio. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
     if ( isEndReached() == true )
         return NULL;
     if ( mode == ClipWorkflow::Get )
@@ -72,6 +72,7 @@ void*       AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 
 void        AudioClipWorkflow::initVlcOutput()
 {
+    m_vlcMedia->addOption( ":verbose 3" );
     m_vlcMedia->addOption( ":no-sout-video" );
     m_vlcMedia->addOption( ":no-video" );
     m_vlcMedia->addOption( ":sout=#transcode{}:smem" );
@@ -97,9 +98,8 @@ void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer
     QMutexLocker    lock( cw->m_availableBuffersMutex );
     cw->m_computedBuffersMutex->lock();
     cw->m_renderLock->lock();
-    //If there's no buffer at all, it must be the first render
 
-    qWarning() << ">>>AudioGeneration. Available:" << cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count();
+//    qWarning() << ">>>AudioGeneration. Available:" << cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count();
     AudioSample* as = NULL;
     if ( cw->m_availableBuffers.isEmpty() == true )
     {
