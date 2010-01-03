@@ -23,6 +23,7 @@ include(Actions/actions.pri)
 include(Commands/commands.pri)
 include(Configuration/configuration.pri)
 include(EffectsEngine/EffectsEngine.pri)
+include(EffectsEngine/PluginsAPI/PluginsAPI.pri)
 include(GUI/GUI.pri)
 include(GUI/import/import.pri)
 include(GUI/library/library.pri)
@@ -53,6 +54,7 @@ INCLUDEPATH += LibVLCpp \
     Media \
     Project \
     EffectsEngine \
+    EffectsEngine/PluginsAPI \
     Configuration \
     EffectsEngine \
     Actions
@@ -72,13 +74,16 @@ DEPENDPATH += LibVLCpp \
     Media \
     Project \
     EffectsEngine \
+    EffectsEngine/PluginsAPI \
     Configuration \
     EffectsEngine \
     Actions
-TRANSLATIONS = ../ts/vlmc_es.ts \
-    ../ts/vlmc_fr.ts \
-    ../ts/vlmc_sv.ts \
-    ../ts/vlmc_jp.ts
+TRANSLATIONS = ../ts/vlmc_cs.ts \
+               ../ts/vlmc_es.ts \
+               ../ts/vlmc_fr.ts \
+               ../ts/vlmc_jp.ts \
+               ../ts/vlmc_sv.ts \
+               ../ts/vlmc_pt_BR.ts
 RESOURCES += ../ressources.qrc
 
 exists( ../ts/*.qm ) {

@@ -103,12 +103,12 @@ void        TrackHandler::getOutput( qint64 currentFrame, qint64 subFrame )
         if ( m_trackType == MainWorkflow::VideoTrack )
         {
             if ( m_tracks[i].activated() == false )
-                m_effectEngine->setInputFrame( *TrackHandler::nullOutput, i );
+                (*((*m_effectEngine)->getInternalStaticVideoOutput( i + 1 ))) << *TrackHandler::nullOutput;
             else
             {
                 StackedBuffer<LightVideoFrame*, VideoClipWorkflow>* stackedBuffer =
                         reinterpret_cast<StackedBuffer<LightVideoFrame*, VideoClipWorkflow>*>( m_tracks[i]->getOutput( currentFrame, subFrame ) );
-                m_effectEngine->setInputFrame( *(stackedBuffer->get()), i );
+                (*((*m_effectEngine)->getInternalStaticVideoOutput( i + 1 ))) << *(stackedBuffer->get());
             }
         }
         else

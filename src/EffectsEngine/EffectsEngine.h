@@ -31,9 +31,7 @@
 #include "LightVideoFrame.h"
 #include "InSlot.hpp"
 #include "OutSlot.hpp"
-#include "GenericEffect.h"
-#include "GreenFilterEffect.h"
-#include "MixerEffect.h"
+#include "EffectNodeFactory.h"
 
 class	EffectsEngine
 {
@@ -42,52 +40,25 @@ class	EffectsEngine
 
   // CTOR & DTOR
 
-  EffectsEngine( void 
+  EffectsEngine( void
 		/* quint32 nbinputs, quint32 nboutputs  */);
   ~EffectsEngine();
 
-  // MAIN METHOD
 
-  void		render( void );
+  EffectNode*        operator->( void );
+  EffectNode const * operator->( void ) const;
+  EffectNode*        operator*( void );
+  EffectNode const * operator*( void ) const;
 
-  // BYPASSING
-
-  void		enable( void );
-  void		disable( void );
-
-  // INPUTS & OUTPUTS METHODS
-
-/*   void			setClock( Parameter currentframenumber ); */
-  void				setInputFrame( LightVideoFrame& frame, quint32 tracknumber );
-  LightVideoFrame const &       getOutputFrame( quint32 tracknumber ) const;
-
- private:
-  
-  // START & STOP
-
-  void		start( void );
-  void		stop( void );
-
-  // EFFECTS LOADING & UNLOADING
-
-
-  void		loadEffects( void );
-  void		unloadEffects( void );
-
-  // EFFECTS PATCHING
-
-  void		patchEffects( void );
-
+  void               enable( void );
+  void               disable( void );
 
  private:
 
-  QHash< quint32, GenericEffect* >              m_effects;
-  OutSlot<LightVideoFrame>*			m_videoInputs; // It's OutSlots because, it's the Outputs of the workflow, that should be connected to InSlots of effects
-  InSlot<LightVideoFrame>*			m_videoOutputs; // It's InSlots because, it's the Inputs of the effect engine, that should be connected to OutSlots of the renderer
-/*   OutSlot<LightParameter>			m_clockInput;	 // It's OutSlots because, it's the Outputs of the clock of the workflow, that should be connected to OutSlots */
-
-  QReadWriteLock*                               m_inputLock;
-
+  mutable QReadWriteLock                        m_rwl;
+  EffectNodeFactory                             m_enf;
+  EffectNode*                                   m_patch;
+  EffectNode*                                   m_bypassPatch;
 };
 
 #endif // EFFECTSENGINE_H_

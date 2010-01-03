@@ -5,6 +5,7 @@
  *
  * Authors: Geoffroy Lacarriere <geoffroylaca@gmail.com>
  *          Thomas Boquet <thomas.boquet@gmail.com>
+ *          Clement Chavance <chavance.c@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -49,6 +50,7 @@ class ImportController : public QDialog
         ImportController(QWidget *parent = 0);
         ~ImportController();
         void    setUIMetaData( Media* media );
+        void    setUIMetaData( Clip* clip );
 
     protected:
         void changeEvent( QEvent *e );
@@ -60,10 +62,13 @@ class ImportController : public QDialog
         StackViewController*        m_stackNav;
         TagWidget*                  m_tag;
         ImportMediaListController*  m_mediaListController;
+        ImportMediaListController*  m_clipListController;
         QDirModel*                  m_filesModel;
         QFileSystemWatcher*         m_fsWatcher;
         QString                     m_currentlyWatchedDir;
         QUuid                       m_currentUuid;
+        QUuid                       m_savedUuid;
+        bool                        m_controllerSwitched;
 
     public slots:
         void        newMediaLoaded( Media* media );
@@ -74,6 +79,8 @@ class ImportController : public QDialog
         void        clipSelection( const QUuid& uuid );
         void        mediaDeletion( const QUuid& uuid );
         void        clipDeletion( const QUuid& uuid );
+        void        showClipList( const QUuid& uuid );
+        void        restoreContext();
 
     private slots:
         void        forwardButtonClicked();

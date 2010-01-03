@@ -1,38 +1,135 @@
 
-================= GenericEffect =================
+================= EffectNode =================
 
--rajouter le mode conteneur, avec donc la generation des Out/InSlot necessaire pour proxyfier les infos,
- et le getter pour savoir s'il est en mode conteneur ou pas
+OK -rajouter le mode conteneur, avec donc la generation des Out/InSlot necessaire pour proxyfier les
+    infos, et le getter pour savoir s'il est en mode conteneur ou pas
 -rendre la classe thread-safe
 -rajouter les commandes suivantes (create, delete, connect, disconnect, set)
--rajouter le chainage pere fils avec les methode pour set et get le pere
- OK -rajouter l'interpreteur et l'encodeur
--remplacer les qhash par des tableau statique
+ OK -rajouter le chainage pere fils avec les methode pour set et get le pere
+-rajouter l'interpreteur et l'encodeur
+ OK -remplacer les qhash par des tableau statique
 -rajouter les connection dynamique avec une liste
 -rajouter le semaphore pour savoir si le render peut commencer
--remplacer la virtuelle pure render par une virtuelle implemante vide
--remplacer tout les connect etrange par 
+ OK -remplacer la virtuelle pure render par une virtuelle implemante vide
+-remplacer tout les connect etrange par un connect unifie avec plus de parametre , rappel des connects possible : stat/stat, dyn/dyn, dyn/stat, stat/dyn
+
+OK -rajouter un nom
+OK -rajouter  6 booleens pour les 6 types de connections dynamiques possibles activees ou non : AudioIn, VideoIn, ParamIn, AudioOut, VideoOut, ParamOut
+OK -rajouter un id pour pouvoir connaitre le nom d'un module auquelle un autre est connecte( grace a la classe mapping )
+
+
+ADDING CHILD COUNTING :D
+
+LISTE DES COMMANDES:
+
+ROUTE		CREATE			NODETYPE-ID
+ROUTE		DELETE			NODEINSTANCE-ID
+ROUTE		SET			INSLOT-ID VALUE
+ROUTE		CONNECT-STAT/STAT	SRC-NODEINSTANCE-ID OUTSLOT-ID DST-NODEINSTANCE-ID INSLOT-ID
+ROUTE		CONNECT-DYN/DYN		SRC-NODEINSTANCE-ID DST-NODEINSTANCE-ID
+ROUTE		CONNECT-DYN/STAT	SRC-NODEINSTANCE-ID DST-NODEINSTANCE-ID INSLOT-ID
+ROUTE		CONNECT-STAT/DYN	SRC-NODEINSTANCE-ID OUTSLOT-ID DST-NODEINSTANCE-ID
+ROUTE		DISCONNECT-STAT		NODEINSTANCE-ID OUTSLOTID
+ROUTE		DISCONNECT-DYN		NODEINSTANCE-ID
+ROUTE		DUMP			NODEINSTANCE-ID
+
+
+    //
+    //
+    //
+    // MISSING FUNCTIONNALITY
+    //
+    //
+    //
+
+    // IN PRIVATE : GETTING SLOT FOR THE EFFECT DEVELOPPER
+
+    // PENSER A POPER UN SLOTDYNAMIQUE QUAND IL SE FAIT DECO BRUTAL :D
+
+OK ->    // TO FINISH : CONNECTION AND BINDINDG
+
+    // INTERPRETER AND ITS PRIMITIVE METHODES
+
+OK ->    // REPLACE VIRTUAL PURE RENDER METHOD BY VIRTUAL RENDER METHOD WHO RENTER THE SUB-EFFECTS BY DEFAULT
+    // WITH THE MULTI-THREAD RENDER CLASS
+
+OK ->    // EffectsFactory static instance into EffectNode
+
+OK ->    // SUB-EFFECTS MANAGEMENT METHODS
+
+    // BIEN SEPARER LE DEVELOPPER-LAND ET LE EFFECTSENGINE-LAND, notamment en faisant des interface IPublic*slot
+    // DONC TOUT PROXIFIER PAR LE GENERICEFFECT, sauf l'ecriture/lecture dans un slot et le getting de l'id et de l'instance de l'effet et du EffectNode
+
+
+================ LightVideoFrame ================
+
+-rajouter le numero de la frame
+-rajouter le numero de track de la frame
+-rajouter la hauteur et la largeure
 
 ================= EffectsEngine =================
 
--remplacer les QHash par des tableaux statiques
-  OK -rajouter une methode activate & desactivate
+ OK -rajouter une methode activate & desactivate
 -rajouter le patch sous forme de GenericEffect conteneur
 -rendre la classe thread-safe
+
+OK -> -rajouter un compteur pour chaque type de slot dynamiques
 
 ================= InSlot & OutSlot =================
 
 !!!! voir si il faut permettre une seule lecture et une seule ecriture avec une methode pour
 reset ou pas (ce qui permettrais au passage de savoir le status d'un InSlot (pret a la lecture ou non))
 
+comme un tuyau, quand on le vide l'eau se barre et ne reste pas dedans.
+
+ou sinon pouvoir definir qu'un slot et persistant ou non
 
  OK -les simplifiers en virant la gestion de priorite pour la deporter ailleurs
  OK -rajouter un getter pour savoir un out/inslot est connecte
  OK -rajouter un getter pour recuper l'InSlot/OutSlot auquel l'OutSlot/InSlot est connecte
  OK -rajoute la deconnection a la destruction
 
+OK -> -rajouter un id et des get/set pour pouvoir recuperer l'id (pour par exemple recuperer le nom d'un parametre sur lequel on est connecte via la classe de binding)
+-rajouter le fait de pouvoir connecter, deconnecter, deux slot depuis n'importe lequel de la paire
+
+
+-rajouter un setteur pour setter une deleguate a appeler pour generer la commande quand un InSlot recoit une modification ou un connection/deconnection
+-rajouter une methode d'ecriture qui ne spauwn pas une commande (donc qui n'appelle pas la deleguate)
+
+
 (-rajouter les constructeur par copy et operateur = en private pour empecher leur utilisation)
 
 
-truc que en fait je ferais pas -> -rajouter le using dans le template pour forcer le type sur lequel on template a posseder
+-truc que en fait je ferais pas -> -rajouter le using dans le template pour forcer le type sur lequel on template a posseder
 la methode get default value
+===> a la place : faire en sorte que les types sur lesquelles sont templates mes In/OutSlot s'initialisent avec une valeur par defaut quand on leur assigne 0
+
+================ Classe de commande ================
+
+================ Classe de render ================
+
+-FAIRE UNE CLASSE DE RENDU MULTI-THREADE
+-REMPLACER LE BOOL VISIT PAR UN NOMBRE DE VISIT AUTORISE, POUR MODIFIER LA GRANULARITE DU MOTEUR
+
+================ Classe d'automation ================
+
+
+================ AUTRE =============================
+
+-GROUPE DE SLOT DYNAMIQUE NOMME EN SE SERVANT DU SEMANTIC OBJECT MANAGER
+-METTRE LE SLOTS CONNECTE DANS UNE LISTE POUR POUVOIR LES RECUPERER FACILEMENT ET RECUPERER FACILEMENT LEUR NOMBRE
+-GRANULARITE REGLABLE PAR UN NB QUI DEFINIS LE NB DE RESET ET DONC LE NB DE QUEUE DE L'EFFET APRES SON RENDER
+
+
+-METHODE POUR SET/GET UNE THUMB ICONE POUR AFFICHER L'EFFETS EN PETIT
+
+
+-NODE CONTAINER MAIS AVEC QUAND MEME UN PLUGIN
+-SLOT DATAS
+-EFFET DREAMAGE AVEC PARAMETRE GMA
+
+
+-CORRIGER LA COHERENCE DANS LES NOMS DE METHODES, DE CLASSES ET D'INSTANCES ET NOTAMMENT DEFINIR
+ UNE NOMENCLATURE (pour eviter les methodes qui s'appellent del et d'autre remove, par exemple)
+-INLINER TOUTE LES METHODES DES SLOTS
+-FAIRE LES METHODES DE CONNECTIONS ET DECONNECTIONS A PARTIR DES INSLOTS
