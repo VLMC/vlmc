@@ -96,6 +96,11 @@ LIBS += -L/usr/local/lib \
 DEFINES += VLMC_VERSION="$$VERSION"
 CODECFORTR = UTF-8
 include(../locale.pri)
+
+exists( src.user.pro ) {
+    include( src.user.pro )
+}
+
 # QMAKE_CFLAGS+=-pg
 # QMAKE_CXXFLAGS+=-pg
 # QMAKE_LFLAGS+=-pg
