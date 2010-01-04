@@ -71,12 +71,11 @@ INCLUDEPATH += $$VLMC_DIRS \
 
 DEPENDPATH += $$VLMC_DIRS
 
-TRANSLATIONS = ../ts/vlmc_cs.ts \
-               ../ts/vlmc_es.ts \
-               ../ts/vlmc_fr.ts \
-               ../ts/vlmc_jp.ts \
-               ../ts/vlmc_sv.ts \
-               ../ts/vlmc_pt_BR.ts
+# Add traduction here, it will be automatically build by the next line.
+TRANSLATIONS_LIST = cs es fr jp sv pt_BR
+# Add every translation in the TRANSLATION variable
+for(lang, TRANSLATIONS_LIST):exists( ../ts/vlmc_$${lang}.ts ):TRANSLATIONS += ../ts/vlmc_$${lang}.ts
+
 RESOURCES += ../ressources.qrc
 
 exists( ../ts/*.qm ) {
