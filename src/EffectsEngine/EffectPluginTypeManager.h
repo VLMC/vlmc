@@ -27,7 +27,7 @@
 #include <QDir>
 #include "EffectPluginTypeLoader.h"
 
-#define PLUGINS_PATH "./src/EffectsEngine/Plugins/bin/"
+#define PLUGINS_PATH "./src/EffectsEngine/Plugins/lib/"
 
 class   EffectPluginTypeManager
 {
