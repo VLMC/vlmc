@@ -64,6 +64,9 @@ private:
     void        createGlobalPreferences();
     void        createProjectPreferences();
     void        initializeMenuKeyboardShortcut();
+#ifdef DEBUG_CRASHHANDLER
+    void        setupCrashTester();
+#endif
     /**
      *  \brief  Will check if vlmc closed nicely or crashed.
      *          If so, the emergency backup will be opened.
