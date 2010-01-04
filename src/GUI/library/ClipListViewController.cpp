@@ -45,7 +45,7 @@ void    ClipListViewController::addClipsFromMedia( Media* media )
         addClip( clip );
 }
 
-const int   ClipListViewController::getNbDeletion() const
+int     ClipListViewController::getNbDeletion() const
 {
     return m_deletion;
 }
