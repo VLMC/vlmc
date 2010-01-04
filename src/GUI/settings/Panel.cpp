@@ -50,6 +50,7 @@ Panel::Panel( QWidget* parent )
     m_buttons->setExclusive( true );
     m_layout->setMargin( 0 );
     m_layout->setSpacing( 1 );
+    m_layout->insertSpacerItem( 1, new QSpacerItem( 1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
 
     QObject::connect( m_buttons,
                       SIGNAL( buttonClicked( int ) ),
@@ -79,11 +80,10 @@ void    Panel::addButton( const QString& label,
     button->setIconSize( QSize( Panel::M_ICON_HEIGHT,
                                 Panel::M_ICON_HEIGHT) );
     button->setToolButtonStyle( Qt::ToolButtonTextUnderIcon  );
-    button->resize( Panel::M_ICON_HEIGHT + 6,
-                    Panel::M_ICON_HEIGHT + 6 );
 
     button->setSizePolicy( QSizePolicy::Expanding,
-                           QSizePolicy::Expanding );
+                           QSizePolicy::Minimum );
+
     if ( m_firstButton == 0 )
     {
         button->setChecked( true );
@@ -91,7 +91,8 @@ void    Panel::addButton( const QString& label,
         m_firstButtonNb = number;
     }
     m_buttons->addButton( button, number );
-    m_layout->addWidget( button );
+
+    m_layout->insertWidget( m_layout->count() - 1, button );
 }
 
 void    Panel::show()

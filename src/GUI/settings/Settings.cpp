@@ -48,6 +48,8 @@ Settings::Settings( bool loadDefaults,
     m_name( name )
 {
     m_panel = new Panel( this );
+    m_panel->setMaximumWidth( 130 );
+
     m_stackedWidgets = new QStackedWidget( this );
     SettingsManager::getInstance()->addNewSettingsPart( m_name );
     connect();
