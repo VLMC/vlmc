@@ -139,8 +139,6 @@ protected:
 
 
 public slots:
-    virtual void                    __videoPaused() = 0;
-    virtual void                    __videoPlaying() = 0;
     virtual void                    __endReached() = 0;
     virtual void                    setClip( Clip* ) = 0;
     virtual void                    setMedia( Media* ) = 0;

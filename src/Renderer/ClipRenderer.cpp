@@ -37,8 +37,8 @@ ClipRenderer::ClipRenderer() :
     m_mediaChanged( false )
 {
     connect( m_mediaPlayer,     SIGNAL( stopped() ),            this,   SLOT( __videoStopped() ) );
-    connect( m_mediaPlayer,     SIGNAL( paused() ),             this,   SLOT( __videoPaused() ) );
-    connect( m_mediaPlayer,     SIGNAL( playing() ),            this,   SLOT( __videoPlaying() ) );
+    connect( m_mediaPlayer,     SIGNAL( paused() ),             this,   SIGNAL( paused() ) );
+    connect( m_mediaPlayer,     SIGNAL( playing() ),            this,   SIGNAL( playing() ) );
     connect( m_mediaPlayer,     SIGNAL( timeChanged( qint64 ) ),        this,   SLOT( __timeChanged( qint64 ) ) );
     connect( m_mediaPlayer,     SIGNAL( endReached() ),         this,   SLOT( __endReached() ) );
 }
@@ -231,20 +231,11 @@ void        ClipRenderer::previewWidgetCursorChanged( qint64 newFrame )
 /////////////////////////////////////////////////////////////////////
 /////SLOTS :
 /////////////////////////////////////////////////////////////////////
-void        ClipRenderer::__videoPaused()
-{
-    emit paused();
-}
 
 void        ClipRenderer::__videoStopped()
 {
     emit frameChanged( 0, MainWorkflow::Renderer );
     emit stopped();
-}
-
-void        ClipRenderer::__videoPlaying()
-{
-    emit playing();
 }
 
 //void        ClipRenderer::__positionChanged()

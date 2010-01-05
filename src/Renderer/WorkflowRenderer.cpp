@@ -71,7 +71,7 @@ void    WorkflowRenderer::initializeRenderer()
     connect( m_mainWorkflow, SIGNAL( mainWorkflowUnpaused() ), this, SLOT( mainWorkflowUnpaused() ), Qt::QueuedConnection );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
     connect( m_mainWorkflow, SIGNAL( frameChanged( qint64, MainWorkflow::FrameChangedReason ) ),
-             this, SLOT( __frameChanged( qint64, MainWorkflow::FrameChangedReason ) ) );
+             this, SIGNAL( frameChanged( qint64, MainWorkflow::FrameChangedReason ) ) );
 }
 
 WorkflowRenderer::~WorkflowRenderer()
@@ -132,10 +132,10 @@ void        WorkflowRenderer::startPreview()
     m_mediaPlayer->setMedia( m_media );
 
     //Media player part: to update PreviewWidget
-    connect( m_mediaPlayer, SIGNAL( playing() ),    this,   SLOT( __videoPlaying() ), Qt::DirectConnection );
-    connect( m_mediaPlayer, SIGNAL( paused() ),     this,   SLOT( __videoPaused() ), Qt::DirectConnection );
+    connect( m_mediaPlayer, SIGNAL( playing() ),    this,   SIGNAL( playing() ), Qt::DirectConnection );
+    connect( m_mediaPlayer, SIGNAL( paused() ),     this,   SIGNAL( paused() ), Qt::DirectConnection );
     //FIXME:: check if this doesn't require Qt::QueuedConnection
-    connect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SLOT( __videoStopped() ) );
+    connect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SIGNAL( endReached() ) );
 
     m_mainWorkflow->setFullSpeedRender( false );
     m_mainWorkflow->startRender();
@@ -355,25 +355,5 @@ void        WorkflowRenderer::__endReached()
 {
     stop();
     emit endReached();
-}
-
-void        WorkflowRenderer::__frameChanged( qint64 frame, MainWorkflow::FrameChangedReason reason )
-{
-    emit frameChanged( frame, reason );
-}
-
-void        WorkflowRenderer::__videoPlaying()
-{
-    emit playing();
-}
-
-void        WorkflowRenderer::__videoStopped()
-{
-    emit endReached();
-}
-
-void        WorkflowRenderer::__videoPaused()
-{
-    emit paused();
 }
 
