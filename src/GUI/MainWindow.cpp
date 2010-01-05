@@ -36,8 +36,8 @@
 
 #include "MainWindow.h"
 #include "Library.h"
-#include "Timeline.h"
-#include "TracksView.h"
+#include "timeline/Timeline.h"
+#include "timeline/TracksView.h"
 #include "About.h"
 #include "DockWidgetManager.h"
 #include "ImportController.h"

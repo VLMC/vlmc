@@ -8,15 +8,15 @@ FORMS += ui/About.ui \
     ui/transcode.ui \
     ui/WorkflowFileRendererDialog.ui
 HEADERS += About.h \
-    AbstractGraphicsMediaItem.h \
+    timeline/AbstractGraphicsMediaItem.h \
     ClickableLabel.h \
     ClipProperty.h \
     DockWidgetManager.h \
     FileInfoListModel.h \
-    GraphicsAudioItem.h \
-    GraphicsCursorItem.h \
-    GraphicsMovieItem.h \
-    GraphicsTrack.hpp \
+    timeline/GraphicsAudioItem.h \
+    timeline/GraphicsCursorItem.h \
+    timeline/GraphicsMovieItem.h \
+    timeline/GraphicsTrack.hpp \
     ImportMediaCellView.h \
     ImportMediaListController.h \
     LanguagePreferences.h \
@@ -25,23 +25,23 @@ HEADERS += About.h \
     PreviewRuler.h \
     PreviewWidget.h \
     TagWidget.h \
-    Timeline.h \
-    TracksControls.h \
-    TracksRuler.h \
-    TracksScene.h \
-    TracksView.h \
+    timeline/Timeline.h \
+    timeline/TracksControls.h \
+    timeline/TracksRuler.h \
+    timeline/TracksScene.h \
+    timeline/TracksView.h \
     UndoStack.h \
     WorkflowFileRendererDialog.h \
     AudioSpectrumDrawer.h
 SOURCES += About.cpp \
-    AbstractGraphicsMediaItem.cpp \
+    timeline/AbstractGraphicsMediaItem.cpp \
     ClickableLabel.cpp \
     ClipProperty.cpp \
     DockWidgetManager.cpp \
     FileInfoListModel.cpp \
-    GraphicsAudioItem.cpp \
-    GraphicsCursorItem.cpp \
-    GraphicsMovieItem.cpp \
+    timeline/GraphicsAudioItem.cpp \
+    timeline/GraphicsCursorItem.cpp \
+    timeline/GraphicsMovieItem.cpp \
     ImportMediaCellView.cpp \
     ImportMediaListController.cpp \
     LanguagePreferences.cpp \
@@ -50,11 +50,11 @@ SOURCES += About.cpp \
     PreviewRuler.cpp \
     PreviewWidget.cpp \
     TagWidget.cpp \
-    Timeline.cpp \
-    TracksControls.cpp \
-    TracksRuler.cpp \
-    TracksScene.cpp \
-    TracksView.cpp \
+    timeline/Timeline.cpp \
+    timeline/TracksControls.cpp \
+    timeline/TracksRuler.cpp \
+    timeline/TracksScene.cpp \
+    timeline/TracksView.cpp \
     UndoStack.cpp \
     WorkflowFileRendererDialog.cpp \
     AudioSpectrumDrawer.cpp
