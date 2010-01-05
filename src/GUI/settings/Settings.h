@@ -4,6 +4,7 @@
  * Copyright (C) 2008-2009 the VLMC team
  *
  * Authors: Clement CHAVANCE <kinder@vlmc.org>
+ *          Ludovic Fauvet <etix@l0cal.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,22 +21,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef SIMPLEPREFERENCES_H
-#define SIMPLEPREFERENCES_H
+#ifndef SETTINGS_H
+#define SETTINGS_H
 
 #include <QDialog>
 #include <QString>
-#include <QHash>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QDialogButtonBox>
-#include <QButtonGroup>
-#include <QStackedWidget>
-#include <QAbstractButton>
-#include <QVector>
+#include <QList>
 
-#include "Panel.h"
-#include "PreferenceWidget.h"
+class QDialogButtonBox;
+class QLabel;
+class QHBoxLayout;
+class QAbstractButton;
+class QScrollArea;
+
+class Panel;
+class PreferenceWidget;
 
 class   Settings : public QDialog
 {
@@ -48,40 +48,37 @@ class   Settings : public QDialog
                   QWidget* parent = 0,
                   Qt::WindowFlags f = 0 );
         virtual ~Settings();
-        void                addWidget( const QString& name,
-                                        PreferenceWidget* pWidget,
-                                        const QIcon& icon,
-                                        const QString& label );
-        void                build();
-        void                show( const QString& part = "default" );
+
+        void                        addWidget( const QString& name,
+                                               PreferenceWidget* pWidget,
+                                               const QIcon& icon,
+                                               const QString& label );
+        void                        show( const QString& part = "default" );
 
     private:
-        void            connect( void );
-        QVBoxLayout*    buildRightHLayout();
-        void    save( void );
+        inline QHBoxLayout*         buildLayout();
+        void                        save();
 
     private:
-        QHash<int, QString>         m_widgets;
-        QVector<PreferenceWidget*>  m_pWidgets;
-        QWidget*                    m_currentWidget;
+        QDialogButtonBox*           m_buttons;
+        QList<PreferenceWidget*>    m_pWidgets;
+        PreferenceWidget*           m_currentWidget;
         Panel*                      m_panel;
         QLabel*                     m_title;
-        QStackedWidget*             m_stackedWidgets;
-        QDialogButtonBox*           m_buttons;
         bool                        m_defaults;
         QString                     m_name;
+        QScrollArea*                m_configPanel;
 
 
     public slots:
-        void    switchWidget( int widget );
+        void    switchWidget( int index );
         void    load();
 
     private slots:
         void    buttonClicked( QAbstractButton* button );
 
     signals:
-        void    widgetSwitched( int widget );
         void    loadSettings( const QString& part, bool defaults );
 };
 
-#endif /* !SIMPLEPREFERENCES_H */
+#endif // SETTINGS_H

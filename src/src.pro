@@ -1,20 +1,23 @@
+# Basic settings
 TEMPLATE = app
 TARGET = vlmc
-DESTDIR = ../bin
 CONFIG += debug
 VERSION = 0.0.1
+
+# Build paths configurations
+DESTDIR = ../bin
 OBJECTS_DIR = ../build
 MOC_DIR = ../build/moc
 UI_DIR = ../build/ui
+
+# Make both .h and .hpp C++ headers extensions
 QMAKE_EXT_H = .h \
     .hpp
-INCLUDEPATH += ../build/moc \
-    ../build/ui \
-    $$[VLMC_ADDITIONAL_INCLUDEPATH]
-QT += gui \
-    network \
-    svg \
-    xml
+
+QT +=   gui \
+        network \
+        svg \
+        xml
 
 SOURCES += main.cpp
 
@@ -38,7 +41,9 @@ include(Project/projectManager.pri)
 include(Renderer/Renderer.pri)
 include(Tools/Tools.pri)
 include(Workflow/Workflow.pri)
-INCLUDEPATH += LibVLCpp \
+
+
+VLMC_DIRS = LibVLCpp \
     GUI \
     GUI/widgets \
     GUI/library \
@@ -58,32 +63,19 @@ INCLUDEPATH += LibVLCpp \
     Configuration \
     EffectsEngine \
     Actions
-DEPENDPATH += LibVLCpp \
-    GUI \
-    GUI/import \
-    GUI/library \
-    GUI/settings \
-    GUI/widgets \
-    GUI/wizard \
-    Tools \
-    Renderer \
-    Metadata \
-    Commands \
-    Workflow \
-    Library \
-    Media \
-    Project \
-    EffectsEngine \
-    EffectsEngine/PluginsAPI \
-    Configuration \
-    EffectsEngine \
-    Actions
-TRANSLATIONS = ../ts/vlmc_cs.ts \
-               ../ts/vlmc_es.ts \
-               ../ts/vlmc_fr.ts \
-               ../ts/vlmc_jp.ts \
-               ../ts/vlmc_sv.ts \
-               ../ts/vlmc_pt_BR.ts
+
+INCLUDEPATH += $$VLMC_DIRS \
+            ../build/moc \
+            ../build/ui \
+            $$[VLMC_ADDITIONAL_INCLUDEPATH]
+
+DEPENDPATH += $$VLMC_DIRS
+
+# Add traduction here, it will be automatically build by the next line.
+TRANSLATIONS_LIST = cs es fr jp sv pt_BR
+# Add every translation in the TRANSLATION variable
+for(lang, TRANSLATIONS_LIST):exists( ../ts/vlmc_$${lang}.ts ):TRANSLATIONS += ../ts/vlmc_$${lang}.ts
+
 RESOURCES += ../ressources.qrc
 
 exists( ../ts/*.qm ) {
@@ -91,12 +83,14 @@ exists( ../ts/*.qm ) {
 }
 
 LIBS += -L/usr/local/lib \
-    -lvlc \
-    $$[VLMC_ADDITIONAL_LIBS]
+        -lvlc \
+        $$[VLMC_ADDITIONAL_LIBS]
 DEFINES += VLMC_VERSION="$$VERSION"
+
 CODECFORTR = UTF-8
 include(../locale.pri)
-# QMAKE_CFLAGS+=-pg
-# QMAKE_CXXFLAGS+=-pg
-# QMAKE_LFLAGS+=-pg
-# QMAKE_CXXFLAGS += -W -Wall -Wold-style-cast
+
+exists( src.user.pro ) {
+    include( src.user.pro )
+}
+
