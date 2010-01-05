@@ -17,8 +17,8 @@ HEADERS += About.h \
     timeline/GraphicsCursorItem.h \
     timeline/GraphicsMovieItem.h \
     timeline/GraphicsTrack.hpp \
-    ImportMediaCellView.h \
-    ImportMediaListController.h \
+    import/ImportMediaCellView.h \
+    import/ImportMediaListController.h \
     LanguagePreferences.h \
     LCDTimecode.h \
     MainWindow.h \
@@ -42,8 +42,8 @@ SOURCES += About.cpp \
     timeline/GraphicsAudioItem.cpp \
     timeline/GraphicsCursorItem.cpp \
     timeline/GraphicsMovieItem.cpp \
-    ImportMediaCellView.cpp \
-    ImportMediaListController.cpp \
+    import/ImportMediaCellView.cpp \
+    import/ImportMediaListController.cpp \
     LanguagePreferences.cpp \
     LCDTimecode.cpp \
     MainWindow.cpp \
