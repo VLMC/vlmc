@@ -20,9 +20,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <cassert>
 #include "VLCInstance.h"
-#include <QtDebug>
 
 using namespace LibVLCpp;
 
@@ -30,7 +28,7 @@ Instance::Instance()
 {
     char const *argv[] =
     {
-//        "-vvvvv",
+        "-vvvvv",
         "--no-skip-frames",
 //        "--intf", "dummy",
         "--text-renderer", "dummy",
