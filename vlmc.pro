@@ -9,10 +9,12 @@
 }
 
 TEMPLATE = subdirs
-SUBDIRS = src \
-            launcher
+SUBDIRS =   src \
+            launcher \
+            src/EffectsEngine/Plugins/src/src.pro
 CONFIG += ordered
 
 DEPENDPATH += src \
-            launcher
+            launcher \
+            src/EffectsEngine/Plugins/src/src.pro
 

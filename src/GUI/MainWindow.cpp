@@ -91,6 +91,9 @@ MainWindow::MainWindow( QWidget *parent ) :
     createGlobalPreferences();
     createProjectPreferences();
     initializeMenuKeyboardShortcut();
+#ifdef DEBUG_CRASHHANDLER
+    setupCrashTester();
+#endif
 
     // Translations
     connect( this, SIGNAL( translateDockWidgetTitle() ),
@@ -304,7 +307,6 @@ void        MainWindow::createGlobalPreferences()
                                      new KeyboardShortcut( m_globalPreferences ),
                                      QIcon( ":/images/keyboard" ),
                                      tr( "Keyboard Settings" ) );
-    m_globalPreferences->build();
 }
 
 void	    MainWindow::createProjectPreferences()
@@ -322,7 +324,6 @@ void	    MainWindow::createProjectPreferences()
                                    new AudioProjectPreferences,
                                    QIcon( ":/images/images/audio.png" ),
                                    "Audio settings" );
-    m_projectPreferences->build();
 }
 
 
@@ -550,3 +551,14 @@ void    MainWindow::on_actionImport_triggered()
 {
     m_importController->exec();
 }
+
+#ifdef DEBUG_CRASHHANDLER
+void    MainWindow::setupCrashTester()
+{
+    QAction* actionCrash = new QAction( this );
+    actionCrash->setObjectName( QString::fromUtf8( "actionCrash" ) );
+    m_ui.menuTools->addAction( actionCrash );
+    actionCrash->setText( QApplication::translate( "MainWindow", "Crash", 0, QApplication::UnicodeUTF8 ) );
+    connect( actionCrash, SIGNAL( triggered( bool ) ), this, SLOT( on_actionCrash_triggered() ) );
+}
+#endif

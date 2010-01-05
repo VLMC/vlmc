@@ -73,7 +73,6 @@
      <string>Tools</string>
     </property>
     <addaction name="actionTranscode"/>
-    <addaction name="actionCrash"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
