@@ -27,12 +27,12 @@ include(Commands/commands.pri)
 include(Configuration/configuration.pri)
 include(EffectsEngine/EffectsEngine.pri)
 include(EffectsEngine/PluginsAPI/PluginsAPI.pri)
-include(GUI/GUI.pri)
-include(GUI/import/import.pri)
-include(GUI/library/library.pri)
-include(GUI/settings/settings.pri)
-include(GUI/widgets/widgets.pri)
-include(GUI/wizard/wizard.pri)
+include(Gui/Gui.pri)
+include(Gui/import/import.pri)
+include(Gui/library/library.pri)
+include(Gui/settings/settings.pri)
+include(Gui/widgets/widgets.pri)
+include(Gui/wizard/wizard.pri)
 include(LibVLCpp/LibVLCpp.pri)
 include(Library/Library.pri)
 include(Media/Media.pri)
@@ -44,12 +44,12 @@ include(Workflow/Workflow.pri)
 
 
 VLMC_DIRS = LibVLCpp \
-    GUI \
-    GUI/widgets \
-    GUI/library \
-    GUI/import \
-    GUI/settings \
-    GUI/wizard \
+    Gui \
+    Gui/widgets \
+    Gui/library \
+    Gui/import \
+    Gui/settings \
+    Gui/wizard \
     Tools \
     Renderer \
     Metadata \
