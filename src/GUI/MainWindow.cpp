@@ -307,7 +307,6 @@ void        MainWindow::createGlobalPreferences()
                                      new KeyboardShortcut( m_globalPreferences ),
                                      QIcon( ":/images/keyboard" ),
                                      tr( "Keyboard Settings" ) );
-    m_globalPreferences->build();
 }
 
 void	    MainWindow::createProjectPreferences()
@@ -325,7 +324,6 @@ void	    MainWindow::createProjectPreferences()
                                    new AudioProjectPreferences,
                                    QIcon( ":/images/images/audio.png" ),
                                    "Audio settings" );
-    m_projectPreferences->build();
 }
 
 

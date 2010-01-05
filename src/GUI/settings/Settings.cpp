@@ -4,6 +4,7 @@
  * Copyright (C) 2008-2009 the VLMC team
  *
  * Authors: Clement CHAVANCE <kinder@vlmc.org>
+ *          Ludovic Fauvet <etix@l0cal.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,21 +21,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <QPushButton>
+#include "Settings.h"
+
 #include <QDialogButtonBox>
 #include <QAbstractButton>
-#include <QApplication>
-#include <QSizePolicy>
-#include <QLabel>
-#include <QHash>
 #include <QIcon>
 #include <QLabel>
-#include <QtDebug>
-#include <QVariant>
+#include <QScrollArea>
 
 #include "PreferenceWidget.h"
 #include "SettingsManager.h"
-#include "Settings.h"
 #include "Panel.h"
 
 
@@ -47,51 +43,56 @@ Settings::Settings( bool loadDefaults,
     m_defaults( loadDefaults ),
     m_name( name )
 {
-    m_panel = new Panel( this );
-    m_panel->setMaximumWidth( 130 );
+    setMinimumHeight( 400 );
+    setMinimumWidth( 600 );
 
-    m_stackedWidgets = new QStackedWidget( this );
+    m_buttons = new QDialogButtonBox( Qt::Horizontal, this );
+    m_buttons->setStandardButtons( QDialogButtonBox::Ok |
+                                   QDialogButtonBox::Cancel |
+                                   QDialogButtonBox::Apply );
+
+    connect( m_buttons, SIGNAL( clicked( QAbstractButton* ) ),
+             this, SLOT( buttonClicked( QAbstractButton* ) ) );
+
+
+    // Create the layout
+    setLayout( buildLayout() );
+
     SettingsManager::getInstance()->addNewSettingsPart( m_name );
-    connect();
+
+    connect( m_panel, SIGNAL( changePanel( int ) ),
+             this, SLOT( switchWidget( int ) ) );
+    connect( SettingsManager::getInstance(), SIGNAL( settingsLoaded() ),
+             this, SLOT( load() ) );
 }
 
 Settings::~Settings()
 {
 }
 
-
-//TODO : see if the widget MUST have a fixed size, or if the window can dynamicaly
-//adjust to the size of the biggest Widget.
 void        Settings::addWidget( const QString& name,
         PreferenceWidget* pWidget,
         const QIcon& icon,
         const QString& label )
 {
-    m_stackedWidgets->addWidget( pWidget );
+    connect( this, SIGNAL( loadSettings( const QString&, bool ) ) ,
+             pWidget, SLOT( loadThemAll( const QString&, bool ) ) );
 
-    QObject::connect( this,
-                      SIGNAL( loadSettings( const QString&, bool ) ) ,
-                      pWidget,
-                      SLOT( loadThemAll( const QString&, bool ) ) );
-    int idx = m_stackedWidgets->indexOf( pWidget );
-    m_widgets.insert( idx, name );
-    m_pWidgets.push_back( pWidget );
-    m_panel->addButton( label, icon, idx );
-    if ( !m_currentWidget )
-        m_currentWidget = pWidget;
-}
+    // We don't want the widget to be visible
+    pWidget->hide();
 
-void        Settings::build()
-{
-    if ( !m_currentWidget )
-        qFatal( "Can't build the preference panel without having a widget" );
+    // Save the widget name into a property
+    pWidget->setProperty( "name", name );
 
-    QHBoxLayout* hLayout = new QHBoxLayout( this );
-    setLayout( hLayout );
-    //TODO : change the size of the widgets to make it look cleaner
-    hLayout->addWidget( m_panel );
-    hLayout->insertLayout( 1, buildRightHLayout() );
-    load();
+    // Add the widget to the list
+    m_pWidgets.append( pWidget );
+
+    // Create a button linked to the widget using its index
+    m_panel->addButton( label, icon, m_pWidgets.indexOf( pWidget ) );
+
+    // If this is the first widget, show it by default.
+    if ( m_pWidgets.count() == 1 )
+        switchWidget( 0 );
 }
 
 void        Settings::show( const QString& part )
@@ -104,54 +105,40 @@ void        Settings::show( const QString& part )
         m_defaults = false;
     }
     load();
+    switchWidget( 0 );
     QWidget::show();
 }
 
-void        Settings::connect( void )
+QHBoxLayout*    Settings::buildLayout()
 {
-    QObject::connect( m_panel,
-            SIGNAL( changePanel( int ) ),
-            SLOT( switchWidget( int ) ) );
-    QObject::connect( this,
-            SIGNAL( widgetSwitched( int ) ),
-            m_stackedWidgets,
-            SLOT( setCurrentIndex( int ) ));
-    QObject::connect( SettingsManager::getInstance(),
-                        SIGNAL( settingsLoaded() ),
-                        this,
-                        SLOT( load() ) );
-}
+    // Create the left panel
+    m_panel = new Panel( this );
+    m_panel->setMaximumWidth( 130 );
 
-QVBoxLayout*    Settings::buildRightHLayout()
-{
-    QVBoxLayout* layout = new QVBoxLayout;
-    QFrame* titleLine = new QFrame( this );
-    m_buttons = new QDialogButtonBox( this );
+    // Create the master layout
+    QHBoxLayout* hLayout = new QHBoxLayout( this );
+    hLayout->addWidget( m_panel );
 
-    QObject::connect( m_buttons, SIGNAL( clicked( QAbstractButton* ) ),
-            this, SLOT( buttonClicked( QAbstractButton* ) ) );
-
+    // Right Sub-layout
+    QVBoxLayout* vLayout = new QVBoxLayout;
     m_title = new QLabel( this );
-    titleLine->setFrameShape( QFrame::HLine );
-    titleLine->setFrameShadow( QFrame::Sunken );
+    m_configPanel = new QScrollArea( this );
+    m_configPanel->setFrameShape( QFrame::NoFrame );
 
-    QFont   labelFont = QApplication::font( this );
-
+    // Set the font and text of the panel title
+    QFont labelFont = font();
     labelFont.setPointSize( labelFont.pointSize() + 6 );
     labelFont.setFamily( "Verdana" );
     m_title->setFont( labelFont );
+    m_title->setText( "Empty" );
 
-    m_buttons->setStandardButtons( QDialogButtonBox::Ok |
-            QDialogButtonBox::Cancel |
-            QDialogButtonBox::Apply );
+    vLayout->addWidget( m_title );
+    vLayout->addWidget( m_configPanel );
+    vLayout->addWidget( m_buttons );
 
-    QString title( m_widgets.value( m_stackedWidgets->indexOf( m_currentWidget ) ) );
-    m_title->setText( title );
-    layout->addWidget( m_title );
-    layout->addWidget( titleLine );
-    layout->addWidget( m_stackedWidgets );
-    layout->addWidget( m_buttons );
-    return ( layout );
+    hLayout->insertLayout( -1, vLayout );
+
+    return hLayout;
 }
 
 void    Settings::save( void )
@@ -162,6 +149,7 @@ void    Settings::buttonClicked( QAbstractButton* button )
 {
     bool  save = false;
     bool  hide = false ;
+
     switch ( m_buttons->standardButton( button ) )
     {
         case QDialogButtonBox::Ok :
@@ -179,26 +167,37 @@ void    Settings::buttonClicked( QAbstractButton* button )
     }
     if ( save == true )
     {
-        //Save Settings
-        PreferenceWidget*		widg;
+        // Ask each widget to save their state
+        for ( int i = 0; i < m_pWidgets.count(); ++i )
+            m_pWidgets.at( i )->save();
 
-        foreach( widg, m_pWidgets )
-            widg->save();
+        // then commit
         SettingsManager::getInstance()->commit();
     }
-    if ( hide == true )
-        setVisible( false );
+    if ( hide == true ) setVisible( false );
 }
 
-void    Settings::switchWidget( int widget )
+void    Settings::switchWidget( int index )
 {
-    //TODO : Change the title of the preferences shown
-    //Hide the current widget and show the new one.
+    PreferenceWidget* pWidget = m_pWidgets.at( index );
 
-    if ( !m_widgets.contains( widget ) )
-        return ;
-    m_title->setText( m_widgets.value( widget ) );
-    emit widgetSwitched( widget );
+    // This should never happen
+    if ( !pWidget ) return;
+
+    QString name( pWidget->property( "name" ).toString() );
+
+    // Set the panel name
+    m_title->setText( name );
+
+    // Also set the window title accordingly
+    setWindowTitle( tr( "Preferences: %1" ).arg( name ) );
+
+    // If there is already a widget into the QScrollArea take it
+    // to avoid its deletion.
+    if ( m_configPanel->widget() )
+        m_configPanel->takeWidget();
+
+    m_configPanel->setWidget( pWidget );
 }
 
 void    Settings::load()
