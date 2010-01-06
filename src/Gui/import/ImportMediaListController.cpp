@@ -38,8 +38,8 @@ ImportMediaListController::~ImportMediaListController()
 void    ImportMediaListController::addMedia( Media* media )
 {
     ImportMediaCellView* cell = new ImportMediaCellView( media->getUuid() );
-    connect( cell, SIGNAL( cellSelected( const QUuid& ) ), this, SLOT( mediaSelection( const QUuid& ) ) );
-    connect( cell, SIGNAL( cellDeleted( const QUuid& ) ), this, SLOT( mediaDeletion( const QUuid& ) ) );
+    connect( cell, SIGNAL( cellSelected( const QUuid& ) ), this, SIGNAL( mediaSelected( const QUuid& ) ) );
+    connect( cell, SIGNAL( cellDeleted( const QUuid& ) ), this, SIGNAL( mediaDeleted( const QUuid& ) ) );
     connect( cell, SIGNAL( arrowClicked( const QUuid& ) ), this, SIGNAL( showClipListAsked( const QUuid& ) ) );
 
     cell->setTitle( media->getFileName() );
@@ -75,7 +75,7 @@ void    ImportMediaListController::removeMedia( const QUuid& uuid )
 void    ImportMediaListController::addClip( Clip* clip )
 {
     ImportMediaCellView* cell = new ImportMediaCellView( clip->getUuid() );
-    connect( cell, SIGNAL( cellSelected( const QUuid& ) ), this, SLOT( clipSelection( const QUuid& ) ) );
+    connect( cell, SIGNAL( cellSelected( const QUuid& ) ), this, SIGNAL( clipSelected( const QUuid& ) ) );
     connect( cell, SIGNAL( cellDeleted( const QUuid& ) ), this, SLOT( clipDeletion( const QUuid& ) ) );
 
     QString size;
@@ -116,25 +116,10 @@ void    ImportMediaListController::addClipsFromMedia( Media* media )
         addClip( media->clips()->value( uuid ) );
 }
 
-void    ImportMediaListController::mediaSelection( const QUuid& uuid )
-{
-    emit mediaSelected( uuid );
-}
-
-void    ImportMediaListController::clipSelection( const QUuid& uuid )
-{
-    emit clipSelected( uuid );
-}
-
 void    ImportMediaListController::clipDeletion( const QUuid& uuid )
 {
     m_clipDeleted += 1;
     emit clipDeleted( uuid );
-}
-
-void    ImportMediaListController::mediaDeletion( const QUuid& uuid )
-{
-    emit mediaDeleted( uuid );
 }
 
 void    ImportMediaListController::clipAdded( Clip* clip )
