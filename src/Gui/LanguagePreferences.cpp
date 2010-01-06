@@ -26,19 +26,35 @@
 #include "LanguagePreferences.h"
 #include "ui_LanguagePreferences.h"
 
+#include <QDir>
+
 QTranslator* LanguagePreferences::m_currentLang = NULL;
 
 LanguagePreferences::LanguagePreferences( QWidget *parent )
     : PreferenceWidget( parent )
 {
     m_ui.setupUi( this );
-    m_ui.comboBoxLanguage->addItem( tr( "Czech" ),      "cs" );
-    m_ui.comboBoxLanguage->addItem( tr( "English" ),    "en" );
-    m_ui.comboBoxLanguage->addItem( tr( "French" ),     "fr" );
-    m_ui.comboBoxLanguage->addItem( tr( "Japanese" ),   "jp" );
-    m_ui.comboBoxLanguage->addItem( tr( "Spanish" ),    "es" );
-    m_ui.comboBoxLanguage->addItem( tr( "Swedish" ),    "sv" );
-    m_ui.comboBoxLanguage->addItem( tr( "Brazilian Portugese" ),    "pt_BR" );
+
+    QDir            dir( "ts/", "*.ts", QDir::Name | QDir::IgnoreCase, QDir::Files );
+    QStringList     tss = dir.entryList();
+
+    foreach ( const QString& tsFileName, tss )
+    {
+        QString     localeStr;
+        int         localePos = tsFileName.lastIndexOf( "vlmc_");
+        int         dotPos = tsFileName.lastIndexOf( ".ts" );
+        if ( localePos < 0 || dotPos < 0 )
+        {
+            qWarning() << "Invalid translation file:" << tsFileName;
+            continue ;
+        }
+        localePos += 5;
+        localeStr = tsFileName.mid( localePos, dotPos - localePos );
+        QLocale     locale( localeStr );
+        m_ui.comboBoxLanguage->addItem( QLocale::countryToString( locale.country() ) + " / "
+                                        + QLocale::languageToString( locale.language() ), localeStr );
+    }
+    m_ui.comboBoxLanguage->addItem( "UnitedStates / English",    "en" );
 }
 
 LanguagePreferences::~LanguagePreferences() {}
