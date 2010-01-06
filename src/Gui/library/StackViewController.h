@@ -57,7 +57,6 @@ private:
 
 public slots:
     void                        previous();
-    void                        displayImportMenu();
 
 signals:
     void                        importRequired();
