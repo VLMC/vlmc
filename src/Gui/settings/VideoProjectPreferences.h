@@ -26,7 +26,7 @@
 #include "PreferenceWidget.h"
 #include "ui_VideoProjectPreferences.h"
 
-#include <QWidget>
+class QWidget;
 
 class VideoProjectPreferences : public PreferenceWidget
 {

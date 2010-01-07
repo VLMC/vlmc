@@ -26,8 +26,9 @@
 #include "PreferenceWidget.h"
 #include "ui_VLMCPreferences.h"
 
-#include <QWidget>
 #include <QSettings>
+
+class QWidget;
 
 class VLMCPreferences : public PreferenceWidget
 {

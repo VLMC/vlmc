@@ -20,13 +20,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include "ProjectPreferences.h"
+
+#include "PreferenceWidget.h"
+#include "SettingsManager.h"
+
+#include <QWidget>
 //DEBUG
 #include <QtDebug>
 //!DEBUG
-
-#include "ProjectPreferences.h"
-#include "PreferenceWidget.h"
-#include "SettingsManager.h"
 
 
   ProjectPreferences::ProjectPreferences( QWidget* parent )

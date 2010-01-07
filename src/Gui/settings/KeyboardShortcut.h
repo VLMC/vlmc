@@ -25,12 +25,12 @@
 
 #include "PreferenceWidget.h"
 
-#include <QObject>
 #include <QFormLayout>
 #include <QHash>
 #include <QString>
-#include <QKeySequence>
 
+class QKeySequence;
+class QWidget;
 
 class   KeyboardShortcut : public PreferenceWidget
 {

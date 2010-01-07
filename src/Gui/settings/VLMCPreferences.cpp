@@ -23,7 +23,8 @@
 #include "VLMCPreferences.h"
 #include "SettingsManager.h"
 
-#include "QDebug"
+#include <QWidget>
+#include <QtDebug>
 
 VLMCPreferences::VLMCPreferences( QWidget *parent )
         : PreferenceWidget( parent )

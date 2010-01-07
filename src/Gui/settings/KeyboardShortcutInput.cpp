@@ -22,6 +22,7 @@
 
 #include <QKeyEvent>
 #include <QKeySequence>
+#include <QTimer>
 #include <QtDebug>
 
 #include "KeyboardShortcutInput.h"

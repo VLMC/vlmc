@@ -25,7 +25,8 @@
 
 #include "PreferenceWidget.h"
 #include "ui_AudioProjectPreferences.h"
-#include <QWidget>
+
+class QWidget;
 
 class AudioProjectPreferences : public PreferenceWidget
 {

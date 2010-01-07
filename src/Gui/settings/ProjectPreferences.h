@@ -26,9 +26,7 @@
 #include "ui_ProjectPreferences.h"
 #include "PreferenceWidget.h"
 
-#include <QSettings>
-#include <QWidget>
-
+class QWidget;
 
 class   ProjectPreferences : public PreferenceWidget
 {

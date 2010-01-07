@@ -24,7 +24,8 @@
 #define KEYBOARDSHORTCUTINPUT_H
 
 #include <QPushButton>
-#include <QTimer>
+
+class QTimer;
 
 class   KeyboardShortcutInput : public QPushButton
 {

@@ -25,8 +25,10 @@
 #define PANEL_H
 
 #include <QWidget>
-#include <QVBoxLayout>
 #include <QString>
+
+class QVBoxLayout;
+class QButtonGroup;
 
 class QButtonGroup;
 
