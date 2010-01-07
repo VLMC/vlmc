@@ -33,6 +33,16 @@ class   QWidget;
 #include "MainWorkflow.h"
 
 #include <QObject>
+
+class   Clip;
+
+class   QWidget;
+class   QWaitCondition;
+class   QMutex;
+class   QUuid;
+
+
+#include <QObject>
 #include <QStack>
 
 class   WorkflowRenderer : public GenericRenderer

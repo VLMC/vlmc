@@ -25,7 +25,7 @@
 
 #include <QObject>
 #include <QWidget>
-#include <QLabel>
+class   QLabel;
 
 #include "VLCMediaPlayer.h"
 #include "MainWorkflow.h"

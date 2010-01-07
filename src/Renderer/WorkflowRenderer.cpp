@@ -29,6 +29,11 @@
 #include "timeline/Timeline.h"
 #include "SettingsManager.h"
 #include "LightVideoFrame.h"
+#include "MainWorkflow.h"
+#include "GenericRenderer.h"
+#include "StackedAction.hpp"
+#include "ActionStack.h"
+#include "AudioClipWorkflow.h"
 
 uint8_t*            WorkflowRenderer::silencedAudioBuffer = NULL;
 
