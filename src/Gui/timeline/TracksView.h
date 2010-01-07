@@ -37,6 +37,7 @@ class QGraphicsLinearLayout;
 class TracksScene;
 class GraphicsMovieItem;
 class WorkflowRenderer;
+class ToolButtons;
 
 class TracksView : public QGraphicsView
 {
