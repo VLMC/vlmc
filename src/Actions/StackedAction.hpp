@@ -26,6 +26,7 @@
 #include <QUuid>
 
 #include "MainWorkflow.h"
+#include "Clip.h"
 
 namespace Action
 {

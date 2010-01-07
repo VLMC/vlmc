@@ -29,6 +29,7 @@
 #include "TrackHandler.h"
 #include "Library.h"
 #include "SettingsManager.h"
+#include "Clip.h"
 
 LightVideoFrame*    MainWorkflow::blackOutput = NULL;
 

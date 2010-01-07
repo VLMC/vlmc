@@ -24,8 +24,6 @@
 #ifndef MAINWORKFLOW_H
 #define MAINWORKFLOW_H
 
-#include <QObject>
-
 #include "Singleton.hpp"
 #include "AudioClipWorkflow.h"
 
@@ -39,6 +37,9 @@ class   LightVideoFrame;
 class   EffectsEngine;
 class   TrackWorkflow;
 class   TrackHandler;
+
+#include <QObject>
+#include <QUuid>
 
 class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
 {

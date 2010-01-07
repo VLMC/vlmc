@@ -34,6 +34,8 @@
 #include "ActionStack.h"
 #include "AudioClipWorkflow.h"
 
+class   QWaitCondition;
+
 class   WorkflowRenderer : public GenericRenderer
 {
     Q_OBJECT

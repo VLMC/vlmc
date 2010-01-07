@@ -23,16 +23,17 @@
 #ifndef CLIPWORKFLOW_H
 #define CLIPWORKFLOW_H
 
-#include <QReadWriteLock>
-#include <QMutex>
-#include <QObject>
-#include <QQueue>
-
-#include "Clip.h"
-#include "WaitCondition.hpp"
 #include "VLCMediaPlayer.h"
-#include "LightVideoFrame.h"
 #include "mdate.h"
+
+#include <QObject>
+
+class   QReadWriteLock;
+class   QMutex;
+
+class   Clip;
+class   WaitCondition;
+class   LightVideoFrame;
 
 class   ClipWorkflow : public QObject
 {

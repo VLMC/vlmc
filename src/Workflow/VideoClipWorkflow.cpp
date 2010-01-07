@@ -24,6 +24,7 @@
 #include "VideoClipWorkflow.h"
 #include "MainWorkflow.h"
 #include "StackedBuffer.hpp"
+#include "LightVideoFrame.h"
 
 VideoClipWorkflow::VideoClipWorkflow( Clip* clip ) : ClipWorkflow( clip )
 {

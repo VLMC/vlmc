@@ -20,12 +20,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <QtDebug>
-
 #include "vlmc.h"
 #include "ClipWorkflow.h"
 #include "MemoryPool.hpp"
 #include "LightVideoFrame.h"
+#include "Clip.h"
+#include "WaitCondition.hpp"
+
+#include <QWaitCondition>
+#include <QtDebug>
 
 ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
                 m_mediaPlayer(NULL),

@@ -26,6 +26,7 @@
 
 #include <QMutex>
 #include <QQueue>
+#include <QtDebug>
 
 #include "Singleton.hpp"
 

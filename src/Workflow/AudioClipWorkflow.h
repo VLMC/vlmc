@@ -24,7 +24,6 @@
 #define AUDIOCLIPWORKFLOW_H
 
 #include "ClipWorkflow.h"
-#include "Pool.hpp"
 #include "StackedBuffer.hpp"
 
 class   AudioClipWorkflow : public ClipWorkflow

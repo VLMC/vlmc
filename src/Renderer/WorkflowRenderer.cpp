@@ -22,11 +22,13 @@
 
 #include <QtDebug>
 #include <QThread>
+#include <QWaitCondition>
 
 #include "vlmc.h"
 #include "WorkflowRenderer.h"
 #include "timeline/Timeline.h"
 #include "SettingsManager.h"
+#include "LightVideoFrame.h"
 
 uint8_t*            WorkflowRenderer::silencedAudioBuffer = NULL;
 
