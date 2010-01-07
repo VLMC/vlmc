@@ -21,52 +21,48 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <QLabel>
 #include <QSizePolicy>
-#include <QPalette>
 #include <QDockWidget>
 #include <QFileDialog>
 #include <QSlider>
-#include <QUndoView>
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QUrl>
 #include <QSettings>
-#include <QStringList>
 
 #include "MainWindow.h"
 #include "Library.h"
-#include "Timeline.h"
-#include "TracksView.h"
 #include "About.h"
-#include "DockWidgetManager.h"
-#include "ImportController.h"
+#include "ProjectManager.h"
+#include "KeyboardShortcut.h"
+#include "VlmcDebug.h"
+
 #include "MainWorkflow.h"
 #include "WorkflowFileRenderer.h"
 #include "WorkflowRenderer.h"
 #include "ClipRenderer.h"
 #include "EffectsEngine.h"
+
+/* Widgets */
+#include "DockWidgetManager.h"
 #include "UndoStack.h"
-#include "ClipProperty.h"
 #include "PreviewWidget.h"
-#include "ProjectWizard.h"
-#include "PreferenceWidget.h"
-#include "ProjectPreferences.h"
+#include "MediaLibraryWidget.h"
+#include "timeline/Timeline.h"
+#include "timeline/TracksView.h"
+#include "ImportController.h"
+
+/* Settings / Preferences */
 #include "ProjectManager.h"
+#include "ProjectWizard.h"
+#include "ProjectPreferences.h"
+#include "VLMCPreferences.h"
+#include "VLMCSettingsDefault.h"
 #include "AudioProjectPreferences.h"
 #include "VideoProjectPreferences.h"
-#include "VLMCSettingsDefault.h"
-#include "ProjectSettingsDefault.h"
-#include "VLMCPreferences.h"
-#include "Import.h"
-#include "MediaLibraryWidget.h"
 #include "LanguagePreferences.h"
-#include "ProjectManager.h"
-#include "KeyboardShortcut.h"
 #include "Settings.h"
-#include "SettingValue.h"
 #include "SettingsManager.h"
-#include "VlmcDebug.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )

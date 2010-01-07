@@ -24,7 +24,7 @@
 #define TRACKCONTROLS_H
 
 #include <QtGui/QWidget>
-#include "GraphicsTrack.hpp"
+#include "timeline/GraphicsTrack.hpp"
 
 namespace Ui {
     class TrackControls;
