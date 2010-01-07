@@ -164,14 +164,32 @@ EffectNode const * EffectsEngine::operator*( void ) const
     return ( m_patch );
 }
 
+//
+//
+//
+
+const LightVideoFrame &
+EffectsEngine::getVideoOutput( quint32 outId ) const
+{
+    return (*m_patch->getInternalStaticVideoInput( outId ));
+}
+
+void
+EffectsEngine::setVideoInput( quint32 inId, const LightVideoFrame & frame )
+{
+    (*m_patch->getInternalStaticVideoOutput( inId )) << frame;
+}
+
 // BYPASSING
 
-void		EffectsEngine::enable( void )
+void
+EffectsEngine::enable( void )
 {
     return ;
 }
 
-void		EffectsEngine::disable( void )
+void
+EffectsEngine::disable( void )
 {
     return ;
 }

@@ -53,6 +53,9 @@ class	EffectsEngine
   void               enable( void );
   void               disable( void );
 
+  const LightVideoFrame & getVideoOutput( quint32 outId ) const;
+  void                    setVideoInput( quint32 inId, const LightVideoFrame & frame );
+
  private:
 
   mutable QReadWriteLock                        m_rwl;
