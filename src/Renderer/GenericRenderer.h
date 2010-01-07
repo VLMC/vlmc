@@ -27,9 +27,12 @@
 #include <QWidget>
 #include <QLabel>
 
-#include "Clip.h"
 #include "VLCMediaPlayer.h"
 #include "MainWorkflow.h"
+
+class   Clip;
+class   Media;
+class   QUuid;
 
 /**
  *  \class  Common base for every renderer.
