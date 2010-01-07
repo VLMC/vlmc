@@ -39,7 +39,6 @@ MainWorkflow::MainWorkflow( int trackCount ) :
 {
     m_currentFrameLock = new QReadWriteLock;
     m_renderStartedLock = new QReadWriteLock;
-    m_renderMutex = new QMutex;
 
     const SettingValue* width = SettingsManager::getInstance()->getValue( "project", "VideoProjectWidth" );
     connect( width, SIGNAL( changed( QVariant ) ), this, SLOT( widthChanged( QVariant ) ) );
@@ -72,7 +71,6 @@ MainWorkflow::~MainWorkflow()
     stop();
 
     delete m_effectEngine;
-    delete m_renderMutex;
     delete m_renderStartedLock;
     delete m_currentFrameLock;
     delete m_currentFrame;
@@ -119,11 +117,10 @@ void    MainWorkflow::startRender()
 MainWorkflow::OutputBuffers*    MainWorkflow::getOutput( TrackType trackType )
 {
     QReadLocker         lock( m_renderStartedLock );
-    QMutexLocker        lock2( m_renderMutex );
 
     if ( m_renderStarted == true )
     {
-        QReadLocker         lock3( m_currentFrameLock );
+        QReadLocker         lock2( m_currentFrameLock );
 
         m_tracks[trackType]->getOutput( m_currentFrame[VideoTrack], m_currentFrame[trackType] );
         if ( trackType == MainWorkflow::VideoTrack )
@@ -145,26 +142,15 @@ MainWorkflow::OutputBuffers*    MainWorkflow::getOutput( TrackType trackType )
 
 void        MainWorkflow::pause()
 {
-    {
-        //Just wait for the current render to finish
-        //TODO:
-        //FIXME: check if this is not alreay handled by the stacked actions system.
-        QMutexLocker    lock( m_renderMutex );
-
-        for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
-            m_tracks[i]->pause();
-    }
+    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
+        m_tracks[i]->pause();
     emit mainWorkflowPaused();
 }
 
 void        MainWorkflow::unpause()
 {
-    {
-        QMutexLocker    lock( m_renderMutex );
-
-        for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
-            m_tracks[i]->unpause();
-    }
+    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
+        m_tracks[i]->unpause();
     emit mainWorkflowUnpaused();
 }
 
