@@ -44,12 +44,6 @@ class	EffectsEngine
 		/* quint32 nbinputs, quint32 nboutputs  */);
   ~EffectsEngine();
 
-
-  EffectNode*        operator->( void );
-  EffectNode const * operator->( void ) const;
-  EffectNode*        operator*( void );
-  EffectNode const * operator*( void ) const;
-
   void               enable( void );
   void               disable( void );
 

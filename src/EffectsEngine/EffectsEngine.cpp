@@ -150,37 +150,6 @@ EffectsEngine::~EffectsEngine()
         EffectNode::deleteRootNode( "BypassRootNode" );
 }
 
-//
-
-EffectNode* EffectsEngine::operator->( void )
-{
-    QReadLocker    rl( &m_rwl );
-    return ( m_patch );
-}
-
-EffectNode const * EffectsEngine::operator->( void ) const
-{
-    QReadLocker    rl( &m_rwl );
-    return ( m_patch );
-}
-
-EffectNode* EffectsEngine::operator*( void )
-{
-    QReadLocker    rl( &m_rwl );
-    return ( m_patch );
-}
-
-EffectNode const * EffectsEngine::operator*( void ) const
-{
-    QReadLocker    rl( &m_rwl );
-    return ( m_patch );
-}
-
-//
-//
-//
-
-
 void
 EffectsEngine::setVideoInput( quint32 inId, const LightVideoFrame & frame )
 {
