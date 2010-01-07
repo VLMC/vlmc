@@ -1,0 +1,303 @@
+Hacking on VLMC
+---------------
+
+Thanks
+------
+Most parts of this guide are taken from the Amarok coding rules.
+
+This C++ FAQ is a life saver in many situations, so you want to keep it handy:
+
+  http://www.parashift.com/c++-faq-lite/
+
+
+Formatting
+----------
+* Spaces, not tabs
+* Indentation is 4 spaces
+* No trailing spaces
+* Lines should be limited to 90 characters
+* Spaces between brackets and argument functions
+* Spaces before and after operators
+* For pointer and reference variable declarations put a space between the type
+  and the * or & and no space before the variable name.
+* For if, else, while and similar statements put the brackets on the next line,
+  although brackets are not needed for single statements.
+* Function and class definitions have their brackets on separate lines
+* A function implementation's return type is on its own line.
+* A return keyword must be used without parenthesis.
+* CamelCase.{cpp,h} style file names.
+* Qt 4 includes a foreach keyword which makes it very easy to iterate over all
+  elements of a container.
+
+Example:
+
+ | bool
+ | MyClass::myMethod( QStringList list, const QString &name )
+ | {
+ |     if( list.isEmpty() )
+ |         return false;
+ |
+ |     /*
+ |       Define the temporary variable like this to restrict its scope
+ |       when you do not need it outside the loop. Let the compiler
+ |       optimise it.
+ |     */
+ |     foreach( const QString &string, list )
+ |         debug() << "Current string is " << string;
+ | }
+
+
+The program astyle can be used to automatically format source code, which can
+be useful for badly formatted 3rd party patches.
+
+Use it like this to get (approximately) VLMC formatting style:
+
+    "astyle -s4 -b -p -U -D -o source.cpp"
+
+
+Class, Function, Enums & Variable Naming
+---------------------------------
+* Use CamelCase for everything.
+* Local variables should start out with a lowercase letter.
+* Class names are capitalized
+* Prefix class member variables with m_, ex. m_tracksView.
+* Prefix static member variables with s_, ex s_instance
+* Functions are named in the Qt style. It's like Java's, without the "get"
+  prefix.
+  * A getter is variable()
+  * If it's a getter for a boolean, prefix with 'is', so isCondition()
+  * A setter is setVariable( arg ).
+
+
+Best Practices
+--------------
+* Focus on code portability
+* Focus on code readability
+  * Do not overload an operator without a valid justification
+  * For each overloaded operator, there must be an equivalent method
+  * Do not use reinterpret_cast without a valid justification
+  * Do not write functions and/or methods of more than 100 lines
+
+
+Includes
+--------
+Header includes should be listed in the following order:
+    - Own Header
+    - VLMC includes
+    - Qt includes
+
+They should also be sorted alphabetically, for ease of locating them. A small
+comment if applicable is also helpful.
+
+Includes in a header file should be kept to the absolute minimum, as to keep
+compile times low. This can be achieved by using "forward declarations"
+instead of includes, like "class QListView;". Forward declarations work for
+pointers and const references.
+
+In vim you can sort headers automatically by marking the block, and then
+doing ":sort".
+
+Example:
+
+ | #include "MySuperWidget.h"
+ |
+ | #include "Timeline.h"
+ | #include "TracksRuler.h"
+ | #include "TracksView.h"
+ |
+ | #include <QGraphicsView>
+ | #include <QWidget>
+
+
+Comments
+--------
+Comment your code. Don't comment what the code does, comment on the purpose of
+the code. It's good for others reading your code, and ultimately it's good for
+you too. Every method must be commented (in Doxygen format), including
+potential return value and potential parameters.
+
+For headers, use the Doxygen syntax. See: http://www.stack.nl/~dimitri/doxygen/
+
+
+Header Formatting
+-----------------
+General rules apply here. Please keep header function definitions aligned
+nicely, if possible. It helps greatly when looking through the code. Sorted
+methods, either by name or by their function (ie, group all related methods
+together) is great too. Access levels should be sorted in this order:
+public, protected, private.
+
+Example:
+
+ | #ifndef TRACKSCONTROLS_H
+ | #define TRACKSCONTROLS_H
+ |
+ | class TracksControls : public QScrollArea
+ | {
+ |     Q_OBJECT
+ |
+ |     public:
+ |         TracksControls( QWidget *parent = 0 );
+ |         ~TracksControls() {};
+ |
+ |     public slots:
+ |         void            addVideoTrack( GraphicsTrack *track );
+ |         void            addAudioTrack( GraphicsTrack *track );
+ |         void            clear();
+ |
+ |     private:
+ |         QWidget         *m_centralWidget;
+ |         QWidget         *m_separator;
+ |         QVBoxLayout     *m_layout;
+ | };
+ |
+ | #endif // TRACKSCONTROLS_H
+
+
+0 vs NULL
+---------
+0 and NULL are the same in C++. However, NULL is expected to be used with
+pointers, therefore, it improves code clarity.
+To summarize:
+ * You shall use NULL when dealing with pointers.
+ * You must not use NULL when dealing with something that's not a pointer.
+
+
+Const Correctness
+-----------------
+Try to keep your code const correct. Declare methods const if they don't mutate
+the object, and use const variables. It improves safety, and also makes it
+easier to understand the code.
+
+In case of a pointer/reference to a const value, you must put the const at the
+beginning of the line.
+
+See: http://www.parashift.com/c++-faq-lite/const-correctness.html
+
+Example:
+
+ | bool
+ | MyClass::isValidFile( const QString &path ) const
+ | {
+ |     const bool valid = QFile::exist( path );
+ |
+ |     return valid;
+ | }
+
+
+Casts
+-----
+Prefer C++ casts instead of the traditionnals C casts.
+
+Wrong:
+ | void
+ | MyClass::clicked( QAbstractButton *button )
+ | {
+ |     QPushButton *pButton = (QPushButton*)button;
+ |
+ |     pButton->setFlat( true );
+ | }
+
+Correct:
+ | void
+ | MyClass::clicked( QAbstractButton *button )
+ | {
+ |     QPushButton *pButton = static_cast<QPushButton *>( button );
+ |
+ |     pButton->setFlat( true );
+ | }
+
+
+Commenting Out Code
+-------------------
+Don't keep commented out code. It just causes confusion and makes the source
+harder to read. Remember, the last revision before your change is always
+availabe in Git. Hence no need for leaving cruft in the source.
+
+Wrong:
+ | myWidget->show();
+ | //myWidget->rise(); //what is this good for?
+
+Correct:
+ | myWidget->show();
+
+
+Internationalization (i18n)
+---------------------------
+Each translatable string should be enclosed within a tr().
+
+Wrong:
+ | myPushButton->setText( "Click me!" );
+
+Correct:
+ | myPushButton->setText( tr( "Click me!" ) );
+
+Read more on: http://doc.trolltech.com/i18n-source-translation.html
+
+VLMC also supports retranslation of the entire GUI at runtime. You should
+subscribe to QEvent::LanguageChange to be notified of a language change and
+update the GUI accordingly.
+
+Example:
+
+ | void
+ | MyWidget::changeEvent( QEvent *e )
+ | {
+ |     QFrame::changeEvent( e );
+ |     switch( e->type() )
+ |     {
+ |     case QEvent::LanguageChange:
+ |         ui.retranslateUi( this );
+ |         break;
+ |     default:
+ |         break;
+ |     }
+ | }
+
+
+Embedding UI Class
+------------------
+Use simple aggregation to embed a Qt UI into your class.
+
+Example:
+
+ | #include "ui_MyWidget.h"
+ |
+ | class MyWidget : public QFrame
+ | {
+ |     Q_OBJECT
+ |
+ |     public:
+ |         MyWidget( QWidget *parent = 0 );
+ |         ~MyWidget() {};
+ |
+ |     protected:
+ |         virtual void changeEvent( QEvent *e );
+ |
+ |     private:
+ |         Ui::MyWidget ui;
+ | };
+
+
+Debugging
+---------
+Debug is not printed out on the console by default. However, everything is
+written to a log file. This can be changed by setting -v, -vv, and
+--logfile=[output_file]
+
+Don't ever ever ever let some debugs such as "i am here", "ptr == 0xDEADB33F".
+Just let what's required. (ie: a media loaded, the render has started.... )
+
+
+Copyright
+---------
+To comply with the GPL, add your name, email address & the year to the top of
+any file that you edit. If you bring in code or files from elsewhere, make sure
+its GPL-compatible and to put the authors name, email & copyright year to the
+top of those files.
+
+Please note that it is not sufficient to write a pointer to the license (like a
+URL). The complete license header needs to be written everytime.
+
+Thanks, now have fun!
+  -- the VLMC developers
