@@ -34,25 +34,23 @@ class   Panel : public QWidget
 {
     Q_OBJECT
     Q_DISABLE_COPY( Panel )
-    public:
-        Panel( QWidget* parent = 0 );
-        virtual ~Panel();
 
-        void    addButton( const QString& label,
-                           const QIcon& icon,
-                           int index );
+public:
+    Panel( QWidget* parent = 0 );
+    virtual ~Panel() { }
 
-    private:
-        virtual void        showEvent( QShowEvent * );
-        QVBoxLayout*        m_layout;
-        QButtonGroup*       m_buttons;
-        static const int    M_ICON_HEIGHT;
+    void    addButton( const QString& label,
+                       const QIcon& icon,
+                       int index );
 
-    private slots:
-        void    switchPanel( int index );
+private:
+    virtual void        showEvent( QShowEvent * );
+    QVBoxLayout*        m_layout;
+    QButtonGroup*       m_buttons;
+    static const int    M_ICON_HEIGHT;
 
-    signals:
-        void   changePanel( int index );
+signals:
+    void   changePanel( int index );
 };
 
 

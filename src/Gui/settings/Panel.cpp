@@ -35,9 +35,7 @@
 
 const int   Panel::M_ICON_HEIGHT = 64;
 
-Panel::Panel( QWidget* parent )
-    : QWidget( parent ),
-    m_layout( 0 )
+Panel::Panel( QWidget* parent ) : QWidget( parent )
 {
     m_layout = new QVBoxLayout( this );
     m_buttons = new QButtonGroup( this );
@@ -48,16 +46,10 @@ Panel::Panel( QWidget* parent )
     m_layout->insertSpacerItem( 1, new QSpacerItem( 1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
 
     connect( m_buttons, SIGNAL( buttonPressed(int) ),
-             this, SLOT( switchPanel(int) ) );
+             this, SIGNAL( changePanel(int) ) );
 
     setSizePolicy( QSizePolicy::Expanding,
                    QSizePolicy::Expanding );
-    setLayout( m_layout );
-}
-
-Panel::~Panel()
-{
-
 }
 
 void    Panel::addButton( const QString& label,
@@ -86,12 +78,6 @@ void    Panel::addButton( const QString& label,
 void    Panel::showEvent( QShowEvent *event )
 {
     // Reset the selection when the dialog is shown.
-    if ( !event->spontaneous() &&
-         !m_buttons->buttons().isEmpty() )
+    if ( !event->spontaneous() && !m_buttons->buttons().isEmpty() )
         m_buttons->buttons().first()->setChecked( true );
-}
-
-void    Panel::switchPanel( int index )
-{
-    emit changePanel( index );
 }

@@ -25,7 +25,7 @@
 
 #include "vlmc.h"
 #include "WorkflowRenderer.h"
-#include "Timeline.h"
+#include "timeline/Timeline.h"
 #include "SettingsManager.h"
 
 uint8_t*            WorkflowRenderer::silencedAudioBuffer = NULL;
