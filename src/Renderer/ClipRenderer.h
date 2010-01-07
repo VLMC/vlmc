@@ -72,8 +72,6 @@ public slots:
 
 //    void                    __positionChanged();
     void                    __timeChanged( qint64 time );
-    void                    __videoPaused();
-    void                    __videoPlaying();
     void                    __endReached();
     void                    __videoStopped();
 };

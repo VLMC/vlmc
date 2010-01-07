@@ -43,7 +43,7 @@ StackViewController::StackViewController( QWidget* parent, bool enableImport ) :
     {
         m_importButton = new QPushButton( "Import", parent );
         m_layout->addWidget( m_importButton );
-        connect( m_importButton, SIGNAL( clicked() ), this, SLOT( displayImportMenu() ) );
+        connect( m_importButton, SIGNAL( clicked() ), this, SIGNAL( importRequired() ) );
     }
 
     parent->setLayout( m_layout );
@@ -114,7 +114,3 @@ const ViewController*   StackViewController::getCurrentViewController() const
     return m_current;
 }
 
-void    StackViewController::displayImportMenu()
-{
-    emit importRequired();
-}

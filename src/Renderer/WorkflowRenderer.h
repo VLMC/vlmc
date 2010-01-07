@@ -138,10 +138,6 @@ class   WorkflowRenderer : public GenericRenderer
         void                rulerCursorChanged( qint64 newFrame );
         void                previewWidgetCursorChanged( qint64 newFrame );
 
-        virtual void        __frameChanged( qint64 frame, MainWorkflow::FrameChangedReason );
-        void                __videoPaused();
-        void                __videoStopped();
-        void                __videoPlaying();
         void                __endReached();
 
     private slots:
