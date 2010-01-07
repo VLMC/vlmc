@@ -27,7 +27,7 @@
 
 #include <iostream>
 
-EffectsEngine::EffectsEngine( void ) : m_patch( NULL ), m_bypassPatch( NULL )
+EffectsEngine::EffectsEngine( void ) : m_patch( NULL ), m_bypassPatch( NULL ), m_enabled( true ), m_processedInBypassPatch( false )
 {
     //
     //
@@ -168,16 +168,41 @@ EffectNode const * EffectsEngine::operator*( void ) const
 //
 //
 
-const LightVideoFrame &
-EffectsEngine::getVideoOutput( quint32 outId ) const
-{
-    return (*m_patch->getInternalStaticVideoInput( outId ));
-}
 
 void
 EffectsEngine::setVideoInput( quint32 inId, const LightVideoFrame & frame )
 {
-    (*m_patch->getInternalStaticVideoOutput( inId )) << frame;
+    QWriteLocker  wl( &m_rwl );
+    if ( m_enabled == true )
+    {
+        m_processedInBypassPatch = false;
+        (*m_patch->getInternalStaticVideoOutput( inId )) << frame;
+    }
+    else
+    {
+        m_processedInBypassPatch = true;
+        (*m_bypassPatch->getInternalStaticVideoOutput( inId )) << frame;
+    }
+}
+
+void
+EffectsEngine::render( void )
+{
+    QWriteLocker  wl( &m_rwl );
+    if ( m_processedInBypassPatch == false )
+        m_patch->render();
+    else
+        m_bypassPatch->render();
+}
+
+const LightVideoFrame &
+EffectsEngine::getVideoOutput( quint32 outId ) const
+{
+    QReadLocker  rl( &m_rwl );
+
+    if ( m_processedInBypassPatch == false )
+        return (*m_patch->getInternalStaticVideoInput( outId ));
+    return (*m_bypassPatch->getInternalStaticVideoInput( outId ));
 }
 
 // BYPASSING
@@ -185,11 +210,13 @@ EffectsEngine::setVideoInput( quint32 inId, const LightVideoFrame & frame )
 void
 EffectsEngine::enable( void )
 {
-    return ;
+    QWriteLocker  wl( &m_rwl );
+    m_enabled = true;
 }
 
 void
 EffectsEngine::disable( void )
 {
-    return ;
+    QWriteLocker  wl( &m_rwl );
+    m_enabled = false;
 }

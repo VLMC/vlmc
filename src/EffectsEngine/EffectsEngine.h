@@ -54,6 +54,7 @@ class	EffectsEngine
   void               disable( void );
 
   const LightVideoFrame & getVideoOutput( quint32 outId ) const;
+  void                    render( void );
   void                    setVideoInput( quint32 inId, const LightVideoFrame & frame );
 
  private:
@@ -62,6 +63,8 @@ class	EffectsEngine
   EffectNodeFactory                             m_enf;
   EffectNode*                                   m_patch;
   EffectNode*                                   m_bypassPatch;
+  bool                                          m_enabled;
+  bool                                          m_processedInBypassPatch;
 };
 
 #endif // EFFECTSENGINE_H_

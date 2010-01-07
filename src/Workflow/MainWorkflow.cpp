@@ -218,8 +218,8 @@ MainWorkflow::OutputBuffers*  MainWorkflow::getSynchroneOutput()
 //    qDebug() << "Waiting for sync output";
     m_synchroneRenderWaitCondition->wait( m_synchroneRenderWaitConditionMutex );
 //    qDebug() << "Got it";
-    (*m_effectEngine)->render();
-    LightVideoFrame const & tmp = (*((*m_effectEngine)->getInternalStaticVideoInput( 1 )) );
+    m_effectEngine->render();
+    LightVideoFrame const & tmp = m_effectEngine->getVideoOutput( 1 );
     if (tmp->nboctets == 0 )
         m_outputBuffers->video = MainWorkflow::blackOutput;
     else
