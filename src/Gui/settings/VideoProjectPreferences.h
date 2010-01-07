@@ -23,9 +23,10 @@
 #ifndef VIDEOPROJECTPREFERENCES_H
 #define VIDEOPROJECTPREFERENCES_H
 
-#include <QWidget>
 #include "PreferenceWidget.h"
 #include "ui_VideoProjectPreferences.h"
+
+#include <QWidget>
 
 class VideoProjectPreferences : public PreferenceWidget
 {
