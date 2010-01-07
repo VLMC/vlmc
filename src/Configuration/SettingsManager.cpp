@@ -20,6 +20,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include "SettingsManager.h"
+
+#include "VLMCSettingsDefault.h"
+#include "ProjectSettingsDefault.h"
+
 #include <QHash>
 #include <QDomElement>
 #include <QDomNamedNodeMap>
@@ -29,9 +34,7 @@
 #include <QReadLocker>
 #include <QTextStream>
 
-#include "SettingsManager.h"
-#include "VLMCSettingsDefault.h"
-#include "ProjectSettingsDefault.h"
+
 
 bool    SettingsManager::m_defaultLoaded = false;
 

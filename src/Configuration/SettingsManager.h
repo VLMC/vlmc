@@ -23,13 +23,13 @@
 #ifndef SETTINGSMANAGER_H
 #define SETTINGSMANAGER_H
 
+#include "SettingValue.h"
+#include "QSingleton.hpp"
+
 #include <QObject>
 #include <QHash>
 #include <QReadWriteLock>
 #include <QVariant>
-
-#include "SettingValue.h"
-#include "QSingleton.hpp"
 
 class   QDomDocument;
 class   QDomElement;
