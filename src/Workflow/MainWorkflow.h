@@ -25,18 +25,18 @@
 #define MAINWORKFLOW_H
 
 #include <QObject>
-#include <QReadWriteLock>
-#include <QMutex>
-#include <QDomElement>
-#include <QWaitCondition>
 
-#include "WaitCondition.hpp"
 #include "Singleton.hpp"
-#include "Clip.h"
-#include "LightVideoFrame.h"
-#include "EffectsEngine.h"
 #include "AudioClipWorkflow.h"
 
+class   QMutex;
+class   QReadWriteLock;
+class   QDomElement;
+class   QDomDocument;
+
+class   Clip;
+class   LightVideoFrame;
+class   EffectsEngine;
 class   TrackWorkflow;
 class   TrackHandler;
 
