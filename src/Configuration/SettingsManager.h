@@ -24,15 +24,16 @@
 #define SETTINGSMANAGER_H
 
 #include <QObject>
-#include <QVector>
 #include <QHash>
 #include <QReadWriteLock>
-#include <QString>
 #include <QVariant>
-#include <QDomDocument>
 
 #include "SettingValue.h"
 #include "QSingleton.hpp"
+
+class   QDomDocument;
+class   QDomElement;
+class   QString;
 
 struct  SettingsPart
 {

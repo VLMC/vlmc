@@ -23,6 +23,8 @@
 #ifndef VLMCSETTINGSDEFAULT_H
 #define VLMCSETTINGSDEFAULT_H
 
+#include <QString>
+
 class VLMCSettingsDefault
 {
     public:

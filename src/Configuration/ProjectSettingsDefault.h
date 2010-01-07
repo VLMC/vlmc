@@ -23,6 +23,8 @@
 #ifndef PROJECTSETTINGSDEFAULT_H
 #define PROJECTSETTINGSDEFAULT_H
 
+#include <QString>
+
 class ProjectSettingsDefault
 {
     public:
