@@ -272,8 +272,6 @@ MainWorkflow::setCurrentFrame( qint64 currentFrame, MainWorkflow::FrameChangedRe
 {
     QWriteLocker    lock( m_currentFrameLock );
 
-//    if ( m_currentFrame[VideoTrack] == currentFrame )
-        return ;
     toggleBreakPoint();
     if ( m_renderStarted == true )
     {
