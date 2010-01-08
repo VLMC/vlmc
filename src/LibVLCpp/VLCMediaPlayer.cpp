@@ -34,16 +34,7 @@ MediaPlayer::MediaPlayer() : m_media( NULL )
 
     // Initialize the event manager
     p_em = libvlc_media_player_event_manager( m_internalPtr, m_ex );
-
-    // Register the callback
-    libvlc_event_attach( p_em, libvlc_MediaPlayerSnapshotTaken, callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerTimeChanged, callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerPlaying, callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerPaused, callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerStopped, callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerEndReached, callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerPositionChanged, callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerLengthChanged, callbacks,this,m_ex );
+    registerEvents();
 }
 
 MediaPlayer::MediaPlayer( Media* media ) : m_media( media )
@@ -53,15 +44,7 @@ MediaPlayer::MediaPlayer( Media* media ) : m_media( media )
 
     // Initialize the event manager
     p_em = libvlc_media_player_event_manager( m_internalPtr, m_ex );
-
-    // Register the callback
-    libvlc_event_attach( p_em, libvlc_MediaPlayerSnapshotTaken, callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerTimeChanged, callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerPlaying, callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerPaused, callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerStopped, callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerEndReached, callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerPositionChanged, callbacks, this, m_ex );
+    registerEvents();
 }
 
 MediaPlayer::~MediaPlayer()
@@ -74,6 +57,23 @@ MediaPlayer::~MediaPlayer()
     libvlc_event_detach( p_em, libvlc_MediaPlayerEndReached, callbacks, this, m_ex );
     libvlc_event_detach( p_em, libvlc_MediaPlayerPositionChanged, callbacks, this, m_ex );
     libvlc_media_player_release( m_internalPtr );
+}
+
+void
+MediaPlayer::registerEvents()
+{
+    // Register the callback
+    libvlc_event_attach( p_em, libvlc_MediaPlayerSnapshotTaken,   callbacks, this, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerTimeChanged,     callbacks, this, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerPlaying,         callbacks, this, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerPaused,          callbacks, this, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerStopped,         callbacks, this, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerEndReached,      callbacks, this, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerPositionChanged, callbacks, this, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerLengthChanged,   callbacks, this, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerEncounteredError,callbacks, this, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerPausableChanged, callbacks, this, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerSeekableChanged, callbacks, this, m_ex );
 }
 
 /**
@@ -111,6 +111,10 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
     case libvlc_MediaPlayerSnapshotTaken:
         self->emit snapshotTaken();
         break;
+    case libvlc_MediaPlayerEncounteredError:
+        qDebug() << "libvlc_MediaPlayerEncounteredError received."
+                << "This is not looking good...";
+        break ;
     case libvlc_MediaPlayerSeekableChanged:
     case libvlc_MediaPlayerPausableChanged:
     case libvlc_MediaPlayerTitleChanged:
@@ -119,9 +123,8 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
     case libvlc_MediaPlayerBuffering:
     case libvlc_MediaPlayerForward:
     case libvlc_MediaPlayerBackward:
-    case libvlc_MediaPlayerEncounteredError:
     default:
-        qDebug() << "Unknown mediaPlayerEvent: " << event->type;
+//        qDebug() << "Unknown mediaPlayerEvent: " << event->type;
         break;
     }
 }
@@ -153,6 +156,7 @@ qint64                          MediaPlayer::getTime()
 
 void                            MediaPlayer::setTime( qint64 time )
 {
+    qDebug() << this << "MediaPlayer::setTime: setting time to" << time;
     libvlc_media_player_set_time( m_internalPtr, time, m_ex );
     CheckVlcppException( m_ex );
 }

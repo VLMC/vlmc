@@ -58,7 +58,7 @@ class   TrackWorkflow : public QObject
         TrackWorkflow( unsigned int trackId, MainWorkflow::TrackType type );
         ~TrackWorkflow();
 
-        void*                                   getOutput( qint64 currentFrame, qint64 subFrame );
+        void*                                   getOutput( qint64 currentFrame );
         qint64                                  getLength() const;
         void                                    stop();
         void                                    pause();

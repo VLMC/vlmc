@@ -134,6 +134,7 @@ void*       TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
 {
     cw->getStateLock()->lockForRead();
 
+    qDebug() << "TrackWorkflow::renderClip. currentFrame:" << currentFrame << "trackType:" << m_trackType;
 //    qDebug() << "Rendering clip" << cw << "state:" << cw->getState() << "Type:" << m_trackType;
     if ( cw->getState() == ClipWorkflow::Rendering ||
          cw->getState() == ClipWorkflow::Paused ||
@@ -142,7 +143,10 @@ void*       TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
     {
         cw->getStateLock()->unlock();
         if ( needRepositioning == true )
+        {
+            qDebug() << "adjusting because of needRepositionning";
             adjustClipTime( currentFrame, start, cw );
+        }
         return cw->getOutput( ClipWorkflow::Pop );
     }
     else if ( cw->getState() == ClipWorkflow::Stopped )
@@ -151,6 +155,8 @@ void*       TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
         cw->initialize();
         if ( start != currentFrame || cw->getClip()->getBegin() != 0 ) //Clip was not started as its real begining
         {
+            qDebug() << "Adjusting clip start. start:" << start << "currentframe:" << currentFrame
+                    << "clip begin:" << cw->getClip()->getBegin();
             adjustClipTime( currentFrame, start, cw );
         }
         cw->waitForCompleteInit();
@@ -236,7 +242,7 @@ void                TrackWorkflow::releasePreviousRender()
         m_videoStackedBuffer->release();
 }
 
-void*               TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFrame )
+void*               TrackWorkflow::getOutput( qint64 currentFrame )
 {
     releasePreviousRender();
     QReadLocker     lock( m_clipsLock );
@@ -255,13 +261,24 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFra
         QMutexLocker    lock( m_forceRepositionningMutex );
         if ( m_forceRepositionning == true )
         {
+            qDebug() << "Force repositionning is required.";
             needRepositioning = true;
             m_forceRepositionning = false;
         }
-        else if ( m_paused == true && subFrame != m_lastFrame )
-           needRepositioning = true;
+        else if ( m_paused == true && currentFrame != m_lastFrame )
+        {
+            needRepositioning = true;
+            qDebug() << "Paused is true, currentframe != lastframe -> repo";
+        }
         else
-            needRepositioning = ( abs( subFrame - m_lastFrame ) > 1 ) ? true : false;
+        {
+            needRepositioning = ( abs( currentFrame - m_lastFrame ) > 1 ) ? true : false;
+            if ( needRepositioning == true )
+            {
+                qDebug() << "Need repo because more than 1 frame has passed. currentFrame:"
+                        << currentFrame << "m_lastFrame:" << m_lastFrame;
+            }
+        }
     }
 
     while ( it != end )
@@ -289,7 +306,7 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFra
             stopClipWorkflow( cw );
         ++it;
     }
-    m_lastFrame = subFrame;
+    m_lastFrame = currentFrame;
     return ret;
 }
 
@@ -447,6 +464,8 @@ void    TrackWorkflow::clear()
 
 void    TrackWorkflow::adjustClipTime( qint64 currentFrame, qint64 start, ClipWorkflow* cw )
 {
+    if ( m_trackType == MainWorkflow::AudioTrack )
+        qDebug() << "Adjusting clip time for audio:" << currentFrame;
     qint64  nbMs = ( currentFrame - start ) / cw->getClip()->getParent()->getFps() * 1000;
     qint64  beginInMs = cw->getClip()->getBegin() / cw->getClip()->getParent()->getFps() * 1000;
     qint64  startFrame = beginInMs + nbMs;

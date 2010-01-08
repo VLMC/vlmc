@@ -74,7 +74,7 @@ class   AudioClipWorkflow : public ClipWorkflow
                                             unsigned int size, qint64 pts );
 
         //FIXME: this is totally random powered ! Please adjust with a value that does make sense...
-        static const uint32_t   nbBuffers = 256;
+        static const uint32_t   nbBuffers = 1024;
 };
 
 #endif // AUDIOCLIPWORKFLOW_H

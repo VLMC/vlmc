@@ -32,6 +32,7 @@ AudioClipWorkflow::AudioClipWorkflow( Clip* clip ) :
         AudioSample* as = new AudioSample;
         as->buff = NULL;
         m_availableBuffers.push_back( as );
+        as->debugId = i;
     }
     debugType = 1;
 }
@@ -60,9 +61,12 @@ void*       AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
     QMutexLocker    lock2( m_computedBuffersMutex );
     preGetOutput();
 
-//    qWarning() << "Audio. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
+    qWarning() << "Audio. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
     if ( isEndReached() == true )
+    {
+        qDebug() << "End is reached";
         return NULL;
+    }
     if ( mode == ClipWorkflow::Get )
         qCritical() << "A sound buffer should never be asked with 'Get' mode";
     ::StackedBuffer<AudioSample*>* buff = new StackedBuffer(
@@ -73,7 +77,8 @@ void*       AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 
 void        AudioClipWorkflow::initVlcOutput()
 {
-    m_vlcMedia->addOption( ":verbose 3" );
+//    m_vlcMedia->addOption( ":verbose 3" );
+//    m_vlcMedia->addOption( ":vvv" );
     m_vlcMedia->addOption( ":no-sout-video" );
     m_vlcMedia->addOption( ":no-video" );
     m_vlcMedia->addOption( ":sout=#transcode{}:smem" );
@@ -91,6 +96,7 @@ AudioClipWorkflow::AudioSample*    AudioClipWorkflow::createBuffer( size_t size 
     AudioSample* as = new AudioSample;
     as->buff = new uchar[size];
     as->size = size;
+    as->debugId = -1;
     return as;
 }
 

@@ -63,7 +63,7 @@ void    WorkflowRenderer::initializeRenderer()
 
     sprintf( videoString, "width=%i:height=%i:dar=%s:fps=%s:data=%lld:codec=%s:cat=2:caching=0",
              m_mainWorkflow->getWidth(), m_mainWorkflow->getHeight(), "4/3", "30/1", (qint64)m_videoEsHandler, "RV24" );
-    sprintf( audioParameters, "data=%lld:cat=1:codec=s16l:samplerate=%u:channels=%u",
+    sprintf( audioParameters, "data=%lld:cat=1:codec=s16l:samplerate=%u:channels=%u:caching=0",
              (qint64)m_audioEsHandler, m_rate, m_nbChannels );
     strcpy( inputSlave, ":input-slave=imem://" );
     strcat( inputSlave, audioParameters );
@@ -130,7 +130,7 @@ int     WorkflowRenderer::lockVideo( WorkflowRenderer* self, int64_t *pts, size_
         ptsDiff = (*(ret->video))->ptsDiff;
     }
     self->m_pts = *pts = ptsDiff + self->m_pts;
-    //qDebug() << "Video pts" << self->m_pts << "diff" << ptsDiff;
+//    qDebug() << "Video pts" << self->m_pts << "diff" << ptsDiff;
     //*pts = qRound64( (float)( self->m_pts * 1000000.0f ) / self->m_outputFps );
     //++self->m_pts;
     *buffer = self->m_renderVideoFrame;
@@ -167,7 +167,7 @@ int     WorkflowRenderer::lockAudio(  WorkflowRenderer* self, int64_t *pts, size
         ptsDiff = self->m_pts - self->m_audioPts;
     }
     self->m_audioPts = *pts = self->m_audioPts + ptsDiff;
-    //qDebug() << "Audio pts" << self->m_audioPts << "diff" << ptsDiff;
+//    qDebug() << "Audio pts" << self->m_audioPts << "diff" << ptsDiff;
     //*pts = self->m_audioPts * 1000000.0f / self->m_rate;
     //self->m_audioPts += nbSample * self->m_nbChannels;
     return 0;

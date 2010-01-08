@@ -136,8 +136,7 @@ MainWorkflow::getOutput( TrackType trackType )
     {
         QReadLocker         lock2( m_currentFrameLock );
 
-        m_tracks[trackType]->getOutput( m_currentFrame[VideoTrack],
-                                        m_currentFrame[trackType] );
+        m_tracks[trackType]->getOutput( m_currentFrame[trackType] );
         if ( trackType == MainWorkflow::VideoTrack )
         {
             m_effectEngine->render();
@@ -264,11 +263,18 @@ MainWorkflow::unmuteTrack( unsigned int trackId, MainWorkflow::TrackType trackTy
     m_tracks[trackType]->unmuteTrack( trackId );
 }
 
+void toggleBreakPoint()
+{
+}
+
 void
 MainWorkflow::setCurrentFrame( qint64 currentFrame, MainWorkflow::FrameChangedReason reason )
 {
     QWriteLocker    lock( m_currentFrameLock );
 
+//    if ( m_currentFrame[VideoTrack] == currentFrame )
+        return ;
+    toggleBreakPoint();
     if ( m_renderStarted == true )
     {
         //Since any track can be reactivated, we reactivate all of them, and let them

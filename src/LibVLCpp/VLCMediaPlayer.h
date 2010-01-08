@@ -65,6 +65,7 @@ namespace   LibVLCpp
 
     private:
         static void                         callbacks( const libvlc_event_t* event, void* self );
+        void                                registerEvents();
 
         Exception                           m_ex;
         libvlc_event_manager_t*             p_em;

@@ -93,7 +93,7 @@ void    MetaDataWorker::computeAudioMetaData()
     m_media->getVLCMedia()->addOption( ":sout-transcode-acodec=s16l" );
     m_media->getVLCMedia()->addOption( ":no-sout-smem-time-sync" );
     m_media->getVLCMedia()->addOption( ":no-sout-keep" );
-//    connect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( generateAudioSpectrum() ), Qt::QueuedConnection );
+    connect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( generateAudioSpectrum() ), Qt::QueuedConnection );
 }
 
 void    MetaDataWorker::getMetaData()
