@@ -21,9 +21,16 @@
  *****************************************************************************/
 
 #include "EffectNode.h"
+#include "IEffectNode.h"
 
-EffectNodeFactory              EffectNode::m_renf;
-QReadWriteLock                 EffectNode::m_srwl( QReadWriteLock::Recursive );
+#include <QObject>
+#include <QReadLocker>
+#include <QReadWriteLock>
+#include <QString>
+#include <QWriteLocker>
+
+EffectNodeFactory              EffectNode::s_renf;
+QReadWriteLock                 EffectNode::s_srwl( QReadWriteLock::Recursive );
 
 template class SemanticObjectManager< InSlot<LightVideoFrame> >;
 template class SemanticObjectManager< OutSlot<LightVideoFrame> >;
@@ -34,9 +41,9 @@ template class SemanticObjectManager< OutSlot<LightVideoFrame> >;
 // template class SemanticObjectManager<InSlot<qreal> >;
 // template class SemanticObjectManager<OutSlot<qreal> >;
 
-EffectNode::EffectNode(IEffectPlugin* plugin) : m_rwl( QReadWriteLock::Recursive ),
-                                                m_father( NULL ), m_plugin( plugin ),
-                                                m_visited( false )
+EffectNode::EffectNode( IEffectPlugin* plugin ) : m_rwl( QReadWriteLock::Recursive ),
+                                                  m_father( NULL ), m_plugin( plugin ),
+                                                  m_visited( false )
 {
     m_staticVideosInputs.setFather( this );
     m_staticVideosOutputs.setFather( this );
@@ -802,22 +809,22 @@ EffectNode::isAnEmptyNode( void ) const
 bool
 EffectNode::createRootNode( const QString & rootNodeName )
 {
-    QWriteLocker                        wl( &m_srwl );
-    return EffectNode::m_renf.createEmptyEffectNodeInstance( rootNodeName );
+    QWriteLocker                        wl( &s_srwl );
+    return EffectNode::s_renf.createEmptyEffectNodeInstance( rootNodeName );
 }
 
 bool
 EffectNode::deleteRootNode( const QString & rootNodeName )
 {
-    QWriteLocker                        wl( &m_srwl );
-    return EffectNode::m_renf.deleteEffectNodeInstance( rootNodeName );
+    QWriteLocker                        wl( &s_srwl );
+    return EffectNode::s_renf.deleteEffectNodeInstance( rootNodeName );
 }
 
 EffectNode*
 EffectNode::getRootNode( const QString & rootNodeName )
 {
-    QReadLocker                        rl( &m_srwl );
-    return EffectNode::m_renf.getEffectNodeInstance( rootNodeName );
+    QReadLocker                        rl( &s_srwl );
+    return EffectNode::s_renf.getEffectNodeInstance( rootNodeName );
 }
 
 //

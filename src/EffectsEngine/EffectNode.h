@@ -24,21 +24,23 @@
 #define EFFECTNODE_H_
 
 #include "EffectNodeFactory.h"
-#include "IEffectNode.h"
-#include "IEffectPlugin.h"
 #include "InSlot.hpp"
 #include "OutSlot.hpp"
-#include "LightVideoFrame.h"
 #include "SemanticObjectManager.hpp"
 #include "SimpleObjectsReferencer.hpp"
 
 #include <QQueue>
-#include <QObject>
-#include <QReadLocker>
-#include <QReadWriteLock>
-#include <QString>
 #include <QtGlobal>
-#include <QWriteLocker>
+
+class   IEffectNode;
+class   IEffectPlugin;
+class   LightVideoFrame;
+
+class   QReadLocker;
+class   QReadWriteLock;
+class   QString;
+class   QWriteLocker;
+class   QObject;
 
 class	EffectNode : public IEffectNode
 {
@@ -427,12 +429,12 @@ class	EffectNode : public IEffectNode
 
  private:
 
-    static EffectNodeFactory            m_renf;
-    static QReadWriteLock               m_srwl;
+    static EffectNodeFactory            s_renf;
+    static QReadWriteLock               s_srwl;
 
  private:
 
-    mutable QReadWriteLock                      m_rwl;
+    mutable QReadWriteLock              m_rwl;
     EffectNodeFactory                   m_enf;
     EffectNode*                         m_father;
     IEffectPlugin*                      m_plugin;
