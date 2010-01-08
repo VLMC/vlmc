@@ -36,6 +36,9 @@ class GraphicsMovieItem : public AbstractGraphicsMediaItem
 {
     Q_OBJECT
 public:
+    /**
+     * \brief See http://doc.trolltech.com/4.5/qgraphicsitem.html#type
+     */
     enum { Type = UserType + 1 };
     GraphicsMovieItem( Clip* clip );
     virtual ~GraphicsMovieItem();
@@ -50,7 +53,17 @@ public:
     virtual Clip* clip() const;
 
 protected:
+    /**
+     * \brief Paint the item's rectangle.
+     * \param painter Pointer to a QPainter.
+     * \param option Painting options.
+     */
     void                paintRect( QPainter* painter, const QStyleOptionGraphicsItem* option );
+    /**
+     * \brief Paint the item's title.
+     * \param painter Pointer to a QPainter.
+     * \param option Painting options.
+     */
     void                paintTitle( QPainter* painter, const QStyleOptionGraphicsItem* option );
     virtual void        hoverEnterEvent( QGraphicsSceneHoverEvent* event );
     virtual void        hoverLeaveEvent( QGraphicsSceneHoverEvent* event );
@@ -59,10 +72,19 @@ protected:
     virtual void        mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
 
 private:
+    /**
+     * \brief Check if the position given as parameter could be taken as a resize request.
+     * \return Returns True if the point is in a resize zone.
+     */
     bool                resizeZone( const QPointF& position );
     Clip*               m_clip;
 
 signals:
+    /**
+     * \brief Emitted when the item detect a cut request.
+     * \param self A pointer to the sender.
+     * \param frame Frame's number where the cut takes place.
+     */
     void                split( GraphicsMovieItem* self, qint64 frame );
 };
 
