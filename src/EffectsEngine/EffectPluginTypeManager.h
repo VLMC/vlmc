@@ -36,17 +36,17 @@ class   EffectPluginTypeManager
 
  public:
 
-    EffectPluginTypeManager();
+    EffectPluginTypeManager( void );
     ~EffectPluginTypeManager();
 
-    IEffectPlugin*              createIEffectPluginInstance( quint32 typeId ) const;
-    IEffectPlugin*              createIEffectPluginInstance( QString const & typeName ) const;
+    IEffectPlugin*      createIEffectPluginInstance( quint32 typeId ) const;
+    IEffectPlugin*      createIEffectPluginInstance( const QString & typeName ) const;
 
-    QList<QString>              getEffectPluginTypesNamesList( void ) const;
-    QList<quint32>              getEffectPluginTypesIdsList( void ) const;
+    QList<QString>      getEffectPluginTypesNamesList( void ) const;
+    QList<quint32>      getEffectPluginTypesIdsList( void ) const;
 
-    QString const               getEffectPluginTypeNameByTypeId( quint32 typeId ) const;
-    quint32                     getEffectPluginTypeIdByTypeName( QString const & typeName ) const;
+    const QString       getEffectPluginTypeNameByTypeId( quint32 typeId ) const;
+    quint32             getEffectPluginTypeIdByTypeName( const QString & typeName ) const;
 
  private:
 
