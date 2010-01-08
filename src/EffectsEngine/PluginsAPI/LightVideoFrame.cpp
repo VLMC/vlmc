@@ -34,16 +34,16 @@ VideoFrame::~VideoFrame()
 {
   if ( frame.octets != NULL )
     delete [] frame.octets;
-};
+}
 
-VideoFrame::VideoFrame()
+VideoFrame::VideoFrame( void )
 {
   frame.octets = NULL;
   nboctets = 0;
   nbpixels = 0;
 }
 
-VideoFrame::VideoFrame(VideoFrame const & tocopy) : QSharedData( tocopy )
+VideoFrame::VideoFrame( const VideoFrame& tocopy ) : QSharedData( tocopy )
 {
     if ( tocopy.frame.octets != NULL )
     {
@@ -70,27 +70,28 @@ VideoFrame::VideoFrame(VideoFrame const & tocopy) : QSharedData( tocopy )
 LightVideoFrame::LightVideoFrame()
 {
   m_videoFrame = new VideoFrame;
-};
+}
 
-LightVideoFrame::LightVideoFrame(LightVideoFrame const & tocopy) : m_videoFrame(tocopy.m_videoFrame)
+LightVideoFrame::LightVideoFrame( const LightVideoFrame& tocopy ) : m_videoFrame(tocopy.m_videoFrame)
 {
-};
+}
 
-LightVideoFrame&	LightVideoFrame::operator=(LightVideoFrame const & tocopy)
+LightVideoFrame&
+LightVideoFrame::operator=( const LightVideoFrame& tocopy )
 {
   m_videoFrame = tocopy.m_videoFrame;
-  return ( *this );
-};
+  return *this;
+}
 
-LightVideoFrame::LightVideoFrame(quint32 nboctets)
+LightVideoFrame::LightVideoFrame( quint32 nboctets )
 {
   m_videoFrame = new VideoFrame;
   m_videoFrame->nboctets = nboctets;
   m_videoFrame->nbpixels = nboctets / Pixel::NbComposantes;
   m_videoFrame->frame.octets = new quint8[nboctets];
-};
+}
 
-LightVideoFrame::LightVideoFrame(quint8 const * tocopy, quint32 nboctets)
+LightVideoFrame::LightVideoFrame( const quint8 * tocopy, quint32 nboctets )
 {
     m_videoFrame = new VideoFrame;
     m_videoFrame->nboctets = nboctets;
@@ -98,28 +99,32 @@ LightVideoFrame::LightVideoFrame(quint8 const * tocopy, quint32 nboctets)
     m_videoFrame->frame.octets = new quint8[nboctets];
 
     memcpy( m_videoFrame->frame.octets, tocopy, m_videoFrame->nboctets );
-};
+}
 
 LightVideoFrame::~LightVideoFrame()
 {
-};
+}
 
-VideoFrame const * LightVideoFrame::operator->(void) const
+const VideoFrame*
+LightVideoFrame::operator->( void ) const
 {
-  return ( m_videoFrame.data() );
-};
+  return m_videoFrame.data();
+}
 
-VideoFrame const & LightVideoFrame::operator*(void) const
+const VideoFrame&
+LightVideoFrame::operator*( void ) const
 {
-  return ( *m_videoFrame );
-};
+  return *m_videoFrame;
+}
 
-VideoFrame* LightVideoFrame::operator->(void)
+VideoFrame*
+LightVideoFrame::operator->( void )
 {
-  return ( m_videoFrame.data() );
-};
+  return m_videoFrame.data();
+}
 
-VideoFrame& LightVideoFrame::operator*(void)
+VideoFrame&
+LightVideoFrame::operator*( void )
 {
-  return ( *m_videoFrame );
-};
+  return *m_videoFrame;
+}
