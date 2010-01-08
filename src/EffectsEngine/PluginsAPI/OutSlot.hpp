@@ -38,41 +38,41 @@ template<typename T>
 class   OutSlot
 {
 
-  friend class InSlot<T>;
+    friend class InSlot<T>;
 
 public:
 
-  // CTOR & DTOR
+    // CTOR & DTOR
 
-  OutSlot();
-  OutSlot(OutSlot const &);
-  OutSlot&	operator=(OutSlot const &);
-  ~OutSlot();
+    OutSlot( void );
+    OutSlot( const OutSlot & );
+    OutSlot&            operator=( const OutSlot & );
+    ~OutSlot();
 
-  // STREAMING
+    // STREAMING
 
-  OutSlot&	operator<<( T const & );
-  OutSlot&	operator=( T const & );
+    OutSlot&            operator<<( const T & );
+    OutSlot&            operator=( const T & );
 
-  // CONNECTION & DISCONNECTION
+    // CONNECTION & DISCONNECTION
 
-  bool		connect( InSlot<T>& );
-  bool		disconnect( void );
+    bool		connect( InSlot<T>& );
+    bool		disconnect( void );
 
-  // GETTING INFOS
+    // GETTING INFOS
 
-    InSlot<T>*	getInSlotPtr( void ) const;
-    QString const       getName( void ) const;
+    InSlot<T>*          getInSlotPtr( void ) const;
+    const QString       getName( void ) const;
     quint32             getId( void ) const;
-    IEffectNode const *         getFather( void ) const;
-    bool                        isItAnInternalSlot( void ) const;
+    const IEffectNode * getFather( void ) const;
+    bool                isItAnInternalSlot( void ) const;
 
- // SRTTING INFOS
+    // SRTTING INFOS
 
-    void          setId( quint32 id );
-    void          setName( QString const & name );
-    void          setFather( EffectNode* father );
-    void          setScope( bool isItAnInternalSlot );
+    void                setId( quint32 id );
+    void                setName( const QString & name );
+    void                setFather( EffectNode* father );
+    void                setScope( bool isItAnInternalSlot );
 
 private:
 
@@ -80,24 +80,24 @@ private:
 
     EffectNode*         getPrivateFather( void ) const;
 
-  // OTHERS
+    // OTHERS
 
-  void			setPipe( T* shared );
-  void			resetPipe( void );
-  void			setInSlotPtr( InSlot<T>* );
-  void			resetInSlotPtr( void );
+    void                setPipe( T* shared );
+    void                resetPipe( void );
+    void                setInSlotPtr( InSlot<T>* );
+    void                resetInSlotPtr( void );
 
 private:
 
     mutable QReadWriteLock      m_rwl;
-    InSlot<T>*		m_InSlotPtr;
-    T			m_junk;
-    T*			m_pipe;
+    InSlot<T>*                  m_InSlotPtr;
+    T                           m_junk;
+    T*                          m_pipe;
 
-    quint32             m_id;
-    QString             m_name;
-    EffectNode*         m_father;
-    bool                m_isItAnInternalSlot;
+    quint32                     m_id;
+    QString                     m_name;
+    EffectNode*                 m_father;
+    bool                        m_isItAnInternalSlot;
 };
 
 /////////////////////////
@@ -107,21 +107,30 @@ private:
 // CTOR & DTOR
 
 template<typename T>
-OutSlot<T>::OutSlot() : m_rwl( QReadWriteLock::Recursive ), m_id( 0 ), m_name( "" ), m_father( NULL ), m_isItAnInternalSlot( false )
+OutSlot<T>::OutSlot( void ) : m_rwl( QReadWriteLock::Recursive ),
+                              m_id( 0 ),
+                              m_name( "" ),
+                              m_father( NULL ),
+                              m_isItAnInternalSlot( false )
 {
     resetInSlotPtr();
     resetPipe();
 }
 
 template<typename T>
-OutSlot<T>::OutSlot(OutSlot<T> const & tocopy) : m_rwl( QReadWriteLock::Recursive ), m_id( 0 ), m_name( "" ), m_father( NULL ), m_isItAnInternalSlot( false )
+OutSlot<T>::OutSlot( const OutSlot<T> & tocopy ) : m_rwl( QReadWriteLock::Recursive ),
+                                                 m_id( 0 ),
+                                                 m_name( "" ),
+                                                 m_father( NULL ),
+                                                 m_isItAnInternalSlot( false )
 {
-  resetInSlotPtr();
-  resetPipe();
+    resetInSlotPtr();
+    resetPipe();
 }
 
 template<typename T>
-OutSlot<T>&	OutSlot<T>::operator=(OutSlot<T> const & tocopy)
+OutSlot<T>&
+OutSlot<T>::operator=( const OutSlot<T> & tocopy )
 {
     QWriteLocker  wl( &m_rwl );
 
@@ -131,125 +140,135 @@ OutSlot<T>&	OutSlot<T>::operator=(OutSlot<T> const & tocopy)
     m_isItAnInternalSlot = false;
     resetInSlotPtr();
     resetPipe();
+    return *this;
 }
 
 template<typename T>
 OutSlot<T>::~OutSlot()
 {
-  if ( m_InSlotPtr != NULL )
-    m_InSlotPtr->disconnect();
+    if ( m_InSlotPtr != NULL )
+        m_InSlotPtr->disconnect();
 }
 
 // WRITING METHODS
 
 template<typename T>
-OutSlot<T>&	OutSlot<T>::operator=( T const & val )
+OutSlot<T>&
+OutSlot<T>::operator=( const T & val )
 {
     QWriteLocker  wl( &m_rwl );
     (*m_pipe) = val;
-    return ( *this );
+    return *this;
 }
 
 template<typename T>
-OutSlot<T>&	OutSlot<T>::operator<<( T const & val )
+OutSlot<T>&
+OutSlot<T>::operator<<( const T & val )
 {
     QWriteLocker  wl( &m_rwl );
     (*m_pipe) = val;
-    return (*this);
+    return *this;
 }
 
 // CONNECTION METHODS
 
 template<typename T>
-bool	OutSlot<T>::connect( InSlot<T>& toconnect )
+bool
+OutSlot<T>::connect( InSlot<T>& toconnect )
 {
     QWriteLocker  wl( &m_rwl );
-  if ( m_InSlotPtr != NULL )
-      return ( false );
-  if ( toconnect.connect( (*this) ) == false)
-    return ( false );
-  return ( true );
+    if ( m_InSlotPtr != NULL )
+        return false;
+    if ( toconnect.connect( (*this) ) == false)
+        return false;
+    return true;
 }
 
 template<typename T>
-bool	OutSlot<T>::disconnect( void )
+bool
+OutSlot<T>::disconnect( void )
 {
     QWriteLocker  wl( &m_rwl );
-  if ( m_InSlotPtr == NULL)
-      return ( false );
-  m_InSlotPtr->disconnect();
-  return ( true );
+    if ( m_InSlotPtr == NULL)
+        return false;
+    m_InSlotPtr->disconnect();
+    return true;
 }
 
 // GETTING INFOS
 
 template<typename T>
-InSlot<T>*	OutSlot<T>::getInSlotPtr( void ) const
+InSlot<T>*
+OutSlot<T>::getInSlotPtr( void ) const
 {
     QReadLocker  rl( &m_rwl );
-  return ( m_InSlotPtr );
+    return m_InSlotPtr;
 }
 
 template<typename T>
-quint32                OutSlot<T>::getId( void ) const
+quint32
+OutSlot<T>::getId( void ) const
 {
     QReadLocker  rl( &m_rwl );
-    return ( m_id );
+    return m_id;
 }
 
 template<typename T>
-QString const          OutSlot<T>::getName( void ) const
+const QString
+OutSlot<T>::getName( void ) const
 {
     QReadLocker  rl( &m_rwl );
-    return ( m_name );
+    return m_name;
 }
 
 template<typename T>
-IEffectNode const *         OutSlot<T>::getFather( void ) const
+const IEffectNode *
+OutSlot<T>::getFather( void ) const
 {
     QReadLocker  rl( &m_rwl );
-    return ( m_father );
+    return m_father;
 }
 
 template<typename T>
-bool         OutSlot<T>::isItAnInternalSlot( void ) const
+bool
+OutSlot<T>::isItAnInternalSlot( void ) const
 {
     QReadLocker  rl( &m_rwl );
-    return ( m_isItAnInternalSlot );
+    return m_isItAnInternalSlot;
 }
 
 // SETTING INFOS
 
 template<typename T>
-void                OutSlot<T>::setId( quint32 id )
+void
+OutSlot<T>::setId( quint32 id )
 {
     QWriteLocker  wl( &m_rwl );
     m_id = id;
-    return ;
 }
 
 template<typename T>
-void                OutSlot<T>::setName( QString const & name )
+void
+OutSlot<T>::setName( const QString & name )
 {
     QWriteLocker  wl( &m_rwl );
     m_name = name;
-    return ;
 }
 
 template<typename T>
-void         OutSlot<T>::setFather( EffectNode* father )
+void
+OutSlot<T>::setFather( EffectNode* father )
 {
     QWriteLocker  wl( &m_rwl );
     m_father = father;
-    return ;
 }
 
 template<typename T>
-void         OutSlot<T>::setScope( bool isItAnInternalSlot )
+void
+OutSlot<T>::setScope( bool isItAnInternalSlot )
 {
     QWriteLocker  wl( &m_rwl );
     m_isItAnInternalSlot = isItAnInternalSlot;
-    return ;
 }
 
 //////////////////////////
@@ -259,44 +278,45 @@ void         OutSlot<T>::setScope( bool isItAnInternalSlot )
 // GETTING PRIVATES INFOS
 
 template<typename T>
-EffectNode*         OutSlot<T>::getPrivateFather( void ) const
+EffectNode*
+OutSlot<T>::getPrivateFather( void ) const
 {
     QReadLocker  rl( &m_rwl );
-    return ( m_father );
+    return m_father;
 }
 
 // OTHERS
 
 template<typename T>
-void	OutSlot<T>::setPipe( T* shared )
+void
+OutSlot<T>::setPipe( T* shared )
 {
     QWriteLocker  wl( &m_rwl );
-  m_pipe = shared;
-  return ;
+    m_pipe = shared;
 }
 
 template<typename T>
-void	OutSlot<T>::resetPipe( void )
+void
+OutSlot<T>::resetPipe( void )
 {
     QWriteLocker  wl( &m_rwl );
-  m_pipe = &m_junk;
-  return ;
+    m_pipe = &m_junk;
 }
 
 template<typename T>
-void	OutSlot<T>::setInSlotPtr( InSlot<T>* ptr )
+void
+OutSlot<T>::setInSlotPtr( InSlot<T>* ptr )
 {
     QWriteLocker  wl( &m_rwl );
-  m_InSlotPtr = ptr;
-  return ;
+    m_InSlotPtr = ptr;
 }
 
 template<typename T>
-void	OutSlot<T>::resetInSlotPtr( void )
+void
+OutSlot<T>::resetInSlotPtr( void )
 {
     QWriteLocker  wl( &m_rwl );
-  m_InSlotPtr = NULL;
-  return ;
+    m_InSlotPtr = NULL;
 }
 
 #endif // OUTSLOT_HPP_
