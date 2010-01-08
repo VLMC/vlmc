@@ -27,7 +27,7 @@
 
 #include <QDebug>
 
-EffectPluginTypeLoader::EffectPluginTypeLoader() : m_iepc( NULL )
+EffectPluginTypeLoader::EffectPluginTypeLoader( void ) : m_iepc( NULL )
 {
 }
 
@@ -38,11 +38,11 @@ EffectPluginTypeLoader::~EffectPluginTypeLoader()
 IEffectPlugin*   EffectPluginTypeLoader::createIEffectPluginInstance( void ) const
 {
     if ( m_iepc != NULL )
-        return ( m_iepc->createIEffectPluginInstance() );
-    return ( NULL );
+        return m_iepc->createIEffectPluginInstance();
+    return NULL;
 }
 
-bool    EffectPluginTypeLoader::load( QString const & fileName )
+bool    EffectPluginTypeLoader::load( const QString & fileName )
 {
     QObject*    tmp;
     m_qpl.setFileName( fileName );
@@ -51,15 +51,15 @@ bool    EffectPluginTypeLoader::load( QString const & fileName )
     if ( tmp == NULL )
     {
         qDebug() << m_qpl.errorString();
-        return ( false );
+        return false ;
     }
 
     m_iepc = qobject_cast<IEffectPluginCreator*>( tmp );
     if ( m_iepc == NULL )
     {
-        qDebug() << "The type of the created instance of the loaded class isn't IEffectPluginCreator* !";
-        return ( false );
+        qDebug() << "The type of the created instance of"
+                 << "the loaded class isn't IEffectPluginCreator* !";
+        return false;
     }
-    return  ( true );
+    return true;
 }
-
