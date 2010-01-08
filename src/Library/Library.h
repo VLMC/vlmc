@@ -89,7 +89,7 @@ public:
 
 private:
     /**
-     *  \brief Library Object Constructor
+     *  \brief Library Constructor
      */
     Library();
     /**
@@ -149,14 +149,35 @@ public slots:
      */
     void                    removingMediaAsked( const QUuid& uuid );
 
+    /**
+     *  \brief  Load the medias contained in the project to the library
+     *  \param  project The project file dom element
+     *  \sa saveProject( QDomDocument& doc, QDomElement& rootNode )
+     */
     void                    loadProject( const QDomElement& project );
+    /**
+     *  \brief  Save the medias contained in the library to the project
+     *  \param  doc  The project dom document
+     *  \param  rootNode    The rootNode of the project
+     */
     void                    saveProject( QDomDocument& doc, QDomElement& rootNode );
     /**
      *  \brief  Clear the library (remove all the loaded media and delete them)
      */
     void                    clear();
 private slots:
-    void                    metaDataComputed( Media* );
+    /**
+     *  \brief      This seems to be a crappy function that create a clip from media
+     *  \param      media   The media freshly loaded
+     *  \warning    What the fuck?!!! What is the purpose of that Method?
+     *              Clips should be handled into Medias
+     */
+    void                    metaDataComputed( Media* media );
+    /**
+     *  \brief  This slot should be call when the audio spectrum of a Media has been
+     *          Computed
+     *  \param  media   The media which have a computed audio spectrum
+     */
     void                    audioSpectrumComputed( Media* media );
 
 signals:
@@ -175,6 +196,9 @@ signals:
      *  \param uuid The removed media uuid
      */
     void                    mediaRemoved( const QUuid& );
+    /**
+     *  \brief This signal should be emitted when the project has been loaded
+     */
     void                    projectLoaded();
 
     friend class            Singleton<Library>;
