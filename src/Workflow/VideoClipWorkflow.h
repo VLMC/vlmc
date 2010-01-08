@@ -32,6 +32,16 @@ class   Clip;
 class   VideoClipWorkflow : public ClipWorkflow
 {
     public:
+        class   StackedBuffer : public ::StackedBuffer<LightVideoFrame*>
+        {
+            public:
+                StackedBuffer( LightVideoFrame* lvf, VideoClipWorkflow* poolHandler,
+                                    bool mustBeReleased = true);
+                virtual void    release();
+            private:
+                VideoClipWorkflow*  m_poolHandler;
+        };
+
         VideoClipWorkflow( Clip* clip );
         ~VideoClipWorkflow();
         void*                   getLockCallback();
@@ -52,8 +62,6 @@ class   VideoClipWorkflow : public ClipWorkflow
         QQueue<LightVideoFrame*>    m_availableBuffers;
         static void             lock( VideoClipWorkflow* clipWorkflow, void** pp_ret, int size );
         static void             unlock( VideoClipWorkflow* clipWorkflow, void* buffer, int width, int height, int bpp, int size, qint64 pts );
-
-        friend class    StackedBuffer<LightVideoFrame*, VideoClipWorkflow>;
 };
 
 #endif // VIDEOCLIPWORKFLOW_H

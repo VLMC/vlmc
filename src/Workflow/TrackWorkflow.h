@@ -28,10 +28,8 @@
 
 #include <QObject>
 
-class   AudioClipWorkflow;
 class   ClipWorkflow;
 class   LightVideoFrame;
-class   VideoClipWorkflow;
 
 class   QDomElement;
 class   QDomElement;
@@ -116,9 +114,8 @@ class   TrackWorkflow : public QObject
 
         MainWorkflow::TrackType                 m_trackType;
         qint64                                  m_lastFrame;
-        //Damn i wish this could be a meta-if :D (ho wait... it could be ! once the code will be cleaned)
-        StackedBuffer<LightVideoFrame*, VideoClipWorkflow>*                     m_videoStackedBuffer;
-        StackedBuffer<AudioClipWorkflow::AudioSample*, AudioClipWorkflow>*      m_audioStackedBuffer;
+        StackedBuffer<LightVideoFrame*>*                    m_videoStackedBuffer;
+        StackedBuffer<AudioClipWorkflow::AudioSample*>*     m_audioStackedBuffer;
 
     signals:
         void                                    trackEndReached( unsigned int );

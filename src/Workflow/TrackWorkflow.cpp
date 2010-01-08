@@ -276,9 +276,9 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFra
                 qCritical() << "There's more than one clip to render here. Undefined behaviour !";
             ret = renderClip( cw, currentFrame, start, needRepositioning );
             if ( m_trackType == MainWorkflow::VideoTrack )
-                m_videoStackedBuffer = reinterpret_cast<StackedBuffer<LightVideoFrame*, VideoClipWorkflow>*>( ret );
+                m_videoStackedBuffer = reinterpret_cast<StackedBuffer<LightVideoFrame*>*>( ret );
             else
-                m_audioStackedBuffer = reinterpret_cast<StackedBuffer<AudioClipWorkflow::AudioSample*, AudioClipWorkflow>*>( ret );
+                m_audioStackedBuffer = reinterpret_cast<StackedBuffer<AudioClipWorkflow::AudioSample*>*>( ret );
         }
         //Is it about to be rendered ?
         else if ( start > currentFrame &&

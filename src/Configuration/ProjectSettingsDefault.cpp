@@ -24,6 +24,8 @@
 #include "ProjectSettingsDefault.h"
 #include "ProjectManager.h"
 
+#include <QtDebug>
+
 void    ProjectSettingsDefault::load( const QString& part )
 {
     SettingsManager::getInstance()->addNewSettingsPart( part );
@@ -60,7 +62,7 @@ void    ProjectSettingsDefault::loadVideoDefaults( const QString& part )
     settingsMan->setValue( part,
                            "VideoProjectWidth",
                            defaultProjectWidth );
-
+    qDebug() << "Loaded defaults values";
     return ;
 }
 

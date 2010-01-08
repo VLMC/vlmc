@@ -38,6 +38,16 @@ class   AudioClipWorkflow : public ClipWorkflow
             qint64          ptsDiff;
             uint32_t        debugId;
         };
+        class   StackedBuffer : public ::StackedBuffer<AudioSample*>
+        {
+            public:
+                StackedBuffer( AudioSample* lvf, AudioClipWorkflow* poolHandler,
+                                    bool mustBeReleased = true);
+                virtual void        release();
+            private:
+                AudioClipWorkflow*  m_poolHandler;
+        };
+
         AudioClipWorkflow( Clip* clip );
         ~AudioClipWorkflow();
         void*                   getLockCallback();
@@ -65,8 +75,6 @@ class   AudioClipWorkflow : public ClipWorkflow
 
         //FIXME: this is totally random powered ! Please adjust with a value that does make sense...
         static const uint32_t   nbBuffers = 256;
-
-        friend class    StackedBuffer<AudioSample*, AudioClipWorkflow>;
 };
 
 #endif // AUDIOCLIPWORKFLOW_H

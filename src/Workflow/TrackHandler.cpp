@@ -114,8 +114,8 @@ TrackHandler::getOutput( qint64 currentFrame, qint64 subFrame )
                 m_effectEngine->setVideoInput( i + 1, *TrackHandler::nullOutput );
             else
             {
-                StackedBuffer<LightVideoFrame*, VideoClipWorkflow>* stackedBuffer =
-                    reinterpret_cast<StackedBuffer<LightVideoFrame*, VideoClipWorkflow>*>(
+                StackedBuffer<LightVideoFrame*>* stackedBuffer =
+                    reinterpret_cast<StackedBuffer<LightVideoFrame*>*>(
                             m_tracks[i]->getOutput( currentFrame, subFrame ) );
 
                 m_effectEngine->setVideoInput( i + 1, *( stackedBuffer->get() ) );
@@ -123,9 +123,9 @@ TrackHandler::getOutput( qint64 currentFrame, qint64 subFrame )
         }
         else
         {
-            StackedBuffer<AudioClipWorkflow::AudioSample*, AudioClipWorkflow>*
+            StackedBuffer<AudioClipWorkflow::AudioSample*>*
                     stackedBuffer =
-                    reinterpret_cast<StackedBuffer<AudioClipWorkflow::AudioSample*, AudioClipWorkflow>*> (
+                    reinterpret_cast<StackedBuffer<AudioClipWorkflow::AudioSample*>*> (
                             m_tracks[i]->getOutput( currentFrame, subFrame ) );
             if ( stackedBuffer != NULL )
                 m_tmpAudioBuffer = stackedBuffer->get();

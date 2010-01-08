@@ -26,24 +26,19 @@
 #include <QtDebug>
 #include "Pool.hpp"
 
-template <typename T, typename U>
+template <typename T>
 class   StackedBuffer
 {
     public:
-        StackedBuffer( T buff, U* poolHandler, bool mustBeReleased  = true ) :
+        StackedBuffer( T buff, bool mustBeReleased  = true ) :
                 m_buff( buff ),
-                m_poolHandler( poolHandler ),
                 m_mustRelease( mustBeReleased )
         {
         }
 
         /// \warning    Calling this method will definitely invalidate the pointer;
-        void    release()
-        {
-            if ( m_mustRelease == true )
-                m_poolHandler->releaseBuffer( m_buff );
-            delete this;
-        }
+        virtual void    release() = 0;
+
         const   T&   get() const
         {
             return m_buff;
@@ -61,9 +56,8 @@ class   StackedBuffer
             return get();
         }
 
-    private:
+    protected:
         T           m_buff;
-        U*          m_poolHandler;
         bool        m_mustRelease;
 };
 

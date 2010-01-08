@@ -97,15 +97,13 @@ VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
     "Computed:" << m_computedBuffers.count();*/
     if ( isEndReached() == true )
         return NULL;
-    StackedBuffer<LightVideoFrame*, VideoClipWorkflow>* buff;
+    ::StackedBuffer<LightVideoFrame*>* buff;
     if ( mode == ClipWorkflow::Pop )
     {
-        buff = new StackedBuffer<LightVideoFrame*, VideoClipWorkflow>(
-                                                m_computedBuffers.dequeue(), this, true );
+        buff = new StackedBuffer( m_computedBuffers.dequeue(), this, true );
     }
     else if ( mode == ClipWorkflow::Get )
-        buff = new StackedBuffer<LightVideoFrame*, VideoClipWorkflow>(
-                                                m_computedBuffers.head(), NULL, false );
+        buff = new StackedBuffer( m_computedBuffers.head(), NULL, false );
     postGetOutput();
     return buff;
 }
@@ -191,4 +189,19 @@ VideoClipWorkflow::flushComputedBuffers()
     {
         m_availableBuffers.enqueue( m_computedBuffers.dequeue() );
     }
+}
+
+VideoClipWorkflow::StackedBuffer::StackedBuffer( LightVideoFrame *lvf,
+                                                    VideoClipWorkflow *poolHandler,
+                                                    bool mustBeReleased) :
+    ::StackedBuffer<LightVideoFrame*>( lvf, mustBeReleased ),
+    m_poolHandler( poolHandler )
+{
+}
+
+void    VideoClipWorkflow::StackedBuffer::release()
+{
+    if ( m_mustRelease == true )
+        m_poolHandler->releaseBuffer( m_buff );
+    delete this;
 }

@@ -65,7 +65,8 @@ void*       AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
         return NULL;
     if ( mode == ClipWorkflow::Get )
         qCritical() << "A sound buffer should never be asked with 'Get' mode";
-    StackedBuffer<AudioSample*, AudioClipWorkflow>* buff = new StackedBuffer<AudioSample*, AudioClipWorkflow>( m_computedBuffers.dequeue(), this, true );
+    ::StackedBuffer<AudioSample*>* buff = new StackedBuffer(
+            m_computedBuffers.dequeue(), this, true );
     postGetOutput();
     return buff;
 }
@@ -170,4 +171,19 @@ void        AudioClipWorkflow::flushComputedBuffers()
     {
         m_availableBuffers.enqueue( m_computedBuffers.dequeue() );
     }
+}
+
+AudioClipWorkflow::StackedBuffer::StackedBuffer( AudioClipWorkflow::AudioSample *as,
+                                                        AudioClipWorkflow *poolHandler,
+                                                        bool mustBeReleased) :
+    ::StackedBuffer<AudioClipWorkflow::AudioSample*>( as, mustBeReleased ),
+    m_poolHandler( poolHandler )
+{
+}
+
+void    AudioClipWorkflow::StackedBuffer::release()
+{
+    if ( m_mustRelease == true )
+        m_poolHandler->releaseBuffer( m_buff );
+    delete this;
 }
