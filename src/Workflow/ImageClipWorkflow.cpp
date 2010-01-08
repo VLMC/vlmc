@@ -23,13 +23,16 @@
 #include "ImageClipWorkflow.h"
 #include "Clip.h"
 
+//FIXME: This should be taken from the configuration.
 #define IMAGE_DURATION  10000
 
-ImageClipWorkflow::ImageClipWorkflow( Clip* clip ) : VideoClipWorkflow( clip )
+ImageClipWorkflow::ImageClipWorkflow( Clip *clip ) :
+        VideoClipWorkflow( clip )
 {
 }
 
-void    ImageClipWorkflow::initVlcOutput()
+void
+ImageClipWorkflow::initVlcOutput()
 {
     char    buffer[32];
 
@@ -37,6 +40,5 @@ void    ImageClipWorkflow::initVlcOutput()
     m_vlcMedia->addOption( buffer );
     sprintf( buffer, ":fake-fps=%f", m_clip->getParent()->getFps() );
     m_vlcMedia->addOption( buffer );
-
     VideoClipWorkflow::initVlcOutput();
 }
