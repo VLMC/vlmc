@@ -33,10 +33,10 @@ class	IEffectNode
 
     virtual ~IEffectNode() {};
 
-    virtual quint32             getTypeId( void ) const = 0;
-    virtual QString const &     getTypeName( void ) const = 0;
-    virtual quint32             getInstanceId( void ) const = 0;
-    virtual QString const &     getInstanceName( void ) const = 0;
+    virtual quint32                             getTypeId( void ) const = 0;
+    virtual const QString &                     getTypeName( void ) const = 0;
+    virtual quint32                             getInstanceId( void ) const = 0;
+    virtual const QString &                     getInstanceName( void ) const = 0;
 
     // ================================================================= SLOTS ========================================================================
 
@@ -46,47 +46,47 @@ class	IEffectNode
 
     // -------------- CREATE --------------
 
-    virtual void		createStaticVideoInput( void ) = 0;
-    virtual void		createStaticVideoOutput( void ) = 0;
+    virtual void                                createStaticVideoInput( void ) = 0;
+    virtual void                                createStaticVideoOutput( void ) = 0;
 
-    virtual void		createStaticVideoInput( QString const & name ) = 0;
-    virtual void		createStaticVideoOutput( QString const & name ) = 0;
+    virtual void                                createStaticVideoInput( const QString & name ) = 0;
+    virtual void                                createStaticVideoOutput( const QString & name ) = 0;
 
     // -------------- REMOVE --------------
 
-    virtual bool		removeStaticVideoInput( QString const & name ) = 0;
-    virtual bool		removeStaticVideoOutput( QString const & name ) = 0;
+    virtual bool                                removeStaticVideoInput( const QString & name ) = 0;
+    virtual bool                                removeStaticVideoOutput( const QString & name ) = 0;
 
-    virtual bool		removeStaticVideoInput( quint32 id ) = 0;
-    virtual bool		removeStaticVideoOutput( quint32 id ) = 0;
+    virtual bool                                removeStaticVideoInput( quint32 id ) = 0;
+    virtual bool                                removeStaticVideoOutput( quint32 id ) = 0;
 
     // -------------- GET --------------
 
-    virtual InSlot<LightVideoFrame>*		getStaticVideoInput( QString const & name ) const = 0;
-    virtual OutSlot<LightVideoFrame>*	        getStaticVideoOutput( QString const & name ) const = 0;
+    virtual InSlot<LightVideoFrame>*		getStaticVideoInput( const QString & name ) const = 0;
+    virtual OutSlot<LightVideoFrame>*	        getStaticVideoOutput( const QString & name ) const = 0;
 
     virtual InSlot<LightVideoFrame>*		getStaticVideoInput( quint32 id ) const = 0;
     virtual OutSlot<LightVideoFrame>*		getStaticVideoOutput( quint32 id ) const = 0;
 
-    virtual QList<InSlot<LightVideoFrame>*>		getStaticsVideosInputsList( void ) const = 0;
-    virtual QList<OutSlot<LightVideoFrame>*>		getStaticsVideosOutputsList( void ) const = 0;
+    virtual QList<InSlot<LightVideoFrame>*>	getStaticsVideosInputsList( void ) const = 0;
+    virtual QList<OutSlot<LightVideoFrame>*>	getStaticsVideosOutputsList( void ) const = 0;
 
     // -------------- GET INFOS ON SLOTS --------------
 
-    virtual QList<QString>	getStaticsVideosInputsNamesList( void ) const = 0;
-    virtual QList<QString>	getStaticsVideosOutputsNamesList( void ) const = 0;
+    virtual QList<QString>                      getStaticsVideosInputsNamesList( void ) const = 0;
+    virtual QList<QString>                      getStaticsVideosOutputsNamesList( void ) const = 0;
 
-    virtual QList<quint32>	getStaticsVideosInputsIdsList( void ) const = 0;
-    virtual QList<quint32>	getStaticsVideosOutputsIdsList( void ) const = 0;
+    virtual QList<quint32>                      getStaticsVideosInputsIdsList( void ) const = 0;
+    virtual QList<quint32>                      getStaticsVideosOutputsIdsList( void ) const = 0;
 
-    virtual QString const        getStaticVideoInputNameById( quint32 const id ) const = 0;
-    virtual QString const        getStaticVideoOutputNameById( quint32 const id ) const = 0;
+    virtual const QString                       getStaticVideoInputNameById( quint32 id ) const = 0;
+    virtual const QString                       getStaticVideoOutputNameById( quint32 id ) const = 0;
 
-    virtual quint32              getStaticVideoInputIdByName( QString const & name ) const = 0;
-    virtual quint32              getStaticVideoOutputIdByName( QString const & name ) const = 0;
+    virtual quint32                             getStaticVideoInputIdByName( const QString & name ) const = 0;
+    virtual quint32                             getStaticVideoOutputIdByName( const QString & name ) const = 0;
 
-    virtual quint32              getNBStaticsVideosInputs( void ) const = 0;
-    virtual quint32              getNBStaticsVideosOutputs( void ) const = 0;
+    virtual quint32                             getNBStaticsVideosInputs( void ) const = 0;
+    virtual quint32                             getNBStaticsVideosOutputs( void ) const = 0;
 
 };
 
