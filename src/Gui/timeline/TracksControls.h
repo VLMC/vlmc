@@ -28,6 +28,9 @@
 #include "GraphicsTrack.hpp"
 #include "TrackControls.h"
 
+/**
+ * \brief Tracks controller widget
+ */
 class TracksControls : public QScrollArea
 {
     Q_OBJECT
@@ -35,8 +38,19 @@ public:
     TracksControls( QWidget* parent = 0 );
 
 public slots:
+    /**
+     * \brief Add a new controller for a video track.
+     * \param track Pointer to the newly added track.
+     */
     void addVideoTrack( GraphicsTrack* track );
+    /**
+     * \brief Add a new controller for an audio track.
+     * \param track Pointer to the newly added track.
+     */
     void addAudioTrack( GraphicsTrack* track );
+    /**
+     * \brief Remove all controllers from the widget.
+     */
     void clear();
 
 private:
