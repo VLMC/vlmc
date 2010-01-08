@@ -39,50 +39,48 @@ class	EffectNodeFactory
 
   // CTOR & DTOR
 
-    EffectNodeFactory();
+    EffectNodeFactory( void );
     ~EffectNodeFactory();
 
     // SETTING FATHER
 
-    void                        setFather( EffectNode* father );
+    void                setFather( EffectNode* father );
 
     // EFFECT TYPES INFORMATION
 
-    QList<QString>              getEffectNodeTypesNamesList( void ) const;
-    QList<quint32>              getEffectNodeTypesIdsList( void ) const;
+    QList<QString>      getEffectNodeTypesNamesList( void ) const;
+    QList<quint32>      getEffectNodeTypesIdsList( void ) const;
 
-    QString const               getEffectNodeTypeNameByTypeId( quint32 typeId ) const;
-    quint32                     getEffectNodeTypeIdByTypeName( QString const & typeName ) const;
+    const QString       getEffectNodeTypeNameByTypeId( quint32 typeId ) const;
+    quint32             getEffectNodeTypeIdByTypeName( const QString & typeName ) const;
 
     // EFFECT INSTANCES INFORMATIONS
 
-    QList<QString>              getEffectNodeInstancesNamesList( void ) const;
-    QList<quint32>              getEffectNodeInstancesIdsList( void ) const;
+    QList<QString>      getEffectNodeInstancesNamesList( void ) const;
+    QList<quint32>      getEffectNodeInstancesIdsList( void ) const;
 
-    QString const               getEffectNodeInstanceNameByInstanceId( quint32 instanceId ) const;
-    quint32                     getEffectNodeInstanceIdByInstanceName( QString const & instanceName ) const;
+    const QString       getEffectNodeInstanceNameByInstanceId( quint32 instanceId ) const;
+    quint32             getEffectNodeInstanceIdByInstanceName( const QString & instanceName ) const;
 
     // CREATE AND DELETE EFFECTS
 
-    void        createEmptyEffectNodeInstance( void );
-    bool        createEmptyEffectNodeInstance( QString const & instanceName );
+    void                createEmptyEffectNodeInstance( void );
+    bool                createEmptyEffectNodeInstance( const QString & instanceName );
 
-    bool        createEffectNodeInstance( quint32 typeId );
-    bool        createEffectNodeInstance( QString const & typeName );
+    bool                createEffectNodeInstance( quint32 typeId );
+    bool                createEffectNodeInstance( const QString & typeName );
 
-    bool        deleteEffectNodeInstance( quint32 instanceId );
-    bool        deleteEffectNodeInstance( QString const & instanceName );
+    bool                deleteEffectNodeInstance( quint32 instanceId );
+    bool                deleteEffectNodeInstance( const QString & instanceName );
 
     // GETTING EFFECTS
 
-    EffectNode* getEffectNodeInstance( quint32 instanceId ) const;
-    EffectNode* getEffectNodeInstance( QString const & instanceName ) const;
+    EffectNode*         getEffectNodeInstance( quint32 instanceId ) const;
+    EffectNode*         getEffectNodeInstance( const QString & instanceName ) const;
 
     QList<EffectNode*>  getEffectNodeInstancesList( void ) const;
 
 private:
-
-    // NEW COOL
 
     QMap<quint32, EffectNode*>                  m_enById;
     QMap<QString, EffectNode*>                  m_enByName;
@@ -92,7 +90,7 @@ private:
 
     EffectNode*                                 m_father;
 
-    static EffectPluginTypeManager              m_eptm;
+    static EffectPluginTypeManager              s_eptm;
 
 };
 
