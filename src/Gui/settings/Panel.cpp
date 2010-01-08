@@ -21,6 +21,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include "Panel.h"
+
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QButtonGroup>
@@ -31,7 +33,6 @@
 #include <QSize>
 #include <QShowEvent>
 
-#include "Panel.h"
 
 const int   Panel::M_ICON_HEIGHT = 64;
 

@@ -23,10 +23,12 @@
 #ifndef VLMCPREFERENCES_H
 #define VLMCPREFERENCES_H
 
-#include <QWidget>
-#include <QSettings>
 #include "PreferenceWidget.h"
 #include "ui_VLMCPreferences.h"
+
+#include <QSettings>
+
+class QWidget;
 
 class VLMCPreferences : public PreferenceWidget
 {

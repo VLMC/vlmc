@@ -23,11 +23,10 @@
 #ifndef PROJECTPREFERENCES_H
 #define PROJECTPREFERENCES_H
 
-#include <QSettings>
-#include <QWidget>
-
 #include "ui_ProjectPreferences.h"
 #include "PreferenceWidget.h"
+
+class QWidget;
 
 class   ProjectPreferences : public PreferenceWidget
 {

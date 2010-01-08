@@ -26,27 +26,29 @@
   * It can load and unload Medias (Medias.h/Media.cpp)
   */
 
-#include <QtDebug>
-#include <QMessageBox>
-#include <QDomElement>
-#include <QUuid>
-#include <QHash>
-
+#include "Clip.h"
 #include "Library.h"
 #include "Media.h"
-#include "Clip.h"
 #include "MetaDataManager.h"
+
+#include <QDebug>
+#include <QDomElement>
+#include <QHash>
+#include <QMessageBox>
+#include <QUuid>
 
 Library::Library()
 {
 }
 
-Media*          Library::getMedia( const QUuid& uuid )
+Media*
+Library::getMedia( const QUuid& uuid )
 {
     return getElementByUuid( m_medias, uuid );
 }
 
-Clip*           Library::getClip( const QUuid& uuid )
+Clip*
+Library::getClip( const QUuid& uuid )
 {
     Clip*   clip;
     clip = getElementByUuid( m_clips, uuid );
@@ -54,7 +56,8 @@ Clip*           Library::getClip( const QUuid& uuid )
     return clip;
 }
 
-void        Library::removingMediaAsked( const QUuid& uuid )
+void
+Library::removingMediaAsked( const QUuid& uuid )
 {
     QHash<QUuid, Media*>::iterator   it = m_medias.find( uuid );
     if ( it == m_medias.end() )
@@ -69,7 +72,8 @@ void        Library::removingMediaAsked( const QUuid& uuid )
     deleteMedia( media );
 }
 
-void        Library::deleteMedia( Media *media )
+void
+Library::deleteMedia( Media *media )
 {
     if ( media->getMetadata() == Media::ParsedWithAudioSpectrum )
         delete media;
@@ -80,7 +84,8 @@ void        Library::deleteMedia( Media *media )
     }
 }
 
-void        Library::audioSpectrumComputed( Media *media )
+void
+Library::audioSpectrumComputed( Media *media )
 {
     disconnect( media, SIGNAL( audioSpectrumComputed( Media* ) ), this, SLOT( audioSpectrumComputed( Media* ) ) );
     if ( m_mediaToDelete.contains( media ) )
@@ -90,7 +95,8 @@ void        Library::audioSpectrumComputed( Media *media )
     }
 }
 
-void        Library::metaDataComputed( Media* media )
+void
+Library::metaDataComputed( Media* media )
 {
     emit newMediaLoaded( media );
     Clip* clip = new Clip( media );
@@ -107,7 +113,8 @@ void        Library::metaDataComputed( Media* media )
     }
 }
 
-void        Library::newMediaLoadingAsked( const QString& filePath, const QString& uuid )
+void
+Library::newMediaLoadingAsked( const QString& filePath, const QString& uuid )
 {
     Media*   media;
     if ( mediaAlreadyLoaded( filePath ) == true )
@@ -118,7 +125,8 @@ void        Library::newMediaLoadingAsked( const QString& filePath, const QStrin
     emit metadataRequired( media );
 }
 
-void        Library::addMedia( Media* media )
+void
+Library::addMedia( Media* media )
 {
     QUuid id;
     foreach( id, m_medias.keys() )
@@ -140,7 +148,8 @@ void        Library::addClip( Clip* clip )
     m_clips[clip->getUuid()] = clip;
 }
 
-void        Library::loadMedia( const QString& path, const QUuid& uuid )
+void
+Library::loadMedia( const QString& path, const QUuid& uuid )
 {
     Media*  it;
     foreach ( it, m_medias )
@@ -164,7 +173,8 @@ void        Library::loadMedia( const QString& path, const QUuid& uuid )
     m_medias[uuid] = media;
 }
 
-bool        Library::mediaAlreadyLoaded( const QString& filePath )
+bool
+Library::mediaAlreadyLoaded( const QString& filePath )
 {
     Media*   media;
     foreach ( media, m_medias )
@@ -175,7 +185,8 @@ bool        Library::mediaAlreadyLoaded( const QString& filePath )
     return false;
 }
 
-void        Library::loadProject( const QDomElement& medias )
+void
+Library::loadProject( const QDomElement& medias )
 {
     if ( medias.isNull() == true || medias.tagName() != "medias" )
     {
@@ -230,7 +241,8 @@ void        Library::loadProject( const QDomElement& medias )
     emit projectLoaded();
 }
 
-void        Library::saveProject( QDomDocument& doc, QDomElement& rootNode )
+void
+Library::saveProject( QDomDocument& doc, QDomElement& rootNode )
 {
     QHash<QUuid, Media*>::iterator          it = m_medias.begin();
     QHash<QUuid, Media*>::iterator          end = m_medias.end();
@@ -258,7 +270,8 @@ void        Library::saveProject( QDomDocument& doc, QDomElement& rootNode )
     rootNode.appendChild( medias );
 }
 
-void    Library::clear()
+void
+Library::clear()
 {
     QHash<QUuid, Media*>::iterator  it = m_medias.begin();
     QHash<QUuid, Media*>::iterator  end = m_medias.end();

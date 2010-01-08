@@ -20,6 +20,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include "SettingsManager.h"
+
+#include "VLMCSettingsDefault.h"
+#include "ProjectSettingsDefault.h"
+
 #include <QHash>
 #include <QDomElement>
 #include <QDomNamedNodeMap>
@@ -29,9 +34,7 @@
 #include <QReadLocker>
 #include <QTextStream>
 
-#include "SettingsManager.h"
-#include "VLMCSettingsDefault.h"
-#include "ProjectSettingsDefault.h"
+
 
 bool    SettingsManager::m_defaultLoaded = false;
 
@@ -43,22 +46,6 @@ SettingsManager::SettingsManager( QObject* parent )
 SettingsManager::~SettingsManager()
 {
 }
-
-//void  SettingsManager::setValues( const QString& part, SettingsPart::ConfigPair values )
-//{
-//    if ( !m_tempData.contains( part ) )
-//        addNewSettingsPart( part );
-//    m_globalLock.lockForRead();
-//    SettingsPart* sett = m_tempData[part];
-//    m_globalLock.unlock();
-//    SettingsPart::ConfigPair::iterator  it = values.begin();
-//    SettingsPart::ConfigPair::iterator  end = values.end();
-//
-//    QWriteLocker    lock( &sett->m_lock );
-//    for ( ; it != end; ++it  )
-//        sett->m_data.insert( it.key(), it.value() );
-//    return ;
-//}
 
 void  SettingsManager::setValue( const QString& part , const QString& key, const QVariant& value )
 {
@@ -213,10 +200,13 @@ void    SettingsManager::flush()
 
 void  SettingsManager::loadDefaultsSettings()
 {
-    VLMCSettingsDefault::load( "default" );
-    VLMCSettingsDefault::load( "VLMC" );
-    ProjectSettingsDefault::load( "default" );
-    ProjectSettingsDefault::load( "project" );
+    if ( !SettingsManager::m_defaultLoaded )
+    {
+        VLMCSettingsDefault::load( "default" );
+        VLMCSettingsDefault::load( "VLMC" );
+        ProjectSettingsDefault::load( "default" );
+        ProjectSettingsDefault::load( "project" );
+    }
 }
 
 SettingsManager*    SettingsManager::getInstance()

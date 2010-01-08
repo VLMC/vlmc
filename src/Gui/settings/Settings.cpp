@@ -23,15 +23,17 @@
 
 #include "Settings.h"
 
+#include "PreferenceWidget.h"
+#include "SettingsManager.h"
+#include "Panel.h"
+
 #include <QDialogButtonBox>
 #include <QAbstractButton>
 #include <QIcon>
 #include <QLabel>
 #include <QScrollArea>
+#include <QHBoxLayout>
 
-#include "PreferenceWidget.h"
-#include "SettingsManager.h"
-#include "Panel.h"
 
 
 Settings::Settings( bool loadDefaults,

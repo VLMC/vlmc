@@ -1,0 +1,14 @@
+Requirements:
+-------------
+
+- doxygen
+- graphviz
+
+
+Generate the documentation:
+---------------------------
+
+Run doxygen from the doc/ directory:
+# doxygen
+
+The documentation will be generated into the html/ directory.

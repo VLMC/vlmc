@@ -23,13 +23,14 @@
 #ifndef KEYBOARDSHORTCUT_H
 #define KEYBOARDSHORTCUT_H
 
-#include <QObject>
+#include "PreferenceWidget.h"
+
 #include <QFormLayout>
 #include <QHash>
 #include <QString>
-#include <QKeySequence>
 
-#include "PreferenceWidget.h"
+class QKeySequence;
+class QWidget;
 
 class   KeyboardShortcut : public PreferenceWidget
 {

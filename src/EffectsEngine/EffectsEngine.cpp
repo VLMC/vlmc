@@ -27,7 +27,7 @@
 
 #include <iostream>
 
-EffectsEngine::EffectsEngine( void ) : m_patch( NULL ), m_bypassPatch( NULL )
+EffectsEngine::EffectsEngine( void ) : m_patch( NULL ), m_bypassPatch( NULL ), m_enabled( true ), m_processedInBypassPatch( false )
 {
     //
     //
@@ -59,34 +59,46 @@ EffectsEngine::EffectsEngine( void ) : m_patch( NULL ), m_bypassPatch( NULL )
                    qDebug() << "The connection of the intput " << i << " of the mixer with the internal " << i << " output of the RootNode failed!";
                else
                    qDebug() << "The connection of the intput " << i << " of the mixer with the internal " << i << " output of the RootNode successed!";
-           // RECUP LE MIXER ET CONNECTE SA SORTIE 1 A L'INTERNAL INPUT DU ROOT NODE
-           tmp = m_patch->getChild( 1 );
-           if ( tmp->connectChildStaticVideoOutputToParentStaticVideoInput( 1, 1 ) == false )
-               qDebug() << "The connection of the mixer output with the BypassRootNode internal input failed!";
-           else
-               qDebug() << "The connection of the mixer output with the BypassRootNode internal input successed!";
 
-           //           m_patch->createChild( "libVLMC_BlitInRectangleEffectPlugin" );
-           //           m_patch->createChild( "libVLMC_InvertRNBEffectPlugin" );
-           // // RECUP LE MIXER ET CONNECTE SA SORTIE 1 A L'ENTREE 2 DU BLIT
+           // // RECUP LE MIXER ET CONNECTE SA SORTIE 1 A L'INTERNAL INPUT DU ROOT NODE
            // tmp = m_patch->getChild( 1 );
-           // if ( tmp->connectStaticVideoOutputToStaticVideoInput( 1, 2, "dst" ) == false )
-           //     qDebug() << "La connection de la sortie n'as pas reussie HAHA";
-           // // RECUP LE BLIT ET CONNECT SA SORTIE 2 A L'INTERNAL INPUT DU ROOT NODE
-           // tmp = m_patch->getChild( 2 );
-           // qDebug() << "NAME : " << tmp->getInstanceName();
-           // if ( tmp->connectChildStaticVideoOutputToParentStaticVideoInput( "res", 1 ) == false )
-           //     qDebug() << "La connection de la sortie n'as pas reussie";
-           // // CONNECT SA SORTIE 1 A SA L'ENTREE  1 DE L'INVERSEUR DE BLEU ET DE ROUGE
-           // if ( tmp->connectStaticVideoOutputToStaticVideoInput( "aux", 3, 1 ) == false )
-           //     qDebug() << "La connection de la sortie n'as pas reussie, MERDE";
-           // // CONNECT LA SORTIE DE L'INVERSEUR A L'ENTREE SRC DU BLIT
-           // tmp = m_patch->getChild( 3 );
-           // if ( tmp->connectStaticVideoOutputToStaticVideoInput( 1, 2, 1 ) == false )
-           //     qDebug() << "La connection de la sortie n'as pas reussie, MERDE";
+           // if ( tmp->connectChildStaticVideoOutputToParentStaticVideoInput( 1, 1 ) == false )
+           //     qDebug() << "The connection of the mixer output with the BypassRootNode internal input failed!";
+           // else
+           //     qDebug() << "The connection of the mixer output with the BypassRootNode internal input successed!";
+
+
+           m_patch->createChild( "libVLMC_BlitInRectangleEffectPlugin" );
+           m_patch->createChild( "libVLMC_InvertRNBEffectPlugin" );
+           // RECUP LE MIXER ET CONNECTE SA SORTIE 1 A L'ENTREE 2 DU BLIT
+           tmp = m_patch->getChild( 1 );
+           if ( tmp->connectStaticVideoOutputToStaticVideoInput( 1, 2, "dst" ) == false )
+               qDebug() << "The connection of the mixer output with the second input of the blit failed!";
+           else
+               qDebug() << "The connection of the mixer output with the second input of the blit successed!";
+
+           // RECUP LE BLIT ET CONNECT SA SORTIE 2 A L'INTERNAL INPUT DU ROOT NODE
+           tmp = m_patch->getChild( 2 );
+           if ( tmp->connectChildStaticVideoOutputToParentStaticVideoInput( "res", 1 ) == false )
+               qDebug() << "The connection of the second output of the blit with the BypassRootNode internal input failed!";
+           else
+               qDebug() << "The connection of the second output of the blit with the BypassRootNode internal input successed!";
+
+           // CONNECT SA SORTIE 1 A SA L'ENTREE  1 DE L'INVERSEUR DE BLEU ET DE ROUGE
+           if ( tmp->connectStaticVideoOutputToStaticVideoInput( "aux", 3, 1 ) == false )
+               qDebug() << "The connection of the first output of the blit with the RNBInvert input failed!";
+           else
+               qDebug() << "The connection of the first output of the blit with the RNBInvert input successed!";
+
+           // CONNECT LA SORTIE DE L'INVERSEUR A L'ENTREE SRC DU BLIT
+           tmp = m_patch->getChild( 3 );
+           if ( tmp->connectStaticVideoOutputToStaticVideoInput( 1, 2, 1 ) == false )
+               qDebug() << "The connection of the RNBInvert output with the first input of the blit failed!";
+           else
+               qDebug() << "The connection of the RNBInvert output with the first input of the blit successed!";
        }
        else
-           qDebug() << "There's not the video mixer plugin, so the connection with it cannot exist in the BypassRootNode";
+           qDebug() << "There's not the video mixer plugin, so the connection with it cannot exist in the RootNode";
    }
 
    //
@@ -138,40 +150,54 @@ EffectsEngine::~EffectsEngine()
         EffectNode::deleteRootNode( "BypassRootNode" );
 }
 
-//
-
-EffectNode* EffectsEngine::operator->( void )
+void
+EffectsEngine::setVideoInput( quint32 inId, const LightVideoFrame & frame )
 {
-    QReadLocker    rl( &m_rwl );
-    return ( m_patch );
+    QWriteLocker  wl( &m_rwl );
+    if ( m_enabled == true )
+    {
+        m_processedInBypassPatch = false;
+        (*m_patch->getInternalStaticVideoOutput( inId )) << frame;
+    }
+    else
+    {
+        m_processedInBypassPatch = true;
+        (*m_bypassPatch->getInternalStaticVideoOutput( inId )) << frame;
+    }
 }
 
-EffectNode const * EffectsEngine::operator->( void ) const
+void
+EffectsEngine::render( void )
 {
-    QReadLocker    rl( &m_rwl );
-    return ( m_patch );
+    QWriteLocker  wl( &m_rwl );
+    if ( m_processedInBypassPatch == false )
+        m_patch->render();
+    else
+        m_bypassPatch->render();
 }
 
-EffectNode* EffectsEngine::operator*( void )
+const LightVideoFrame &
+EffectsEngine::getVideoOutput( quint32 outId ) const
 {
-    QReadLocker    rl( &m_rwl );
-    return ( m_patch );
-}
+    QReadLocker  rl( &m_rwl );
 
-EffectNode const * EffectsEngine::operator*( void ) const
-{
-    QReadLocker    rl( &m_rwl );
-    return ( m_patch );
+    if ( m_processedInBypassPatch == false )
+        return (*m_patch->getInternalStaticVideoInput( outId ));
+    return (*m_bypassPatch->getInternalStaticVideoInput( outId ));
 }
 
 // BYPASSING
 
-void		EffectsEngine::enable( void )
+void
+EffectsEngine::enable( void )
 {
-    return ;
+    QWriteLocker  wl( &m_rwl );
+    m_enabled = true;
 }
 
-void		EffectsEngine::disable( void )
+void
+EffectsEngine::disable( void )
 {
-    return ;
+    QWriteLocker  wl( &m_rwl );
+    m_enabled = false;
 }
