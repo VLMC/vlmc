@@ -39,7 +39,7 @@ class GraphicsMovieItem;
 class WorkflowRenderer;
 
 /**
- * \brief Class which manage the timeline using QGraphicsItems
+ * \brief Class managing the timeline using QGraphicsItems.
  */
 class TracksView : public QGraphicsView
 {

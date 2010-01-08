@@ -32,6 +32,9 @@
 class TracksView;
 class Clip;
 
+/**
+ * \brief Base class for Audio/Video items.
+ */
 class AbstractGraphicsMediaItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT

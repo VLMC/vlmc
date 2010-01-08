@@ -33,6 +33,9 @@ class TracksControls;
 class TracksRuler;
 class WorkflowRenderer;
 
+/**
+ * \brief Entry point of the timeline widget.
+ */
 class Timeline : public QWidget
 {
     Q_OBJECT

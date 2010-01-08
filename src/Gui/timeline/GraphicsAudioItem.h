@@ -33,6 +33,9 @@
 
 #define ROUNDED_RECT_RADIUS 5
 
+/**
+ * \brief Represents an audio item.
+ */
 class GraphicsAudioItem : public AbstractGraphicsMediaItem
 {
     Q_OBJECT
