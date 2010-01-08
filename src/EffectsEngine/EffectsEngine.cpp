@@ -35,9 +35,6 @@
 #include <QReadWriteLock>
 #include <QtDebug>
 
-/**
- * \brief EffectsEngine constructor
- */
 EffectsEngine::EffectsEngine( void ) : m_patch( NULL ),
                                        m_bypassPatch( NULL ),
                                        m_enabled( true ),
@@ -47,9 +44,6 @@ EffectsEngine::EffectsEngine( void ) : m_patch( NULL ),
     makeBypassPatch();
 }
 
-/**
- * \brief EffectsEngine destructor
- */
 EffectsEngine::~EffectsEngine()
 {
     if ( m_patch )
@@ -58,13 +52,6 @@ EffectsEngine::~EffectsEngine()
         EffectNode::deleteRootNode( "BypassRootNode" );
 }
 
-/** \brief Patch maker
- * This method instantiates a root EffectNode named "RootNode",
- * creates a mixer effect as subchild in it and connects
- * both to getter to allow audio and video goiny through
- * the effects engine.
- * It's used by the effects engine, when it's enabled.
- */
 void
 EffectsEngine::makePatch( void )
 {
@@ -147,13 +134,6 @@ EffectsEngine::makePatch( void )
     }
 }
 
-/**
- *\brief BypassPatch maker
- * This method instantiates a root EffectNode named "BypassRootNode",
- * it happends the sames things like in void EffectsEngine::makePatch()
- * but the created root EffectNode will never be modified by the GUI.
- * It's used by the effects engine, when it's disabled.
- */
 void
 EffectsEngine::makeBypassPatch( void )
 {
@@ -200,17 +180,6 @@ EffectsEngine::makeBypassPatch( void )
     }
 }
 
-/**
- * \brief Send the video frame in input with id inId
- * \bug If the effects engine enable state is changed beetween
- *      two call of this method, there will be crap
- * \param inId : this is the id of the video input
- * \param frame : this is the frame to send to the input with id inId
- * If the effects engine is enable, it will give the video frame to the
- * input with the id inId of the EffectNode called "RootNode"
- * else, it will give the video frame to the input with the id inId
- * of the EffectNode called "BypassRootNode"
- */
 void
 EffectsEngine::setVideoInput( quint32 inId, const LightVideoFrame & frame )
 {
@@ -227,13 +196,6 @@ EffectsEngine::setVideoInput( quint32 inId, const LightVideoFrame & frame )
     }
 }
 
-/**
- * \brief Render the audio/video with effects
- * If the patch used by inputs methods is "RootNode", it will call the
- * render method of the root EffectNode called "RootNode"
- * else, it will call the render method of the root EffectNode
- * called "BypassRootNode"
- */
 void
 EffectsEngine::render( void )
 {
@@ -244,17 +206,6 @@ EffectsEngine::render( void )
         m_bypassPatch->render();
 }
 
-/**
- * \brief Get the video result of the output with id outId
- * \param outId : this is the id of the video output
- * \return This method return the result track contained in the ouput
- *         with id outId
- * If the patch used by input method is "RootNode", it will get
- * the video frame of the output with id outId of the EffectNode
- * called "RootNode",
- * else, it will do the same thing but with the EffectNode
- * called "BypassRootNode"
- */
 const LightVideoFrame &
 EffectsEngine::getVideoOutput( quint32 outId ) const
 {
@@ -267,12 +218,6 @@ EffectsEngine::getVideoOutput( quint32 outId ) const
 
 // BYPASSING
 
-/**
- * \brief Enable the effects engine
- * This method enable the effects engine by setting
- * m_enabled to true ( and so tell the effects engine to use the root EffectNode
- * named "RootNode")
- */
 void
 EffectsEngine::enable( void )
 {
@@ -280,12 +225,6 @@ EffectsEngine::enable( void )
     m_enabled = true;
 }
 
-/**
- * \brief Disable the effects engine
- * This method disable the effects engine by setting
- * m_enabled to false ( and so tell the effects engine to use the root EffectNode
- * named "BypassRootNode")
- */
 void
 EffectsEngine::disable( void )
 {
