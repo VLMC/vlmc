@@ -25,8 +25,11 @@
 #define EFFECTPLUGINTYPELOADER_H_
 
 #include <QPluginLoader>
-#include <QDebug>
-#include "IEffectPluginCreator.h"
+
+class   IEffectPlugin;
+class   IEffectPluginCreator;
+
+class   QPluginLoader;
 
 class   EffectPluginTypeLoader
 {
@@ -35,7 +38,7 @@ public:
     EffectPluginTypeLoader();
     ~EffectPluginTypeLoader();
 
-    IEffectPlugin*       createIEffectPluginInstance( void ) const;
+    IEffectPlugin*      createIEffectPluginInstance( void ) const;
     bool                load( QString const & fileName );
 
 private:

@@ -24,11 +24,14 @@
 #ifndef EFFECTNODEFACTORY_H_
 #define EFFECTNODEFACTORY_H_
 
-#include <QMap>
-
-#include "IEffectPluginCreator.h"
 #include "EffectPluginTypeManager.h"
+#include "IEffectPluginCreator.h"
+
+#include <QMap>
+#include <QString>
+
 class   EffectNode;
+class   IEffectNode;
 
 class	EffectNodeFactory
 {
@@ -92,7 +95,5 @@ private:
     static EffectPluginTypeManager              m_eptm;
 
 };
-
-#include "EffectNode.h"
 
 #endif // EFFECTNODEFACTORY_H_

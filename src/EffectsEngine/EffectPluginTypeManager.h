@@ -24,10 +24,12 @@
 #ifndef EFFECTPLUGINTYPEMANAGER_H_
 #define EFFECTPLUGINTYPEMANAGER_H_
 
-#include <QDir>
-#include "EffectPluginTypeLoader.h"
-
 #define PLUGINS_PATH "./src/EffectsEngine/Plugins/lib/"
+
+#include <QMap>
+
+class   EffectPluginTypeLoader;
+class   IEffectPlugin;
 
 class   EffectPluginTypeManager
 {

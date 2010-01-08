@@ -23,6 +23,10 @@
 
 #include "EffectNodeFactory.h"
 
+#include "EffectNode.h"
+#include "EffectPluginTypeManager.h"
+#include "IEffectPluginCreator.h"
+
 EffectPluginTypeManager EffectNodeFactory::m_eptm = EffectPluginTypeManager();
 
 EffectNodeFactory::EffectNodeFactory() : m_higherFreeId( 1 ), m_mapHoles( 0 ), m_father( NULL )

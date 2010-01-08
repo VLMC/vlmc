@@ -23,6 +23,10 @@
 
 #include "EffectPluginTypeLoader.h"
 
+#include <IEffectPluginCreator.h>
+
+#include <QDebug>
+
 EffectPluginTypeLoader::EffectPluginTypeLoader() : m_iepc( NULL )
 {
 }

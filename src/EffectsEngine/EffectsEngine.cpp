@@ -27,6 +27,8 @@
  */
 
 #include "EffectsEngine.h"
+
+#include "EffectNode.h"
 #include "EffectNodeFactory.h"
 #include "LightVideoFrame.h"
 #include "InSlot.hpp"
@@ -212,8 +214,8 @@ EffectsEngine::getVideoOutput( quint32 outId ) const
     QReadLocker  rl( &m_rwl );
 
     if ( m_processedInBypassPatch == false )
-        return (*m_patch->getInternalStaticVideoInput( outId ));
-    return (*m_bypassPatch->getInternalStaticVideoInput( outId ));
+        return *m_patch->getInternalStaticVideoInput( outId );
+    return *m_bypassPatch->getInternalStaticVideoInput( outId );
 }
 
 // BYPASSING

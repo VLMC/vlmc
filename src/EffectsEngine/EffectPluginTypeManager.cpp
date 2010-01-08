@@ -23,6 +23,11 @@
 
 #include "EffectPluginTypeManager.h"
 
+#include "EffectPluginTypeLoader.h"
+
+#include <QDebug>
+#include <QDir>
+
 EffectPluginTypeManager::EffectPluginTypeManager() : m_higherFreeId( 2 )
 {
     QDir                        dir;

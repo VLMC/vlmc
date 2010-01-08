@@ -1,6 +1,6 @@
 /*****************************************************************************
- * IEffectPluginCreator.cpp: Interface that must inherit the class who can an
- *                            instantiate an effect plugin
+ * IEffectPluginCreator.cpp: Interface that must inherit the class who can
+ *                           instantiate an effect plugin
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
@@ -24,7 +24,9 @@
 #ifndef IEFFECTPLUGINFACTORY_H_
 #define IEFFECTPLUGINFACTORY_H_
 
-#include "IEffectPlugin.h"
+#include <QtPlugin>
+
+class   IEffectPlugin;
 
 class   IEffectPluginCreator
 {

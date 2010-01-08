@@ -24,6 +24,12 @@
 
 #include "LightVideoFrame.h"
 
+#include <QSharedData>
+#include <QDebug>
+#include <qmutex.h>
+#include <QWriteLocker>
+#include <QReadLocker>
+
 VideoFrame::~VideoFrame()
 {
   if ( frame.octets != NULL )

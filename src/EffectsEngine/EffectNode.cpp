@@ -21,7 +21,9 @@
  *****************************************************************************/
 
 #include "EffectNode.h"
+
 #include "IEffectNode.h"
+#include "IEffectPlugin.h"
 
 #include <QObject>
 #include <QReadLocker>

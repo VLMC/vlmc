@@ -24,6 +24,7 @@
 #define EFFECTNODE_H_
 
 #include "EffectNodeFactory.h"
+#include "IEffectNode.h"
 #include "InSlot.hpp"
 #include "OutSlot.hpp"
 #include "SemanticObjectManager.hpp"
@@ -32,7 +33,6 @@
 #include <QQueue>
 #include <QtGlobal>
 
-class   IEffectNode;
 class   IEffectPlugin;
 class   LightVideoFrame;
 

@@ -26,11 +26,11 @@
 #define LIGHTVIDEOFRAME_H_
 
 #include <QSharedDataPointer>
-#include <QSharedData>
-#include <QDebug>
-#include <qmutex.h>
-#include <QWriteLocker>
-#include <QReadLocker>
+/* #include <QSharedData> */
+/* #include <QDebug> */
+/* #include <qmutex.h> */
+/* #include <QWriteLocker> */
+/* #include <QReadLocker> */
 
 struct	Pixel
 {
@@ -75,7 +75,7 @@ public:
   VideoFrame const & operator*(void) const;
   VideoFrame* operator->(void);
   VideoFrame& operator*(void);
-  
+
 private:
 
   QSharedDataPointer<VideoFrame>	m_videoFrame;

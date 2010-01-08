@@ -30,11 +30,12 @@
 #define EFFECTSENGINE_H_
 
 #include "EffectNodeFactory.h"
+
+#include <QReadWriteLock>
 #include <QtGlobal>
 
 class   EffectNode;
 class   LightVideoFrame;
-class   QReadWriteLock;
 
 /**
  * \class EffectsEngine
