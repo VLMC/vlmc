@@ -35,7 +35,10 @@ class SemanticObjectManager
 {
 public:
 
-    SemanticObjectManager() : m_higherFreeId( 1 ), m_mapHoles( 0 ), m_father( NULL ), m_isItInternal( false )
+    SemanticObjectManager( void ) : m_higherFreeId( 1 ),
+                                    m_mapHoles( 0 ),
+                                    m_father( NULL ),
+                                    m_isItInternal( false )
     {
     }
 
@@ -51,43 +54,41 @@ public:
         }
     }
 
-    inline void                        setFather( EffectNode* father)
+    inline void setFather( EffectNode* father)
     {
         m_father = father;
-        return ;
     }
 
-    inline void                        setScope( bool isItInternal )
+    inline void setScope( bool isItInternal )
     {
         m_isItInternal = isItInternal;
-        return ;
     }
 
     // OBJECTS INFORMATIONS
 
-    inline QList<QString>              getObjectsNamesList( void ) const
+    inline QList<QString> getObjectsNamesList( void ) const
     {
-        return ( m_nameById.values() );
+        return m_nameById.values();
     }
 
-    inline QList<quint32>              getObjectsIdsList( void ) const
+    inline QList<quint32> getObjectsIdsList( void ) const
     {
-        return ( m_nameById.keys() );
+        return m_nameById.keys();
     }
 
-    inline QString const               getObjectNameByObjectId( quint32 objectId ) const
+    inline const QString               getObjectNameByObjectId( quint32 objectId ) const
     {
-        return ( m_nameById.value( objectId, "" ) );
+        return m_nameById.value( objectId, "" );
     }
 
-    inline quint32                     getObjectIdByObjectName( QString const & objectName ) const
+    inline quint32                     getObjectIdByObjectName( const QString & objectName ) const
     {
-        return ( m_nameById.key( objectName, 0 ) );
+        return m_nameById.key( objectName, 0 );
     }
 
     inline quint32                     getNBObjects( void ) const
     {
-        return ( m_nameById.size() );
+        return m_nameById.size();
     }
 
     // CREATE AND DELETE OBJECTS
@@ -120,10 +121,9 @@ public:
         m_objectByName[ objectName ] = newObject;
         m_objectById[ objectId ] = newObject;
         m_nameById[ objectId ] = objectName;
-        return ;
     }
 
-    inline void                        createObject( QString const & objectName )
+    inline void                        createObject( const QString & objectName )
     {
         T*                          newObject;
         quint32                     objectId;
@@ -148,7 +148,6 @@ public:
         m_objectByName[ objectName ] = newObject;
         m_objectById[ objectId ] = newObject;
         m_nameById[ objectId ] = objectName;
-        return ;
     }
 
     inline bool                        deleteObject( quint32 objectId )
@@ -185,7 +184,7 @@ public:
                 qDebug() << "You can't delete the object with ["
                          << objectId
                          << "] as id, it already has been deleted!";
-                return ( false );
+                return false;
             }
         }
         else
@@ -193,12 +192,12 @@ public:
             qDebug() << "You can't delete the object with ["
                      << objectId
                      << "] as id, it doesn't exist!";
-            return ( false );
+            return false;
         }
-        return ( true );
+        return true;
     }
 
-    inline bool                        deleteObject( QString const & objectName )
+    inline bool                        deleteObject( const QString & objectName )
     {
         typename QMap<quint32, T*>::iterator itid;
         quint32                     objectId;
@@ -233,7 +232,7 @@ public:
                 qDebug() << "You can't delete the object named ["
                          << objectName
                          << "], it already has been deleted!";
-                return ( false );
+                return false;
             }
         }
         else
@@ -241,9 +240,9 @@ public:
             qDebug() << "You can't delete the object named ["
                      << objectName
                      << "], it doesn't exist!";
-            return ( false );
+            return false;
         }
-        return ( true );
+        return true;
     }
 
     // GETTING OBJECTS
@@ -253,22 +252,22 @@ public:
         typename QMap<quint32, T*>::const_iterator    it = m_objectById.find( objectId );
 
         if ( it != m_objectById.end() )
-            return ( it.value() );
-        return ( NULL );
+            return it.value();
+        return NULL;
     }
 
-    inline T*                          getObject( QString const & objectName ) const
+    inline T*                          getObject( const QString & objectName ) const
     {
         typename QMap<QString, T*>::const_iterator    it = m_objectByName.find( objectName );
 
         if ( it != m_objectByName.end() )
-            return ( it.value() );
-        return ( NULL );
+            return it.value();
+        return NULL;
     }
 
     inline QList<T*>                   getObjectsList( void ) const
     {
-        return ( m_objectByName.values() );
+        return m_objectByName.values();
     }
 
 private:

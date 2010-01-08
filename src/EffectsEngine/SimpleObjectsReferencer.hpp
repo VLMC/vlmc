@@ -32,7 +32,7 @@ class      SimpleObjectsReferencer
 {
 public:
 
-    SimpleObjectsReferencer()
+    SimpleObjectsReferencer( void )
     {};
 
     ~SimpleObjectsReferencer()
@@ -43,9 +43,9 @@ public:
         if ( m_objRefs.find( obj->getId() ) == m_objRefs.end() )
         {
             m_objRefs[ obj->getId() ] = obj;
-            return ( true );
+            return true;
         }
-        return ( false );
+        return false;
     };
 
     bool     delObjectReference( quint32 objId )
@@ -55,19 +55,19 @@ public:
         if ( it != m_objRefs.end() )
         {
             m_objRefs.erase( it );
-            return ( true );
+            return true;
         }
-        return ( false );
+        return false;
     };
 
     quint32 getNBObjectsReferences( void ) const
     {
-        return ( m_objRefs.size() );
+        return m_objRefs.size();
     };
 
     QList<T*> getObjectsReferencesList( void ) const
     {
-        return ( m_objRefs.values() );
+        return m_objRefs.values();
     };
 
 private:
