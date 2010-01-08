@@ -39,8 +39,3 @@ const QVariant&     SettingValue::get() const
 {
     return m_val;
 }
-
-QVariant&     SettingValue::get()
-{
-    return m_val;
-}

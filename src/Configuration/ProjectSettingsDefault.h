@@ -25,14 +25,49 @@
 
 #include <QString>
 
+/**
+ * \class ProjectSettingsDefault 
+ *
+ * \brief Static class for loading default parameters
+ *        for the project
+ */
+
 class ProjectSettingsDefault
 {
     public:
+
+        /**
+         * \brief load all the project defaults parameters
+         * \param part the settings part in wich the default values will
+         *        be loaded
+         */
+
         static void load( const QString& part );
 
     private:
+
+        /**
+         * \brief will load the project Audio related values.
+         * \param part the settings part in wich the audio default
+         *        values will be loaded
+         */
+
         static void loadAudioDefaults( const QString& part );
+
+        /**
+         * \brief will load the project Video related values.
+         * \param part the settings part in wich the audio default
+         *        values will be loaded
+         */
+
         static void loadVideoDefaults( const QString& part );
+
+        /**
+         * \brief will load the Project global values.
+         * \param part the settings part in wich the project default
+         *        values will be loaded
+         */
+
         static void loadProjectDefaults( const QString& part );
 
     private:

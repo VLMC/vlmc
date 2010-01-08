@@ -25,16 +25,61 @@
 
 #include <QString>
 
+/**
+ * \class VLMCSettingsDefault
+ *
+ * \brief Static class for loading default parameters
+ *        for the application
+ */
+
 class VLMCSettingsDefault
 {
     public:
+
+        /**
+         * \brief load all the application defaults parameters
+         * \param part the settings part in wich the default values will
+         *        be loaded
+         */
+
         static void load( const QString& part );
+
+        /**
+         * \brief will load the values for the shortcuts settings.
+         *
+         * This method will create a new part in the settings Manager
+         * called keyboard_shortcut
+         * \sa  loadKeyboardShortcutDefaults( const QString& part )
+         */
+
         static void loadKeyboardShortcutDefaults();
 
     private:
+
+        /**
+         * \brief will load the values for the application global values.
+         * \param part the settings part in wich the global default
+         *        values will be loaded
+         */
+
         static void loadVLMCDefaults( const QString& part );
+
+        /**
+         * \brief will load the values for the language settings.
+         * \param part the settings part in wich the language
+         *        default values will be loaded
+         */
+
         static void loadlanguageDefaults( const QString& part );
+
+        /**
+         * \brief will load the values for the shortcuts settings.
+         * \param part the settings part in wich the language
+         *        default values will be loaded
+         */
+
         static void loadKeyboardShortcutDefaults( const QString& part );
+
     private:
         VLMCSettingsDefault();
         ~VLMCSettingsDefault();

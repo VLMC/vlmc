@@ -26,18 +26,42 @@
 #include <QObject>
 #include <QVariant>
 
+/**
+ * 'class SettingValue
+ *
+ * \brief represent a setting value
+ *
+ */
+
 class   SettingValue : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY( SettingValue );
     public:
         SettingValue( const QVariant& val );
+
+        /**
+         * \brief setter for the m_val member
+         * \param   val the value wich will be affected to m_val
+         */
+
         void            set( const QVariant& val );
+
+        /**
+         * \brief getter for the m_val member
+         */
+
         const QVariant& get() const;
-        QVariant&       get();
     private:
+        /**
+         * \brief the QVariant containingthe value of the settings
+         */
         QVariant        m_val;
     signals:
+        /**
+         * \brief This signal is emmited while the m_val
+         *        member have been modified
+         */
         void        changed( const QVariant& );
 };
 
