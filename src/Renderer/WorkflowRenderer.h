@@ -23,18 +23,17 @@
 #ifndef WORKFLOWRENDERER_H
 #define WORKFLOWRENDERER_H
 
+class   QWaitCondition;
+class   QWidget;
 
-#include <QObject>
-#include <QWidget>
-#include <QStack>
-
-#include "Workflow/MainWorkflow.h"
-#include "GenericRenderer.h"
-#include "StackedAction.hpp"
 #include "ActionStack.h"
 #include "AudioClipWorkflow.h"
+#include "GenericRenderer.h"
+#include "StackedAction.hpp"
+#include "MainWorkflow.h"
 
-class   QWaitCondition;
+#include <QObject>
+#include <QStack>
 
 class   WorkflowRenderer : public GenericRenderer
 {

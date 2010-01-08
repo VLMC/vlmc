@@ -27,6 +27,11 @@
 #include "VideoClipWorkflow.h"
 #include "ImageClipWorkflow.h"
 #include "AudioClipWorkflow.h"
+#include "Clip.h"
+#include "Media.h"
+#include <QReadWriteLock>
+#include <QDomDocument>
+#include <QDomElement>
 
 TrackWorkflow::TrackWorkflow( unsigned int trackId, MainWorkflow::TrackType type  ) :
         m_trackId( trackId ),

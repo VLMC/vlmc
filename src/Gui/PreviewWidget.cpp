@@ -25,6 +25,7 @@
 #include "PreviewWidget.h"
 #include "ui_PreviewWidget.h"
 #include "ClipRenderer.h"
+#include "Clip.h"
 
 PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent ) :
     QWidget( parent ),

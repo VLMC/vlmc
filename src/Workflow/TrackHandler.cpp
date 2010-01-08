@@ -23,6 +23,9 @@
 #include "TrackHandler.h"
 #include "TrackWorkflow.h"
 
+#include <QDomDocument>
+#include <QDomElement>
+
 LightVideoFrame* TrackHandler::nullOutput = NULL;
 
 TrackHandler::TrackHandler( unsigned int nbTracks, MainWorkflow::TrackType trackType, EffectsEngine* effectsEngine ) :

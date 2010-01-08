@@ -25,6 +25,7 @@
 #include <QtGlobal>
 
 #include "ClipRenderer.h"
+#include "Media.h"
 #include "MainWorkflow.h"
 
 ClipRenderer::ClipRenderer() :

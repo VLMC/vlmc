@@ -24,9 +24,10 @@
 #define VIDEOCLIPWORKFLOW_H
 
 #include "ClipWorkflow.h"
-#include "Clip.h"
 #include "StackedBuffer.hpp"
 #include "Pool.hpp"
+
+class   Clip;
 
 class   VideoClipWorkflow : public ClipWorkflow
 {

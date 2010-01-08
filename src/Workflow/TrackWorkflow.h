@@ -23,18 +23,25 @@
 #ifndef TRACKWORKFLOW_H
 #define TRACKWORKFLOW_H
 
-#include <QObject>
-#include <QMutex>
-#include <QWaitCondition>
-#include <QMap>
-#include <QList>
-#include <QReadWriteLock>
-#include <QDomElement>
-
-#include "ClipWorkflow.h"
-#include "LightVideoFrame.h"
 #include "MainWorkflow.h"
 #include "StackedBuffer.hpp"
+
+#include <QObject>
+
+class   AudioClipWorkflow;
+class   ClipWorkflow;
+class   LightVideoFrame;
+class   VideoClipWorkflow;
+
+class   QDomElement;
+class   QDomElement;
+template <typename T>
+class   QList;
+template <typename T, typename U>
+class   QMap;
+class   QMutex;
+class   QReadWriteLock;
+class   QWaitCondition;
 
 //TODO: REMOVE THIS
 #ifndef FPS
@@ -44,9 +51,6 @@
 #ifndef MAX_TRACKS
 #define MAX_TRACKS 64
 #endif
-
-class   VideoClipWorkflow;
-class   AudioClipWorkflow;
 
 class   TrackWorkflow : public QObject
 {

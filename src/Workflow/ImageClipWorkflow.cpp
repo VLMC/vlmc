@@ -21,6 +21,7 @@
  *****************************************************************************/
 
 #include "ImageClipWorkflow.h"
+#include "Clip.h"
 
 #define IMAGE_DURATION  10000
 

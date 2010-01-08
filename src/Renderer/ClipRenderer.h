@@ -23,12 +23,14 @@
 #ifndef CLIPRENDERER_H
 #define CLIPRENDERER_H
 
-#include <QWidget>
-#include <QObject>
+class   Clip;
+class   Media;
+class   QUuid;
 
-#include "VLCMediaPlayer.h"
-#include "Clip.h"
 #include "GenericRenderer.h"
+#include "VLCMediaPlayer.h"
+
+#include <QObject>
 
 class ClipRenderer : public GenericRenderer
 {
