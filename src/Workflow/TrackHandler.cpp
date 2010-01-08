@@ -28,7 +28,8 @@
 
 LightVideoFrame* TrackHandler::nullOutput = NULL;
 
-TrackHandler::TrackHandler( unsigned int nbTracks, MainWorkflow::TrackType trackType, EffectsEngine* effectsEngine ) :
+TrackHandler::TrackHandler( unsigned int nbTracks, MainWorkflow::TrackType trackType,
+                            EffectsEngine* effectsEngine ) :
         m_trackCount( nbTracks ),
         m_trackType( trackType ),
         m_length( 0 ),
@@ -51,13 +52,13 @@ TrackHandler::~TrackHandler()
         delete nullOutput;
         nullOutput = NULL;
     }
-
     for (unsigned int i = 0; i < m_trackCount; ++i)
         delete m_tracks[i];
     delete[] m_tracks;
 }
 
-void        TrackHandler::addClip( Clip* clip, unsigned int trackId, qint64 start )
+void
+TrackHandler::addClip( Clip* clip, unsigned int trackId, qint64 start )
 {
     Q_ASSERT_X( trackId < m_trackCount, "MainWorkflow::addClip",
                 "The specified trackId isn't valid, for it's higher than the number of tracks");
@@ -72,7 +73,8 @@ void        TrackHandler::addClip( Clip* clip, unsigned int trackId, qint64 star
         m_length = m_tracks[trackId]->getLength();
 }
 
-void        TrackHandler::startRender()
+void
+TrackHandler::startRender()
 {
     m_paused = false;
     m_endReached = false;
@@ -81,7 +83,8 @@ void        TrackHandler::startRender()
     computeLength();
 }
 
-void        TrackHandler::computeLength()
+void
+TrackHandler::computeLength()
 {
     qint64      maxLength = 0;
 
@@ -93,12 +96,14 @@ void        TrackHandler::computeLength()
     m_length = maxLength;
 }
 
-qint64      TrackHandler::getLength() const
+qint64
+TrackHandler::getLength() const
 {
     return m_length;
 }
 
-void        TrackHandler::getOutput( qint64 currentFrame, qint64 subFrame )
+void
+TrackHandler::getOutput( qint64 currentFrame, qint64 subFrame )
 {
     m_tmpAudioBuffer = NULL;
     for ( unsigned int i = 0; i < m_trackCount; ++i )
@@ -106,18 +111,22 @@ void        TrackHandler::getOutput( qint64 currentFrame, qint64 subFrame )
         if ( m_trackType == MainWorkflow::VideoTrack )
         {
             if ( m_tracks[i].activated() == false )
-                (*((*m_effectEngine)->getInternalStaticVideoOutput( i + 1 ))) << *TrackHandler::nullOutput;
+                m_effectEngine->setVideoInput( i + 1, *TrackHandler::nullOutput );
             else
             {
                 StackedBuffer<LightVideoFrame*, VideoClipWorkflow>* stackedBuffer =
-                        reinterpret_cast<StackedBuffer<LightVideoFrame*, VideoClipWorkflow>*>( m_tracks[i]->getOutput( currentFrame, subFrame ) );
-                (*((*m_effectEngine)->getInternalStaticVideoOutput( i + 1 ))) << *(stackedBuffer->get());
+                    reinterpret_cast<StackedBuffer<LightVideoFrame*, VideoClipWorkflow>*>(
+                            m_tracks[i]->getOutput( currentFrame, subFrame ) );
+
+                m_effectEngine->setVideoInput( i + 1, *( stackedBuffer->get() ) );
             }
         }
         else
         {
-            StackedBuffer<AudioClipWorkflow::AudioSample*, AudioClipWorkflow>* stackedBuffer =
-                    reinterpret_cast<StackedBuffer<AudioClipWorkflow::AudioSample*, AudioClipWorkflow>*> ( m_tracks[i]->getOutput( currentFrame, subFrame ) );
+            StackedBuffer<AudioClipWorkflow::AudioSample*, AudioClipWorkflow>*
+                    stackedBuffer =
+                    reinterpret_cast<StackedBuffer<AudioClipWorkflow::AudioSample*, AudioClipWorkflow>*> (
+                            m_tracks[i]->getOutput( currentFrame, subFrame ) );
             if ( stackedBuffer != NULL )
                 m_tmpAudioBuffer = stackedBuffer->get();
             //else if will remain NULL
@@ -125,7 +134,8 @@ void        TrackHandler::getOutput( qint64 currentFrame, qint64 subFrame )
     }
 }
 
-void        TrackHandler::pause()
+void
+TrackHandler::pause()
 {
     for ( unsigned int i = 0; i < m_trackCount; ++i )
     {
@@ -134,7 +144,8 @@ void        TrackHandler::pause()
     }
 }
 
-void        TrackHandler::unpause()
+void
+TrackHandler::unpause()
 {
     for ( unsigned int i = 0; i < m_trackCount; ++i )
     {
@@ -143,13 +154,15 @@ void        TrackHandler::unpause()
     }
 }
 
-void        TrackHandler::activateAll()
+void
+TrackHandler::activateAll()
 {
     for ( unsigned int i = 0; i < m_trackCount; ++i )
         activateTrack( i );
 }
 
-void        TrackHandler::activateTrack( unsigned int trackId )
+void
+TrackHandler::activateTrack( unsigned int trackId )
 {
     if ( m_tracks[trackId]->getLength() > 0 )
         m_tracks[trackId].activate();
@@ -157,14 +170,16 @@ void        TrackHandler::activateTrack( unsigned int trackId )
         m_tracks[trackId].deactivate();
 }
 
-qint64      TrackHandler::getClipPosition( const QUuid& uuid, unsigned int trackId ) const
+qint64
+TrackHandler::getClipPosition( const QUuid &uuid, unsigned int trackId ) const
 {
     Q_ASSERT( trackId < m_trackCount );
 
     return m_tracks[trackId]->getClipPosition( uuid );
 }
 
-void        TrackHandler::stop()
+void
+TrackHandler::stop()
 {
     for (unsigned int i = 0; i < m_trackCount; ++i)
     {
@@ -173,7 +188,8 @@ void        TrackHandler::stop()
     }
 }
 
-void        TrackHandler::moveClip(const QUuid& clipUuid, unsigned int oldTrack,
+void
+TrackHandler::moveClip(const QUuid &clipUuid, unsigned int oldTrack,
                                        unsigned int newTrack, qint64 startingFrame )
 {
      Q_ASSERT( newTrack < m_trackCount && oldTrack < m_trackCount );
@@ -200,7 +216,8 @@ void        TrackHandler::moveClip(const QUuid& clipUuid, unsigned int oldTrack,
     computeLength();
 }
 
-Clip*       TrackHandler::removeClip( const QUuid& uuid, unsigned int trackId )
+Clip*
+TrackHandler::removeClip( const QUuid& uuid, unsigned int trackId )
 {
     Q_ASSERT( trackId < m_trackCount );
 
@@ -210,24 +227,28 @@ Clip*       TrackHandler::removeClip( const QUuid& uuid, unsigned int trackId )
     return clip;
 }
 
-void        TrackHandler::muteTrack( unsigned int trackId )
+void
+TrackHandler::muteTrack( unsigned int trackId )
 {
     m_tracks[trackId].setHardDeactivation( true );
 }
 
-void        TrackHandler::unmuteTrack( unsigned int trackId )
+void
+TrackHandler::unmuteTrack( unsigned int trackId )
 {
     m_tracks[trackId].setHardDeactivation( false );
 }
 
-Clip*       TrackHandler::getClip( const QUuid& uuid, unsigned int trackId )
+Clip*
+TrackHandler::getClip( const QUuid& uuid, unsigned int trackId )
 {
     Q_ASSERT( trackId < m_trackCount );
 
     return m_tracks[trackId]->getClip( uuid );
 }
 
-void        TrackHandler::clear()
+void
+TrackHandler::clear()
 {
     for ( unsigned int i = 0; i < m_trackCount; ++i )
     {
@@ -236,17 +257,20 @@ void        TrackHandler::clear()
     m_length = 0;
 }
 
-bool        TrackHandler::isPaused() const
+bool
+TrackHandler::isPaused() const
 {
     return m_paused;
 }
 
-bool        TrackHandler::endIsReached() const
+bool
+TrackHandler::endIsReached() const
 {
     return m_endReached;
 }
 
-void        TrackHandler::trackEndReached( unsigned int trackId )
+void
+TrackHandler::trackEndReached( unsigned int trackId )
 {
     m_tracks[trackId].deactivate();
 
@@ -259,12 +283,14 @@ void        TrackHandler::trackEndReached( unsigned int trackId )
     emit tracksEndReached();
 }
 
-unsigned int    TrackHandler::getTrackCount() const
+unsigned int
+TrackHandler::getTrackCount() const
 {
     return m_trackCount;
 }
 
-void            TrackHandler::save( QDomDocument& doc, QDomElement& timelineNode ) const
+void
+TrackHandler::save( QDomDocument& doc, QDomElement& timelineNode ) const
 {
     for ( unsigned int i = 0; i < m_trackCount; ++i)
     {

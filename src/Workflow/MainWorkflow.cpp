@@ -30,6 +30,9 @@
 #include "Library.h"
 #include "SettingsManager.h"
 #include "Clip.h"
+#include "EffectsEngine.h"
+
+#include <QDomElement>
 
 LightVideoFrame     *MainWorkflow::blackOutput = NULL;
 
@@ -137,9 +140,8 @@ MainWorkflow::getOutput( TrackType trackType )
                                         m_currentFrame[trackType] );
         if ( trackType == MainWorkflow::VideoTrack )
         {
-            (*m_effectEngine)->render();
-            const LightVideoFrame &tmp =
-                    (*((*m_effectEngine)->getInternalStaticVideoInput( 1 )) );
+            m_effectEngine->render();
+            const LightVideoFrame &tmp = m_effectEngine->getVideoOutput( 1 );
             if (tmp->nboctets == 0 )
                 m_outputBuffers->video = MainWorkflow::blackOutput;
             else
