@@ -178,9 +178,6 @@ class   ClipWorkflow : public QObject
     private:
         LibVLCpp::MediaPlayer*  m_mediaPlayer;
 
-        State                   m_requiredState;
-        QMutex*                 m_requiredStateLock;
-
         WaitCondition*          m_initWaitCond;
         WaitCondition*          m_pausingStateWaitCond;
 
@@ -206,13 +203,6 @@ class   ClipWorkflow : public QObject
         qint64                  m_beginPausePts;
         qint64                  m_pauseDuration;
         int                     debugType;
-
-
-    protected:
-        /**
-         *  \warning    Don't ever call this method from anywhere else than the unlock() method
-         */
-        void                    checkStateChange();
 
     private slots:
         void                    loadingComplete();

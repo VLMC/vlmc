@@ -32,12 +32,10 @@
 
 ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
                 m_mediaPlayer(NULL),
-                m_requiredState( ClipWorkflow::None ),
                 m_clip( clip ),
                 m_state( ClipWorkflow::Stopped )
 {
     m_stateLock = new QReadWriteLock;
-    m_requiredStateLock = new QMutex;
     m_initWaitCond = new WaitCondition;
     m_pausingStateWaitCond = new WaitCondition;
     m_renderLock = new QMutex;
@@ -51,22 +49,9 @@ ClipWorkflow::~ClipWorkflow()
     delete m_renderLock;
     delete m_pausingStateWaitCond;
     delete m_initWaitCond;
-    delete m_requiredStateLock;
     delete m_stateLock;
     delete m_availableBuffersMutex;
     delete m_computedBuffersMutex;
-}
-
-void    ClipWorkflow::checkStateChange()
-{
-    QMutexLocker    lock( m_requiredStateLock );
-    QWriteLocker    lock2( m_stateLock );
-    if ( m_requiredState != ClipWorkflow::None )
-    {
-        m_state = m_requiredState;
-//        qDebug() << '[' << (void*)this << "] Applying required state change:" << m_state;
-        m_requiredState = ClipWorkflow::None;
-    }
 }
 
 void    ClipWorkflow::initialize()
@@ -140,8 +125,6 @@ void            ClipWorkflow::stop()
         MemoryPool<LibVLCpp::MediaPlayer>::getInstance()->release( m_mediaPlayer );
         m_mediaPlayer = NULL;
         setState( Stopped );
-        QMutexLocker    lock( m_requiredStateLock );
-        m_requiredState = ClipWorkflow::None;
         delete m_vlcMedia;
     }
     else
@@ -166,12 +149,6 @@ void            ClipWorkflow::setState( State state )
     QWriteLocker    lock( m_stateLock );
 //        qDebug() << '[' << (void*)this << "] Setting state to" << state;
     m_state = state;
-}
-
-void            ClipWorkflow::queryStateChange( State newState )
-{
-    QMutexLocker    lock( m_requiredStateLock );
-    m_requiredState = newState;
 }
 
 QReadWriteLock* ClipWorkflow::getStateLock()
@@ -245,7 +222,6 @@ void        ClipWorkflow::commonUnlock()
 //        qDebug() << "feeding cont wait mutex acquired. Type:" << debugType;
         m_feedingCondWait->wake();
     }
-    checkStateChange();
 }
 
 void    ClipWorkflow::computePtsDiff( qint64 pts )
