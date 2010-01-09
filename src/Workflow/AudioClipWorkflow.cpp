@@ -61,10 +61,10 @@ void*       AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
     QMutexLocker    lock2( m_computedBuffersMutex );
     preGetOutput();
 
-    qWarning() << "Audio. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
+//    qWarning() << "Audio. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
     if ( isEndReached() == true )
     {
-        qDebug() << "End is reached";
+//        qDebug() << "End is reached";
         return NULL;
     }
     if ( mode == ClipWorkflow::Get )
@@ -110,7 +110,7 @@ void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer
     AudioSample* as = NULL;
     if ( cw->m_availableBuffers.isEmpty() == true )
     {
-        qCritical() << cw << "Late buffer generation. Spawning new audio buffer.";
+//        qCritical() << cw << "Late buffer generation. Spawning new audio buffer.";
         as = cw->createBuffer( size );
     }
     else
@@ -146,11 +146,7 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
         as->nbChannels = channels;
         as->ptsDiff = cw->m_currentPts - cw->m_previousPts;
     }
-    qWarning() << "::::Computing audio PTS: debugId:" << as->debugId << "ptsdiff:" << as->ptsDiff;
-    if ( as->ptsDiff > 100000 )
-    {
-        qWarning() << "Probably invalid pts diff.";
-    }
+//    qWarning() << "::::Computing audio PTS: debugId:" << as->debugId << "ptsdiff:" << as->ptsDiff;
     cw->commonUnlock();
     cw->m_renderLock->unlock();
     cw->m_computedBuffersMutex->unlock();
