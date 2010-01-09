@@ -150,7 +150,6 @@ void            ClipWorkflow::stop()
 
 void            ClipWorkflow::setTime( qint64 time )
 {
-    qDebug() << "setting clipworkflow time to:" << time;
     m_mediaPlayer->setTime( time );
     flushComputedBuffers();
 }
