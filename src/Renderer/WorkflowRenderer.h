@@ -88,8 +88,8 @@ class   WorkflowRenderer : public GenericRenderer
                                         uint32_t trackId, MainWorkflow::TrackType trackType, bool undoRedoAction = false );
 
         static int          lock( void *data, int64_t *dts, int64_t *pts, unsigned int *flags, size_t *bufferSize, void **buffer );
-        static int          lockVideo( WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer );
-        static int          lockAudio( WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer );
+        int                 lockVideo( int64_t *pts, size_t *bufferSize, void **buffer );
+        int                 lockAudio( int64_t *pts, size_t *bufferSize, void **buffer );
         static void         unlock( void *data, size_t buffSize, void *buffer );
 
     private:

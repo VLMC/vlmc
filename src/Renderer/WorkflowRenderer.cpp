@@ -104,12 +104,12 @@ int     WorkflowRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigne
     *flags = 0;
     if ( handler->type == Video )
     {
-        ret = lockVideo( handler->self, pts, bufferSize, buffer );
+        ret = handler->self->lockVideo( pts, bufferSize, buffer );
         handler->self->m_mainWorkflow->goToNextFrame( MainWorkflow::VideoTrack );
     }
     else if ( handler->type == Audio )
     {
-        ret = lockAudio( handler->self, pts, bufferSize, buffer );
+        ret = handler->self->lockAudio( pts, bufferSize, buffer );
         handler->self->m_mainWorkflow->goToNextFrame( MainWorkflow::AudioTrack );
     }
     else
@@ -118,58 +118,58 @@ int     WorkflowRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigne
     return ret;
 }
 
-int     WorkflowRenderer::lockVideo( WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer )
+int     WorkflowRenderer::lockVideo( int64_t *pts, size_t *bufferSize, void **buffer )
 {
     qint64 ptsDiff = 0;
 
-    if ( self->m_stopping == false && self->m_paused == false )
+    if ( m_stopping == false && m_paused == false )
     {
-        MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getOutput( MainWorkflow::VideoTrack );
-        memcpy( self->m_renderVideoFrame, (*(ret->video))->frame.octets, (*(ret->video))->nboctets );
-        self->m_videoBuffSize = (*(ret->video))->nboctets;
+        MainWorkflow::OutputBuffers* ret = m_mainWorkflow->getOutput( MainWorkflow::VideoTrack );
+        memcpy( m_renderVideoFrame, (*(ret->video))->frame.octets, (*(ret->video))->nboctets );
+        m_videoBuffSize = (*(ret->video))->nboctets;
         ptsDiff = (*(ret->video))->ptsDiff;
     }
-    self->m_pts = *pts = ptsDiff + self->m_pts;
-//    qDebug() << "Video pts" << self->m_pts << "diff" << ptsDiff;
-    //*pts = qRound64( (float)( self->m_pts * 1000000.0f ) / self->m_outputFps );
-    //++self->m_pts;
-    *buffer = self->m_renderVideoFrame;
-    *bufferSize = self->m_videoBuffSize;
+    m_pts = *pts = ptsDiff + m_pts;
+//    qDebug() << "Video pts" << m_pts << "diff" << ptsDiff;
+    //*pts = qRound64( (float)( m_pts * 1000000.0f ) / m_outputFps );
+    //++m_pts;
+    *buffer = m_renderVideoFrame;
+    *bufferSize = m_videoBuffSize;
     return 0;
 }
 
-int     WorkflowRenderer::lockAudio(  WorkflowRenderer* self, int64_t *pts, size_t *bufferSize, void **buffer )
+int     WorkflowRenderer::lockAudio(  int64_t *pts, size_t *bufferSize, void **buffer )
 {
     qint64 ptsDiff;
 
-    if ( self->m_stopping == false )
+    if ( m_stopping == false )
     {
-        MainWorkflow::OutputBuffers* ret = self->m_mainWorkflow->getOutput( MainWorkflow::AudioTrack );
-        self->m_renderAudioSample = ret->audio;
+        MainWorkflow::OutputBuffers* ret = m_mainWorkflow->getOutput( MainWorkflow::AudioTrack );
+        m_renderAudioSample = ret->audio;
     }
     uint32_t    nbSample;
-    if ( self->m_renderAudioSample != NULL )
+    if ( m_renderAudioSample != NULL )
     {
-        nbSample = self->m_renderAudioSample->nbSample;
-        *buffer = self->m_renderAudioSample->buff;
-        *bufferSize = self->m_renderAudioSample->size;
-        ptsDiff = self->m_renderAudioSample->ptsDiff;
+        nbSample = m_renderAudioSample->nbSample;
+        *buffer = m_renderAudioSample->buff;
+        *bufferSize = m_renderAudioSample->size;
+        ptsDiff = m_renderAudioSample->ptsDiff;
     }
     else
     {
-        nbSample = self->m_rate / self->m_outputFps;
-        unsigned int    buffSize = self->m_nbChannels * 2 * nbSample;
+        nbSample = m_rate / m_outputFps;
+        unsigned int    buffSize = m_nbChannels * 2 * nbSample;
         if ( WorkflowRenderer::silencedAudioBuffer == NULL )
             WorkflowRenderer::silencedAudioBuffer = new uint8_t[ buffSize ];
         memset( WorkflowRenderer::silencedAudioBuffer, 0, buffSize );
         *buffer = WorkflowRenderer::silencedAudioBuffer;
         *bufferSize = buffSize;
-        ptsDiff = self->m_pts - self->m_audioPts;
+        ptsDiff = m_pts - m_audioPts;
     }
-    self->m_audioPts = *pts = self->m_audioPts + ptsDiff;
-//    qDebug() << "Audio pts" << self->m_audioPts << "diff" << ptsDiff;
-    //*pts = self->m_audioPts * 1000000.0f / self->m_rate;
-    //self->m_audioPts += nbSample * self->m_nbChannels;
+    m_audioPts = *pts = m_audioPts + ptsDiff;
+    qDebug() << "Audio pts" << m_audioPts << "diff" << ptsDiff;
+    //*pts = m_audioPts * 1000000.0f / m_rate;
+    //m_audioPts += nbSample * m_nbChannels;
     return 0;
 }
 
