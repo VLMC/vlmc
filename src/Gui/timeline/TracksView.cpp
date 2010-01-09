@@ -696,6 +696,20 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
                                                                  m_actionItem->startPos(),
                                                                  m_actionItem->mediaType() ) );
 
+        // Update the linked item too
+        if ( m_actionItem->groupItem() )
+        {
+            m_actionItem->groupItem()->oldTrackNumber = m_actionItem->groupItem()->trackNumber();
+            m_actionItem->groupItem()->oldPosition = m_actionItem->groupItem()->startPos();
+
+            Commands::trigger( new Commands::MainWorkflow::MoveClip( m_mainWorkflow,
+                                                                     m_actionItem->groupItem()->clip()->getUuid(),
+                                                                     m_actionItem->groupItem()->oldTrackNumber,
+                                                                     m_actionItem->groupItem()->trackNumber(),
+                                                                     m_actionItem->groupItem()->startPos(),
+                                                                     m_actionItem->groupItem()->mediaType() ) );
+        }
+
         m_actionItem->oldTrackNumber = m_actionItem->trackNumber();
         m_actionItem->oldPosition = m_actionItem->startPos();
         m_actionRelativeX = -1;
