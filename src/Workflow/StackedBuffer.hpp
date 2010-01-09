@@ -35,6 +35,9 @@ class   StackedBuffer
                 m_mustRelease( mustBeReleased )
         {
         }
+        virtual ~StackedBuffer()
+        {
+        }
 
         /// \warning    Calling this method will definitely invalidate the pointer;
         virtual void    release() = 0;

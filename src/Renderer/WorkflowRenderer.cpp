@@ -167,7 +167,7 @@ int     WorkflowRenderer::lockAudio(  int64_t *pts, size_t *bufferSize, void **b
         ptsDiff = m_pts - m_audioPts;
     }
     m_audioPts = *pts = m_audioPts + ptsDiff;
-    qDebug() << "Audio pts" << m_audioPts << "diff" << ptsDiff;
+    qDebug() << "Audio pts" << m_audioPts << "debug id:" << m_renderAudioSample->debugId << "diff:" << ptsDiff;
     //*pts = m_audioPts * 1000000.0f / m_rate;
     //m_audioPts += nbSample * m_nbChannels;
     return 0;
