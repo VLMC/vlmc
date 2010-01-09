@@ -44,10 +44,13 @@ public:
 protected:
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
     virtual QVariant itemChange( GraphicsItemChange change, const QVariant& value );
+    virtual void mousePressEvent( QGraphicsSceneMouseEvent* event );
+    virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
 
 private:
     QPen        m_pen;
     QRectF      m_boundingRect;
+    bool        m_mouseDown;
 
 signals:
     void cursorPositionChanged( qint64 pos );
