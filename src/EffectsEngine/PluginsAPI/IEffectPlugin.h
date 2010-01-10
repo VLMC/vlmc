@@ -24,7 +24,9 @@
 #ifndef IEFFECTPLUGIN_H_
 #define IEFFECTPLUGIN_H_
 
-#include "IEffectNode.h"
+//#include "IEffectNode.h"
+
+class   IEffectNode;
 
 class	IEffectPlugin
 {

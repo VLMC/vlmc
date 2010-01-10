@@ -32,6 +32,9 @@
 class TracksView;
 class Clip;
 
+/**
+ * \brief Base class for Audio/Video items.
+ */
 class AbstractGraphicsMediaItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
@@ -87,30 +90,42 @@ public:
 
 protected:
     /**
-     * Returns the current tracksView for the item,
-     * or 0 if the item is not stored in a tracksView.
+     * \details Returns a pointer to the tracksView which contains the item,
+     * or NULL if the item is not stored in a tracksView.
      */
     TracksView* tracksView();
 
     /**
-     * Contains the old trackNumber
+     * \brief Contains the old trackNumber.
      */
     unsigned int oldTrackNumber;
     /**
-     * Contains the old position
+     * \brief Contains the old position.
      */
     qint64 oldPosition;
 
     /**
-     * Pointer to the linked item
-     * or NULL if it isn't.
+     * \brief Return a pointer to the linked item.
+     * \details This method will return NULL if there is no linked item.
      */
     AbstractGraphicsMediaItem* groupItem();
 
+    /**
+     * \brief Set the width of the item.
+     * \param width Width in frames.
+     */
     void setWidth( qint64 width );
+    /**
+     * \brief Set the height of the item.
+     * \param height Height in pixels.
+     */
     void setHeight( qint64 height );
 
 protected slots:
+    /**
+     * \brief Adjust the length of the item according to the associated Clip.
+     * \details This method should be called when the clip size change
+     */
     void adjustLength();
 
 private:

@@ -23,7 +23,12 @@
 
 #include "EffectPluginTypeManager.h"
 
-EffectPluginTypeManager::EffectPluginTypeManager() : m_higherFreeId( 2 )
+#include "EffectPluginTypeLoader.h"
+
+#include <QDebug>
+#include <QDir>
+
+EffectPluginTypeManager::EffectPluginTypeManager( void ) : m_higherFreeId( 2 )
 {
     QDir                        dir;
     QStringList                 filter;
@@ -75,40 +80,46 @@ EffectPluginTypeManager::~EffectPluginTypeManager()
     }
 }
 
-IEffectPlugin*      EffectPluginTypeManager::createIEffectPluginInstance( quint32 typeId ) const
+IEffectPlugin*
+EffectPluginTypeManager::createIEffectPluginInstance( quint32 typeId ) const
 {
-    QMap<quint32, EffectPluginTypeLoader*>::const_iterator    it = m_eptlById.find( typeId );
+    QMap<quint32, EffectPluginTypeLoader*>::const_iterator it = m_eptlById.find( typeId );
 
     if ( it != m_eptlById.end() )
-        return ( it.value()->createIEffectPluginInstance() );
-    return ( NULL );
+        return it.value()->createIEffectPluginInstance();
+    return NULL;
 }
 
-IEffectPlugin*      EffectPluginTypeManager::createIEffectPluginInstance( QString const & typeName ) const
+IEffectPlugin*
+EffectPluginTypeManager::createIEffectPluginInstance( const QString & typeName ) const
 {
-    QMap<QString, EffectPluginTypeLoader*>::const_iterator    it = m_eptlByName.find( typeName );
+    QMap<QString, EffectPluginTypeLoader*>::const_iterator it = m_eptlByName.find( typeName );
 
     if ( it != m_eptlByName.end() )
-        return ( it.value()->createIEffectPluginInstance() );
-    return ( NULL );
+        return it.value()->createIEffectPluginInstance();
+    return NULL;
 }
 
-QList<QString>      EffectPluginTypeManager::getEffectPluginTypesNamesList( void ) const
+QList<QString>
+EffectPluginTypeManager::getEffectPluginTypesNamesList( void ) const
 {
     return ( m_nameById.values() );
 }
 
-QList<quint32>      EffectPluginTypeManager::getEffectPluginTypesIdsList( void ) const
+QList<quint32>
+EffectPluginTypeManager::getEffectPluginTypesIdsList( void ) const
 {
-    return ( m_nameById.keys() );
+    return m_nameById.keys();
 }
 
-QString const       EffectPluginTypeManager::getEffectPluginTypeNameByTypeId( quint32 typeId ) const
+const QString
+EffectPluginTypeManager::getEffectPluginTypeNameByTypeId( quint32 typeId ) const
 {
-    return ( m_nameById.value( typeId, "" ) );
+    return m_nameById.value( typeId, "" );
 }
 
-quint32       EffectPluginTypeManager::getEffectPluginTypeIdByTypeName( QString const & typeName ) const
+quint32
+EffectPluginTypeManager::getEffectPluginTypeIdByTypeName( const QString& typeName ) const
 {
-    return ( m_nameById.key( typeName, 0 ) );
+    return m_nameById.key( typeName, 0 );
 }

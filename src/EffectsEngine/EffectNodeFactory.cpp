@@ -23,9 +23,15 @@
 
 #include "EffectNodeFactory.h"
 
-EffectPluginTypeManager EffectNodeFactory::m_eptm = EffectPluginTypeManager();
+#include "EffectNode.h"
+#include "EffectPluginTypeManager.h"
+#include "IEffectPluginCreator.h"
 
-EffectNodeFactory::EffectNodeFactory() : m_higherFreeId( 1 ), m_mapHoles( 0 ), m_father( NULL )
+EffectPluginTypeManager EffectNodeFactory::s_eptm = EffectPluginTypeManager();
+
+EffectNodeFactory::EffectNodeFactory( void ) : m_higherFreeId( 1 ),
+                                         m_mapHoles( 0 ),
+                                         m_father( NULL )
 {
 }
 
@@ -44,59 +50,68 @@ EffectNodeFactory::~EffectNodeFactory()
 
 // SETTING FATHER
 
-void                        EffectNodeFactory::setFather( EffectNode* father )
+void
+EffectNodeFactory::setFather( EffectNode* father )
 {
     m_father = father ;
-    return ;
 }
 
 // EFFECT TYPES INFORMATION
 
-QList<QString>              EffectNodeFactory::getEffectNodeTypesNamesList( void ) const
+QList<QString>
+EffectNodeFactory::getEffectNodeTypesNamesList( void ) const
 {
-    return ( EffectNodeFactory::m_eptm.getEffectPluginTypesNamesList() );
+    return EffectNodeFactory::s_eptm.getEffectPluginTypesNamesList();
 }
 
-QList<quint32>              EffectNodeFactory::getEffectNodeTypesIdsList( void ) const
+QList<quint32>
+EffectNodeFactory::getEffectNodeTypesIdsList( void ) const
 {
-    return ( EffectNodeFactory::m_eptm.getEffectPluginTypesIdsList() );
+    return EffectNodeFactory::s_eptm.getEffectPluginTypesIdsList();
 }
 
-QString const               EffectNodeFactory::getEffectNodeTypeNameByTypeId( quint32 typeId ) const
+const QString
+EffectNodeFactory::getEffectNodeTypeNameByTypeId( quint32 typeId ) const
 {
-    return ( EffectNodeFactory::m_eptm.getEffectPluginTypeNameByTypeId( typeId ) );
+    return EffectNodeFactory::s_eptm.getEffectPluginTypeNameByTypeId( typeId );
 }
 
-quint32                     EffectNodeFactory::getEffectNodeTypeIdByTypeName( QString const & typeName ) const
+quint32
+EffectNodeFactory::getEffectNodeTypeIdByTypeName( const QString & typeName ) const
 {
-    return ( EffectNodeFactory::m_eptm.getEffectPluginTypeIdByTypeName( typeName ) );
+    return EffectNodeFactory::s_eptm.getEffectPluginTypeIdByTypeName( typeName );
 }
 
 // EFFECT INSTANCES INFORMATIONS
 
-QList<QString>              EffectNodeFactory::getEffectNodeInstancesNamesList( void ) const
+QList<QString>
+EffectNodeFactory::getEffectNodeInstancesNamesList( void ) const
 {
-    return ( m_nameById.values() );
+    return m_nameById.values();
 }
 
-QList<quint32>              EffectNodeFactory::getEffectNodeInstancesIdsList( void ) const
+QList<quint32>
+EffectNodeFactory::getEffectNodeInstancesIdsList( void ) const
 {
-    return ( m_nameById.keys() );
+    return m_nameById.keys();
 }
 
-QString const               EffectNodeFactory::getEffectNodeInstanceNameByInstanceId( quint32 instanceId ) const
+const QString
+EffectNodeFactory::getEffectNodeInstanceNameByInstanceId( quint32 instanceId ) const
 {
-    return ( m_nameById.value( instanceId, "" ) );
+    return m_nameById.value( instanceId, "" );
 }
 
-quint32                     EffectNodeFactory::getEffectNodeInstanceIdByInstanceName( QString const & instanceName ) const
+quint32
+EffectNodeFactory::getEffectNodeInstanceIdByInstanceName( const QString & instanceName ) const
 {
-    return ( m_nameById.key( instanceName, 0 ) );
+    return m_nameById.key( instanceName, 0 );
 }
 
 // CREATE AND DELETE EFFECTS
 
-void                        EffectNodeFactory::createEmptyEffectNodeInstance( void )
+void
+EffectNodeFactory::createEmptyEffectNodeInstance( void )
 {
     EffectNode*         newNode;
     quint32             instanceId;
@@ -126,10 +141,10 @@ void                        EffectNodeFactory::createEmptyEffectNodeInstance( vo
     m_enById[ instanceId ] = newNode;
     m_nameById[ instanceId ] = instanceName;
     qDebug() << "New empty EffectNode* created with name : " << instanceName ;
-    return ;
 }
 
-bool                        EffectNodeFactory::createEmptyEffectNodeInstance( QString const & instanceName )
+bool
+EffectNodeFactory::createEmptyEffectNodeInstance( const QString & instanceName )
 {
     if ( m_enByName.find( instanceName ) == m_enByName.end() )
     {
@@ -158,20 +173,22 @@ bool                        EffectNodeFactory::createEmptyEffectNodeInstance( QS
         m_enById[ instanceId ] = newNode;
         m_nameById[ instanceId ] = instanceName;
         qDebug() << "New empty EffectNode* created with name : " << instanceName ;
-        return ( true );
+        return true;
     }
-    qDebug() << "You can't create a new empty EffectNode with name : " << instanceName << ", it already exist!";
-    return ( false );
+    qDebug() << "You can't create a new empty EffectNode with name : "
+             << instanceName << ", it already exist!";
+    return false;
 }
 
-bool                        EffectNodeFactory::createEffectNodeInstance( QString const & typeName )
+bool
+EffectNodeFactory::createEffectNodeInstance( const QString & typeName )
 {
     IEffectPlugin*      newInstance;
     EffectNode*         newNode;
     quint32             instanceId;
     QString             instanceName;
 
-    newInstance = EffectNodeFactory::m_eptm.createIEffectPluginInstance( typeName );
+    newInstance = EffectNodeFactory::s_eptm.createIEffectPluginInstance( typeName );
     if ( newInstance != NULL )
     {
         newNode = new EffectNode( newInstance );
@@ -195,21 +212,22 @@ bool                        EffectNodeFactory::createEffectNodeInstance( QString
         m_enByName[ instanceName ] = newNode;
         m_enById[ instanceId ] = newNode;
         m_nameById[ instanceId ] = instanceName;
-        return ( true );
+        return true;
         qDebug() << "EffectNode* with typeName[" << typeName << "] created.";
     }
     qDebug() << "Can't create EffectNode* with typeName[" << typeName << "]!";
-    return ( false );
+    return false;
 }
 
-bool        EffectNodeFactory::createEffectNodeInstance( quint32 typeId )
+bool
+EffectNodeFactory::createEffectNodeInstance( quint32 typeId )
 {
     IEffectPlugin*      newInstance;
     EffectNode*         newNode;
     quint32             instanceId;
     QString             instanceName;
 
-    newInstance = EffectNodeFactory::m_eptm.createIEffectPluginInstance( typeId );
+    newInstance = EffectNodeFactory::s_eptm.createIEffectPluginInstance( typeId );
     if ( newInstance != NULL )
     {
         newNode = new EffectNode( newInstance );
@@ -233,14 +251,14 @@ bool        EffectNodeFactory::createEffectNodeInstance( quint32 typeId )
         m_enByName[ instanceName ] = newNode;
         m_enById[ instanceId ] = newNode;
         m_nameById[ instanceId ] = instanceName;
-        return ( true );
+        return true;
         qDebug() << "EffectNode* with typeId[" << typeId << "] created.";
     }
     qDebug() << "Can't create EffectNode* with typeId[" << typeId << "]!";
-    return ( false );
+    return false;
 }
 
-bool        EffectNodeFactory::deleteEffectNodeInstance( QString const & instanceName )
+bool        EffectNodeFactory::deleteEffectNodeInstance( const QString & instanceName )
 {
     QMap<quint32, EffectNode*>::iterator itid;
     quint32                             instanceId;
@@ -276,7 +294,7 @@ bool        EffectNodeFactory::deleteEffectNodeInstance( QString const & instanc
             qDebug() << "You can't delete the EffectNode* instance with instanceName["
                      << instanceName
                      << "] it already has been deleted!";
-            return ( false );
+            return false;
         }
     }
     else
@@ -284,12 +302,13 @@ bool        EffectNodeFactory::deleteEffectNodeInstance( QString const & instanc
         qDebug() << "You can't delete the EffectNode* instance with instanceName["
                  << instanceName
                  << "] it doesn't exist!";
-        return ( false );
+        return false;
     }
-    return ( true );
+    return true;
 }
 
-bool        EffectNodeFactory::deleteEffectNodeInstance( quint32 instanceId )
+bool
+EffectNodeFactory::deleteEffectNodeInstance( quint32 instanceId )
 {
     QMap<quint32, EffectNode*>::iterator itid;
 
@@ -323,7 +342,7 @@ bool        EffectNodeFactory::deleteEffectNodeInstance( quint32 instanceId )
             qDebug() << "You can't delete the EffectNode* instance with instanceId["
                      << instanceId
                      << "] it already has been deleted!";
-            return ( false );
+            return false;
         }
     }
     else
@@ -331,30 +350,32 @@ bool        EffectNodeFactory::deleteEffectNodeInstance( quint32 instanceId )
         qDebug() << "You can't delete the EffectNode* instance with instanceId["
                  << instanceId
                  << "] it doesn't exist!";
-        return ( false );
+        return false;
     }
-    return ( true );
+    return true;
 }
 
-EffectNode* EffectNodeFactory::getEffectNodeInstance( quint32 instanceId ) const
+EffectNode*
+EffectNodeFactory::getEffectNodeInstance( quint32 instanceId ) const
 {
    QMap<quint32, EffectNode*>::const_iterator    it = m_enById.find( instanceId );
 
     if ( it != m_enById.end() )
-        return ( it.value() );
-    return ( NULL );
+        return it.value();
+    return NULL;
 }
 
-EffectNode* EffectNodeFactory::getEffectNodeInstance( QString const & instanceName ) const
+EffectNode*
+EffectNodeFactory::getEffectNodeInstance( const QString & instanceName ) const
 {
     QMap<QString, EffectNode*>::const_iterator    it = m_enByName.find( instanceName );
 
     if ( it != m_enByName.end() )
-        return ( it.value() );
-    return ( NULL );
+        return it.value();
+    return NULL;
 }
 
 QList<EffectNode*>  EffectNodeFactory::getEffectNodeInstancesList( void ) const
 {
-    return ( m_enByName.values() );
+    return m_enByName.values();
 }

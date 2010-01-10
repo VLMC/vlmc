@@ -33,10 +33,16 @@
 
 #define ROUNDED_RECT_RADIUS 5
 
+/**
+ * \brief Represents an audio item.
+ */
 class GraphicsAudioItem : public AbstractGraphicsMediaItem
 {
     Q_OBJECT
 public:
+    /**
+     * \brief See http://doc.trolltech.com/4.5/qgraphicsitem.html#type
+     */
     enum { Type = UserType + 1 };
     GraphicsAudioItem( Clip* clip );
     virtual ~GraphicsAudioItem();
@@ -54,7 +60,17 @@ public:
     virtual Clip* clip() const;
 
 protected:
+    /**
+     * \brief Paint the item's rectangle.
+     * \param painter Pointer to a QPainter.
+     * \param option Painting options.
+     */
     void                paintRect( QPainter* painter, const QStyleOptionGraphicsItem* option );
+    /**
+     * \brief Paint the item's title.
+     * \param painter Pointer to a QPainter.
+     * \param option Painting options.
+     */
     void                paintTitle( QPainter* painter, const QStyleOptionGraphicsItem* option );
     virtual void        hoverEnterEvent( QGraphicsSceneHoverEvent* event );
     virtual void        hoverLeaveEvent( QGraphicsSceneHoverEvent* event );
@@ -62,6 +78,9 @@ protected:
     virtual void        mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
 
 private slots:
+    /**
+     * \deprecated Do not use.
+     */
     void                adjustLength();
 
 private:
@@ -70,6 +89,11 @@ private:
     int                 m_height;
 
 signals:
+    /**
+     * \brief Emitted when the item detect a cut request.
+     * \param self A pointer to the sender.
+     * \param frame Frame's number where the cut takes place.
+     */
     void                split( GraphicsAudioItem* self, qint64 frame );
 };
 

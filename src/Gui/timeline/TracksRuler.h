@@ -44,18 +44,39 @@ static const int LITTLE_MARK_X1 = (LITTLE_MARK_X2 - LITTLE_MARK_LENGTH);
 
 static const int LABEL_SIZE = 9;
 
+/**
+ * \brief Timeline's ruler widget
+ */
 class TracksRuler : public QWidget
 {
     Q_OBJECT
 
 public:
     TracksRuler( TracksView* tracksView, QWidget* parent = 0 );
+    /**
+     * \brief Change the duration of the project.
+     * \param duration Duration in frames.
+     */
     void setDuration( int duration );
+    /**
+     * \brief Compute the spacing between the marks.
+     * \param rate Zoom factor
+     */
     void setPixelPerMark( double rate );
+    /**
+     * \brief Scaling steps.
+     */
     static const int comboScale[];
+    /**
+     * \brief Offset of the current position.
+     */
     int offset() const { return m_offset; }
 
 public slots:
+    /**
+     * \brief Scroll the content of the ruler.
+     * \param pos Position in frames.
+     */
     void moveRuler( int pos );
 
 protected:
@@ -64,7 +85,15 @@ protected:
     virtual void mouseMoveEvent( QMouseEvent* event );
 
 private:
+    /**
+     * \brief Generate the timecode for the specified frame.
+     * \param frames The frame number.
+     * \return The timecode as a QString.
+     */
     QString getTimeCode( int frames ) const;
+    /**
+     * \brief Return a pointer to the TracksView.
+     */
     TracksView* m_tracksView;
     int m_duration;
     int m_fps;
@@ -77,6 +106,9 @@ private:
     int m_bigMarkDistance;
 
 signals:
+    /**
+     * \brief Emitted when the user is seeking.
+     */
     void        frameChanged( qint64, MainWorkflow::FrameChangedReason );
 };
 

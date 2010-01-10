@@ -22,6 +22,8 @@
 
 #include "ActionStack.h"
 
+#include <QDebug>
+
 using namespace Action;
 
 Stack::~Stack()

@@ -26,11 +26,6 @@
 #define LIGHTVIDEOFRAME_H_
 
 #include <QSharedDataPointer>
-#include <QSharedData>
-#include <QDebug>
-#include <qmutex.h>
-#include <QWriteLocker>
-#include <QReadLocker>
 
 struct	Pixel
 {
@@ -52,8 +47,8 @@ union	RawVideoFrame
 struct	VideoFrame : public QSharedData
 {
   ~VideoFrame();
-  VideoFrame();
-  VideoFrame(VideoFrame const & tocopy);
+  VideoFrame( void );
+  VideoFrame( const VideoFrame& tocopy);
 
   RawVideoFrame	frame;
   quint32	nbpixels;
@@ -66,16 +61,16 @@ class	LightVideoFrame
 public:
 
   LightVideoFrame();
-  LightVideoFrame(LightVideoFrame const & tocopy);
-  LightVideoFrame(quint32 nboctets);
-  LightVideoFrame(quint8 const * tocopy, quint32 nboctets);
+  LightVideoFrame( const LightVideoFrame& tocopy );
+  LightVideoFrame( quint32 nboctets );
+  LightVideoFrame( const quint8* tocopy, quint32 nboctets );
   ~LightVideoFrame();
 
-  LightVideoFrame&	operator=(LightVideoFrame const & tocopy);
-  VideoFrame const * operator->(void) const;
-  VideoFrame const & operator*(void) const;
-  VideoFrame* operator->(void);
-  VideoFrame& operator*(void);
+  LightVideoFrame&      operator=( const LightVideoFrame& tocopy );
+  const VideoFrame*     operator->( void ) const;
+  const VideoFrame&     operator*( void ) const;
+  VideoFrame*           operator->( void );
+  VideoFrame&           operator*( void );
 
 private:
 

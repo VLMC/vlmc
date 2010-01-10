@@ -25,25 +25,26 @@
 #define EFFECTPLUGINTYPELOADER_H_
 
 #include <QPluginLoader>
-#include <QDebug>
-#include "IEffectPluginCreator.h"
+
+class   IEffectPlugin;
+class   IEffectPluginCreator;
+
+class   QPluginLoader;
 
 class   EffectPluginTypeLoader
 {
 public:
 
-    EffectPluginTypeLoader();
+    EffectPluginTypeLoader( void );
     ~EffectPluginTypeLoader();
 
-    IEffectPlugin*       createIEffectPluginInstance( void ) const;
-    bool                load( QString const & fileName );
+    IEffectPlugin*      createIEffectPluginInstance( void ) const;
+    bool                load( const QString & fileName );
 
 private:
 
-    QPluginLoader                       m_qpl;
-    IEffectPluginCreator*               m_iepc;
+    QPluginLoader               m_qpl;
+    IEffectPluginCreator*       m_iepc;
 };
-
-// L'EffectNode contiendra son id de type, son nom de type, son id d'instance, et son nom d'instance
 
 #endif // EFFECTPLUGINTYPELOADER_H_
