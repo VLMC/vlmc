@@ -131,11 +131,19 @@ void            ClipWorkflow::stop()
         qDebug() << "ClipWorkflow has already been stopped";
 }
 
-void            ClipWorkflow::setTime( qint64 time )
+void
+ClipWorkflow::setTime( qint64 time )
 {
-//    qDebug() << "setting clipworkflow time:" << time;
+    qDebug() << "setting clipworkflow time:" << time;
     m_mediaPlayer->setTime( time );
     flushComputedBuffers();
+    QWriteLocker    lock( m_stateLock );
+    if ( m_state == ClipWorkflow::Paused )
+    {
+        qDebug() << "Unpausing media player after set time";
+        m_mediaPlayer->pause();
+        m_state = ClipWorkflow::PauseRequired;
+    }
 }
 
 bool            ClipWorkflow::isRendering() const
@@ -180,7 +188,7 @@ void        ClipWorkflow::preGetOutput()
 //        qWarning() << "Waiting for buffer to be fed";
         m_renderLock->unlock();
         m_computedBuffersMutex->unlock();
-//        qDebug() << "Unlocked render lock, entering cond wait";
+        qDebug() << "Unlocked render lock, entering cond wait";
         m_feedingCondWait->waitLocked();
         m_computedBuffersMutex->lock();
         m_renderLock->lock();
@@ -215,7 +223,7 @@ void        ClipWorkflow::commonUnlock()
         setState( ClipWorkflow::PauseRequired );
         m_mediaPlayer->pause();
     }
-    if ( getNbComputedBuffers() == 1 )
+//    if ( getNbComputedBuffers() == 1 )
     {
 //        qDebug() << "Waking feeding cont wait... acquiring lock. Type:" << debugType;
         QMutexLocker    lock( m_feedingCondWait->getMutex() );
@@ -265,7 +273,7 @@ void    ClipWorkflow::mediaPlayerPaused()
 
 void    ClipWorkflow::mediaPlayerUnpaused()
 {
-//    qWarning() << "Media player unpaused. Go back to rendering. Type:" << debugType;
+    qWarning() << "Media player unpaused. Go back to rendering. Type:" << debugType;
     setState( ClipWorkflow::Rendering );
     m_pauseDuration = mdate() - m_beginPausePts;
 //    qDebug() << "pause duration:" << m_pauseDuration;
