@@ -27,6 +27,7 @@
 #include "Clip.h"
 #include "WaitCondition.hpp"
 
+#include <QReadWriteLock>
 #include <QWaitCondition>
 #include <QtDebug>
 
