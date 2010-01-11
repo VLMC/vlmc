@@ -109,7 +109,6 @@ void            MediaCellView::mousePressEvent( QMouseEvent* event )
 
 void    MediaCellView::mouseMoveEvent( QMouseEvent* event )
 {
-    qDebug() << "in MediaCellView::mouseMoveEvent";
     if ( ( event->buttons() | Qt::LeftButton ) != Qt::LeftButton )
          return;
 
@@ -152,7 +151,6 @@ void        MediaCellView::deleteButtonClicked( QWidget*, QMouseEvent* )
 
 void        MediaCellView::arrowButtonClicked( QWidget*, QMouseEvent* )
 {
-    qDebug() << "arrow clicked for uuid" << uuid();
     emit arrowClicked( uuid() );
 }
 

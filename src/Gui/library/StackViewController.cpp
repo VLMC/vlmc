@@ -74,7 +74,6 @@ void    StackViewController::pushViewController( ViewController* viewController,
     }
 
     m_current = viewController;
-    qDebug() << "title :" << &m_current->title();
     m_nav->setTitle( m_current->title() );
     m_layout->insertWidget( 1, m_current->view() );
 }

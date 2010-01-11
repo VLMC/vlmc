@@ -35,14 +35,15 @@ LanguagePreferences::LanguagePreferences( QWidget *parent )
 {
     m_ui.setupUi( this );
 
-    QDir            dir( "ts/", "*.ts", QDir::Name | QDir::IgnoreCase, QDir::Files );
+    QDir            dir( "ts/", "*.qm", QDir::Name | QDir::IgnoreCase, QDir::Files );
     QStringList     tss = dir.entryList();
 
+    m_ui.comboBoxLanguage->setInsertPolicy( QComboBox::InsertAlphabetically );
     foreach ( const QString& tsFileName, tss )
     {
         QString     localeStr;
         int         localePos = tsFileName.lastIndexOf( "vlmc_");
-        int         dotPos = tsFileName.lastIndexOf( ".ts" );
+        int         dotPos = tsFileName.lastIndexOf( ".qm" );
         if ( localePos < 0 || dotPos < 0 )
         {
             qWarning() << "Invalid translation file:" << tsFileName;
@@ -51,10 +52,12 @@ LanguagePreferences::LanguagePreferences( QWidget *parent )
         localePos += 5;
         localeStr = tsFileName.mid( localePos, dotPos - localePos );
         QLocale     locale( localeStr );
+        qDebug() << "Adding new language:" << QLocale::countryToString( locale.country() ) << '/' <<
+                QLocale::languageToString( locale.language() ) << "with locale" << localeStr;
         m_ui.comboBoxLanguage->addItem( QLocale::countryToString( locale.country() ) + " / "
                                         + QLocale::languageToString( locale.language() ), localeStr );
     }
-    m_ui.comboBoxLanguage->addItem( "UnitedStates / English",    "en" );
+    m_ui.comboBoxLanguage->addItem( "UnitedStates / English",    "en_US" );
 }
 
 LanguagePreferences::~LanguagePreferences() {}
@@ -62,9 +65,9 @@ LanguagePreferences::~LanguagePreferences() {}
 void LanguagePreferences::load()
 {
     const QString& part = m_defaults ? "default" : m_settName;
-    SettingsManager* setMan = SettingsManager::getInstance();
-    QVariant    lang = setMan->getValue( part, "VLMCLang" );
-    int idx = m_ui.comboBoxLanguage->findData( lang );
+    SettingsManager         *setMan = SettingsManager::getInstance();
+    const SettingValue      *lang = setMan->getValue( part, "VLMCLang" );
+    int idx = m_ui.comboBoxLanguage->findData( lang->get() );
 
     if ( idx != -1 )
         m_ui.comboBoxLanguage->setCurrentIndex( idx );
