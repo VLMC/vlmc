@@ -38,6 +38,7 @@ LanguagePreferences::LanguagePreferences( QWidget *parent )
     QDir            dir( "ts/", "*.ts", QDir::Name | QDir::IgnoreCase, QDir::Files );
     QStringList     tss = dir.entryList();
 
+    m_ui.comboBoxLanguage->setInsertPolicy( QComboBox::InsertAlphabetically );
     foreach ( const QString& tsFileName, tss )
     {
         QString     localeStr;
@@ -54,7 +55,7 @@ LanguagePreferences::LanguagePreferences( QWidget *parent )
         m_ui.comboBoxLanguage->addItem( QLocale::countryToString( locale.country() ) + " / "
                                         + QLocale::languageToString( locale.language() ), localeStr );
     }
-    m_ui.comboBoxLanguage->addItem( "UnitedStates / English",    "en" );
+    m_ui.comboBoxLanguage->addItem( "UnitedStates / English",    "en_US" );
 }
 
 LanguagePreferences::~LanguagePreferences() {}
@@ -62,9 +63,9 @@ LanguagePreferences::~LanguagePreferences() {}
 void LanguagePreferences::load()
 {
     const QString& part = m_defaults ? "default" : m_settName;
-    SettingsManager* setMan = SettingsManager::getInstance();
-    QVariant    lang = setMan->getValue( part, "VLMCLang" );
-    int idx = m_ui.comboBoxLanguage->findData( lang );
+    SettingsManager         *setMan = SettingsManager::getInstance();
+    const SettingValue      *lang = setMan->getValue( part, "VLMCLang" );
+    int idx = m_ui.comboBoxLanguage->findData( lang->get() );
 
     if ( idx != -1 )
         m_ui.comboBoxLanguage->setCurrentIndex( idx );
