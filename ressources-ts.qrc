@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/Lang">
-        <file alias="cs">ts/vlmc_cs.qm</file>
         <file alias="es">ts/vlmc_es.qm</file>
         <file alias="fr">ts/vlmc_fr.qm</file>
         <file alias="sv">ts/vlmc_sv.qm</file>
