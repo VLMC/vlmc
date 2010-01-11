@@ -14,4 +14,7 @@ ui_*.h
 *.o
 *.so*
 qrc_ressources.cpp
+CMakeCache.txt
+CMakeFiles
+*.cmake
 
