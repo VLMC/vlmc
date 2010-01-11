@@ -8,5 +8,6 @@
         <file alias="ja_JP">ts/vlmc_ja_JP.qm</file>
         <file alias="it">ts/vlmc_it.qm</file>
         <file alias="sk">ts/vlmc_sk.qm</file>
+        <file alias="uk">ts/vlmc_uk.qm</file>
     </qresource>
 </RCC>
