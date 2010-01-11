@@ -1,6 +1,8 @@
 #CMakeQt by Rohit Yadav<rohityadav89@gmail.com>
 #CMake Build System for Qt
 
+SUBDIRS(EffectsEngine/Plugins/src)
+
 MACRO(ADD_TRANSLATION_FILES _sources )
 
     FOREACH (_current_FILE ${ARGN})

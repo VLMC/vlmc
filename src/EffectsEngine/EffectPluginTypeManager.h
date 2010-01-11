@@ -24,7 +24,7 @@
 #ifndef EFFECTPLUGINTYPEMANAGER_H_
 #define EFFECTPLUGINTYPEMANAGER_H_
 
-#define PLUGINS_PATH "./src/EffectsEngine/Plugins/lib/"
+#define PLUGINS_PATH "bin/effects/"
 
 #include <QMap>
 
