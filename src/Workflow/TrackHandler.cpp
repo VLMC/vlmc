@@ -115,22 +115,27 @@ TrackHandler::getOutput( qint64 currentFrame )
                 m_effectEngine->setVideoInput( i + 1, *TrackHandler::nullOutput );
             else
             {
-                StackedBuffer<LightVideoFrame*>* stackedBuffer =
-                    reinterpret_cast<StackedBuffer<LightVideoFrame*>*>(
-                            m_tracks[i]->getOutput( currentFrame ) );
-
-                m_effectEngine->setVideoInput( i + 1, *( stackedBuffer->get() ) );
+                void*   ret = m_tracks[i]->getOutput( currentFrame );
+                if ( ret == NULL )
+                    m_effectEngine->setVideoInput( i + 1, *TrackHandler::nullOutput );
+                else
+                {
+                    StackedBuffer<LightVideoFrame*>* stackedBuffer =
+                        reinterpret_cast<StackedBuffer<LightVideoFrame*>*>( ret );
+                    m_effectEngine->setVideoInput( i + 1, *( stackedBuffer->get() ) );
+                }
             }
         }
         else
         {
-            StackedBuffer<AudioClipWorkflow::AudioSample*>*
-                    stackedBuffer =
-                    reinterpret_cast<StackedBuffer<AudioClipWorkflow::AudioSample*>*> (
-                            m_tracks[i]->getOutput( currentFrame ) );
+            void*   ret = m_tracks[i]->getOutput( currentFrame );
+            //m_tmpAudioBuffer is NULl by default, so it will remain NULL if we continue;
+            if ( ret == NULL )
+                continue ;
+            StackedBuffer<AudioClipWorkflow::AudioSample*>* stackedBuffer =
+                reinterpret_cast<StackedBuffer<AudioClipWorkflow::AudioSample*>*> ( ret );
             if ( stackedBuffer != NULL )
                 m_tmpAudioBuffer = stackedBuffer->get();
-            //else if will remain NULL
         }
     }
 }

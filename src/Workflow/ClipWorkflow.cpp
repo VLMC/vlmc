@@ -179,7 +179,7 @@ LibVLCpp::MediaPlayer*       ClipWorkflow::getMediaPlayer()
     return m_mediaPlayer;
 }
 
-void        ClipWorkflow::preGetOutput()
+bool        ClipWorkflow::preGetOutput()
 {
     QMutexLocker    lock( m_feedingCondWait->getMutex() );
 
@@ -187,13 +187,9 @@ void        ClipWorkflow::preGetOutput()
     if ( getNbComputedBuffers() == 0 )
     {
 //        qWarning() << "Waiting for buffer to be fed";
-        m_renderLock->unlock();
-        m_computedBuffersMutex->unlock();
-        qDebug() << "Unlocked render lock, entering cond wait";
-        m_feedingCondWait->waitLocked();
-        m_computedBuffersMutex->lock();
-        m_renderLock->lock();
+        return false;
     }
+    return true;
 }
 
 void        ClipWorkflow::postGetOutput()
@@ -209,8 +205,8 @@ void        ClipWorkflow::postGetOutput()
 //            This will act like an "unpause";
             m_mediaPlayer->pause();
         }
-        else if ( debugType == 1)
-            qCritical() << "Running out of computed buffers !";
+        else
+            qCritical() << "Running out of computed buffers ! debugType:" << debugType;
     }
 }
 
@@ -274,7 +270,7 @@ void    ClipWorkflow::mediaPlayerPaused()
 
 void    ClipWorkflow::mediaPlayerUnpaused()
 {
-    qWarning() << "Media player unpaused. Go back to rendering. Type:" << debugType;
+//    qWarning() << "Media player unpaused. Go back to rendering. Type:" << debugType;
     setState( ClipWorkflow::Rendering );
     m_pauseDuration = mdate() - m_beginPausePts;
 //    qDebug() << "pause duration:" << m_pauseDuration;

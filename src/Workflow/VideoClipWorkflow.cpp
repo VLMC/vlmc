@@ -92,9 +92,10 @@ VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
     QMutexLocker    lock( m_renderLock );
     QMutexLocker    lock2( m_computedBuffersMutex );
 
-    preGetOutput();
-    qWarning() << "Video::getOutput(). Available:" << m_availableBuffers.count() <<
-    "Computed:" << m_computedBuffers.count();
+    if ( preGetOutput() == false )
+        return NULL;
+//    qWarning() << "Video::getOutput(). Available:" << m_availableBuffers.count() <<
+//    "Computed:" << m_computedBuffers.count();
     if ( isEndReached() == true )
         return NULL;
     ::StackedBuffer<LightVideoFrame*>* buff;
