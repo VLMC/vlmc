@@ -1,0 +1,11 @@
+
+Cross-compilation (from Unix)
+=============================
+
+Download contribs from:
+http://vlmc.org/~etix/contribs/
+
+To be continued...
+
+----------------------------------------------------------
+cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-win32.cmake .

@@ -8,6 +8,7 @@ Makefile*
 
 *.pro.user
 moc_*.cpp
+moc_*.cxx*
 ui_*.h
 .*.swp
 *~
@@ -16,5 +17,5 @@ ui_*.h
 qrc_ressources.cpp
 CMakeCache.txt
 CMakeFiles
-*.cmake
-
+cmake_install.cmake
+CPack*.cmake

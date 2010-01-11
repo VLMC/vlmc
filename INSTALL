@@ -20,7 +20,7 @@ Building VLMC
 
 A typical way to build VLMC is:
 
-	qmake
+	cmake .
 	make
 
 Running VLMC
