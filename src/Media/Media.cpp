@@ -178,6 +178,7 @@ void                Media::setHeight( int height )
 
 float               Media::getFps() const
 {
+    Q_ASSERT_X( m_fps > 1.0f, "Media::getFps()", "FPS can't be zero");
     return m_fps;
 }
 

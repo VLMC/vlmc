@@ -139,8 +139,8 @@ VideoClipWorkflow::lock( VideoClipWorkflow *cw, void **pp_ret, int size )
     else
         lvf = cw->m_availableBuffers.dequeue();
     cw->m_computedBuffers.enqueue( lvf );
-//    qWarning() << ">>>VideoGeneration. Available:" <<
-//        cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count();
+    qWarning() << ">>>VideoGeneration. Available:" <<
+        cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count() << "position" << cw->m_mediaPlayer->getPosition();
 //    qWarning() << "feeding video buffer";
     *pp_ret = (*(lvf))->frame.octets;
 }
@@ -194,6 +194,7 @@ VideoClipWorkflow::releaseBuffer( LightVideoFrame *lvf )
 void
 VideoClipWorkflow::flushComputedBuffers()
 {
+    qDebug() << "Flushing computed buffers in video";
     QMutexLocker    lock( m_computedBuffersMutex );
     QMutexLocker    lock2( m_availableBuffersMutex );
 

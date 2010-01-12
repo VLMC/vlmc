@@ -135,15 +135,15 @@ void            ClipWorkflow::stop()
 void
 ClipWorkflow::setTime( qint64 time )
 {
-//    qDebug() << "setting clipworkflow time:" << time;
-    m_mediaPlayer->setTime( time );
+    qDebug() << "setting clipworkflow time:" << time << "debugType:" << debugType;
     flushComputedBuffers();
+    m_mediaPlayer->setTime( time );
     QWriteLocker    lock( m_stateLock );
     if ( m_state == ClipWorkflow::Paused )
     {
 //        qDebug() << "Unpausing media player after set time";
         m_mediaPlayer->pause();
-        m_state = ClipWorkflow::PauseRequired;
+        m_state = ClipWorkflow::UnpauseRequired;
     }
 }
 
@@ -209,7 +209,7 @@ void        ClipWorkflow::commonUnlock()
 {
     //Don't test using availableBuffer, as it may evolve if a buffer is required while
     //no one is available : we would spawn a new buffer, thus modifying the number of available buffers
-    if ( getNbComputedBuffers() == getMaxComputedBuffers() )
+    if ( getNbComputedBuffers() >= getMaxComputedBuffers() )
     {
 //        qWarning() << "Pausing clip workflow. Type:" << debugType;
         setState( ClipWorkflow::PauseRequired );

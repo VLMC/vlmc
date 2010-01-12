@@ -178,15 +178,12 @@ class   ClipWorkflow : public QObject
          *          This has to be implemented in the underlying
          *          clipworkflow implementation.
          */
-        virtual void            flushComputedBuffers() = 0;
-
     private:
-        LibVLCpp::MediaPlayer*  m_mediaPlayer;
-
         WaitCondition*          m_initWaitCond;
         WaitCondition*          m_pausingStateWaitCond;
 
     protected:
+        LibVLCpp::MediaPlayer*  m_mediaPlayer;
         Clip*                   m_clip;
         QMutex*                 m_renderLock;
         QReadWriteLock*         m_stateLock;
@@ -213,6 +210,7 @@ class   ClipWorkflow : public QObject
         void                    clipEndReached();
         void                    mediaPlayerPaused();
         void                    mediaPlayerUnpaused();
+        virtual void            flushComputedBuffers() = 0;
 };
 
 #endif // CLIPWORKFLOW_H

@@ -109,17 +109,17 @@ int     WorkflowRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigne
     *flags = 0;
     if ( handler->type == Video )
     {
-        qDebug() << "entering lock video";
+//        qDebug() << "entering lock video";
         ret = handler->self->lockVideo( pts, bufferSize, buffer );
         handler->self->m_mainWorkflow->goToNextFrame( MainWorkflow::VideoTrack );
-        qDebug() << "leaved lock video";
+//        qDebug() << "leaved lock video";
     }
     else if ( handler->type == Audio )
     {
-        qDebug() << "entering lock audio";
+//        qDebug() << "entering lock audio";
         ret = handler->self->lockAudio( pts, bufferSize, buffer );
         handler->self->m_mainWorkflow->goToNextFrame( MainWorkflow::AudioTrack );
-        qDebug() << "leaved lock audio";
+//        qDebug() << "leaved lock audio";
     }
     else
         qCritical() << "Invalid ES type";
@@ -160,9 +160,9 @@ int     WorkflowRenderer::lockAudio(  int64_t *pts, size_t *bufferSize, void **b
 
     if ( m_stopping == false )
     {
-        qDebug() << "getting MainWorkflow audio output";
+//        qDebug() << "getting MainWorkflow audio output";
         MainWorkflow::OutputBuffers* ret = m_mainWorkflow->getOutput( MainWorkflow::AudioTrack );
-        qDebug() << "got mainworkflow audio output";
+//        qDebug() << "got mainworkflow audio output";
         m_renderAudioSample = ret->audio;
     }
     uint32_t    nbSample;

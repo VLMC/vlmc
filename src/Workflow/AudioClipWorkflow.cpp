@@ -57,31 +57,31 @@ void*       AudioClipWorkflow::getUnlockCallback()
 
 void*       AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 {
-    qDebug() << "entering audio get output";
+//    qDebug() << "entering audio get output";
     QMutexLocker    lock( m_renderLock );
-    qDebug() << "got audio render lock";
+//    qDebug() << "got audio render lock";
     QMutexLocker    lock2( m_computedBuffersMutex );
-    qDebug() << "got computed buffers mutex";
+//    qDebug() << "got computed buffers mutex";
 
     if ( preGetOutput() == false )
     {
-        qDebug() << "audio preGetOutput() returned false";
+//        qDebug() << "audio preGetOutput() returned false";
         return NULL;
     }
 
-    qWarning() << "Audio. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
+//    qWarning() << "Audio. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
     if ( isEndReached() == true )
     {
-        qDebug() << "audio end is reached";
+//        qDebug() << "audio end is reached";
         return NULL;
     }
     if ( mode == ClipWorkflow::Get )
         qCritical() << "A sound buffer should never be asked with 'Get' mode";
     ::StackedBuffer<AudioSample*>* buff = new StackedBuffer(
             m_computedBuffers.dequeue(), this, true );
-    qDebug() << "calling audio postGetOutput();";
+//    qDebug() << "calling audio postGetOutput();";
     postGetOutput();
-    qDebug() << "returning audio buffer";
+//    qDebug() << "returning audio buffer";
     return buff;
 }
 
@@ -103,6 +103,7 @@ void        AudioClipWorkflow::initVlcOutput()
 
 AudioClipWorkflow::AudioSample*    AudioClipWorkflow::createBuffer( size_t size )
 {
+    qDebug() << "Creating new buffer of size:" << size;
     AudioSample* as = new AudioSample;
     as->buff = new uchar[size];
     as->size = size;
@@ -116,7 +117,7 @@ void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer
     cw->m_renderLock->lock();
     cw->m_computedBuffersMutex->lock();
 
-//    qWarning() << ">>>AudioGeneration. Available:" << cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count();
+    qWarning() << ">>>AudioGeneration. Available:" << cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count() << "position" << cw->m_mediaPlayer->getPosition();
     AudioSample* as = NULL;
     if ( cw->m_availableBuffers.isEmpty() == true )
     {
@@ -156,6 +157,10 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
         as->nbChannels = channels;
         as->ptsDiff = cw->m_currentPts - cw->m_previousPts;
     }
+//    if ( as->ptsDiff == 0 )
+//    {
+//        qCritical() << "PTS DIFF IS 0 !!!! ";
+//    }
 //    qWarning() << "::::Computing audio PTS: debugId:" << as->debugId << "ptsdiff:" << as->ptsDiff;
     cw->commonUnlock();
     cw->m_renderLock->unlock();
@@ -180,8 +185,9 @@ void        AudioClipWorkflow::releaseBuffer( AudioSample *sample )
 
 void        AudioClipWorkflow::flushComputedBuffers()
 {
-    QMutexLocker    lock( m_computedBuffersMutex );
-    QMutexLocker    lock2( m_availableBuffersMutex );
+    qDebug() << "Flushing computed buffers in audio";
+    QMutexLocker    lock( m_availableBuffersMutex );
+    QMutexLocker    lock2( m_computedBuffersMutex );
 
     while ( m_computedBuffers.isEmpty() == false )
     {
