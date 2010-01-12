@@ -21,6 +21,12 @@ SET(CMAKE_VERBOSE_MAKEFILE OFF)
 # set path to additional CMake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
+IF(WIN32)
+    # Building in release for WIN32
+    set(CMAKE_BUILD_TYPE "Release")
+    SET_PROPERTY(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS_RELEASE QT_NO_DEBUG)
+ENDIF(WIN32)
+
 # Optionally allow embedding libvlc into the binary as 
 # VLMC requires libVLC
 SET (WITH_LIBVLC FALSE CACHE BOOL "Compile LibVLC in VLMC")
