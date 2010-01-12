@@ -1,8 +1,10 @@
 project(MixerEffectPlugin)
 
-if(NOT WIN32)
-
-set(MIXEREFFECT_SRCS MixerEffectPlugin.cpp MixerEffectPluginCreator.cpp) 
+set(MIXEREFFECT_SRCS
+    MixerEffectPlugin.cpp
+    MixerEffectPluginCreator.cpp
+    ../../../PluginsAPI/LightVideoFrame.cpp
+)
 
 qt4_automoc(${MIXEREFFECT_SRCS})
 
@@ -15,7 +17,7 @@ ADD_LIBRARY(MixerEffectPlugin SHARED ${MIXEREFFECT_SRCS})
 
 target_link_libraries(MixerEffectPlugin ${QT_LIBRARIES})
 
-INCLUDE_DIRECTORIES(${QT_INCLUDE_DIR} ../../../PluginsAPI)
-#install(TARGETS mixereffect DESTINATION lib/kde4/plugins/styles)
-
-endif(NOT WIN32)
+INCLUDE_DIRECTORIES(
+    ${QT_INCLUDE_DIR}
+    ../../../PluginsAPI
+)

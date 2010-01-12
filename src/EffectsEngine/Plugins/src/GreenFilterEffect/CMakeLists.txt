@@ -1,8 +1,10 @@
 project(GreenFilterEffectPlugin)
 
-if(NOT WIN32)
-
-set(GREENFILTEREFFECT_SRCS GreenFilterEffectPlugin.cpp GreenFilterEffectPluginCreator.cpp) 
+set(GREENFILTEREFFECT_SRCS
+    GreenFilterEffectPlugin.cpp
+    GreenFilterEffectPluginCreator.cpp
+    ../../../PluginsAPI/LightVideoFrame.cpp
+)
 
 qt4_automoc(${GREENFILTEREFFECT_SRCS})
 
@@ -15,7 +17,7 @@ ADD_LIBRARY(GreenFilterEffectPlugin SHARED ${GREENFILTEREFFECT_SRCS})
 
 target_link_libraries(GreenFilterEffectPlugin ${QT_LIBRARIES})
 
-INCLUDE_DIRECTORIES(${QT_INCLUDE_DIR} ../../../PluginsAPI)
-#install(TARGETS mixereffect DESTINATION lib/kde4/plugins/styles)
-
-endif(NOT WIN32)
+INCLUDE_DIRECTORIES(
+    ${QT_INCLUDE_DIR}
+    ../../../PluginsAPI
+)

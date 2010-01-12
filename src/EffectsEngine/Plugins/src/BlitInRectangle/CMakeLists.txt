@@ -1,8 +1,10 @@
 project(BlitInRectangleEffectPlugin)
 
-if(NOT WIN32)
-
-set(BLITINRECTANGLE_SRCS BlitInRectangleEffectPlugin.cpp BlitInRectangleEffectPluginCreator.cpp) 
+set(BLITINRECTANGLE_SRCS
+    BlitInRectangleEffectPlugin.cpp
+    BlitInRectangleEffectPluginCreator.cpp
+    ../../../PluginsAPI/LightVideoFrame.cpp
+)
 
 qt4_automoc(${BLITINRECTANGLE_SRCS})
 
@@ -15,7 +17,7 @@ ADD_LIBRARY(BlitInRectangleEffectPlugin SHARED ${BLITINRECTANGLE_SRCS})
 
 target_link_libraries(BlitInRectangleEffectPlugin ${QT_LIBRARIES})
 
-INCLUDE_DIRECTORIES(${QT_INCLUDE_DIR} ../../../PluginsAPI)
-#install(TARGETS mixereffect DESTINATION lib/kde4/plugins/styles)
-
-endif(NOT WIN32)
+INCLUDE_DIRECTORIES(
+    ${QT_INCLUDE_DIR}
+    ../../../PluginsAPI
+)

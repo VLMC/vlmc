@@ -1,8 +1,10 @@
 project(InvertRNBEffectPlugin)
 
-if(NOT WIN32)
-
-set(INVERTRNBEFFECT_SRCS InvertRNBEffectPlugin.cpp InvertRNBEffectPluginCreator.cpp) 
+set(INVERTRNBEFFECT_SRCS
+    InvertRNBEffectPlugin.cpp
+    InvertRNBEffectPluginCreator.cpp
+    ../../../PluginsAPI/LightVideoFrame.cpp
+)
 
 qt4_automoc($INVERTRNBEFFECT_SRCS})
 
@@ -15,7 +17,7 @@ ADD_LIBRARY(InvertRNBEffectPlugin SHARED ${INVERTRNBEFFECT_SRCS})
 
 target_link_libraries(InvertRNBEffectPlugin ${QT_LIBRARIES})
 
-INCLUDE_DIRECTORIES(${QT_INCLUDE_DIR} ../../../PluginsAPI)
-#install(TARGETS mixereffect DESTINATION lib/kde4/plugins/styles)
-
-endif(NOT WIN32)
+INCLUDE_DIRECTORIES(
+    ${QT_INCLUDE_DIR}
+    ../../../PluginsAPI
+)
