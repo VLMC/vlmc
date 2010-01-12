@@ -40,7 +40,6 @@ ClipWorkflow::ClipWorkflow( Clip::Clip* clip ) :
     m_initWaitCond = new WaitCondition;
     m_pausingStateWaitCond = new WaitCondition;
     m_renderLock = new QMutex;
-    m_feedingCondWait = new WaitCondition;
     m_availableBuffersMutex = new QMutex;
     m_computedBuffersMutex = new QMutex;
 }
@@ -181,14 +180,9 @@ LibVLCpp::MediaPlayer*       ClipWorkflow::getMediaPlayer()
 
 bool        ClipWorkflow::preGetOutput()
 {
-    QMutexLocker    lock( m_feedingCondWait->getMutex() );
-
     //Computed buffer mutex is already locked by underlying clipworkflow getoutput method
     if ( getNbComputedBuffers() == 0 )
-    {
-//        qWarning() << "Waiting for buffer to be fed";
         return false;
-    }
     return true;
 }
 
@@ -219,13 +213,6 @@ void        ClipWorkflow::commonUnlock()
 //        qWarning() << "Pausing clip workflow. Type:" << debugType;
         setState( ClipWorkflow::PauseRequired );
         m_mediaPlayer->pause();
-    }
-//    if ( getNbComputedBuffers() == 1 )
-    {
-//        qDebug() << "Waking feeding cont wait... acquiring lock. Type:" << debugType;
-        QMutexLocker    lock( m_feedingCondWait->getMutex() );
-//        qDebug() << "feeding cont wait mutex acquired. Type:" << debugType;
-        m_feedingCondWait->wake();
     }
 }
 

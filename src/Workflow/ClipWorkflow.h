@@ -197,7 +197,6 @@ class   ClipWorkflow : public QObject
          *          the clipworkflow hasn't generate a frame yet,
          *          while the renderer asks for one.
          */
-        WaitCondition*          m_feedingCondWait;
         QMutex*                 m_computedBuffersMutex;
         QMutex*                 m_availableBuffersMutex;
         qint64                  m_beginPausePts;
