@@ -57,23 +57,30 @@ void*       AudioClipWorkflow::getUnlockCallback()
 
 void*       AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 {
+//    qDebug() << "entering audio get output";
     QMutexLocker    lock( m_renderLock );
+//    qDebug() << "got audio render lock";
     QMutexLocker    lock2( m_computedBuffersMutex );
 
     if ( preGetOutput() == false )
+    {
+//        qDebug() << "audio preGetOutput() returned false";
         return NULL;
+    }
 
 //    qWarning() << "Audio. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
     if ( isEndReached() == true )
     {
-//        qDebug() << "End is reached";
+//        qDebug() << "audio end is reached";
         return NULL;
     }
     if ( mode == ClipWorkflow::Get )
         qCritical() << "A sound buffer should never be asked with 'Get' mode";
     ::StackedBuffer<AudioSample*>* buff = new StackedBuffer(
             m_computedBuffers.dequeue(), this, true );
+//    qDebug() << "calling audio postGetOutput();";
     postGetOutput();
+//    qDebug() << "returning audio buffer";
     return buff;
 }
 
@@ -148,7 +155,7 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
         as->nbChannels = channels;
         as->ptsDiff = cw->m_currentPts - cw->m_previousPts;
     }
-    qWarning() << "::::Computing audio PTS: debugId:" << as->debugId << "ptsdiff:" << as->ptsDiff;
+//    qWarning() << "::::Computing audio PTS: debugId:" << as->debugId << "ptsdiff:" << as->ptsDiff;
     cw->commonUnlock();
     cw->m_renderLock->unlock();
     cw->m_computedBuffersMutex->unlock();

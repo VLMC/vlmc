@@ -134,13 +134,13 @@ void            ClipWorkflow::stop()
 void
 ClipWorkflow::setTime( qint64 time )
 {
-    qDebug() << "setting clipworkflow time:" << time;
+//    qDebug() << "setting clipworkflow time:" << time;
     m_mediaPlayer->setTime( time );
     flushComputedBuffers();
     QWriteLocker    lock( m_stateLock );
     if ( m_state == ClipWorkflow::Paused )
     {
-        qDebug() << "Unpausing media player after set time";
+//        qDebug() << "Unpausing media player after set time";
         m_mediaPlayer->pause();
         m_state = ClipWorkflow::PauseRequired;
     }
@@ -199,8 +199,8 @@ void        ClipWorkflow::postGetOutput()
 //            This will act like an "unpause";
             m_mediaPlayer->pause();
         }
-        else
-            qCritical() << "Running out of computed buffers ! debugType:" << debugType;
+//        else
+//            qCritical() << "Running out of computed buffers ! debugType:" << debugType;
     }
 }
 

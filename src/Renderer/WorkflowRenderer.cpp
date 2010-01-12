@@ -109,13 +109,17 @@ int     WorkflowRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigne
     *flags = 0;
     if ( handler->type == Video )
     {
+        qDebug() << "entering lock video";
         ret = handler->self->lockVideo( pts, bufferSize, buffer );
         handler->self->m_mainWorkflow->goToNextFrame( MainWorkflow::VideoTrack );
+        qDebug() << "leaved lock video";
     }
     else if ( handler->type == Audio )
     {
+        qDebug() << "entering lock audio";
         ret = handler->self->lockAudio( pts, bufferSize, buffer );
         handler->self->m_mainWorkflow->goToNextFrame( MainWorkflow::AudioTrack );
+        qDebug() << "leaved lock audio";
     }
     else
         qCritical() << "Invalid ES type";
@@ -134,8 +138,15 @@ int     WorkflowRenderer::lockVideo( int64_t *pts, size_t *bufferSize, void **bu
         m_videoBuffSize = (*(ret->video))->nboctets;
         ptsDiff = (*(ret->video))->ptsDiff;
     }
+    if ( ptsDiff == 0 )
+    {
+        //If no ptsDiff has been computed, we have to fake it, so we compute
+        //the theorical pts for one frame.
+        //this is a bit hackish though... (especially regarding the "no frame computed" detection)
+        ptsDiff = 1000000 / m_outputFps;
+    }
     m_pts = *pts = ptsDiff + m_pts;
-//    qDebug() << "Video pts" << m_pts << "diff" << ptsDiff;
+    qDebug() << "Video pts" << m_pts << "diff" << ptsDiff;
     //*pts = qRound64( (float)( m_pts * 1000000.0f ) / m_outputFps );
     //++m_pts;
     *buffer = m_renderVideoFrame;

@@ -89,15 +89,24 @@ VideoClipWorkflow::getUnlockCallback()
 void*
 VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 {
+//    qDebug() << "entering video get output";
     QMutexLocker    lock( m_renderLock );
+//    qDebug() << "got video render lock";
     QMutexLocker    lock2( m_computedBuffersMutex );
+//    qDebug() << "got video computer buffers lock";
 
     if ( preGetOutput() == false )
+    {
+//        qDebug() << "video preGetOutput() returned false";
         return NULL;
+    }
 //    qWarning() << "Video::getOutput(). Available:" << m_availableBuffers.count() <<
 //    "Computed:" << m_computedBuffers.count();
     if ( isEndReached() == true )
+    {
+//        qDebug() << "video end reached was true";
         return NULL;
+    }
     ::StackedBuffer<LightVideoFrame*>* buff;
     if ( mode == ClipWorkflow::Pop )
     {
@@ -105,7 +114,9 @@ VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
     }
     else if ( mode == ClipWorkflow::Get )
         buff = new StackedBuffer( m_computedBuffers.head(), NULL, false );
+//    qDebug() << "calling video postGetOutput();";
     postGetOutput();
+//    qDebug() << "returning videobuff";
     return buff;
 }
 
@@ -128,8 +139,8 @@ VideoClipWorkflow::lock( VideoClipWorkflow *cw, void **pp_ret, int size )
     else
         lvf = cw->m_availableBuffers.dequeue();
     cw->m_computedBuffers.enqueue( lvf );
-    qWarning() << ">>>VideoGeneration. Available:" <<
-        cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count();
+//    qWarning() << ">>>VideoGeneration. Available:" <<
+//        cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count();
 //    qWarning() << "feeding video buffer";
     *pp_ret = (*(lvf))->frame.octets;
 }
@@ -186,7 +197,6 @@ VideoClipWorkflow::flushComputedBuffers()
     QMutexLocker    lock( m_computedBuffersMutex );
     QMutexLocker    lock2( m_availableBuffersMutex );
 
-    qWarning() << "Flushing computed buffers. state:" << m_state;
     while ( m_computedBuffers.isEmpty() == false )
     {
         m_availableBuffers.enqueue( m_computedBuffers.dequeue() );
