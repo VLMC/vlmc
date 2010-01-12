@@ -72,7 +72,7 @@ INCLUDEPATH += $$VLMC_DIRS \
 DEPENDPATH += $$VLMC_DIRS
 
 # Add translations here, it will be automatically build by the next line.
-TRANSLATIONS_LIST = es fr ja_JP sv pt_BR sk it uk
+TRANSLATIONS_LIST = es fr ja_JP sv pt_BR sk it uk cs
 # Add every translation in the TRANSLATION variable
 for(lang, TRANSLATIONS_LIST):exists( ../ts/vlmc_$${lang}.ts ):TRANSLATIONS += ../ts/vlmc_$${lang}.ts
 
