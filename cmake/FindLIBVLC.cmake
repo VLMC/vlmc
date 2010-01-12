@@ -1,7 +1,7 @@
 
 # CMake module to search for LIBVLC (VLC library)
 # Author: Rohit Yadav <rohityadav89@gmail.com>
-# 
+#
 # If it's found it sets LIBVLC_FOUND to TRUE
 # and following variables are set:
 #    LIBVLC_INCLUDE_DIR
@@ -13,17 +13,19 @@
 # FIND_* is invoked first with specified paths and NO_DEFAULT_PATH
 # and then again with no specified paths to search the default
 # locations. When an earlier FIND_* succeeds, subsequent FIND_*s
-# searching for the same item do nothing. 
+# searching for the same item do nothing.
 
 
 #Put here path to custom location
 #example: /home/user/vlc/include etc..
-FIND_PATH(LIBVLC_INCLUDE_DIR vlc.h
+FIND_PATH(LIBVLC_INCLUDE_DIR vlc/vlc.h
   "$ENV{LIB_DIR}/include"
   "$ENV{LIB_DIR}/include/vlc"
+  "/usr/include"
   "/usr/include/vlc"
+  "/usr/local/include"
   "/usr/local/include/vlc"
-  "/home/etix/dev/vlc/include/vlc/"
+  "/home/etix/dev/vlc/include/"
   #mingw
   c:/msys/local/include
   NO_DEFAULT_PATH
