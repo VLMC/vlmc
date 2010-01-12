@@ -62,7 +62,6 @@ void    ProjectSettingsDefault::loadVideoDefaults( const QString& part )
     settingsMan->setValue( part,
                            "VideoProjectWidth",
                            defaultProjectWidth );
-    qDebug() << "Loaded defaults values";
     return ;
 }
 

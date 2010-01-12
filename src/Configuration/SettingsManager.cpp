@@ -200,7 +200,6 @@ void    SettingsManager::flush()
 
 void  SettingsManager::loadDefaultsSettings()
 {
-    qDebug() << "Load default settings ?";
     if ( !SettingsManager::m_defaultLoaded )
     {
         SettingsManager::m_defaultLoaded = true;
