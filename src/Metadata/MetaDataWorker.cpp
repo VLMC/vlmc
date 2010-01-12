@@ -51,7 +51,11 @@ void    MetaDataWorker::compute()
     if ( m_media->getFileType() == Media::Video )
     {
         if ( m_type == Audio )
-            computeAudioMetaData();
+        {
+            qDebug() << "Skipping metadata computing";
+            return ;
+//            computeAudioMetaData();
+        }
         else
             computeVideoMetaData();
     }

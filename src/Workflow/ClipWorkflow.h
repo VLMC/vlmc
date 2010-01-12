@@ -45,23 +45,28 @@ class   ClipWorkflow : public QObject
             None = -1,
             /// \brief  Used when the clipworkflow hasn't been started yet
             Stopped,            //0
+            /**
+             *  \brief  Used when initializing is in progress (until the mediaplayer
+             *          enters the playing state.
+             */
+            Initializing,       //1
             /// \brief  Used when the clipworkflow is launched and active
-            Rendering,          //1
+            Rendering,          //2
             /// \brief  Used when stopping
-            Stopping,           //2
+            Stopping,           //3
             /// \brief  Used when end is reached, IE no more frame has to be rendered, but the trackworkflow
             ///         may eventually ask for some.
-            EndReached,         //3
+            EndReached,         //4
             // Here starts internal states :
             /// \brief  This state will be used when an unpause
             ///         has been required
-            UnpauseRequired,    //4
+            UnpauseRequired,    //5
             /// \brief  This state will be used when a pause
             ///         has been required
-            PauseRequired,      //5
+            PauseRequired,      //6
             /// \brief  This state will be used when the media player is paused,
             ///         because of a sufficient number of computed buffers
-            Paused,             //6
+            Paused,             //7
         };
 
         /**

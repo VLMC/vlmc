@@ -57,30 +57,31 @@ void*       AudioClipWorkflow::getUnlockCallback()
 
 void*       AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 {
-//    qDebug() << "entering audio get output";
+    qDebug() << "entering audio get output";
     QMutexLocker    lock( m_renderLock );
-//    qDebug() << "got audio render lock";
+    qDebug() << "got audio render lock";
     QMutexLocker    lock2( m_computedBuffersMutex );
+    qDebug() << "got computed buffers mutex";
 
     if ( preGetOutput() == false )
     {
-//        qDebug() << "audio preGetOutput() returned false";
+        qDebug() << "audio preGetOutput() returned false";
         return NULL;
     }
 
-//    qWarning() << "Audio. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
+    qWarning() << "Audio. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
     if ( isEndReached() == true )
     {
-//        qDebug() << "audio end is reached";
+        qDebug() << "audio end is reached";
         return NULL;
     }
     if ( mode == ClipWorkflow::Get )
         qCritical() << "A sound buffer should never be asked with 'Get' mode";
     ::StackedBuffer<AudioSample*>* buff = new StackedBuffer(
             m_computedBuffers.dequeue(), this, true );
-//    qDebug() << "calling audio postGetOutput();";
+    qDebug() << "calling audio postGetOutput();";
     postGetOutput();
-//    qDebug() << "returning audio buffer";
+    qDebug() << "returning audio buffer";
     return buff;
 }
 
@@ -112,8 +113,8 @@ AudioClipWorkflow::AudioSample*    AudioClipWorkflow::createBuffer( size_t size 
 void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer , unsigned int size )
 {
     QMutexLocker    lock( cw->m_availableBuffersMutex );
-    cw->m_computedBuffersMutex->lock();
     cw->m_renderLock->lock();
+    cw->m_computedBuffersMutex->lock();
 
 //    qWarning() << ">>>AudioGeneration. Available:" << cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count();
     AudioSample* as = NULL;

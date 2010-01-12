@@ -56,6 +56,7 @@ ClipWorkflow::~ClipWorkflow()
 
 void    ClipWorkflow::initialize()
 {
+    setState( ClipWorkflow::Initializing );
     if ( m_clip->getParent()->getFileType() == Media::Image )
         m_vlcMedia = new LibVLCpp::Media( "fake:///" + m_clip->getParent()->getFileInfo()->absoluteFilePath() );
     else

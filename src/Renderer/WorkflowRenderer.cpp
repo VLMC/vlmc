@@ -146,7 +146,7 @@ int     WorkflowRenderer::lockVideo( int64_t *pts, size_t *bufferSize, void **bu
         ptsDiff = 1000000 / m_outputFps;
     }
     m_pts = *pts = ptsDiff + m_pts;
-    qDebug() << "Video pts" << m_pts << "diff" << ptsDiff;
+//    qDebug() << "Video pts" << m_pts << "diff" << ptsDiff;
     //*pts = qRound64( (float)( m_pts * 1000000.0f ) / m_outputFps );
     //++m_pts;
     *buffer = m_renderVideoFrame;
@@ -160,7 +160,9 @@ int     WorkflowRenderer::lockAudio(  int64_t *pts, size_t *bufferSize, void **b
 
     if ( m_stopping == false )
     {
+        qDebug() << "getting MainWorkflow audio output";
         MainWorkflow::OutputBuffers* ret = m_mainWorkflow->getOutput( MainWorkflow::AudioTrack );
+        qDebug() << "got mainworkflow audio output";
         m_renderAudioSample = ret->audio;
     }
     uint32_t    nbSample;
