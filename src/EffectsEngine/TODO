@@ -3,7 +3,7 @@
 
 OK -rajouter le mode conteneur, avec donc la generation des Out/InSlot necessaire pour proxyfier les
     infos, et le getter pour savoir s'il est en mode conteneur ou pas
--rendre la classe thread-safe
+OK -rendre la classe thread-safe
 -rajouter les commandes suivantes (create, delete, connect, disconnect, set)
  OK -rajouter le chainage pere fils avec les methode pour set et get le pere
 -rajouter l'interpreteur et l'encodeur
@@ -42,7 +42,7 @@ ROUTE		DUMP			NODEINSTANCE-ID
     //
     //
 
-    // IN PRIVATE : GETTING SLOT FOR THE EFFECT DEVELOPPER
+OK->    // IN PRIVATE : GETTING SLOT FOR THE EFFECT DEVELOPPER
 
     // PENSER A POPER UN SLOTDYNAMIQUE QUAND IL SE FAIT DECO BRUTAL :D
 
@@ -57,8 +57,8 @@ OK ->    // EffectsFactory static instance into EffectNode
 
 OK ->    // SUB-EFFECTS MANAGEMENT METHODS
 
-    // BIEN SEPARER LE DEVELOPPER-LAND ET LE EFFECTSENGINE-LAND, notamment en faisant des interface IPublic*slot
-    // DONC TOUT PROXIFIER PAR LE GENERICEFFECT, sauf l'ecriture/lecture dans un slot et le getting de l'id et de l'instance de l'effet et du EffectNode
+MOUAIS->    // BIEN SEPARER LE DEVELOPPER-LAND ET LE EFFECTSENGINE-LAND, notamment en faisant des interface IPublic*slot
+MOUAIS->    // DONC TOUT PROXIFIER PAR LE GENERICEFFECT, sauf l'ecriture/lecture dans un slot et le getting de l'id et de l'instance de l'effet et du EffectNode
 
 
 ================ LightVideoFrame ================
@@ -70,8 +70,8 @@ OK ->    // SUB-EFFECTS MANAGEMENT METHODS
 ================= EffectsEngine =================
 
  OK -rajouter une methode activate & desactivate
--rajouter le patch sous forme de GenericEffect conteneur
--rendre la classe thread-safe
+ OK -rajouter le patch sous forme de GenericEffect conteneur
+ OK -rendre la classe thread-safe
 
 OK -> -rajouter un compteur pour chaque type de slot dynamiques
 
@@ -117,8 +117,9 @@ la methode get default value
 ================ AUTRE =============================
 
 -GROUPE DE SLOT DYNAMIQUE NOMME EN SE SERVANT DU SEMANTIC OBJECT MANAGER
--METTRE LE SLOTS CONNECTE DANS UNE LISTE POUR POUVOIR LES RECUPERER FACILEMENT ET RECUPERER FACILEMENT LEUR NOMBRE
 -GRANULARITE REGLABLE PAR UN NB QUI DEFINIS LE NB DE RESET ET DONC LE NB DE QUEUE DE L'EFFET APRES SON RENDER
+
+OK -> -METTRE LE SLOTS CONNECTE DANS UNE LISTE POUR POUVOIR LES RECUPERER FACILEMENT ET RECUPERER FACILEMENT LEUR NOMBRE
 
 
 -METHODE POUR SET/GET UNE THUMB ICONE POUR AFFICHER L'EFFETS EN PETIT
