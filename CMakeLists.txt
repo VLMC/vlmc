@@ -46,8 +46,8 @@ ADD_DEFINITIONS(${QT_DEFINITIONS})
 
 # layout of VLMC installation
 # (default values are platform-specific)
-
-SET (EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin/)
+SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/effects)
 
 # common for MAC and UNIX
 SET (DEFAULT_BIN_SUBDIR     bin)
