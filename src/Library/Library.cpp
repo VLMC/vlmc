@@ -233,6 +233,12 @@ Library::mediaAlreadyLoaded( const QString& filePath )
         if ( media->getFileInfo()->filePath() == filePath )
             return true;
     }
+    foreach( id, m_medias.keys() )
+    {
+        Media* media = m_medias.value( id );
+        if ( media->getFileInfo()->filePath() == filePath )
+            return true;
+    }
     return false;
 }
 
@@ -243,6 +249,12 @@ Library::mediaAlreadyLoaded( const QFileInfo& fileInfo )
     foreach( id, m_temporaryMedias.keys() )
     {
         Media* media = m_temporaryMedias.value( id );
+        if ( media->getFileInfo()->filePath() == fileInfo.filePath() )
+            return true;
+    }
+    foreach( id, m_medias.keys() )
+    {
+        Media* media = m_medias.value( id );
         if ( media->getFileInfo()->filePath() == fileInfo.filePath() )
             return true;
     }
