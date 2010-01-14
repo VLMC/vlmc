@@ -34,70 +34,8 @@ MixerEffectPlugin::~MixerEffectPlugin()
 void    MixerEffectPlugin::init( IEffectNode* ien )
 {
     m_ien = ien;
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
-    m_ien->createStaticVideoInput();
+    for ( unsigned int i = 0; i < 64; ++i )
+        m_ien->createStaticVideoInput();
     m_ien->createStaticVideoOutput();
     return ;
 }
@@ -108,7 +46,7 @@ void	MixerEffectPlugin::render( void )
   quint32       nbIns;
 
   nbIns = m_ien->getNBStaticsVideosInputs();
-  for ( i = 1; i <= nbIns; ++i )
+  for ( i = nbIns; i > 0; --i )
   {
       const LightVideoFrame&   lvf = (*m_ien->getStaticVideoInput( i ));
       if ( lvf->frame.octets != NULL )
