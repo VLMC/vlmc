@@ -164,7 +164,7 @@ void TracksView::deleteMedia( const QUuid& uuid  )
             MainWorkflow::TrackType itemTt = item->mediaType();
 
             // Remove the item from the timeline
-            removeMediaItem( itemUuid, itemTn );
+            removeMediaItem( itemUuid, itemTn, itemTt );
 
             // Removing the item from the backend.
             m_renderer->removeClip( itemUuid,
@@ -174,44 +174,76 @@ void TracksView::deleteMedia( const QUuid& uuid  )
     }
 }
 
-void TracksView::addMediaItem( Clip* clip, unsigned int track, qint64 start )
+void TracksView::addMediaItem( Clip* clip, unsigned int track, MainWorkflow::TrackType trackType, qint64 start )
 {
     Q_ASSERT( clip );
 
     // If there is not enough tracks to insert
     // the clip do it now.
-    if ( track > (quint32)m_numVideoTrack )
+    if ( trackType == MainWorkflow::VideoTrack )
     {
-        unsigned int nbTrackToAdd = track - m_numVideoTrack;
-        for ( unsigned int i = 0; i < nbTrackToAdd; ++i )
+        if ( track > (quint32)m_numVideoTrack )
+        {
+            unsigned int nbTrackToAdd = track - m_numVideoTrack;
+            for ( unsigned int i = 0; i < nbTrackToAdd; ++i )
+                addVideoTrack();
+        }
+        // Add the empty upper track
+        if ( track + 1 == m_numVideoTrack )
             addVideoTrack();
     }
-    // Add the empty upper track
-    if ( track + 1 == m_numVideoTrack )
-        addVideoTrack();
+    else if ( trackType == MainWorkflow::AudioTrack )
+    {
+        if ( track > (quint32)m_numAudioTrack )
+        {
+            unsigned int nbTrackToAdd = track - m_numAudioTrack;
+            for ( unsigned int i = 0; i < nbTrackToAdd; ++i )
+                addAudioTrack();
+        }
+        // Add the empty upper track
+        if ( track + 1 == m_numAudioTrack )
+            addAudioTrack();
+    }
 
     // Is the clip already existing in the timeline ?
-    //TODO: please optimize me!
-    QList<QGraphicsItem*> sceneItems = m_scene->items();
-    for ( int i = 0; i < sceneItems.size(); ++i )
+    QList<QGraphicsItem*> trackItems = getTrack( trackType, track )->childItems();;
+    for ( int i = 0; i < trackItems.size(); ++i )
     {
         AbstractGraphicsMediaItem* item =
-                dynamic_cast<AbstractGraphicsMediaItem*>( sceneItems.at( i ) );
+                dynamic_cast<AbstractGraphicsMediaItem*>( trackItems.at( i ) );
         if ( !item || item->uuid() != clip->getUuid() ) continue;
         // Item already exist: goodbye!
         return;
     }
 
-    GraphicsMovieItem* item = new GraphicsMovieItem( clip );
-    item->m_tracksView = this;
-    item->setHeight( tracksHeight() );
-    item->setParentItem( getTrack( MainWorkflow::VideoTrack, track ) );
-    item->setStartPos( start );
-    item->oldTrackNumber = track;
-    item->oldPosition = start;
-    connect( item, SIGNAL( split(GraphicsMovieItem*,qint64) ),
-             this, SLOT( split(GraphicsMovieItem*,qint64) ) );
-    moveMediaItem( item, track, start );
+    if ( trackType == MainWorkflow::VideoTrack )
+    {
+        GraphicsMovieItem* item = new GraphicsMovieItem( clip );
+        item->m_tracksView = this;
+        item->setHeight( tracksHeight() );
+        item->setParentItem( getTrack( trackType, track ) );
+        item->setStartPos( start );
+        item->oldTrackNumber = track;
+        item->oldPosition = start;
+        moveMediaItem( item, track, start );
+
+        // Split is currently only supported for video
+        connect( item, SIGNAL( split(GraphicsMovieItem*,qint64) ),
+                 this, SLOT( split(GraphicsMovieItem*,qint64) ) );
+    }
+    else if ( trackType == MainWorkflow::AudioTrack )
+    {
+        //FIXME If a GraphicsAudioItem is downcasted to an AbstractGraphicsMediaItem
+        // the item is not drawn in the timeline.
+        GraphicsAudioItem* item = new GraphicsAudioItem( clip );
+        item->m_tracksView = this;
+        item->setHeight( tracksHeight() );
+        item->setParentItem( getTrack( trackType, track ) );
+        item->setStartPos( start );
+        item->oldTrackNumber = track;
+        item->oldPosition = start;
+        moveMediaItem( item, track, start );
+    }
 
     updateDuration();
 }
@@ -245,7 +277,7 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
     // Group the items together
     m_dragVideoItem->group( m_dragAudioItem );
 
-    //TODO connect the split signal to the audio clip
+    //TODO connect the split signal to the video clip
     connect( m_dragVideoItem, SIGNAL( split(GraphicsMovieItem*,qint64) ),
              this, SLOT( split(GraphicsMovieItem*,qint64) ) );
 
@@ -416,9 +448,9 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, 
     }
 }
 
-void TracksView::removeMediaItem( const QUuid& uuid, unsigned int track )
+void TracksView::removeMediaItem( const QUuid& uuid, unsigned int track, MainWorkflow::TrackType trackType )
 {
-    QList<QGraphicsItem*> trackItems = getTrack( MainWorkflow::VideoTrack, track )->childItems();;
+    QList<QGraphicsItem*> trackItems = getTrack( trackType, track )->childItems();;
 
     for ( int i = 0; i < trackItems.size(); ++i )
     {

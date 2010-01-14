@@ -158,9 +158,10 @@ public slots:
      * \brief Insert an item into the timeline.
      * \param clip Clip to insert.
      * \param track The track's number.
+     * \param trackType The type of the track (Audio or Video)
      * \param start The position in frames.
      */
-    void                    addMediaItem( Clip* clip, unsigned int track, qint64 start );
+    void                    addMediaItem( Clip* clip, unsigned int track, MainWorkflow::TrackType trackType, qint64 start );
     /**
      * \brief Move an item in the timeline.
      * \param uuid The Universally Unique Identifier of the item.
@@ -172,8 +173,9 @@ public slots:
      * \brief Remove an item from the timeline.
      * \param uuid The Universally Unique Identifier of the item.
      * \param track The current track of the item.
+     * \param trackType The type of the track (Audio or Video)
      */
-    void                    removeMediaItem( const QUuid& uuid, unsigned int track );
+    void                    removeMediaItem( const QUuid& uuid, unsigned int track, MainWorkflow::TrackType trackType );
 
 protected:
     virtual void            resizeEvent( QResizeEvent* event );

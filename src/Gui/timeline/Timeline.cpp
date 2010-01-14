@@ -153,9 +153,9 @@ void Timeline::setTool( ToolButtons button )
     tracksView()->setTool( button );
 }
 
-void Timeline::actionAddClip( Clip* clip, unsigned int track, qint64 start, MainWorkflow::TrackType )
+void Timeline::actionAddClip( Clip* clip, unsigned int track, qint64 start, MainWorkflow::TrackType trackType )
 {
-    tracksView()->addMediaItem( clip, track, start );
+    tracksView()->addMediaItem( clip, track, trackType, start );
 }
 
 void Timeline::actionMoveClip( const QUuid& uuid, unsigned int track, qint64 time, MainWorkflow::TrackType )
@@ -166,7 +166,7 @@ void Timeline::actionMoveClip( const QUuid& uuid, unsigned int track, qint64 tim
     tracksRuler()->update();
 }
 
-void Timeline::actionRemoveClip( Clip* clip, unsigned int track, MainWorkflow::TrackType )
+void Timeline::actionRemoveClip( Clip* clip, unsigned int track, MainWorkflow::TrackType trackType )
 {
-    tracksView()->removeMediaItem( clip->getUuid(), track );
+    tracksView()->removeMediaItem( clip->getUuid(), track, trackType );
 }
