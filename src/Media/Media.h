@@ -146,6 +146,7 @@ public:
 
     QList<int>*                 getAudioValues() { return m_audioValueList; }
 
+    Clip*                       baseClip() { return m_baseClip; }
 
 private:
     void                        setFileType();
@@ -168,6 +169,7 @@ protected:
     MetadataState               m_metadataState;
     QString                     m_fileName;
     QStringList                 m_metaTags;
+    Clip*                       m_baseClip;
     QHash<QUuid, Clip*>         m_clips;
     QList<int>*                 m_audioValueList;
 
