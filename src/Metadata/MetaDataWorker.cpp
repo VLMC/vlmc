@@ -52,9 +52,7 @@ void    MetaDataWorker::compute()
     {
         if ( m_type == Audio )
         {
-            qDebug() << "Skipping metadata computing";
-            return ;
-//            computeAudioMetaData();
+            computeAudioMetaData();
         }
         else
             computeVideoMetaData();
@@ -254,7 +252,6 @@ void        MetaDataWorker::unlock( MetaDataWorker* metaDataWorker, uint8_t* pcm
 
 void    MetaDataWorker::generateAudioSpectrum()
 {
-    qWarning() << "Generating audio spectrum";
     disconnect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( generateAudioSpectrum() ) );
     m_mediaPlayer->stop();
     emit mediaPlayerIdle( m_mediaPlayer );

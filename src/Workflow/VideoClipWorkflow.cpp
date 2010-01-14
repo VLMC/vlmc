@@ -62,7 +62,8 @@ VideoClipWorkflow::initVlcOutput()
     m_vlcMedia->addOption( ":sout-transcode-acodec=s16l" );
 //    m_vlcMedia->addOption( ":no-sout-keep" );
 
-    m_vlcMedia->addOption( ":no-sout-smem-time-sync" );
+    m_vlcMedia->addOption( ":sout-smem-time-sync" );
+//    m_vlcMedia->addOption( ":no-sout-smem-time-sync" );
 
     sprintf( buffer, ":sout-transcode-width=%i",
              MainWorkflow::getInstance()->getWidth() );
@@ -123,10 +124,12 @@ VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 void
 VideoClipWorkflow::lock( VideoClipWorkflow *cw, void **pp_ret, int size )
 {
+//    qDebug() << "Entering VideoClipWorkflow::lock";
     Q_UNUSED( size );
     QMutexLocker        lock( cw->m_availableBuffersMutex );
     cw->m_renderLock->lock();
     cw->m_computedBuffersMutex->lock();
+//    qDebug() << "Got all videoclipworkflow::lock mutexs acquired.";
 
     LightVideoFrame*    lvf = NULL;
     if ( cw->m_availableBuffers.isEmpty() == true )
@@ -139,8 +142,8 @@ VideoClipWorkflow::lock( VideoClipWorkflow *cw, void **pp_ret, int size )
     else
         lvf = cw->m_availableBuffers.dequeue();
     cw->m_computedBuffers.enqueue( lvf );
-    qWarning() << ">>>VideoGeneration. Available:" <<
-        cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count() << "position" << cw->m_mediaPlayer->getPosition();
+//    qWarning() << ">>>VideoGeneration. Available:" <<
+//        cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count() << "position" << cw->m_mediaPlayer->getPosition();
 //    qWarning() << "feeding video buffer";
     *pp_ret = (*(lvf))->frame.octets;
 }
@@ -194,7 +197,6 @@ VideoClipWorkflow::releaseBuffer( LightVideoFrame *lvf )
 void
 VideoClipWorkflow::flushComputedBuffers()
 {
-    qDebug() << "Flushing computed buffers in video";
     QMutexLocker    lock( m_computedBuffersMutex );
     QMutexLocker    lock2( m_availableBuffersMutex );
 

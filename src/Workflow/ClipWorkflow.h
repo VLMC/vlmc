@@ -178,6 +178,8 @@ class   ClipWorkflow : public QObject
          *          This has to be implemented in the underlying
          *          clipworkflow implementation.
          */
+        virtual void            flushComputedBuffers() = 0;
+
     private:
         WaitCondition*          m_initWaitCond;
         WaitCondition*          m_pausingStateWaitCond;
@@ -210,7 +212,7 @@ class   ClipWorkflow : public QObject
         void                    clipEndReached();
         void                    mediaPlayerPaused();
         void                    mediaPlayerUnpaused();
-        virtual void            flushComputedBuffers() = 0;
+        void                    resyncClipWorkflow();
 };
 
 #endif // CLIPWORKFLOW_H

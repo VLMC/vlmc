@@ -98,7 +98,8 @@ void        AudioClipWorkflow::initVlcOutput()
     m_vlcMedia->addOption( ":sout-transcode-acodec=s16l" );
     m_vlcMedia->addOption( ":sout-transcode-samplerate=48000" );
     m_vlcMedia->addOption( ":sout-transcode-channels=2" );
-    m_vlcMedia->addOption( ":no-sout-smem-time-sync" );
+    m_vlcMedia->addOption( ":sout-smem-time-sync" );
+//    m_vlcMedia->addOption( ":no-sout-smem-time-sync" );
 }
 
 AudioClipWorkflow::AudioSample*    AudioClipWorkflow::createBuffer( size_t size )
@@ -117,7 +118,7 @@ void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer
     cw->m_renderLock->lock();
     cw->m_computedBuffersMutex->lock();
 
-    qWarning() << ">>>AudioGeneration. Available:" << cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count() << "position" << cw->m_mediaPlayer->getPosition();
+//    qWarning() << ">>>AudioGeneration. Available:" << cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count() << "position" << cw->m_mediaPlayer->getPosition();
     AudioSample* as = NULL;
     if ( cw->m_availableBuffers.isEmpty() == true )
     {
@@ -157,10 +158,6 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
         as->nbChannels = channels;
         as->ptsDiff = cw->m_currentPts - cw->m_previousPts;
     }
-//    if ( as->ptsDiff == 0 )
-//    {
-//        qCritical() << "PTS DIFF IS 0 !!!! ";
-//    }
 //    qWarning() << "::::Computing audio PTS: debugId:" << as->debugId << "ptsdiff:" << as->ptsDiff;
     cw->commonUnlock();
     cw->m_renderLock->unlock();
@@ -185,7 +182,6 @@ void        AudioClipWorkflow::releaseBuffer( AudioSample *sample )
 
 void        AudioClipWorkflow::flushComputedBuffers()
 {
-    qDebug() << "Flushing computed buffers in audio";
     QMutexLocker    lock( m_availableBuffersMutex );
     QMutexLocker    lock2( m_computedBuffersMutex );
 

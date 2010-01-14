@@ -127,6 +127,7 @@ void            ClipWorkflow::stop()
         m_mediaPlayer = NULL;
         setState( Stopped );
         delete m_vlcMedia;
+        flushComputedBuffers();
     }
     else
         qDebug() << "ClipWorkflow has already been stopped";
@@ -135,9 +136,12 @@ void            ClipWorkflow::stop()
 void
 ClipWorkflow::setTime( qint64 time )
 {
-    qDebug() << "setting clipworkflow time:" << time << "debugType:" << debugType;
-    flushComputedBuffers();
+//    qDebug() << m_mediaPlayer << "setting clipworkflow time:" << time << "debugType:" << debugType <<
+//            "theorical position:" << (double)time / (double)((double)m_clip->getLengthSecond() * 1000.0);
+    connect( m_mediaPlayer, SIGNAL( timeChanged(qint64) ),
+             this, SLOT( resyncClipWorkflow() ), Qt::DirectConnection );
     m_mediaPlayer->setTime( time );
+    flushComputedBuffers();
     QWriteLocker    lock( m_stateLock );
     if ( m_state == ClipWorkflow::Paused )
     {
@@ -219,11 +223,6 @@ void        ClipWorkflow::commonUnlock()
 
 void    ClipWorkflow::computePtsDiff( qint64 pts )
 {
-//    if ( debugType == 1 )
-//    {
-//        qDebug() << "in computePtsDiff, Before << : pts:" << pts << "previousPts:" << m_previousPts
-//                << "currentPts:" << m_currentPts;
-//    }
     if ( m_previousPts == -1 )
         m_previousPts = pts;
     if ( m_currentPts == -1 )
@@ -262,4 +261,13 @@ void    ClipWorkflow::mediaPlayerUnpaused()
     setState( ClipWorkflow::Rendering );
     m_pauseDuration = mdate() - m_beginPausePts;
 //    qDebug() << "pause duration:" << m_pauseDuration;
+}
+
+void    ClipWorkflow::resyncClipWorkflow()
+{
+    disconnect( m_mediaPlayer, SIGNAL( timeChanged(qint64) ),
+             this, SLOT( resyncClipWorkflow() ) );
+    flushComputedBuffers();
+    m_previousPts = -1;
+    m_currentPts = -1;
 }
