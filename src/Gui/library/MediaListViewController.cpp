@@ -104,6 +104,8 @@ void    MediaListViewController::updateCell( Media* media )
 
 void    MediaListViewController::showClipList( const QUuid& uuid )
 {
+    if ( !m_cells->contains( uuid ) )
+        return ;
     qDebug() << "nb clips :" << Library::getInstance()->media( uuid )->clips()->size();
     if ( Library::getInstance()->media( uuid ) == NULL ||
          Library::getInstance()->media( uuid )->clips()->size() == 0 )

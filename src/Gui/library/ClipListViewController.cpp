@@ -98,12 +98,12 @@ void    ClipListViewController::clipDeletion( const QUuid& uuid )
 {
     if ( m_cells.contains( uuid ) )
     {
+        QUuid tmp = uuid;
         ++m_deletion;
         QWidget* cell = m_cells.value( uuid );
         removeCell( cell );
-        m_cells.remove( uuid );
         m_currentUuid = QUuid();
-        m_cells.remove( uuid );
-        emit clipDeleted( m_mediaId, uuid );
+        m_cells.remove( tmp );
+        emit clipDeleted( m_mediaId, tmp );
     }
 }
