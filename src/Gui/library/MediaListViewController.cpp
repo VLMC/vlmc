@@ -27,7 +27,8 @@
 MediaListViewController::MediaListViewController( StackViewController* nav ) :
         ListViewController( nav ), m_nav( nav ), m_clipsListView( 0 )
 {
-    connect(Library::getInstance(), SIGNAL( newMediaLoaded( Media* ) ), this, SLOT( newMediaLoaded( Media* ) ) );
+    connect( Library::getInstance(), SIGNAL( newMediaImported( QUuid ) ),
+             this, SLOT( newMediaLoaded( QUuid ) ) );
     m_cells = new QHash<QUuid, QWidget*>();
     connect( m_nav, SIGNAL( previousButtonPushed() ), this, SLOT( restoreContext() ) );
 }
@@ -36,18 +37,22 @@ MediaListViewController::~MediaListViewController()
 {
     delete m_cells;
 }
-
-
-void        MediaListViewController::newMediaLoaded( Media* media )
+void        MediaListViewController::newMediaLoaded( const QUuid& uuid )
 {
+    Media* media = Library::getInstance()->media( uuid );
+    if ( media == NULL )
+        return;
+
     MediaCellView* cell = new MediaCellView( media->getUuid() );
 
-    connect( cell, SIGNAL ( cellSelected( QUuid ) ), this, SLOT ( cellSelection( QUuid ) ) );
-    connect( cell, SIGNAL ( cellDeleted( QUuid ) ), this, SLOT( mediaDeletion( QUuid ) ) );
-    connect( cell, SIGNAL ( arrowClicked( QUuid ) ), this, SLOT( showClipList( QUuid ) ) );
+    connect( cell, SIGNAL ( cellSelected( QUuid ) ),
+             this, SLOT ( cellSelection( QUuid ) ) );
+    connect( cell, SIGNAL ( cellDeleted( QUuid ) ),
+             this, SLOT( mediaDeletion( QUuid ) ) );
 
     if ( media->getMetadata() != Media::ParsedWithSnapshot )
-        connect( media, SIGNAL( snapshotComputed( Media* ) ), this, SLOT( updateCell( Media* ) ) );
+        connect( media, SIGNAL( snapshotComputed( Media* ) ),
+                 this, SLOT( updateCell( Media* ) ) );
     cell->setThumbnail( media->getSnapshot() );
     cell->setTitle( media->getFileName() );
     cell->setLength( media->getLengthMS() );
@@ -63,12 +68,15 @@ void    MediaListViewController::cellSelection( const QUuid& uuid )
     if ( m_cells->contains( uuid ) )
     {
         if ( !m_currentUuid.isNull() && m_cells->contains( m_currentUuid ) )
-            m_cells->value( m_currentUuid )->setPalette( m_cells->value( uuid )->palette() );
+        {
+            QWidget* cell = m_cells->value( m_currentUuid );
+            cell->setPalette( m_cells->value( uuid )->palette() );
+        }
         QPalette p = m_cells->value( uuid )->palette();
         p.setColor( QPalette::Window, QColor( Qt::darkBlue ) );
         m_cells->value( uuid )->setPalette( p );
         m_currentUuid = uuid;
-        emit mediaSelected( Library::getInstance()->getMedia( uuid ) );
+        emit mediaSelected( Library::getInstance()->media( uuid ) );
     }
 }
 
@@ -94,7 +102,8 @@ void    MediaListViewController::updateCell( Media* media )
 
 void    MediaListViewController::showClipList( const QUuid& uuid )
 {
-    if ( Library::getInstance()->getMedia( uuid )->clips()->size() == 0 )
+    if ( Library::getInstance()->media( uuid ) == NULL ||
+         Library::getInstance()->media( uuid )->clips()->size() == 0 )
         return ;
     if ( m_lastUuidClipListAsked != uuid )
     {
@@ -102,8 +111,9 @@ void    MediaListViewController::showClipList( const QUuid& uuid )
         if ( m_clipsListView != 0 )
             delete m_clipsListView;
         m_clipsListView = new ClipListViewController( m_nav, uuid );
-        m_clipsListView->addClipsFromMedia( Library::getInstance()->getMedia( uuid ) );
-        connect( m_clipsListView, SIGNAL( clipSelected( const QUuid& ) ), this, SIGNAL( clipSelected( const QUuid& ) ) );
+        m_clipsListView->addClipsFromMedia( Library::getInstance()->media( uuid ) );
+        connect( m_clipsListView, SIGNAL( clipSelected( const QUuid& ) ),
+                 this, SIGNAL( clipSelected( const QUuid& ) ) );
     }
     m_nav->pushViewController( m_clipsListView );
 }

@@ -101,7 +101,7 @@ void    ClipListViewController::clipDeletion( const QUuid& uuid )
         removeCell( cell );
         m_cells.remove( uuid );
         m_currentUuid = QUuid();
-        Library::getInstance()->getMedia( m_mediaId )->removeClip( uuid );
+        Library::getInstance()->media( m_mediaId )->removeClip( uuid );
         m_cells.remove( uuid );
     }
 }

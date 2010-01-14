@@ -25,7 +25,8 @@ private:
     QUuid                   m_lastUuidClipListAsked;
 
 public slots:
-    void        newMediaLoaded( Media* );
+    //void        newMediaLoaded( Media* );
+    void        newMediaLoaded( const QUuid& uuid );
     void        cellSelection( const QUuid& uuid );
     void        mediaDeletion( const QUuid& uuid );
     void        mediaRemoved( const QUuid& uuid );

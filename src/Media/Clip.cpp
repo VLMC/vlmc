@@ -93,7 +93,7 @@ Clip::Clip( const QUuid& uuid, qint64 begin, qint64 end ) :
         m_maxEnd( end )
 {
     Q_UNUSED( end );
-    Media*  media = Library::getInstance()->getMedia( uuid );
+    Media*  media = Library::getInstance()->media( uuid );
     Q_ASSERT( media != NULL );
     m_parent = media;
     m_Uuid = QUuid::createUuid();
