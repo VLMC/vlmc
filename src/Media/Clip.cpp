@@ -72,7 +72,7 @@ Clip::Clip( Media* parent, qint64 begin, qint64 end /*= -1*/ ) :
     computeLength();
 }
 
-Clip::Clip( Clip* clip ) :
+Clip::Clip( const Clip* clip ) :
         m_parent( clip->m_parent ),
         m_begin( clip->m_begin ),
         m_end( clip->m_end ),

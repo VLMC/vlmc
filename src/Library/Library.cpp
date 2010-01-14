@@ -64,6 +64,13 @@ Library::temporaryMedia( const QUuid& uuid )
 Clip*
 Library::clip( const QUuid& uuid )
 {
+    if ( m_medias.contains( uuid ) )
+    {
+        Media* media = m_medias.value( uuid );
+        Clip* clip = new Clip( media->baseClip() );
+        return clip;
+    }
+
     QUuid mediaUuid;
     foreach( mediaUuid, m_medias.keys() )
     {
@@ -77,10 +84,14 @@ Library::clip( const QUuid& uuid )
 Clip*
 Library::clip( const QUuid& mediaUuid, const QUuid& clipUuid )
 {
-    Media* media = m_medias.value( mediaUuid );
-    if ( media == NULL )
-        return NULL;
-    return dynamic_cast<Clip*>( getElementByUuid( *media->clips(), clipUuid ) );
+    if ( m_medias.contains( mediaUuid ) )
+    {
+        if ( m_medias.value( mediaUuid )->clips()->contains( clipUuid ) )
+            return m_medias.value( mediaUuid )->clip( clipUuid );
+        else
+            return new Clip( m_medias.value( mediaUuid )->baseClip() );
+    }
+    return NULL;
 }
 
 void
