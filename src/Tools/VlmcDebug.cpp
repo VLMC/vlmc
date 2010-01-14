@@ -71,7 +71,7 @@ VlmcDebug::~VlmcDebug()
 
 void    VlmcDebug::setup()
 {
-    qInstallMsgHandler( VlmcDebug::vlmcMessageHandler );
+    //qInstallMsgHandler( VlmcDebug::vlmcMessageHandler );
 }
 
 void    VlmcDebug::logFileChanged( const QVariant& logFileV )
