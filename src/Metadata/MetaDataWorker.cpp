@@ -165,6 +165,7 @@ void    MetaDataWorker::renderSnapshot()
 
 void    MetaDataWorker::setSnapshot()
 {
+    qDebug() << "Using QPixmap from setSnapshot";
     QPixmap* pixmap = new QPixmap( m_tmpSnapshotFilename );
     if ( pixmap->isNull() )
         delete pixmap;

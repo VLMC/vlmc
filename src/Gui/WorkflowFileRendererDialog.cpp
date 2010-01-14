@@ -46,6 +46,7 @@ void    WorkflowFileRendererDialog::setProgressBarValue( int val )
 
 void    WorkflowFileRendererDialog::updatePreview( const uchar* buff )
 {
+    qDebug() << "Using QPixmap from workflow file renderer";
     m_ui.previewLabel->setPixmap( QPixmap::fromImage( QImage( buff, VIDEOWIDTH, VIDEOHEIGHT, QImage::Format_RGB888 ).rgbSwapped() ) );
 }
 

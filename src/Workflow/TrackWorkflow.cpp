@@ -226,15 +226,22 @@ void                    TrackWorkflow::stop()
         stopClipWorkflow( it.value() );
         ++it;
     }
+    releasePreviousRender();
     m_lastFrame = 0;
 }
 
 void                TrackWorkflow::releasePreviousRender()
 {
     if ( m_audioStackedBuffer != NULL )
+    {
         m_audioStackedBuffer->release();
+        m_audioStackedBuffer = NULL;
+    }
     if ( m_videoStackedBuffer != NULL )
+    {
         m_videoStackedBuffer->release();
+        m_videoStackedBuffer = NULL;
+    }
 }
 
 void*               TrackWorkflow::getOutput( qint64 currentFrame )
