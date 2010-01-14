@@ -146,7 +146,7 @@ public:
 
     QList<int>*                 getAudioValues() { return m_audioValueList; }
 
-    Clip*                       baseClip() { return m_baseClip; }
+    const Clip*                 baseClip() const { return m_baseClip; }
 
 private:
     void                        setFileType();
