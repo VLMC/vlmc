@@ -52,7 +52,7 @@ class ClipListViewController : public ListViewController
 
     signals:
         void    clipSelected( const QUuid& uuid );
-        void    clipDeleted( const QUuid& uuid );
+        void    clipDeleted( const QUuid& mediaId, const QUuid& clipId );
 };
 
 #endif

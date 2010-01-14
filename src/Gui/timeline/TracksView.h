@@ -98,8 +98,16 @@ public:
      *        in the timeline at the given position.
      * \param pos The position to look at.
      * \return A list of pointer to AbstractGraphicsMediaItem.
+     * \warning Calling this method can be excessively slow!
+     * \sa mediaItems()
      */
     QList<AbstractGraphicsMediaItem*> mediaItems( const QPoint& pos );
+    /**
+     * \brief This is an overloaded method provided for convenience.
+     * \warning Calling this method can be excessively slow!
+     * \sa mediaItems( const QPoint& pos )
+     */
+    QList<AbstractGraphicsMediaItem*> mediaItems();
     /**
      * \brief Remove multiple items from the timeline.
      * \param items A QList of pointers to AbstractGraphicsMediaItem.
@@ -109,7 +117,7 @@ public:
     /**
      * \brief This is an overloaded method provided for convenience.
      * \param item A pointer to AbstractGraphicsMediaItem.
-     * \sa removeMediaItem( const QList<AbstractGraphicsMediaItem*>& );
+     * \sa removeMediaItem( const QList<AbstractGraphicsMediaItem*>& )
      */
     void                    removeMediaItem( AbstractGraphicsMediaItem* item );
     /**
@@ -141,6 +149,11 @@ public slots:
      * \sa Timeline::clear
      */
     void                    clear();
+    /**
+     * \brief Remove a Media from the timeline (and from the backend).
+     * \param uuid The unique identifier of the Media.
+     */
+    void                    deleteMedia( const QUuid& uuid  );
     /**
      * \brief Insert an item into the timeline.
      * \param clip Clip to insert.

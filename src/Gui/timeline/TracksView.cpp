@@ -66,6 +66,8 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, Workf
 
     connect( m_cursorLine, SIGNAL( cursorPositionChanged(qint64) ),
              this, SLOT( ensureCursorVisible() ) );
+    connect( Library::getInstance(), SIGNAL( mediaRemoved( QUuid ) ),
+             this, SLOT( deleteMedia( QUuid ) ) );
 }
 
 void TracksView::createLayout()
@@ -139,6 +141,37 @@ void TracksView::clear()
     addAudioTrack();
 
     updateDuration();
+}
+
+void TracksView::deleteMedia( const QUuid& uuid  )
+{
+    AbstractGraphicsMediaItem* item;
+
+    // Get the list of all items in the timeline
+    QList<AbstractGraphicsMediaItem*> items = mediaItems();
+
+    // Iterate over each item to check if their parent's uuid
+    // is the one we would like to remove.
+    foreach( item, items )
+    {
+        if ( item->clip()->getParent()->getUuid() ==
+             uuid )
+        {
+            // This item needs to be removed.
+            // Saving its values
+            QUuid itemUuid = item->uuid();
+            quint32 itemTn = item->trackNumber();
+            MainWorkflow::TrackType itemTt = item->mediaType();
+
+            // Remove the item from the timeline
+            removeMediaItem( itemUuid, itemTn );
+
+            // Removing the item from the backend.
+            m_renderer->removeClip( itemUuid,
+                                    itemTn,
+                                    itemTt );
+        }
+    }
 }
 
 void TracksView::addMediaItem( Clip* clip, unsigned int track, qint64 start )
@@ -755,6 +788,7 @@ void TracksView::wheelEvent( QWheelEvent* event )
 
 QList<AbstractGraphicsMediaItem*> TracksView::mediaItems( const QPoint& pos )
 {
+    //TODO optimization needed!
     QList<QGraphicsItem*> collisionList = items( pos );
     QList<AbstractGraphicsMediaItem*> mediaCollisionList;
     for ( int i = 0; i < collisionList.size(); ++i )
@@ -765,6 +799,22 @@ QList<AbstractGraphicsMediaItem*> TracksView::mediaItems( const QPoint& pos )
             mediaCollisionList.append( item );
     }
     return mediaCollisionList;
+}
+
+QList<AbstractGraphicsMediaItem*> TracksView::mediaItems()
+{
+    //TODO optimization needed!
+    QGraphicsItem* item;
+    AbstractGraphicsMediaItem* ami;
+    QList<AbstractGraphicsMediaItem*> outlist;
+    QList<QGraphicsItem*> list = items();
+    foreach( item, list )
+    {
+        ami = dynamic_cast<AbstractGraphicsMediaItem*>( item );
+        if ( ami )
+            outlist.append( ami );
+    }
+    return outlist;
 }
 
 void TracksView::setCursorPos( qint64 pos )

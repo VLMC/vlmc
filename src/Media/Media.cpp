@@ -74,6 +74,7 @@ Media::Media( const QString& filePath, const QString& uuid /*= QString()*/ )
 
     m_audioValueList = new QList<int>();
     m_vlcMedia = new LibVLCpp::Media( m_mrl );
+    m_baseClip = new Clip( this );
 }
 
 Media::~Media()
@@ -208,7 +209,7 @@ void            Media::emitSnapshotComputed()
 void            Media::emitAudioSpectrumComuted()
 {
     m_metadataState = ParsedWithAudioSpectrum;
-    emit audioSpectrumComputed( this );
+    emit audioSpectrumComputed( this->getUuid() );
 }
 
 Media::InputType    Media::getInputType() const

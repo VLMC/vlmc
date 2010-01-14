@@ -64,10 +64,23 @@ Library::temporaryMedia( const QUuid& uuid )
 Clip*
 Library::clip( const QUuid& uuid )
 {
-    Clip*   clip;
-    clip = getElementByUuid( m_clips, uuid );
+    QUuid mediaUuid;
+    foreach( mediaUuid, m_medias.keys() )
+    {
+        Media* media = m_medias.value( mediaUuid );
+        if ( media != NULL && media->clips()->contains( uuid ) )
+            return dynamic_cast<Clip*>( getElementByUuid( *media->clips(), uuid ) );
+    }
+    return NULL;
+}
 
-    return clip;
+Clip*
+Library::clip( const QUuid& mediaUuid, const QUuid& clipUuid )
+{
+    Media* media = m_medias.value( mediaUuid );
+    if ( media == NULL )
+        return NULL;
+    return dynamic_cast<Clip*>( getElementByUuid( *media->clips(), clipUuid ) );
 }
 
 void
@@ -151,8 +164,6 @@ Library::addMedia( const QFileInfo& fileInfo )
 
     m_temporaryMedias[media->getUuid()] = media;
 
-    Clip* clip = new Clip( media );
-    m_clips[media->getUuid()] = clip;
     m_progressDialog->setValue(m_nbLoadedMedias);
     emit newMediaLoaded( media->getUuid() );
 }
@@ -160,7 +171,8 @@ Library::addMedia( const QFileInfo& fileInfo )
 void
 Library::addClip( Clip* clip )
 {
-    m_clips[clip->getUuid()] = clip;
+    Media* media = m_medias[clip->getParent()->getUuid()];
+    media->addClip( clip );
 }
 
 void
@@ -199,18 +211,6 @@ Library::metaDataComputed( Media* media )
                 SIGNAL( metaDataComputed( Media* ) ),
                 this,
                 SLOT( metaDataComputed( Media* ) ) );
-    Clip* clip = new Clip( media );
-    m_clips[media->getUuid()] = clip;
-    //If the media have some clip, add then to m_clips
-    const QHash<QUuid, Clip*>*    clips = media->clips();
-    if ( clips->size() != 0 )
-    {
-        QHash<QUuid, Clip*>::const_iterator   it = clips->begin();
-        QHash<QUuid, Clip*>::const_iterator   ed = clips->end();
-
-        for ( ; it != ed; ++it )
-            m_clips[it.key()] = it.value();
-    }
 }
 
 void
@@ -233,6 +233,12 @@ Library::mediaAlreadyLoaded( const QString& filePath )
         if ( media->getFileInfo()->filePath() == filePath )
             return true;
     }
+    foreach( id, m_medias.keys() )
+    {
+        Media* media = m_medias.value( id );
+        if ( media->getFileInfo()->filePath() == filePath )
+            return true;
+    }
     return false;
 }
 
@@ -243,6 +249,12 @@ Library::mediaAlreadyLoaded( const QFileInfo& fileInfo )
     foreach( id, m_temporaryMedias.keys() )
     {
         Media* media = m_temporaryMedias.value( id );
+        if ( media->getFileInfo()->filePath() == fileInfo.filePath() )
+            return true;
+    }
+    foreach( id, m_medias.keys() )
+    {
+        Media* media = m_medias.value( id );
         if ( media->getFileInfo()->filePath() == fileInfo.filePath() )
             return true;
     }
@@ -266,7 +278,7 @@ Library::loadFile( const QFileInfo& fileInfo, int loadingMedias )
             addMedia( fileInfo );
         else
         {
-            m_progressDialog->setMaximum( m_loadingMedias - 1 );
+            m_progressDialog->setMaximum( m_loadingMedias-- );
             m_progressDialog->setValue( ++m_nbLoadedMedias );
         }
     }
@@ -384,14 +396,6 @@ Library::clear()
         ++it;
     }
     m_medias.clear();
-    QHash<QUuid, Clip*>::iterator  it2 = m_clips.begin();
-    QHash<QUuid, Clip*>::iterator  end2 = m_clips.end();
-    while ( it2 != end2 )
-    {
-        delete it2.value();
-        ++it2;
-    }
-    m_clips.clear();
 }
 
 void
@@ -413,4 +417,23 @@ Library::importDone()
         emit newMediaImported( media->getUuid() );
     }
     m_temporaryMedias.clear();
+}
+
+void
+Library::removeClip( const QUuid& mediaId, const QUuid& clipId )
+{
+    qDebug() << "removing clip" << clipId << "in media" << mediaId;
+    Media*  med = 0;
+    if ( m_medias.contains( mediaId ) )
+        med = m_medias[mediaId];
+    else
+        return;
+
+    qDebug() << "clips :" << *med->clips();
+    if ( med->clips()->contains( clipId ) )
+    {
+        qDebug() << "clips before :" << med->clips()->size();
+        med->removeClip( clipId );
+        qDebug() << "clips :" << med->clips()->size();
+    }
 }

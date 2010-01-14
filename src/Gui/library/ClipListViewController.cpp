@@ -33,6 +33,8 @@ ClipListViewController::ClipListViewController( StackViewController* nav, const 
     m_currentUuid(),
     m_deletion( 0 )
 {
+    connect( this, SIGNAL( clipDeleted( const QUuid&, const QUuid& ) ),
+             Library::getInstance(), SLOT( removeClip( const QUuid&, const QUuid& ) ) );
 }
 
 ClipListViewController::~ClipListViewController()
@@ -96,12 +98,12 @@ void    ClipListViewController::clipDeletion( const QUuid& uuid )
 {
     if ( m_cells.contains( uuid ) )
     {
+        QUuid tmp = uuid;
         ++m_deletion;
         QWidget* cell = m_cells.value( uuid );
         removeCell( cell );
-        m_cells.remove( uuid );
         m_currentUuid = QUuid();
-        Library::getInstance()->media( m_mediaId )->removeClip( uuid );
-        m_cells.remove( uuid );
+        m_cells.remove( tmp );
+        emit clipDeleted( m_mediaId, tmp );
     }
 }

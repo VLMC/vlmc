@@ -49,6 +49,8 @@ void        MediaListViewController::newMediaLoaded( const QUuid& uuid )
              this, SLOT ( cellSelection( QUuid ) ) );
     connect( cell, SIGNAL ( cellDeleted( QUuid ) ),
              this, SLOT( mediaDeletion( QUuid ) ) );
+    connect( cell, SIGNAL( arrowClicked( const QUuid& ) ),
+             this, SLOT( showClipList( const QUuid& ) ) );
 
     if ( media->getMetadata() != Media::ParsedWithSnapshot )
         connect( media, SIGNAL( snapshotComputed( Media* ) ),
@@ -102,12 +104,16 @@ void    MediaListViewController::updateCell( Media* media )
 
 void    MediaListViewController::showClipList( const QUuid& uuid )
 {
+    if ( !m_cells->contains( uuid ) )
+        return ;
+    qDebug() << "nb clips :" << Library::getInstance()->media( uuid )->clips()->size();
     if ( Library::getInstance()->media( uuid ) == NULL ||
          Library::getInstance()->media( uuid )->clips()->size() == 0 )
         return ;
+    qDebug() << "uuid" << uuid << "lastUuid" << m_lastUuidClipListAsked;
     if ( m_lastUuidClipListAsked != uuid )
     {
-        m_lastUuidClipListAsked = m_currentUuid;
+        m_lastUuidClipListAsked = uuid;
         if ( m_clipsListView != 0 )
             delete m_clipsListView;
         m_clipsListView = new ClipListViewController( m_nav, uuid );

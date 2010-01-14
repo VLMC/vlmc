@@ -52,7 +52,6 @@ ImportMediaListController::addMedia( Media* media )
     addCell( cell );
 
     m_mediaCellList->insert( media->getUuid(), cell );
-    qDebug() << "addMedia: " << media->getUuid();
 }
 
 void

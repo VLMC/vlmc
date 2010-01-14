@@ -78,26 +78,32 @@ public:
      */
     Clip*   clip( const QUuid& uuid );
     /**
+     *  \brief  returns the clip that match the unique identifier
+     *  \param  mediaUuid the unique identifier of the media
+     *  \param  clipUuid the unique identifier of the clip
+     *  \return a pointer to the required clip, or NULL if no clips matches
+     *  \sa     media( const QUuid& uuid )
+     */
+    Clip*   clip( const QUuid& mediaUuid, const QUuid& clipUuid );
+    /**
      * \brief returns the medias qHash
      *  \return a pointer to the medias qHash, or NULL if no there is no medias
      *  \sa     temporaryMedias( const QUuid& uuid )
      */
-    QHash<QUuid, Media*>*   medias() { return &m_medias; }
+     QHash<QUuid, Media*>*   medias() { return &m_medias; }
     /**
      * \brief returns the temporary medias qHash
      *  \return a pointer to the temporary medias qHash, or NULL if no there is no medias
      *  \sa     medias( const QUuid& uuid )
      */
     QHash<QUuid, Media*>*   temporaryMedias() { return &m_temporaryMedias; }
-//    /**
-//     *  \brief  Add the media with already computed metadatas to the library
-//     *  \param  media The media to add.
-//     *  \sa     addClip( Clip* clip )
-//     *  \sa     media( const QUuid& uuid)
-//     *  \sa     clip( const QUuid& uuid )
-//     */
-//    void    addMedia( Media* media );
-
+    /**
+     *  \brief  Add the media with already computed metadatas to the library
+     *  \param  fileInfo the file info of the media
+     *  \sa     addClip( Clip* clip )
+     *  \sa     media( const QUuid& uuid)
+     *  \sa     clip( const QUuid& uuid )
+     */
       void    addMedia( const QFileInfo& fileInfo );
 
     /**
@@ -168,11 +174,6 @@ private:
      */
     QHash<QUuid, Media*>    m_mediaToDelete;
     /**
-     *  \brief The List of clips loaded into the library
-     *  \warning This list should be removed to used clips existing inside medias
-     */
-    QHash<QUuid, Clip*>     m_clips;
-    /**
      *  \brief  This method allows to get whereas Media or clip by uuid
      *  \param container The type of container used for storage, where T is Clip or Media
      *  \param uuid The uuid of the element you are looking for
@@ -226,6 +227,10 @@ public slots:
      *  \brief  Clear the library (remove all the loaded media and delete them)
      */
     void    clear();
+    /**
+     *  \brief Remove a clip from a media
+     */
+    void    removeClip( const QUuid& mediaId, const QUuid& clipId );
 private slots:
     /**
      *  \brief

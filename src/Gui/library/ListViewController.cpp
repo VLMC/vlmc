@@ -32,11 +32,13 @@ ListViewController::ListViewController( StackViewController* nav ) : m_nav( nav 
     m_title      = new QString( "Media List" );
     m_scrollArea = new QScrollArea();
     m_layout     = new QVBoxLayout();
+    m_container  = new QWidget();
 
     m_layout->setAlignment( Qt::AlignTop );
     m_layout->setSpacing( 0 );
     m_layout->setContentsMargins( 0, 0, 0, 0 );
-    m_scrollArea->setLayout( m_layout );
+    m_container->setLayout( m_layout );
+    m_scrollArea->setWidget( m_container );
     m_scrollArea->setWidgetResizable( true );
     m_scrollArea->setAcceptDrops( true );
 
@@ -47,6 +49,7 @@ ListViewController::~ListViewController()
     delete m_title;
     delete m_scrollArea;
     delete m_layout;
+    delete m_container;
 }
 
 // ViewController method implementation
