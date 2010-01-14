@@ -74,7 +74,6 @@ Media::Media( const QString& filePath, const QString& uuid /*= QString()*/ )
 
     m_audioValueList = new QList<int>();
     m_vlcMedia = new LibVLCpp::Media( m_mrl );
-    m_baseClip = new Clip( this );
 }
 
 Media::~Media()
@@ -195,7 +194,10 @@ Media::FileType     Media::getFileType() const
 void            Media::emitMetaDataComputed( bool hasMetadata )
 {
     if ( hasMetadata == true )
+    {
+        m_baseClip = new Clip( this );
         m_metadataState = ParsedWithoutSnapshot;
+    }
     emit metaDataComputed( this );
 }
 

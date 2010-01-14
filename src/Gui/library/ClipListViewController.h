@@ -36,6 +36,7 @@ class ClipListViewController : public ListViewController
 
         void    addClipsFromMedia( Media* media );
         int     getNbDeletion() const;
+        void    resetNbDeletion();
 
     private:
         void    addClip( Clip* clip );

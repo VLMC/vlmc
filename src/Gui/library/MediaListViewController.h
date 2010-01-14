@@ -33,12 +33,14 @@ public slots:
     void        updateCell( Media* media );
     void        showClipList( const QUuid& uuid );
     void        newClipAdded( Clip* clip );
+    void        clipSelection( const QUuid& uuid );
 
 private slots:
     void    restoreContext();
 signals:
     void        mediaSelected( Media* media );
     void        mediaDeleted( const QUuid& uuid );
+    void        clipSelected( Clip* clip );
 
 };
 #endif // MEDIALISTVIEWCONTROLLER_H

@@ -38,7 +38,7 @@ MediaLibraryWidget::MediaLibraryWidget( QWidget* parent ) : QWidget( parent )
     connect( library, SIGNAL( mediaRemoved( QUuid ) ), list, SLOT( mediaRemoved( const QUuid& ) ) );
     connect( m_nav, SIGNAL( importRequired() ), this, SIGNAL( importRequired() ) );
     //Clip
-    //connect( list, SIGNAL( clipSelected( Clip* clip ) ), this, SIGNAL( clipSelected( Clip* ) ) );
+    connect( list, SIGNAL( clipSelected( Clip* ) ), this, SIGNAL( previewClipSetted( Clip* ) ) );
     connect( this, SIGNAL( addClipToViewController( Clip* ) ), list, SLOT( newClipAdded( Clip* ) ) );
     m_nav->pushViewController( list );
 }
@@ -66,5 +66,4 @@ void    MediaLibraryWidget::mediaSelection( Media* media )
 
 void    MediaLibraryWidget::clipSelection( Clip* clip )
 {
-    emit clipSelected( clip );
 }

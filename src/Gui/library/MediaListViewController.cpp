@@ -55,6 +55,7 @@ void        MediaListViewController::newMediaLoaded( const QUuid& uuid )
     if ( media->getMetadata() != Media::ParsedWithSnapshot )
         connect( media, SIGNAL( snapshotComputed( Media* ) ),
                  this, SLOT( updateCell( Media* ) ) );
+    cell->setNbClips( media->clips()->size() );
     cell->setThumbnail( media->getSnapshot() );
     cell->setTitle( media->getFileName() );
     cell->setLength( media->getLengthMS() );
@@ -106,11 +107,9 @@ void    MediaListViewController::showClipList( const QUuid& uuid )
 {
     if ( !m_cells->contains( uuid ) )
         return ;
-    qDebug() << "nb clips :" << Library::getInstance()->media( uuid )->clips()->size();
     if ( Library::getInstance()->media( uuid ) == NULL ||
          Library::getInstance()->media( uuid )->clips()->size() == 0 )
         return ;
-    qDebug() << "uuid" << uuid << "lastUuid" << m_lastUuidClipListAsked;
     if ( m_lastUuidClipListAsked != uuid )
     {
         m_lastUuidClipListAsked = uuid;
@@ -119,7 +118,7 @@ void    MediaListViewController::showClipList( const QUuid& uuid )
         m_clipsListView = new ClipListViewController( m_nav, uuid );
         m_clipsListView->addClipsFromMedia( Library::getInstance()->media( uuid ) );
         connect( m_clipsListView, SIGNAL( clipSelected( const QUuid& ) ),
-                 this, SIGNAL( clipSelected( const QUuid& ) ) );
+                 this, SLOT( clipSelection( const QUuid& ) ) );
     }
     m_nav->pushViewController( m_clipsListView );
 }
@@ -140,15 +139,25 @@ void    MediaListViewController::newClipAdded( Clip* clip )
 
 void    MediaListViewController::restoreContext()
 {
-    qDebug() << "current uuid" << m_currentUuid;
     if ( m_clipsListView->getNbDeletion() != 0 )
     {
-        qDebug() << "cells :" << m_cells;
-        if ( m_cells->contains( m_currentUuid ) )
+        if ( m_cells->contains( m_lastUuidClipListAsked ) )
         {
-            MediaCellView*  cell = dynamic_cast<MediaCellView*>( m_cells->value( m_currentUuid, 0 ) );
+            MediaCellView*  cell = dynamic_cast<MediaCellView*>( m_cells->value( m_lastUuidClipListAsked, 0 ) );
             if ( cell != 0 )
+            {
                 cell->decrementClipCount( m_clipsListView->getNbDeletion() );
+                m_clipsListView->resetNbDeletion();
+            }
         }
     }
+}
+
+void
+MediaListViewController::clipSelection( const QUuid& uuid )
+{
+    Clip* clip;
+    if ( ( clip = Library::getInstance()->clip( m_currentUuid, uuid ) ) != 0 )
+        emit clipSelected( clip );
+
 }

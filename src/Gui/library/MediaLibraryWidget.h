@@ -51,7 +51,7 @@ private slots:
 
 signals:
     void    mediaSelected( Media* media );
-    void    clipSelected( Clip* clip );
+    void    previewClipSetted( Clip* clip );
     void    importRequired();
     void    addClipToViewController( Clip* clip );
 };
