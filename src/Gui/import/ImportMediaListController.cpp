@@ -25,7 +25,8 @@
 #include "ImportMediaListController.h"
 #include <QDebug>
 
-ImportMediaListController::ImportMediaListController( StackViewController* nav ) : ListViewController( nav ), m_nav( nav ), m_clipDeleted( 0 )
+ImportMediaListController::ImportMediaListController( StackViewController* nav ) :
+        ListViewController( nav ), m_nav( nav ), m_clipDeleted( 0 )
 {
     m_mediaCellList = new QHash<QUuid, ImportMediaCellView*>();
 }
@@ -35,48 +36,61 @@ ImportMediaListController::~ImportMediaListController()
     delete m_mediaCellList;
 }
 
-void    ImportMediaListController::addMedia( Media* media )
+void
+ImportMediaListController::addMedia( Media* media )
 {
     ImportMediaCellView* cell = new ImportMediaCellView( media->getUuid() );
-    connect( cell, SIGNAL( cellSelected( const QUuid& ) ), this, SIGNAL( mediaSelected( const QUuid& ) ) );
-    connect( cell, SIGNAL( cellDeleted( const QUuid& ) ), this, SIGNAL( mediaDeleted( const QUuid& ) ) );
-    connect( cell, SIGNAL( arrowClicked( const QUuid& ) ), this, SIGNAL( showClipListAsked( const QUuid& ) ) );
+    connect( cell, SIGNAL( cellSelected( const QUuid& ) ),
+             this, SIGNAL( mediaSelected( const QUuid& ) ) );
+    connect( cell, SIGNAL( cellDeleted( const QUuid& ) ),
+             this, SIGNAL( mediaDeleted( const QUuid& ) ) );
+    connect( cell, SIGNAL( arrowClicked( const QUuid& ) ),
+             this, SIGNAL( showClipListAsked( const QUuid& ) ) );
 
     cell->setTitle( media->getFileName() );
     cell->setThumbnail( media->getSnapshot() );
     addCell( cell );
 
     m_mediaCellList->insert( media->getUuid(), cell );
+    qDebug() << "addMedia: " << media->getUuid();
 }
 
-void    ImportMediaListController::metaDataComputed( Media* media )
+void
+ImportMediaListController::metaDataComputed( Media* media )
 {
     m_mediaCellList->value( media->getUuid() )->setThumbnail( media->getSnapshot() );
 }
 
-ImportMediaCellView* ImportMediaListController::getCell( QUuid uuid ) const
+ImportMediaCellView*
+ImportMediaListController::cell( QUuid uuid ) const
 {
     if (m_mediaCellList->contains( uuid ) )
         return m_mediaCellList->value( uuid );
     return NULL;
 }
 
-bool    ImportMediaListController::contains( QUuid uuid )
+bool
+ImportMediaListController::contains( QUuid uuid )
 {
     return m_mediaCellList->contains( uuid );
 }
 
-void    ImportMediaListController::removeMedia( const QUuid& uuid )
+void
+ImportMediaListController::removeMedia( const QUuid& uuid )
 {
+    const QUuid saveUuid = uuid;
     removeCell( m_mediaCellList->value( uuid ) );
-    m_mediaCellList->remove( uuid );
+    m_mediaCellList->remove( saveUuid );
 }
 
-void    ImportMediaListController::addClip( Clip* clip )
+void
+ImportMediaListController::addClip( Clip* clip )
 {
     ImportMediaCellView* cell = new ImportMediaCellView( clip->getUuid() );
-    connect( cell, SIGNAL( cellSelected( const QUuid& ) ), this, SIGNAL( clipSelected( const QUuid& ) ) );
-    connect( cell, SIGNAL( cellDeleted( const QUuid& ) ), this, SLOT( clipDeletion( const QUuid& ) ) );
+    connect( cell, SIGNAL( cellSelected( const QUuid& ) ),
+             this, SIGNAL( clipSelected( const QUuid& ) ) );
+    connect( cell, SIGNAL( cellDeleted( const QUuid& ) ),
+             this, SLOT( clipDeletion( const QUuid& ) ) );
 
     QString size;
 
@@ -90,39 +104,43 @@ void    ImportMediaListController::addClip( Clip* clip )
     m_mediaCellList->insert( clip->getUuid(), cell );
 }
 
-void    ImportMediaListController::removeClip( const QUuid& uuid )
+void
+ImportMediaListController::removeClip( const QUuid& uuid )
 {
     removeCell( m_mediaCellList->value( uuid ) );
     m_mediaCellList->remove( uuid );
 }
 
-void    ImportMediaListController::cleanAll()
+void
+ImportMediaListController::cleanAll()
 {
     QUuid uuid;
     MediaCellView* cell;
     foreach( uuid, m_mediaCellList->keys() )
     {
         cell = m_mediaCellList->value( uuid );
-        m_layout->removeWidget( cell );
-        delete cell;
+        removeCell( cell );
     }
     m_mediaCellList->clear();
 }
 
-void    ImportMediaListController::addClipsFromMedia( Media* media )
+void
+ImportMediaListController::addClipsFromMedia( Media* media )
 {
     QUuid uuid;
     foreach( uuid, media->clips()->keys() )
         addClip( media->clips()->value( uuid ) );
 }
 
-void    ImportMediaListController::clipDeletion( const QUuid& uuid )
+void
+ImportMediaListController::clipDeletion( const QUuid& uuid )
 {
     m_clipDeleted += 1;
     emit clipDeleted( uuid );
 }
 
-void    ImportMediaListController::clipAdded( Clip* clip )
+void
+ImportMediaListController::clipAdded( Clip* clip )
 {
     if ( clip->getParent() == 0 )
         return ;
@@ -131,8 +149,8 @@ void    ImportMediaListController::clipAdded( Clip* clip )
         m_mediaCellList->value( uuid )->incrementClipCount();
 }
 
-int     ImportMediaListController::getNbDeletions() const
+const QHash<QUuid, ImportMediaCellView*>*
+ImportMediaListController::mediaCellList() const
 {
-    return m_clipDeleted;
+    return m_mediaCellList;
 }
-

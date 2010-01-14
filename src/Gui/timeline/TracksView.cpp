@@ -187,7 +187,7 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
         event->acceptProposedAction();
 
     QUuid uuid = QUuid( QString( event->mimeData()->data( "vlmc/uuid" ) ) );
-    Clip* clip = Library::getInstance()->getClip( uuid );
+    Clip* clip = Library::getInstance()->clip( uuid );
     if ( !clip ) return;
 
     //FIXME: this leaks, but at least we have independant clips.

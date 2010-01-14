@@ -45,10 +45,10 @@ class ImportMediaListController : public ListViewController
         void    cleanAll();
         void    addClipsFromMedia( Media* media );
 
-        const QHash<QUuid, ImportMediaCellView*>* getMediaCellList() const { return m_mediaCellList; }
-        ImportMediaCellView* getCell( QUuid uuid ) const;
+        const QHash<QUuid, ImportMediaCellView*>* mediaCellList() const;
+        ImportMediaCellView* cell( QUuid uuid ) const;
         bool    contains( QUuid uuid );
-        int     getNbDeletions() const;
+        int     nbDeletions() const { return m_clipDeleted; }
 
     private:
         StackViewController*                m_nav;

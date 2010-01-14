@@ -1,8 +1,6 @@
 FORMS	+=	ui/ImportController.ui
 
-HEADERS	+=	ImportController.h	\
-		ImportModel.h
+HEADERS	+=	ImportController.h
 
-SOURCES	+=	ImportController.cpp	\
-		ImportModel.cpp
+SOURCES	+=	ImportController.cpp
 

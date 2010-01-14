@@ -22,12 +22,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <QTime>
-#include "ImportController.h"
 #include "ui_ImportController.h"
+
 #include "ClipRenderer.h"
+#include "ImportController.h"
 #include "Library.h"
-#include "QPalette"
+
+#include <QPalette>
+#include <QTime>
 
 ImportController::ImportController(QWidget *parent) :
     QDialog(parent),
@@ -36,30 +38,25 @@ ImportController::ImportController(QWidget *parent) :
     m_controllerSwitched( false )
 {
     m_ui->setupUi(this);
-
-    m_model = new ImportModel();
     m_preview = new PreviewWidget( new ClipRenderer, m_ui->previewContainer );
     m_stackNav = new StackViewController( m_ui->stackViewContainer, false );
     m_mediaListController = new ImportMediaListController( m_stackNav );
     m_tag = new TagWidget( m_ui->tagContainer, 6 );
     m_filesModel = new QDirModel();
-
     m_stackNav->pushViewController( m_mediaListController );
 
     QStringList filters;
-    //Video
-    filters << "*.mov" << "*.avi" << "*.mkv" << "*.mpg" << "*.mpeg" << "*.wmv" << "*.mp4" << "*.ogg" << "*.ogv";
-    //Audio
+    filters << "*.mov" << "*.avi" << "*.mkv" << "*.mpg" << "*.mpeg" << "*.wmv" << "*.mp4"
+            << "*.ogg" << "*.ogv";
     filters << "*.mp3" << "*.oga" << "*.flac" << "*.aac" << "*.wav";
-    //Picture
     filters << "*.gif" << "*.png" << "*.jpg";
-
-    m_filesModel->setFilter( QDir::AllDirs | QDir::Files | QDir::Readable | QDir::NoDotAndDotDot );
+    m_filesModel->setFilter( QDir::AllDirs | QDir::Files | QDir::Readable |
+                             QDir::NoDotAndDotDot );
     m_filesModel->sort( 2, Qt::AscendingOrder );
     m_filesModel->sort( 0, Qt::AscendingOrder );
     m_filesModel->setNameFilters( filters );
 
-    m_model->setFilter( filters );
+    Library::getInstance()->setFilter( filters );
     m_ui->treeView->setModel( m_filesModel );
     m_ui->treeView->setRootIndex( m_filesModel->index( QDir::rootPath() ) );
     m_ui->treeView->setCurrentIndex( m_filesModel->index( QDir::homePath() ) );
@@ -73,36 +70,47 @@ ImportController::ImportController(QWidget *parent) :
     m_fsWatcher->addPath( QDir::homePath() );
     m_currentlyWatchedDir = QDir::homePath();
 
-    connect( m_fsWatcher, SIGNAL( directoryChanged( QString ) ), m_filesModel, SLOT( refresh() ) );
-    connect( m_ui->treeView, SIGNAL( clicked( QModelIndex ) ), this, SLOT( treeViewClicked( QModelIndex ) ) );
-    connect( m_ui->treeView, SIGNAL( doubleClicked( QModelIndex ) ), this, SLOT( treeViewDoubleClicked( QModelIndex ) ) );
-    connect( m_ui->forwardButton, SIGNAL( clicked() ), this, SLOT( forwardButtonClicked() ) );
+    connect( m_fsWatcher, SIGNAL( directoryChanged( QString ) ),
+             m_filesModel, SLOT( refresh() ) );
+    connect( m_ui->treeView, SIGNAL( clicked( QModelIndex ) ),
+             this, SLOT( treeViewClicked( QModelIndex ) ) );
+    connect( m_ui->treeView, SIGNAL( doubleClicked( QModelIndex ) ),
+             this, SLOT( treeViewDoubleClicked( QModelIndex ) ) );
+    connect( m_ui->forwardButton, SIGNAL( clicked() ),
+             this, SLOT( forwardButtonClicked() ) );
 
-    connect( m_model, SIGNAL( newMediaLoaded( Media* ) ), this, SLOT( newMediaLoaded( Media* ) ) );
-    connect( m_model, SIGNAL( updateMediaRequested( Media* ) ), this, SLOT( updateMediaRequested( Media* ) ) );
+    connect( Library::getInstance(), SIGNAL( newMediaLoaded( const QUuid& ) ),
+             this, SLOT( newMediaLoaded( const QUuid& ) ) );
+    connect( Library::getInstance(), SIGNAL( updateMediaRequested( const QUuid& ) ),
+             this, SLOT( updateMediaRequested( const QUuid& ) ) );
 
-    connect( this, SIGNAL( mediaSelected( Media* ) ), m_preview->getGenericRenderer(), SLOT( setMedia( Media* ) ) );
-    connect( this, SIGNAL( mediaSelected( Media* ) ), m_tag, SLOT( mediaSelected( Media* ) ) );
+    connect( this, SIGNAL( mediaSelected( Media* ) ),
+             m_preview->getGenericRenderer(), SLOT( setMedia( Media* ) ) );
+    connect( this, SIGNAL( mediaSelected( Media* ) ),
+             m_tag, SLOT( mediaSelected( Media* ) ) );
 
-    //Media
-    connect( m_mediaListController, SIGNAL( mediaSelected( QUuid ) ), this, SLOT( mediaSelection( QUuid ) ) );
-    connect( m_mediaListController, SIGNAL( mediaDeleted( QUuid ) ), this, SLOT( mediaDeletion( QUuid ) ) );
-    //Clips
-    connect( m_mediaListController, SIGNAL( showClipListAsked( const QUuid& ) ), this, SLOT( showClipList( const QUuid& ) ) );
-    connect( m_preview, SIGNAL( addClip( Clip* ) ), m_mediaListController, SLOT( clipAdded( Clip* ) ) );
-    //StackViewController
-    connect( m_stackNav, SIGNAL( previousButtonPushed() ), this, SLOT( restoreContext() ) );
+    connect( m_mediaListController, SIGNAL( mediaSelected( const QUuid& ) ),
+             this, SLOT( mediaSelection( const QUuid& ) ) );
+    connect( m_mediaListController, SIGNAL( mediaDeleted( const QUuid& ) ),
+             this, SLOT( mediaDeletion( const QUuid& ) ) );
+
+    connect( m_mediaListController, SIGNAL( showClipListAsked( const QUuid& ) ),
+             this, SLOT( showClipList( const QUuid& ) ) );
+    connect( m_preview, SIGNAL( addClip( Clip* ) ),
+             m_mediaListController, SLOT( clipAdded( Clip* ) ) ); //StackViewController
+    connect( m_stackNav, SIGNAL( previousButtonPushed() ),
+             this, SLOT( restoreContext() ) );
 }
 
 ImportController::~ImportController()
 {
     delete m_ui;
-    delete m_model;
     delete m_stackNav;
     delete m_tag;
 }
 
-void ImportController::changeEvent( QEvent *e )
+void
+ImportController::changeEvent( QEvent *e )
 {
     QDialog::changeEvent( e );
     switch ( e->type() )
@@ -115,42 +123,39 @@ void ImportController::changeEvent( QEvent *e )
     }
 }
 
-void        ImportController::newMediaLoaded( Media* media )
-{
-    m_mediaListController->addMedia( media );
-}
-
-void        ImportController::mediaSelection( const QUuid& uuid )
+void
+ImportController::mediaSelection( const QUuid& uuid )
 {
     if ( m_mediaListController->contains( uuid ) )
     {
         if ( !m_currentUuid.isNull() && m_mediaListController->contains( m_currentUuid ) )
-            m_mediaListController->getCell( m_currentUuid )->setPalette( palette() );
-        QPalette p = m_mediaListController->getCell( uuid )->palette();
+            m_mediaListController->cell( m_currentUuid )->setPalette( this->palette() );
+        QPalette p = m_mediaListController->cell( uuid )->palette();
         p.setColor( QPalette::Window, QColor( Qt::darkBlue ) );
-        m_mediaListController->getCell( uuid )->setPalette( p );
+        m_mediaListController->cell( uuid )->setPalette( p );
 
-        setUIMetaData( m_model->getMedia( uuid ) );
+        setUIMetaData( Library::getInstance()->temporaryMedia( uuid ) );
         if ( uuid != NULL && uuid != m_currentUuid )
             m_preview->stop();
         m_currentUuid = uuid;
-        emit mediaSelected( m_model->getMedia( uuid ) );
+        emit mediaSelected( Library::getInstance()->temporaryMedia( uuid ) );
     }
 }
 
-void        ImportController::clipSelection( const QUuid& uuid )
+void
+ImportController::clipSelection( const QUuid& uuid )
 {
     if ( !m_currentUuid.isNull() && !m_controllerSwitched )
-        m_clipListController->getCell( m_currentUuid )->setPalette( palette() );
+        m_clipListController->cell( m_currentUuid )->setPalette( palette() );
     else
         m_controllerSwitched = false;
-    QPalette p = m_clipListController->getCell( uuid )->palette();
+    QPalette p = m_clipListController->cell( uuid )->palette();
     p.setColor( QPalette::Window, QColor( Qt::darkBlue ) );
-    m_clipListController->getCell( uuid )->setPalette( p );
+    m_clipListController->cell( uuid )->setPalette( p );
     Clip*   clip;
-    foreach(QUuid id, m_model->getMedias()->keys() )
+    foreach(QUuid id, Library::getInstance()->medias()->keys() )
     {
-        Media* media = m_model->getMedias()->value( id );
+        Media* media = Library::getInstance()->medias()->value( id );
         if ( ( clip = media->clip( uuid ) ) != 0 )
             break;
     }
@@ -161,17 +166,30 @@ void        ImportController::clipSelection( const QUuid& uuid )
     m_currentUuid = uuid;
 }
 
-void        ImportController::updateMediaRequested( Media* media )
+void
+ImportController::newMediaLoaded( const QUuid& uuid )
 {
-    if ( m_mediaListController->contains( media->getUuid() ) )
-    {
-        ImportMediaCellView*    cell = m_mediaListController->getCell( media->getUuid() );
-        cell->setThumbnail( media->getSnapshot() );
-        cell->setLength( media->getLengthMS() );
-    }
+    Media* media = Library::getInstance()->temporaryMedia( uuid );
+    if ( media == NULL )
+        return;
+    m_mediaListController->addMedia( media );
 }
 
-void    ImportController::setUIMetaData( Media* media )
+void
+ImportController::updateMediaRequested( const QUuid& uuid )
+{
+    Media* media = Library::getInstance()->temporaryMedia( uuid );
+    if ( media == NULL )
+        return;
+    ImportMediaCellView*    cell = m_mediaListController->cell( media->getUuid() );
+    if ( cell == NULL )
+        return;
+    cell->setThumbnail( media->getSnapshot() );
+    cell->setLength( media->getLengthMS() );
+}
+
+void
+ImportController::setUIMetaData( Media* media )
 {
     if ( media != NULL )
     {
@@ -185,7 +203,7 @@ void    ImportController::setUIMetaData( Media* media )
         setWindowTitle( media->getFileInfo()->fileName() + " " + tr( "properties" ) );
         //Resolution
         m_ui->resolutionValueLabel->setText( QString::number( media->getWidth() )
-                                           + " x " + QString::number( media->getHeight() ) );
+                                        + " x " + QString::number( media->getHeight() ) );
         //FPS
         m_ui->fpsValueLabel->setText( QString::number( media->getFps() ) );
     }
@@ -198,31 +216,33 @@ void    ImportController::setUIMetaData( Media* media )
     }
 }
 
-void        ImportController::setUIMetaData( Clip* clip )
+void
+ImportController::setUIMetaData( Clip* clip )
 {
-    //compute clip length
     QTime   time;
     qint64  length = clip->getLengthSecond();
     time = time.addSecs( length );
     qDebug() << time;
     m_ui->durationValueLabel->setText( time.toString( "hh:mm:ss" ) );
-    //Filename || title
     m_ui->nameValueLabel->setText( clip->getParent()->getFileInfo()->fileName() );
     m_ui->nameValueLabel->setWordWrap( true );
-    setWindowTitle( clip->getParent()->getFileInfo()->fileName() + " " + tr( "properties" ) );
-    //Resolution
+    setWindowTitle( clip->getParent()->getFileInfo()->fileName() + " " +
+                    tr( "properties" ) );
     m_ui->resolutionValueLabel->setText( QString::number( clip->getParent()->getWidth() )
             + " x " + QString::number( clip->getParent()->getHeight() ) );
-    //FPS
     m_ui->fpsValueLabel->setText( QString::number( clip->getParent()->getFps() ) );
 }
 
-void    ImportController::forwardButtonClicked()
+void
+ImportController::forwardButtonClicked()
 {
-    m_model->loadFile( m_filesModel->fileInfo( m_ui->treeView->selectionModel()->currentIndex() ).filePath() );
+    QModelIndex index = m_ui->treeView->selectionModel()->currentIndex();
+    QString filePath =  m_filesModel->fileInfo( index ).filePath();
+    Library::getInstance()->loadFile( filePath );
 }
 
-void    ImportController::treeViewClicked( const QModelIndex& index )
+void
+ImportController::treeViewClicked( const QModelIndex& index )
 {
     if ( m_filesModel->isDir( index ) )
     {
@@ -233,35 +253,36 @@ void    ImportController::treeViewClicked( const QModelIndex& index )
     m_ui->forwardButton->setEnabled( true );
 }
 
-void    ImportController::treeViewDoubleClicked( const QModelIndex& index )
+void
+ImportController::treeViewDoubleClicked( const QModelIndex& index )
 {
     if ( !m_filesModel->isDir( index ) )
         forwardButtonClicked();
 }
 
-void    ImportController::reject()
+void
+ImportController::reject()
 {
     m_preview->stop();
-    m_model->removeAllMedias();
+    m_mediaListController->cleanAll();
+    Library::getInstance()->deleteTemporaryMedias();
     done( Rejected );
 }
 
-void    ImportController::accept()
+void
+ImportController::accept()
 {
-    QUuid id;
-    foreach( id, m_model->getMedias()->keys() )
-    {
-        Media* media = m_model->getMedias()->value( id );
-        Library::getInstance()->addMedia( media );
-    }
+    m_mediaListController->cleanAll();
+    Library::getInstance()->importDone();
     m_preview->stop();
     done( Accepted );
 }
 
-void        ImportController::mediaDeletion( const QUuid& uuid )
+void
+ImportController::mediaDeletion( const QUuid& uuid )
 {
+    Library::getInstance()->deleteMedia( uuid );
     m_mediaListController->removeMedia( uuid );
-    m_model->removeMedia( uuid );
 
     if ( uuid == m_currentUuid )
     {
@@ -271,29 +292,31 @@ void        ImportController::mediaDeletion( const QUuid& uuid )
     }
 }
 
-void        ImportController::clipDeletion( const QUuid& uuid )
+void
+ImportController::clipDeletion( const QUuid& uuid )
 {
     m_clipListController->removeClip( uuid );
     QUuid id;
-    foreach( id, m_model->getMedias()->keys() )
+    foreach( id, Library::getInstance()->temporaryMedias()->keys() )
     {
-        Media* media = m_model->getMedias()->value( id );
-        if ( media->clip( uuid ) )
-        {
+        Media* media = Library::getInstance()->temporaryMedias()->value( id );
+        if ( media != NULL && media->clip( uuid ) )
             media->removeClip( uuid );
-        }
     }
 }
 
-void        ImportController::showClipList( const QUuid& uuid )
+void
+ImportController::showClipList( const QUuid& uuid )
 {
-    Media*  media = m_model->getMedia( uuid );
-
-    if ( media->clips()->size() == 0 )
+    Media* media = Library::getInstance()->temporaryMedia( uuid );
+    if ( media == NULL || media->clips()->size() == 0 )
         return ;
+
     m_clipListController = new ImportMediaListController( m_stackNav );
-    connect( m_clipListController, SIGNAL( clipSelected( const QUuid& ) ), this, SLOT( clipSelection( const QUuid& ) ) );
-    connect( m_clipListController, SIGNAL( clipDeleted( const QUuid& ) ), this, SLOT( clipDeletion( const QUuid& ) ) );
+    connect( m_clipListController, SIGNAL( clipSelected( const QUuid& ) ),
+             this, SLOT( clipSelection( const QUuid& ) ) );
+    connect( m_clipListController, SIGNAL( clipDeleted( const QUuid& ) ),
+             this, SLOT( clipDeletion( const QUuid& ) ) );
     m_clipListController->addClipsFromMedia( media );
     if ( !m_currentUuid.isNull() )
         m_savedUuid = m_currentUuid;
@@ -301,12 +324,16 @@ void        ImportController::showClipList( const QUuid& uuid )
     m_stackNav->pushViewController( m_clipListController );
 }
 
-void        ImportController::restoreContext()
+void
+ImportController::restoreContext()
 {
-    if ( m_clipListController->getNbDeletions() != 0 )
+    if ( m_clipListController->nbDeletions() != 0 )
     {
-        if ( !m_savedUuid.isNull() )
-            m_mediaListController->getCell( m_savedUuid )->decrementClipCount( m_clipListController->getNbDeletions() );
+        if ( !m_savedUuid.isNull() && m_mediaListController->cell( m_savedUuid ) != NULL )
+        {
+            ImportMediaCellView* cell = m_mediaListController->cell( m_savedUuid );
+            cell->decrementClipCount( m_clipListController->nbDeletions() );
+        }
     }
     if ( !m_savedUuid.isNull() )
         m_currentUuid = m_savedUuid;

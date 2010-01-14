@@ -22,26 +22,34 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+/** \file
+ * This file ImportController contains class declaration/definition.
+ * It's the the controler of the import menu widget of vlmc.
+ */
+
 #ifndef IMPORTCONTROLLER_H
 #define IMPORTCONTROLLER_H
+
+#include "Clip.h"
+#include "ImportMediaListController.h"
+#include "Media.h"
+#include "PreviewWidget.h"
+#include "StackViewController.h"
+#include "TagWidget.h"
 
 #include <QDialog>
 #include <QDirModel>
 #include <QFileSystemWatcher>
-
-#include "Media.h"
-#include "Clip.h"
-#include "ImportModel.h"
-#include "PreviewWidget.h"
-#include "StackViewController.h"
-#include "TagWidget.h"
-#include "ImportMediaListController.h"
 
 namespace Ui
 {
     class ImportController;
 }
 
+/**
+ *  \class ImportController
+ *  \brief Controller of the import menu
+ */
 class ImportController : public QDialog
 {
     Q_OBJECT
@@ -58,7 +66,6 @@ class ImportController : public QDialog
     private:
         Ui::ImportController*       m_ui;
         PreviewWidget*              m_preview;
-        ImportModel*                m_model;
         StackViewController*        m_stackNav;
         TagWidget*                  m_tag;
         ImportMediaListController*  m_mediaListController;
@@ -71,8 +78,8 @@ class ImportController : public QDialog
         bool                        m_controllerSwitched;
 
     public slots:
-        void        newMediaLoaded( Media* media );
-        void        updateMediaRequested( Media* media );
+        void        newMediaLoaded( const QUuid& uuid );
+        void        updateMediaRequested( const QUuid& uuid );
         void        accept();
         void        reject();
         void        mediaSelection( const QUuid& uuid );
