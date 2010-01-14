@@ -39,6 +39,8 @@ ClipListViewController::ClipListViewController( StackViewController* nav, const 
 
 ClipListViewController::~ClipListViewController()
 {
+    foreach( QWidget* cell, m_cells.values() )
+        removeCell( cell );
 }
 
 void    ClipListViewController::addClipsFromMedia( Media* media )
