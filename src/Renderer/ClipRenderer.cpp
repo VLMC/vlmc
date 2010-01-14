@@ -73,6 +73,7 @@ void        ClipRenderer::setMedia( Media* media )
 
 void        ClipRenderer::setClip( Clip* clip )
 {
+    qDebug() << "Setting clip";
     if ( clip == NULL )
     {
         m_selectedMedia = NULL;
@@ -107,7 +108,7 @@ void        ClipRenderer::startPreview()
     m_mediaPlayer->setMedia( m_vlcMedia );
 
     m_mediaPlayer->play();
-    m_mediaPlayer->setPosition( m_begin / m_end );
+    m_mediaPlayer->setPosition( m_begin / m_selectedMedia->getNbFrames() );
     m_clipLoaded = true;
     m_isRendering = true;
     m_paused = false;
