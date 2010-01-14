@@ -76,6 +76,8 @@ void    StackViewController::pushViewController( ViewController* viewController,
     m_current = viewController;
     m_nav->setTitle( m_current->title() );
     m_layout->insertWidget( 1, m_current->view() );
+    if ( m_current->view()->isHidden() )
+        m_current->view()->show();
 }
 
 void        StackViewController::popViewController( bool animated )
