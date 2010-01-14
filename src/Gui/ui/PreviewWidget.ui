@@ -2,14 +2,11 @@
 <ui version="4.0">
  <class>PreviewWidget</class>
  <widget class="QWidget" name="PreviewWidget">
-  <property name="windowModality">
-   <enum>Qt::ApplicationModal</enum>
-  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>444</width>
+    <width>328</width>
     <height>341</height>
    </rect>
   </property>
@@ -291,6 +288,12 @@
      </item>
      <item>
       <widget class="LCDTimecode" name="lcdNumber">
+       <property name="minimumSize">
+        <size>
+         <width>80</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
        </property>
