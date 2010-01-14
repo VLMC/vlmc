@@ -226,6 +226,10 @@ public slots:
      *  \brief  Clear the library (remove all the loaded media and delete them)
      */
     void    clear();
+    /**
+     *  \brief Remove a clip from a media
+     */
+    void    removeClip( const QUuid& mediaId, const QUuid& clipId );
 private slots:
     /**
      *  \brief
