@@ -141,11 +141,14 @@ void    MediaListViewController::restoreContext()
 {
     if ( m_clipsListView->getNbDeletion() != 0 )
     {
-        if ( m_cells->contains( m_currentUuid ) )
+        if ( m_cells->contains( m_lastUuidClipListAsked ) )
         {
-            MediaCellView*  cell = dynamic_cast<MediaCellView*>( m_cells->value( m_currentUuid, 0 ) );
+            MediaCellView*  cell = dynamic_cast<MediaCellView*>( m_cells->value( m_lastUuidClipListAsked, 0 ) );
             if ( cell != 0 )
+            {
                 cell->decrementClipCount( m_clipsListView->getNbDeletion() );
+                m_clipsListView->resetNbDeletion();
+            }
         }
     }
 }

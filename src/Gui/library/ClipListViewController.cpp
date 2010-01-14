@@ -52,6 +52,11 @@ int     ClipListViewController::getNbDeletion() const
     return m_deletion;
 }
 
+void    ClipListViewController::resetNbDeletion()
+{
+    m_deletion = 0;
+}
+
 void    ClipListViewController::addClip( Clip* clip )
 {
     MediaCellView* cell = new MediaCellView( clip->getUuid() );
