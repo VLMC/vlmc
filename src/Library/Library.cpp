@@ -37,6 +37,7 @@
 #include <QDomElement>
 #include <QHash>
 #include <QMessageBox>
+#include <QProgressDialog>
 #include <QUuid>
 
 Library::Library()
@@ -264,7 +265,10 @@ Library::loadFile( const QFileInfo& fileInfo, int loadingMedias )
         if ( !mediaAlreadyLoaded( fileInfo ) )
             addMedia( fileInfo );
         else
+        {
+            m_progressDialog->setMaximum( m_loadingMedias - 1 );
             m_progressDialog->setValue( ++m_nbLoadedMedias );
+        }
     }
     else
     {
