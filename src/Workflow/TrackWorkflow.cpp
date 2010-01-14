@@ -135,7 +135,6 @@ void*       TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
     cw->getStateLock()->lockForRead();
 
 //    qDebug() << "TrackWorkflow::renderClip. currentFrame:" << currentFrame << "trackType:" << m_trackType;
-//    qDebug() << "Rendering clip" << cw << "state:" << cw->getState() << "Type:" << m_trackType;
     if ( cw->getState() == ClipWorkflow::Rendering ||
          cw->getState() == ClipWorkflow::Paused ||
          cw->getState() == ClipWorkflow::PauseRequired ||
@@ -244,7 +243,7 @@ void                TrackWorkflow::releasePreviousRender()
     }
 }
 
-void*               TrackWorkflow::getOutput( qint64 currentFrame )
+void*               TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFrame )
 {
     releasePreviousRender();
     QReadLocker     lock( m_clipsLock );
@@ -266,10 +265,10 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame )
             needRepositioning = true;
             m_forceRepositionning = false;
         }
-        else if ( m_paused == true && currentFrame != m_lastFrame )
+        else if ( m_paused == true && subFrame != m_lastFrame )
             needRepositioning = true;
         else
-            needRepositioning = ( abs( currentFrame - m_lastFrame ) > 1 ) ? true : false;
+            needRepositioning = ( abs( subFrame - m_lastFrame ) > 1 ) ? true : false;
     }
 
     while ( it != end )
@@ -297,7 +296,7 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame )
             stopClipWorkflow( cw );
         ++it;
     }
-    m_lastFrame = currentFrame;
+    m_lastFrame = subFrame;
     return ret;
 }
 

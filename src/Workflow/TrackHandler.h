@@ -49,10 +49,13 @@ class   TrackHandler : public QObject
         void                    startRender();
         /**
          *  \param      currentFrame    The current rendering frame (ie the video frame, in all case)
+         *  \param      subFrame        The type-dependent frame. IE, for a video track,
+         *                              it's the same as currentFrame, but for an audio
+         *                              track, it will be different.
          *  \todo       This should probably be partialy handled by the trackHandler, as the work
          *              is exactly the same for both audio and video trackWorkflow in most of the case... or not.
          */
-        void                    getOutput( qint64 currentFrame );
+        void                    getOutput( qint64 currentFrame, qint64 subFrame );
         void                    pause();
         void                    unpause();
         void                    activateAll();

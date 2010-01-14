@@ -137,7 +137,8 @@ MainWorkflow::getOutput( TrackType trackType )
     {
         QReadLocker         lock2( m_currentFrameLock );
 
-        m_tracks[trackType]->getOutput( m_currentFrame[trackType] );
+        m_tracks[trackType]->getOutput( m_currentFrame[VideoTrack],
+                                        m_currentFrame[trackType] );
         if ( trackType == MainWorkflow::VideoTrack )
         {
             m_effectEngine->render();

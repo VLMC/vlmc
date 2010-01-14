@@ -105,7 +105,7 @@ TrackHandler::getLength() const
 }
 
 void
-TrackHandler::getOutput( qint64 currentFrame )
+TrackHandler::getOutput( qint64 currentFrame, qint64 subFrame )
 {
     m_tmpAudioBuffer = NULL;
     for ( unsigned int i = 0; i < m_trackCount; ++i )
@@ -116,7 +116,7 @@ TrackHandler::getOutput( qint64 currentFrame )
                 m_effectEngine->setVideoInput( i + 1, *TrackHandler::nullOutput );
             else
             {
-                void*   ret = m_tracks[i]->getOutput( currentFrame );
+                void*   ret = m_tracks[i]->getOutput( currentFrame, subFrame );
                 if ( ret == NULL )
                     m_effectEngine->setVideoInput( i + 1, *TrackHandler::nullOutput );
                 else
@@ -129,7 +129,7 @@ TrackHandler::getOutput( qint64 currentFrame )
         }
         else
         {
-            void*   ret = m_tracks[i]->getOutput( currentFrame );
+            void*   ret = m_tracks[i]->getOutput( currentFrame, subFrame );
             //m_tmpAudioBuffer is NULl by default, so it will remain NULL if we continue;
             if ( ret == NULL )
                 continue ;
