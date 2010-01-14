@@ -186,3 +186,14 @@ void        MediaCellView::decrementClipCount( const int nb )
         clips = 0;
     m_ui->clipCount->setText( QString::number( clips ) );
 }
+
+void
+MediaCellView::containsClip()
+{
+    m_ui->clipCount->hide();
+    m_ui->clipCountLabel->hide();
+    m_ui->arrow->hide();
+    disconnect( m_ui->arrow,
+                SIGNAL( clicked( QWidget*, QMouseEvent* ) ), this,
+                SLOT( arrowButtonClicked( QWidget*, QMouseEvent* ) ) );
+}
