@@ -692,6 +692,21 @@ QList<AbstractGraphicsMediaItem*> TracksView::mediaItems( const QPoint& pos )
     return mediaCollisionList;
 }
 
+QList<AbstractGraphicsMediaItem*> TracksView::mediaItems()
+{
+    QGraphicsItem* item;
+    AbstractGraphicsMediaItem* ami;
+    QList<AbstractGraphicsMediaItem*> outlist;
+    QList<QGraphicsItem*> list = items();
+    foreach( item, list )
+    {
+        ami = dynamic_cast<AbstractGraphicsMediaItem*>( item );
+        if ( ami )
+            outlist.append( ami );
+    }
+    return outlist;
+}
+
 void TracksView::setCursorPos( qint64 pos )
 {
     if ( pos < 0 ) pos = 0;

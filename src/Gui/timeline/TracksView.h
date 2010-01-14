@@ -100,6 +100,11 @@ public:
      */
     QList<AbstractGraphicsMediaItem*> mediaItems( const QPoint& pos );
     /**
+     * \brief This is an overloaded method provided for convenience.
+     * \sa mediaItems( const QPoint& pos )
+     */
+    QList<AbstractGraphicsMediaItem*> mediaItems();
+    /**
      * \brief Remove multiple items from the timeline.
      * \param items A QList of pointers to AbstractGraphicsMediaItem.
      * \sa removeMediaItem( AbstractGraphicsMediaItem* )
@@ -108,7 +113,7 @@ public:
     /**
      * \brief This is an overloaded method provided for convenience.
      * \param item A pointer to AbstractGraphicsMediaItem.
-     * \sa removeMediaItem( const QList<AbstractGraphicsMediaItem*>& );
+     * \sa removeMediaItem( const QList<AbstractGraphicsMediaItem*>& )
      */
     void                    removeMediaItem( AbstractGraphicsMediaItem* item );
     /**
