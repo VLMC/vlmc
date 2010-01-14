@@ -482,6 +482,8 @@ void TracksView::dropEvent( QDropEvent* event )
 {
     qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );;
 
+    UndoStack::getInstance()->beginMacro( "Add clip" );
+
     if ( m_dragAudioItem )
     {
         updateDuration();
@@ -518,6 +520,8 @@ void TracksView::dropEvent( QDropEvent* event )
                                                                 MainWorkflow::VideoTrack ) );
         m_dragVideoItem = NULL;
     }
+
+    UndoStack::getInstance()->endMacro();
 }
 
 void TracksView::setDuration( int duration )
@@ -722,6 +726,8 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
         if ( getTrack( MainWorkflow::AudioTrack, m_numAudioTrack - 1 )->childItems().count() > 0 )
             addAudioTrack();
 
+        UndoStack::getInstance()->beginMacro( "Move clip" );
+
         Commands::trigger( new Commands::MainWorkflow::MoveClip( m_mainWorkflow,
                                                                  m_actionItem->clip()->getUuid(),
                                                                  m_actionItem->oldTrackNumber,
@@ -742,6 +748,8 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
             m_actionItem->groupItem()->oldTrackNumber = m_actionItem->groupItem()->trackNumber();
             m_actionItem->groupItem()->oldPosition = m_actionItem->groupItem()->startPos();
         }
+
+        UndoStack::getInstance()->endMacro();
 
         m_actionItem->oldTrackNumber = m_actionItem->trackNumber();
         m_actionItem->oldPosition = m_actionItem->startPos();

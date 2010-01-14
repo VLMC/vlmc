@@ -38,6 +38,8 @@ class UndoStack : public QUndoView, public QSingleton<UndoStack>
 
     public:
         void        push( QUndoCommand* command );
+        void        beginMacro( const QString& text );
+        void        endMacro();
 
     private:
         UndoStack( QWidget* parent );

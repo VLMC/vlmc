@@ -53,6 +53,16 @@ void    UndoStack::push( QUndoCommand* command )
     m_undoStack->push( command );
 }
 
+void    UndoStack::beginMacro( const QString& text )
+{
+    m_undoStack->beginMacro( text );
+}
+
+void    UndoStack::endMacro()
+{
+    m_undoStack->endMacro();
+}
+
 void    UndoStack::clear()
 {
     m_undoStack->clear();
