@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2008-2009 the VLMC team
  *
- * Authors: Christophe Courtaut <christophe.courtaut@gmail.com>
+ * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,54 +23,36 @@
 #ifndef METADATAMANAGER_H
 #define METADATAMANAGER_H
 
-#include <QObject>
-#include <QMutex>
-#include <QMutexLocker>
-#include <QQueue>
-#include <QMultiMap>
-#include <QThreadPool>
 #include "VLCMediaPlayer.h"
-#include "Media.h"
 #include "Singleton.hpp"
 
-#define DEFAULT_MAX_MEDIA_PLAYER 1
+#include <QObject>
+#include <QQueue>
+class   QMutex;
+class   Media;
 
 class MetaDataManager : public QObject, public Singleton<MetaDataManager>
 {
     Q_OBJECT
-    Q_DISABLE_COPY( MetaDataManager )
-    enum MediaPlayerState
-    {
-        Idle,
-        Running
-    };
+    Q_DISABLE_COPY( MetaDataManager );
 
     public:
-        ~MetaDataManager();
         void    computeMediaMetadata( Media* media );
-        void    setMediaPlayersNumberMaxCount( int number );
-        void    addMediaPlayer();
-        void    removeMediaPlayer();
-        void    populateEmptyMediaPlayerSlots();
-        int     mediaPlayersMaxCount() const;
-        void    checkMediasToCompute();
-    private slots:
-        void    mediaPlayerIdle( LibVLCpp::MediaPlayer* mediaPlayer );
     private:
         MetaDataManager();
+        ~MetaDataManager();
+
+        void                    launchComputing( Media *media );
 
     private:
-        QQueue<Media*>                                          m_mediasToComputeMetaData;
-        QQueue<Media*>                                          m_mediasToComputeSnapshot;
-        QQueue<Media*>                                          m_mediasToComputeAudioSpectrum;
-        QMultiMap<MediaPlayerState, LibVLCpp::MediaPlayer*>     m_mediaPlayers;
-        QMutex                                                  m_mediasToComputeMetaDataMutex;
-        QMutex                                                  m_mediasToComputeSnapshotMutex;
-        QMutex                                                  m_mediasToComputeAudioSpectrumMutex;
-        QMutex                                                  m_mediaPlayersMutex;
-        int                                                     m_mediaPlayersMaxCount;
-        int                                                     m_mediaPlayersToRemove;
-        friend class                                            Singleton<MetaDataManager>;
+        QMutex                  *m_computingMutex;
+        QQueue<Media*>          m_mediaToCompute;
+        bool                    m_computeInProgress;
+        LibVLCpp::MediaPlayer   *m_mediaPlayer;
+        friend class            Singleton<MetaDataManager>;
+
+    private slots:
+        void                    computingCompleted();
 };
 
 #endif //METADATAMANAGER_H

@@ -65,13 +65,6 @@ public:
         File,
         Stream
     };
-    enum    MetadataState
-    {
-        None,
-        ParsedWithoutSnapshot,
-        ParsedWithSnapshot,
-        ParsedWithAudioSpectrum
-    };
     Media( const QString& filePath, const QString& uuid = QString() );
     virtual ~Media();
 
@@ -132,12 +125,11 @@ public:
     void                        setMetaTags( const QStringList& tags );
     bool                        matchMetaTag( const QString& tag ) const;
 
-    void                        emitMetaDataComputed( bool hasMetadata );
+    void                        emitMetaDataComputed();
     void                        emitSnapshotComputed();
     void                        emitAudioSpectrumComuted();
 
 //    bool                        hasMetadata() const;
-    MetadataState               getMetadata() const;
 
     void                        addClip( Clip* clip );
     void                        removeClip( const QUuid& uuid );
@@ -166,7 +158,6 @@ protected:
     float                       m_fps;
     FileType                    m_fileType;
     InputType                   m_inputType;
-    MetadataState               m_metadataState;
     QString                     m_fileName;
     QStringList                 m_metaTags;
     Clip*                       m_baseClip;

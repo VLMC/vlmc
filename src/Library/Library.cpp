@@ -104,8 +104,7 @@ Library::removingMediaAsked( const QUuid& uuid )
 void
 Library::deleteMedia( const QUuid& uuid )
 {
-    if ( m_medias.contains( uuid ) &&
-         m_medias.value( uuid )->getMetadata() == Media::ParsedWithAudioSpectrum )
+    if ( m_medias.contains( uuid ) )
     {
         disconnect( m_medias.value( uuid ),
                     SIGNAL( audioSpectrumComputed( const QUuid& ) ),
@@ -113,9 +112,7 @@ Library::deleteMedia( const QUuid& uuid )
                     SLOT( deleteMedia( const QUuid& ) ) );
         delete m_medias.take( uuid );
     }
-    else if ( m_temporaryMedias.contains( uuid ) &&
-              m_temporaryMedias.value( uuid )->getMetadata() ==
-              Media::ParsedWithAudioSpectrum )
+    else if ( m_temporaryMedias.contains( uuid ) )
     {
         disconnect( m_medias.value( uuid ),
                     SIGNAL( audioSpectrumComputed( const QUuid& ) ),

@@ -44,19 +44,19 @@ class MetaDataWorker : public QObject
         };
 
     public:
-        MetaDataWorker( LibVLCpp::MediaPlayer* mediaPlayer, Media* media, MetaDataType type );
+        MetaDataWorker( LibVLCpp::MediaPlayer* mediaPlayer, Media* media );
         ~MetaDataWorker();
         void                        compute();
 
     private:
-        void                        computeVideoMetaData();
+        void                        computeDynamicFileMetaData();
         void                        computeImageMetaData();
-        void                        computeAudioMetaData();
+        void                        prepareAudioSpectrumComputing();
         void                        addAudioValue( int value );
+        void                        finalize();
 
     private:
-        void                        getMetaData();
-        void                        initVlcOutput();
+        void                        metaDataAvailable();
         static void                 lock( MetaDataWorker* metaDataWorker, uint8_t** pcm_buffer , unsigned int size );
         static void                 unlock( MetaDataWorker* metaDataWorker, uint8_t* pcm_buffer,
                                         unsigned int channels, unsigned int rate,
@@ -65,8 +65,6 @@ class MetaDataWorker : public QObject
 
     private:
         LibVLCpp::MediaPlayer*      m_mediaPlayer;
-        MetaDataType                m_type;
-
         Media*                      m_media;
         QString                     m_tmpSnapshotFilename;
 
@@ -75,16 +73,15 @@ class MetaDataWorker : public QObject
 
         unsigned char*              m_audioBuffer;
 
-    signals:
-        void    snapshotRequested();
-        void    mediaPlayerIdle( LibVLCpp::MediaPlayer* mediaPlayer );
-
     private slots:
         void    renderSnapshot();
         void    setSnapshot();
         void    entrypointPlaying();
         void    entrypointLengthChanged();
         void    generateAudioSpectrum();
+
+    signals:
+        void    computed();
 };
 
 #endif // METADATAWORKER_H

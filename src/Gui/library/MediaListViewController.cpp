@@ -52,9 +52,8 @@ void        MediaListViewController::newMediaLoaded( const QUuid& uuid )
     connect( cell, SIGNAL( arrowClicked( const QUuid& ) ),
              this, SLOT( showClipList( const QUuid& ) ) );
 
-    if ( media->getMetadata() != Media::ParsedWithSnapshot )
-        connect( media, SIGNAL( snapshotComputed( Media* ) ),
-                 this, SLOT( updateCell( Media* ) ) );
+    connect( media, SIGNAL( snapshotComputed( Media* ) ),
+             this, SLOT( updateCell( Media* ) ) );
     cell->setNbClips( media->clips()->size() );
     cell->setThumbnail( media->getSnapshot() );
     cell->setTitle( media->getFileName() );

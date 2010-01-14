@@ -73,6 +73,7 @@ MediaPlayer::~MediaPlayer()
     libvlc_event_detach( p_em, libvlc_MediaPlayerStopped, callbacks, this, m_ex );
     libvlc_event_detach( p_em, libvlc_MediaPlayerEndReached, callbacks, this, m_ex );
     libvlc_event_detach( p_em, libvlc_MediaPlayerPositionChanged, callbacks, this, m_ex );
+    stop();
     libvlc_media_player_release( m_internalPtr );
 }
 
