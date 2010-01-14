@@ -209,7 +209,7 @@ void            Media::emitSnapshotComputed()
 void            Media::emitAudioSpectrumComuted()
 {
     m_metadataState = ParsedWithAudioSpectrum;
-    emit audioSpectrumComputed( this );
+    emit audioSpectrumComputed( this->getUuid() );
 }
 
 Media::InputType    Media::getInputType() const

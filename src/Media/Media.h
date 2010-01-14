@@ -176,7 +176,7 @@ protected:
 signals:
     void                        metaDataComputed( Media* );
     void                        snapshotComputed( Media* );
-    void                        audioSpectrumComputed( Media* );
+    void                        audioSpectrumComputed( const QUuid& );
 };
 
 #endif // CLIP_H__
