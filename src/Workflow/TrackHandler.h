@@ -25,12 +25,12 @@
 
 #include <QObject>
 #include "Toggleable.hpp"
-#include "EffectsEngine.h"
 #include "MainWorkflow.h"
 
 //TEMPORARY:
 #include "AudioClipWorkflow.h"
 
+class   EffectEngine;
 class   TrackWorkflow;
 
 class   TrackHandler : public QObject
