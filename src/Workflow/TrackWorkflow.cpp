@@ -346,7 +346,7 @@ Clip*       TrackWorkflow::removeClip( const QUuid& id )
             m_clips.erase( it );
             stopClipWorkflow( cw );
             computeLength();
-            disconnectClipWorkflow( cw );
+            cw->disconnect();
             delete cw;
             if ( m_length == 0 )
                 emit trackEndReached( m_trackId );
@@ -369,7 +369,7 @@ ClipWorkflow*       TrackWorkflow::removeClipWorkflow( const QUuid& id )
         if ( it.value()->getClip()->getUuid() == id )
         {
             ClipWorkflow*   cw = it.value();
-            disconnectClipWorkflow( cw );
+            cw->disconnect();
             m_clips.erase( it );
             computeLength();
             return cw;
@@ -459,13 +459,6 @@ void    TrackWorkflow::adjustClipTime( qint64 currentFrame, qint64 start, ClipWo
     qint64  beginInMs = cw->getClip()->getBegin() / cw->getClip()->getParent()->getFps() * 1000;
     qint64  startFrame = beginInMs + nbMs;
     cw->setTime( startFrame );
-}
-
-void    TrackWorkflow::disconnectClipWorkflow( ClipWorkflow* cw )
-{
-    disconnect( cw, SIGNAL( renderComplete( ClipWorkflow* ) ), this, SLOT( clipWorkflowRenderCompleted( ClipWorkflow* ) ) );
-    disconnect( cw, SIGNAL( paused() ), this, SLOT( clipWorkflowPaused() ) );
-    disconnect( cw, SIGNAL( unpaused() ), this, SLOT( clipWorkflowUnpaused() ) );
 }
 
 void    TrackWorkflow::forceRepositionning()
