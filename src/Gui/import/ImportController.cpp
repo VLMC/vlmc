@@ -153,12 +153,15 @@ ImportController::clipSelection( const QUuid& uuid )
     p.setColor( QPalette::Window, QColor( Qt::darkBlue ) );
     m_clipListController->cell( uuid )->setPalette( p );
     Clip*   clip;
-    foreach(QUuid id, Library::getInstance()->medias()->keys() )
+    foreach(QUuid id, Library::getInstance()->temporaryMedias()->keys() )
     {
-        Media* media = Library::getInstance()->medias()->value( id );
+        Media* media = Library::getInstance()->temporaryMedias()->value( id );
         if ( ( clip = media->clip( uuid ) ) != 0 )
             break;
     }
+    if ( clip == 0 )
+        return ;
+    qDebug() << "ImportController::clipSelection clip" << clip;
     setUIMetaData( clip );
     if ( uuid != m_currentUuid )
         m_preview->stop();
