@@ -54,6 +54,7 @@ protected:
 private:
     QString*                    m_title;
     QScrollArea*                m_scrollArea;
+    QWidget*                    m_container;
 
     StackViewController*        m_nav;
 };
