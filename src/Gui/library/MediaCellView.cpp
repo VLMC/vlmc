@@ -65,6 +65,11 @@ void            MediaCellView::setTitle( const QString& title )
     m_ui->title->setText( title );
 }
 
+void            MediaCellView::setNbClips( int nbClip )
+{
+    m_ui->clipCount->setText( QString::number( nbClip ) );
+}
+
 void            MediaCellView::setThumbnail( const QPixmap& pixmap )
 {
     m_ui->thumbnail->setScaledContents( false );

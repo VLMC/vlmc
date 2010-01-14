@@ -42,6 +42,7 @@ public:
     ~MediaCellView();
 
     void                    setTitle( const QString& title );
+    void                    setNbClips( int nbClip );
     void                    setThumbnail( const QPixmap& pixmap );
     const QPixmap*          getThumbnail() const;
     /**
