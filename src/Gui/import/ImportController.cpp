@@ -161,7 +161,6 @@ ImportController::clipSelection( const QUuid& uuid )
     }
     if ( clip == 0 )
         return ;
-    qDebug() << "ImportController::clipSelection clip" << clip;
     setUIMetaData( clip );
     if ( uuid != m_currentUuid )
         m_preview->stop();
@@ -225,7 +224,6 @@ ImportController::setUIMetaData( Clip* clip )
     QTime   time;
     qint64  length = clip->getLengthSecond();
     time = time.addSecs( length );
-    qDebug() << time;
     m_ui->durationValueLabel->setText( time.toString( "hh:mm:ss" ) );
     m_ui->nameValueLabel->setText( clip->getParent()->getFileInfo()->fileName() );
     m_ui->nameValueLabel->setWordWrap( true );
