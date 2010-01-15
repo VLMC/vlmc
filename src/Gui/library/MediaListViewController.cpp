@@ -111,8 +111,6 @@ void    MediaListViewController::showClipList( const QUuid& uuid )
          Library::getInstance()->media( uuid )->clips()->size() == 0 )
         return ;
     m_lastUuidClipListAsked = uuid;
-    if ( m_clipsListView != 0 )
-        delete m_clipsListView;
     m_clipsListView = new ClipListViewController( m_nav, uuid );
     m_clipsListView->addClipsFromMedia( Library::getInstance()->media( uuid ) );
     connect( m_clipsListView, SIGNAL( clipSelected( const QUuid& ) ),
@@ -150,6 +148,7 @@ void    MediaListViewController::restoreContext()
             }
         }
     }
+    delete m_clipsListView;
 }
 
 void
