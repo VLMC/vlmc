@@ -51,7 +51,7 @@ ImportController::ImportController(QWidget *parent) :
             << "*.ogg" << "*.ogv";
     filters << "*.mp3" << "*.oga" << "*.flac" << "*.aac" << "*.wav";
     filters << "*.gif" << "*.png" << "*.jpg";
-    m_filesModel->setFilter( QDir::AllDirs | QDir::Files | QDir::Readable |
+    m_filesModel->setFilter( QDir::AllDirs | QDir::Files | QDir::Readable | QDir::Drives |
                              QDir::NoDotAndDotDot );
     m_filesModel->sort( 2, Qt::AscendingOrder );
     m_filesModel->sort( 0, Qt::AscendingOrder );
