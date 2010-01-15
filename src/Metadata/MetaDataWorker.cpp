@@ -118,6 +118,7 @@ void    MetaDataWorker::metaDataAvailable()
         }
     }
     m_media->setLength( m_mediaPlayer->getLength() );
+    m_media->emitMetaDataComputed();
 
     m_media->setNbFrames( (m_media->getLengthMS() / 1000) * m_media->getFps() );
     //Setting time for snapshot :
@@ -171,7 +172,6 @@ void    MetaDataWorker::setSnapshot()
 
 void    MetaDataWorker::finalize()
 {
-    m_media->emitMetaDataComputed();
     m_media->disconnect( this );
     emit    computed();
     delete this;
