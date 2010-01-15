@@ -271,6 +271,7 @@ ImportController::reject()
     m_preview->stop();
     m_mediaListController->cleanAll();
     Library::getInstance()->deleteTemporaryMedias();
+    collapseAllButCurrentPath();
     done( Rejected );
 }
 
@@ -280,7 +281,22 @@ ImportController::accept()
     m_mediaListController->cleanAll();
     Library::getInstance()->importDone();
     m_preview->stop();
+    collapseAllButCurrentPath();
     done( Accepted );
+}
+
+void
+ImportController::collapseAllButCurrentPath()
+{
+    m_ui->treeView->collapseAll();
+    QStringList paths;
+    for ( QDir directory( m_currentlyWatchedDir ); !directory.isRoot(); directory.cdUp() )
+        paths.prepend( directory.absolutePath() );
+    while ( paths.count() > 0 )
+    {
+        m_ui->treeView->setCurrentIndex( m_filesModel->index( paths.takeFirst() ) );
+        m_ui->treeView->setExpanded( m_ui->treeView->currentIndex() , true );
+    }
 }
 
 void
