@@ -126,6 +126,13 @@ class	EffectsEngine
     */
     void                    setVideoInput( quint32 inId, const LightVideoFrame & frame );
 
+    // TEMPORARY TRANSITION WRAPPER
+
+    quint32                     addTransition( quint32 startFrame, quint32 endFrame );
+    bool                        moveTransition( quint32 transitionId, quint32 startFrame, quint32 endFrame );
+    bool                        removeTransition( quint32 transitionId );
+
+
 private:
 
     /**

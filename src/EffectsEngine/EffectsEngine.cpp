@@ -233,3 +233,24 @@ EffectsEngine::disable( void )
     QWriteLocker  wl( &m_rwl );
     m_enabled = false;
 }
+
+
+// TEMPORARY TRANSITION WRAPPER
+
+quint32
+EffectsEngine::addTransition( quint32 startFrame, quint32 endFrame )
+{
+    return 42;
+}
+
+bool
+EffectsEngine::moveTransition( quint32 transitionId, quint32 startFrame, quint32 endFrame )
+{
+    return true;
+}
+
+bool
+EffectsEngine::removeTransition( quint32 transitionId )
+{
+    return true;
+}
