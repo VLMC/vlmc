@@ -72,7 +72,6 @@ SET(VLMC_SRCS
     Gui/import/ImportController.cpp
     Gui/import/ImportMediaCellView.cpp
     Gui/import/ImportMediaListController.cpp
-    Gui/import/ImportModel.cpp
     Gui/library/ClipListViewController.cpp
     Gui/library/ListViewController.cpp
     Gui/library/MediaCellView.cpp
@@ -148,7 +147,6 @@ SET (VLMC_HDRS
     Gui/import/ImportController.h                                                 
     Gui/import/ImportMediaCellView.h                                              
     Gui/import/ImportMediaListController.h                                        
-    Gui/import/ImportModel.h                                                      
     Gui/LanguagePreferences.h                                                     
     Gui/LCDTimecode.h                                                             
     Gui/library/ClipListViewController.h                                          
