@@ -86,8 +86,12 @@ void    ClipWorkflow::loadingComplete()
 
 void    ClipWorkflow::adjustBegin()
 {
-    if ( m_clip->getParent()->getFileType() == Media::Video || m_clip->getParent()->getFileType() == Media::Audio )
-        m_mediaPlayer->setTime( m_clip->getBegin() / m_clip->getParent()->getFps() * 1000 );
+    if ( m_clip->getParent()->getFileType() == Media::Video ||
+         m_clip->getParent()->getFileType() == Media::Audio )
+    {
+        m_mediaPlayer->setTime( m_clip->getBegin() /
+                                m_clip->getParent()->getFps() * 1000 );
+    }
 }
 
 bool    ClipWorkflow::isEndReached() const

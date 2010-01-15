@@ -151,9 +151,9 @@ void*       TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
     {
         cw->getStateLock()->unlock();
         cw->initialize();
+        cw->waitForCompleteInit();
         if ( start != currentFrame || cw->getClip()->getBegin() != 0 ) //Clip was not started as its real begining
             adjustClipTime( currentFrame, start, cw );
-        cw->waitForCompleteInit();
         return cw->getOutput( ClipWorkflow::Pop );
     }
     else if ( cw->getState() == ClipWorkflow::EndReached )
@@ -454,7 +454,6 @@ void    TrackWorkflow::clear()
 
 void    TrackWorkflow::adjustClipTime( qint64 currentFrame, qint64 start, ClipWorkflow* cw )
 {
-    qDebug() << "Adjusting clip time.";
     qint64  nbMs = ( currentFrame - start ) / cw->getClip()->getParent()->getFps() * 1000;
     qint64  beginInMs = cw->getClip()->getBegin() / cw->getClip()->getParent()->getFps() * 1000;
     qint64  startFrame = beginInMs + nbMs;
