@@ -1,23 +1,28 @@
-project(BlitInRectangleEffectPlugin)
+PROJECT(BlitInRectangleEffectPlugin)
 
-set(BLITINRECTANGLE_SRCS
+INCLUDE(${QT_USE_FILE})
+INCLUDE_DIRECTORIES(
+    ${QT_INCLUDE_DIR}
+    ../../../PluginsAPI
+)
+
+SET(SOURCES_CPP
     BlitInRectangleEffectPlugin.cpp
     BlitInRectangleEffectPluginCreator.cpp
     ../../../PluginsAPI/LightVideoFrame.cpp
 )
 
-qt4_automoc(${BLITINRECTANGLE_SRCS})
+SET(SOURCES_H
+    BlitInRectangleEffectPluginCreator.h
+)
+
+QT4_WRAP_CPP(SOURCES_H_MOC ${SOURCES_H})
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)
 ADD_DEFINITIONS(-DQT_NO_DEBUG)
 ADD_DEFINITIONS(-DQT_SHARED)
 
-ADD_LIBRARY(BlitInRectangleEffectPlugin SHARED ${BLITINRECTANGLE_SRCS})
+ADD_LIBRARY(BlitInRectangleEffectPlugin SHARED ${SOURCES_CPP} ${SOURCES_H_MOC})
 
-target_link_libraries(BlitInRectangleEffectPlugin ${QT_LIBRARIES})
-
-INCLUDE_DIRECTORIES(
-    ${QT_INCLUDE_DIR}
-    ../../../PluginsAPI
-)
+TARGET_LINK_LIBRARIES(BlitInRectangleEffectPlugin ${QT_LIBRARIES})

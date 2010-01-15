@@ -1,23 +1,29 @@
-project(GreenFilterEffectPlugin)
+PROJECT(GreenFilterEffectPlugin)
 
-set(GREENFILTEREFFECT_SRCS
+INCLUDE(${QT_USE_FILE})
+INCLUDE_DIRECTORIES(
+    ${QT_INCLUDE_DIR}
+    ../../../PluginsAPI
+)
+
+SET(SOURCES_CPP
     GreenFilterEffectPlugin.cpp
     GreenFilterEffectPluginCreator.cpp
     ../../../PluginsAPI/LightVideoFrame.cpp
 )
 
-qt4_automoc(${GREENFILTEREFFECT_SRCS})
+SET(SOURCES_H
+    GreenFilterEffectPluginCreator.h
+)
+
+QT4_WRAP_CPP(SOURCES_H_MOC ${SOURCES_H})
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)
 ADD_DEFINITIONS(-DQT_NO_DEBUG)
 ADD_DEFINITIONS(-DQT_SHARED)
 
-ADD_LIBRARY(GreenFilterEffectPlugin SHARED ${GREENFILTEREFFECT_SRCS})
+ADD_LIBRARY(GreenFilterEffectPlugin SHARED ${SOURCES_CPP} ${SOURCES_H_MOC})
 
-target_link_libraries(GreenFilterEffectPlugin ${QT_LIBRARIES})
+TARGET_LINK_LIBRARIES(GreenFilterEffectPlugin ${QT_LIBRARIES})
 
-INCLUDE_DIRECTORIES(
-    ${QT_INCLUDE_DIR}
-    ../../../PluginsAPI
-)

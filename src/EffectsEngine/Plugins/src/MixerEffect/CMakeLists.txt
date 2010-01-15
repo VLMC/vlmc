@@ -1,23 +1,29 @@
-project(MixerEffectPlugin)
+PROJECT(MixerEffectPlugin)
 
-set(MIXEREFFECT_SRCS
+INCLUDE(${QT_USE_FILE})
+INCLUDE_DIRECTORIES(
+    ${QT_INCLUDE_DIR}
+    ../../../PluginsAPI
+)
+
+SET(SOURCES_CPP
     MixerEffectPlugin.cpp
     MixerEffectPluginCreator.cpp
     ../../../PluginsAPI/LightVideoFrame.cpp
 )
 
-qt4_automoc(${MIXEREFFECT_SRCS})
+SET(SOURCES_H
+    MixerEffectPluginCreator.h
+)
+
+QT4_WRAP_CPP(SOURCES_H_MOC ${SOURCES_H})
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)
 ADD_DEFINITIONS(-DQT_NO_DEBUG)
 ADD_DEFINITIONS(-DQT_SHARED)
 
-ADD_LIBRARY(MixerEffectPlugin SHARED ${MIXEREFFECT_SRCS})
+ADD_LIBRARY(MixerEffectPlugin SHARED ${SOURCES_CPP} ${SOURCES_H_MOC})
 
-target_link_libraries(MixerEffectPlugin ${QT_LIBRARIES})
+TARGET_LINK_LIBRARIES(MixerEffectPlugin ${QT_LIBRARIES})
 
-INCLUDE_DIRECTORIES(
-    ${QT_INCLUDE_DIR}
-    ../../../PluginsAPI
-)

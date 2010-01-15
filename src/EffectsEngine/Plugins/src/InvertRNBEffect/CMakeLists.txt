@@ -1,23 +1,29 @@
-project(InvertRNBEffectPlugin)
+PROJECT(InvertRNBEffectPlugin)
 
-set(INVERTRNBEFFECT_SRCS
+INCLUDE(${QT_USE_FILE})
+INCLUDE_DIRECTORIES(
+    ${QT_INCLUDE_DIR}
+    ../../../PluginsAPI
+)
+
+SET(SOURCES_CPP
     InvertRNBEffectPlugin.cpp
     InvertRNBEffectPluginCreator.cpp
     ../../../PluginsAPI/LightVideoFrame.cpp
 )
 
-qt4_automoc($INVERTRNBEFFECT_SRCS})
+SET(SOURCES_H
+    InvertRNBEffectPluginCreator.h
+)
+
+QT4_WRAP_CPP(SOURCES_H_MOC ${SOURCES_H})
 
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)
 ADD_DEFINITIONS(-DQT_NO_DEBUG)
 ADD_DEFINITIONS(-DQT_SHARED)
 
-ADD_LIBRARY(InvertRNBEffectPlugin SHARED ${INVERTRNBEFFECT_SRCS})
+ADD_LIBRARY(InvertRNBEffectPlugin SHARED ${SOURCES_CPP} ${SOURCES_H_MOC})
 
-target_link_libraries(InvertRNBEffectPlugin ${QT_LIBRARIES})
+TARGET_LINK_LIBRARIES(InvertRNBEffectPlugin ${QT_LIBRARIES})
 
-INCLUDE_DIRECTORIES(
-    ${QT_INCLUDE_DIR}
-    ../../../PluginsAPI
-)
