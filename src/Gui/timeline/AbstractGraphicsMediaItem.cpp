@@ -33,6 +33,11 @@ AbstractGraphicsMediaItem::AbstractGraphicsMediaItem() :
 
 }
 
+AbstractGraphicsMediaItem::~AbstractGraphicsMediaItem()
+{
+    ungroup();
+}
+
 TracksView* AbstractGraphicsMediaItem::tracksView()
 {
     return m_tracksView;

@@ -47,7 +47,7 @@ public:
     };
 
     AbstractGraphicsMediaItem();
-    virtual ~AbstractGraphicsMediaItem() { }
+    virtual ~AbstractGraphicsMediaItem();
 
     /// Defines the outer bounds of the item as a rectangle
     virtual QRectF boundingRect() const;
