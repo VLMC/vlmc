@@ -317,6 +317,7 @@ Library::loadProject( const QDomElement& medias )
     QDomElement elem = medias.firstChild().toElement();
     while ( elem.isNull() == false )
     {
+        QList<QDomElement>  clipList;
         QDomElement mediaProperty = elem.firstChild().toElement();
         QString     path;
         QString     uuid;
@@ -328,6 +329,15 @@ Library::loadProject( const QDomElement& medias )
                 path = mediaProperty.text();
             else if ( tagName == "uuid" )
                 uuid = mediaProperty.text();
+            else if ( tagName == "clips" )
+            {
+                QDomElement clip = mediaProperty.firstChild().toElement();
+                while ( clip.isNull() == false )
+                {
+                    clipList.push_back( clip );
+                    clip = clip.nextSibling().toElement();
+                }
+            }
             else
                 qWarning() << "Unknown field" << tagName;
             mediaProperty = mediaProperty.nextSibling().toElement();
@@ -354,6 +364,28 @@ Library::loadProject( const QDomElement& medias )
         else
         {
             loadMedia( path, uuid );
+        }
+        if ( clipList.size() != 0 )
+        {
+            foreach( QDomElement clip, clipList )
+            {
+                QString parentUuid = clip.attribute( "parentUuid", "");
+                if ( parentUuid != "" && parentUuid == uuid )
+                {
+                    QString beg = clip.attribute( "begin", "" );
+                    QString end = clip.attribute( "end", "" );
+                    QString clipUuid = clip.attribute( "uuid", "" );
+                    if ( beg != "" && end != "" && uuid != "" )
+                    {
+                        Media* media = m_medias[QUuid( uuid )];
+                        if ( media != 0 )
+                        {
+                            Clip* clip = new Clip( media, beg.toInt(), end.toInt(), QUuid( clipUuid ) );
+                            media->addClip( clip );
+                        }
+                    }
+                }
+            }
         }
 
         elem = elem.nextSibling().toElement();
@@ -387,6 +419,21 @@ Library::saveProject( QDomDocument& doc, QDomElement& rootNode )
 
         media.appendChild( mrl );
         media.appendChild( uuid );
+        //Creating the clip branch
+        if ( it.value()->clips()->size() != 0 )
+        {
+            QDomElement clips = doc.createElement( "clips" );
+            foreach( Clip* c, it.value()->clips()->values() )
+            {
+                QDomElement clip = doc.createElement( "clip" );
+                clip.setAttribute( "begin", c->getBegin() );
+                clip.setAttribute( "end", c->getEnd() );
+                clip.setAttribute( "uuid", c->getUuid() );
+                clip.setAttribute( "parentUuid", c->getParent()->getUuid() );
+                clips.appendChild( clip );
+            }
+            media.appendChild( clips );
+        }
     }
     rootNode.appendChild( medias );
 }
