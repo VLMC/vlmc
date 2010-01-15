@@ -27,7 +27,7 @@ IF(WIN32)
     SET_PROPERTY(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS_RELEASE QT_NO_DEBUG)
 ENDIF(WIN32)
 
-# Optionally allow embedding libvlc into the binary as 
+# Optionally allow embedding libvlc into the binary as
 # VLMC requires libVLC
 SET (WITH_LIBVLC FALSE CACHE BOOL "Compile LibVLC in VLMC")
 
@@ -48,6 +48,11 @@ ADD_DEFINITIONS(${QT_DEFINITIONS})
 # (default values are platform-specific)
 SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/effects)
+
+# Copy the sh launcher
+IF (NOT WIN32)
+    CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/vlmc" "${CMAKE_CURRENT_BINARY_DIR}/vlmc" COPYONLY)
+ENDIF(NOT WIN32)
 
 # common for MAC and UNIX
 SET (DEFAULT_BIN_SUBDIR     bin)
