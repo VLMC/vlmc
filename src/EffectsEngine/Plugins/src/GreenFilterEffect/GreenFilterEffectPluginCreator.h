@@ -34,6 +34,7 @@ class   GreenFilterEffectPluginCreator : public QObject, public IEffectPluginCre
 {
     Q_OBJECT;
     Q_INTERFACES( IEffectPluginCreator );
+    Q_CLASSINFO( "PLUGINNAME", "GreenFilter" );
 public:
     IEffectPlugin*      createIEffectPluginInstance( void );
 };

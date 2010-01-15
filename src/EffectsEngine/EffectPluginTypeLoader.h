@@ -38,6 +38,7 @@ public:
     EffectPluginTypeLoader( void );
     ~EffectPluginTypeLoader();
 
+    QString             pluginName( void ) const;
     IEffectPlugin*      createIEffectPluginInstance( void ) const;
     bool                load( const QString & fileName );
 
@@ -45,6 +46,7 @@ private:
 
     QPluginLoader               m_qpl;
     IEffectPluginCreator*       m_iepc;
+    QString                     m_pluginName;
 };
 
 #endif // EFFECTPLUGINTYPELOADER_H_

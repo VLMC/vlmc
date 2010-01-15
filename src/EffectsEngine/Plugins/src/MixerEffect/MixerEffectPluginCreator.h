@@ -32,8 +32,9 @@
 
 class   MixerEffectPluginCreator : public QObject, public IEffectPluginCreator
 {
-    Q_OBJECT
-    Q_INTERFACES( IEffectPluginCreator )
+    Q_OBJECT;
+    Q_INTERFACES( IEffectPluginCreator );
+    Q_CLASSINFO("PLUGINNAME", "Mixer");
 
  public:
     IEffectPlugin*     createIEffectPluginInstance( void );

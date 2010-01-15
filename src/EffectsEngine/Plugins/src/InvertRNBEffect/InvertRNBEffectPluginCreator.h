@@ -34,6 +34,7 @@ class   InvertRNBEffectPluginCreator : public QObject, public IEffectPluginCreat
 {
     Q_OBJECT;
     Q_INTERFACES( IEffectPluginCreator );
+    Q_CLASSINFO( "PLUGINNAME", "InvertRNB" );
 public:
     IEffectPlugin*      createIEffectPluginInstance( void );
 };

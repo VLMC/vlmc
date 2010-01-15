@@ -72,7 +72,7 @@ EffectsEngine::makePatch( void )
         m_patch->createStaticVideoOutput();
 
 
-        if ( m_patch->createChild( "libVLMC_MixerEffectPlugin" ) == true )
+        if ( m_patch->createChild( "Mixer" ) == true )
         {
             tmp = m_patch->getChild( 1 );
             for ( i = 1 ; i <= 64; ++i)
@@ -93,8 +93,8 @@ EffectsEngine::makePatch( void )
             //     qDebug() << "The connection of the mixer output with the BypassRootNode internal input successed!";
 
 
-            m_patch->createChild( "libVLMC_BlitInRectangleEffectPlugin" );
-            m_patch->createChild( "libVLMC_InvertRNBEffectPlugin" );
+            m_patch->createChild( "BlitInRectangle" );
+            m_patch->createChild( "InvertRNB" );
             // RECUP LE MIXER ET CONNECTE SA SORTIE 1 A L'ENTREE 2 DU BLIT
             tmp = m_patch->getChild( 1 );
             if ( tmp->connectStaticVideoOutputToStaticVideoInput( 1, 2, "dst" ) == false )
@@ -116,10 +116,10 @@ EffectsEngine::makePatch( void )
             // CONNECT SA SORTIE 1 A SA L'ENTREE  1 DE L'INVERSEUR DE BLEU ET DE ROUGE
             if ( tmp->connectStaticVideoOutputToStaticVideoInput( "aux", 3, 1 ) == false )
                 qDebug() << "The connection of the first output of the blit"
-                         << "with the RNBInvert input failed!";
+                         << "with the InvertRNB input failed!";
             else
                 qDebug() << "The connection of the first output of the blit"
-                         << "with the RNBInvert input successed!";
+                         << "with the InvertRNB input successed!";
 
             // CONNECT LA SORTIE DE L'INVERSEUR A L'ENTREE SRC DU BLIT
             tmp = m_patch->getChild( 3 );
@@ -154,7 +154,7 @@ EffectsEngine::makeBypassPatch( void )
             m_bypassPatch->createStaticVideoInput();
         m_bypassPatch->createStaticVideoOutput();
 
-        if ( m_bypassPatch->createChild( "libVLMC_MixerEffectPlugin" ) == true )
+        if ( m_bypassPatch->createChild( "Mixer" ) == true )
         {
             tmp = m_bypassPatch->getChild( 1 );
             for ( i = 1 ; i <= 64; ++i)

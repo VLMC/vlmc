@@ -23,9 +23,10 @@
 
 #include "MixerEffectPluginCreator.h"
 
-IEffectPlugin*  MixerEffectPluginCreator::createIEffectPluginInstance( void )
+IEffectPlugin*
+MixerEffectPluginCreator::createIEffectPluginInstance( void )
 {
-    return (new MixerEffectPlugin());
+    return new MixerEffectPlugin();
 }
 
 Q_EXPORT_PLUGIN2( MixerEffectPluginCreator, MixerEffectPluginCreator )

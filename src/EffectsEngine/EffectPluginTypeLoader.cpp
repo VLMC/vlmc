@@ -26,6 +26,7 @@
 #include <IEffectPluginCreator.h>
 
 #include <QDebug>
+#include <QMetaClassInfo>
 
 EffectPluginTypeLoader::EffectPluginTypeLoader( void ) : m_iepc( NULL )
 {
@@ -35,16 +36,26 @@ EffectPluginTypeLoader::~EffectPluginTypeLoader()
 {
 }
 
-IEffectPlugin*   EffectPluginTypeLoader::createIEffectPluginInstance( void ) const
+IEffectPlugin*
+ EffectPluginTypeLoader::createIEffectPluginInstance( void ) const
 {
     if ( m_iepc != NULL )
         return m_iepc->createIEffectPluginInstance();
     return NULL;
 }
 
-bool    EffectPluginTypeLoader::load( const QString & fileName )
+QString
+EffectPluginTypeLoader::pluginName( void ) const
+{
+    return m_pluginName;
+}
+
+bool
+EffectPluginTypeLoader::load( const QString & fileName )
 {
     QObject*    tmp;
+    int         pnindex;
+
     m_qpl.setFileName( fileName );
     tmp = m_qpl.instance();
 
@@ -61,5 +72,11 @@ bool    EffectPluginTypeLoader::load( const QString & fileName )
                  << "the loaded class isn't IEffectPluginCreator* !";
         return false;
     }
+    if ( ( pnindex = tmp->metaObject()->indexOfClassInfo( "PLUGINNAME" ) ) == -1 )
+    {
+        qDebug() << "The Plugin hasn't a PLUGINNAME MetaClassInfo!";
+        return false;
+    }
+    m_pluginName = tmp->metaObject()->classInfo( pnindex ).value();
     return true;
 }

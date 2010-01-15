@@ -34,6 +34,7 @@ class   BlitInRectangleEffectPluginCreator : public QObject, public IEffectPlugi
 {
     Q_OBJECT;
     Q_INTERFACES( IEffectPluginCreator );
+    Q_CLASSINFO( "PLUGINNAME", "BlitInRectangle" );
 public:
     IEffectPlugin*      createIEffectPluginInstance( void );
 };

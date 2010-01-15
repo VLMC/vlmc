@@ -54,12 +54,13 @@ EffectPluginTypeManager::EffectPluginTypeManager( void ) : m_higherFreeId( 2 )
                     tmpEptl = new EffectPluginTypeLoader();
                 if ( tmpEptl->load( list.at( i ).absoluteFilePath() ) == true )
                 {
-                    m_eptlByName[ list.at( i ).baseName() ] = tmpEptl;
+                    m_eptlByName[ tmpEptl->pluginName() ] = tmpEptl;
                     m_eptlById[ m_higherFreeId ] = tmpEptl;
-                    m_nameById[ m_higherFreeId ] = list.at( i ).baseName();
+                    m_nameById[ m_higherFreeId ] = tmpEptl->pluginName();
                     ++m_higherFreeId;
-                    tmpEptl = NULL;
                     qDebug() << list.at( i ).fileName() << " loaded.";
+                    qDebug() << "---> Plugin name : " << tmpEptl->pluginName();
+                    tmpEptl = NULL;
                 }
                 else
                     qDebug() << list.at( i ).fileName() << " can't be loaded!";
