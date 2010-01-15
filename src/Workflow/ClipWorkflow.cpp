@@ -77,10 +77,7 @@ void    ClipWorkflow::initialize( bool preloading /*= false*/ )
 //    qDebug() << "Setting state to initializing";
     setState( Initializing );
 //    qDebug() << "State is Initializing.";
-    if ( m_clip->getParent()->getFileType() == Media::Image )
-        m_vlcMedia = new LibVLCpp::Media( "fake:///" + QUrl::toPercentEncoding( m_clip->getParent()->getFileInfo()->absoluteFilePath() ) );
-    else
-        m_vlcMedia = new LibVLCpp::Media( "file:///" + QUrl::toPercentEncoding( m_clip->getParent()->getFileInfo()->absoluteFilePath() ) );
+    m_vlcMedia = new LibVLCpp::Media( m_clip->getParent()->getMrl() );
     initVlcOutput();
     m_mediaPlayer = Pool<LibVLCpp::MediaPlayer>::getInstance()->get();
     m_mediaPlayer->setMedia( m_vlcMedia );

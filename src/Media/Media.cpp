@@ -59,9 +59,11 @@ Media::Media( const QString& filePath, const QString& uuid /*= QString()*/ )
         m_fileName = m_fileInfo->fileName();
         setFileType();
         if ( m_fileType == Media::Video || m_fileType == Media::Audio )
-            m_mrl = "file:///" + QUrl::toPercentEncoding( m_fileInfo->absoluteFilePath() );
+            m_mrl = "file:///" + QUrl::toPercentEncoding( m_fileInfo->absoluteFilePath(),
+                                                          "/" );
         else
-            m_mrl = "fake:///" + QUrl::toPercentEncoding( m_fileInfo->absoluteFilePath() );
+            m_mrl = "fake:///" + QUrl::toPercentEncoding( m_fileInfo->absoluteFilePath(),
+                                                          "/" );
     }
     else
     {

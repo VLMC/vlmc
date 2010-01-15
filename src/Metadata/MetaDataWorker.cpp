@@ -120,7 +120,6 @@ void    MetaDataWorker::metaDataAvailable()
         m_media->setFps( Clip::DefaultFPS );
     }
     m_media->setNbFrames( (m_media->getLengthMS() / 1000) * m_media->getFps() );
-    m_media->emitMetaDataComputed();
     //Setting time for snapshot :
     if ( m_media->getFileType() == Media::Video ||
          m_media->getFileType() == Media::Image )
@@ -172,6 +171,7 @@ void    MetaDataWorker::setSnapshot()
 
 void    MetaDataWorker::finalize()
 {
+    m_media->emitMetaDataComputed();
     m_media->disconnect( this );
     emit    computed();
     delete this;
