@@ -156,6 +156,7 @@ MediaListViewController::clipSelection( const QUuid& uuid )
 {
     Clip* clip;
     if ( ( clip = Library::getInstance()->clip( m_currentUuid, uuid ) ) != 0 )
+    {
         emit clipSelected( clip );
-
+    }
 }

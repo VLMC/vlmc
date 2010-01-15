@@ -98,10 +98,7 @@ public:
      * \brief Return the length in frames
      * \warning The returned value may not be accurate
      */
-    qint64                          getLength() const
-    {
-        return qRound64( (qreal)getLengthMs() / 1000.0 * (qreal)getFps() );
-    }
+    virtual qint64                  getLength() const = 0;
 
     /**
      * \brief Return true if the renderer is paused
