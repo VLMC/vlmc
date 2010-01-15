@@ -31,9 +31,8 @@
 #include <QThreadPool>
 #include <QRunnable>
 
-MetaDataWorker::MetaDataWorker( LibVLCpp::MediaPlayer* mediaPlayer, Media* media, MetaDataWorker::MetaDataType type ) :
+MetaDataWorker::MetaDataWorker( LibVLCpp::MediaPlayer* mediaPlayer, Media* media ) :
         m_mediaPlayer( mediaPlayer ),
-        m_type( type ),
         m_media( media ),
         m_mediaIsPlaying( false),
         m_lengthHasChanged( false ),
@@ -43,38 +42,32 @@ MetaDataWorker::MetaDataWorker( LibVLCpp::MediaPlayer* mediaPlayer, Media* media
 
 MetaDataWorker::~MetaDataWorker()
 {
-    delete m_audioBuffer;
+    if ( m_audioBuffer )
+        delete m_audioBuffer;
 }
 
 void    MetaDataWorker::compute()
 {
-    if ( m_media->getFileType() == Media::Video )
-    {
-        if ( m_type == Audio )
-        {
-            computeAudioMetaData();
-        }
-        else
-            computeVideoMetaData();
-    }
+    if ( m_media->getFileType() == Media::Video ||
+         m_media->getFileType() == Media::Audio )
+        computeDynamicFileMetaData();
     else if ( m_media->getFileType() == Media::Image )
-    {
         computeImageMetaData();
-    }
 
     m_media->addConstantParam( ":vout=dummy" );
     m_mediaPlayer->setMedia( m_media->getVLCMedia() );
-    if ( m_type != Audio )
-        connect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( entrypointPlaying() ), Qt::QueuedConnection );
+    connect( m_mediaPlayer, SIGNAL( playing() ),
+             this, SLOT( entrypointPlaying() ), Qt::QueuedConnection );
     m_mediaPlayer->play();
     m_media->flushVolatileParameters();
 }
 
-void    MetaDataWorker::computeVideoMetaData()
+void    MetaDataWorker::computeDynamicFileMetaData()
 {
     //Disabling audio for this specific use of the media
     m_media->addVolatileParam( ":no-audio", ":audio" );
-    connect( m_mediaPlayer, SIGNAL( lengthChanged() ), this, SLOT( entrypointLengthChanged() ), Qt::QueuedConnection );
+    connect( m_mediaPlayer, SIGNAL( lengthChanged() ),
+             this, SLOT( entrypointLengthChanged() ), Qt::QueuedConnection );
 }
 
 void    MetaDataWorker::computeImageMetaData()
@@ -85,7 +78,7 @@ void    MetaDataWorker::computeImageMetaData()
     m_lengthHasChanged = true;
 }
 
-void    MetaDataWorker::computeAudioMetaData()
+void    MetaDataWorker::prepareAudioSpectrumComputing()
 {
     m_media->getVLCMedia()->addOption( ":no-sout-video" );
     m_media->getVLCMedia()->addOption( ":sout=#transcode{}:smem" );
@@ -98,7 +91,7 @@ void    MetaDataWorker::computeAudioMetaData()
     connect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( generateAudioSpectrum() ), Qt::QueuedConnection );
 }
 
-void    MetaDataWorker::getMetaData()
+void    MetaDataWorker::metaDataAvailable()
 {
     m_mediaIsPlaying = false;
     m_lengthHasChanged = false;
@@ -106,51 +99,43 @@ void    MetaDataWorker::getMetaData()
     //In order to wait for the VOUT to be ready:
     //Until we have a way of knowing when it is, both getWidth and getHeight method
     //will trigger exception... so we shut it up.
-    LibVLCpp::Exception::setErrorCallback( LibVLCpp::Exception::silentExceptionHandler );
-    while ( m_mediaPlayer->hasVout() == false )
+    if ( m_media->getFileType() != Media::Audio )
     {
-        SleepMS( 1 ); //Ugly isn't it :)
-    }
-    LibVLCpp::Exception::setErrorCallback( NULL );
+        LibVLCpp::Exception::setErrorCallback( LibVLCpp::Exception::silentExceptionHandler );
+        while ( m_mediaPlayer->hasVout() == false )
+        {
+            SleepMS( 1 ); //Ugly isn't it :)
+        }
+        LibVLCpp::Exception::setErrorCallback( NULL );
 
-    if ( m_type == MetaData )
-    {
-        m_media->setLength( m_mediaPlayer->getLength() );
         m_media->setWidth( m_mediaPlayer->getWidth() );
         m_media->setHeight( m_mediaPlayer->getHeight() );
-        m_media->setFps( m_mediaPlayer->getFps() );
-        if ( m_media->getFps() == .0f )
-        {
-            qWarning() << "Invalid FPS for media:" << m_media->getFileInfo()->absoluteFilePath();
-            m_media->setFps( Clip::DefaultFPS );
-        }
-        m_media->setNbFrames( (m_media->getLengthMS() / 1000) * m_media->getFps() );
-        if ( m_mediaPlayer->isPlaying() )
-            m_mediaPlayer->stop();
-        emit mediaPlayerIdle( m_mediaPlayer );
-        m_media->emitMetaDataComputed( true );
-        delete this;
-        return;
     }
-    else if ( m_type == Snapshot )
+    m_media->setLength( m_mediaPlayer->getLength() );
+    m_media->setFps( m_mediaPlayer->getFps() );
+
+    if ( m_media->getFps() == .0f )
     {
-        //Setting time for snapshot :
-        if ( m_media->getFileType() == Media::Video )
-        {
-            connect( m_mediaPlayer, SIGNAL( positionChanged( float ) ), this, SLOT( renderSnapshot() ) );
-            m_mediaPlayer->setTime( m_mediaPlayer->getLength() / 3 );
-        }
-        else
-            connect( this, SIGNAL( snapshotRequested() ), this, SLOT( renderSnapshot() ) );
+        qWarning() << "Invalid FPS for media:" << m_media->getFileInfo()->absoluteFilePath();
+        m_media->setFps( Clip::DefaultFPS );
     }
+    m_media->setNbFrames( (m_media->getLengthMS() / 1000) * m_media->getFps() );
+    //Setting time for snapshot :
+    if ( m_media->getFileType() == Media::Video ||
+         m_media->getFileType() == Media::Image )
+    {
+        connect( m_mediaPlayer, SIGNAL( positionChanged( float ) ), this, SLOT( renderSnapshot() ) );
+        m_mediaPlayer->setTime( m_mediaPlayer->getLength() / 3 );
+    }
+    else
+        finalize();
 }
 
 void    MetaDataWorker::renderSnapshot()
 {
-    if ( m_media->getFileType() == Media::Video )
+    if ( m_media->getFileType() == Media::Video ||
+         m_media->getFileType() == Media::Audio )
         disconnect( m_mediaPlayer, SIGNAL( positionChanged( float ) ), this, SLOT( renderSnapshot() ) );
-    else
-        disconnect( this, SIGNAL( snapshotRequested() ), this, SLOT( renderSnapshot() ) );
     QTemporaryFile tmp;
     tmp.setAutoRemove( false );
     tmp.open();
@@ -180,15 +165,16 @@ void    MetaDataWorker::setSnapshot()
     //CHECKME:
     //This is synchrone, but it may become asynchrone in the future...
 //    connect( m_mediaPlayer, SIGNAL( stopped () ), this, SLOT( mediaPlayerStopped() ), Qt::QueuedConnection );
-    if ( m_mediaIsPlaying )
-        m_mediaPlayer->stop();
-    emit mediaPlayerIdle( m_mediaPlayer );
 
-    if ( m_type == Snapshot )
-        m_media->emitSnapshotComputed();
-    else
-        m_media->emitMetaDataComputed( true );
+    m_media->emitSnapshotComputed();
+    finalize();
+}
 
+void    MetaDataWorker::finalize()
+{
+    m_media->emitMetaDataComputed();
+    m_media->disconnect( this );
+    emit    computed();
     delete this;
 }
 
@@ -197,7 +183,7 @@ void    MetaDataWorker::entrypointLengthChanged()
     disconnect( m_mediaPlayer, SIGNAL( lengthChanged() ), this, SLOT( entrypointLengthChanged() ) );
     m_lengthHasChanged = true;
     if ( m_mediaIsPlaying == true )
-        getMetaData();
+        metaDataAvailable();
 }
 
 void    MetaDataWorker::entrypointPlaying()
@@ -205,7 +191,7 @@ void    MetaDataWorker::entrypointPlaying()
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( entrypointPlaying() ) );
     m_mediaIsPlaying = true;
     if ( m_lengthHasChanged == true )
-        getMetaData();
+        metaDataAvailable();
 }
 
 void        MetaDataWorker::lock( MetaDataWorker* metaDataWorker, uint8_t** pcm_buffer , unsigned int size )
@@ -255,7 +241,6 @@ void    MetaDataWorker::generateAudioSpectrum()
 {
     disconnect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( generateAudioSpectrum() ) );
     m_mediaPlayer->stop();
-    emit mediaPlayerIdle( m_mediaPlayer );
 //    AudioSpectrumHelper* audioSpectrum = new AudioSpectrumHelper( m_media->getAudioValues() );
 //    audioSpectrum->setAutoDelete( true );
 //    QThreadPool::globalInstance()->start( audioSpectrum );

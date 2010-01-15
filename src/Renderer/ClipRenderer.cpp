@@ -77,7 +77,6 @@ ClipRenderer::setMedia( Media *media )
 void
 ClipRenderer::setClip( Clip *clip )
 {
-    qDebug() << "Setting clip";
     if ( clip == NULL )
     {
         m_selectedMedia = NULL;
@@ -87,8 +86,6 @@ ClipRenderer::setClip( Clip *clip )
     m_selectedMedia = clip->getParent();
     m_begin = clip->getBegin();
     m_end = clip->getEnd();
-    qDebug() << "ClipRenderer::setClip begin" << m_begin;
-    qDebug() << "ClipRenderer::setClip end" << m_end;
     if ( m_isRendering == true )
         m_mediaChanged = true;
     else

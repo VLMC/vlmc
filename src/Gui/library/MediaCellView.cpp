@@ -114,7 +114,6 @@ void            MediaCellView::mousePressEvent( QMouseEvent* event )
 
 void    MediaCellView::mouseMoveEvent( QMouseEvent* event )
 {
-    qDebug() << "in MediaCellView::mouseMoveEvent";
     if ( ( event->buttons() | Qt::LeftButton ) != Qt::LeftButton )
          return;
 
@@ -157,7 +156,6 @@ void        MediaCellView::deleteButtonClicked( QWidget*, QMouseEvent* )
 
 void        MediaCellView::arrowButtonClicked( QWidget*, QMouseEvent* )
 {
-    qDebug() << "arrow clicked for uuid" << uuid();
     emit arrowClicked( uuid() );
 }
 
@@ -187,4 +185,15 @@ void        MediaCellView::decrementClipCount( const int nb )
     if ( clips < 0 )
         clips = 0;
     m_ui->clipCount->setText( QString::number( clips ) );
+}
+
+void
+MediaCellView::containsClip()
+{
+    m_ui->clipCount->hide();
+    m_ui->clipCountLabel->hide();
+    m_ui->arrow->hide();
+    disconnect( m_ui->arrow,
+                SIGNAL( clicked( QWidget*, QMouseEvent* ) ), this,
+                SLOT( arrowButtonClicked( QWidget*, QMouseEvent* ) ) );
 }

@@ -56,6 +56,7 @@ public:
     const QUuid&            uuid() const;
     const ClickableLabel*   nextButton() const;
     const ClickableLabel*   deleteButton() const;
+    void                    containsClip();
 
 protected:
     void changeEvent( QEvent *e );

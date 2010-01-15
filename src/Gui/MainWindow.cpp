@@ -112,7 +112,9 @@ MainWindow::MainWindow( QWidget *parent ) :
     m_pWizard = new ProjectWizard( this );
     m_pWizard->setModal( true );
 
-    if ( restoreSession() == false )
+    QSettings s;
+    if ( s.value( "ShowWizardStartup", true ).toBool() &&
+         restoreSession() == false )
     {
         m_pWizard->show();
     }

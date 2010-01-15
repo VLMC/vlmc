@@ -86,6 +86,7 @@ void
 ImportMediaListController::addClip( Clip* clip )
 {
     ImportMediaCellView* cell = new ImportMediaCellView( clip->getUuid() );
+    cell->containsClip();
     connect( cell, SIGNAL( cellSelected( const QUuid& ) ),
              this, SIGNAL( clipSelected( const QUuid& ) ) );
     connect( cell, SIGNAL( cellDeleted( const QUuid& ) ),

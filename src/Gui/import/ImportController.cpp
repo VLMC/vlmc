@@ -29,6 +29,7 @@
 #include "Library.h"
 
 #include <QPalette>
+#include <QSettings>
 #include <QTime>
 
 ImportController::ImportController(QWidget *parent) :
@@ -57,9 +58,12 @@ ImportController::ImportController(QWidget *parent) :
     m_filesModel->setNameFilters( filters );
 
     Library::getInstance()->setFilter( filters );
+
+    restoreCurrentPath();
+
     m_ui->treeView->setModel( m_filesModel );
     m_ui->treeView->setRootIndex( m_filesModel->index( QDir::rootPath() ) );
-    m_ui->treeView->setCurrentIndex( m_filesModel->index( QDir::homePath() ) );
+    m_ui->treeView->setCurrentIndex( m_filesModel->index( m_currentlyWatchedDir ) );
     m_ui->treeView->setExpanded( m_ui->treeView->currentIndex() , true );
     m_ui->treeView->setColumnHidden( 1, true );
     m_ui->treeView->setColumnHidden( 2, true );
@@ -67,8 +71,7 @@ ImportController::ImportController(QWidget *parent) :
     m_ui->forwardButton->setEnabled( false );
 
     m_fsWatcher = new QFileSystemWatcher();
-    m_fsWatcher->addPath( QDir::homePath() );
-    m_currentlyWatchedDir = QDir::homePath();
+    m_fsWatcher->addPath( m_currentlyWatchedDir );
 
     connect( m_fsWatcher, SIGNAL( directoryChanged( QString ) ),
              m_filesModel, SLOT( refresh() ) );
@@ -161,7 +164,6 @@ ImportController::clipSelection( const QUuid& uuid )
     }
     if ( clip == 0 )
         return ;
-    qDebug() << "ImportController::clipSelection clip" << clip;
     setUIMetaData( clip );
     if ( uuid != m_currentUuid )
         m_preview->stop();
@@ -225,7 +227,6 @@ ImportController::setUIMetaData( Clip* clip )
     QTime   time;
     qint64  length = clip->getLengthSecond();
     time = time.addSecs( length );
-    qDebug() << time;
     m_ui->durationValueLabel->setText( time.toString( "hh:mm:ss" ) );
     m_ui->nameValueLabel->setText( clip->getParent()->getFileInfo()->fileName() );
     m_ui->nameValueLabel->setWordWrap( true );
@@ -252,6 +253,7 @@ ImportController::treeViewClicked( const QModelIndex& index )
         m_fsWatcher->removePath( m_currentlyWatchedDir );
         m_currentlyWatchedDir = m_filesModel->filePath( index );
         m_fsWatcher->addPath( m_filesModel->filePath( index ) );
+        saveCurrentPath();
     }
     m_ui->forwardButton->setEnabled( true );
 }
@@ -269,6 +271,7 @@ ImportController::reject()
     m_preview->stop();
     m_mediaListController->cleanAll();
     Library::getInstance()->deleteTemporaryMedias();
+    collapseAllButCurrentPath();
     done( Rejected );
 }
 
@@ -278,7 +281,22 @@ ImportController::accept()
     m_mediaListController->cleanAll();
     Library::getInstance()->importDone();
     m_preview->stop();
+    collapseAllButCurrentPath();
     done( Accepted );
+}
+
+void
+ImportController::collapseAllButCurrentPath()
+{
+    m_ui->treeView->collapseAll();
+    QStringList paths;
+    for ( QDir directory( m_currentlyWatchedDir ); !directory.isRoot(); directory.cdUp() )
+        paths.prepend( directory.absolutePath() );
+    while ( paths.count() > 0 )
+    {
+        m_ui->treeView->setCurrentIndex( m_filesModel->index( paths.takeFirst() ) );
+        m_ui->treeView->setExpanded( m_ui->treeView->currentIndex() , true );
+    }
 }
 
 void
@@ -341,4 +359,21 @@ ImportController::restoreContext()
     if ( !m_savedUuid.isNull() )
         m_currentUuid = m_savedUuid;
     m_controllerSwitched = false;
+}
+
+void
+ImportController::saveCurrentPath()
+{
+    QSettings s;
+    s.setValue( "ImportPreviouslySelectPath", m_currentlyWatchedDir );
+    s.sync();
+}
+
+void
+ImportController::restoreCurrentPath()
+{
+    QSettings s;
+    QVariant path = s.value( "ImportPreviouslySelectPath", QDir::homePath() );
+    QFileInfo info = path.toString();
+    m_currentlyWatchedDir = info.absoluteFilePath();
 }

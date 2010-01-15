@@ -27,6 +27,7 @@
   */
 
 #include <QtDebug>
+#include <QUrl>
 #include "Media.h"
 #include "MetaDataManager.h"
 
@@ -44,7 +45,7 @@ Media::Media( const QString& filePath, const QString& uuid /*= QString()*/ )
     m_nbFrames( 0 ),
     m_width( 0 ),
     m_height( 0 ),
-    m_metadataState( None )
+    m_baseClip( NULL )
 {
     if ( uuid.length() == 0 )
         m_uuid = QUuid::createUuid();
@@ -58,9 +59,11 @@ Media::Media( const QString& filePath, const QString& uuid /*= QString()*/ )
         m_fileName = m_fileInfo->fileName();
         setFileType();
         if ( m_fileType == Media::Video || m_fileType == Media::Audio )
-            m_mrl = "file:///" + m_fileInfo->absoluteFilePath();
+            m_mrl = "file:///" + QUrl::toPercentEncoding( m_fileInfo->absoluteFilePath(),
+                                                          "/" );
         else
-            m_mrl = "fake:///" + m_fileInfo->absoluteFilePath();
+            m_mrl = "fake:///" + QUrl::toPercentEncoding( m_fileInfo->absoluteFilePath(),
+                                                          "/" );
     }
     else
     {
@@ -71,7 +74,6 @@ Media::Media( const QString& filePath, const QString& uuid /*= QString()*/ )
         m_fileName = m_mrl;
         qDebug() << "Loading a stream";
     }
-
     m_audioValueList = new QList<int>();
     m_vlcMedia = new LibVLCpp::Media( m_mrl );
 }
@@ -191,26 +193,20 @@ Media::FileType     Media::getFileType() const
     return m_fileType;
 }
 
-void            Media::emitMetaDataComputed( bool hasMetadata )
+void            Media::emitMetaDataComputed()
 {
-    if ( hasMetadata == true )
-    {
-        m_baseClip = new Clip( this );
-        m_metadataState = ParsedWithoutSnapshot;
-    }
+    Q_ASSERT( m_baseClip == NULL );
+    m_baseClip = new Clip( this );
     emit metaDataComputed( this );
 }
 
 void            Media::emitSnapshotComputed()
 {
-    if ( m_metadataState == ParsedWithoutSnapshot )
-        m_metadataState = ParsedWithSnapshot;
     emit snapshotComputed( this );
 }
 
 void            Media::emitAudioSpectrumComuted()
 {
-    m_metadataState = ParsedWithAudioSpectrum;
     emit audioSpectrumComputed( this->getUuid() );
 }
 
@@ -275,9 +271,4 @@ void            Media::addClip( Clip* clip )
 void            Media::removeClip( const QUuid& uuid )
 {
     m_clips.remove( uuid );
-}
-
-Media::MetadataState   Media::getMetadata() const
-{
-    return m_metadataState;
 }

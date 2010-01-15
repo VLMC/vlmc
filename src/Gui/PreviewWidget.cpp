@@ -190,8 +190,6 @@ void        PreviewWidget::createNewClipFromMarkers()
         return ;
 
     beg = beg < 0 ? 0 : beg;
-    qDebug() << "PreviewWidget::createNewClipFromMarkers begin" << beg;
-    qDebug() << "PreviewWidget::createNewClipFromMarkers end" << end;
     Clip*   part = new Clip( selectedMedia, beg, end );
 
     //Adding the newly created clip to the media

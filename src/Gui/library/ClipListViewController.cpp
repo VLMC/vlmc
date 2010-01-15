@@ -39,6 +39,8 @@ ClipListViewController::ClipListViewController( StackViewController* nav, const 
 
 ClipListViewController::~ClipListViewController()
 {
+    foreach( QWidget* cell, m_cells.values() )
+        removeCell( cell );
 }
 
 void    ClipListViewController::addClipsFromMedia( Media* media )
@@ -60,6 +62,7 @@ void    ClipListViewController::resetNbDeletion()
 void    ClipListViewController::addClip( Clip* clip )
 {
     MediaCellView* cell = new MediaCellView( clip->getUuid() );
+    cell->containsClip();
     connect( cell, SIGNAL( cellSelected( QUuid ) ), this, SLOT( cellSelection( const QUuid& ) ) );
     connect( cell, SIGNAL( cellDeleted( const QUuid& ) ), this, SLOT( clipDeletion( const QUuid& ) ) );
 

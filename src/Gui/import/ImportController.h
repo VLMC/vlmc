@@ -64,6 +64,9 @@ class ImportController : public QDialog
         void changeEvent( QEvent *e );
 
     private:
+        void                        saveCurrentPath();
+        void                        restoreCurrentPath();
+        void                        collapseAllButCurrentPath();
         Ui::ImportController*       m_ui;
         PreviewWidget*              m_preview;
         StackViewController*        m_stackNav;
