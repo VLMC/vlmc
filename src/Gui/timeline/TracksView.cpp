@@ -249,40 +249,58 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
     QUuid uuid = QUuid( QString( event->mimeData()->data( "vlmc/uuid" ) ) );
     Clip* clip = Library::getInstance()->clip( uuid );
     if ( !clip ) return;
+    if ( clip->getParent()->hasAudioTrack() == false &&
+         clip->getParent()->hasVideoTrack() == false )
+        return ;
 
-    //FIXME: this leaks, but at least we have independant clips.
-    Clip* audioClip = new Clip( clip );
-    Clip* videoClip = new Clip( clip );
+    Clip* audioClip = NULL;
+    Clip* videoClip = NULL;
+    //FIXME: Creating a new clip leaks, but at least we have independant clips.
 
-    // Remove old items (if any)
-    if ( m_dragAudioItem ) delete m_dragAudioItem;
-    if ( m_dragVideoItem ) delete m_dragVideoItem;
+    if ( clip->getParent()->hasAudioTrack() == true )
+    {
+        audioClip = new Clip( clip );
 
-    // Create the items
-    m_dragAudioItem = new GraphicsAudioItem( audioClip );
-    m_dragAudioItem->m_tracksView = this;
-    m_dragAudioItem->setHeight( tracksHeight() );
-    m_dragAudioItem->setParentItem( getTrack( m_dragAudioItem->mediaType(), 0 ) );
+        if ( m_dragAudioItem ) delete m_dragAudioItem;
+        m_dragAudioItem = new GraphicsAudioItem( audioClip );
+        m_dragAudioItem->m_tracksView = this;
+        m_dragAudioItem->setHeight( tracksHeight() );
+        m_dragAudioItem->setParentItem( getTrack( m_dragAudioItem->mediaType(), 0 ) );
+        //TODO connect the split signal to the audio clip
+    }
+    if ( clip->getParent()->hasVideoTrack() == true )
+    {
+        videoClip = new Clip( clip );
 
-    m_dragVideoItem = new GraphicsMovieItem( videoClip );
-    m_dragVideoItem->m_tracksView = this;
-    m_dragVideoItem->setHeight( tracksHeight() );
-    m_dragVideoItem->setParentItem( getTrack( m_dragVideoItem->mediaType(), 0 ) );
+        if ( m_dragVideoItem ) delete m_dragVideoItem;
+        m_dragVideoItem = new GraphicsMovieItem( videoClip );
+        m_dragVideoItem->m_tracksView = this;
+        m_dragVideoItem->setHeight( tracksHeight() );
+        m_dragVideoItem->setParentItem( getTrack( m_dragVideoItem->mediaType(), 0 ) );
+        connect( m_dragVideoItem, SIGNAL( split(GraphicsMovieItem*,qint64) ),
+                 this, SLOT( split(GraphicsMovieItem*,qint64) ) );
+    }
 
     // Group the items together
-    m_dragVideoItem->group( m_dragAudioItem );
-
-    //TODO connect the split signal to the video clip
-    connect( m_dragVideoItem, SIGNAL( split(GraphicsMovieItem*,qint64) ),
-             this, SLOT( split(GraphicsMovieItem*,qint64) ) );
-
-    moveMediaItem( m_dragVideoItem, event->pos() );
+    if ( audioClip != NULL && videoClip != NULL )
+        m_dragVideoItem->group( m_dragAudioItem );
+    if ( videoClip == NULL )
+        moveMediaItem( m_dragAudioItem, event->pos() );
+    else
+        moveMediaItem( m_dragVideoItem, event->pos() );
 }
 
 void TracksView::dragMoveEvent( QDragMoveEvent* event )
 {
-    if ( !m_dragVideoItem ) return;
-    moveMediaItem( m_dragVideoItem, event->pos() );
+    AbstractGraphicsMediaItem* target;
+
+    if ( m_dragVideoItem != NULL )
+        target = m_dragVideoItem;
+    else if ( m_dragAudioItem != NULL)
+        target = m_dragAudioItem;
+    else
+        return ;
+    moveMediaItem( target, event->pos() );
 }
 
 bool TracksView::setItemOldTrack( const QUuid &uuid, uint32_t oldTrackNumber )
