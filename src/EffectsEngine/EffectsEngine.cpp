@@ -240,17 +240,23 @@ EffectsEngine::disable( void )
 quint32
 EffectsEngine::addTransition( quint32 startFrame, quint32 endFrame )
 {
+    Q_UNUSED( startFrame );
+    Q_UNUSED( endFrame );
     return 42;
 }
 
 bool
 EffectsEngine::moveTransition( quint32 transitionId, quint32 startFrame, quint32 endFrame )
 {
+    Q_UNUSED( transitionId );
+    Q_UNUSED( startFrame );
+    Q_UNUSED( endFrame );
     return true;
 }
 
 bool
 EffectsEngine::removeTransition( quint32 transitionId )
 {
+    Q_UNUSED( transitionId );
     return true;
 }
