@@ -71,10 +71,12 @@ class   AudioClipWorkflow : public ClipWorkflow
         QQueue<AudioSample*>        m_availableBuffers;
         void                        initVlcOutput();
         AudioSample*                createBuffer( size_t size );
-        static void                 lock( AudioClipWorkflow* clipWorkflow, uint8_t** pcm_buffer , unsigned int size );
-        static void                 unlock( AudioClipWorkflow* clipWorkflow, uint8_t* pcm_buffer,
-                                            unsigned int channels, unsigned int rate,
-                                            unsigned int nb_samples, unsigned int bits_per_sample,
+        static void                 lock( AudioClipWorkflow* clipWorkflow,
+                                          uint8_t** pcm_buffer , unsigned int size );
+        static void                 unlock( AudioClipWorkflow* clipWorkflow,
+                                            uint8_t* pcm_buffer, unsigned int channels,
+                                            unsigned int rate, unsigned int nb_samples,
+                                            unsigned int bits_per_sample,
                                             unsigned int size, qint64 pts );
 
         //FIXME: this is totally random powered ! Please adjust with a value that does make sense...

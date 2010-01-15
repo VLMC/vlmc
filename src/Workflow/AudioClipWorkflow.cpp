@@ -57,38 +57,23 @@ void*       AudioClipWorkflow::getUnlockCallback()
 
 void*       AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 {
-//    qDebug() << "entering audio get output";
     QMutexLocker    lock( m_renderLock );
-//    qDebug() << "got audio render lock";
     QMutexLocker    lock2( m_computedBuffersMutex );
-//    qDebug() << "got computed buffers mutex";
 
     if ( preGetOutput() == false )
-    {
-//        qDebug() << "audio preGetOutput() returned false";
         return NULL;
-    }
-
-//    qWarning() << "Audio. Available:" << m_availableBuffers.count() << "Computed:" << m_computedBuffers.count();
     if ( isEndReached() == true )
-    {
-//        qDebug() << "audio end is reached";
         return NULL;
-    }
     if ( mode == ClipWorkflow::Get )
         qCritical() << "A sound buffer should never be asked with 'Get' mode";
     ::StackedBuffer<AudioSample*>* buff = new StackedBuffer(
             m_computedBuffers.dequeue(), this, true );
-//    qDebug() << "calling audio postGetOutput();";
     postGetOutput();
-//    qDebug() << "returning audio buffer";
     return buff;
 }
 
 void        AudioClipWorkflow::initVlcOutput()
 {
-//    m_vlcMedia->addOption( ":verbose 3" );
-//    m_vlcMedia->addOption( ":vvv" );
     m_vlcMedia->addOption( ":no-sout-video" );
     m_vlcMedia->addOption( ":no-video" );
     m_vlcMedia->addOption( ":sout=#transcode{}:smem" );
@@ -99,12 +84,10 @@ void        AudioClipWorkflow::initVlcOutput()
     m_vlcMedia->addOption( ":sout-transcode-samplerate=48000" );
     m_vlcMedia->addOption( ":sout-transcode-channels=2" );
     m_vlcMedia->addOption( ":sout-smem-time-sync" );
-//    m_vlcMedia->addOption( ":no-sout-smem-time-sync" );
 }
 
 AudioClipWorkflow::AudioSample*    AudioClipWorkflow::createBuffer( size_t size )
 {
-    qDebug() << "Creating new buffer of size:" << size;
     AudioSample* as = new AudioSample;
     as->buff = new uchar[size];
     as->size = size;
@@ -118,13 +101,9 @@ void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer
     cw->m_renderLock->lock();
     cw->m_computedBuffersMutex->lock();
 
-//    qWarning() << ">>>AudioGeneration. Available:" << cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count() << "position" << cw->m_mediaPlayer->getPosition();
     AudioSample* as = NULL;
     if ( cw->m_availableBuffers.isEmpty() == true )
-    {
-//        qCritical() << cw << "Late buffer generation. Spawning new audio buffer.";
         as = cw->createBuffer( size );
-    }
     else
     {
         as = cw->m_availableBuffers.dequeue();
@@ -143,8 +122,6 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
                                       unsigned int nb_samples, unsigned int bits_per_sample,
                                       unsigned int size, qint64 pts )
 {
-//    qDebug() << "pts:" << pts << "nb channels" << channels << "rate:" << rate <<
-//            "size:" << size << "nb_samples:" << nb_samples;
     Q_UNUSED( pcm_buffer );
     Q_UNUSED( rate );
     Q_UNUSED( bits_per_sample );
@@ -158,7 +135,6 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
         as->nbChannels = channels;
         as->ptsDiff = cw->m_currentPts - cw->m_previousPts;
     }
-//    qWarning() << "::::Computing audio PTS: debugId:" << as->debugId << "ptsdiff:" << as->ptsDiff;
     cw->commonUnlock();
     cw->m_renderLock->unlock();
     cw->m_computedBuffersMutex->unlock();

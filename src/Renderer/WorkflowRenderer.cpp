@@ -24,7 +24,6 @@
 #include <QThread>
 #include <QWaitCondition>
 
-#include "vlmc.h"
 #include "WorkflowRenderer.h"
 #include "timeline/Timeline.h"
 #include "SettingsManager.h"
@@ -58,7 +57,6 @@ void    WorkflowRenderer::initializeRenderer()
     m_videoEsHandler = new EsHandler;
     m_videoEsHandler->self = this;
     m_videoEsHandler->type = Video;
-
     m_audioEsHandler = new EsHandler;
     m_audioEsHandler->self = this;
     m_audioEsHandler->type = Audio;
@@ -67,7 +65,8 @@ void    WorkflowRenderer::initializeRenderer()
     m_rate = 48000;
 
     sprintf( videoString, "width=%i:height=%i:dar=%s:fps=%s:data=%lld:codec=%s:cat=2:caching=0",
-             m_mainWorkflow->getWidth(), m_mainWorkflow->getHeight(), "4/3", "30/1", (qint64)m_videoEsHandler, "RV24" );
+             m_mainWorkflow->getWidth(), m_mainWorkflow->getHeight(), "4/3", "30/1",
+             (qint64)m_videoEsHandler, "RV24" );
     sprintf( audioParameters, "data=%lld:cat=1:codec=s16l:samplerate=%u:channels=%u:caching=0",
              (qint64)m_audioEsHandler, m_rate, m_nbChannels );
     strcpy( inputSlave, ":input-slave=imem://" );
@@ -109,21 +108,16 @@ int     WorkflowRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigne
     *flags = 0;
     if ( handler->type == Video )
     {
-//        qDebug() << "entering lock video";
         ret = handler->self->lockVideo( pts, bufferSize, buffer );
         handler->self->m_mainWorkflow->goToNextFrame( MainWorkflow::VideoTrack );
-//        qDebug() << "leaved lock video";
     }
     else if ( handler->type == Audio )
     {
-//        qDebug() << "entering lock audio";
         ret = handler->self->lockAudio( pts, bufferSize, buffer );
         handler->self->m_mainWorkflow->goToNextFrame( MainWorkflow::AudioTrack );
-//        qDebug() << "leaved lock audio";
     }
     else
         qCritical() << "Invalid ES type";
-//    qDebug() << "ES Type:" << handler->type << "pts:" << *pts;
     return ret;
 }
 
@@ -146,9 +140,6 @@ int     WorkflowRenderer::lockVideo( int64_t *pts, size_t *bufferSize, void **bu
         ptsDiff = 1000000 / m_outputFps;
     }
     m_pts = *pts = ptsDiff + m_pts;
-//    qDebug() << "Video pts" << m_pts << "diff" << ptsDiff;
-    //*pts = qRound64( (float)( m_pts * 1000000.0f ) / m_outputFps );
-    //++m_pts;
     *buffer = m_renderVideoFrame;
     *bufferSize = m_videoBuffSize;
     return 0;
@@ -160,9 +151,7 @@ int     WorkflowRenderer::lockAudio(  int64_t *pts, size_t *bufferSize, void **b
 
     if ( m_stopping == false )
     {
-//        qDebug() << "getting MainWorkflow audio output";
         MainWorkflow::OutputBuffers* ret = m_mainWorkflow->getOutput( MainWorkflow::AudioTrack );
-//        qDebug() << "got mainworkflow audio output";
         m_renderAudioSample = ret->audio;
     }
     uint32_t    nbSample;
@@ -185,9 +174,6 @@ int     WorkflowRenderer::lockAudio(  int64_t *pts, size_t *bufferSize, void **b
         ptsDiff = m_pts - m_audioPts;
     }
     m_audioPts = *pts = m_audioPts + ptsDiff;
-//    qDebug() << "Audio pts" << m_audioPts << "debug id:" << m_renderAudioSample->debugId << "diff:" << ptsDiff;
-    //*pts = m_audioPts * 1000000.0f / m_rate;
-    //m_audioPts += nbSample * m_nbChannels;
     return 0;
 }
 
