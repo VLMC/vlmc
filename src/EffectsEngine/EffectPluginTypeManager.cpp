@@ -31,7 +31,6 @@
 EffectPluginTypeManager::EffectPluginTypeManager( void ) : m_higherFreeId( 2 )
 {
     QDir                        dir;
-    QStringList                 filter;
     quint32                     i;
     quint32                     size;
     QFileInfoList               list;
@@ -41,14 +40,15 @@ EffectPluginTypeManager::EffectPluginTypeManager( void ) : m_higherFreeId( 2 )
         qDebug() << "Can't change dir to " << PLUGINS_PATH << "!";
     else
     {
-        filter << "*.so";
-        list = dir.entryInfoList( filter, QDir::Files );
+        list = dir.entryInfoList( QDir::Files );
         size = list.size();
         if ( list.empty() == true )
             qDebug() << PLUGINS_PATH << " is empty of plugins!";
         else
             for ( i = 0; i < size; ++i )
             {
+                if ( !QLibrary::isLibrary( list.at( i ).absoluteFilePath() ) )
+                    continue;
                 qDebug() << "Try to load : " << list.at( i ).fileName();
                 if ( tmpEptl == NULL )
                     tmpEptl = new EffectPluginTypeLoader();
