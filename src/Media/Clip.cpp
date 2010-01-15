@@ -100,6 +100,16 @@ Clip::Clip( const QUuid& uuid, qint64 begin, qint64 end ) :
     computeLength();
 }
 
+Clip::Clip( Media* parent, qint64 begin, qint64 end, const QUuid& uuid )
+    : m_parent( parent ),
+    m_begin( begin ),
+    m_end( end ),
+    m_Uuid( uuid )
+{
+    computeLength();
+}
+
+
 Clip::~Clip()
 {
 }

@@ -47,6 +47,7 @@ class   Clip : public QObject
         Clip( Clip* creator, qint64 begin, qint64 end );
         Clip( const Clip* clip );
         Clip( const QUuid& uuid, qint64 begin = 0, qint64 end = -1 );
+        Clip( Media* parent, qint64 begin, qint64 end, const QUuid& uuid );
         virtual ~Clip();
 
         qint64              getBegin() const;
