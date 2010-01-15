@@ -149,10 +149,7 @@ public:
      *  \return     The length that has to be rendered in frames
      *  \sa         getLengthMs()
      */
-    qint64                          getLength() const
-    {
-        return qRound64( (qreal)getLengthMs() / 1000.0 * (qreal)getFps() );
-    }
+    virtual qint64                  getLength() const = 0;
 
     /**
      *  \brief  Return true if the renderer is paused

@@ -21,8 +21,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef INVERTRNBEFFECTPLUGINCREATOR_H_
-#define INVERTRNBEFFECTPLUGINCREATOR_H_
+#ifndef BLITINRECTANGLEEFFECTPLUGINCREATOR_H_
+#define BLITINRECTANGLEEFFECTPLUGINCREATOR_H_
 
 #include <QObject>
 #include <QtPlugin>
@@ -38,4 +38,4 @@ public:
     IEffectPlugin*      createIEffectPluginInstance( void );
 };
 
-#endif // INVERTRNBEFFECTPLUGINCREATOR_H_
+#endif // BLITINRECTANGLEEFFECTPLUGINCREATOR_H_

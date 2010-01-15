@@ -51,7 +51,7 @@ ImportController::ImportController(QWidget *parent) :
             << "*.ogg" << "*.ogv";
     filters << "*.mp3" << "*.oga" << "*.flac" << "*.aac" << "*.wav";
     filters << "*.gif" << "*.png" << "*.jpg";
-    m_filesModel->setFilter( QDir::AllDirs | QDir::Files | QDir::Readable |
+    m_filesModel->setFilter( QDir::AllDirs | QDir::Files | QDir::Readable | QDir::Drives |
                              QDir::NoDotAndDotDot );
     m_filesModel->sort( 2, Qt::AscendingOrder );
     m_filesModel->sort( 0, Qt::AscendingOrder );
@@ -68,7 +68,7 @@ ImportController::ImportController(QWidget *parent) :
     m_ui->treeView->setColumnHidden( 1, true );
     m_ui->treeView->setColumnHidden( 2, true );
     m_ui->treeView->setColumnHidden( 3, true );
-    m_ui->forwardButton->setEnabled( false );
+    m_ui->forwardButton->setEnabled( true );
 
     m_fsWatcher = new QFileSystemWatcher();
     m_fsWatcher->addPath( m_currentlyWatchedDir );
@@ -297,6 +297,7 @@ ImportController::collapseAllButCurrentPath()
         m_ui->treeView->setCurrentIndex( m_filesModel->index( paths.takeFirst() ) );
         m_ui->treeView->setExpanded( m_ui->treeView->currentIndex() , true );
     }
+    m_ui->forwardButton->setEnabled( true );
 }
 
 void

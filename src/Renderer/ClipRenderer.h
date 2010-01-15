@@ -45,6 +45,7 @@ public:
     virtual void            stop();
     virtual void            nextFrame();
     virtual void            previousFrame();
+    virtual qint64          getLength() const;
     virtual qint64          getLengthMs() const;
     virtual qint64          getCurrentFrame() const;
     virtual float           getFps() const;
@@ -72,7 +73,14 @@ public slots:
     virtual void            mediaUnloaded( const QUuid& );
     virtual void            previewWidgetCursorChanged( qint64 newFrame );
 
-//    void                    __positionChanged();
+    /**
+     *  \brief      Triggered at every libvlc_MediaPlayerTimeChanged event.
+     *
+     *  This slot will compute a frame number based on the time and the clip's FPS.
+     *  Once computed, it will emit a frameChanged signal, with the reason Renderer.
+     *  \warning    The frame number computed may be unaccurate.
+     *  \sa         frameChanged();
+     */
     void                    __timeChanged( qint64 time );
     void                    __endReached();
     void                    __videoStopped();

@@ -46,10 +46,8 @@ ListViewController::ListViewController( StackViewController* nav ) : m_nav( nav 
 
 ListViewController::~ListViewController()
 {
-    delete m_title;
     delete m_scrollArea;
-    delete m_layout;
-    delete m_container;
+    delete m_title;
 }
 
 // ViewController method implementation

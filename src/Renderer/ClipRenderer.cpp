@@ -113,7 +113,7 @@ ClipRenderer::startPreview()
     m_mediaPlayer->setMedia( m_vlcMedia );
 
     m_mediaPlayer->play();
-    m_mediaPlayer->setPosition( m_begin / m_selectedMedia->getNbFrames() );
+    m_mediaPlayer->setPosition( (double)m_begin / (double)m_selectedMedia->getNbFrames() );
     m_clipLoaded = true;
     m_isRendering = true;
     m_paused = false;
@@ -185,6 +185,12 @@ ClipRenderer::previousFrame()
 }
 
 qint64
+ClipRenderer::getLength() const
+{
+    return m_end - m_begin;
+}
+
+qint64
 ClipRenderer::getLengthMs() const
 {
     if ( m_selectedMedia )
@@ -241,6 +247,7 @@ ClipRenderer::previewWidgetCursorChanged( qint64 newFrame )
 {
     if ( m_isRendering == true )
     {
+        newFrame += m_begin;
         qint64 nbSeconds = qRound64( (qreal)newFrame / m_selectedMedia->getFps() );
         m_mediaPlayer->setTime( nbSeconds * 1000 );
     }
@@ -264,6 +271,12 @@ ClipRenderer::__timeChanged( qint64 time )
     if ( fps < 0.1f )
         fps = m_selectedMedia->getFps();
     qint64 f = qRound64( (qreal)time / 1000.0 * fps );
+    if ( f >= m_end )
+    {
+        __endReached();
+        return ;
+    }
+    f = f - m_begin;
     emit frameChanged( f, MainWorkflow::Renderer );
 }
 

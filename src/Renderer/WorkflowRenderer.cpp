@@ -302,6 +302,11 @@ qint64      WorkflowRenderer::getCurrentFrame() const
     return m_mainWorkflow->getCurrentFrame();
 }
 
+qint64      WorkflowRenderer::getLength() const
+{
+    return qRound64( (qreal)getLengthMs() / 1000.0 * (qreal)getFps() );
+}
+
 qint64      WorkflowRenderer::getLengthMs() const
 {
     return m_mainWorkflow->getLengthFrame() / getFps() * 1000;
