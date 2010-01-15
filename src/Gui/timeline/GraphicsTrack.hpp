@@ -63,18 +63,10 @@ public:
         if ( enabled == m_enabled ) return;
         m_enabled = enabled;
 
-        MainWorkflow::TrackType type;
-        if ( m_type == MainWorkflow::AudioTrack )
-            //TODO need audio support
-            //type = MainWorkflow::AudioTrack;
-            return;
-        else
-            type = MainWorkflow::VideoTrack;
-
         if ( enabled )
-            MainWorkflow::getInstance()->unmuteTrack( m_trackNumber, type );
+            MainWorkflow::getInstance()->unmuteTrack( m_trackNumber, m_type );
         else
-            MainWorkflow::getInstance()->muteTrack( m_trackNumber, type );
+            MainWorkflow::getInstance()->muteTrack( m_trackNumber, m_type );
     }
 
     bool trackEnabled()
