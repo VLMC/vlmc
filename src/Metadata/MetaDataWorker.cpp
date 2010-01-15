@@ -125,12 +125,12 @@ void    MetaDataWorker::metaDataAvailable()
         m_media->setFps( val->get().toDouble() );
     }
     m_media->setLength( m_mediaPlayer->getLength() );
-    m_media->emitMetaDataComputed();
 
     m_media->setTracksAvailable( m_mediaPlayer->hasVideoTrack(),
                                  m_mediaPlayer->hasAudioTrack() );
-
     m_media->setNbFrames( (m_media->getLengthMS() / 1000) * m_media->getFps() );
+
+    m_media->emitMetaDataComputed();
     //Setting time for snapshot :
     if ( m_media->getFileType() == Media::Video ||
          m_media->getFileType() == Media::Image )
