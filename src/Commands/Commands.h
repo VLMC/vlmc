@@ -40,14 +40,6 @@ namespace Commands
 
     namespace   MainWorkflow
     {
-        struct ClipActionInfo
-        {
-            Clip*                       clip;
-            quint32                     trackNumber;
-            qint64                      pos;
-            ::MainWorkflow::TrackType   trackType;
-        };
-
         NEW_COMMAND( AddClip )
         {
             public:
@@ -83,16 +75,19 @@ namespace Commands
                 ::MainWorkflow::TrackType   m_trackType;
         };
 
-        NEW_COMMAND( RemoveClips )
+        NEW_COMMAND( RemoveClip )
         {
             public:
-                RemoveClips( WorkflowRenderer* renderer, const QVector<ClipActionInfo>& clipsInfos );
+                RemoveClip( WorkflowRenderer* renderer, Clip* clip, unsigned int trackNumber, qint64 pos, ::MainWorkflow::TrackType trackType );
                 virtual void redo();
                 virtual void undo();
 
             private:
-                WorkflowRenderer*               m_renderer;
-                QVector<ClipActionInfo>         m_clips;
+                WorkflowRenderer*           m_renderer;
+                Clip*                       m_clip;
+                unsigned int                m_trackNumber;
+                qint64                      m_pos;
+                ::MainWorkflow::TrackType   m_trackType;
         };
 
         /**

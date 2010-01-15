@@ -58,7 +58,7 @@ void TracksScene::keyPressEvent( QKeyEvent* keyEvent )
         // Skip the deletion process
         if ( b == QMessageBox::No ) return;
 
-        QVector<Commands::MainWorkflow::ClipActionInfo> clipsinfos;
+        UndoStack::getInstance()->beginMacro( "Remove clip(s)" );
 
         QList<QGraphicsItem*> items = selectedItems();
         for (int i = 0; i < items.size(); ++i )
@@ -66,16 +66,14 @@ void TracksScene::keyPressEvent( QKeyEvent* keyEvent )
             GraphicsMovieItem* item = qgraphicsitem_cast<GraphicsMovieItem*>( items.at(i) );
             if ( !item ) return;
 
-            Commands::MainWorkflow::ClipActionInfo ai;
-            ai.clip = item->clip();
-            ai.trackNumber = item->trackNumber();
-            ai.pos = item->startPos();
-            ai.trackType = MainWorkflow::VideoTrack;
-            clipsinfos.append( ai );
+            Commands::trigger( new Commands::MainWorkflow::RemoveClip( tv->m_renderer,
+                                                                       item->clip(),
+                                                                       item->trackNumber(),
+                                                                       item->startPos(),
+                                                                       item->mediaType() ) );
         }
 
-        Commands::trigger( new Commands::MainWorkflow::RemoveClips( tv->m_renderer,
-                                                                    clipsinfos ) );
+        UndoStack::getInstance()->endMacro();
     }
 
     QGraphicsScene::keyPressEvent( keyEvent );
