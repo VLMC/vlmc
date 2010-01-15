@@ -15,17 +15,16 @@
 # locations. When an earlier FIND_* succeeds, subsequent FIND_*s
 # searching for the same item do nothing.
 
-
 #Put here path to custom location
 #example: /home/user/vlc/include etc..
 FIND_PATH(LIBVLC_INCLUDE_DIR vlc/vlc.h
+  "$ENV{LIBVLC_INCLUDE_PATH}"
   "$ENV{LIB_DIR}/include"
   "$ENV{LIB_DIR}/include/vlc"
   "/usr/include"
   "/usr/include/vlc"
   "/usr/local/include"
   "/usr/local/include/vlc"
-  "/home/etix/dev/vlc/include/"
   #mingw
   c:/msys/local/include
   NO_DEFAULT_PATH
@@ -35,8 +34,8 @@ FIND_PATH(LIBVLC_INCLUDE_DIR vlc.h)
 #Put here path to custom location
 #example: /home/user/vlc/lib etc..
 FIND_LIBRARY(LIBVLC_LIBRARY NAMES vlc PATHS
+  "$ENV{LIBVLC_LIBRARY_PATH}"
   "$ENV{LIB_DIR}/lib"
-  "/home/etix/dev/vlc/build/src/.libs"
   #mingw
   c:/msys/local/lib
   NO_DEFAULT_PATH
