@@ -26,8 +26,12 @@
 #include "ClipWorkflow.h"
 #include "StackedBuffer.hpp"
 
+#include <QPointer>
+
 class   AudioClipWorkflow : public ClipWorkflow
 {
+    Q_OBJECT
+
     public:
         struct  AudioSample
         {
@@ -45,7 +49,7 @@ class   AudioClipWorkflow : public ClipWorkflow
                                     bool mustBeReleased = true);
                 virtual void        release();
             private:
-                AudioClipWorkflow*  m_poolHandler;
+                QPointer<AudioClipWorkflow>     m_poolHandler;
         };
 
         AudioClipWorkflow( Clip* clip );

@@ -27,10 +27,14 @@
 #include "StackedBuffer.hpp"
 #include "Pool.hpp"
 
+#include <QPointer>
+
 class   Clip;
 
 class   VideoClipWorkflow : public ClipWorkflow
 {
+    Q_OBJECT
+
     public:
         class   StackedBuffer : public ::StackedBuffer<LightVideoFrame*>
         {
@@ -39,7 +43,7 @@ class   VideoClipWorkflow : public ClipWorkflow
                                     bool mustBeReleased = true);
                 virtual void    release();
             private:
-                VideoClipWorkflow*  m_poolHandler;
+                QPointer<VideoClipWorkflow>     m_poolHandler;
         };
 
         VideoClipWorkflow( Clip* clip );

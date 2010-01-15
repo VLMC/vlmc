@@ -201,7 +201,7 @@ AudioClipWorkflow::StackedBuffer::StackedBuffer( AudioClipWorkflow::AudioSample 
 
 void    AudioClipWorkflow::StackedBuffer::release()
 {
-    if ( m_mustRelease == true )
+    if ( m_mustRelease == true && m_poolHandler.isNull() == false )
         m_poolHandler->releaseBuffer( m_buff );
     delete this;
 }
