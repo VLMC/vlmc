@@ -199,10 +199,13 @@ SET (VLMC_HDRS
     Renderer/WorkflowFileRenderer.h
     Renderer/WorkflowRenderer.h
     Tools/VlmcDebug.h
+    Workflow/AudioClipWorkflow.h 
     Workflow/ClipWorkflow.h
+    Workflow/ImageClipWorkflow.h
     Workflow/MainWorkflow.h
     Workflow/TrackHandler.h
     Workflow/TrackWorkflow.h
+    Workflow/VideoClipWorkflow.h
   )
 
 SET(VLMC_UIS
