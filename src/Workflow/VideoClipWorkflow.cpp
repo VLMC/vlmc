@@ -20,7 +20,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "vlmc.h"
 #include "VideoClipWorkflow.h"
 #include "MainWorkflow.h"
 #include "StackedBuffer.hpp"
@@ -60,10 +59,7 @@ VideoClipWorkflow::initVlcOutput()
     m_vlcMedia->setVideoUnlockCallback( reinterpret_cast<void*>( getUnlockCallback() ) );
     m_vlcMedia->addOption( ":sout-transcode-vcodec=RV24" );
     m_vlcMedia->addOption( ":sout-transcode-acodec=s16l" );
-//    m_vlcMedia->addOption( ":no-sout-keep" );
-
     m_vlcMedia->addOption( ":sout-smem-time-sync" );
-//    m_vlcMedia->addOption( ":no-sout-smem-time-sync" );
 
     sprintf( buffer, ":sout-transcode-width=%i",
              MainWorkflow::getInstance()->getWidth() );
@@ -90,51 +86,33 @@ VideoClipWorkflow::getUnlockCallback()
 void*
 VideoClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 {
-//    qDebug() << "entering video get output";
     QMutexLocker    lock( m_renderLock );
-//    qDebug() << "got video render lock";
     QMutexLocker    lock2( m_computedBuffersMutex );
-//    qDebug() << "got video computer buffers lock";
 
     if ( preGetOutput() == false )
-    {
-//        qDebug() << "video preGetOutput() returned false";
         return NULL;
-    }
-//    qWarning() << "Video::getOutput(). Available:" << m_availableBuffers.count() <<
-//    "Computed:" << m_computedBuffers.count();
     if ( isEndReached() == true )
-    {
-//        qDebug() << "video end reached was true";
         return NULL;
-    }
     ::StackedBuffer<LightVideoFrame*>* buff;
     if ( mode == ClipWorkflow::Pop )
-    {
         buff = new StackedBuffer( m_computedBuffers.dequeue(), this, true );
-    }
     else if ( mode == ClipWorkflow::Get )
         buff = new StackedBuffer( m_computedBuffers.head(), NULL, false );
-//    qDebug() << "calling video postGetOutput();";
     postGetOutput();
-//    qDebug() << "returning videobuff";
     return buff;
 }
 
 void
 VideoClipWorkflow::lock( VideoClipWorkflow *cw, void **pp_ret, int size )
 {
-//    qDebug() << "Entering VideoClipWorkflow::lock";
     Q_UNUSED( size );
     QMutexLocker        lock( cw->m_availableBuffersMutex );
+    LightVideoFrame*    lvf = NULL;
+
     cw->m_renderLock->lock();
     cw->m_computedBuffersMutex->lock();
-//    qDebug() << "Got all videoclipworkflow::lock mutexs acquired.";
-
-    LightVideoFrame*    lvf = NULL;
     if ( cw->m_availableBuffers.isEmpty() == true )
     {
-//        qCritical() << "Late buffer generation. Spawning new video buffer";
         lvf = new LightVideoFrame( MainWorkflow::getInstance()->getWidth()
                                    * MainWorkflow::getInstance()->getHeight()
                                    * Pixel::NbComposantes );
@@ -142,9 +120,6 @@ VideoClipWorkflow::lock( VideoClipWorkflow *cw, void **pp_ret, int size )
     else
         lvf = cw->m_availableBuffers.dequeue();
     cw->m_computedBuffers.enqueue( lvf );
-//    qWarning() << ">>>VideoGeneration. Available:" <<
-//        cw->m_availableBuffers.count() << "Computed:" << cw->m_computedBuffers.count() << "position" << cw->m_mediaPlayer->getPosition();
-//    qWarning() << "feeding video buffer";
     *pp_ret = (*(lvf))->frame.octets;
 }
 
@@ -161,15 +136,6 @@ VideoClipWorkflow::unlock( VideoClipWorkflow *cw, void *buffer, int width,
     cw->computePtsDiff( pts );
     LightVideoFrame     *lvf = cw->m_computedBuffers.last();
     (*(lvf))->ptsDiff = cw->m_currentPts - cw->m_previousPts;
-//    qWarning() << "Computed ptsDiff:" << (*(lvf))->ptsDiff;
-//    if ( (*(lvf))->ptsDiff > 100000 )
-//    {
-//        qWarning() << "Probably invalid pts diff. pts:" << pts << "m_currentPts:" <<
-//    cw->m_currentPts << "m_previousPts:" << cw->m_previousPts
-//                << "state:" << cw->m_state;
-//    }
-    // If this is the first buffer that has been rendered,
-    // there may be a waiting TrackWorkflow.
     cw->commonUnlock();
     cw->m_renderLock->unlock();
     cw->m_computedBuffersMutex->unlock();
@@ -201,9 +167,7 @@ VideoClipWorkflow::flushComputedBuffers()
     QMutexLocker    lock2( m_availableBuffersMutex );
 
     while ( m_computedBuffers.isEmpty() == false )
-    {
         m_availableBuffers.enqueue( m_computedBuffers.dequeue() );
-    }
 }
 
 VideoClipWorkflow::StackedBuffer::StackedBuffer( LightVideoFrame *lvf,
