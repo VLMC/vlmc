@@ -50,14 +50,11 @@ void    MetaDataWorker::compute()
 {
     if ( m_media->getFileType() == Media::Video ||
          m_media->getFileType() == Media::Audio )
-    {
         computeDynamicFileMetaData();
-    }
     else if ( m_media->getFileType() == Media::Image )
-    {
         computeImageMetaData();
-    }
 
+    m_media->addConstantParam( ":vout=dummy" );
     m_mediaPlayer->setMedia( m_media->getVLCMedia() );
     connect( m_mediaPlayer, SIGNAL( playing() ),
              this, SLOT( entrypointPlaying() ), Qt::QueuedConnection );
@@ -68,8 +65,6 @@ void    MetaDataWorker::compute()
 void    MetaDataWorker::computeDynamicFileMetaData()
 {
     //Disabling audio for this specific use of the media
-    if ( m_media->getFileType() == Media::Video )
-        m_media->addConstantParam( ":vout=dummy" );
     m_media->addVolatileParam( ":no-audio", ":audio" );
     connect( m_mediaPlayer, SIGNAL( lengthChanged() ),
              this, SLOT( entrypointLengthChanged() ), Qt::QueuedConnection );
