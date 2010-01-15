@@ -25,6 +25,7 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <QFileInfo>
+#include <QSettings>
 #include <QDebug>
 #include "WelcomePage.h"
 
@@ -44,6 +45,8 @@ WelcomePage::WelcomePage( QWidget* parent )
              this, SLOT( selectOpenRadio() ) );
     connect( m_ui.projectsListWidget, SIGNAL( itemDoubleClicked(QListWidgetItem*) ),
              this, SLOT( projectDoubleClicked(QListWidgetItem*) ) );
+    connect( m_ui.hideStartupCheckBox, SIGNAL( clicked(bool) ),
+             this, SLOT( hideWizardAtStartup(bool) ) );
 
     registerField( "loadProject", m_ui.projectsListWidget );
     m_projectPath = new QString();
@@ -76,6 +79,9 @@ int WelcomePage::nextId() const
 
 void WelcomePage::initializePage()
 {
+    QSettings s;
+
+    m_ui.hideStartupCheckBox->setChecked( !s.value( "ShowWizardStartup", true ).toBool() );
     m_ui.createRadioButton->setChecked( true );
     loadRecentsProjects();
 }
@@ -171,4 +177,10 @@ void WelcomePage::setProjectPath( const QString& path )
 {
     m_projectPath->clear();
     m_projectPath->append( path );
+}
+
+void WelcomePage::hideWizardAtStartup( bool hidden )
+{
+    QSettings s;
+    s.setValue( "ShowWizardStartup", !hidden );
 }
