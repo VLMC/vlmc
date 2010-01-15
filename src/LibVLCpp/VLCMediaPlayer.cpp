@@ -266,3 +266,15 @@ QString                             MediaPlayer::getLoadedMRL()
     char* str = libvlc_media_get_mrl( media );
     return QString( str );
 }
+
+bool
+MediaPlayer::hasVideoTrack()
+{
+    return ( libvlc_video_get_track_count( m_internalPtr, m_ex ) > 0 );
+}
+
+bool
+MediaPlayer::hasAudioTrack()
+{
+    return ( libvlc_audio_get_track_count( m_internalPtr, m_ex ) > 0 );
+}

@@ -114,6 +114,10 @@ public:
     const QUuid&                getUuid() const;
     void                        setUuid( const QUuid& uuid );
 
+    bool                        hasAudioTrack() const;
+    bool                        hasVideoTrack() const;
+    void                        setTracksAvailable( bool video, bool audio );
+
     FileType                    getFileType() const;
     static const QString        VideoExtensions;
     static const QString        AudioExtensions;
@@ -163,6 +167,8 @@ protected:
     Clip*                       m_baseClip;
     QHash<QUuid, Clip*>         m_clips;
     QList<int>*                 m_audioValueList;
+    bool                        m_hasVideo;
+    bool                        m_hasAudio;
 
 signals:
     void                        metaDataComputed( Media* );

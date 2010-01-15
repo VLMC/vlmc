@@ -27,6 +27,7 @@
 #include "vlmc.h"
 #include "MetaDataWorker.h"
 #include "Library.h"
+#include "SettingsManager.h"
 
 #include <QThreadPool>
 #include <QRunnable>
@@ -117,8 +118,17 @@ void    MetaDataWorker::metaDataAvailable()
             m_media->setFps( Clip::DefaultFPS );
         }
     }
+    else
+    {
+        const SettingValue *val = SettingsManager::getInstance()->getValue( "project", "VideoProjectFPS" );
+        Q_ASSERT_X( val != NULL, "MetaDataWorker", "Can't operate without a project FPS value ");
+        m_media->setFps( val->get().toDouble() );
+    }
     m_media->setLength( m_mediaPlayer->getLength() );
     m_media->emitMetaDataComputed();
+
+    m_media->setTracksAvailable( m_mediaPlayer->hasVideoTrack(),
+                                 m_mediaPlayer->hasAudioTrack() );
 
     m_media->setNbFrames( (m_media->getLengthMS() / 1000) * m_media->getFps() );
     //Setting time for snapshot :
