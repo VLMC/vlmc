@@ -110,15 +110,15 @@ void    MetaDataWorker::metaDataAvailable()
 
         m_media->setWidth( m_mediaPlayer->getWidth() );
         m_media->setHeight( m_mediaPlayer->getHeight() );
+        m_media->setFps( m_mediaPlayer->getFps() );
+        if ( m_media->getFps() == .0f )
+        {
+            qWarning() << "Invalid FPS for media:" << m_media->getFileInfo()->absoluteFilePath();
+            m_media->setFps( Clip::DefaultFPS );
+        }
     }
     m_media->setLength( m_mediaPlayer->getLength() );
-    m_media->setFps( m_mediaPlayer->getFps() );
 
-    if ( m_media->getFps() == .0f )
-    {
-        qWarning() << "Invalid FPS for media:" << m_media->getFileInfo()->absoluteFilePath();
-        m_media->setFps( Clip::DefaultFPS );
-    }
     m_media->setNbFrames( (m_media->getLengthMS() / 1000) * m_media->getFps() );
     //Setting time for snapshot :
     if ( m_media->getFileType() == Media::Video ||

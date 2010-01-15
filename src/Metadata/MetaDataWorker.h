@@ -36,14 +36,6 @@ class MetaDataWorker : public QObject
     Q_DISABLE_COPY( MetaDataWorker )
 
     public:
-        enum MetaDataType
-        {
-            MetaData,
-            Snapshot,
-            Audio
-        };
-
-    public:
         MetaDataWorker( LibVLCpp::MediaPlayer* mediaPlayer, Media* media );
         ~MetaDataWorker();
         void                        compute();

@@ -45,6 +45,7 @@ Media::Media( const QString& filePath, const QString& uuid /*= QString()*/ )
     m_nbFrames( 0 ),
     m_width( 0 ),
     m_height( 0 ),
+    m_fps( .0f ),
     m_baseClip( NULL )
 {
     if ( uuid.length() == 0 )
