@@ -129,14 +129,17 @@ TrackHandler::getOutput( qint64 currentFrame, qint64 subFrame )
         }
         else
         {
-            void*   ret = m_tracks[i]->getOutput( currentFrame, subFrame );
-            //m_tmpAudioBuffer is NULl by default, so it will remain NULL if we continue;
-            if ( ret == NULL )
-                continue ;
-            StackedBuffer<AudioClipWorkflow::AudioSample*>* stackedBuffer =
-                reinterpret_cast<StackedBuffer<AudioClipWorkflow::AudioSample*>*> ( ret );
-            if ( stackedBuffer != NULL )
-                m_tmpAudioBuffer = stackedBuffer->get();
+            if ( m_tracks[i].activated() == true )
+            {
+                void*   ret = m_tracks[i]->getOutput( currentFrame, subFrame );
+                //m_tmpAudioBuffer is NULl by default, so it will remain NULL if we continue;
+                if ( ret == NULL )
+                    continue ;
+                StackedBuffer<AudioClipWorkflow::AudioSample*>* stackedBuffer =
+                    reinterpret_cast<StackedBuffer<AudioClipWorkflow::AudioSample*>*> ( ret );
+                if ( stackedBuffer != NULL )
+                    m_tmpAudioBuffer = stackedBuffer->get();
+            }
         }
     }
 }
