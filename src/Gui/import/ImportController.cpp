@@ -68,7 +68,7 @@ ImportController::ImportController(QWidget *parent) :
     m_ui->treeView->setColumnHidden( 1, true );
     m_ui->treeView->setColumnHidden( 2, true );
     m_ui->treeView->setColumnHidden( 3, true );
-    m_ui->forwardButton->setEnabled( false );
+    m_ui->forwardButton->setEnabled( true );
 
     m_fsWatcher = new QFileSystemWatcher();
     m_fsWatcher->addPath( m_currentlyWatchedDir );
@@ -297,6 +297,7 @@ ImportController::collapseAllButCurrentPath()
         m_ui->treeView->setCurrentIndex( m_filesModel->index( paths.takeFirst() ) );
         m_ui->treeView->setExpanded( m_ui->treeView->currentIndex() , true );
     }
+    m_ui->forwardButton->setEnabled( true );
 }
 
 void
