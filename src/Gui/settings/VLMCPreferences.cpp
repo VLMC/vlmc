@@ -81,3 +81,16 @@ void    VLMCPreferences::save()
     settMan->setValue( m_settName, "AutomaticBackupInterval", autoSaveInterval );
     settMan->commit();
 }
+
+void VLMCPreferences::changeEvent( QEvent *e )
+{
+    QWidget::changeEvent( e );
+    switch ( e->type() )
+    {
+    case QEvent::LanguageChange:
+        m_ui.retranslateUi( this );
+        break;
+    default:
+        break;
+    }
+}

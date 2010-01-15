@@ -36,6 +36,8 @@ class   ProjectPreferences : public PreferenceWidget
         virtual ~ProjectPreferences();
         void    load();
         void    save();
+    protected:
+        virtual void changeEvent( QEvent *e );
     private:
         Ui::ProjectPreferences  m_ui;
 };

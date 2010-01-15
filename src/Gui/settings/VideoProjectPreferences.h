@@ -36,6 +36,8 @@ class VideoProjectPreferences : public PreferenceWidget
         ~VideoProjectPreferences();
         void    load();
         void    save();
+    protected:
+        virtual void changeEvent( QEvent *e );
     private:
         Ui::VideoProjectPreferences m_ui;
 };

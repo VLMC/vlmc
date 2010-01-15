@@ -58,3 +58,16 @@ void    VideoProjectPreferences::save()
     settMan->setValue( m_settName,"VideoProjectWidth", projectWidth);
     return ;
 }
+
+void VideoProjectPreferences::changeEvent( QEvent *e )
+{
+    QWidget::changeEvent( e );
+    switch ( e->type() )
+    {
+    case QEvent::LanguageChange:
+        m_ui.retranslateUi( this );
+        break;
+    default:
+        break;
+    }
+}

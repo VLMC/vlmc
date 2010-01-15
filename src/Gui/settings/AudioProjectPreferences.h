@@ -36,6 +36,8 @@ class AudioProjectPreferences : public PreferenceWidget
         ~AudioProjectPreferences();
         void    load();
         void    save();
+    protected:
+        virtual void changeEvent( QEvent *e );
     private:
         Ui::AudioProjectPreferences m_ui;
 };

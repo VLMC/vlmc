@@ -39,6 +39,8 @@ class VLMCPreferences : public PreferenceWidget
         ~VLMCPreferences();
         void    load();
         void    save();
+    protected:
+        virtual void changeEvent( QEvent *e );
 
     private slots:
         void    setAutomaticSaveLabelVisiblity( bool visible );

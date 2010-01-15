@@ -55,3 +55,16 @@ void    ProjectPreferences::save()
 
     settMan->setValue( m_settName, "ProjectName", name );
 }
+
+void ProjectPreferences::changeEvent( QEvent *e )
+{
+    QWidget::changeEvent( e );
+    switch ( e->type() )
+    {
+    case QEvent::LanguageChange:
+        m_ui.retranslateUi( this );
+        break;
+    default:
+        break;
+    }
+}
