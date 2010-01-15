@@ -29,7 +29,7 @@
 #include "TracksView.h"
 #include "Timeline.h"
 
-GraphicsAudioItem::GraphicsAudioItem( Clip* clip ) : m_clip( clip ), m_width( 0 ), m_height( 0 )
+GraphicsAudioItem::GraphicsAudioItem( Clip* clip ) : m_clip( clip )
 {
     setFlags( QGraphicsItem::ItemIsSelectable );
 
@@ -56,11 +56,6 @@ MainWorkflow::TrackType GraphicsAudioItem::mediaType() const
     return MainWorkflow::AudioTrack;
 }
 
-QRectF GraphicsAudioItem::boundingRect() const
-{
-    return QRectF( 0, 0, m_width, m_height );
-}
-
 void GraphicsAudioItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* )
 {
     painter->save();
@@ -70,26 +65,6 @@ void GraphicsAudioItem::paint( QPainter* painter, const QStyleOptionGraphicsItem
     painter->save();
     paintTitle( painter, option );
     painter->restore();
-}
-
-void GraphicsAudioItem::setWidth( int width )
-{
-    prepareGeometryChange();
-    m_width = width;
-}
-
-void GraphicsAudioItem::setHeight( int height )
-{
-    prepareGeometryChange();
-    m_height = height;
-}
-
-void GraphicsAudioItem::adjustLength()
-{
-    //FIXME implement clip expanding.
-    Q_ASSERT_X( m_clip->getLength() <= m_width, "adjustLength", "Clip expanding not supported!" );
-    prepareGeometryChange();
-    setWidth( m_clip->getLength() );
 }
 
 Clip* GraphicsAudioItem::clip() const

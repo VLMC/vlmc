@@ -216,16 +216,10 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, MainWorkflow::Tra
         return;
     }
 
+    AbstractGraphicsMediaItem* item = 0;
     if ( trackType == MainWorkflow::VideoTrack )
     {
-        GraphicsMovieItem* item = new GraphicsMovieItem( clip );
-        item->m_tracksView = this;
-        item->setHeight( tracksHeight() );
-        item->setParentItem( getTrack( trackType, track ) );
-        item->setStartPos( start );
-        item->oldTrackNumber = track;
-        item->oldPosition = start;
-        moveMediaItem( item, track, start );
+        item = new GraphicsMovieItem( clip );
 
         // Split is currently only supported for video
         connect( item, SIGNAL( split(GraphicsMovieItem*,qint64) ),
@@ -235,16 +229,16 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, MainWorkflow::Tra
     {
         //FIXME If a GraphicsAudioItem is downcasted to an AbstractGraphicsMediaItem
         // the item is not drawn in the timeline.
-        GraphicsAudioItem* item = new GraphicsAudioItem( clip );
-        item->m_tracksView = this;
-        item->setHeight( tracksHeight() );
-        item->setParentItem( getTrack( trackType, track ) );
-        item->setStartPos( start );
-        item->oldTrackNumber = track;
-        item->oldPosition = start;
-        moveMediaItem( item, track, start );
+        item = new GraphicsAudioItem( clip );
     }
 
+    item->m_tracksView = this;
+    item->setHeight( tracksHeight() );
+    item->setParentItem( getTrack( trackType, track ) );
+    item->setStartPos( start );
+    item->oldTrackNumber = track;
+    item->oldPosition = start;
+    moveMediaItem( item, track, start );
     updateDuration();
 }
 
