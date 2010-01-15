@@ -56,21 +56,14 @@ ClipWorkflow::~ClipWorkflow()
 
 void    ClipWorkflow::initialize()
 {
-<<<<<<< HEAD
-    if ( m_clip->getParent()->getFileType() == Media::Image )
-        m_vlcMedia = new LibVLCpp::Media( "fake:///" + m_clip->getParent()->getFileInfo()->absoluteFilePath() );
-    else
-        m_vlcMedia = new LibVLCpp::Media( "file:///" + m_clip->getParent()->getFileInfo()->absoluteFilePath() );
-    m_currentPts = -1;
-    m_previousPts = -1;
-    m_pauseDuration = -1;
-=======
 //    qDebug() << "Setting state to initializing";
     setState( ClipWorkflow::Initializing );
 
 //    qDebug() << "State is Initializing.";
     m_vlcMedia = new LibVLCpp::Media( m_clip->getParent()->getMrl() );
->>>>>>> master
+    m_currentPts = -1;
+    m_previousPts = -1;
+    m_pauseDuration = -1;
     initVlcOutput();
     m_mediaPlayer = MemoryPool<LibVLCpp::MediaPlayer>::getInstance()->get();
     m_mediaPlayer->setMedia( m_vlcMedia );
