@@ -9,5 +9,6 @@
         <file alias="sk">ts/vlmc_sk.qm</file>
         <file alias="uk">ts/vlmc_uk.qm</file>
         <file alias="cs">ts/vlmc_cs.qm</file>
+        <file alias="nl">ts/vlmc_nl.qm</file>
     </qresource>
 </RCC>
