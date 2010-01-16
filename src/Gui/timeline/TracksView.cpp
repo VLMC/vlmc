@@ -176,7 +176,6 @@ void TracksView::deleteMedia( const QUuid& uuid  )
 
 void TracksView::addMediaItem( Clip* clip, unsigned int track, MainWorkflow::TrackType trackType, qint64 start )
 {
-    qDebug() << "adding media item";
     Q_ASSERT( clip );
 
     // If there is not enough tracks to insert
@@ -205,7 +204,6 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, MainWorkflow::Tra
         if ( track + 1 == m_numAudioTrack )
             addAudioTrack();
     }
-    qDebug() << "check for existence in timeline";
     // Is the clip already existing in the timeline ?
     QList<QGraphicsItem*> trackItems = getTrack( trackType, track )->childItems();;
     for ( int i = 0; i < trackItems.size(); ++i )
@@ -217,7 +215,6 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, MainWorkflow::Tra
         return;
     }
 
-    qDebug() << "connecting split";
     AbstractGraphicsMediaItem* item = 0;
     if ( trackType == MainWorkflow::VideoTrack )
     {
@@ -234,7 +231,6 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, MainWorkflow::Tra
         item = new GraphicsAudioItem( clip );
     }
 
-    qDebug() << "doing stuffs";
     item->m_tracksView = this;
     item->setHeight( tracksHeight() );
     item->setParentItem( getTrack( trackType, track ) );
