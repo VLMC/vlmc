@@ -261,10 +261,12 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
 
     // Create the items
     m_dragAudioItem = new GraphicsAudioItem( audioClip );
+    m_dragAudioItem->m_tracksView = this;
     m_dragAudioItem->setHeight( tracksHeight() );
     m_dragAudioItem->setParentItem( getTrack( m_dragAudioItem->mediaType(), 0 ) );
 
     m_dragVideoItem = new GraphicsMovieItem( videoClip );
+    m_dragVideoItem->m_tracksView = this;
     m_dragVideoItem->setHeight( tracksHeight() );
     m_dragVideoItem->setParentItem( getTrack( m_dragVideoItem->mediaType(), 0 ) );
 
