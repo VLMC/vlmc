@@ -35,7 +35,7 @@ LanguagePreferences::LanguagePreferences( QWidget *parent )
 {
     m_ui.setupUi( this );
 
-    QDir            dir( "ts/", "*.qm", QDir::Name | QDir::IgnoreCase, QDir::Files );
+    QDir            dir( TS_DIR, "*.qm", QDir::Name | QDir::IgnoreCase, QDir::Files );
     QStringList     tss = dir.entryList();
 
     m_ui.comboBoxLanguage->setInsertPolicy( QComboBox::InsertAlphabetically );
