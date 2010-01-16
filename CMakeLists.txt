@@ -39,7 +39,7 @@ ENDIF(WIN32)
 
 # Optionally allow embedding libvlc into the binary as
 # VLMC requires libVLC
-SET (WITH_LIBVLC FALSE CACHE BOOL "Compile LibVLC in VLMC")
+#SET (WITH_LIBVLC FALSE CACHE BOOL "Compile LibVLC in VLMC")
 
 FIND_PACKAGE(LIBVLC)
   IF (NOT LIBVLC_FOUND)
