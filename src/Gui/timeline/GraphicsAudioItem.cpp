@@ -188,6 +188,19 @@ void GraphicsAudioItem::hoverLeaveEvent( QGraphicsSceneHoverEvent* event )
     AbstractGraphicsMediaItem::hoverLeaveEvent( event );
 }
 
+void GraphicsAudioItem::hoverMoveEvent( QGraphicsSceneHoverEvent* event )
+{
+    if ( !tracksView() ) return;
+
+    if ( tracksView()->tool() == TOOL_DEFAULT )
+    {
+        if ( resizeZone( event->pos() ) )
+            setCursor( Qt::SizeHorCursor );
+        else
+            setCursor( Qt::OpenHandCursor );
+    }
+}
+
 void GraphicsAudioItem::mousePressEvent( QGraphicsSceneMouseEvent* event )
 {
     TracksView* tv = Timeline::getInstance()->tracksView();
