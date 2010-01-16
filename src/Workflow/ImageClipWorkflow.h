@@ -23,9 +23,10 @@
 #ifndef IMAGECLIPWORKFLOW_H
 #define IMAGECLIPWORKFLOW_H
 
-#include "VideoClipWorkflow.h"
+#include "ClipWorkflow.h"
+#include "StackedBuffer.hpp"
 
-class   ImageClipWorkflow : public VideoClipWorkflow
+class   ImageClipWorkflow : public ClipWorkflow
 {
     Q_OBJECT
 
@@ -35,8 +36,6 @@ class   ImageClipWorkflow : public VideoClipWorkflow
             public:
                 StackedBuffer( LightVideoFrame* lvf );
                 virtual void    release();
-            private:
-                QPointer<VideoClipWorkflow>     m_poolHandler;
         };
         ImageClipWorkflow( Clip* clip );
 
@@ -47,6 +46,7 @@ class   ImageClipWorkflow : public VideoClipWorkflow
         virtual void            initVlcOutput();
         virtual uint32_t        getNbComputedBuffers() const;
         virtual uint32_t        getMaxComputedBuffers() const;
+        virtual void            flushComputedBuffers();
     private:
         static void             lock( ImageClipWorkflow* clipWorkflow, void** pp_ret,
                                       int size );

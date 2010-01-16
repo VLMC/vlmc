@@ -23,9 +23,10 @@
 #include "ImageClipWorkflow.h"
 #include "Clip.h"
 #include "LightVideoFrame.h"
+#include "MainWorkflow.h"
 
 ImageClipWorkflow::ImageClipWorkflow( Clip *clip ) :
-        VideoClipWorkflow( clip ),
+        ClipWorkflow( clip ),
         m_buffer( NULL ),
         m_stackedBuffer( NULL )
 {
@@ -40,11 +41,28 @@ ImageClipWorkflow::initVlcOutput()
 {
     char    buffer[32];
 
+    m_vlcMedia->addOption( ":no-audio" );
+    m_vlcMedia->addOption( ":no-sout-audio" );
+    m_vlcMedia->addOption( ":sout=#transcode{}:smem" );
+    m_vlcMedia->setVideoDataCtx( this );
+    m_vlcMedia->setVideoLockCallback( reinterpret_cast<void*>( getLockCallback() ) );
+    m_vlcMedia->setVideoUnlockCallback( reinterpret_cast<void*>( getUnlockCallback() ) );
+    m_vlcMedia->addOption( ":sout-transcode-vcodec=RV24" );
+    m_vlcMedia->addOption( ":sout-transcode-acodec=s16l" );
+    m_vlcMedia->addOption( ":sout-smem-time-sync" );
+
+    sprintf( buffer, ":sout-transcode-width=%i",
+             MainWorkflow::getInstance()->getWidth() );
+    m_vlcMedia->addOption( buffer );
+    sprintf( buffer, ":sout-transcode-height=%i",
+             MainWorkflow::getInstance()->getHeight() );
+    m_vlcMedia->addOption( buffer );
+    sprintf( buffer, ":sout-transcode-fps=%f", (float)Clip::DefaultFPS );
+    m_vlcMedia->addOption( buffer );
     sprintf( buffer, ":fake-duration=%d", 1000 );
     m_vlcMedia->addOption( buffer );
     sprintf( buffer, ":fake-fps=%f", m_clip->getParent()->getFps() );
     m_vlcMedia->addOption( buffer );
-    VideoClipWorkflow::initVlcOutput();
 }
 
 void*
@@ -106,6 +124,11 @@ void
 ImageClipWorkflow::stopComputation()
 {
     m_mediaPlayer->stop();
+}
+
+void
+ImageClipWorkflow::flushComputedBuffers()
+{
 }
 
 ImageClipWorkflow::StackedBuffer::StackedBuffer( LightVideoFrame *lvf ) :
