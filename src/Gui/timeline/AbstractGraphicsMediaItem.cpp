@@ -114,7 +114,7 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
         if ( clip()->getBegin() + size > clip()->getMaxEnd() )
             return ;
         tracksView()->getRenderer()->resizeClip( clip(), clip()->getBegin(), clip()->getBegin() + size, 0, //This parameter is unused in this case
-                                                 trackNumber(), MainWorkflow::VideoTrack );
+                                                 trackNumber(), mediaType() );
     }
     else
     {
@@ -129,7 +129,7 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
 //        }
         m_resizeExpected = true;
         tracksView()->getRenderer()->resizeClip( clip(), qMax( clip()->getEnd() - size, (qint64)0 ), clip()->getEnd(),
-                                                 startPos() + ( oldLength - size ), trackNumber(), MainWorkflow::VideoTrack );
+                                                 startPos() + ( oldLength - size ), trackNumber(), mediaType() );
         setStartPos( startPos() + ( oldLength - size ) );
     }
 

@@ -808,7 +808,7 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
         //we can have an undo action.
         Commands::trigger( new Commands::MainWorkflow::ResizeClip( m_renderer, clip->getUuid(), clip->getBegin(),
                                                                    clip->getEnd(), m_actionResizeOldBegin, m_actionResizeOldBegin + m_actionResizeBase,
-                                                                   m_actionItem->pos().x(), m_actionResizeStart, m_actionItem->trackNumber(), MainWorkflow::VideoTrack ) );
+                                                                   m_actionItem->pos().x(), m_actionResizeStart, m_actionItem->trackNumber(), m_actionItem->mediaType() ) );
         updateDuration();
     }
 
