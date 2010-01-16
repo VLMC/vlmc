@@ -224,17 +224,3 @@ void GraphicsMovieItem::mouseReleaseEvent( QGraphicsSceneMouseEvent*  event )
         setCursor( Qt::OpenHandCursor );
 }
 
-bool GraphicsMovieItem::resizeZone( const QPointF& position )
-{
-    // Get the current transformation of the view and invert it.
-    QTransform transform = tracksView()->transform().inverted();
-    // Map the RESIZE_ZONE distance from the view to the item coordinates.
-    QLine line = transform.map( QLine( 0, 0, RESIZE_ZONE, 0 ) );
-
-    if ( position.x() < line.x2() ||
-         position.x() > ( boundingRect().width() - line.x2() ) )
-    {
-        return true;
-    }
-    return false;
-}

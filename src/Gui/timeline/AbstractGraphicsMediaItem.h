@@ -128,6 +128,12 @@ protected slots:
      */
     void adjustLength();
 
+    /**
+     * \brief Check if the position given as parameter could be taken as a resize request.
+     * \return Returns True if the point is in a resize zone.
+     */
+    bool resizeZone( const QPointF& position );
+
 private:
     /// This pointer will be set when inserted in the tracksView.
     TracksView* m_tracksView;

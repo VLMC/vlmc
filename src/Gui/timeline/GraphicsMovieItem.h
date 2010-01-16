@@ -75,11 +75,6 @@ protected:
     virtual void        mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
 
 private:
-    /**
-     * \brief Check if the position given as parameter could be taken as a resize request.
-     * \return Returns True if the point is in a resize zone.
-     */
-    bool                resizeZone( const QPointF& position );
     Clip*               m_clip;
 
 signals:
