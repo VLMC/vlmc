@@ -51,7 +51,11 @@ ClipProperty::ClipProperty( Clip* clip, QWidget *parent ) :
     ui->fpsValueLabel->setText( QString::number( m_clip->getParent()->getFps() ) );
     //Snapshot
     ui->snapshotLabel->setPixmap( m_clip->getParent()->getSnapshot().scaled( 128, 128, Qt::KeepAspectRatio ) );
-
+    //nb tracks :
+    ui->nbVideoTracksValueLabel->setText(
+            QString::number( m_clip->getParent()->getNbVideoTracks() ) );
+    ui->nbAudioTracksValueLabel->setText(
+            QString::number( m_clip->getParent()->getNbAudioTracks() ) );
     //Metatags
     const QPushButton* button = ui->buttonBox->button( QDialogButtonBox::Apply );
     Q_ASSERT( button != NULL);

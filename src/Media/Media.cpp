@@ -47,8 +47,8 @@ Media::Media( const QString& filePath, const QString& uuid /*= QString()*/ )
     m_height( 0 ),
     m_fps( .0f ),
     m_baseClip( NULL ),
-    m_hasVideo( false ),
-    m_hasAudio( false )
+    m_nbAudioTracks( 0 ),
+    m_nbVideoTracks( 0 )
 {
     if ( uuid.length() == 0 )
         m_uuid = QUuid::createUuid();
@@ -277,20 +277,37 @@ void            Media::removeClip( const QUuid& uuid )
 }
 
 bool
-        Media::hasAudioTrack() const
+Media::hasAudioTrack() const
 {
-    return m_hasAudio;
+    return ( m_nbAudioTracks > 0 );
 }
 
 bool
 Media::hasVideoTrack() const
 {
-    return m_hasVideo;
+    return ( m_nbVideoTracks > 0);
 }
 
 void
-Media::setTracksAvailable( bool video, bool audio )
+Media::setNbAudioTrack( int nbTrack )
 {
-    m_hasVideo = video;
-    m_hasAudio = audio;
+    m_nbAudioTracks = nbTrack;
+}
+
+void
+Media::setNbVideoTrack( int nbTracks )
+{
+    m_nbVideoTracks = nbTracks;
+}
+
+int
+Media::getNbAudioTracks() const
+{
+    return m_nbAudioTracks;
+}
+
+int
+Media::getNbVideoTracks() const
+{
+    return m_nbVideoTracks;
 }

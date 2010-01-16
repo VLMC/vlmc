@@ -267,14 +267,18 @@ QString                             MediaPlayer::getLoadedMRL()
     return QString( str );
 }
 
-bool
-MediaPlayer::hasVideoTrack()
+int
+MediaPlayer::getNbAudioTrack()
 {
-    return ( libvlc_video_get_track_count( m_internalPtr, m_ex ) > 0 );
+    int res = libvlc_audio_get_track_count( m_internalPtr, m_ex );
+    CheckVlcppException( m_ex );
+    return res;
 }
 
-bool
-MediaPlayer::hasAudioTrack()
+int
+MediaPlayer::getNbVideoTrack()
 {
-    return ( libvlc_audio_get_track_count( m_internalPtr, m_ex ) > 0 );
+    int res = libvlc_video_get_track_count( m_internalPtr, m_ex );
+    CheckVlcppException( m_ex );
+    return res;
 }

@@ -62,8 +62,8 @@ namespace   LibVLCpp
         bool                                hasVout();
         const QString&                      getLoadedFileName() const;
         QString                             getLoadedMRL();
-        bool                                hasVideoTrack();
-        bool                                hasAudioTrack();
+        int                                 getNbAudioTrack();
+        int                                 getNbVideoTrack();
 
     private:
         static void                         callbacks( const libvlc_event_t* event, void* self );

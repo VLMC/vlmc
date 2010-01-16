@@ -126,8 +126,8 @@ void    MetaDataWorker::metaDataAvailable()
     }
     m_media->setLength( m_mediaPlayer->getLength() );
 
-    m_media->setTracksAvailable( m_mediaPlayer->hasVideoTrack(),
-                                 m_mediaPlayer->hasAudioTrack() );
+    m_media->setNbAudioTrack( m_mediaPlayer->getNbAudioTrack() );
+    m_media->setNbVideoTrack( m_mediaPlayer->getNbVideoTrack() );
     m_media->setNbFrames( (m_media->getLengthMS() / 1000) * m_media->getFps() );
 
     m_media->emitMetaDataComputed();
