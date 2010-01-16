@@ -48,13 +48,13 @@ ImageClipWorkflow::initVlcOutput()
 }
 
 void*
-ImageClipWorkflow::getLockCallback()
+ImageClipWorkflow::getLockCallback() const
 {
     return reinterpret_cast<void*>( &ImageClipWorkflow::lock );
 }
 
 void*
-ImageClipWorkflow::getUnlockCallback()
+ImageClipWorkflow::getUnlockCallback() const
 {
     return reinterpret_cast<void*>( &ImageClipWorkflow::unlock );
 }

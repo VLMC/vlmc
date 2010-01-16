@@ -72,13 +72,13 @@ VideoClipWorkflow::initVlcOutput()
 }
 
 void*
-VideoClipWorkflow::getLockCallback()
+VideoClipWorkflow::getLockCallback() const
 {
     return reinterpret_cast<void*>(&VideoClipWorkflow::lock);
 }
 
 void*
-VideoClipWorkflow::getUnlockCallback()
+VideoClipWorkflow::getUnlockCallback() const
 {
     return reinterpret_cast<void*>( &VideoClipWorkflow::unlock );
 }

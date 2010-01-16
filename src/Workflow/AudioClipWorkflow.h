@@ -54,9 +54,9 @@ class   AudioClipWorkflow : public ClipWorkflow
 
         AudioClipWorkflow( Clip* clip );
         ~AudioClipWorkflow();
-        void*                   getLockCallback();
-        void*                   getUnlockCallback();
-        virtual void*           getOutput( ClipWorkflow::GetMode mode );
+        void                    *getLockCallback() const;
+        void                    *getUnlockCallback() const;
+        virtual void            *getOutput( ClipWorkflow::GetMode mode );
 
     protected:
         virtual uint32_t        getNbComputedBuffers() const;

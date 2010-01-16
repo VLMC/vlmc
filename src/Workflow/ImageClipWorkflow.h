@@ -40,8 +40,8 @@ class   ImageClipWorkflow : public VideoClipWorkflow
         };
         ImageClipWorkflow( Clip* clip );
 
-        void*                   getLockCallback();
-        void*                   getUnlockCallback();
+        void                    *getLockCallback() const;
+        void                    *getUnlockCallback() const;
         virtual void            *getOutput( ClipWorkflow::GetMode mode );
     protected:
         virtual void            initVlcOutput();

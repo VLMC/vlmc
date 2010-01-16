@@ -45,17 +45,20 @@ AudioClipWorkflow::~AudioClipWorkflow()
         delete m_computedBuffers.dequeue();
 }
 
-void*       AudioClipWorkflow::getLockCallback()
+void*
+AudioClipWorkflow::getLockCallback() const
 {
     return reinterpret_cast<void*>(&AudioClipWorkflow::lock);
 }
 
-void*       AudioClipWorkflow::getUnlockCallback()
+void*
+AudioClipWorkflow::getUnlockCallback() const
 {
     return reinterpret_cast<void*>(&AudioClipWorkflow::unlock);
 }
 
-void*       AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
+void*
+AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
 {
     QMutexLocker    lock( m_renderLock );
     QMutexLocker    lock2( m_computedBuffersMutex );

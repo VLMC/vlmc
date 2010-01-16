@@ -48,9 +48,9 @@ class   VideoClipWorkflow : public ClipWorkflow
 
         VideoClipWorkflow( Clip* clip );
         ~VideoClipWorkflow();
-        void*                   getLockCallback();
-        void*                   getUnlockCallback();
-        virtual void*           getOutput( ClipWorkflow::GetMode mode );
+        void                    *getLockCallback() const;
+        void                    *getUnlockCallback() const;
+        virtual void            *getOutput( ClipWorkflow::GetMode mode );
 
         static const uint32_t   nbBuffers = 3 * 30; //3 seconds with an average fps of 30
 

@@ -154,8 +154,8 @@ class   ClipWorkflow : public QObject
 
         void                    waitForCompleteInit();
 
-        virtual void*           getLockCallback() = 0;
-        virtual void*           getUnlockCallback() = 0;
+        virtual void*           getLockCallback() const = 0;
+        virtual void*           getUnlockCallback() const = 0;
 
         LibVLCpp::MediaPlayer*  getMediaPlayer();
 
