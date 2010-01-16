@@ -21,6 +21,16 @@ SET(CMAKE_VERBOSE_MAKEFILE OFF)
 # set path to additional CMake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
+# Configuring build type
+IF(NOT CMAKE_BUILD_TYPE)
+    SET(CMAKE_BUILD_TYPE "Debug" CACHE STRING
+        "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+        FORCE)
+    MESSAGE("Setting build type to '${CMAKE_BUILD_TYPE}'")
+ELSE(NOT CMAKE_BUILD_TYPE)
+    MESSAGE("Build type set to '${CMAKE_BUILD_TYPE}'")
+ENDIF(NOT CMAKE_BUILD_TYPE)
+
 IF(WIN32)
     # Building in release for WIN32
     set(CMAKE_BUILD_TYPE "Release")
