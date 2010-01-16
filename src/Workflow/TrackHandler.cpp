@@ -80,9 +80,14 @@ TrackHandler::startRender()
 {
     m_paused = false;
     m_endReached = false;
-    for ( unsigned int i = 0; i < m_trackCount; ++i )
-        activateTrack( i );
     computeLength();
+    if ( m_length == 0 )
+        m_endReached = true;
+    else
+    {
+        for ( unsigned int i = 0; i < m_trackCount; ++i )
+            activateTrack( i );
+    }
 }
 
 void

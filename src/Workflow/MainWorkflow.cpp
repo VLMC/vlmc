@@ -415,8 +415,10 @@ void
 MainWorkflow::tracksEndReached()
 {
     for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
+    {
         if ( m_tracks[i]->endIsReached() == false )
             return ;
+    }
     emit mainWorkflowEndReached();
 }
 
