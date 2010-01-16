@@ -27,10 +27,40 @@
 
 class   ImageClipWorkflow : public VideoClipWorkflow
 {
-public:
-    ImageClipWorkflow( Clip* clip );
-    virtual void    initVlcOutput();
-private:
+    Q_OBJECT
+
+    public:
+        class   StackedBuffer : public ::StackedBuffer<LightVideoFrame*>
+        {
+            public:
+                StackedBuffer( LightVideoFrame* lvf );
+                virtual void    release();
+            private:
+                QPointer<VideoClipWorkflow>     m_poolHandler;
+        };
+        ImageClipWorkflow( Clip* clip );
+
+        void*                   getLockCallback();
+        void*                   getUnlockCallback();
+        virtual void            *getOutput( ClipWorkflow::GetMode mode );
+    protected:
+        virtual void            initVlcOutput();
+        virtual uint32_t        getNbComputedBuffers() const;
+        virtual uint32_t        getMaxComputedBuffers() const;
+    private:
+        static void             lock( ImageClipWorkflow* clipWorkflow, void** pp_ret,
+                                      int size );
+        static void             unlock( ImageClipWorkflow* clipWorkflow, void* buffer,
+                                        int width, int height, int bpp, int size,
+                                        qint64 pts );
+    private:
+        LightVideoFrame         *m_buffer;
+        StackedBuffer           *m_stackedBuffer;
+
+    private slots:
+        void                    stopComputation();
+    signals:
+        void                    computedFinished();
 };
 
 #endif // IMAGECLIPWORKFLOW_H

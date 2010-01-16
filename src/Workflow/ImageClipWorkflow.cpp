@@ -22,13 +22,17 @@
 
 #include "ImageClipWorkflow.h"
 #include "Clip.h"
-
-//FIXME: This should be taken from the configuration.
-#define IMAGE_DURATION  10000
+#include "LightVideoFrame.h"
 
 ImageClipWorkflow::ImageClipWorkflow( Clip *clip ) :
-        VideoClipWorkflow( clip )
+        VideoClipWorkflow( clip ),
+        m_buffer( NULL ),
+        m_stackedBuffer( NULL )
 {
+    //This is used to queue the media player stopping, as it can't be asked for
+    //from vlc's input thread (well it can but it will deadlock)
+    connect( this, SIGNAL( computedFinished() ),
+             this, SLOT( stopComputation() ), Qt::QueuedConnection );
 }
 
 void
@@ -36,9 +40,81 @@ ImageClipWorkflow::initVlcOutput()
 {
     char    buffer[32];
 
-    sprintf( buffer, ":fake-duration=%d", IMAGE_DURATION );
+    sprintf( buffer, ":fake-duration=%d", 1000 );
     m_vlcMedia->addOption( buffer );
     sprintf( buffer, ":fake-fps=%f", m_clip->getParent()->getFps() );
     m_vlcMedia->addOption( buffer );
     VideoClipWorkflow::initVlcOutput();
+}
+
+void*
+ImageClipWorkflow::getLockCallback()
+{
+    return reinterpret_cast<void*>( &ImageClipWorkflow::lock );
+}
+
+void*
+ImageClipWorkflow::getUnlockCallback()
+{
+    return reinterpret_cast<void*>( &ImageClipWorkflow::unlock );
+}
+
+void*
+ImageClipWorkflow::getOutput( ClipWorkflow::GetMode )
+{
+    QMutexLocker    lock( m_renderLock );
+
+    return m_stackedBuffer;
+}
+
+void
+ImageClipWorkflow::lock(ImageClipWorkflow *cw, void **pp_ret, int size )
+{
+    cw->m_renderLock->lock();
+    if ( cw->m_buffer == NULL )
+    {
+        cw->m_buffer = new LightVideoFrame( size );
+        cw->m_stackedBuffer = new StackedBuffer( cw->m_buffer );
+    }
+    *pp_ret = (*(cw->m_buffer))->frame.octets;
+}
+
+void
+ImageClipWorkflow::unlock(ImageClipWorkflow *cw, void *buffer, int width, int height, int bpp, int size, qint64 pts)
+{
+    cw->m_renderLock->unlock();
+    cw->emit computedFinished();
+}
+
+uint32_t
+ImageClipWorkflow::getNbComputedBuffers() const
+{
+    QMutexLocker    lock( m_renderLock );
+
+    if ( m_buffer != NULL )
+        return 1;
+    return 0;
+}
+
+uint32_t
+ImageClipWorkflow::getMaxComputedBuffers() const
+{
+    return 1;
+}
+
+void
+ImageClipWorkflow::stopComputation()
+{
+    m_mediaPlayer->stop();
+}
+
+ImageClipWorkflow::StackedBuffer::StackedBuffer( LightVideoFrame *lvf ) :
+    ::StackedBuffer<LightVideoFrame*>( lvf, false )
+{
+}
+
+void
+ImageClipWorkflow::StackedBuffer::release()
+{
+    return ;
 }

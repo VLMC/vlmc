@@ -203,6 +203,7 @@ SET (VLMC_HDRS
     Workflow/ClipWorkflow.h
     Workflow/ImageClipWorkflow.h
     Workflow/MainWorkflow.h
+    Workflow/StackedBuffer.hpp
     Workflow/TrackHandler.h
     Workflow/TrackWorkflow.h
     Workflow/VideoClipWorkflow.h
