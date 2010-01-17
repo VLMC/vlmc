@@ -4,7 +4,9 @@
  * Copyright (C) 2008-2009 the VLMC team
  *
  * Authors: Christophe Courtaut <christophe.courtaut@gmail.com>
- * Authors: Clement CHAVANCE <kinder@vlmcorg>
+ *          Clement CHAVANCE <kinder@vlmc.org>
+ *          Hugo Beauzee-Luyssen <beauze.h@gmail.com>
+ *          Ludovic Fauvet <etix@l0cal.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -27,6 +29,7 @@
 #include "ui_LanguagePreferences.h"
 
 #include <QDir>
+#include <QLocale>
 
 QTranslator* LanguagePreferences::m_currentLang = NULL;
 
@@ -35,25 +38,34 @@ LanguagePreferences::LanguagePreferences( QWidget *parent )
 {
     m_ui.setupUi( this );
 
-    QDir            dir( ":/ts/", "*.qm", QDir::Name | QDir::IgnoreCase, QDir::Files );
-    QStringList     tss = dir.entryList();
+    QDir dir( ":/ts/", "*.qm", QDir::Name | QDir::IgnoreCase, QDir::Files );
 
-    foreach ( const QString& tsFileName, tss )
+    foreach ( const QString& tsFileName, dir.entryList() )
     {
-        QString     localeStr;
+        QString     countryCode;
         int         localePos = tsFileName.lastIndexOf( TS_PREFIX );
-        int         dotPos = tsFileName.lastIndexOf( ".qm" );
-        if ( localePos < 0 || dotPos < 0 )
+        int         extPos = tsFileName.lastIndexOf( ".qm" );
+
+        if ( localePos < 0 || extPos < 0 || localePos > extPos )
         {
             qWarning() << "Invalid translation file:" << tsFileName;
             continue ;
         }
-        localePos += 5;
-        localeStr = tsFileName.mid( localePos, dotPos - localePos );
-        QLocale     locale( localeStr );
+
+        localePos += qstrlen( TS_PREFIX );
+        countryCode = tsFileName.mid( localePos, extPos - localePos );
+        QLocale     locale( countryCode );
+
+        // Check if the country code is valid ISO 639
+        if ( locale.language() == QLocale::C )
+        {
+            qWarning() << "Invalid locale for file:" << tsFileName;
+            continue;
+        }
+
         m_ui.comboBoxLanguage->addItem( QString( "%1 (%2)" ).arg(
                 QLocale::languageToString( locale.language() ),
-                QLocale::countryToString( locale.country() ) ), localeStr );
+                QLocale::countryToString( locale.country() ) ), countryCode );
     }
     m_ui.comboBoxLanguage->addItem( "English (UnitedStates)",    "en_US" );
 
