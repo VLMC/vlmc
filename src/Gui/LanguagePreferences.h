@@ -29,6 +29,8 @@
 #include "PreferenceWidget.h"
 #include "ui_LanguagePreferences.h"
 
+#define TS_PREFIX "vlmc_"
+
 class LanguagePreferences : public PreferenceWidget
 {
     Q_OBJECT

@@ -35,14 +35,14 @@ LanguagePreferences::LanguagePreferences( QWidget *parent )
 {
     m_ui.setupUi( this );
 
-    QDir            dir( TS_DIR, "*.qm", QDir::Name | QDir::IgnoreCase, QDir::Files );
+    QDir            dir( ":/ts/", "*.qm", QDir::Name | QDir::IgnoreCase, QDir::Files );
     QStringList     tss = dir.entryList();
 
     m_ui.comboBoxLanguage->setInsertPolicy( QComboBox::InsertAlphabetically );
     foreach ( const QString& tsFileName, tss )
     {
         QString     localeStr;
-        int         localePos = tsFileName.lastIndexOf( "vlmc_");
+        int         localePos = tsFileName.lastIndexOf( TS_PREFIX );
         int         dotPos = tsFileName.lastIndexOf( ".qm" );
         if ( localePos < 0 || dotPos < 0 )
         {
@@ -52,12 +52,11 @@ LanguagePreferences::LanguagePreferences( QWidget *parent )
         localePos += 5;
         localeStr = tsFileName.mid( localePos, dotPos - localePos );
         QLocale     locale( localeStr );
-        qDebug() << "Adding new language:" << QLocale::countryToString( locale.country() ) << '/' <<
-                QLocale::languageToString( locale.language() ) << "with locale" << localeStr;
-        m_ui.comboBoxLanguage->addItem( QLocale::countryToString( locale.country() ) + " / "
-                                        + QLocale::languageToString( locale.language() ), localeStr );
+        m_ui.comboBoxLanguage->addItem( QString( "%1 (%2)" ).arg(
+                QLocale::languageToString( locale.language() ),
+                QLocale::countryToString( locale.country() ) ), localeStr );
     }
-    m_ui.comboBoxLanguage->addItem( "UnitedStates / English",    "en_US" );
+    m_ui.comboBoxLanguage->addItem( "English (UnitedStates)",    "en_US" );
 }
 
 LanguagePreferences::~LanguagePreferences() {}
@@ -94,7 +93,7 @@ void LanguagePreferences::changeLang( QString langValue )
     if ( !langValue.isEmpty() )
     {
         m_currentLang = new QTranslator();
-        m_currentLang->load( langValue, ":/Lang/" );
+        m_currentLang->load( TS_PREFIX + langValue, ":/ts/" );
         qApp->installTranslator( m_currentLang );
     }
 }
