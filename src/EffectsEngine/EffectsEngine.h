@@ -30,9 +30,16 @@
 #define EFFECTSENGINE_H_
 
 #include "EffectNodeFactory.h"
+//Temporary
+#include "SemanticObjectManager.hpp"
 
 #include <QReadWriteLock>
 #include <QtGlobal>
+
+// Temporary
+class  TStart;
+class  TStop;
+
 
 class   EffectNode;
 class   LightVideoFrame;
@@ -128,10 +135,18 @@ class	EffectsEngine
 
     // TEMPORARY TRANSITION WRAPPER
 
-    quint32                     addTransition( quint32 startFrame, quint32 endFrame );
-    bool                        moveTransition( quint32 transitionId, quint32 startFrame, quint32 endFrame );
+    quint32                     addTransition( quint32 srcTrackId,
+                                               quint32 dstTrackId,
+                                               quint32 startFrameId,
+                                               quint32 stopFrameId );
+    bool                        moveTransition( quint32 transitionId,
+                                                quint32 startFrameId,
+                                                quint32 stopFrameId );
     bool                        removeTransition( quint32 transitionId );
 
+private:
+
+    void                        configureTransitions();
 
 private:
 
@@ -172,6 +187,65 @@ private:
      */
     bool                    m_processedInBypassPatch;
 
+// Temporary
+
+    SemanticObjectManager<TStart>            m_TStartManager;
+    SemanticObjectManager<TStop>             m_TStopManager;
+    QMap<quint32, QMap<quint32, TStart*> >   m_TStartTimeline;
+    QMap<quint32, QMap<quint32, TStop*> >    m_TStopTimeline;
+};
+
+// Temporary
+
+struct TStart
+{
+    void setId( quint32 id )
+    {
+        m_id = id;
+    };
+    void setName( const QString & name )
+    {
+        Q_UNUSED( name );
+    };
+    void setFather( EffectNode* father )
+    {
+        Q_UNUSED( father );
+    };
+    void setScope( bool isItInternal )
+    {
+        Q_UNUSED( isItInternal );
+    };
+
+    quint32     m_id;
+    quint32     m_startFrameId;
+    quint32     m_srcTrackId;
+    quint32     m_dstTrackId;
+    quint32     m_nbSteps;
+};
+
+struct  TStop
+{
+    void setId( quint32 id )
+    {
+        m_id = id;
+    };
+    void setName( const QString & name )
+    {
+        Q_UNUSED( name );
+    };
+    void setFather( EffectNode* father )
+    {
+        Q_UNUSED( father );
+    };
+    void setScope( bool isItInternal )
+    {
+        Q_UNUSED( isItInternal );
+    };
+
+    quint32     m_id;
+    quint32     m_stopFrameId;
+    quint32     m_srcTrackId;
+    quint32     m_dstTrackId;
 };
 
 #endif // EFFECTSENGINE_H_

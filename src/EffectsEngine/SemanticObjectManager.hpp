@@ -25,6 +25,7 @@
 #ifndef SEMANTICOBJECTMANAGER_H_
 #define SEMANTICOBJECTMANAGER_H_
 
+#include <QDebug>
 #include <QString>
 #include <QMap>
 

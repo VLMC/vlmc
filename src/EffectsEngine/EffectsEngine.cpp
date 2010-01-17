@@ -205,7 +205,10 @@ EffectsEngine::render( void )
     if ( m_processedInBypassPatch == false )
         m_patch->render();
     else
+    {
+        configureTransitions();
         m_bypassPatch->render();
+    }
 }
 
 const LightVideoFrame &
@@ -237,26 +240,101 @@ EffectsEngine::disable( void )
 
 // TEMPORARY TRANSITION WRAPPER
 
-quint32
-EffectsEngine::addTransition( quint32 startFrame, quint32 endFrame )
+void
+EffectsEngine::configureTransitions()
 {
-    Q_UNUSED( startFrame );
-    Q_UNUSED( endFrame );
-    return 42;
+}
+
+quint32
+EffectsEngine::addTransition( quint32 srcTrackId,
+                              quint32 dstTrackId,
+                              quint32 startFrameId,
+                              quint32 stopFrameId )
+{
+    QWriteLocker  wl( &m_rwl );
+    TStart*     tstart;
+    TStop*      tstop;
+
+    m_TStartManager.createObject();
+    m_TStopManager.createObject();
+    tstart = m_TStartManager.getObject( m_TStartManager.getNBObjects() );
+    tstop = m_TStopManager.getObject( m_TStopManager.getNBObjects() );
+
+    tstart->m_startFrameId = startFrameId;
+    tstart->m_nbSteps = stopFrameId - startFrameId;
+    tstart->m_srcTrackId = srcTrackId;
+    tstart->m_dstTrackId = dstTrackId;
+
+    tstop->m_stopFrameId = stopFrameId;
+    tstop->m_srcTrackId = srcTrackId;
+    tstop->m_dstTrackId = dstTrackId;
+    m_TStartTimeline[startFrameId][tstart->m_id] = tstart;
+    m_TStopTimeline[stopFrameId][tstop->m_id] = tstop;
+    return tstart->m_id;
 }
 
 bool
-EffectsEngine::moveTransition( quint32 transitionId, quint32 startFrame, quint32 endFrame )
+EffectsEngine::moveTransition( quint32 transitionId, quint32 startFrameId, quint32 stopFrameId )
 {
-    Q_UNUSED( transitionId );
-    Q_UNUSED( startFrame );
-    Q_UNUSED( endFrame );
+    QWriteLocker  wl( &m_rwl );
+    TStart*     tstart;
+    TStop*      tstop;
+
+    tstart = m_TStartManager.getObject( transitionId );
+    tstop = m_TStopManager.getObject( transitionId );
+    if ( tstart == NULL || tstop == NULL )
+        return false;
+
+    if ( tstart->m_startFrameId != startFrameId )
+    {
+        m_TStartTimeline[tstart->m_startFrameId].
+            erase( m_TStartTimeline[tstart->m_startFrameId].find( tstart->m_id ) );
+        if ( m_TStartTimeline[tstart->m_startFrameId].isEmpty() == true )
+            m_TStartTimeline.erase( m_TStartTimeline.find( tstart->m_startFrameId ) );
+        m_TStartTimeline[startFrameId][transitionId] = tstart;
+    }
+
+    if ( tstop->m_stopFrameId != stopFrameId )
+    {
+        m_TStopTimeline[tstop->m_stopFrameId].
+            erase( m_TStopTimeline[tstop->m_stopFrameId].find( tstop->m_id ) );
+        if ( m_TStopTimeline[tstop->m_stopFrameId].isEmpty() == true )
+            m_TStopTimeline.erase( m_TStopTimeline.find( tstop->m_stopFrameId ) );
+        m_TStopTimeline[startFrameId][transitionId] = tstop;
+    }
+
+
+    tstart->m_startFrameId = startFrameId;
+    tstart->m_nbSteps = stopFrameId - startFrameId;
+    tstop->m_stopFrameId = stopFrameId;
+
+    // if we're during a transition, think to update the nbSteps in the transition Effect.
+
     return true;
 }
 
 bool
 EffectsEngine::removeTransition( quint32 transitionId )
 {
-    Q_UNUSED( transitionId );
+    QWriteLocker  wl( &m_rwl );
+    TStart*     tstart;
+    TStop*      tstop;
+
+    tstart = m_TStartManager.getObject( transitionId );
+    tstop = m_TStopManager.getObject( transitionId );
+    if ( tstart == NULL || tstop == NULL )
+        return false;
+
+    m_TStartTimeline[tstart->m_startFrameId].
+        erase( m_TStartTimeline[tstart->m_startFrameId].find( tstart->m_id ) );
+    if ( m_TStartTimeline[tstart->m_startFrameId].isEmpty() == true )
+        m_TStartTimeline.erase( m_TStartTimeline.find( tstart->m_startFrameId ) );
+    m_TStopTimeline[tstop->m_stopFrameId].
+        erase( m_TStopTimeline[tstop->m_stopFrameId].find( tstop->m_id ) );
+    if ( m_TStopTimeline[tstop->m_stopFrameId].isEmpty() == true )
+        m_TStopTimeline.erase( m_TStopTimeline.find( tstop->m_stopFrameId ) );
+
+    m_TStartManager.deleteObject( transitionId );
+    m_TStopManager.deleteObject( transitionId );
     return true;
 }
