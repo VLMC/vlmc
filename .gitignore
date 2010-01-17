@@ -2,7 +2,6 @@
 /bin
 /debug
 /qtc-gdbmacros
-/ts/*.qm
 Makefile*
 /include
 
