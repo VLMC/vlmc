@@ -38,7 +38,6 @@ LanguagePreferences::LanguagePreferences( QWidget *parent )
     QDir            dir( ":/ts/", "*.qm", QDir::Name | QDir::IgnoreCase, QDir::Files );
     QStringList     tss = dir.entryList();
 
-    m_ui.comboBoxLanguage->setInsertPolicy( QComboBox::InsertAlphabetically );
     foreach ( const QString& tsFileName, tss )
     {
         QString     localeStr;
@@ -57,6 +56,9 @@ LanguagePreferences::LanguagePreferences( QWidget *parent )
                 QLocale::countryToString( locale.country() ) ), localeStr );
     }
     m_ui.comboBoxLanguage->addItem( "English (UnitedStates)",    "en_US" );
+
+    // Sort the combobox
+    m_ui.comboBoxLanguage->model()->sort( 0 );
 }
 
 LanguagePreferences::~LanguagePreferences() {}
