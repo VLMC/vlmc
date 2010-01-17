@@ -3,36 +3,6 @@
 
 SUBDIRS(EffectsEngine/Plugins/src)
 
-MACRO(ADD_TRANSLATION_FILES _sources )
-
-    FOREACH (_current_FILE ${ARGN})
-      GET_FILENAME_COMPONENT(_in ${_current_FILE} ABSOLUTE)
-      GET_FILENAME_COMPONENT(_basename ${_current_FILE} NAME_WE)
-
-      SET(_out ${CMAKE_SOURCE_DIR}/ts/${_basename}.qm)
-
-      ADD_CUSTOM_COMMAND(
-         OUTPUT ${_out}
-         COMMAND ${QT_LRELEASE_EXECUTABLE}
-         ARGS -verbose ${_in} -qm ${_out}
-         DEPENDS ${_in}
-      )
-
-      SET(${_sources} ${${_sources}} ${_out} )
-   ENDFOREACH (_current_FILE)
-ENDMACRO(ADD_TRANSLATION_FILES)
-
-
-FILE (GLOB TS_FILES ${CMAKE_SOURCE_DIR}/ts/*.ts)
-set_property( DIRECTORY PROPERTY APPEND PROPERTY COMPILE_DEFINITIONS TS_DIR="${CMAKE_SOURCE_DIR}/ts/" )
-
-ADD_TRANSLATION_FILES (VLMC_QM ${TS_FILES})
-
-# creating a custom target is needed to make the files build
-# "ALL" means that it will be run by default
-ADD_CUSTOM_TARGET (translations ALL
-                  DEPENDS ${VLMC_QM})
-
 SET(VLMC_SRCS 
     main.cpp
     Actions/ActionStack.cpp
