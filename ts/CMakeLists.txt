@@ -1,17 +1,26 @@
 
+## RCC file
+SET(TS_QRC ${CMAKE_SOURCE_DIR}/ts/ressources-ts.qrc)
+
 IF(NOT QT_LUPDATE_EXECUTABLE)
     MESSAGE(WARNING "VLMC could not find lupdate. You won't be able to update translations.")
 ENDIF(NOT QT_LUPDATE_EXECUTABLE)
 
 IF(NOT QT_LRELEASE_EXECUTABLE)
     MESSAGE(WARNING "VLMC could not find lrelease. Your build won't contain translations.")
+    ## Create an empty RCC file
+    FILE(WRITE ${TS_QRC} "<RCC></RCC>")
 ENDIF(NOT QT_LRELEASE_EXECUTABLE)
+
 
 ## Wraps the supplied .ts files in lrelease commands
 MACRO(QT4_ADD_TRANSLATIONS outfiles)
+    FILE(WRITE ${TS_QRC} "<RCC><qresource prefix=\"ts\">\n")
     FOREACH (it ${ARGN})
         GET_FILENAME_COMPONENT(it ${it} ABSOLUTE)
         GET_FILENAME_COMPONENT(outfile ${it} NAME_WE)
+
+        FILE(APPEND ${TS_QRC} "<file>${outfile}.qm</file>\n")
 
         SET(outfile ${CMAKE_SOURCE_DIR}/ts/${outfile}.qm)
 
@@ -24,6 +33,7 @@ MACRO(QT4_ADD_TRANSLATIONS outfiles)
 
         SET(${outfiles} ${${outfiles}} ${outfile})
     ENDFOREACH(it)
+    FILE(APPEND ${TS_QRC} "</qresource></RCC>")
 ENDMACRO(QT4_ADD_TRANSLATIONS)
 
 ## Collect all translations files

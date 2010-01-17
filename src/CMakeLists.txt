@@ -210,7 +210,7 @@ SET(VLMC_UIS
 
 SET(VLMC_RCC
     ../ressources.qrc
-    ../ressources-ts.qrc
+    ../ts/ressources-ts.qrc
   )
 
 #include paths for vlmc
