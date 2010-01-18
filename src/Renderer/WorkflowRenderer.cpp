@@ -102,19 +102,22 @@ WorkflowRenderer::~WorkflowRenderer()
 int     WorkflowRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigned int *flags, size_t *bufferSize, void **buffer )
 {
     int             ret = 1;
+    EsHandler*      handler = reinterpret_cast<EsHandler*>( datas );
+    bool            paused = handler->self->m_paused;
 
-    EsHandler*  handler = reinterpret_cast<EsHandler*>( datas );
     *dts = -1;
     *flags = 0;
     if ( handler->type == Video )
     {
         ret = handler->self->lockVideo( pts, bufferSize, buffer );
-        handler->self->m_mainWorkflow->goToNextFrame( MainWorkflow::VideoTrack );
+        if ( paused == false )
+            handler->self->m_mainWorkflow->goToNextFrame( MainWorkflow::VideoTrack );
     }
     else if ( handler->type == Audio )
     {
         ret = handler->self->lockAudio( pts, bufferSize, buffer );
-        handler->self->m_mainWorkflow->goToNextFrame( MainWorkflow::AudioTrack );
+        if ( paused == false )
+            handler->self->m_mainWorkflow->goToNextFrame( MainWorkflow::AudioTrack );
     }
     else
         qCritical() << "Invalid ES type";
