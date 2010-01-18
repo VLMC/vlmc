@@ -52,6 +52,8 @@ ImportMediaListController::addMedia( Media* media )
     addCell( cell );
 
     m_mediaCellList->insert( media->getUuid(), cell );
+    if ( media->baseClip() == NULL )
+        connect( media, SIGNAL( metaDataComputed( Media* ) ), cell, SLOT( enableCell() ) );
 }
 
 void

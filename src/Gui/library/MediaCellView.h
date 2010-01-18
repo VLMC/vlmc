@@ -79,6 +79,7 @@ signals:
 public slots:
     void        deleteButtonClicked( QWidget* sender, QMouseEvent* event );
     void        arrowButtonClicked( QWidget* sender, QMouseEvent* event );
+    void        enableCell();
 
 };
 

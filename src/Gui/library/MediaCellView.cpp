@@ -40,6 +40,7 @@ MediaCellView::MediaCellView( const QUuid& uuid, QWidget *parent ) :
     connect( m_ui->arrow,
              SIGNAL( clicked( QWidget*, QMouseEvent* ) ),
              SLOT( arrowButtonClicked( QWidget*, QMouseEvent* ) ) );
+    setEnabled( false );
 }
 
 MediaCellView::~MediaCellView()
@@ -199,4 +200,10 @@ MediaCellView::containsClip()
     disconnect( m_ui->arrow,
                 SIGNAL( clicked( QWidget*, QMouseEvent* ) ), this,
                 SLOT( arrowButtonClicked( QWidget*, QMouseEvent* ) ) );
+}
+
+void
+MediaCellView::enableCell()
+{
+    this->setEnabled( true );
 }
