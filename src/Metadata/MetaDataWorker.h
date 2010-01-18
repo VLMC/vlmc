@@ -58,7 +58,6 @@ class MetaDataWorker : public QObject
     private:
         LibVLCpp::MediaPlayer*      m_mediaPlayer;
         Media*                      m_media;
-        QString                     m_tmpSnapshotFilename;
 
         bool                        m_mediaIsPlaying;
         bool                        m_lengthHasChanged;
@@ -67,7 +66,7 @@ class MetaDataWorker : public QObject
 
     private slots:
         void    renderSnapshot();
-        void    setSnapshot();
+        void    setSnapshot( const char* );
         void    entrypointPlaying();
         void    entrypointLengthChanged();
         void    generateAudioSpectrum();

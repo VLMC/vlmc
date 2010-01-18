@@ -47,7 +47,8 @@ MetaDataWorker::~MetaDataWorker()
         delete m_audioBuffer;
 }
 
-void    MetaDataWorker::compute()
+void
+MetaDataWorker::compute()
 {
     if ( m_media->getFileType() == Media::Video ||
          m_media->getFileType() == Media::Audio )
@@ -63,7 +64,8 @@ void    MetaDataWorker::compute()
     m_media->flushVolatileParameters();
 }
 
-void    MetaDataWorker::computeDynamicFileMetaData()
+void
+MetaDataWorker::computeDynamicFileMetaData()
 {
     //Disabling audio for this specific use of the media
     m_media->addVolatileParam( ":no-audio", ":audio" );
@@ -71,7 +73,8 @@ void    MetaDataWorker::computeDynamicFileMetaData()
              this, SLOT( entrypointLengthChanged() ), Qt::QueuedConnection );
 }
 
-void    MetaDataWorker::computeImageMetaData()
+void
+MetaDataWorker::computeImageMetaData()
 {
     m_media->addVolatileParam( ":access=fake", ":access=''" );
     m_media->addVolatileParam( ":fake-duration=10000", ":fake-duration=''" );
@@ -79,7 +82,8 @@ void    MetaDataWorker::computeImageMetaData()
     m_lengthHasChanged = true;
 }
 
-void    MetaDataWorker::prepareAudioSpectrumComputing()
+void
+MetaDataWorker::prepareAudioSpectrumComputing()
 {
     m_media->getVLCMedia()->addOption( ":no-sout-video" );
     m_media->getVLCMedia()->addOption( ":sout=#transcode{}:smem" );
@@ -92,7 +96,8 @@ void    MetaDataWorker::prepareAudioSpectrumComputing()
     connect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( generateAudioSpectrum() ), Qt::QueuedConnection );
 }
 
-void    MetaDataWorker::metaDataAvailable()
+void
+MetaDataWorker::metaDataAvailable()
 {
     m_mediaIsPlaying = false;
     m_lengthHasChanged = false;
@@ -142,7 +147,8 @@ void    MetaDataWorker::metaDataAvailable()
         finalize();
 }
 
-void    MetaDataWorker::renderSnapshot()
+void
+MetaDataWorker::renderSnapshot()
 {
     if ( m_media->getFileType() == Media::Video ||
          m_media->getFileType() == Media::Audio )
@@ -150,27 +156,29 @@ void    MetaDataWorker::renderSnapshot()
     QTemporaryFile tmp;
     tmp.setAutoRemove( false );
     tmp.open();
-    m_tmpSnapshotFilename = tmp.fileName();
 
-    connect( m_mediaPlayer, SIGNAL( snapshotTaken() ), this, SLOT( setSnapshot() ), Qt::QueuedConnection );
+    connect( m_mediaPlayer, SIGNAL( snapshotTaken( const char* ) ),
+             this, SLOT( setSnapshot( const char* ) ), Qt::QueuedConnection );
 
     //The slot should be triggered in this methode
-    m_mediaPlayer->takeSnapshot( m_tmpSnapshotFilename.toStdString().c_str(), 0, 0 );
+    m_mediaPlayer->takeSnapshot( tmp.fileName().toStdString().c_str(), 0, 0 );
     //Snapshot slot should has been called (but maybe not in next version...)
 }
 
-void    MetaDataWorker::setSnapshot()
+void
+MetaDataWorker::setSnapshot( const char* filename )
 {
-    QPixmap* pixmap = new QPixmap( m_tmpSnapshotFilename );
+    QPixmap* pixmap = new QPixmap( filename );
     if ( pixmap->isNull() )
         delete pixmap;
     else
         m_media->setSnapshot( pixmap );
     //TODO : we shouldn't have to do this... patch vlc to get a memory snapshot.
-    QFile   tmp( m_tmpSnapshotFilename );
+    QFile   tmp( filename );
     tmp.remove();
 
-    disconnect( m_mediaPlayer, SIGNAL( snapshotTaken() ), this, SLOT( setSnapshot() ) );
+    disconnect( m_mediaPlayer, SIGNAL( snapshotTaken(const char*) ),
+                this, SLOT( setSnapshot( const char* ) ) );
 
     //CHECKME:
     //This is synchrone, but it may become asynchrone in the future...
@@ -180,14 +188,16 @@ void    MetaDataWorker::setSnapshot()
     finalize();
 }
 
-void    MetaDataWorker::finalize()
+void
+MetaDataWorker::finalize()
 {
     m_media->disconnect( this );
     emit    computed();
     delete this;
 }
 
-void    MetaDataWorker::entrypointLengthChanged()
+void
+MetaDataWorker::entrypointLengthChanged()
 {
     disconnect( m_mediaPlayer, SIGNAL( lengthChanged() ), this, SLOT( entrypointLengthChanged() ) );
     m_lengthHasChanged = true;
@@ -195,7 +205,8 @@ void    MetaDataWorker::entrypointLengthChanged()
         metaDataAvailable();
 }
 
-void    MetaDataWorker::entrypointPlaying()
+void
+MetaDataWorker::entrypointPlaying()
 {
     disconnect( m_mediaPlayer, SIGNAL( playing() ), this, SLOT( entrypointPlaying() ) );
     m_mediaIsPlaying = true;
@@ -203,14 +214,16 @@ void    MetaDataWorker::entrypointPlaying()
         metaDataAvailable();
 }
 
-void        MetaDataWorker::lock( MetaDataWorker* metaDataWorker, uint8_t** pcm_buffer , unsigned int size )
+void
+MetaDataWorker::lock( MetaDataWorker* metaDataWorker, uint8_t** pcm_buffer , unsigned int size )
 {
     if ( metaDataWorker->m_audioBuffer == NULL )
         metaDataWorker->m_audioBuffer = new unsigned char[size];
     *pcm_buffer = metaDataWorker->m_audioBuffer;
 }
 
-void        MetaDataWorker::unlock( MetaDataWorker* metaDataWorker, uint8_t* pcm_buffer,
+void
+MetaDataWorker::unlock( MetaDataWorker* metaDataWorker, uint8_t* pcm_buffer,
                                       unsigned int channels, unsigned int rate,
                                       unsigned int nb_samples, unsigned int bits_per_sample,
                                       unsigned int size, int pts )
@@ -246,7 +259,8 @@ void        MetaDataWorker::unlock( MetaDataWorker* metaDataWorker, uint8_t* pcm
     metaDataWorker->addAudioValue( leftAverage );
 }
 
-void    MetaDataWorker::generateAudioSpectrum()
+void
+MetaDataWorker::generateAudioSpectrum()
 {
     disconnect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( generateAudioSpectrum() ) );
     m_mediaPlayer->stop();
@@ -257,7 +271,8 @@ void    MetaDataWorker::generateAudioSpectrum()
     delete this;
 }
 
-void    MetaDataWorker::addAudioValue( int value )
+void
+MetaDataWorker::addAudioValue( int value )
 {
     m_media->getAudioValues()->append( value );
 }

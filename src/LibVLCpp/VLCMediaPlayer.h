@@ -74,7 +74,7 @@ namespace   LibVLCpp
         Media*                              m_media;
 
     signals:
-        void                                snapshotTaken();
+        void                                snapshotTaken( const char* );
         void                                timeChanged( qint64 );
         void                                playing();
         void                                paused();

@@ -111,7 +111,7 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
         self->emit lengthChanged();
         break;
     case libvlc_MediaPlayerSnapshotTaken:
-        self->emit snapshotTaken();
+        self->emit snapshotTaken( event->u.media_player_snapshot_taken.psz_filename );
         break;
     case libvlc_MediaPlayerEncounteredError:
         qDebug() << "libvlc_MediaPlayerEncounteredError received."
