@@ -95,7 +95,10 @@ void            MediaCellView::mouseDoubleClickEvent( QMouseEvent* event )
 {
     if ( ( event->buttons() | Qt::LeftButton ) == Qt::LeftButton )
     {
-        ClipProperty* mp = new ClipProperty( Library::getInstance()->clip( m_uuid ), this );
+        Clip* clip = Library::getInstance()->clip( m_uuid );
+        if ( clip == NULL )
+            return;
+        ClipProperty* mp = new ClipProperty( clip, this );
         mp->setModal( true );
         mp->show();
     }

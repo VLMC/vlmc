@@ -67,6 +67,8 @@ Library::clip( const QUuid& uuid )
     if ( m_medias.contains( uuid ) )
     {
         Media* media = m_medias.value( uuid );
+        if ( media->baseClip() == NULL )
+            return NULL;
         Clip* clip = new Clip( media->baseClip() );
         return clip;
     }
