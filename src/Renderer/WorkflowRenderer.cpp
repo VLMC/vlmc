@@ -99,7 +99,9 @@ WorkflowRenderer::~WorkflowRenderer()
     delete m_waitCond;
 }
 
-int     WorkflowRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigned int *flags, size_t *bufferSize, void **buffer )
+int
+WorkflowRenderer::lock( void *datas, qint64 *dts, qint64 *pts, quint32 *flags,
+                        size_t *bufferSize, void **buffer )
 {
     int             ret = 1;
     EsHandler*      handler = reinterpret_cast<EsHandler*>( datas );
@@ -124,7 +126,8 @@ int     WorkflowRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigne
     return ret;
 }
 
-int     WorkflowRenderer::lockVideo( int64_t *pts, size_t *bufferSize, void **buffer )
+int
+WorkflowRenderer::lockVideo( qint64 *pts, size_t *bufferSize, void **buffer )
 {
     qint64 ptsDiff = 0;
 
@@ -148,7 +151,8 @@ int     WorkflowRenderer::lockVideo( int64_t *pts, size_t *bufferSize, void **bu
     return 0;
 }
 
-int     WorkflowRenderer::lockAudio(  int64_t *pts, size_t *bufferSize, void **buffer )
+int
+WorkflowRenderer::lockAudio( qint64 *pts, size_t *bufferSize, void **buffer )
 {
     qint64 ptsDiff;
 

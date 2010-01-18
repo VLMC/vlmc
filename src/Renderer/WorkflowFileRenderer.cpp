@@ -89,7 +89,9 @@ float   WorkflowFileRenderer::getFps() const
     return m_outputFps;
 }
 
-int     WorkflowFileRenderer::lock( void *datas, int64_t *dts, int64_t *pts, unsigned int *flags, size_t *bufferSize, void **buffer )
+int
+WorkflowFileRenderer::lock( void *datas, qint64 *dts, qint64 *pts, quint32 *flags,
+                            size_t *bufferSize, void **buffer )
 {
     WorkflowFileRenderer* self = reinterpret_cast<WorkflowFileRenderer*>( datas );
     int     ret = WorkflowRenderer::lock( datas, dts, pts, flags, bufferSize, buffer );

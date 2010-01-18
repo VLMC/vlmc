@@ -39,7 +39,8 @@ public:
     WorkflowFileRenderer( const QString& outputFileName );
     virtual ~WorkflowFileRenderer();
 
-    static int          lock( void* datas, int64_t *dts, int64_t *pts, unsigned int *flags, size_t *bufferSize, void **buffer );
+    static int          lock( void* datas, qint64 *dts, qint64 *pts, quint32 *flags,
+                              size_t *bufferSize, void **buffer );
     static void         unlock( void* datas, size_t size, void* buff );
 
     void                run();

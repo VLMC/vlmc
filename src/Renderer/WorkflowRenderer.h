@@ -276,8 +276,8 @@ class   WorkflowRenderer : public GenericRenderer
          *  \param  bufferSize  The size of the buffer that will be provided
          *  \param  buffer      The buffer itself.
          */
-        static int          lock( void *data, int64_t *dts, int64_t *pts,
-                                unsigned int *flags, size_t *bufferSize, void **buffer );
+        static int          lock( void *data, qint64 *dts, qint64 *pts,
+                                quint32 *flags, size_t *bufferSize, void **buffer );
         /**
          *  \brief  "Subcallback", for video frame injection
          *
@@ -285,7 +285,7 @@ class   WorkflowRenderer : public GenericRenderer
          *  \param  bufferSize  The size of the buffer that will be provided
          *  \param  buffer      The buffer itself.
          */
-        int                 lockVideo( int64_t *pts, size_t *bufferSize, void **buffer );
+        int                 lockVideo( qint64 *pts, size_t *bufferSize, void **buffer );
         /**
          *  \brief  "Subcallback", for audio sample injection
          *
@@ -293,7 +293,7 @@ class   WorkflowRenderer : public GenericRenderer
          *  \param  bufferSize  The size of the buffer that will be provided
          *  \param  buffer      The buffer itself.
          */
-        int                 lockAudio( int64_t *pts, size_t *bufferSize, void **buffer );
+        int                 lockAudio( qint64 *pts, size_t *bufferSize, void **buffer );
         /**
          *  \brief  unlock callback for the imem module
          *
