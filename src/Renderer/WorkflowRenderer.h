@@ -317,7 +317,6 @@ class   WorkflowRenderer : public GenericRenderer
          */
         static uint8_t*     silencedAudioBuffer;
         size_t              m_videoBuffSize;
-        AudioClipWorkflow::AudioSample*     m_renderAudioSample;
         Action::Stack       m_actions;
         QMutex*             m_actionsMutex;
         QWaitCondition*     m_waitCond;

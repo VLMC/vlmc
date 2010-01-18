@@ -133,8 +133,11 @@ WorkflowRenderer::lockVideo( qint64 *pts, size_t *bufferSize, void **buffer )
 
     if ( m_stopping == false && m_paused == false )
     {
-        MainWorkflow::OutputBuffers* ret = m_mainWorkflow->getOutput( MainWorkflow::VideoTrack );
-        memcpy( m_renderVideoFrame, (*(ret->video))->frame.octets, (*(ret->video))->nboctets );
+        MainWorkflow::OutputBuffers* ret =
+                m_mainWorkflow->getOutput( MainWorkflow::VideoTrack );
+        memcpy( m_renderVideoFrame,
+                (*(ret->video))->frame.octets,
+                (*(ret->video))->nboctets );
         m_videoBuffSize = (*(ret->video))->nboctets;
         ptsDiff = (*(ret->video))->ptsDiff;
     }
@@ -154,20 +157,23 @@ WorkflowRenderer::lockVideo( qint64 *pts, size_t *bufferSize, void **buffer )
 int
 WorkflowRenderer::lockAudio( qint64 *pts, size_t *bufferSize, void **buffer )
 {
-    qint64 ptsDiff;
+    qint64                              ptsDiff;
+    uint32_t                            nbSample;
+    AudioClipWorkflow::AudioSample      *renderAudioSample;
 
-    if ( m_stopping == false )
+    if ( m_stopping == false && m_paused == false )
     {
         MainWorkflow::OutputBuffers* ret = m_mainWorkflow->getOutput( MainWorkflow::AudioTrack );
-        m_renderAudioSample = ret->audio;
+        renderAudioSample = ret->audio;
     }
-    uint32_t    nbSample;
-    if ( m_renderAudioSample != NULL )
+    else
+        renderAudioSample = NULL;
+    if ( renderAudioSample != NULL )
     {
-        nbSample = m_renderAudioSample->nbSample;
-        *buffer = m_renderAudioSample->buff;
-        *bufferSize = m_renderAudioSample->size;
-        ptsDiff = m_renderAudioSample->ptsDiff;
+        nbSample = renderAudioSample->nbSample;
+        *buffer = renderAudioSample->buff;
+        *bufferSize = renderAudioSample->size;
+        ptsDiff = renderAudioSample->ptsDiff;
     }
     else
     {
