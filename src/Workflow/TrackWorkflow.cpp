@@ -44,6 +44,7 @@ TrackWorkflow::TrackWorkflow( unsigned int trackId, MainWorkflow::TrackType type
         m_audioStackedBuffer( NULL )
 {
     m_forceRepositionningMutex = new QMutex;
+    m_renderOneFrameMutex = new QMutex;
     m_clipsLock = new QReadWriteLock;
 }
 
@@ -59,6 +60,7 @@ TrackWorkflow::~TrackWorkflow()
         it = m_clips.erase( it );
     }
     delete m_clipsLock;
+    delete m_renderOneFrameMutex;
     delete m_forceRepositionningMutex;
 }
 
@@ -130,10 +132,13 @@ Clip*               TrackWorkflow::getClip( const QUuid& uuid )
 }
 
 void*       TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
-                                        qint64 start , bool needRepositioning )
+                                        qint64 start , bool needRepositioning,
+                                        bool renderOneFrame )
 {
-    cw->getStateLock()->lockForRead();
+    ClipWorkflow::GetMode       mode = ( m_paused == false || renderOneFrame == true ?
+                                         ClipWorkflow::Pop : ClipWorkflow::Get );
 
+    cw->getStateLock()->lockForRead();
 //    qDebug() << "TrackWorkflow::renderClip. currentFrame:" << currentFrame << "trackType:" << m_trackType;
     if ( cw->getState() == ClipWorkflow::Rendering ||
          cw->getState() == ClipWorkflow::Paused ||
@@ -145,7 +150,7 @@ void*       TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
         {
             adjustClipTime( currentFrame, start, cw );
         }
-        return cw->getOutput( ClipWorkflow::Pop );
+        return cw->getOutput( mode );
     }
     else if ( cw->getState() == ClipWorkflow::Stopped )
     {
@@ -154,7 +159,7 @@ void*       TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
         cw->waitForCompleteInit();
         if ( start != currentFrame || cw->getClip()->getBegin() != 0 ) //Clip was not started as its real begining
             adjustClipTime( currentFrame, start, cw );
-        return cw->getOutput( ClipWorkflow::Pop );
+        return cw->getOutput( mode );
     }
     else if ( cw->getState() == ClipWorkflow::EndReached )
     {
@@ -252,6 +257,7 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFra
     QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
     bool                                        needRepositioning;
     void*                                       ret = NULL;
+    bool                                        renderOneFrame = false;
 
     if ( checkEnd( currentFrame ) == true )
     {
@@ -259,7 +265,7 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFra
         //We continue, as there can be ClipWorkflow that requires to be stopped.
     }
     {
-        QMutexLocker    lock( m_forceRepositionningMutex );
+        QMutexLocker    lock2( m_forceRepositionningMutex );
         if ( m_forceRepositionning == true )
         {
             needRepositioning = true;
@@ -269,6 +275,14 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFra
             needRepositioning = true;
         else
             needRepositioning = ( abs( subFrame - m_lastFrame ) > 1 ) ? true : false;
+    }
+    {
+        QMutexLocker      lock2( m_renderOneFrameMutex );
+        if ( m_renderOneFrame == true )
+        {
+            m_renderOneFrame = false;
+            renderOneFrame = true;
+        }
     }
 
     while ( it != end )
@@ -281,7 +295,7 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFra
         {
             if ( ret != NULL )
                 qCritical() << "There's more than one clip to render here. Undefined behaviour !";
-            ret = renderClip( cw, currentFrame, start, needRepositioning );
+            ret = renderClip( cw, currentFrame, start, needRepositioning, renderOneFrame );
             if ( m_trackType == MainWorkflow::VideoTrack )
                 m_videoStackedBuffer = reinterpret_cast<StackedBuffer<LightVideoFrame*>*>( ret );
             else
@@ -297,6 +311,7 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFra
         ++it;
     }
     m_lastFrame = subFrame;
+
     return ret;
 }
 
@@ -464,4 +479,11 @@ void    TrackWorkflow::forceRepositionning()
 {
     QMutexLocker    lock( m_forceRepositionningMutex );
     m_forceRepositionning = true;
+}
+
+void
+TrackWorkflow::renderOneFrame()
+{
+    QMutexLocker    lock( m_renderOneFrameMutex );
+    m_renderOneFrame = true;
 }

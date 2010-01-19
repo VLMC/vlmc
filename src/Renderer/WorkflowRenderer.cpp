@@ -131,7 +131,7 @@ WorkflowRenderer::lockVideo( qint64 *pts, size_t *bufferSize, void **buffer )
 {
     qint64 ptsDiff = 0;
 
-    if ( m_stopping == false && m_paused == false )
+    if ( m_stopping == false )
     {
         MainWorkflow::OutputBuffers* ret =
                 m_mainWorkflow->getOutput( MainWorkflow::VideoTrack );
@@ -235,8 +235,7 @@ void        WorkflowRenderer::startPreview()
 
 void        WorkflowRenderer::nextFrame()
 {
-    //FIXME: won't work, just compile
-    m_mainWorkflow->nextFrame( MainWorkflow::VideoTrack );
+    m_mainWorkflow->renderOneFrame();
 }
 
 void        WorkflowRenderer::previousFrame()

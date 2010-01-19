@@ -77,6 +77,14 @@ class   TrackHandler : public QObject
 
         void                    save( QDomDocument& doc, QDomElement& timelineNode ) const;
 
+        /**
+         *  \brief      Will configure the track workflow so they render only one frame
+         *
+         *  \sa MainWorkflow::renderOneFrame()
+         */
+        void                    renderOneFrame();
+
+
     private:
         void                    computeLength();
         void                    activateTrack( unsigned int tracKId );

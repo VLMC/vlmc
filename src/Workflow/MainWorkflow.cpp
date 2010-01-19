@@ -459,3 +459,12 @@ MainWorkflow::getHeight() const
 {
     return m_height;
 }
+
+void
+MainWorkflow::renderOneFrame()
+{
+    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
+        m_tracks[i]->renderOneFrame();
+    nextFrame( VideoTrack );
+    nextFrame( AudioTrack );
+}

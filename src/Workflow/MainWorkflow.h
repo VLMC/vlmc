@@ -325,6 +325,14 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          */
         uint32_t                getHeight() const;
 
+        /**
+         *  \brief          Will render one frame only
+         *
+         *  It will change the ClipWorkflow frame getting mode from Get to Pop, just for
+         *  one frame
+         */
+        void                    renderOneFrame();
+
     private:
         MainWorkflow( int trackCount = 64 );
         ~MainWorkflow();

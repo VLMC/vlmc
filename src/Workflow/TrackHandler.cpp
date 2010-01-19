@@ -320,3 +320,13 @@ TrackHandler::save( QDomDocument& doc, QDomElement& timelineNode ) const
         }
     }
 }
+
+void
+TrackHandler::renderOneFrame()
+{
+    for ( unsigned int i = 0; i < m_trackCount; ++i)
+    {
+        if ( m_tracks[i].activated() == true )
+            m_tracks[i]->renderOneFrame();
+    }
+}

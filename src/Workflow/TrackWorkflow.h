@@ -79,11 +79,13 @@ class   TrackWorkflow : public QObject
         void                                    clear();
 
         void                                    forceRepositionning();
+        void                                    renderOneFrame();
 
     private:
         void                                    computeLength();
         void*                                   renderClip( ClipWorkflow* cw, qint64 currentFrame,
-                                                            qint64 start, bool needRepositioning );
+                                                            qint64 start, bool needRepositioning,
+                                                            bool renderOneFrame );
         void                                    preloadClip( ClipWorkflow* cw );
         void                                    stopClipWorkflow( ClipWorkflow* cw );
         bool                                    checkEnd( qint64 currentFrame ) const;
@@ -107,6 +109,8 @@ class   TrackWorkflow : public QObject
          */
         bool                                    m_forceRepositionning;
         QMutex*                                 m_forceRepositionningMutex;
+        bool                                    m_renderOneFrame;
+        QMutex                                  *m_renderOneFrameMutex;
 
         QReadWriteLock*                         m_clipsLock;
 
