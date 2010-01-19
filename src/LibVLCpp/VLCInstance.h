@@ -23,10 +23,11 @@
 #ifndef VLCINSTANCE_H
 #define VLCINSTANCE_H
 
-#include "vlc/vlc.h"
 #include "VLCpp.hpp"
 #include "VLCException.h"
 #include "Singleton.hpp"
+
+struct libvlc_instance_t;
 
 namespace LibVLCpp
 {

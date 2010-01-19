@@ -21,6 +21,7 @@
  *****************************************************************************/
 
 #include "VLCInstance.h"
+#include "vlc/vlc.h"
 
 using namespace LibVLCpp;
 
