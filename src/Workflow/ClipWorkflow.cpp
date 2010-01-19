@@ -25,7 +25,9 @@
 #include "MemoryPool.hpp"
 #include "LightVideoFrame.h"
 #include "Clip.h"
+#include "VLCMediaPlayer.h"
 #include "WaitCondition.hpp"
+
 
 #include <QReadWriteLock>
 #include <QWaitCondition>

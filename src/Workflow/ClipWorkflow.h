@@ -23,7 +23,6 @@
 #ifndef CLIPWORKFLOW_H
 #define CLIPWORKFLOW_H
 
-#include "VLCMediaPlayer.h"
 #include "mdate.h"
 
 #include <QObject>
@@ -34,6 +33,12 @@ class   QMutex;
 class   Clip;
 class   WaitCondition;
 class   LightVideoFrame;
+
+namespace LibVLCpp
+{
+    class   MediaPlayer;
+    class   Media;
+}
 
 class   ClipWorkflow : public QObject
 {
