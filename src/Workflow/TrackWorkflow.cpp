@@ -265,24 +265,32 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFra
         //We continue, as there can be ClipWorkflow that requires to be stopped.
     }
     {
-        QMutexLocker    lock2( m_forceRepositionningMutex );
-        if ( m_forceRepositionning == true )
-        {
-            needRepositioning = true;
-            m_forceRepositionning = false;
-        }
-        else if ( m_paused == true && subFrame != m_lastFrame )
-            needRepositioning = true;
-        else
-            needRepositioning = ( abs( subFrame - m_lastFrame ) > 1 ) ? true : false;
-    }
-    {
         QMutexLocker      lock2( m_renderOneFrameMutex );
         if ( m_renderOneFrame == true )
         {
             m_renderOneFrame = false;
             renderOneFrame = true;
         }
+    }
+    {
+        QMutexLocker    lock2( m_forceRepositionningMutex );
+        if ( m_forceRepositionning == true )
+        {
+            needRepositioning = true;
+            m_forceRepositionning = false;
+        }
+        // This is a bit hackish : when we want to pop a frame in renderOneFrame mode,
+        // we also set the position to avoid the stream to be missynchronized.
+        // this frame setting will most likely toggle the next condition as true
+        // If this condition is true, the clipworkflow will flush all its buffer
+        // as we need to resynchronize after a setTime, so this condition has to remain
+        // false. Easy ain't it ?
+        else if ( m_paused == true && subFrame != m_lastFrame && renderOneFrame == false)
+        {
+            needRepositioning = true;
+        }
+        else
+            needRepositioning = ( abs( subFrame - m_lastFrame ) > 1 ) ? true : false;
     }
 
     while ( it != end )
