@@ -259,6 +259,9 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFra
     void*                                       ret = NULL;
     bool                                        renderOneFrame = false;
 
+    if ( m_lastFrame == -1 )
+        m_lastFrame = currentFrame;
+
     if ( checkEnd( currentFrame ) == true )
     {
         emit trackEndReached( m_trackId );
@@ -286,13 +289,10 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFra
         // as we need to resynchronize after a setTime, so this condition has to remain
         // false. Easy ain't it ?
         else if ( m_paused == true && subFrame != m_lastFrame && renderOneFrame == false)
-        {
             needRepositioning = true;
-        }
         else
             needRepositioning = ( abs( subFrame - m_lastFrame ) > 1 ) ? true : false;
     }
-
     while ( it != end )
     {
         qint64          start = it.key();
@@ -326,6 +326,7 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFra
 void                TrackWorkflow::pause()
 {
     m_paused = true;
+    m_lastFrame = -1;
 }
 
 void            TrackWorkflow::moveClip( const QUuid& id, qint64 startingFrame )

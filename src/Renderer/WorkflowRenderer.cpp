@@ -81,8 +81,8 @@ void    WorkflowRenderer::initializeRenderer()
     m_media->addOption( callbacks );
 
      //Workflow part
-    connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ), Qt::QueuedConnection );
-    connect( m_mainWorkflow, SIGNAL( mainWorkflowUnpaused() ), this, SLOT( mainWorkflowUnpaused() ), Qt::QueuedConnection );
+    connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ), Qt::DirectConnection );
+    connect( m_mainWorkflow, SIGNAL( mainWorkflowUnpaused() ), this, SLOT( mainWorkflowUnpaused() ), Qt::DirectConnection );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
     connect( m_mainWorkflow, SIGNAL( frameChanged( qint64, MainWorkflow::FrameChangedReason ) ),
              this, SIGNAL( frameChanged( qint64, MainWorkflow::FrameChangedReason ) ) );
