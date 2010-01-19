@@ -64,6 +64,9 @@
 #include "Settings.h"
 #include "SettingsManager.h"
 
+/* VLCpp */
+#include "VLCInstance.h"
+
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ), m_renderer( NULL )
 {

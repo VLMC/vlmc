@@ -23,6 +23,7 @@
 #include <QtDebug>
 #include <cassert>
 #include "VLCMedia.h"
+#include "VLCInstance.h"
 
 using namespace LibVLCpp;
 

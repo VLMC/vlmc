@@ -30,7 +30,6 @@
 
 #include "VLCpp.hpp"
 #include "VLCException.h"
-#include "VLCInstance.h"
 
 namespace LibVLCpp
 {
