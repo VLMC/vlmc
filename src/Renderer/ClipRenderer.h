@@ -28,7 +28,11 @@ class   Media;
 class   QUuid;
 
 #include "GenericRenderer.h"
-#include "VLCMediaPlayer.h"
+
+namespace LibVLCpp
+{
+    class   Media;
+}
 
 #include <QObject>
 
