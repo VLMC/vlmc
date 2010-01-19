@@ -52,12 +52,12 @@ class   VideoClipWorkflow : public ClipWorkflow
         void                    *getUnlockCallback() const;
         virtual void            *getOutput( ClipWorkflow::GetMode mode );
 
-        static const uint32_t   nbBuffers = 3 * 30; //3 seconds with an average fps of 30
+        static const quint32    nbBuffers = 3 * 30; //3 seconds with an average fps of 30
 
     protected:
         virtual void            initVlcOutput();
-        virtual uint32_t        getNbComputedBuffers() const;
-        virtual uint32_t        getMaxComputedBuffers() const;
+        virtual quint32         getNbComputedBuffers() const;
+        virtual quint32         getMaxComputedBuffers() const;
         void                    releaseBuffer( LightVideoFrame* lvf );
         void                    flushComputedBuffers();
 

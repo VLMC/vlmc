@@ -24,6 +24,7 @@
 #include <cassert>
 #include "VLCMediaPlayer.h"
 #include "VLCInstance.h"
+#include "VLCMedia.h"
 
 using namespace LibVLCpp;
 

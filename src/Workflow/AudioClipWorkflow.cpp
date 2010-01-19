@@ -23,6 +23,7 @@
 #include <QtDebug>
 
 #include "AudioClipWorkflow.h"
+#include "VLCMedia.h"
 
 AudioClipWorkflow::AudioClipWorkflow( Clip* clip ) :
         ClipWorkflow( clip )
@@ -98,7 +99,7 @@ AudioClipWorkflow::AudioSample*    AudioClipWorkflow::createBuffer( size_t size 
     return as;
 }
 
-void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer , unsigned int size )
+void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, quint8** pcm_buffer , unsigned int size )
 {
     QMutexLocker    lock( cw->m_availableBuffersMutex );
     cw->m_renderLock->lock();
@@ -120,7 +121,7 @@ void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, uint8_t** pcm_buffer
     *pcm_buffer = as->buff;
 }
 
-void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffer,
+void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, quint8* pcm_buffer,
                                       unsigned int channels, unsigned int rate,
                                       unsigned int nb_samples, unsigned int bits_per_sample,
                                       unsigned int size, qint64 pts )
@@ -143,12 +144,14 @@ void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, uint8_t* pcm_buffe
     cw->m_computedBuffersMutex->unlock();
 }
 
-uint32_t    AudioClipWorkflow::getNbComputedBuffers() const
+quint32
+AudioClipWorkflow::getNbComputedBuffers() const
 {
     return m_computedBuffers.count();
 }
 
-uint32_t    AudioClipWorkflow::getMaxComputedBuffers() const
+quint32
+AudioClipWorkflow::getMaxComputedBuffers() const
 {
     return AudioClipWorkflow::nbBuffers;
 }

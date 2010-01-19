@@ -23,8 +23,8 @@
 #ifndef VLCEXCEPTION_H
 #define VLCEXCEPTION_H
 
-#include "vlc/vlc.h"
 #include "VLCpp.hpp"
+struct libvlc_exception_t;
 
 #define CheckVlcppException(ex)     (ex.checkThrow(__FILE__, __LINE__, __func__))
 

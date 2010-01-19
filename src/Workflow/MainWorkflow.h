@@ -313,7 +313,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          *  \return     The width (in pixels) of the currently rendered frames
          *  \sa         getHeight()
          */
-        uint32_t                getWidth() const;
+        quint32                getWidth() const;
         /**
          *  \brief      Get the height used for rendering.
          *
@@ -323,7 +323,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          *  \return     The height (in pixels) of the currently rendered frames
          *  \sa         getWidth()
          */
-        uint32_t                getHeight() const;
+        quint32                getHeight() const;
 
         /**
          *  \brief          Will render one frame only
@@ -375,9 +375,9 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         /// Effect engine instance.
         EffectsEngine*                  m_effectEngine;
         /// Width used for the render
-        uint32_t                        m_width;
+        quint32                         m_width;
         /// Height used the render
-        uint32_t                        m_height;
+        quint32                         m_height;
 
         /// Pre-filled buffer used when there's nothing to render
         static LightVideoFrame*         blackOutput;

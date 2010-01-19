@@ -141,7 +141,7 @@ public:
      * \brief Ugly hack to change the old track number of an item.
      * \deprecated Do not use, will be removed soon.
      */
-    bool                    setItemOldTrack( const QUuid& uuid, uint32_t oldTrackNumber );
+    bool                    setItemOldTrack( const QUuid& uuid, quint32 oldTrackNumber );
 
 public slots:
     /**

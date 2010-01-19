@@ -42,7 +42,7 @@ public:
             qCritical() << "Pool is empty !!";
             return new T;
         }
-        uint8_t*    ptr = m_pool.dequeue();
+        quint8*    ptr = m_pool.dequeue();
         T*  ret = new (ptr) T;
         return ret;
     }
@@ -50,25 +50,25 @@ public:
     {
         QMutexLocker    lock( m_mutex );
         toRelease->~T();
-        m_pool.enqueue( reinterpret_cast<uint8_t*>( toRelease ) );
+        m_pool.enqueue( reinterpret_cast<quint8*>( toRelease ) );
     }
 private:
     MemoryPool()
     {
         for ( size_t i = 0; i < NB_ELEM; ++i )
-            m_pool.enqueue( new uint8_t[ sizeof(T) ] );
+            m_pool.enqueue( new quint8[ sizeof(T) ] );
         m_mutex = new QMutex;
     }
     ~MemoryPool()
     {
         while ( m_pool.size() != 0 )
         {
-            uint8_t*  ptr = m_pool.dequeue();
+            quint8*  ptr = m_pool.dequeue();
             delete ptr;
         }
         delete m_mutex;
     }
-    QQueue<uint8_t*>    m_pool;
+    QQueue<quint8*>     m_pool;
     QMutex*             m_mutex;
     friend class Singleton< MemoryPool<T> >;
 };

@@ -40,7 +40,7 @@ class   AudioClipWorkflow : public ClipWorkflow
             unsigned int    nbSample;
             unsigned int    nbChannels;
             qint64          ptsDiff;
-            uint32_t        debugId;
+            quint32         debugId;
         };
         class   StackedBuffer : public ::StackedBuffer<AudioSample*>
         {
@@ -59,8 +59,8 @@ class   AudioClipWorkflow : public ClipWorkflow
         virtual void            *getOutput( ClipWorkflow::GetMode mode );
 
     protected:
-        virtual uint32_t        getNbComputedBuffers() const;
-        virtual uint32_t        getMaxComputedBuffers() const;
+        virtual quint32        getNbComputedBuffers() const;
+        virtual quint32        getMaxComputedBuffers() const;
         void                    flushComputedBuffers();
 
     private:
@@ -72,15 +72,15 @@ class   AudioClipWorkflow : public ClipWorkflow
         void                        initVlcOutput();
         AudioSample*                createBuffer( size_t size );
         static void                 lock( AudioClipWorkflow* clipWorkflow,
-                                          uint8_t** pcm_buffer , unsigned int size );
+                                          quint8** pcm_buffer , unsigned int size );
         static void                 unlock( AudioClipWorkflow* clipWorkflow,
-                                            uint8_t* pcm_buffer, unsigned int channels,
+                                            quint8* pcm_buffer, unsigned int channels,
                                             unsigned int rate, unsigned int nb_samples,
                                             unsigned int bits_per_sample,
                                             unsigned int size, qint64 pts );
 
         //FIXME: this is totally random powered ! Please adjust with a value that does make sense...
-        static const uint32_t   nbBuffers = 256;
+        static const quint32   nbBuffers = 256;
 };
 
 #endif // AUDIOCLIPWORKFLOW_H

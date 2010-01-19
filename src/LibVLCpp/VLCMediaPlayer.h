@@ -23,17 +23,19 @@
 #ifndef VLCMEDIAPLAYER_H
 #define VLCMEDIAPLAYER_H
 
-#include "vlc/vlc.h"
-
 #include <QMutex>
 #include <QObject>
-
 #include "VLCpp.hpp"
-#include "VLCMedia.h"
+
+struct  libvlc_media_player_t;
+struct  libvlc_event_t;
+struct  libvlc_event_manager_t;
+
 #include "VLCException.h"
 
 namespace   LibVLCpp
 {
+    class   Media;
     class   MediaPlayer : public QObject, public Internal< libvlc_media_player_t >
     {
         Q_OBJECT
@@ -53,7 +55,7 @@ namespace   LibVLCpp
         bool                                isPlaying();
         bool                                isSeekable();
         void                                setDrawable( void* hwnd );
-        void                                setDrawable( uint32_t drawable );
+        void                                setDrawable( quint32 drawable );
         void                                setMedia(Media* media);
         int                                 getWidth();
         int                                 getHeight();

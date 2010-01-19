@@ -44,8 +44,8 @@ class   ImageClipWorkflow : public ClipWorkflow
         virtual void            *getOutput( ClipWorkflow::GetMode mode );
     protected:
         virtual void            initVlcOutput();
-        virtual uint32_t        getNbComputedBuffers() const;
-        virtual uint32_t        getMaxComputedBuffers() const;
+        virtual quint32         getNbComputedBuffers() const;
+        virtual quint32         getMaxComputedBuffers() const;
         virtual void            flushComputedBuffers();
     private:
         static void             lock( ImageClipWorkflow* clipWorkflow, void** pp_ret,

@@ -21,6 +21,7 @@
  *****************************************************************************/
 
 #include <QtDebug>
+#include "vlc/vlc.h"
 #include "VLCException.h"
 
 using namespace LibVLCpp;

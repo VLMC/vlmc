@@ -171,8 +171,8 @@ class   ClipWorkflow : public QObject
          *              This thread safe context has to be set
          *              from the underlying ClipWorkflow implementation.
          */
-        virtual uint32_t        getNbComputedBuffers() const = 0;
-        virtual uint32_t        getMaxComputedBuffers() const = 0;
+        virtual quint32         getNbComputedBuffers() const = 0;
+        virtual quint32         getMaxComputedBuffers() const = 0;
         /**
          *  \brief  Will empty the computed buffers stack.
          *          This has to be implemented in the underlying
