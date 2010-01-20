@@ -83,7 +83,7 @@ signals:
      * \param self A pointer to the sender.
      * \param frame Frame's number where the cut takes place.
      */
-    void                split( GraphicsMovieItem* self, qint64 frame );
+    void                split( AbstractGraphicsMediaItem* self, qint64 frame );
 };
 
 #endif // GRAPHICSMOVIEITEM_H

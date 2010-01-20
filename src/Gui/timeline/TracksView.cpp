@@ -219,10 +219,6 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, MainWorkflow::Tra
     if ( trackType == MainWorkflow::VideoTrack )
     {
         item = new GraphicsMovieItem( clip );
-
-        // Split is currently only supported for video
-        connect( item, SIGNAL( split(GraphicsMovieItem*,qint64) ),
-                 this, SLOT( split(GraphicsMovieItem*,qint64) ) );
     }
     else if ( trackType == MainWorkflow::AudioTrack )
     {
@@ -267,6 +263,8 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
         m_dragAudioItem->setHeight( tracksHeight() );
         m_dragAudioItem->setParentItem( getTrack( m_dragAudioItem->mediaType(), 0 ) );
         //TODO connect the split signal to the audio clip
+        connect( m_dragAudioItem, SIGNAL( split(AbstractGraphicsMediaItem*,qint64) ),
+                 this, SLOT( split(AbstractGraphicsMediaItem*,qint64) ) );
     }
     if ( clip->getParent()->hasVideoTrack() == true )
     {
@@ -277,8 +275,8 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
         m_dragVideoItem->m_tracksView = this;
         m_dragVideoItem->setHeight( tracksHeight() );
         m_dragVideoItem->setParentItem( getTrack( m_dragVideoItem->mediaType(), 0 ) );
-        connect( m_dragVideoItem, SIGNAL( split(GraphicsMovieItem*,qint64) ),
-                 this, SLOT( split(GraphicsMovieItem*,qint64) ) );
+        connect( m_dragVideoItem, SIGNAL( split(AbstractGraphicsMediaItem*,qint64) ),
+                 this, SLOT( split(AbstractGraphicsMediaItem*,qint64) ) );
     }
 
     // Group the items together
@@ -953,7 +951,7 @@ GraphicsTrack* TracksView::getTrack( MainWorkflow::TrackType type, unsigned int 
     return NULL;
 }
 
-void TracksView::split( GraphicsMovieItem* item, qint64 frame )
+void TracksView::split( AbstractGraphicsMediaItem* item, qint64 frame )
 {
     //frame is the number of frame from the beginning of the clip
     //item->startPos() is the position of the splitted clip (in frame)
@@ -961,5 +959,5 @@ void TracksView::split( GraphicsMovieItem* item, qint64 frame )
     //the splitted clip pos + the splitting point (ie startPos() + frame)
     Commands::trigger( new Commands::MainWorkflow::SplitClip( m_renderer, item->clip(), item->trackNumber(),
                                                               item->startPos() + frame, frame + item->clip()->getBegin(),
-                                                              MainWorkflow::VideoTrack ) );
+                                                              item->mediaType() ) );
 }

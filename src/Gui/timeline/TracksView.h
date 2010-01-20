@@ -207,7 +207,7 @@ private slots:
      * \param item The item.
      * \param frame the frame number where the cut should takes place.
      */
-    void                    split( GraphicsMovieItem* item, qint64 frame );
+    void                    split( AbstractGraphicsMediaItem* item, qint64 frame );
 
 private:
     /**
