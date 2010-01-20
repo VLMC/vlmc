@@ -217,15 +217,9 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, MainWorkflow::Tra
 
     AbstractGraphicsMediaItem* item = 0;
     if ( trackType == MainWorkflow::VideoTrack )
-    {
         item = new GraphicsMovieItem( clip );
-    }
     else if ( trackType == MainWorkflow::AudioTrack )
-    {
-        //FIXME If a GraphicsAudioItem is downcasted to an AbstractGraphicsMediaItem
-        // the item is not drawn in the timeline.
         item = new GraphicsAudioItem( clip );
-    }
 
     item->m_tracksView = this;
     item->setHeight( tracksHeight() );
