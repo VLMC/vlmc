@@ -33,8 +33,10 @@
 #include "StackedAction.h"
 #include "ActionStack.h"
 #include "AudioClipWorkflow.h"
+#include "VLCMedia.h"
+#include "Clip.h"
 
-uint8_t*            WorkflowRenderer::silencedAudioBuffer = NULL;
+quint8*         WorkflowRenderer::silencedAudioBuffer = NULL;
 
 WorkflowRenderer::WorkflowRenderer() :
             m_mainWorkflow( MainWorkflow::getInstance() ),

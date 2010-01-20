@@ -22,6 +22,9 @@
 
 #include "StackedAction.h"
 
+#include "MainWorkflow.h"
+#include "Clip.h"
+
 using namespace Action;
 
 Generic::Generic( Type type ) : m_type( type )

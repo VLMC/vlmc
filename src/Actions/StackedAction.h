@@ -24,9 +24,9 @@
 #define STACKEDACTION_H
 
 #include <QUuid>
+class   Clip;
 
 #include "MainWorkflow.h"
-#include "Clip.h"
 
 namespace Action
 {
@@ -62,16 +62,16 @@ namespace Action
     class   Track : public Workflow
     {
         public:
-            Track( MainWorkflow* mainWorkflow, uint32_t trackId, MainWorkflow::TrackType trackType, Type type );
+            Track( MainWorkflow* mainWorkflow, quint32 trackId, MainWorkflow::TrackType trackType, Type type );
         protected:
-            uint32_t                    m_trackId;
+            quint32                    m_trackId;
             MainWorkflow::TrackType     m_trackType;
     };
 
     class   AddClip : public Track
     {
         public:
-            AddClip( MainWorkflow* mainWorkflow, uint32_t trackId, MainWorkflow::TrackType trackType,
+            AddClip( MainWorkflow* mainWorkflow, quint32 trackId, MainWorkflow::TrackType trackType,
                            Clip* clip, qint64 startingPos );
             void        execute();
         protected:
@@ -82,7 +82,7 @@ namespace Action
     class   RemoveClip : public Track
     {
         public:
-            RemoveClip( MainWorkflow* mainWorkflow, uint32_t trackId, MainWorkflow::TrackType trackType,
+            RemoveClip( MainWorkflow* mainWorkflow, quint32 trackId, MainWorkflow::TrackType trackType,
                            const QUuid& uuid );
             void        execute();
         protected:
@@ -92,12 +92,12 @@ namespace Action
     class   MoveClip : public Track
     {
         public:
-            MoveClip( MainWorkflow* mainWorkflow, const QUuid& uuid, uint32_t oldTrack,
-                      uint32_t newTrack, qint64 newPos, MainWorkflow::TrackType trackType, bool undoRedoAction );
+            MoveClip( MainWorkflow* mainWorkflow, const QUuid& uuid, quint32 oldTrack,
+                      quint32 newTrack, qint64 newPos, MainWorkflow::TrackType trackType, bool undoRedoAction );
             void    execute();
         private:
             QUuid       m_uuid;
-            uint32_t    m_newTrack;
+            quint32    m_newTrack;
             qint64      m_newPos;
             bool        m_undoRedoAction;
     };

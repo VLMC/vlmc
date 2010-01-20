@@ -23,6 +23,7 @@
 #include "vlmc.h"
 #include "WorkflowFileRenderer.h"
 #include "SettingsManager.h"
+#include "VLCMedia.h"
 
 WorkflowFileRenderer::WorkflowFileRenderer( const QString& outputFileName ) :
         WorkflowRenderer(),

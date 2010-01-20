@@ -29,6 +29,7 @@
 #include "TracksControls.h"
 #include "TracksRuler.h"
 #include "WorkflowRenderer.h"
+#include "Clip.h"
 
 Timeline*   Timeline::m_instance = NULL;
 

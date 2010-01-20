@@ -130,9 +130,9 @@ class   WorkflowRenderer : public GenericRenderer
          *  \param  trackId     The track id in which the clip has to be added
          *  \param  startingPos The position where the clip should be added
          *  \param  trackType   The type of the clip to add (Audio or Video)
-         *  \sa     removeClip( const QUuid&, uint32_t, MainWorkflow::TrackType );
+         *  \sa     removeClip( const QUuid&, quint32, MainWorkflow::TrackType );
          */
-        void                addClip( Clip* clip, uint32_t trackId, qint64 startingPos,
+        void                addClip( Clip* clip, quint32 trackId, qint64 startingPos,
                                      MainWorkflow::TrackType trackType );
         /**
          *  \brief          Remove a clip from the timeline
@@ -142,9 +142,9 @@ class   WorkflowRenderer : public GenericRenderer
          *  \param  uuid        the uuid of the clip to remove
          *  \param  trackId     the id of the track containing the clip to remove.
          *  \param  trackType   the type of the track
-         *  \sa     addClip( Clip*, uint32_t, qint64, MainWorkflow::TrackType );
+         *  \sa     addClip( Clip*, quint32, qint64, MainWorkflow::TrackType );
          */
-        void                removeClip( const QUuid& uuid, uint32_t trackId,
+        void                removeClip( const QUuid& uuid, quint32 trackId,
                                         MainWorkflow::TrackType trackType );
         /**
          *  \brief                  Will split a clip and return the created clip,
@@ -177,7 +177,7 @@ class   WorkflowRenderer : public GenericRenderer
          *  \sa                     Clip::setBoundaries( qint64, qint64, bool )
          *  \sa                     Clip::lengthUpdated()
          */
-        Clip*               split( Clip* toSplit, Clip* newClip, uint32_t trackId,
+        Clip*               split( Clip* toSplit, Clip* newClip, quint32 trackId,
                                    qint64 newClipPos, qint64 newClipBegin,
                                    MainWorkflow::TrackType trackType );
         /**
@@ -188,7 +188,7 @@ class   WorkflowRenderer : public GenericRenderer
          *  This will cause the generated ClipWorkflow to be deleted, but the Clip itself
          *  won't be deleted.
          *  This method will call
-         *  removeClip(const QUuid&, uint32_t, MainWorkflow::TrackType ), thus emitting
+         *  removeClip(const QUuid&, quint32, MainWorkflow::TrackType ), thus emitting
          *  a MainWorkflow::clipRemoved( Clip*, unsigned int, MainWorkflow::TrackType );
          *  signal.
          *  \param  origin      The clip that has been split
@@ -200,7 +200,7 @@ class   WorkflowRenderer : public GenericRenderer
          *  \sa                 MainWorkflow::clipRemoved( Clip*, unsigned int,
          *                      MainWorkflow::TrackType );
          */
-        void                unsplit( Clip* origin, Clip* splitted, uint32_t trackId,
+        void                unsplit( Clip* origin, Clip* splitted, quint32 trackId,
                                      MainWorkflow::TrackType trackType );
         /**
          *  \brief      Resize a clip in the workflow
@@ -220,7 +220,7 @@ class   WorkflowRenderer : public GenericRenderer
          *                          redo action, the GUI is already aware of the move.
          */
         void                resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd,
-                                        qint64 newPos, uint32_t trackId,
+                                        qint64 newPos, quint32 trackId,
                                         MainWorkflow::TrackType trackType,
                                         bool undoRedoAction = false );
 
@@ -315,7 +315,7 @@ class   WorkflowRenderer : public GenericRenderer
          *  \brief          When there's no sound to play, this is the buffer that'll
          *                  be injected
          */
-        static uint8_t*     silencedAudioBuffer;
+        static quint8*      silencedAudioBuffer;
         size_t              m_videoBuffSize;
         Action::Stack       m_actions;
         QMutex*             m_actionsMutex;
@@ -328,8 +328,8 @@ class   WorkflowRenderer : public GenericRenderer
          */
         qint64              m_pts;
         qint64              m_audioPts;
-        uint32_t            m_nbChannels;
-        uint32_t            m_rate;
+        quint32            m_nbChannels;
+        quint32            m_rate;
 
 
     public slots:
