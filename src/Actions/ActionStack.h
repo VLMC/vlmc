@@ -25,7 +25,7 @@
 
 #include <QStack>
 
-#include "StackedAction.hpp"
+#include "StackedAction.h"
 
 namespace Action
 {

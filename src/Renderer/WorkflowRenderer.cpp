@@ -30,7 +30,7 @@
 #include "LightVideoFrame.h"
 #include "MainWorkflow.h"
 #include "GenericRenderer.h"
-#include "StackedAction.hpp"
+#include "StackedAction.h"
 #include "ActionStack.h"
 #include "AudioClipWorkflow.h"
 

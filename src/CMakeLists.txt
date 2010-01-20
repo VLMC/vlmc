@@ -6,7 +6,7 @@ SUBDIRS(EffectsEngine/Plugins/src)
 SET(VLMC_SRCS 
     main.cpp
     Actions/ActionStack.cpp
-    Actions/StackedAction.hpp
+    Actions/StackedAction.cpp
     API/Module.cpp
     API/ModuleManager.cpp
     API/vlmc_module_variables.cpp
@@ -107,6 +107,7 @@ SET(VLMC_SRCS
   )
 
 SET (VLMC_HDRS
+    Actions/StackedAction.h
     Commands/KeyboardShortcutHelper.h                       
     Configuration/SettingsManager.h                         
     Configuration/SettingValue.h                            

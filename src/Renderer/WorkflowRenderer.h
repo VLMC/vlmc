@@ -26,7 +26,7 @@
 #include "ActionStack.h"
 #include "AudioClipWorkflow.h"
 #include "GenericRenderer.h"
-#include "StackedAction.hpp"
+#include "StackedAction.h"
 #include "MainWorkflow.h"
 
 #include <QObject>

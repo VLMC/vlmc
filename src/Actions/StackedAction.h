@@ -42,17 +42,11 @@ namespace Action
                 Add,
                 Move,
             };
-            Generic( Type type ) : m_type( type ) {}
-            virtual ~Generic(){}
+            Generic( Type type );
+            virtual ~Generic();
             virtual void    execute() = 0;
-            virtual bool    isOpposite( const Generic* ) const
-            {
-                return false;
-            }
-            Type    getType() const
-            {
-                return m_type;
-            }
+            virtual bool    isOpposite( const Generic* ) const;
+            Type    getType() const;
         private:
             Type    m_type;
     };
@@ -60,7 +54,7 @@ namespace Action
     class   Workflow : public Generic
     {
         public:
-            Workflow( MainWorkflow* mainWorkflow, Type type ) : Generic( type ), m_mainWorkflow( mainWorkflow ) {}
+            Workflow( MainWorkflow* mainWorkflow, Type type );
         protected:
             MainWorkflow*   m_mainWorkflow;
     };
@@ -68,10 +62,7 @@ namespace Action
     class   Track : public Workflow
     {
         public:
-            Track( MainWorkflow* mainWorkflow, uint32_t trackId, MainWorkflow::TrackType trackType, Type type ) :
-                Workflow( mainWorkflow, type ), m_trackId( trackId ), m_trackType( trackType )
-            {
-            }
+            Track( MainWorkflow* mainWorkflow, uint32_t trackId, MainWorkflow::TrackType trackType, Type type );
         protected:
             uint32_t                    m_trackId;
             MainWorkflow::TrackType     m_trackType;
@@ -81,14 +72,8 @@ namespace Action
     {
         public:
             AddClip( MainWorkflow* mainWorkflow, uint32_t trackId, MainWorkflow::TrackType trackType,
-                           Clip* clip, qint64 startingPos ) : Track( mainWorkflow, trackId, trackType, Add ),
-                                                            m_clip( clip ), m_startingPos( startingPos )
-            {
-            }
-            void        execute()
-            {
-                m_mainWorkflow->addClip( m_clip, m_trackId, m_startingPos, m_trackType );
-            }
+                           Clip* clip, qint64 startingPos );
+            void        execute();
         protected:
             Clip*       m_clip;
             qint64      m_startingPos;
@@ -98,14 +83,8 @@ namespace Action
     {
         public:
             RemoveClip( MainWorkflow* mainWorkflow, uint32_t trackId, MainWorkflow::TrackType trackType,
-                           const QUuid& uuid ) : Track( mainWorkflow, trackId, trackType, Remove ),
-                                                m_uuid( uuid )
-            {
-            }
-            void        execute()
-            {
-                m_mainWorkflow->removeClip( m_uuid, m_trackId, m_trackType );
-            }
+                           const QUuid& uuid );
+            void        execute();
         protected:
             QUuid       m_uuid;
     };
@@ -114,16 +93,8 @@ namespace Action
     {
         public:
             MoveClip( MainWorkflow* mainWorkflow, const QUuid& uuid, uint32_t oldTrack,
-                      uint32_t newTrack, qint64 newPos, MainWorkflow::TrackType trackType, bool undoRedoAction ) :
-                    Track( mainWorkflow, oldTrack, trackType, Move ),
-                    m_uuid( uuid ), m_newTrack( newTrack ),
-                    m_newPos( newPos ), m_undoRedoAction( undoRedoAction )
-            {
-            }
-            void    execute()
-            {
-                m_mainWorkflow->moveClip( m_uuid, m_trackId, m_newTrack, m_newPos, m_trackType, m_undoRedoAction );
-            }
+                      uint32_t newTrack, qint64 newPos, MainWorkflow::TrackType trackType, bool undoRedoAction );
+            void    execute();
         private:
             QUuid       m_uuid;
             uint32_t    m_newTrack;
@@ -134,14 +105,8 @@ namespace Action
     class   ResizeClip : public Generic
     {
         public:
-            ResizeClip( Clip* clip, qint64 newBegin, qint64 newEnd, bool resizeForSplit ) : Generic( Resize ),
-                    m_clip( clip ), m_newBegin( newBegin ), m_newEnd( newEnd ), m_resizeForSplit( resizeForSplit )
-            {
-            }
-            void    execute()
-            {
-                m_clip->setBoundaries( m_newBegin, m_newEnd, m_resizeForSplit );
-            }
+            ResizeClip( Clip* clip, qint64 newBegin, qint64 newEnd, bool resizeForSplit );
+            void    execute();
         protected:
             Clip*   m_clip;
             qint64  m_newBegin;
@@ -152,33 +117,17 @@ namespace Action
     class   Pause : public Workflow
     {
         public:
-            Pause( MainWorkflow* mainWorkflow ) : Workflow( mainWorkflow, Generic::Pause )
-            {
-            }
-            void    execute()
-            {
-                m_mainWorkflow->pause();
-            }
-            bool    isOpposite( const Generic* act ) const
-            {
-                return ( act->getType() == Unpause );
-            }
+            Pause( MainWorkflow* mainWorkflow );
+            void    execute();
+            bool    isOpposite( const Generic* act ) const;
     };
 
     class   Unpause : public Workflow
     {
         public:
-            Unpause( MainWorkflow* mainWorkflow ) : Workflow( mainWorkflow, Generic::Unpause )
-            {
-            }
-            void    execute()
-            {
-                m_mainWorkflow->unpause();
-            }
-            bool    isOpposite( const Generic* act ) const
-            {
-                return ( act->getType() == Generic::Pause );
-            }
+            Unpause( MainWorkflow* mainWorkflow );
+            void    execute();
+            bool    isOpposite( const Generic* act ) const;
     };
 }
 #endif // STACKEDACTION_H
