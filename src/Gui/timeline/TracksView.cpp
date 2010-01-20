@@ -217,9 +217,17 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, MainWorkflow::Tra
 
     AbstractGraphicsMediaItem* item = 0;
     if ( trackType == MainWorkflow::VideoTrack )
+    {
         item = new GraphicsMovieItem( clip );
+        connect( item, SIGNAL( split(AbstractGraphicsMediaItem*,qint64) ),
+                 this, SLOT( split(AbstractGraphicsMediaItem*,qint64) ) );
+    }
     else if ( trackType == MainWorkflow::AudioTrack )
+    {
         item = new GraphicsAudioItem( clip );
+        connect( item, SIGNAL( split(AbstractGraphicsMediaItem*,qint64) ),
+                 this, SLOT( split(AbstractGraphicsMediaItem*,qint64) ) );
+    }
 
     item->m_tracksView = this;
     item->setHeight( tracksHeight() );
@@ -256,7 +264,6 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
         m_dragAudioItem->m_tracksView = this;
         m_dragAudioItem->setHeight( tracksHeight() );
         m_dragAudioItem->setParentItem( getTrack( m_dragAudioItem->mediaType(), 0 ) );
-        //TODO connect the split signal to the audio clip
         connect( m_dragAudioItem, SIGNAL( split(AbstractGraphicsMediaItem*,qint64) ),
                  this, SLOT( split(AbstractGraphicsMediaItem*,qint64) ) );
     }
