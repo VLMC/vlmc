@@ -43,7 +43,7 @@ ImportController::ImportController(QWidget *parent) :
     m_stackNav = new StackViewController( m_ui->stackViewContainer, false );
     m_mediaListController = new ImportMediaListController( m_stackNav );
     m_tag = new TagWidget( m_ui->tagContainer, 6 );
-    m_filesModel = new QFileSystemModel();
+    m_filesModel = new QDirModel();
     m_stackNav->pushViewController( m_mediaListController );
 
     QStringList filters;
