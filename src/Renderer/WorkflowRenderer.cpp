@@ -77,9 +77,9 @@ void    WorkflowRenderer::initializeRenderer()
     m_media = new LibVLCpp::Media( "imem://" + QString( videoString ) );
     m_media->addOption( inputSlave );
 
-    sprintf( callbacks, "imem-get=%lld", (qint64)WorkflowRenderer::lock );
+    sprintf( callbacks, "imem-get=%lld", (qint64)getLockCallback() );
     m_media->addOption( callbacks );
-    sprintf( callbacks, ":imem-release=%lld", (qint64)WorkflowRenderer::unlock );
+    sprintf( callbacks, ":imem-release=%lld", (qint64)getUnlockCallback() );
     m_media->addOption( callbacks );
 
      //Workflow part
