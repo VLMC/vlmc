@@ -90,7 +90,7 @@ MetaDataWorker::prepareAudioSpectrumComputing()
     m_media->getVLCMedia()->setAudioDataCtx( this );
     m_media->getVLCMedia()->setAudioLockCallback( reinterpret_cast<void*>( lock ) );
     m_media->getVLCMedia()->setAudioUnlockCallback( reinterpret_cast<void*>( unlock ) );
-    m_media->getVLCMedia()->addOption( ":sout-transcode-acodec=s16l" );
+    m_media->getVLCMedia()->addOption( ":sout-transcode-acodec=fl32" );
     m_media->getVLCMedia()->addOption( ":no-sout-smem-time-sync" );
     m_media->getVLCMedia()->addOption( ":no-sout-keep" );
     connect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( generateAudioSpectrum() ), Qt::QueuedConnection );
