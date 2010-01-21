@@ -188,10 +188,6 @@ private:
      */
     QStringList             m_filters;
     /**
-     *  \brief  The progress bar dialog
-     */
-    QProgressDialog*        m_progressDialog;
-    /**
      *  \brief
      */
     template <typename T>
@@ -269,6 +265,14 @@ signals:
      *  \brief
      */
     void    updateMediaRequested( const QUuid& uuid );
+    /**
+     *  \brief
+     */
+    void    progressDialogMax( int max );
+    /**
+     *  \brief
+     */
+    void    progressDialogValue( int value );
     /**
      *  \brief
      */

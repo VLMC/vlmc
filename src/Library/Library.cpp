@@ -42,10 +42,6 @@
 
 Library::Library()
 {
-    m_progressDialog = new QProgressDialog( tr("Importing files..."),
-                                            tr("Cancel"), 0, m_loadingMedias, NULL);
-    m_progressDialog->setWindowModality( Qt::WindowModal );
-    m_progressDialog->setMinimumDuration( 1000 );
     m_nbLoadedMedias = 0;
 }
 
@@ -174,7 +170,7 @@ Library::addMedia( const QFileInfo& fileInfo )
 
     m_temporaryMedias[media->getUuid()] = media;
 
-    m_progressDialog->setValue(m_nbLoadedMedias);
+    emit progressDialogValue( m_nbLoadedMedias );
     emit newMediaLoaded( media->getUuid() );
 }
 
@@ -278,8 +274,8 @@ Library::loadFile( const QFileInfo& fileInfo, int loadingMedias )
     {
         if ( loadingMedias == 1 )
         {
-            m_progressDialog->setMaximum( 1 );
-            m_progressDialog->setValue( 0 );
+            emit progressDialogMax( 1 );
+            emit progressDialogValue( 0 );
             m_loadingMedias = 1;
             m_nbLoadedMedias = 0;
         }
@@ -288,8 +284,8 @@ Library::loadFile( const QFileInfo& fileInfo, int loadingMedias )
             addMedia( fileInfo );
         else
         {
-            m_progressDialog->setMaximum( m_loadingMedias-- );
-            m_progressDialog->setValue( ++m_nbLoadedMedias );
+            emit progressDialogMax( m_loadingMedias-- );
+            emit progressDialogValue( ++m_nbLoadedMedias );
         }
     }
     else
@@ -300,8 +296,8 @@ Library::loadFile( const QFileInfo& fileInfo, int loadingMedias )
 
         m_loadingMedias = list.count();
         m_nbLoadedMedias = 0;
-        m_progressDialog->setMaximum( m_loadingMedias );
-        m_progressDialog->setValue( 0 );
+        emit progressDialogMax( m_loadingMedias );
+        emit progressDialogValue( 0 );
         foreach( file, list )
             loadFile( file, m_loadingMedias );
     }

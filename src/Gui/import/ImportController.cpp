@@ -73,6 +73,11 @@ ImportController::ImportController(QWidget *parent) :
     m_fsWatcher = new QFileSystemWatcher();
     m_fsWatcher->addPath( m_currentlyWatchedDir );
 
+    m_progressDialog = new QProgressDialog( tr("Importing files..."),
+                                            tr("Cancel"), 0, 0, NULL);
+    m_progressDialog->setWindowModality( Qt::WindowModal );
+    m_progressDialog->setMinimumDuration( 1000 );
+
     connect( m_fsWatcher, SIGNAL( directoryChanged( QString ) ),
              m_filesModel, SLOT( refresh() ) );
     connect( m_ui->treeView, SIGNAL( clicked( QModelIndex ) ),
@@ -103,6 +108,11 @@ ImportController::ImportController(QWidget *parent) :
              m_mediaListController, SLOT( clipAdded( Clip* ) ) ); //StackViewController
     connect( m_stackNav, SIGNAL( previousButtonPushed() ),
              this, SLOT( restoreContext() ) );
+
+    connect( Library::getInstance(), SIGNAL( progressDialogMax( int ) ),
+             this, SLOT( progressDialogMax( int ) ) );
+    connect( Library::getInstance(), SIGNAL( progressDialogValue( int ) ),
+             this, SLOT( progressDialogValue( int ) ) );
 }
 
 ImportController::~ImportController()
@@ -377,4 +387,16 @@ ImportController::restoreCurrentPath()
     QVariant path = s.value( "ImportPreviouslySelectPath", QDir::homePath() );
     QFileInfo info = path.toString();
     m_currentlyWatchedDir = info.absoluteFilePath();
+}
+
+void
+ImportController::progressDialogMax( int max )
+{
+    m_progressDialog->setMaximum( max );
+}
+
+void
+ImportController::progressDialogValue( int value )
+{
+    m_progressDialog->setValue( value );
 }

@@ -40,6 +40,7 @@
 #include <QDialog>
 #include <QDirModel>
 #include <QFileSystemWatcher>
+#include <QProgressDialog>
 
 namespace Ui
 {
@@ -79,6 +80,7 @@ class ImportController : public QDialog
         QUuid                       m_currentUuid;
         QUuid                       m_savedUuid;
         bool                        m_controllerSwitched;
+        QProgressDialog*            m_progressDialog;
 
     public slots:
         void        newMediaLoaded( const QUuid& uuid );
@@ -91,6 +93,8 @@ class ImportController : public QDialog
         void        clipDeletion( const QUuid& uuid );
         void        showClipList( const QUuid& uuid );
         void        restoreContext();
+        void        progressDialogMax( int max );
+        void        progressDialogValue( int value );
 
     private slots:
         void        forwardButtonClicked();
