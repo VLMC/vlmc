@@ -50,13 +50,14 @@ void    ProjectManager::signalHandler( int sig )
 }
 
 const QString   ProjectManager::unNamedProject = tr( "<Unnamed project>" );
+const QString   ProjectManager::unSavedProject = tr( "<Unsaved project>" );
 
 ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
 {
     QSettings s;
     m_recentsProjects = s.value( "RecentsProjects" ).toStringList();
 
-    m_projectName = tr( "<Unsaved project>" );
+    m_projectName = ProjectManager::unSavedProject;
     signal( SIGSEGV, ProjectManager::signalHandler );
     signal( SIGFPE, ProjectManager::signalHandler );
     signal( SIGABRT, ProjectManager::signalHandler );
@@ -179,6 +180,10 @@ bool    ProjectManager::createNewProjectFile( bool saveAs )
             outputFileName += ".vlmc";
         m_projectFile = new QFile( outputFileName );
         appendToRecentProject( outputFileName );
+        QFileInfo   fInfo( *m_projectFile );
+        if ( m_projectName == ProjectManager::unSavedProject )
+            m_projectName = fInfo.fileName();
+        emit projectUpdated( m_projectName, true );
     }
     return true;
 }
@@ -190,11 +195,6 @@ void    ProjectManager::saveProject( bool saveAs /*= true*/ )
     if ( createNewProjectFile( saveAs ) == false )
         return ;
     __saveProject( m_projectFile->fileName() );
-    if ( saveAs == true )
-    {
-        QFileInfo   fInfo( *m_projectFile );
-        emit projectUpdated( fInfo.fileName(), true );
-    }
     emit projectSaved();
 }
 
