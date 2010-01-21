@@ -143,9 +143,9 @@ Library::deleteMedia( const QUuid& uuid )
 }
 
 void
-Library::addMedia( const QFileInfo& fileInfo )
+Library::addMedia( const QFileInfo& fileInfo, const QString& uuidStr )
 {
-    Media* media = new Media( fileInfo.filePath() );
+    Media* media = new Media( fileInfo.filePath(), uuidStr );
     m_nbLoadedMedias++;
 
     QUuid id;
@@ -361,7 +361,7 @@ Library::loadProject( const QDomElement& medias )
         }
         else
         {
-            loadMedia( path, uuid );
+            addMedia( path, uuid );
         }
         if ( clipList.size() != 0 )
         {
