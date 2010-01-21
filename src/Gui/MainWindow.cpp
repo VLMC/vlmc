@@ -477,6 +477,7 @@ void    MainWindow::initializeMenuKeyboardShortcut()
     INIT_SHORTCUT( saveAs, "Save as", actionSave_As );
     INIT_SHORTCUT( closeProject, "Close project", actionClose_Project );
     INIT_SHORTCUT( importProject, "Import media", actionImport );
+    INIT_SHORTCUT( renderProject, "Render project", actionRender );
 }
 
 #undef INIT_SHORTCUT
@@ -504,6 +505,8 @@ void    MainWindow::keyboardShortcutChanged( const QString& name, const QString&
         m_ui.actionClose_Project->setShortcut( val );
     else if ( name == "Import media" )
         m_ui.actionImport->setShortcut( val );
+    else if ( name == "Render project" )
+        m_ui.actionRender->setShortcut( val );
     else
         qWarning() << "Unknown shortcut:" << name;
 }
