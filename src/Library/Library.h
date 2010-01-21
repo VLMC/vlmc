@@ -104,7 +104,7 @@ public:
      *  \sa     media( const QUuid& uuid)
      *  \sa     clip( const QUuid& uuid )
      */
-      void    addMedia( const QFileInfo& fileInfo, const QString& uuidStr = QString() );
+      void    addMedia( const QFileInfo& fileInfo, const QString& uuidStr = QString(), bool emitSignal = true );
 
     /**
      *  \brief  Add the clip to the library

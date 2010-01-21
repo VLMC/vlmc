@@ -143,7 +143,7 @@ Library::deleteMedia( const QUuid& uuid )
 }
 
 void
-Library::addMedia( const QFileInfo& fileInfo, const QString& uuidStr )
+Library::addMedia( const QFileInfo& fileInfo, const QString& uuidStr, bool emitSignal )
 {
     Media* media = new Media( fileInfo.filePath(), uuidStr );
     m_nbLoadedMedias++;
@@ -170,8 +170,11 @@ Library::addMedia( const QFileInfo& fileInfo, const QString& uuidStr )
 
     m_temporaryMedias[media->getUuid()] = media;
 
-    emit progressDialogValue( m_nbLoadedMedias );
-    emit newMediaLoaded( media->getUuid() );
+    if ( emitSignal )
+    {
+        emit progressDialogValue( m_nbLoadedMedias );
+        emit newMediaLoaded( media->getUuid() );
+    }
 }
 
 void
@@ -361,7 +364,7 @@ Library::loadProject( const QDomElement& medias )
         }
         else
         {
-            addMedia( path, uuid );
+            addMedia( path, uuid, false );
         }
         if ( clipList.size() != 0 )
         {
@@ -388,6 +391,7 @@ Library::loadProject( const QDomElement& medias )
 
         elem = elem.nextSibling().toElement();
     }
+    importDone();
     emit projectLoaded();
 }
 
