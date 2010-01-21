@@ -43,7 +43,7 @@ ImportController::ImportController(QWidget *parent) :
     m_stackNav = new StackViewController( m_ui->stackViewContainer, false );
     m_mediaListController = new ImportMediaListController( m_stackNav );
     m_tag = new TagWidget( m_ui->tagContainer, 6 );
-    m_filesModel = new QDirModel();
+    m_filesModel = new QFileSystemModel();
     m_stackNav->pushViewController( m_mediaListController );
 
     QStringList filters;
@@ -62,7 +62,7 @@ ImportController::ImportController(QWidget *parent) :
     restoreCurrentPath();
 
     m_ui->treeView->setModel( m_filesModel );
-    m_ui->treeView->setRootIndex( m_filesModel->index( QDir::rootPath() ) );
+    m_ui->treeView->setHeaderHidden( true );
     m_ui->treeView->setCurrentIndex( m_filesModel->index( m_currentlyWatchedDir ) );
     m_ui->treeView->setExpanded( m_ui->treeView->currentIndex() , true );
     m_ui->treeView->setColumnHidden( 1, true );
