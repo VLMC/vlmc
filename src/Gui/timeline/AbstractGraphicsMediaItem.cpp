@@ -106,31 +106,43 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
 {
     Q_ASSERT( clip() );
 
-    if ( size > clip()->getMaxEnd() || size < 1 )
+    if ( size < 1 )
         return;
+
+    if ( clip()->getParent()->getFileType() != Media::Image )
+        if ( size > clip()->getMaxEnd() )
+            return;
 
     if ( from == BEGINNING )
     {
-        if ( clip()->getBegin() + size > clip()->getMaxEnd() )
-            return ;
+        if ( clip()->getParent()->getFileType() != Media::Image )
+            if ( clip()->getBegin() + size > clip()->getMaxEnd() )
+                return;
         tracksView()->getRenderer()->resizeClip( clip(), clip()->getBegin(), clip()->getBegin() + size, 0, //This parameter is unused in this case
                                                  trackNumber(), mediaType() );
     }
     else
     {
-        qint64 newBegin = qMax( clip()->getEnd() - size, (qint64)0 );
-        if ( clip()->getMaxBegin() > newBegin )
-            return ;
-        qint64 oldLength = clip()->getLength();
-//        if ( ( clip()->getEnd() - size ) < 0 )
-//        {
-//            qWarning( "Warning: resizing a region with a size below 0" );
-//            size += clip()->getEnd() - size;
-//        }
-        m_resizeExpected = true;
-        tracksView()->getRenderer()->resizeClip( clip(), qMax( clip()->getEnd() - size, (qint64)0 ), clip()->getEnd(),
-                                                 startPos() + ( oldLength - size ), trackNumber(), mediaType() );
-        setStartPos( startPos() + ( oldLength - size ) );
+        if ( clip()->getParent()->getFileType() != Media::Image )
+        {
+            qint64 newBegin = qMax( clip()->getEnd() - size, (qint64)0 );
+            if ( clip()->getMaxBegin() > newBegin )
+                return;
+
+            m_resizeExpected = true;
+            qint64 oldLength = clip()->getLength();
+            tracksView()->getRenderer()->resizeClip( clip(), qMax( clip()->getEnd() - size, (qint64)0 ), clip()->getEnd(),
+                                                     startPos() + ( oldLength - size ), trackNumber(), mediaType() );
+            setStartPos( startPos() + ( oldLength - size ) );
+        }
+        else
+        {
+            m_resizeExpected = true;
+            qint64 oldLength = clip()->getLength();
+            tracksView()->getRenderer()->resizeClip( clip(), 0, size, startPos() + ( oldLength - size ),
+                                                     trackNumber(), mediaType() );
+            setStartPos( startPos() + ( oldLength - size ) );
+        }
     }
 
     setWidth( clip()->getLength() );
