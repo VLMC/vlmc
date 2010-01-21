@@ -58,7 +58,6 @@ VideoClipWorkflow::initVlcOutput()
     m_vlcMedia->setVideoLockCallback( reinterpret_cast<void*>( getLockCallback() ) );
     m_vlcMedia->setVideoUnlockCallback( reinterpret_cast<void*>( getUnlockCallback() ) );
     m_vlcMedia->addOption( ":sout-transcode-vcodec=RV24" );
-    m_vlcMedia->addOption( ":sout-transcode-acodec=fl32" );
     m_vlcMedia->addOption( ":sout-smem-time-sync" );
 
     sprintf( buffer, ":sout-transcode-width=%i",
