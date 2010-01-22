@@ -455,6 +455,18 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, 
     AbstractGraphicsMediaItem* groupItem;
     if ( ( groupItem = item->groupItem() ) )
     {
+        // Add missing tracks for the target
+        if ( groupItem->mediaType() == MainWorkflow::AudioTrack )
+        {
+            while ( item->trackNumber() >= m_numAudioTrack )
+                addAudioTrack();
+        }
+        else if ( groupItem->mediaType() == MainWorkflow::VideoTrack )
+        {
+            while ( item->trackNumber() >= m_numVideoTrack )
+                addVideoTrack();
+        }
+
         groupItem->setParentItem( getTrack( groupItem->mediaType(), item->trackNumber() ) );
         groupItem->setPos( item->pos() );
     }
