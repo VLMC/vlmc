@@ -304,7 +304,7 @@ EffectsEngine::configureTransitions()
             }
         case TEvent::UNPATCH:
             {
-                qDebug() << "TYPE : DEL\n"
+                qDebug() << "TYPE : UNPATCH\n"
                          << "ID : " << it.value().m_id;
                 break;
             }
