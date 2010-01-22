@@ -28,7 +28,7 @@
 #include "WorkflowRenderer.h"
 #include "WorkflowFileRendererDialog.h"
 
-#include <QTimer>
+#include <QTime>
 
 class   WorkflowFileRenderer : public WorkflowRenderer
 {
@@ -49,11 +49,11 @@ private:
     const QString               m_outputFileName;
     WorkflowFileRendererDialog* m_dialog;
     QImage*                     m_image;
-    QTimer                      m_timer;
+    QTime                       m_time;
 
 protected:
-    virtual void*       getLockCallback();
-    virtual void*       getUnlockCallback();
+    virtual void*               getLockCallback();
+    virtual void*               getUnlockCallback();
 
 private slots:
     void                        stop();

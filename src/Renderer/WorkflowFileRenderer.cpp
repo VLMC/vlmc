@@ -25,18 +25,21 @@
 #include "SettingsManager.h"
 #include "VLCMedia.h"
 
+#include <QTime>
+
 WorkflowFileRenderer::WorkflowFileRenderer( const QString& outputFileName ) :
         WorkflowRenderer(),
         m_outputFileName( outputFileName )
 {
     m_image = NULL;
-    m_timer.setSingleShot( true );
     m_dialog = new WorkflowFileRendererDialog();
     m_dialog->setModal( true );
     m_dialog->setOutputFileName( outputFileName );
     connect( m_dialog->m_ui.cancelButton, SIGNAL( clicked() ), this, SLOT( cancelButtonClicked() ) );
     connect( m_dialog, SIGNAL( finished(int) ), this, SLOT( stop() ) );
-    connect( this, SIGNAL( imageUpdated( const uchar* ) ), m_dialog, SLOT( updatePreview( const uchar* ) ) );
+    connect( this, SIGNAL( imageUpdated( const uchar* ) ),
+             m_dialog, SLOT( updatePreview( const uchar* ) ),
+             Qt::QueuedConnection );
 }
 
 WorkflowFileRenderer::~WorkflowFileRenderer()
@@ -93,13 +96,15 @@ int
 WorkflowFileRenderer::lock( void *datas, qint64 *dts, qint64 *pts, quint32 *flags,
                             size_t *bufferSize, void **buffer )
 {
-    WorkflowFileRenderer* self = reinterpret_cast<WorkflowFileRenderer*>( datas );
-    int     ret = WorkflowRenderer::lock( datas, dts, pts, flags, bufferSize, buffer );
+    int         ret = WorkflowRenderer::lock( datas, dts, pts, flags, bufferSize, buffer );
+    EsHandler*  handler = reinterpret_cast<EsHandler*>( datas );
+    WorkflowFileRenderer* self = static_cast<WorkflowFileRenderer*>( handler->self );
 
-    if ( self->m_timer.isActive() == false )
+    if ( self->m_time.isValid() == false ||
+        self->m_time.elapsed() >= 1000 )
     {
-        self->emit imageUpdated( (uchar*)ret );
-        self->m_timer.start( 1000 );
+        self->emit imageUpdated( (uchar*)self->m_renderVideoFrame );
+        self->m_time.restart();
     }
     return ret;
 }

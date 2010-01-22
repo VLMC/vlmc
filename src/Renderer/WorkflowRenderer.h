@@ -308,9 +308,9 @@ class   WorkflowRenderer : public GenericRenderer
         LibVLCpp::Media*    m_media;
         bool                m_stopping;
         float               m_outputFps;
+        unsigned char*	    m_renderVideoFrame;
 
     private:
-        unsigned char*	    m_renderVideoFrame;
         /**
          *  \brief          When there's no sound to play, this is the buffer that'll
          *                  be injected
