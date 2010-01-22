@@ -53,7 +53,6 @@ void    WorkflowRenderer::initializeRenderer()
     char        callbacks[64];
 
     m_waitCond = new QWaitCondition;
-    qDebug() << "allocating render video frame";
     m_renderVideoFrame = new unsigned char[m_mainWorkflow->getWidth()
                                            * m_mainWorkflow->getHeight() * Pixel::NbComposantes];
 

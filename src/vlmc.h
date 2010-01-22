@@ -36,12 +36,6 @@
 #define SleepMS( x ) Sleep( x )
 #endif
 
-//TODO: THIS HAS TO GO REALLY REALLY REALLY SOON !!!!
-//FIXME:
-//UGLY:
-#define VIDEOWIDTH 640
-#define VIDEOHEIGHT 480
-
 enum ToolButtons
 {
     TOOL_DEFAULT,

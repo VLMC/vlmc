@@ -35,7 +35,7 @@ WorkflowFileRendererDialog::WorkflowFileRendererDialog()
 void    WorkflowFileRendererDialog::setOutputFileName( const QString& outputFileName )
 {
     m_ui.nameLabel->setText( outputFileName );
-    m_ui.previewLabel->setMinimumSize( VIDEOWIDTH, VIDEOHEIGHT);
+    m_ui.previewLabel->setMinimumSize( m_workflow->getWidth(), m_workflow->getHeight() );
     setWindowTitle( "Rendering to " + outputFileName );
 }
 
@@ -47,7 +47,7 @@ void    WorkflowFileRendererDialog::setProgressBarValue( int val )
 void    WorkflowFileRendererDialog::updatePreview( const uchar* buff )
 {
     m_ui.previewLabel->setPixmap(
-            QPixmap::fromImage( QImage( buff, VIDEOWIDTH, VIDEOHEIGHT,
+            QPixmap::fromImage( QImage( buff, m_workflow->getWidth(), m_workflow->getHeight(),
                                         QImage::Format_RGB888 ).rgbSwapped() ) );
 }
 
