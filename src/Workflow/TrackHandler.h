@@ -84,6 +84,10 @@ class   TrackHandler : public QObject
          */
         void                    renderOneFrame();
 
+        /**
+         *  \sa     MainWorkflow::setFullSpeedRender();
+         */
+        void                    setFullSpeedRender( bool val );
 
     private:
         void                    computeLength();

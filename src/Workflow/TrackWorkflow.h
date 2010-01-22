@@ -81,6 +81,11 @@ class   TrackWorkflow : public QObject
         void                                    forceRepositionning();
         void                                    renderOneFrame();
 
+        /**
+         *  \sa     MainWorkflow::setFullSpeedRender();
+         */
+        void                                    setFullSpeedRender( bool val );
+
     private:
         void                                    computeLength();
         void*                                   renderClip( ClipWorkflow* cw, qint64 currentFrame,

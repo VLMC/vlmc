@@ -277,3 +277,9 @@ void    ClipWorkflow::resyncClipWorkflow()
     m_previousPts = -1;
     m_currentPts = -1;
 }
+
+void
+ClipWorkflow::setFullSpeedRender( bool val )
+{
+    m_fullSpeedRender = val;
+}

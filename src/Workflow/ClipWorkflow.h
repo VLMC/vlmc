@@ -164,6 +164,11 @@ class   ClipWorkflow : public QObject
 
         LibVLCpp::MediaPlayer*  getMediaPlayer();
 
+        /**
+         *  \sa MainWorkflow::setFullSpeedRender();
+         */
+        void                    setFullSpeedRender( bool val );
+
     private:
         void                    setState( State state );
         void                    adjustBegin();
@@ -210,6 +215,7 @@ class   ClipWorkflow : public QObject
         QMutex*                 m_availableBuffersMutex;
         qint64                  m_beginPausePts;
         qint64                  m_pauseDuration;
+        bool                    m_fullSpeedRender;
         int                     debugType;
 
     private slots:

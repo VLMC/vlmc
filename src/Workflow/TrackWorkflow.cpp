@@ -496,3 +496,12 @@ TrackWorkflow::renderOneFrame()
     QMutexLocker    lock( m_renderOneFrameMutex );
     m_renderOneFrame = true;
 }
+
+void
+TrackWorkflow::setFullSpeedRender( bool val )
+{
+    foreach ( ClipWorkflow* cw, m_clips.values() )
+    {
+        cw->setFullSpeedRender( val );
+    }
+}

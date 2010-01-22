@@ -330,3 +330,10 @@ TrackHandler::renderOneFrame()
             m_tracks[i]->renderOneFrame();
     }
 }
+
+void
+TrackHandler::setFullSpeedRender( bool val )
+{
+    for ( unsigned int i = 0; i < m_trackCount; ++i)
+        m_tracks[i]->setFullSpeedRender( val );
+}

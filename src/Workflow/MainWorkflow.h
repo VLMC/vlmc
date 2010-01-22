@@ -333,6 +333,15 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          */
         void                    renderOneFrame();
 
+        /**
+         *  \brief              Set the render speed.
+         *
+         *  This will activate or deactivate vlc's pace-control
+         *  \param  val         If true, ClipWorkflow will use no-pace-control
+         *                      else, pace-control.
+         */
+        void                    setFullSpeedRender( bool val );
+
         /// Pre-filled buffer used when there's nothing to render
         static LightVideoFrame*         blackOutput;
 

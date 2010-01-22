@@ -225,6 +225,7 @@ void        WorkflowRenderer::startPreview()
     //FIXME:: check if this doesn't require Qt::QueuedConnection
     connect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SIGNAL( endReached() ) );
 
+    m_mainWorkflow->setFullSpeedRender( false );
     m_mainWorkflow->startRender();
     m_isRendering = true;
     m_paused = false;

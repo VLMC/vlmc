@@ -465,3 +465,10 @@ MainWorkflow::renderOneFrame()
     nextFrame( VideoTrack );
     nextFrame( AudioTrack );
 }
+
+void
+MainWorkflow::setFullSpeedRender( bool val )
+{
+    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
+        m_tracks[i]->setFullSpeedRender( val );
+}
