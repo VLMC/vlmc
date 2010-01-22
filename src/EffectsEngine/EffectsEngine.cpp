@@ -113,6 +113,14 @@ EffectsEngine::makePatch( void )
             if ( tmp->connectStaticVideoOutputToStaticVideoInput( 1, 2, 1 ) == false )
                 qDebug() << "The connection of the RNBInvert output"
                          << "with the first input of the blit failed!";
+
+            // TRANSITIONS
+
+            int i;
+
+            for ( i = 100; i < 100000; i += 100 )
+                qDebug() << "New transition with id #" << addTransition( 1, 2, i, i + 50);
+
         }
         else
             qDebug() << "There's not the video mixer plugin,"
@@ -160,6 +168,14 @@ EffectsEngine::makeBypassPatch( void )
 }
 
 void
+EffectsEngine::setCurrentFrameNumber( quint64 nb )
+{
+    QWriteLocker  wl( &m_rwl );
+
+    m_currentFrameNumber = nb;
+}
+
+void
 EffectsEngine::setVideoInput( quint32 inId, const LightVideoFrame & frame )
 {
     QWriteLocker  wl( &m_rwl );
@@ -180,12 +196,12 @@ EffectsEngine::render( void )
 {
     QWriteLocker  wl( &m_rwl );
     if ( m_processedInBypassPatch == false )
-        m_patch->render();
-    else
     {
         configureTransitions();
-        m_bypassPatch->render();
+        m_patch->render();
     }
+    else
+        m_bypassPatch->render();
 }
 
 const LightVideoFrame &
@@ -220,17 +236,91 @@ EffectsEngine::disable( void )
 void
 EffectsEngine::configureTransitions()
 {
+    QMap<quint32, TEvent>::iterator it = m_TDoAtNextRender.begin();
+    QMap<quint32, TEvent>::iterator end = m_TDoAtNextRender.end();
+
+    qDebug() << m_currentFrameNumber;
+    if ( m_TStartTimeline.find( m_currentFrameNumber ) != m_TStartTimeline.end() )
+    {
+        QMap<quint32, TStart*>::iterator   itStart = (m_TStartTimeline[m_currentFrameNumber]).begin();
+        QMap<quint32, TStart*>::iterator   endStart = (m_TStartTimeline[m_currentFrameNumber]).end();
+        for ( ; itStart != endStart; ++itStart )
+            qDebug() << "TSTART :\n"
+                     << "ID : " << itStart.value()->m_id << "\n"
+                     << "START FRAME ID : " << itStart.value()->m_startFrameId << "\n"
+                     << "SRC TRACK ID : " << itStart.value()->m_srcTrackId << "\n"
+                     << "DST TRACK ID : " << itStart.value()->m_dstTrackId << "\n"
+                     << "NB STEPS : " << itStart.value()->m_nbSteps;
+    }
+    else
+        qDebug() << "!TSTART";
+    if ( m_TStopTimeline.find( m_currentFrameNumber ) != m_TStopTimeline.end() )
+    {
+        QMap<quint32, TStop*>::iterator    itStop = (m_TStopTimeline[m_currentFrameNumber]).begin();
+        QMap<quint32, TStop*>::iterator    endStop = (m_TStopTimeline[m_currentFrameNumber]).end();
+
+        for ( ; itStop != endStop; ++itStop )
+            qDebug() << "TSTOP :\n"
+                     << "ID : " << itStop.value()->m_id << "\n"
+                     << "STOP FRAME ID : " << itStop.value()->m_stopFrameId << "\n"
+                     << "SRC TRACK ID : " << itStop.value()->m_srcTrackId << "\n"
+                     << "DST TRACK ID : " << itStop.value()->m_dstTrackId;
+    }
+    else
+        qDebug() << "!TSTOP";
+    for ( ; it != end; ++it )
+        switch ( it.value().m_type )
+        {
+            qDebug() << "TEVENT :\n";
+        case TEvent::DEL:
+            {
+                qDebug() << "TYPE : DEL\n"
+                         << "ID : " << it.value().m_id;
+                break;
+            }
+        case TEvent::ADD:
+            {
+                qDebug() << "TYPE : ADD\n"
+                         << "ID : " << it.value().m_id << "\n"
+                         << "CURRENT STEP : " <<  it.value().m_currentStep << "\n"
+                         << "NB STEPS : " <<  it.value().m_nbSteps;
+                break;
+            }
+        case TEvent::UPDATE:
+            {
+                qDebug() << "TYPE : UPDATE\n"
+                         << "ID : " << it.value().m_id << "\n"
+                         << "CURRENT STEP : " <<  it.value().m_currentStep << "\n"
+                         << "NB STEPS : " <<  it.value().m_nbSteps;
+                break;
+            }
+        case TEvent::PATCH:
+            {
+                qDebug() << "TYPE : PATCH\n"
+                         << "ID : " << it.value().m_id << "\n"
+                         << "CURRENT STEP : " <<  it.value().m_currentStep << "\n"
+                         << "NB STEPS : " <<  it.value().m_nbSteps;
+                break;
+            }
+        case TEvent::UNPATCH:
+            {
+                qDebug() << "TYPE : DEL\n"
+                         << "ID : " << it.value().m_id;
+                break;
+            }
+        }
 }
 
 quint32
 EffectsEngine::addTransition( quint32 srcTrackId,
                               quint32 dstTrackId,
-                              quint32 startFrameId,
-                              quint32 stopFrameId )
+                              quint64 startFrameId,
+                              quint64 stopFrameId )
 {
     QWriteLocker  wl( &m_rwl );
     TStart*     tstart;
     TStop*      tstop;
+    quint32     i;
 
     m_TStartManager.createObject();
     m_TStopManager.createObject();
@@ -247,20 +337,35 @@ EffectsEngine::addTransition( quint32 srcTrackId,
     tstop->m_dstTrackId = dstTrackId;
     m_TStartTimeline[startFrameId][tstart->m_id] = tstart;
     m_TStopTimeline[stopFrameId][tstop->m_id] = tstop;
+
+    if ( ( m_currentFrameNumber <= stopFrameId ) &&
+         ( m_currentFrameNumber >= startFrameId ) )
+    {
+        m_TDoAtNextRender[tstart->m_id].m_type = TEvent::ADD;
+        m_TDoAtNextRender[tstart->m_id].m_id = tstart->m_id;
+        m_TDoAtNextRender[tstart->m_id].m_currentStep = m_currentFrameNumber - startFrameId;
+        m_TDoAtNextRender[tstart->m_id].m_currentStep = stopFrameId - startFrameId;
+    }
+
     return tstart->m_id;
 }
 
 bool
-EffectsEngine::moveTransition( quint32 transitionId, quint32 startFrameId, quint32 stopFrameId )
+EffectsEngine::moveTransition( quint32 transitionId, quint64 startFrameId, quint64 stopFrameId )
 {
     QWriteLocker  wl( &m_rwl );
     TStart*     tstart;
     TStop*      tstop;
+    quint64     oldStartFrameId;
+    quint64     oldStopFrameId;
 
     tstart = m_TStartManager.getObject( transitionId );
     tstop = m_TStopManager.getObject( transitionId );
     if ( tstart == NULL || tstop == NULL )
         return false;
+
+    oldStartFrameId = tstart->m_startFrameId;
+    oldStopFrameId = tstop->m_stopFrameId;
 
     if ( tstart->m_startFrameId != startFrameId )
     {
@@ -280,13 +385,41 @@ EffectsEngine::moveTransition( quint32 transitionId, quint32 startFrameId, quint
         m_TStopTimeline[startFrameId][transitionId] = tstop;
     }
 
-
     tstart->m_startFrameId = startFrameId;
     tstart->m_nbSteps = stopFrameId - startFrameId;
     tstop->m_stopFrameId = stopFrameId;
 
-    // if we're during a transition, think to update the nbSteps in the transition Effect.
 
+    if ( ( m_currentFrameNumber <= oldStopFrameId ) &&
+         ( m_currentFrameNumber >= oldStartFrameId ) )
+    {
+        if ( ( m_currentFrameNumber <= stopFrameId ) &&
+             ( m_currentFrameNumber >= startFrameId ) )
+        {
+            // si la transition etait pendant la frame courante et le reste,
+            // alors il faut mettre a jour les parametres de la transition
+            m_TDoAtNextRender[transitionId].m_type = TEvent::UPDATE;
+            m_TDoAtNextRender[transitionId].m_id = tstart->m_id;
+            m_TDoAtNextRender[transitionId].m_currentStep = m_currentFrameNumber - startFrameId;
+            m_TDoAtNextRender[transitionId].m_nbSteps = stopFrameId - startFrameId;
+        }
+        else
+        {
+            // si le deplacement place la transition hors de la frame courrante,
+            // alors qu'elle y etait precedement, il faut deconnecter l'effet
+            m_TDoAtNextRender[transitionId].m_type = TEvent::UNPATCH;
+            m_TDoAtNextRender[transitionId].m_id = tstart->m_id;
+        }
+    }
+    else
+    {
+        // si le deplacement place la transition pendant la frame courrante,
+        // alors il faut connecter l'effet et le configurer
+        m_TDoAtNextRender[transitionId].m_type = TEvent::PATCH;
+        m_TDoAtNextRender[transitionId].m_id = tstart->m_id;
+        m_TDoAtNextRender[transitionId].m_currentStep = m_currentFrameNumber - startFrameId;
+        m_TDoAtNextRender[transitionId].m_nbSteps = stopFrameId - startFrameId;
+    }
     return true;
 }
 
@@ -296,12 +429,16 @@ EffectsEngine::removeTransition( quint32 transitionId )
     QWriteLocker  wl( &m_rwl );
     TStart*     tstart;
     TStop*      tstop;
+    quint64     startFrameId;
+    quint64     stopFrameId;
 
     tstart = m_TStartManager.getObject( transitionId );
     tstop = m_TStopManager.getObject( transitionId );
     if ( tstart == NULL || tstop == NULL )
         return false;
 
+    startFrameId = tstart->m_startFrameId;
+    stopFrameId = tstop->m_stopFrameId;
     m_TStartTimeline[tstart->m_startFrameId].
         erase( m_TStartTimeline[tstart->m_startFrameId].find( tstart->m_id ) );
     if ( m_TStartTimeline[tstart->m_startFrameId].isEmpty() == true )
@@ -313,5 +450,12 @@ EffectsEngine::removeTransition( quint32 transitionId )
 
     m_TStartManager.deleteObject( transitionId );
     m_TStopManager.deleteObject( transitionId );
+
+    if ( ( m_currentFrameNumber <= stopFrameId ) &&
+         ( m_currentFrameNumber >= startFrameId ) )
+    {
+        m_TDoAtNextRender[transitionId].m_type = TEvent::DEL;
+        m_TDoAtNextRender[transitionId].m_id = transitionId;
+    }
     return true;
 }

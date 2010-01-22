@@ -21,6 +21,9 @@
  *****************************************************************************/
 
 #include "MixerEffectPlugin.h"
+
+//#include "VlmcPlugin.h"
+
 #include <QtDebug>
 
 MixerEffectPlugin::MixerEffectPlugin()

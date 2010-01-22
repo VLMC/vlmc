@@ -37,6 +37,7 @@
 #include <QtGlobal>
 
 // Temporary
+class  TEvent;
 class  TStart;
 class  TStop;
 
@@ -131,17 +132,20 @@ class	EffectsEngine
     * else, it will give the video frame to the input with the id inId
     * of the EffectNode called "BypassRootNode"
     */
-    void                    setVideoInput( quint32 inId, const LightVideoFrame & frame );
+    void                        setVideoInput( quint32 inId, const LightVideoFrame & frame );
+
+
+    void                        setCurrentFrameNumber( quint64 nb );
 
     // TEMPORARY TRANSITION WRAPPER
 
     quint32                     addTransition( quint32 srcTrackId,
                                                quint32 dstTrackId,
-                                               quint32 startFrameId,
-                                               quint32 stopFrameId );
+                                               quint64 startFrameId,
+                                               quint64 stopFrameId );
     bool                        moveTransition( quint32 transitionId,
-                                                quint32 startFrameId,
-                                                quint32 stopFrameId );
+                                                quint64 startFrameId,
+                                                quint64 stopFrameId );
     bool                        removeTransition( quint32 transitionId );
 
 private:
@@ -187,15 +191,34 @@ private:
      */
     bool                    m_processedInBypassPatch;
 
+    quint64                 m_currentFrameNumber;
+
 // Temporary
 
     SemanticObjectManager<TStart>            m_TStartManager;
     SemanticObjectManager<TStop>             m_TStopManager;
-    QMap<quint32, QMap<quint32, TStart*> >   m_TStartTimeline;
-    QMap<quint32, QMap<quint32, TStop*> >    m_TStopTimeline;
+    QMap<quint64, QMap<quint32, TStart*> >   m_TStartTimeline;
+    QMap<quint64, QMap<quint32, TStop*> >    m_TStopTimeline;
+    QMap<quint32, TEvent>                    m_TDoAtNextRender;
 };
 
 // Temporary
+
+struct TEvent
+{
+    enum EventType
+        {
+            DEL,
+            ADD,
+            UPDATE,
+            PATCH,
+            UNPATCH
+        };
+    EventType   m_type;
+    quint32     m_id;
+    quint64     m_currentStep;
+    quint64     m_nbSteps;
+};
 
 struct TStart
 {
@@ -217,10 +240,10 @@ struct TStart
     };
 
     quint32     m_id;
-    quint32     m_startFrameId;
+    quint64     m_startFrameId;
     quint32     m_srcTrackId;
     quint32     m_dstTrackId;
-    quint32     m_nbSteps;
+    quint64     m_nbSteps;
 };
 
 struct  TStop
@@ -243,7 +266,7 @@ struct  TStop
     };
 
     quint32     m_id;
-    quint32     m_stopFrameId;
+    quint64     m_stopFrameId;
     quint32     m_srcTrackId;
     quint32     m_dstTrackId;
 };
