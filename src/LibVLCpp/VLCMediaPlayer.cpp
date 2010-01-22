@@ -102,7 +102,7 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
         self->emit endReached();
         break;
     case libvlc_MediaPlayerTimeChanged:
-        self->emit timeChanged( event->u.media_player_time_changed.new_time / 1000 );
+        self->emit timeChanged( event->u.media_player_time_changed.new_time );
         break;
     case libvlc_MediaPlayerPositionChanged:
 //        qDebug() << self << "position changed : " << event->u.media_player_position_changed.new_position;
