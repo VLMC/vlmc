@@ -28,8 +28,8 @@
 #ifndef MDATE_H
 #define MDATE_H
 
-#include <sys/types.h>
-typedef int64_t mtime_t;
+#include <QtGlobal>
+typedef qint64 mtime_t;
 
 extern "C" mtime_t mdate( void );
 
