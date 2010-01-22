@@ -40,11 +40,6 @@ UndoStack::UndoStack( QWidget* parent ) : QUndoView( parent )
     connect( ProjectManager::getInstance(), SIGNAL( projectSaved() ),
              m_undoStack, SLOT( setClean() ) );
 
-    m_undoShortcut = new KeyboardShortcutHelper( "Undo", this );
-    m_redoShortcut = new KeyboardShortcutHelper( "Redo", this );
-    connect( m_undoShortcut, SIGNAL( activated() ), m_undoStack, SLOT( undo() ) );
-    connect( m_redoShortcut, SIGNAL( activated() ), m_undoStack, SLOT( redo() ) );
-
     connect( ProjectManager::getInstance(), SIGNAL( projectClosed() ), this, SLOT( clear() ) );
 }
 
@@ -66,4 +61,14 @@ void    UndoStack::endMacro()
 void    UndoStack::clear()
 {
     m_undoStack->clear();
+}
+
+void    UndoStack::undo()
+{
+    m_undoStack->undo();
+}
+
+void    UndoStack::redo()
+{
+    m_undoStack->redo();
 }

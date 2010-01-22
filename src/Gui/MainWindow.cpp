@@ -459,6 +459,16 @@ void    MainWindow::on_actionClose_Project_triggered()
     ProjectManager::getInstance()->closeProject();
 }
 
+void    MainWindow::on_actionUndo_triggered()
+{
+    UndoStack::getInstance( this )->undo();
+}
+
+void    MainWindow::on_actionRedo_triggered()
+{
+    UndoStack::getInstance( this )->redo();
+}
+
 #define INIT_SHORTCUT( instName, shortcutName, actionInstance )      \
             const SettingValue* instName = SettingsManager::getInstance()->getValue( "keyboard_shortcut", shortcutName );\
             KeyboardShortcutHelper* helper##instName = new KeyboardShortcutHelper( shortcutName, this, true ); \
@@ -478,6 +488,8 @@ void    MainWindow::initializeMenuKeyboardShortcut()
     INIT_SHORTCUT( closeProject, "Close project", actionClose_Project );
     INIT_SHORTCUT( importProject, "Import media", actionImport );
     INIT_SHORTCUT( renderProject, "Render project", actionRender );
+    INIT_SHORTCUT( undo, "Undo", actionUndo );
+    INIT_SHORTCUT( redo, "Redo", actionRedo );
 }
 
 #undef INIT_SHORTCUT
@@ -507,6 +519,10 @@ void    MainWindow::keyboardShortcutChanged( const QString& name, const QString&
         m_ui.actionImport->setShortcut( val );
     else if ( name == "Render project" )
         m_ui.actionRender->setShortcut( val );
+    else if ( name == "Undo" )
+        m_ui.actionUndo->setShortcut( val );
+    else if ( name == "Redo" )
+        m_ui.actionRedo->setShortcut( val );
     else
         qWarning() << "Unknown shortcut:" << name;
 }

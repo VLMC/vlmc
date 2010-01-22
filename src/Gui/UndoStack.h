@@ -45,11 +45,11 @@ class UndoStack : public QUndoView, public QSingleton<UndoStack>
         UndoStack( QWidget* parent );
 
         QUndoStack*                 m_undoStack;
-        KeyboardShortcutHelper*     m_undoShortcut;
-        KeyboardShortcutHelper*     m_redoShortcut;
 
     public slots:
         void            clear();
+        void            undo();
+        void            redo();
 
     signals:
         void            cleanChanged( bool val );

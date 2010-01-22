@@ -102,6 +102,8 @@ private slots:
     void                    on_actionHelp_triggered();
     void                    on_actionProject_Preferences_triggered();
     void                    on_actionClose_Project_triggered();
+    void                    on_actionUndo_triggered();
+    void                    on_actionRedo_triggered();
     void                    on_actionCrash_triggered();
     void                    on_actionImport_triggered();
     void                    toolButtonClicked( int id );
