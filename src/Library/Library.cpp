@@ -220,6 +220,7 @@ Library::metaDataComputed( Media* media )
                 SIGNAL( metaDataComputed( Media* ) ),
                 this,
                 SLOT( metaDataComputed( Media* ) ) );
+    emit updateMediaRequested( media->getUuid() );
 }
 
 void

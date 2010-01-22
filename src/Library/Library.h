@@ -229,11 +229,11 @@ public slots:
     void    removeClip( const QUuid& mediaId, const QUuid& clipId );
 private slots:
     /**
-     *  \brief
+     *  \brief  Will update the media cell with its metadata
      */
     void    metaDataComputed( Media* media );
     /**
-     *  \brief
+     *  \brief  Will update the media cell with its snapshot
      */
     void    snapshotComputed( Media* media );
 
