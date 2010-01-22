@@ -119,7 +119,7 @@ EffectsEngine::makePatch( void )
             int i;
 
             for ( i = 100; i < 100000; i += 100 )
-                qDebug() << "New transition with id #" << addTransition( 1, 2, i, i + 50);
+                addTransition( 1, 2, i, i + 50);
 
         }
         else
