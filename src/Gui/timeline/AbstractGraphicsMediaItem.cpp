@@ -201,9 +201,12 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
 
             m_resizeExpected = true;
             qint64 oldLength = clip()->getLength();
+            qint64  newStart = startPos() + ( oldLength - size );
+            if ( newStart < 0 )
+                return ;
             tracksView()->getRenderer()->resizeClip( clip(), qMax( clip()->getEnd() - size, (qint64)0 ), clip()->getEnd(),
-                                                     startPos() + ( oldLength - size ), trackNumber(), mediaType() );
-            setStartPos( startPos() + ( oldLength - size ) );
+                                                     newStart, trackNumber(), mediaType() );
+            setStartPos( newStart );
         }
         else
         {
