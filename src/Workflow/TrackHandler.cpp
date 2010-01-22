@@ -123,7 +123,7 @@ TrackHandler::getOutput( qint64 currentFrame, qint64 subFrame )
             {
                 void*   ret = m_tracks[i]->getOutput( currentFrame, subFrame );
                 if ( ret == NULL )
-                    m_effectEngine->setVideoInput( i + 1, *TrackHandler::nullOutput );
+                    m_effectEngine->setVideoInput( i + 1, *MainWorkflow::blackOutput );
                 else
                 {
                     StackedBuffer<LightVideoFrame*>* stackedBuffer =
