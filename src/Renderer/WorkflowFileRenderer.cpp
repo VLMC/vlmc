@@ -55,7 +55,7 @@ void        WorkflowFileRenderer::run()
     m_outputFps = SettingsManager::getInstance()->getValue( "VLMC", "VLMCOutPutFPS" )->get().toDouble();
 
     //Media as already been created an mainly initialized by the WorkflowRenderer
-    QString     transcodeStr = ":sout=#transcode{vcodec=mp4v,vb=800,acodec=mpga,ab=128,no-hurry-up}"
+    QString     transcodeStr = ":sout=#transcode{vcodec=h264,vb=800,acodec=a52,ab=128,no-hurry-up}"
                                ":standard{access=file,mux=ps,dst=\""
                           + m_outputFileName + "\"}";
     m_media->addOption( transcodeStr.toStdString().c_str() );
