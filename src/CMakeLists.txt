@@ -43,6 +43,7 @@ SET(VLMC_SRCS
     Gui/import/ImportController.cpp
     Gui/import/ImportMediaCellView.cpp
     Gui/import/ImportMediaListController.cpp
+    Gui/export/Export.cpp
     Gui/library/ClipListViewController.cpp
     Gui/library/ListViewController.cpp
     Gui/library/MediaCellView.cpp
@@ -118,7 +119,8 @@ SET (VLMC_HDRS
     Gui/FileInfoListModel.h                                                       
     Gui/import/ImportController.h                                                 
     Gui/import/ImportMediaCellView.h                                              
-    Gui/import/ImportMediaListController.h                                        
+    Gui/import/ImportMediaListController.h
+    Gui/export/Export.h
     Gui/LanguagePreferences.h                                                     
     Gui/LCDTimecode.h                                                             
     Gui/library/ClipListViewController.h                                          
@@ -183,6 +185,7 @@ SET (VLMC_HDRS
 
 SET(VLMC_UIS
     Gui/import/ui/ImportController.ui
+    Gui/export/ui/Export.ui
     Gui/library/StackViewNavController.ui
     Gui/library/ui/MediaCellView.ui
     Gui/library/ui/StackViewNavController.ui
@@ -227,6 +230,7 @@ INCLUDE_DIRECTORIES(
   EffectsEngine/PluginsAPI
   Gui
   Gui/import
+  Gui/export
   Gui/library
   Gui/settings
   Gui/timeline
