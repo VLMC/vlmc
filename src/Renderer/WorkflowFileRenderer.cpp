@@ -66,7 +66,8 @@ void        WorkflowFileRenderer::run()
     m_mediaPlayer->setMedia( m_media );
 
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( stop() ) );
-
+    connect( m_mainWorkflow, SIGNAL( frameChanged( qint64, MainWorkflow::FrameChangedReason) ),
+             this, SLOT( __frameChanged( qint64,MainWorkflow::FrameChangedReason ) ) );
     m_dialog->show();
 
     m_isRendering = true;
