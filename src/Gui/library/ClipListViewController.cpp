@@ -73,6 +73,7 @@ void    ClipListViewController::addClip( Clip* clip )
     cell->setLength( clip->getLengthSecond(), false );
     addCell( cell );
     m_cells.insert( clip->getUuid(), cell );
+    cell->enableCell();
 }
 
 void    ClipListViewController::clean()

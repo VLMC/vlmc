@@ -365,6 +365,8 @@ Library::loadProject( const QDomElement& medias )
         else
         {
             addMedia( path, uuid, false );
+            //FIXME : this is ugly
+            importDone();
         }
         if ( clipList.size() != 0 )
         {
@@ -391,7 +393,6 @@ Library::loadProject( const QDomElement& medias )
 
         elem = elem.nextSibling().toElement();
     }
-    importDone();
     emit projectLoaded();
 }
 
