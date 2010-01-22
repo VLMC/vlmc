@@ -28,6 +28,9 @@
         <file alias="keyboard">images/keyboard.png</file>
         <file alias="marker_start">images/marker_start.png</file>
         <file alias="marker_stop">images/marker_stop.png</file>
+        <file alias="undo">images/undo.png</file>
+        <file alias="redo">images/redo.png</file>
+        <file alias="configure">images/configure.png</file>
     </qresource>
     <qresource prefix="/text">
         <file>AUTHORS</file>

@@ -115,6 +115,10 @@
    </property>
   </action>
   <action name="actionPreferences">
+   <property name="icon">
+    <iconset resource="../../../ressources.qrc">
+     <normaloff>:/images/configure</normaloff>:/images/configure</iconset>
+   </property>
    <property name="text">
     <string>Preferences</string>
    </property>
@@ -221,11 +225,19 @@
    </property>
   </action>
   <action name="actionUndo">
+   <property name="icon">
+    <iconset resource="../../../ressources.qrc">
+     <normaloff>:/images/undo</normaloff>:/images/undo</iconset>
+   </property>
    <property name="text">
     <string>Undo</string>
    </property>
   </action>
   <action name="actionRedo">
+   <property name="icon">
+    <iconset resource="../../../ressources.qrc">
+     <normaloff>:/images/redo</normaloff>:/images/redo</iconset>
+   </property>
    <property name="text">
     <string>Redo</string>
    </property>
