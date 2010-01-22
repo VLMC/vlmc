@@ -40,6 +40,8 @@ class UndoStack : public QUndoView, public QSingleton<UndoStack>
         void        push( QUndoCommand* command );
         void        beginMacro( const QString& text );
         void        endMacro();
+        bool        canUndo();
+        bool        canRedo();
 
     private:
         UndoStack( QWidget* parent );
@@ -53,6 +55,8 @@ class UndoStack : public QUndoView, public QSingleton<UndoStack>
 
     signals:
         void            cleanChanged( bool val );
+        void            canRedoChanged( bool canRedo );
+        void            canUndoChanged( bool canUndo );
 
     friend class        QSingleton<UndoStack>;
 };

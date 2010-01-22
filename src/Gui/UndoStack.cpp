@@ -40,6 +40,9 @@ UndoStack::UndoStack( QWidget* parent ) : QUndoView( parent )
     connect( ProjectManager::getInstance(), SIGNAL( projectSaved() ),
              m_undoStack, SLOT( setClean() ) );
 
+    connect( m_undoStack, SIGNAL( canRedoChanged(bool) ), this, SIGNAL( canRedoChanged(bool) ) );
+    connect( m_undoStack, SIGNAL( canUndoChanged(bool) ), this, SIGNAL( canUndoChanged(bool) ) );
+
     connect( ProjectManager::getInstance(), SIGNAL( projectClosed() ), this, SLOT( clear() ) );
 }
 
@@ -56,6 +59,16 @@ void    UndoStack::beginMacro( const QString& text )
 void    UndoStack::endMacro()
 {
     m_undoStack->endMacro();
+}
+
+bool    UndoStack::canUndo()
+{
+    m_undoStack->canUndo();
+}
+
+bool    UndoStack::canRedo()
+{
+    m_undoStack->canRedo();
 }
 
 void    UndoStack::clear()

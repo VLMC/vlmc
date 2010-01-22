@@ -111,6 +111,15 @@ MainWindow::MainWindow( QWidget *parent ) :
     connect( ProjectManager::getInstance(), SIGNAL( projectUpdated( const QString&, bool ) ),
              this, SLOT( projectUpdated( const QString&, bool ) ) );
 
+    // Undo/Redo
+    connect( UndoStack::getInstance( this ), SIGNAL( canRedoChanged( bool ) ),
+             this, SLOT( canRedoChanged( bool ) ) );
+    connect( UndoStack::getInstance( this ), SIGNAL( canUndoChanged( bool ) ),
+             this, SLOT( canUndoChanged( bool ) ) );
+    canRedoChanged( UndoStack::getInstance( this )->canRedo() );
+    canUndoChanged( UndoStack::getInstance( this )->canUndo() );
+
+
     // Wizard
     m_pWizard = new ProjectWizard( this );
     m_pWizard->setModal( true );
@@ -573,6 +582,16 @@ bool    MainWindow::restoreSession()
 void    MainWindow::on_actionImport_triggered()
 {
     m_importController->exec();
+}
+
+void    MainWindow::canUndoChanged( bool canUndo )
+{
+    m_ui.actionUndo->setEnabled( canUndo );
+}
+
+void    MainWindow::canRedoChanged( bool canRedo )
+{
+    m_ui.actionRedo->setEnabled( canRedo );
 }
 
 #ifdef DEBUG_CRASHHANDLER
