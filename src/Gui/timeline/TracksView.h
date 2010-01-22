@@ -115,12 +115,6 @@ public:
      */
     void                    removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items );
     /**
-     * \brief This is an overloaded method provided for convenience.
-     * \param item A pointer to AbstractGraphicsMediaItem.
-     * \sa removeMediaItem( const QList<AbstractGraphicsMediaItem*>& )
-     */
-    void                    removeMediaItem( AbstractGraphicsMediaItem* item );
-    /**
      * \brief Change the currently selected tool.
      * \param button The selected tool button.
      * \sa tool, ToolButtons
@@ -176,6 +170,12 @@ public slots:
      * \param trackType The type of the track (Audio or Video)
      */
     void                    removeMediaItem( const QUuid& uuid, unsigned int track, MainWorkflow::TrackType trackType );
+    /**
+     * \brief This is an overloaded method provided for convenience.
+     * \param item A pointer to AbstractGraphicsMediaItem.
+     * \sa removeMediaItem( const QList<AbstractGraphicsMediaItem*>& )
+     */
+    void                    removeMediaItem( AbstractGraphicsMediaItem* item );
 
 protected:
     virtual void            resizeEvent( QResizeEvent* event );
@@ -296,6 +296,7 @@ signals:
 
 friend class Timeline;
 friend class TracksScene;
+friend class AbstractGraphicsMediaItem;
 };
 
 #endif // TRACKSVIEW_H

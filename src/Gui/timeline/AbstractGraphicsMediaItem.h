@@ -31,6 +31,7 @@
 
 class TracksView;
 class Clip;
+class TracksScene;
 
 /**
  * \brief Base class for Audio/Video items.
@@ -66,6 +67,9 @@ public:
 
     /// Clip contained in the item
     virtual Clip* clip() const = 0;
+
+    /// Return a pointer to the TracksScene
+    TracksScene* scene();
 
     /// Return the type of the media
     virtual MainWorkflow::TrackType mediaType() const = 0;
@@ -120,6 +124,8 @@ protected:
      * \param height Height in pixels.
      */
     void setHeight( qint64 height );
+
+    virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent* event );
 
 protected slots:
     /**

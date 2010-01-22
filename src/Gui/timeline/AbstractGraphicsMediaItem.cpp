@@ -20,8 +20,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QMenu>
 #include "AbstractGraphicsMediaItem.h"
 #include "TracksView.h"
+#include "TracksScene.h"
 
 #include "Clip.h"
 #include "Commands.h"
@@ -36,6 +38,11 @@ AbstractGraphicsMediaItem::AbstractGraphicsMediaItem() :
 AbstractGraphicsMediaItem::~AbstractGraphicsMediaItem()
 {
     ungroup();
+}
+
+TracksScene* AbstractGraphicsMediaItem::scene()
+{
+    return qobject_cast<TracksScene*>( QGraphicsItem::scene() );
 }
 
 TracksView* AbstractGraphicsMediaItem::tracksView()
@@ -90,6 +97,69 @@ void AbstractGraphicsMediaItem::ungroup()
 AbstractGraphicsMediaItem* AbstractGraphicsMediaItem::groupItem()
 {
     return m_group;
+}
+
+void AbstractGraphicsMediaItem::contextMenuEvent( QGraphicsSceneContextMenuEvent* event )
+{
+    if ( !tracksView() )
+        return;
+
+    QMenu menu( tracksView() );
+
+    QAction* removeAction = menu.addAction( "Remove" );
+
+    menu.addSeparator();
+
+    QAction* linkAction = NULL;
+    QAction* unlinkAction = NULL;
+
+    if ( groupItem() )
+        unlinkAction = menu.addAction( "Unlink" );
+    else
+    {
+        QList<QGraphicsItem*> items = scene()->selectedItems();
+        linkAction = menu.addAction( "Link" );
+
+        if ( items.count() != 2 )
+            linkAction->setEnabled( false );
+    }
+
+    QAction* selectedAction = menu.exec( event->screenPos() );
+
+    if ( !selectedAction )
+        return;
+
+    if ( selectedAction == removeAction )
+        scene()->askRemoveSelectedItems();
+    else if ( selectedAction == linkAction )
+    {
+        QList<QGraphicsItem*> items = scene()->selectedItems();
+
+        AbstractGraphicsMediaItem* item1;
+        AbstractGraphicsMediaItem* item2;
+
+        item1 = dynamic_cast<AbstractGraphicsMediaItem*>( items.at( 0 ) );
+        item2 = dynamic_cast<AbstractGraphicsMediaItem*>( items.at( 1 ) );
+
+        Q_ASSERT( item1 );
+        Q_ASSERT( item2 );
+
+        if ( item1->mediaType() != item2->mediaType() )
+        {
+            item1->group( item2 );
+            tracksView()->moveMediaItem( item1, item1->trackNumber(), item1->startPos() );
+        }
+    }
+    else if ( selectedAction == unlinkAction )
+    {
+        QList<QGraphicsItem*> items = scene()->selectedItems();
+
+        AbstractGraphicsMediaItem* item;
+        item = dynamic_cast<AbstractGraphicsMediaItem*>( items.at( 0 ) );
+
+        item->ungroup();
+    }
+
 }
 
 void AbstractGraphicsMediaItem::setStartPos( qint64 position )

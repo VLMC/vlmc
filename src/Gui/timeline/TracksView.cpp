@@ -748,6 +748,19 @@ void TracksView::mousePressEvent( QMouseEvent* event )
         item->setSelected( true );
         event->accept();
     }
+    else if ( event->modifiers() == Qt::NoModifier &&
+         event->button() == Qt::RightButton &&
+         tool() == TOOL_DEFAULT &&
+         mediaCollisionList.count() == 1 )
+    {
+        AbstractGraphicsMediaItem* item = mediaCollisionList.at( 0 );
+
+        if ( !scene()->selectedItems().contains( item ) )
+        {
+            scene()->clearSelection();
+            item->setSelected( true );
+        }
+    }
     else if ( event->modifiers() == Qt::ControlModifier &&
               event->button() == Qt::LeftButton &&
               tool() == TOOL_DEFAULT &&

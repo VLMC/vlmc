@@ -42,39 +42,47 @@ void TracksScene::keyPressEvent( QKeyEvent* keyEvent )
     {
         // Items deletion
         keyEvent->accept();
-
-        QString message;
-        if ( selectedItems().size() == 1 )
-            message = tr("Confirm the deletion of the region ?");
-        else
-            message = tr("Confirm the deletion of those regions ?");
-
-        QMessageBox::StandardButton b =
-        QMessageBox::warning( tv, "Object deletion",
-                              message,
-                              QMessageBox::Yes | QMessageBox::No,
-                              QMessageBox::No );
-
-        // Skip the deletion process
-        if ( b == QMessageBox::No ) return;
-
-        UndoStack::getInstance()->beginMacro( "Remove clip(s)" );
-
-        QList<QGraphicsItem*> items = selectedItems();
-        for (int i = 0; i < items.size(); ++i )
-        {
-            GraphicsMovieItem* item = qgraphicsitem_cast<GraphicsMovieItem*>( items.at(i) );
-            if ( !item ) return;
-
-            Commands::trigger( new Commands::MainWorkflow::RemoveClip( tv->m_renderer,
-                                                                       item->clip(),
-                                                                       item->trackNumber(),
-                                                                       item->startPos(),
-                                                                       item->mediaType() ) );
-        }
-
-        UndoStack::getInstance()->endMacro();
+        askRemoveSelectedItems();
     }
 
     QGraphicsScene::keyPressEvent( keyEvent );
+}
+
+void TracksScene::askRemoveSelectedItems()
+{
+    TracksView* tv = Timeline::getInstance()->tracksView();
+
+    if ( !tv ) return;
+
+    QString message;
+    if ( selectedItems().size() == 1 )
+        message = tr("Confirm the deletion of the region ?");
+    else
+        message = tr("Confirm the deletion of those regions ?");
+
+    QMessageBox::StandardButton b =
+    QMessageBox::warning( tv, "Object deletion",
+                          message,
+                          QMessageBox::Yes | QMessageBox::No,
+                          QMessageBox::No );
+
+    // Skip the deletion process
+    if ( b == QMessageBox::No ) return;
+
+    UndoStack::getInstance()->beginMacro( "Remove clip(s)" );
+
+    QList<QGraphicsItem*> items = selectedItems();
+    for (int i = 0; i < items.size(); ++i )
+    {
+        GraphicsMovieItem* item = qgraphicsitem_cast<GraphicsMovieItem*>( items.at(i) );
+        if ( !item ) return;
+
+        Commands::trigger( new Commands::MainWorkflow::RemoveClip( tv->m_renderer,
+                                                                   item->clip(),
+                                                                   item->trackNumber(),
+                                                                   item->startPos(),
+                                                                   item->mediaType() ) );
+    }
+
+    UndoStack::getInstance()->endMacro();
 }

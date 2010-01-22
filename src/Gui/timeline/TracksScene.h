@@ -35,6 +35,8 @@ public:
     TracksScene( QObject* parent = 0 );
     virtual ~TracksScene() { }
 
+    void askRemoveSelectedItems();
+
 protected:
     virtual void keyPressEvent( QKeyEvent* keyevent );
 };
