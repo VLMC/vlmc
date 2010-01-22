@@ -282,7 +282,7 @@ ImportController::reject()
     m_mediaListController->cleanAll();
     Library::getInstance()->deleteTemporaryMedias();
     collapseAllButCurrentPath();
-
+    done( Rejected );
 }
 
 void

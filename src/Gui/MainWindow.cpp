@@ -51,7 +51,6 @@
 #include "timeline/Timeline.h"
 #include "timeline/TracksView.h"
 #include "ImportController.h"
-#include "Export.h"
 
 /* Settings / Preferences */
 #include "ProjectManager.h"
@@ -372,23 +371,19 @@ void    MainWindow::on_actionRender_triggered()
         QMessageBox::warning( NULL, "VLMC Renderer", "There is nothing to render." );
         return ;
     }
-    Export* exportMenu = new Export();
-    exportMenu->exec();
-    delete exportMenu;
-
-//    QString outputFileName =
-//            QFileDialog::getSaveFileName( NULL, "Enter the output file name",
-//                                          QDir::currentPath(), "Videos(*.avi *.mpg)" );
-//    if ( outputFileName.length() == 0 )
-//        return ;
-//    else
-//    {
-//        if ( m_renderer )
-//            delete m_renderer;
-//        m_renderer = new WorkflowFileRenderer( outputFileName );
-//        m_renderer->initializeRenderer();
-//        m_renderer->run();
-//    }
+    QString outputFileName =
+            QFileDialog::getSaveFileName( NULL, "Enter the output file name",
+                                          QDir::currentPath(), "Videos(*.avi *.mpg)" );
+    if ( outputFileName.length() == 0 )
+        return ;
+    else
+    {
+        if ( m_renderer )
+            delete m_renderer;
+        m_renderer = new WorkflowFileRenderer( outputFileName );
+        m_renderer->initializeRenderer();
+        m_renderer->run();
+    }
 }
 
 void MainWindow::on_actionNew_Project_triggered()

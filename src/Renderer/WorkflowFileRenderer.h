@@ -45,15 +45,11 @@ public:
 
     void                run();
     virtual float       getFps() const;
-
-    void                setParam( QString param ) { m_transcodeStr = param; }
-
 private:
     const QString               m_outputFileName;
     WorkflowFileRendererDialog* m_dialog;
     QImage*                     m_image;
     QTime                       m_time;
-    QString                     m_transcodeStr;
 
 protected:
     virtual void*               getLockCallback();
