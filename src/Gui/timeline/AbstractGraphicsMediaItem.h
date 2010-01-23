@@ -140,6 +140,8 @@ protected slots:
      */
     bool resizeZone( const QPointF& position );
 
+    QColor itemColor();
+
 private:
     /// This pointer will be set when inserted in the tracksView.
     TracksView* m_tracksView;
@@ -149,6 +151,9 @@ private:
 
     qint64  m_width;
     qint64  m_height;
+
+    QColor  m_itemColor;
+
     //FIXME: this is a nasty forest boolean
     bool    m_resizeExpected;
 };

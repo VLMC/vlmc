@@ -120,6 +120,13 @@ void GraphicsMovieItem::paintRect( QPainter* painter, const QStyleOptionGraphics
     else
         painter->drawRect( mapped );
 
+    if ( itemColor().isValid() )
+    {
+        QRectF mediaColorRect = mapped.adjusted( 3, 2, -3, -2 );
+        painter->setPen( QPen( itemColor(), 2 ) );
+        painter->drawLine( mediaColorRect.topLeft(), mediaColorRect.topRight() );
+    }
+
     if ( isSelected() )
     {
         setZValue( Z_SELECTED );

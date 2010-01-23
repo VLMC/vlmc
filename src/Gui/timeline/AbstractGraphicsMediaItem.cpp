@@ -21,6 +21,7 @@
  *****************************************************************************/
 
 #include <QMenu>
+#include <QColorDialog>
 #include "AbstractGraphicsMediaItem.h"
 #include "TracksView.h"
 #include "TracksScene.h"
@@ -124,6 +125,10 @@ void AbstractGraphicsMediaItem::contextMenuEvent( QGraphicsSceneContextMenuEvent
             linkAction->setEnabled( false );
     }
 
+    menu.addSeparator();
+
+    QAction* changeColor = menu.addAction( "Set color" );
+
     QAction* selectedAction = menu.exec( event->screenPos() );
 
     if ( !selectedAction )
@@ -158,6 +163,11 @@ void AbstractGraphicsMediaItem::contextMenuEvent( QGraphicsSceneContextMenuEvent
         item = dynamic_cast<AbstractGraphicsMediaItem*>( items.at( 0 ) );
 
         item->ungroup();
+    }
+    else if ( selectedAction == changeColor )
+    {
+        m_itemColor = QColorDialog::getColor( m_itemColor, tracksView() );
+        update();
     }
 
 }
@@ -245,4 +255,9 @@ bool AbstractGraphicsMediaItem::resizeZone( const QPointF& position )
         return true;
     }
     return false;
+}
+
+QColor AbstractGraphicsMediaItem::itemColor()
+{
+    return m_itemColor;
 }
