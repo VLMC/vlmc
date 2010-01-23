@@ -1,0 +1,44 @@
+
+QMenu
+{
+    background: transparent;
+    margin: 2px;
+}
+
+QMenu::item
+{
+    background: rgba( 104, 103, 103, 255 );
+    padding: 2px 25px 2px 25px;
+    border: 1px solid transparent;
+}
+
+QMenu::item:selected 
+{
+    border-color: darkblue;
+    background: rgba(175, 175, 175, 150);
+}
+
+QMenu::icon:checked
+{
+    background: gray;
+    border: 1px inset gray;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    bottom: 1px;
+    left: 1px;
+}
+
+QMenu::separator
+{
+    height: 1px;
+    background: transparent;
+    margin-left: 10px;
+    margin-right: 5px;
+}
+
+QMenuBar { background: rgba( 104, 103, 103, 255 ) }
+
+QMenuBar::item { background: rgba( 104, 103, 103, 255 ) }
+
+QAbstractButton { background: rgba( 104, 103, 103, 255 ) }
