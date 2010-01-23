@@ -122,7 +122,6 @@ void
 MainWorkflow::startRender()
 {
     m_renderStarted = true;
-    m_paused = false;
     for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         m_tracks[i]->startRender();
     computeLength();
@@ -169,13 +168,6 @@ MainWorkflow::unpause()
     for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         m_tracks[i]->unpause();
     emit mainWorkflowUnpaused();
-}
-
-void
-MainWorkflow::goToNextFrame( MainWorkflow::TrackType trackType )
-{
-    if ( m_paused == false )
-        nextFrame( trackType );
 }
 
 void

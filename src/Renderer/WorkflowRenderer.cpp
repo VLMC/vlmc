@@ -115,13 +115,13 @@ WorkflowRenderer::lock( void *datas, qint64 *dts, qint64 *pts, quint32 *flags,
     {
         ret = handler->self->lockVideo( pts, bufferSize, buffer );
         if ( paused == false )
-            handler->self->m_mainWorkflow->goToNextFrame( MainWorkflow::VideoTrack );
+            handler->self->m_mainWorkflow->nextFrame( MainWorkflow::VideoTrack );
     }
     else if ( handler->type == Audio )
     {
         ret = handler->self->lockAudio( pts, bufferSize, buffer );
         if ( paused == false )
-            handler->self->m_mainWorkflow->goToNextFrame( MainWorkflow::AudioTrack );
+            handler->self->m_mainWorkflow->nextFrame( MainWorkflow::AudioTrack );
     }
     else
         qCritical() << "Invalid ES type";

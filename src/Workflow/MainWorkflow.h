@@ -127,21 +127,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         EffectsEngine*          getEffectsEngine();
 
         /**
-         *  \brief              This method is meant to make the workflow go to the next
-         *                      frame, only in rendering mode.
-         *
-         *  The nextFrame() method will always go for the next frame, whereas this one
-         *  only does when rendering isn't paused.
-         *  \param  trackType   The type of the frame counter to increment.
-         *                      Though it seems odd to speak about frame for
-         *                      AudioTrack, it's mainly a render position used for
-         *                      synchronisation purpose.
-         *  \sa                 nextFrame( MainWorkflow::TrackType )
-         *  \todo               check if this is still usefull.
-         */
-        void                    goToNextFrame( MainWorkflow::TrackType trackype );
-
-        /**
          *  \brief              Set the workflow position by the desired frame
          *  \param              currentFrame: The desired frame to render from
          *  \param              reason: The program part which required this frame change
@@ -195,7 +180,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          *                      Though it seems odd to speak about frame for AudioTrack,
          *                      it's mainly a render position used for
          *                      synchronisation purpose.
-         *  \sa         goToNextFrame( MainWorkflow::TrackType )
          *  \sa         previousFrame( MainWorkflow::TrackType );
          */
         void                    nextFrame( TrackType trackType );
@@ -377,8 +361,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         bool                            m_renderStarted;
         QReadWriteLock*                 m_renderStartedLock;
 
-        /// True if the workflow is paused
-        bool                            m_paused;
         /// Contains the trackhandler, indexed by MainWorkflow::TrackType
         TrackHandler**                  m_tracks;
         /// Pre-allocated buffer, that will contain every computed outputs.
