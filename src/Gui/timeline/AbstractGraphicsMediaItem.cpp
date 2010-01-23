@@ -129,7 +129,7 @@ void AbstractGraphicsMediaItem::contextMenuEvent( QGraphicsSceneContextMenuEvent
 
     menu.addSeparator();
 
-    QAction* changeColor = menu.addAction( "Set color" );
+    QAction* changeColorAction = menu.addAction( "Set color" );
 
     QAction* selectedAction = menu.exec( event->screenPos() );
 
@@ -182,7 +182,7 @@ void AbstractGraphicsMediaItem::contextMenuEvent( QGraphicsSceneContextMenuEvent
 
         item->ungroup();
     }
-    else if ( selectedAction == changeColor )
+    else if ( selectedAction == changeColorAction )
     {
         m_itemColor = QColorDialog::getColor( m_itemColor, tracksView() );
         update();
