@@ -372,6 +372,13 @@ class   WorkflowRenderer : public GenericRenderer
          *  \brief          called when the workflow is unpaused
          */
         void                mainWorkflowUnpaused();
+        /**
+         *  \brief          Used to launch "permanent playback", as soon as the length
+         *                  first changed to a non zero value.
+         *
+         *  If the length comes to a 0 value again, the permanent playback will be stoped.
+         */
+        void                mainWorkflowLenghtChanged( qint64 newLength );
 
 };
 

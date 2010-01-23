@@ -88,6 +88,8 @@ void    WorkflowRenderer::initializeRenderer()
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
     connect( m_mainWorkflow, SIGNAL( frameChanged( qint64, MainWorkflow::FrameChangedReason ) ),
              this, SIGNAL( frameChanged( qint64, MainWorkflow::FrameChangedReason ) ) );
+    connect( m_mainWorkflow, SIGNAL( lengthChanged( qint64 ) ),
+             this, SLOT(mainWorkflowLenghtChanged(qint64) ) );
 }
 
 WorkflowRenderer::~WorkflowRenderer()
@@ -453,3 +455,16 @@ void        WorkflowRenderer::__endReached()
     emit endReached();
 }
 
+void
+WorkflowRenderer::mainWorkflowLenghtChanged( qint64 newLength )
+{
+    if ( newLength > 0 && m_isRendering == false )
+    {
+        startPreview();
+        togglePlayPause( true );
+    }
+    else if ( newLength == 0 && m_isRendering == true )
+    {
+        stop();
+    }
+}
