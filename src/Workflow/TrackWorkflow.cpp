@@ -468,9 +468,8 @@ void    TrackWorkflow::clear()
 
     for ( ; it != end; ++it )
     {
-        //The clip contained in the trackworkflow will be delete by the undo stack.
         ClipWorkflow*   cw = it.value();
-        delete cw->getClip();
+        //The clip contained in the trackworkflow will be delete by the undo stack.
         delete cw;
     }
     m_clips.clear();
