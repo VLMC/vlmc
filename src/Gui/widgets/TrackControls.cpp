@@ -33,9 +33,9 @@ TrackControls::TrackControls( GraphicsTrack* track, QWidget *parent ) :
              this, SLOT( setTrackDisabled(bool) ) );
 
     if ( m_track->mediaType() == MainWorkflow::VideoTrack )
-        m_ui->trackLabel->setText( tr( "Video #%1" ).arg( QString::number( m_track->trackNumber() ) ) );
+        m_ui->trackLabel->setText( tr( "Video #%1" ).arg( QString::number( m_track->trackNumber() + 1 ) ) );
     else if ( m_track->mediaType() == MainWorkflow::AudioTrack )
-        m_ui->trackLabel->setText( tr( "Audio #%1" ).arg( QString::number( m_track->trackNumber() ) ) );
+        m_ui->trackLabel->setText( tr( "Audio #%1" ).arg( QString::number( m_track->trackNumber() + 1 ) ) );
 }
 
 TrackControls::~TrackControls()
