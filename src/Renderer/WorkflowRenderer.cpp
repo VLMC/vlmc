@@ -67,7 +67,7 @@ void    WorkflowRenderer::initializeRenderer()
     m_rate = 48000;
 
     sprintf( videoString, "width=%i:height=%i:dar=%s:fps=%s:data=%lld:codec=%s:cat=2:caching=0",
-             m_mainWorkflow->getWidth(), m_mainWorkflow->getHeight(), "4/3", "30/1",
+             m_mainWorkflow->getWidth(), m_mainWorkflow->getHeight(), "16/9", "30/1",
              (qint64)m_videoEsHandler, "RV24" );
     sprintf( audioParameters, "data=%lld:cat=1:codec=fl32:samplerate=%u:channels=%u:caching=0",
              (qint64)m_audioEsHandler, m_rate, m_nbChannels );

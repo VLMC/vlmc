@@ -198,7 +198,8 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
         return ;
     }
     if ( cw->getState() == ClipWorkflow::EndReached ||
-         cw->getState() == ClipWorkflow::Rendering )
+         cw->getState() == ClipWorkflow::Rendering ||
+         cw->getState() == ClipWorkflow::Paused )
     {
         cw->getStateLock()->unlock();
         cw->stop();
