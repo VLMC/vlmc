@@ -67,7 +67,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
         m_tracks[i] = new TrackHandler( trackCount, trackType, m_effectEngine );
         connect( m_tracks[i], SIGNAL( tracksEndReached() ),
                  this, SLOT( tracksEndReached() ) );
-	m_currentFrame[i] = 0;
+        m_currentFrame[i] = 0;
     }
     m_outputBuffers = new OutputBuffers;
 
@@ -261,6 +261,20 @@ void
 MainWorkflow::unmuteTrack( unsigned int trackId, MainWorkflow::TrackType trackType )
 {
     m_tracks[trackType]->unmuteTrack( trackId );
+}
+
+void
+MainWorkflow::muteClip( const QUuid& uuid, unsigned int trackId,
+                        MainWorkflow::TrackType trackType )
+{
+    qDebug() << "Mute" << uuid ;
+}
+
+void
+MainWorkflow::unmuteClip( const QUuid& uuid, unsigned int trackId,
+                          MainWorkflow::TrackType trackType )
+{
+    qDebug() << "Unmute" << uuid;
 }
 
 void toggleBreakPoint()

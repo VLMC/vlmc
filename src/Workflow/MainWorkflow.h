@@ -270,6 +270,26 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
                                              MainWorkflow::TrackType trackType );
 
         /**
+         *  \brief      Mute a clip.
+         *
+         *  \param  uuid        The clip's uuid.
+         *  \param  trackId     The id of the track containing the clip.
+         *  \param  trackType   The type of the track containing the clip.
+         */
+        void                    muteClip( const QUuid& uuid, unsigned int trackId,
+                                          MainWorkflow::TrackType trackType );
+
+        /**
+         *  \brief      Unmute a clip.
+         *
+         *  \param  uuid        The clip's uuid.
+         *  \param  trackId     The id of the track containing the clip.
+         *  \param  trackType   The type of the track containing the clip.
+         */
+        void                    unmuteClip( const QUuid& uuid, unsigned int trackId,
+                                          MainWorkflow::TrackType trackType );
+
+        /**
          * \param   uuid : The clip's uuid.
          *              Please note that the UUID must be the "timeline uuid"
          *              and note the clip's uuid, or else nothing would match.
