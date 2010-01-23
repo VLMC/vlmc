@@ -243,8 +243,11 @@ MainWorkflow::removeClip( const QUuid &uuid, unsigned int trackId,
                           MainWorkflow::TrackType trackType )
 {
     Clip *clip = m_tracks[trackType]->removeClip( uuid, trackId );
-    computeLength();
-    emit clipRemoved( clip, trackId, trackType );
+    if ( clip != NULL )
+    {
+        computeLength();
+        emit clipRemoved( clip, trackId, trackType );
+    }
     return clip;
 }
 
