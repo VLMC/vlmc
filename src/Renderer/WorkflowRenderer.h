@@ -88,8 +88,12 @@ class   WorkflowRenderer : public GenericRenderer
          */
         virtual void        togglePlayPause( bool forcePause );
         /**
-         *  \brief Stop the renderer.
+         *  \brief Stop the mainworkflow, but not the renderer.
+         *
+         *  In order to provide premanent feedback (ie stay in paused mode when not
+         *  playing, we have to never stop the renderer.
          *  \sa togglePlayPause( bool );
+         *  \sa killRenderer();
          */
         virtual void        stop();
         /**
@@ -243,6 +247,14 @@ class   WorkflowRenderer : public GenericRenderer
          *  \brief          check for workflow related actions that has been stacked.
          */
         void                checkActions();
+        /**
+         *  \brief          Completely kill the renderer.
+         *
+         *  This will stop both mainworkflow and renderer thread.
+         *  This should only be used when destroying the renderer.
+         *  \sa             stop();
+         */
+        void                killRenderer();
 
     protected:
         /**
