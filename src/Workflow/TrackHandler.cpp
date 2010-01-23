@@ -118,7 +118,12 @@ TrackHandler::getOutput( qint64 currentFrame, qint64 subFrame )
         if ( m_trackType == MainWorkflow::VideoTrack )
         {
             if ( m_tracks[i].activated() == false )
-                m_effectEngine->setVideoInput( i + 1, *TrackHandler::nullOutput );
+            {
+                if ( m_tracks[i].hardDeactivated() == true )
+                    m_effectEngine->setVideoInput( i + 1, *MainWorkflow::blackOutput );
+                else
+                    m_effectEngine->setVideoInput( i + 1, *TrackHandler::nullOutput );
+            }
             else
             {
                 void*   ret = m_tracks[i]->getOutput( currentFrame, subFrame );
