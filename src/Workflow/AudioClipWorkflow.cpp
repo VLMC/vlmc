@@ -65,10 +65,7 @@ AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
     QMutexLocker    lock2( m_computedBuffersMutex );
 
     if ( preGetOutput() == false )
-    {
-        qDebug() << "Nothing to return in audio";
         return NULL;
-    }
     if ( isEndReached() == true )
         return NULL;
     if ( mode == ClipWorkflow::Get )
