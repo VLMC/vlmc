@@ -170,11 +170,24 @@ void                        PreviewWidget::stop()
 void                        PreviewWidget::markerStartClicked()
 {
     m_ui->rulerWidget->setMarker( PreviewRuler::START );
+
+    qint64  beg = m_ui->rulerWidget->getMarker( PreviewRuler::START );
+    qint64  end = m_ui->rulerWidget->getMarker( PreviewRuler::STOP );
+    if ( beg > end )
+    {
+        m_ui->rulerWidget->hideMarker( PreviewRuler::STOP );;
+    }
 }
 
 void                        PreviewWidget::markerStopClicked()
 {
     m_ui->rulerWidget->setMarker( PreviewRuler::STOP );
+    qint64  beg = m_ui->rulerWidget->getMarker( PreviewRuler::START );
+    qint64  end = m_ui->rulerWidget->getMarker( PreviewRuler::STOP );
+    if ( beg > end )
+    {
+        m_ui->rulerWidget->hideMarker( PreviewRuler::START );;
+    }
 }
 
 void        PreviewWidget::createNewClipFromMarkers()

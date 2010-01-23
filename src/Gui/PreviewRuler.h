@@ -46,9 +46,10 @@ public:
 
     PreviewRuler( QWidget* parent = 0 );
     virtual ~PreviewRuler() { }
-    void setRenderer( GenericRenderer* renderer );
-    void setMarker( Marker m );
-    qint64 getMarker( Marker m ) const;
+    void    setRenderer( GenericRenderer* renderer );
+    void    setMarker( Marker m );
+    void    hideMarker( Marker m );
+    qint64  getMarker( Marker m ) const;
 
 public slots:
     void setFrame( qint64 frame, bool broadcastEvent = false );

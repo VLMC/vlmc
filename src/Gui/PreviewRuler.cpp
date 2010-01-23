@@ -265,6 +265,15 @@ qint64 PreviewRuler::getMarker( Marker m ) const
     return ( m == START ? m_markerStart : m_markerStop );
 }
 
+void
+PreviewRuler::hideMarker( Marker m )
+{
+    if ( m == START )
+        m_markerStart = -1;
+    else if ( m == STOP )
+        m_markerStop = -1;
+}
+
 void PreviewRuler::clear()
 {
     m_markerStart = MARKER_DEFAULT;
