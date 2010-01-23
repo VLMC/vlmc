@@ -115,7 +115,12 @@ MainWorkflow::computeLength()
         if ( m_tracks[i]->getLength() > maxLength )
             maxLength = m_tracks[i]->getLength();
     }
-    m_lengthFrame = maxLength;
+    if ( m_lengthFrame != maxLength )
+    {
+        m_lengthFrame = maxLength;
+        emit lengthChanged( m_lengthFrame );
+    }
+
 }
 
 void

@@ -495,6 +495,13 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          *  \sa     unpause();
          */
         void                    mainWorkflowUnpaused();
+
+        /**
+         *  \brief  Emitted when the global length of the workflow changes.
+         *
+         *  \param  newLength   The new length, in frames
+         */
+        void                    lengthChanged( qint64 );
 };
 
 #endif // MAINWORKFLOW_H
