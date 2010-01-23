@@ -37,6 +37,7 @@ class Settings;
 class ProjectWizard;
 class ImportController;
 class WorkflowFileRenderer;
+class WorkflowRenderer;
 
 class MainWindow : public QMainWindow
 {
@@ -80,7 +81,8 @@ private:
     Timeline*               m_timeline;
     PreviewWidget*          m_clipPreview;
     PreviewWidget*          m_projectPreview;
-    WorkflowFileRenderer*   m_renderer;
+    WorkflowFileRenderer*   m_fileRenderer;
+    WorkflowRenderer        *m_renderer;
     Settings*               m_globalPreferences;
     Settings*               m_DefaultProjectPreferences;
     Settings*               m_projectPreferences;
@@ -113,8 +115,8 @@ private slots:
     void                    canRedoChanged( bool canRedo );
 
 signals:
-    void translateDockWidgetTitle();
-    void toolChanged( ToolButtons );
+    void                    translateDockWidgetTitle();
+    void                    toolChanged( ToolButtons );
 
 };
 

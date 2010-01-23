@@ -68,7 +68,7 @@
 #include "VLCInstance.h"
 
 MainWindow::MainWindow( QWidget *parent ) :
-    QMainWindow( parent ), m_renderer( NULL )
+    QMainWindow( parent ), m_fileRenderer( NULL )
 {
     m_ui.setupUi( this );
 
@@ -142,8 +142,8 @@ MainWindow::~MainWindow()
     s.setValue( "CleanQuit", true );
     s.sync();
 
-    if ( m_renderer )
-        delete m_renderer;
+    if ( m_fileRenderer )
+        delete m_fileRenderer;
     LibVLCpp::Instance::destroyInstance();
 }
 
@@ -270,9 +270,9 @@ void MainWindow::createStatusBar()
 
 void MainWindow::initializeDockWidgets( void )
 {
-    WorkflowRenderer*    workflowRenderer = new WorkflowRenderer();
-    workflowRenderer->initializeRenderer();
-    m_timeline = new Timeline( workflowRenderer, this );
+    m_renderer = new WorkflowRenderer();
+    m_renderer->initializeRenderer();
+    m_timeline = new Timeline( m_renderer, this );
     m_timeline->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_timeline->show();
     setCentralWidget( m_timeline );
@@ -288,7 +288,7 @@ void MainWindow::initializeDockWidgets( void )
     KeyboardShortcutHelper* clipShortcut = new KeyboardShortcutHelper( "Launch media preview", this );
     connect( clipShortcut, SIGNAL( activated() ), m_clipPreview, SLOT( on_pushButtonPlay_clicked() ) );
 
-    m_projectPreview = new PreviewWidget( workflowRenderer, this );
+    m_projectPreview = new PreviewWidget( m_renderer, this );
     dockManager->addDockedWidget( m_projectPreview,
                                   tr( "Project Preview" ),
                                   Qt::AllDockWidgetAreas,
@@ -378,11 +378,12 @@ void    MainWindow::on_actionRender_triggered()
         return ;
     else
     {
-        if ( m_renderer )
-            delete m_renderer;
-        m_renderer = new WorkflowFileRenderer( outputFileName );
-        m_renderer->initializeRenderer();
-        m_renderer->run();
+        m_renderer->stop();
+        if ( m_fileRenderer )
+            delete m_fileRenderer;
+        m_fileRenderer = new WorkflowFileRenderer( outputFileName );
+        m_fileRenderer->initializeRenderer();
+        m_fileRenderer->run();
     }
 }
 
