@@ -40,29 +40,29 @@ class PreviewRuler : public QWidget
 public:
     enum Marker
     {
-        START,
-        STOP
+        Start,
+        Stop
     };
 
     PreviewRuler( QWidget* parent = 0 );
     virtual ~PreviewRuler() { }
-    void    setRenderer( GenericRenderer* renderer );
-    void    setMarker( Marker m );
-    void    hideMarker( Marker m );
-    qint64  getMarker( Marker m ) const;
+    void                setRenderer( GenericRenderer* renderer );
+    void                setMarker( Marker m );
+    void                hideMarker( Marker m );
+    qint64              getMarker( Marker m ) const;
 
 public slots:
-    void setFrame( qint64 frame, bool broadcastEvent = false );
+    void                setFrame( qint64 frame, bool broadcastEvent = false );
 
 protected:
-    virtual void paintEvent( QPaintEvent* event );
-    virtual void mousePressEvent( QMouseEvent* event );
-    virtual void mouseMoveEvent( QMouseEvent* event );
-    virtual void mouseReleaseEvent( QMouseEvent * event );
+    virtual void        paintEvent( QPaintEvent* event );
+    virtual void        mousePressEvent( QMouseEvent* event );
+    virtual void        mouseMoveEvent( QMouseEvent* event );
+    virtual void        mouseReleaseEvent( QMouseEvent * event );
 
 private slots:
-    void updateTimecode( qint64 frames = -1 );
-    void clear();
+    void                updateTimecode( qint64 frames = -1 );
+    void                clear();
 
 private:
     GenericRenderer*    m_renderer;
@@ -72,8 +72,8 @@ private:
     bool                m_isSliding;
 
 signals:
-    void frameChanged( qint64, MainWorkflow::FrameChangedReason );
-    void timeChanged( int h, int m, int s, int f );
+    void                frameChanged( qint64, MainWorkflow::FrameChangedReason );
+    void                timeChanged( int h, int m, int s, int f );
 };
 
 #endif // PREVIEWRULER_H

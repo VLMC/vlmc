@@ -254,7 +254,7 @@ void PreviewRuler::updateTimecode( qint64 frames /*= -1*/ )
 
 void PreviewRuler::setMarker( Marker m )
 {
-    if ( m == START )
+    if ( m == Start )
         m_markerStart = m_frame;
     else
         m_markerStop = m_frame;
@@ -262,15 +262,15 @@ void PreviewRuler::setMarker( Marker m )
 
 qint64 PreviewRuler::getMarker( Marker m ) const
 {
-    return ( m == START ? m_markerStart : m_markerStop );
+    return ( m == Start ? m_markerStart : m_markerStop );
 }
 
 void
 PreviewRuler::hideMarker( Marker m )
 {
-    if ( m == START )
+    if ( m == Start )
         m_markerStart = -1;
-    else if ( m == STOP )
+    else if ( m == Stop )
         m_markerStop = -1;
 }
 

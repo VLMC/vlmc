@@ -169,32 +169,32 @@ void                        PreviewWidget::stop()
 
 void                        PreviewWidget::markerStartClicked()
 {
-    m_ui->rulerWidget->setMarker( PreviewRuler::START );
+    m_ui->rulerWidget->setMarker( PreviewRuler::Start );
 
-    qint64  beg = m_ui->rulerWidget->getMarker( PreviewRuler::START );
-    qint64  end = m_ui->rulerWidget->getMarker( PreviewRuler::STOP );
+    qint64  beg = m_ui->rulerWidget->getMarker( PreviewRuler::Start );
+    qint64  end = m_ui->rulerWidget->getMarker( PreviewRuler::Stop );
     if ( beg > end )
     {
-        m_ui->rulerWidget->hideMarker( PreviewRuler::STOP );;
+        m_ui->rulerWidget->hideMarker( PreviewRuler::Stop );;
     }
 }
 
 void                        PreviewWidget::markerStopClicked()
 {
-    m_ui->rulerWidget->setMarker( PreviewRuler::STOP );
-    qint64  beg = m_ui->rulerWidget->getMarker( PreviewRuler::START );
-    qint64  end = m_ui->rulerWidget->getMarker( PreviewRuler::STOP );
+    m_ui->rulerWidget->setMarker( PreviewRuler::Stop );
+    qint64  beg = m_ui->rulerWidget->getMarker( PreviewRuler::Start );
+    qint64  end = m_ui->rulerWidget->getMarker( PreviewRuler::Stop );
     if ( beg > end )
     {
-        m_ui->rulerWidget->hideMarker( PreviewRuler::START );;
+        m_ui->rulerWidget->hideMarker( PreviewRuler::Start );;
     }
 }
 
 void        PreviewWidget::createNewClipFromMarkers()
 {
     Media*  selectedMedia = m_renderer->getMedia();
-    qint64  beg = m_ui->rulerWidget->getMarker( PreviewRuler::START );
-    qint64  end = m_ui->rulerWidget->getMarker( PreviewRuler::STOP );
+    qint64  beg = m_ui->rulerWidget->getMarker( PreviewRuler::Start );
+    qint64  end = m_ui->rulerWidget->getMarker( PreviewRuler::Stop );
 
     if ( beg == -1 && end == -1 )
         return ;
