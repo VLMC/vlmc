@@ -48,6 +48,15 @@ void TracksScene::keyPressEvent( QKeyEvent* keyEvent )
     QGraphicsScene::keyPressEvent( keyEvent );
 }
 
+void TracksScene::contextMenuEvent( QGraphicsSceneContextMenuEvent* event )
+{
+    QGraphicsScene::contextMenuEvent( event );
+    if ( event->isAccepted() )
+        return; // Event handled by an item in the scene.
+
+    //TODO Event not handled, create and show a menu here.
+}
+
 void TracksScene::askRemoveSelectedItems()
 {
     TracksView* tv = Timeline::getInstance()->tracksView();

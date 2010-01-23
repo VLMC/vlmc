@@ -39,6 +39,7 @@ public:
 
 protected:
     virtual void keyPressEvent( QKeyEvent* keyevent );
+    virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent* event );
 };
 
 #endif // TRACKSSCENE_H
