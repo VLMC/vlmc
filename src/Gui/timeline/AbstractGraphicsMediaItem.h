@@ -152,6 +152,8 @@ private:
     qint64  m_width;
     qint64  m_height;
 
+    bool    m_muted;
+
     QColor  m_itemColor;
 
     //FIXME: this is a nasty forest boolean

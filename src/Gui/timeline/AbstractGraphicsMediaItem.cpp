@@ -31,7 +31,8 @@
 
 AbstractGraphicsMediaItem::AbstractGraphicsMediaItem() :
         oldTrackNumber( -1 ), oldPosition( -1 ), m_tracksView( NULL ),
-        m_group( NULL ), m_width( 0 ), m_height( 0 ), m_resizeExpected( false )
+        m_group( NULL ), m_width( 0 ), m_height( 0 ), m_resizeExpected( false ),
+        m_muted( false )
 {
 
 }
@@ -108,8 +109,9 @@ void AbstractGraphicsMediaItem::contextMenuEvent( QGraphicsSceneContextMenuEvent
     QMenu menu( tracksView() );
 
     QAction* removeAction = menu.addAction( "Remove" );
-
-    menu.addSeparator();
+    QAction* muteAction = menu.addAction( "Mute" );
+    muteAction->setCheckable( true );
+    muteAction->setChecked( m_muted );
 
     QAction* linkAction = NULL;
     QAction* unlinkAction = NULL;
@@ -136,6 +138,22 @@ void AbstractGraphicsMediaItem::contextMenuEvent( QGraphicsSceneContextMenuEvent
 
     if ( selectedAction == removeAction )
         scene()->askRemoveSelectedItems();
+    else if ( selectedAction == muteAction )
+    {
+
+        if ( ( m_muted = muteAction->isChecked() ) )
+        {
+            tracksView()->m_mainWorkflow->muteClip( clip()->getUuid(),
+                                                    trackNumber(),
+                                                    mediaType() );
+        }
+        else
+        {
+            tracksView()->m_mainWorkflow->unmuteClip( clip()->getUuid(),
+                                                    trackNumber(),
+                                                    mediaType() );
+        }
+    }
     else if ( selectedAction == linkAction )
     {
         QList<QGraphicsItem*> items = scene()->selectedItems();
