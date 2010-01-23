@@ -238,11 +238,13 @@ void        WorkflowRenderer::startPreview()
 
 void        WorkflowRenderer::nextFrame()
 {
-    m_mainWorkflow->renderOneFrame();
+    if ( m_paused == true )
+        m_mainWorkflow->renderOneFrame();
 }
 
 void        WorkflowRenderer::previousFrame()
 {
+    if ( m_paused == true )
     m_mainWorkflow->previousFrame( MainWorkflow::VideoTrack );
 }
 
