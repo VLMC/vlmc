@@ -108,10 +108,10 @@ void GraphicsAudioItem::paintRect( QPainter* painter, const QStyleOptionGraphics
 
     QLinearGradient gradient( mapped.topLeft(), mapped.bottomLeft() );
 
-    gradient.setColorAt( 0, QColor::fromRgb( 26, 30, 220 ) );
-    gradient.setColorAt( 0.4, QColor::fromRgb( 24, 27, 160 ) );
-    gradient.setColorAt( 0.4, QColor::fromRgb( 20, 22, 125 ) );
-    gradient.setColorAt( 1, QColor::fromRgb( 17, 18, 80 ) );
+    gradient.setColorAt( 0, QColor::fromRgb( 88, 88, 88 ) );
+    gradient.setColorAt( 0.4, QColor::fromRgb( 82, 82, 82 ) );
+    gradient.setColorAt( 0.4, QColor::fromRgb( 60, 60, 60 ) );
+    gradient.setColorAt( 1, QColor::fromRgb( 55, 55, 55 ) );
 
     painter->setPen( Qt::NoPen );
     painter->setBrush( QBrush( gradient ) );
