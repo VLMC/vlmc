@@ -227,6 +227,14 @@ class   WorkflowRenderer : public GenericRenderer
                                         qint64 newPos, quint32 trackId,
                                         MainWorkflow::TrackType trackType,
                                         bool undoRedoAction = false );
+        /**
+         *  \brief          Completely kill the renderer.
+         *
+         *  This will stop both mainworkflow and renderer thread.
+         *  This should only be used when destroying the renderer.
+         *  \sa             stop();
+         */
+        void                killRenderer();
 
     private:
         /**
@@ -247,14 +255,6 @@ class   WorkflowRenderer : public GenericRenderer
          *  \brief          check for workflow related actions that has been stacked.
          */
         void                checkActions();
-        /**
-         *  \brief          Completely kill the renderer.
-         *
-         *  This will stop both mainworkflow and renderer thread.
-         *  This should only be used when destroying the renderer.
-         *  \sa             stop();
-         */
-        void                killRenderer();
 
     protected:
         /**

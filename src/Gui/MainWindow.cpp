@@ -378,7 +378,7 @@ void    MainWindow::on_actionRender_triggered()
         return ;
     else
     {
-        m_renderer->stop();
+        m_renderer->killRenderer();
         if ( m_fileRenderer )
             delete m_fileRenderer;
         m_fileRenderer = new WorkflowFileRenderer( outputFileName );

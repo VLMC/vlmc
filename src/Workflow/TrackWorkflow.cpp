@@ -243,7 +243,8 @@ void                TrackWorkflow::releasePreviousRender()
     }
 }
 
-void*               TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFrame )
+void*
+TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFrame )
 {
     releasePreviousRender();
     QReadLocker     lock( m_clipsLock );
@@ -256,7 +257,6 @@ void*               TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFra
 
     if ( m_lastFrame == -1 )
         m_lastFrame = currentFrame;
-
     if ( checkEnd( currentFrame ) == true )
     {
         emit trackEndReached( m_trackId );

@@ -220,6 +220,7 @@ MainWorkflow::stop()
         m_tracks[i]->stop();
         m_currentFrame[i] = 0;
     }
+    unpause();
     emit frameChanged( 0, Renderer );
 }
 

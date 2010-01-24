@@ -80,7 +80,7 @@ void        WorkflowFileRenderer::run()
 
 void    WorkflowFileRenderer::stop()
 {
-    WorkflowRenderer::stop();
+    WorkflowRenderer::killRenderer();
 }
 
 void    WorkflowFileRenderer::cancelButtonClicked()
