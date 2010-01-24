@@ -59,6 +59,7 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, Workf
     setContentsMargins( 0, 0, 0, 0 );
     setFrameStyle( QFrame::NoFrame );
     setAlignment( Qt::AlignLeft | Qt::AlignTop );
+    setCacheMode( QGraphicsView::CacheBackground );
 
     m_cursorLine = new GraphicsCursorItem( QPen( QColor( 220, 30, 30 ) ) );
 
@@ -607,6 +608,8 @@ void TracksView::resizeEvent( QResizeEvent* event )
 
 void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
 {
+    painter->setWorldMatrixEnabled( false );
+
     // Draw the tracks separators
     painter->setPen( QPen( QColor( 72, 72, 72 ) ) );
     for ( int i = 0; i < m_layout->count(); ++i )
