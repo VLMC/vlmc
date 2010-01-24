@@ -1,7 +1,7 @@
 /*****************************************************************************
  * EffectsEngine.cpp: Main class of the effects engine
  *****************************************************************************
- * Copyright (C) 2008-2009 the VLMC team
+ * Copyright (C) 2008-2010 VideoLAN
  *
  * Authors: Vincent Carrubba <cyberbouba@gmail.com>
  *

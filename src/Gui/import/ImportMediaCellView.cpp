@@ -1,7 +1,7 @@
 /*****************************************************************************
  * ImportMediaCellView.cpp: Inherited class of the MediaCellView
  *****************************************************************************
- * Copyright (C) 2008-2009 the VLMC team
+ * Copyright (C) 2008-2010 VideoLAN
  *
  * Authors: Geoffroy Lacarriere <geoffroylaca@gmail.com>
  *          Thomas Boquet <thomas.boquet@gmail.com>

@@ -1,7 +1,7 @@
 /*****************************************************************************
  * Transcode.cpp :  File Transcoder
  *****************************************************************************
- * copyright (c) 2008-2009 the vlmc team
+ * copyright (c) 2008-2010 the vlmc team
  *
  * authors: clement chavance <chavance.c@gmail.com>
  *

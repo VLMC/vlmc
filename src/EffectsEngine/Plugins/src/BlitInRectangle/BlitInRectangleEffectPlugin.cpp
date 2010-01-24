@@ -2,7 +2,7 @@
  * BlitInRectangleEffectPlugin.cpp: blit src video input in a rectangle on dst
  *                                   video input and output the result
  *****************************************************************************
- * Copyright (C) 2008-2009 the VLMC team
+ * Copyright (C) 2008-2010 VideoLAN
  *
  * Authors: Vincent Carrubba <cyberbouba@gmail.com>
  *

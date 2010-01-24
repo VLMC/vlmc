@@ -1,7 +1,7 @@
 /*****************************************************************************
  * WorkflowFileRendererDialog.cpp: Display a render feedback.
  *****************************************************************************
- * Copyright (C) 2008-2009 the VLMC team
+ * Copyright (C) 2008-2010 VideoLAN
  *
  * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
  *          Christophe Courtaut <christophe.courtaut@gmail.com>

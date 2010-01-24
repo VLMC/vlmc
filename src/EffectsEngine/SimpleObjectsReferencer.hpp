@@ -2,7 +2,7 @@
  * SimpleObjectsReferencer.h: Template class use to store obj reference
  *                            ( not cpp refs, in internal it's pointers).
  *****************************************************************************
- * Copyright (C) 2008-2009 the VLMC team
+ * Copyright (C) 2008-2010 VideoLAN
  *
  * Authors: Vincent Carrubba <cyberbouba@gmail.com>
  *

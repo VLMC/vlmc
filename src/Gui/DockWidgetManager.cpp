@@ -1,7 +1,7 @@
 /*****************************************************************************
  * DockWidgetManager.cpp: Object managing the application docked widget
  *****************************************************************************
- * Copyright (C) 2008-2009 the VLMC team
+ * Copyright (C) 2008-2010 VideoLAN
  *
  * Authors: Clement CHAVANCE <chavance.c@gmail.com>
  *

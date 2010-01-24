@@ -1,7 +1,7 @@
 /*****************************************************************************
  * TracksControls.cpp: Left panel of the timeline
  *****************************************************************************
- * Copyright (C) 2008-2009 the VLMC team
+ * Copyright (C) 2008-2010 VideoLAN
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *

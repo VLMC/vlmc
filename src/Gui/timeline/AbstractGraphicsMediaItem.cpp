@@ -1,7 +1,7 @@
 /*****************************************************************************
  * AbstractGraphicsMediaItem.h: Base class for media representation
  *****************************************************************************
- * Copyright (C) 2008-2009 the VLMC team
+ * Copyright (C) 2008-2010 VideoLAN
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *

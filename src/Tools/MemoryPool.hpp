@@ -2,7 +2,7 @@
  * MemoryPool.hpp: Generic memory pool, that will reinstantiate
  * a new object each time
  *****************************************************************************
- * Copyright (C) 2008-2009 the VLMC team
+ * Copyright (C) 2008-2010 VideoLAN
  *
  * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
  *

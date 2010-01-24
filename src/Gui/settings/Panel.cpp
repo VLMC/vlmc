@@ -1,7 +1,7 @@
 /*****************************************************************************
  * Panel.cpp: a simple panel with buttons
  *****************************************************************************
- * Copyright (C) 2008-2009 the VLMC team
+ * Copyright (C) 2008-2010 VideoLAN
  *
  * Authors: Clement CHAVANCE <kinder@vlmc.org>
  *          Ludovic Fauvet <etix@l0cal.com>

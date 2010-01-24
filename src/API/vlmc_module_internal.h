@@ -1,7 +1,7 @@
 /*****************************************************************************
  * vlmc_module_internal.h: Represents the vlmc's internal representation of a module
  *****************************************************************************
- * Copyright (C) 2008-2009 the VLMC team
+ * Copyright (C) 2008-2010 VideoLAN
  *
  * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
  *

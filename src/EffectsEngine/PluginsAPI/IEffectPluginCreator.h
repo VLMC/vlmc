@@ -2,7 +2,7 @@
  * IEffectPluginCreator.cpp: Interface that must inherit the class who can
  *                           instantiate an effect plugin
  *****************************************************************************
- * Copyright (C) 2008-2009 the VLMC team
+ * Copyright (C) 2008-2010 VideoLAN
  *
  * Authors: Vincent Carrubba <cyberbouba@gmail.com>
  *

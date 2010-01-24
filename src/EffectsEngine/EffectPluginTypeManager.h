@@ -2,7 +2,7 @@
  * EffectPluginTypeManager.h: this class is used to instantiate one
  *                              EffectPluginTypeLoader by .so
  *****************************************************************************
- * Copyright (C) 2008-2009 the VLMC team
+ * Copyright (C) 2008-2010 VideoLAN
  *
  * Authors: Vincent Carrubba <cyberbouba@gmail.com>
  *

@@ -2,7 +2,7 @@
  * TagWidget.cpp : Widget for tagging media
  *                     Render preview
  *****************************************************************************
- * Copyright (C) 2008-2009 the VLMC team
+ * Copyright (C) 2008-2010 VideoLAN
  *
  * Authors: Geoffroy Lacarriere <geoffroylaca@gmail.com>
  *

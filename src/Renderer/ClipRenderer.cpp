@@ -1,7 +1,7 @@
 /*****************************************************************************
  * ClipRenderer.cpp: Render from a Clip (mainly for previewing purpose)
  *****************************************************************************
- * Copyright (C) 2008-2009 the VLMC team
+ * Copyright (C) 2008-2010 VideoLAN
  *
  * Authors: Geoffroy Lacarrière <geoffroylaca@gmail.com>
  *          Hugo Beauzee-Luyssen <hugo@vlmc.org>

@@ -1,7 +1,7 @@
 /*****************************************************************************
 * StackedBuffer.hpp: A buffer that's must can be released and pushed back on a Pool.
 *****************************************************************************
-* Copyright (C) 2008-2009 the VLMC team
+* Copyright (C) 2008-2010 VideoLAN
 *
 * Authors: Hugo Beauzee-Luyssen <hugo@vlmc.org>
 *

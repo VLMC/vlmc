@@ -1,7 +1,7 @@
 /*****************************************************************************
  * KeyboardShortcutHelper.h: An helper to catch keyboard shortcut modifications
  *****************************************************************************
- * Copyright (C) 2008-2009 the VLMC team
+ * Copyright (C) 2008-2010 VideoLAN
  *
  * Authors: Hugo Beauzee-Luyssen <beauze.h@gmail.com>
  *
