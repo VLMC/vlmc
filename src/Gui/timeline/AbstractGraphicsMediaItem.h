@@ -25,13 +25,14 @@
 
 #include <QGraphicsItem>
 #include <QUuid>
-#include "GraphicsTrack.hpp"
+#include "MainWorkflow.h"
 
 #define RESIZE_ZONE 7
 
 class TracksView;
 class Clip;
 class TracksScene;
+class GraphicsTrack;
 
 /**
  * \brief Base class for Audio/Video items.

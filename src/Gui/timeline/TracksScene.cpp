@@ -21,6 +21,7 @@
  *****************************************************************************/
 
 #include <QMessageBox>
+#include <QKeyEvent>
 #include "TracksScene.h"
 #include "Commands.h"
 #include "GraphicsMovieItem.h"

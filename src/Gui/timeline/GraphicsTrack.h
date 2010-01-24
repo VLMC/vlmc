@@ -1,7 +1,7 @@
 /*****************************************************************************
- * GraphicsTrack.hpp: Graphically represent a track in the timeline
+ * GraphicsTrack.h: Graphically represent a track in the timeline
  *****************************************************************************
- * Copyright (C) 2008-2009 the VLMC team
+ * Copyright (C) 2008-2010 the VLMC team
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -20,13 +20,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef GRAPHICSTRACK_HPP
-#define GRAPHICSTRACK_HPP
+#ifndef GRAPHICSTRACK_H
+#define GRAPHICSTRACK_H
 
 #include <QGraphicsWidget>
 #include <QPainter>
 #include <QDebug>
 #include "MainWorkflow.h"
+#include "Timeline.h"
 
 class GraphicsTrack : public QGraphicsWidget
 {
@@ -35,55 +36,15 @@ class GraphicsTrack : public QGraphicsWidget
 public:
     enum { Type = UserType + 2 };
 
-    GraphicsTrack( MainWorkflow::TrackType type, quint32 trackNumber, QGraphicsItem* parent = 0 ) : QGraphicsWidget( parent )
-    {
-        m_type = type;
-        m_trackNumber = trackNumber;
-        m_enabled = true;
+    GraphicsTrack( MainWorkflow::TrackType type, quint32 trackNumber,
+                   QGraphicsItem *parent = 0 );
 
-        setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-        setContentsMargins( 0, 0, 0, 0 );
-        setZValue( 1 );
-    }
-
-    void setHeight( int height )
-    {
-        setPreferredHeight( height );
-        adjustSize();
-        updateGeometry();
-    }
-
-    int height()
-    {
-        return preferredHeight();
-    }
-
-    void setTrackEnabled( bool enabled )
-    {
-        if ( enabled == m_enabled ) return;
-        m_enabled = enabled;
-
-        if ( enabled )
-            MainWorkflow::getInstance()->unmuteTrack( m_trackNumber, m_type );
-        else
-            MainWorkflow::getInstance()->muteTrack( m_trackNumber, m_type );
-    }
-
-    bool trackEnabled()
-    {
-        return m_enabled;
-    }
-
-    quint32 trackNumber()
-    {
-        return m_trackNumber;
-    }
-
-    MainWorkflow::TrackType mediaType()
-    {
-        return m_type;
-    }
-
+    void setHeight( int height );
+    int height();
+    void setTrackEnabled( bool enabled );
+    bool trackEnabled();
+    quint32 trackNumber();
+    MainWorkflow::TrackType mediaType();
     virtual int type() const { return Type; }
 
 private:
@@ -92,4 +53,4 @@ private:
     bool m_enabled;
 };
 
-#endif // GRAPHICSTRACK_HPP
+#endif // GRAPHICSTRACK_H

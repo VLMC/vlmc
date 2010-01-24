@@ -21,6 +21,7 @@
  *****************************************************************************/
 
 #include <QIcon>
+#include "GraphicsTrack.h"
 #include "TrackControls.h"
 #include "ui_TrackControls.h"
 

@@ -25,6 +25,7 @@
 #include "AbstractGraphicsMediaItem.h"
 #include "TracksView.h"
 #include "TracksScene.h"
+#include "GraphicsTrack.h"
 
 #include "Clip.h"
 #include "Commands.h"

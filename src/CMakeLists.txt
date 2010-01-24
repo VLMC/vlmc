@@ -63,7 +63,7 @@ SET(VLMC_SRCS
     Gui/timeline/GraphicsAudioItem.cpp
     Gui/timeline/GraphicsCursorItem.cpp
     Gui/timeline/GraphicsMovieItem.cpp
-    Gui/timeline/GraphicsTrack.hpp
+    Gui/timeline/GraphicsTrack.cpp
     Gui/timeline/Timeline.cpp
     Gui/timeline/TracksControls.cpp
     Gui/timeline/TracksRuler.cpp
@@ -143,7 +143,7 @@ SET (VLMC_HDRS
     Gui/timeline/GraphicsAudioItem.h                                              
     Gui/timeline/GraphicsCursorItem.h                                             
     Gui/timeline/GraphicsMovieItem.h                                              
-    Gui/timeline/GraphicsTrack.hpp
+    Gui/timeline/GraphicsTrack.h
     Gui/timeline/Timeline.h                                                       
     Gui/timeline/TracksControls.h                                                 
     Gui/timeline/TracksRuler.h

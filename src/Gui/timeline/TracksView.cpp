@@ -32,7 +32,7 @@
 #include "GraphicsAudioItem.h"
 #include "GraphicsCursorItem.h"
 #include "Commands.h"
-#include "GraphicsTrack.hpp"
+#include "GraphicsTrack.h"
 #include "WorkflowRenderer.h"
 
 TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, WorkflowRenderer* renderer, QWidget* parent )

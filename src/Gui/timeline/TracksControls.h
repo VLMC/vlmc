@@ -25,8 +25,9 @@
 
 #include <QScrollArea>
 #include <QVBoxLayout>
-#include "GraphicsTrack.hpp"
 #include "TrackControls.h"
+
+class GraphicsTrack;
 
 /**
  * \brief Tracks controller widget
