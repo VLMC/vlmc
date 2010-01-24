@@ -712,6 +712,9 @@ void TracksView::mousePressEvent( QMouseEvent* event )
 {
     QList<AbstractGraphicsMediaItem*> mediaCollisionList = mediaItems( event->pos() );
 
+    // Reset the drag mode
+    setDragMode( QGraphicsView::NoDrag );
+
     if ( event->modifiers() == Qt::ControlModifier && mediaCollisionList.count() == 0 )
     {
         setDragMode( QGraphicsView::ScrollHandDrag );
@@ -843,7 +846,7 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
     m_actionMoveExecuted = false;
     m_actionResize = false;
 
-    setDragMode( QGraphicsView::NoDrag );
+    //setDragMode( QGraphicsView::NoDrag );
     QGraphicsView::mouseReleaseEvent( event );
 }
 
