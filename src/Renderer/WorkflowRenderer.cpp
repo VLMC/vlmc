@@ -228,6 +228,11 @@ void        WorkflowRenderer::startPreview()
     //FIXME:: check if this doesn't require Qt::QueuedConnection
     connect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SIGNAL( endReached() ) );
 
+    //Clean any previous render.
+    memcpy( m_renderVideoFrame,
+            (*MainWorkflow::blackOutput)->frame.octets,
+            (*MainWorkflow::blackOutput)->nboctets );
+
     m_mainWorkflow->setFullSpeedRender( false );
     m_mainWorkflow->startRender();
     m_isRendering = true;

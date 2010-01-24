@@ -24,6 +24,7 @@
 #include "WorkflowFileRenderer.h"
 #include "SettingsManager.h"
 #include "VLCMedia.h"
+#include "LightVideoFrame.h"
 
 #include <QTime>
 
@@ -62,6 +63,11 @@ void        WorkflowFileRenderer::run()
 
 //    sprintf( buffer, ":sout-transcode-fps=%f", m_outputFps );
 //    m_media->addOption( buffer );
+
+    //Clean any previous render.
+    memcpy( m_renderVideoFrame,
+            (*MainWorkflow::blackOutput)->frame.octets,
+            (*MainWorkflow::blackOutput)->nboctets );
 
     m_mediaPlayer->setMedia( m_media );
 
