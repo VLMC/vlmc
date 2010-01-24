@@ -95,7 +95,6 @@ IF (UNIX)
 ENDIF (UNIX)
 
 SUBDIRS(ts)
-SUBDIRS(launcher)
 SUBDIRS(src)
 
 # Copy stuff to doc subdirectory
