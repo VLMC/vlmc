@@ -24,10 +24,7 @@
 #define GRAPHICSTRACK_H
 
 #include <QGraphicsWidget>
-#include <QPainter>
-#include <QDebug>
 #include "MainWorkflow.h"
-#include "Timeline.h"
 
 class GraphicsTrack : public QGraphicsWidget
 {
