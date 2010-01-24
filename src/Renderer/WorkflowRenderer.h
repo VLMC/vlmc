@@ -340,8 +340,13 @@ class   WorkflowRenderer : public GenericRenderer
          */
         qint64              m_pts;
         qint64              m_audioPts;
-        quint32            m_nbChannels;
-        quint32            m_rate;
+        quint32             m_nbChannels;
+        quint32             m_rate;
+        /**
+         *  \brief          Used in permanent rendering mode, to know is some operations
+         *                  has to be performed.
+         */
+        qint64              m_oldLength;
 
 
     public slots:

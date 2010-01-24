@@ -40,7 +40,8 @@ quint8*         WorkflowRenderer::silencedAudioBuffer = NULL;
 
 WorkflowRenderer::WorkflowRenderer() :
             m_mainWorkflow( MainWorkflow::getInstance() ),
-            m_stopping( false )
+            m_stopping( false ),
+            m_oldLength( 0 )
 {
     m_actionsMutex = new QMutex;
 }
@@ -469,13 +470,17 @@ WorkflowRenderer::mainWorkflowLenghtChanged( qint64 newLength )
 {
     if ( newLength > 0 )
     {
-        if ( m_isRendering == false )
-            startPreview();
-        m_paused = false;
-        togglePlayPause( true );
+        if ( m_oldLength == 0 )
+        {
+            if ( m_isRendering == false )
+                startPreview();
+            m_paused = false;
+            togglePlayPause( true );
+        }
     }
     else if ( newLength == 0 && m_isRendering == true )
     {
         stop();
     }
+    m_oldLength = newLength;
 }
