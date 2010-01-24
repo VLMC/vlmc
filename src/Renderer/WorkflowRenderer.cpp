@@ -177,6 +177,7 @@ WorkflowRenderer::lockAudio( qint64 *pts, size_t *bufferSize, void **buffer )
         nbSample = renderAudioSample->nbSample;
         *buffer = renderAudioSample->buff;
         *bufferSize = renderAudioSample->size;
+        qDebug() << "size:" << renderAudioSample->size;
         ptsDiff = renderAudioSample->ptsDiff;
     }
     else

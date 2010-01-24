@@ -34,7 +34,7 @@ MediaPlayer::MediaPlayer() : m_media( NULL )
     CheckVlcppException( m_ex );
 
     // Initialize the event manager
-    p_em = libvlc_media_player_event_manager( m_internalPtr, m_ex );
+    p_em = libvlc_media_player_event_manager( m_internalPtr );
     registerEvents();
 }
 
@@ -44,19 +44,19 @@ MediaPlayer::MediaPlayer( Media* media ) : m_media( media )
     CheckVlcppException( m_ex );
 
     // Initialize the event manager
-    p_em = libvlc_media_player_event_manager( m_internalPtr, m_ex );
+    p_em = libvlc_media_player_event_manager( m_internalPtr );
     registerEvents();
 }
 
 MediaPlayer::~MediaPlayer()
 {
-    libvlc_event_detach( p_em, libvlc_MediaPlayerSnapshotTaken, callbacks, this, m_ex );
-    libvlc_event_detach( p_em, libvlc_MediaPlayerTimeChanged, callbacks, this, m_ex );
-    libvlc_event_detach( p_em, libvlc_MediaPlayerPlaying, callbacks, this, m_ex );
-    libvlc_event_detach( p_em, libvlc_MediaPlayerPaused, callbacks, this, m_ex );
-    libvlc_event_detach( p_em, libvlc_MediaPlayerStopped, callbacks, this, m_ex );
-    libvlc_event_detach( p_em, libvlc_MediaPlayerEndReached, callbacks, this, m_ex );
-    libvlc_event_detach( p_em, libvlc_MediaPlayerPositionChanged, callbacks, this, m_ex );
+    libvlc_event_detach( p_em, libvlc_MediaPlayerSnapshotTaken, callbacks, this );
+    libvlc_event_detach( p_em, libvlc_MediaPlayerTimeChanged, callbacks, this );
+    libvlc_event_detach( p_em, libvlc_MediaPlayerPlaying, callbacks, this );
+    libvlc_event_detach( p_em, libvlc_MediaPlayerPaused, callbacks, this );
+    libvlc_event_detach( p_em, libvlc_MediaPlayerStopped, callbacks, this );
+    libvlc_event_detach( p_em, libvlc_MediaPlayerEndReached, callbacks, this );
+    libvlc_event_detach( p_em, libvlc_MediaPlayerPositionChanged, callbacks, this );
     stop();
     libvlc_media_player_release( m_internalPtr );
 }
@@ -76,6 +76,7 @@ MediaPlayer::registerEvents()
     libvlc_event_attach( p_em, libvlc_MediaPlayerEncounteredError,callbacks, this, m_ex );
     libvlc_event_attach( p_em, libvlc_MediaPlayerPausableChanged, callbacks, this, m_ex );
     libvlc_event_attach( p_em, libvlc_MediaPlayerSeekableChanged, callbacks, this, m_ex );
+    CheckVlcppException( m_ex );
 }
 
 /**
@@ -146,8 +147,7 @@ void                            MediaPlayer::pause()
 
 void                            MediaPlayer::stop()
 {
-    libvlc_media_player_stop( m_internalPtr, m_ex );
-    CheckVlcppException( m_ex );
+    libvlc_media_player_stop( m_internalPtr );
 }
 
 qint64                          MediaPlayer::getTime()
@@ -191,8 +191,7 @@ void                            MediaPlayer::takeSnapshot( const char* outputFil
 
 bool                            MediaPlayer::isPlaying()
 {
-    int res = libvlc_media_player_is_playing( m_internalPtr, m_ex );
-    CheckVlcppException( m_ex );
+    int res = libvlc_media_player_is_playing( m_internalPtr );
     return (res == 1);
 }
 
@@ -205,20 +204,17 @@ bool                                MediaPlayer::isSeekable()
 
 void                                MediaPlayer::setDrawable( void* hwnd )
 {
-    libvlc_media_player_set_hwnd( m_internalPtr, hwnd, m_ex );
-    CheckVlcppException( m_ex );
+    libvlc_media_player_set_hwnd( m_internalPtr, hwnd );
 }
 
 void                                MediaPlayer::setDrawable( uint32_t drawable )
 {
-    libvlc_media_player_set_xwindow( m_internalPtr, drawable, m_ex );
-    CheckVlcppException( m_ex );
+    libvlc_media_player_set_xwindow( m_internalPtr, drawable );
 }
 
 void                                MediaPlayer::setMedia( Media* media )
 {
-    libvlc_media_player_set_media( m_internalPtr, media->getInternalPtr(), m_ex);
-    CheckVlcppException( m_ex );
+    libvlc_media_player_set_media( m_internalPtr, media->getInternalPtr() );
 }
 
 int                                 MediaPlayer::getWidth()
@@ -262,8 +258,7 @@ const QString&                      MediaPlayer::getLoadedFileName() const
 
 QString                             MediaPlayer::getLoadedMRL()
 {
-    Media::internalPtr     media = libvlc_media_player_get_media( m_internalPtr, m_ex );
-    CheckVlcppException( m_ex );
+    Media::internalPtr     media = libvlc_media_player_get_media( m_internalPtr );
     char* str = libvlc_media_get_mrl( media );
     return QString( str );
 }
