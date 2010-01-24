@@ -29,7 +29,7 @@ TrackControls::TrackControls( GraphicsTrack* track, QWidget *parent ) :
     QWidget( parent ), m_ui( new Ui::TrackControls ), m_track( track )
 {
     m_ui->setupUi( this );
-    setTrackDisabled( !m_track->trackEnabled() );
+    setTrackDisabled( !m_track->isEnabled() );
     connect( m_ui->disableButton, SIGNAL( clicked(bool) ),
              this, SLOT( setTrackDisabled(bool) ) );
 

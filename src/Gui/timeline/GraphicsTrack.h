@@ -42,7 +42,7 @@ public:
     void setHeight( int height );
     int height();
     void setTrackEnabled( bool enabled );
-    bool trackEnabled();
+    bool isEnabled();
     quint32 trackNumber();
     MainWorkflow::TrackType mediaType();
     virtual int type() const { return Type; }

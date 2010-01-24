@@ -63,7 +63,7 @@ GraphicsTrack::setTrackEnabled( bool enabled )
 }
 
 bool
-GraphicsTrack::trackEnabled()
+GraphicsTrack::isEnabled()
 {
     return m_enabled;
 }
