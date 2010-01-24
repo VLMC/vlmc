@@ -119,16 +119,13 @@ TrackHandler::getOutput( qint64 currentFrame, qint64 subFrame )
         {
             if ( m_tracks[i].activated() == false )
             {
-                if ( m_tracks[i].hardDeactivated() == true )
-                    m_effectEngine->setVideoInput( i + 1, *MainWorkflow::blackOutput );
-                else
-                    m_effectEngine->setVideoInput( i + 1, *TrackHandler::nullOutput );
+                m_effectEngine->setVideoInput( i + 1, *TrackHandler::nullOutput );
             }
             else
             {
                 void*   ret = m_tracks[i]->getOutput( currentFrame, subFrame );
                 if ( ret == NULL )
-                    m_effectEngine->setVideoInput( i + 1, *MainWorkflow::blackOutput );
+                    m_effectEngine->setVideoInput( i + 1, *TrackHandler::nullOutput );
                 else
                 {
                     StackedBuffer<LightVideoFrame*>* stackedBuffer =
@@ -341,4 +338,16 @@ TrackHandler::setFullSpeedRender( bool val )
 {
     for ( unsigned int i = 0; i < m_trackCount; ++i)
         m_tracks[i]->setFullSpeedRender( val );
+}
+
+void
+TrackHandler::muteClip( const QUuid &uuid, quint32 trackId )
+{
+    m_tracks[trackId]->muteClip( uuid );
+}
+
+void
+TrackHandler::unmuteClip( const QUuid &uuid, quint32 trackId )
+{
+    m_tracks[trackId]->unmuteClip( uuid );
 }

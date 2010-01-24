@@ -86,6 +86,15 @@ class   TrackWorkflow : public QObject
          */
         void                                    setFullSpeedRender( bool val );
 
+        /**
+         *  \brief      Mute a clip
+         *
+         *  Mutting a clip will prevent it to be rendered.
+         *  \param  uuid    The uuid of the clip to mute.
+         */
+        void                                    muteClip( const QUuid& uuid );
+        void                                    unmuteClip( const QUuid& uuid );
+
     private:
         void                                    computeLength();
         void*                                   renderClip( ClipWorkflow* cw, qint64 currentFrame,

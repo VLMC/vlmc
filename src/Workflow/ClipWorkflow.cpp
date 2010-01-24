@@ -142,8 +142,6 @@ void            ClipWorkflow::stop()
 void
 ClipWorkflow::setTime( qint64 time )
 {
-//    qDebug() << m_mediaPlayer << "setting clipworkflow time:" << time << "debugType:" << debugType <<
-//            "theorical position:" << (double)time / (double)((double)m_clip->getLengthSecond() * 1000.0);
     connect( m_mediaPlayer, SIGNAL( timeChanged(qint64) ),
              this, SLOT( resyncClipWorkflow() ), Qt::DirectConnection );
     m_mediaPlayer->setTime( time );
@@ -281,4 +279,17 @@ void
 ClipWorkflow::setFullSpeedRender( bool val )
 {
     m_fullSpeedRender = val;
+}
+
+void
+ClipWorkflow::mute()
+{
+    stop();
+    setState( Muted );
+}
+
+void
+ClipWorkflow::unmute()
+{
+    setState( Stopped );
 }

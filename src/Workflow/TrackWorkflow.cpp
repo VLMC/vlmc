@@ -158,10 +158,13 @@ void*       TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
         cw->initialize();
         cw->waitForCompleteInit();
         if ( start != currentFrame || cw->getClip()->getBegin() != 0 ) //Clip was not started as its real begining
+        {
             adjustClipTime( currentFrame, start, cw );
+        }
         return cw->getOutput( mode );
     }
-    else if ( cw->getState() == ClipWorkflow::EndReached )
+    else if ( cw->getState() == ClipWorkflow::EndReached ||
+              cw->getState() == ClipWorkflow::Muted )
     {
         cw->getStateLock()->unlock();
         //The stopClipWorkflow() method will take care of that.
@@ -192,23 +195,14 @@ void                TrackWorkflow::stopClipWorkflow( ClipWorkflow* cw )
 //    qDebug() << "Stopping clip workflow";
     cw->getStateLock()->lockForRead();
 
-    if ( cw->getState() == ClipWorkflow::Stopped )
+    if ( cw->getState() == ClipWorkflow::Stopped ||
+         cw->getState() == ClipWorkflow::Muted )
     {
         cw->getStateLock()->unlock();
         return ;
     }
-    if ( cw->getState() == ClipWorkflow::EndReached ||
-         cw->getState() == ClipWorkflow::Rendering ||
-         cw->getState() == ClipWorkflow::Paused )
-    {
-        cw->getStateLock()->unlock();
-        cw->stop();
-    }
-    else
-    {
-        qCritical() << "Unexpected ClipWorkflow::State when stopping :" << cw->getState();
-        cw->getStateLock()->unlock();
-    }
+    cw->getStateLock()->unlock();
+    cw->stop();
 }
 
 bool                TrackWorkflow::checkEnd( qint64 currentFrame ) const
@@ -504,4 +498,46 @@ TrackWorkflow::setFullSpeedRender( bool val )
     {
         cw->setFullSpeedRender( val );
     }
+}
+
+void
+TrackWorkflow::muteClip( const QUuid &uuid )
+{
+    QWriteLocker    lock( m_clipsLock );
+
+    QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
+
+    while ( it != end )
+    {
+        if ( it.value()->getClip()->getUuid() == uuid )
+        {
+            it.value()->mute();
+            return ;
+        }
+        ++it;
+    }
+    qWarning() << "Failed to mute clip" << uuid << "it probably doesn't exist "
+            "in this track";
+}
+
+void
+TrackWorkflow::unmuteClip( const QUuid &uuid )
+{
+    QWriteLocker    lock( m_clipsLock );
+
+    QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
+    QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
+
+    while ( it != end )
+    {
+        if ( it.value()->getClip()->getUuid() == uuid )
+        {
+            it.value()->unmute();
+            return ;
+        }
+        ++it;
+    }
+    qWarning() << "Failed to unmute clip" << uuid << "it probably doesn't exist "
+            "in this track";
 }

@@ -267,14 +267,14 @@ void
 MainWorkflow::muteClip( const QUuid& uuid, unsigned int trackId,
                         MainWorkflow::TrackType trackType )
 {
-    qDebug() << "Mute" << uuid ;
+    m_tracks[trackType]->muteClip( uuid, trackId );
 }
 
 void
 MainWorkflow::unmuteClip( const QUuid& uuid, unsigned int trackId,
                           MainWorkflow::TrackType trackType )
 {
-    qDebug() << "Unmute" << uuid;
+    m_tracks[trackType]->unmuteClip( uuid, trackId );
 }
 
 void toggleBreakPoint()

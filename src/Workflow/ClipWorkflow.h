@@ -72,6 +72,8 @@ class   ClipWorkflow : public QObject
             /// \brief  This state will be used when the media player is paused,
             ///         because of a sufficient number of computed buffers
             Paused,             //7
+            /// \brief  This state means a clip is mutted and must not be restarted
+            Muted,
         };
 
         /**
@@ -168,6 +170,9 @@ class   ClipWorkflow : public QObject
          *  \sa MainWorkflow::setFullSpeedRender();
          */
         void                    setFullSpeedRender( bool val );
+
+        void                    mute();
+        void                    unmute();
 
     private:
         void                    setState( State state );

@@ -89,6 +89,15 @@ class   TrackHandler : public QObject
          */
         void                    setFullSpeedRender( bool val );
 
+        /**
+         *  \brief  Will mute a clip in the given track.
+         *
+         *  \param  uuid    The uuid of the clip to mute.
+         *  \param  trackId The id of the track holding the clip.
+         */
+        void                    muteClip( const QUuid& uuid, quint32 trackId );
+        void                    unmuteClip( const QUuid& uuid, quint32 trackId );
+
     private:
         void                    computeLength();
         void                    activateTrack( unsigned int tracKId );
