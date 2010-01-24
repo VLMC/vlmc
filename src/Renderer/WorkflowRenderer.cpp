@@ -177,7 +177,6 @@ WorkflowRenderer::lockAudio( qint64 *pts, size_t *bufferSize, void **buffer )
         nbSample = renderAudioSample->nbSample;
         *buffer = renderAudioSample->buff;
         *bufferSize = renderAudioSample->size;
-        qDebug() << "size:" << renderAudioSample->size;
         ptsDiff = renderAudioSample->ptsDiff;
     }
     else
@@ -468,9 +467,11 @@ void        WorkflowRenderer::__endReached()
 void
 WorkflowRenderer::mainWorkflowLenghtChanged( qint64 newLength )
 {
-    if ( newLength > 0 && m_isRendering == false )
+    if ( newLength > 0 )
     {
-        startPreview();
+        if ( m_isRendering == false )
+            startPreview();
+        m_paused = false;
         togglePlayPause( true );
     }
     else if ( newLength == 0 && m_isRendering == true )

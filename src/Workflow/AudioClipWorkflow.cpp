@@ -104,7 +104,6 @@ AudioClipWorkflow::AudioSample*    AudioClipWorkflow::createBuffer( size_t size 
 
 void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, quint8** pcm_buffer , unsigned int size )
 {
-    qDebug() << "computing buffer of size: " << size;
     QMutexLocker    lock( cw->m_availableBuffersMutex );
     cw->m_renderLock->lock();
     cw->m_computedBuffersMutex->lock();
