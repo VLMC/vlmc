@@ -1,7 +1,7 @@
 /*****************************************************************************
  * main.cpp: VLMC main
  *****************************************************************************
- * Copyright (C) 2008-2010 VideoLAN
+ * Copyright (C) 2008-2009 the VLMC team
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -27,6 +27,8 @@
  */
 
 #include "MainWindow.h"
+
+#include <QFile>
 
 #include <QApplication>
 #include <QColor>
@@ -59,8 +61,14 @@ VLMCmain( int argc, char **argv )
     //Preferences::changeLang( QSettings().value( "Lang" ).toString() );
 
 #ifdef Q_OS_WIN
-    // Ugly workaround
-    app.setStyle( "plastique" );
+
+    QFile  css(":/styles/windows");
+    if ( css.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+        QString styleSheet = css.readAll();
+        if ( styleSheet != "" )
+            app.setStyleSheet( styleSheet );
+    }
 #endif
 
     // Creating the color palette
