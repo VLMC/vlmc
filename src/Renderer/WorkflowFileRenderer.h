@@ -58,7 +58,9 @@ protected:
 private slots:
     void                        stop();
     void                        cancelButtonClicked();
-    void                        __frameChanged( qint64 frame, MainWorkflow::FrameChangedReason reason );
+    void                        __frameChanged( qint64 frame,
+                                                MainWorkflow::FrameChangedReason reason );
+    void                        __endReached();
 
 signals:
     void                        imageUpdated( const uchar* image );

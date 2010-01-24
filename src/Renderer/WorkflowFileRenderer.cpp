@@ -95,6 +95,12 @@ void    WorkflowFileRenderer::cancelButtonClicked()
     m_dialog->done( 0 );
 }
 
+void
+WorkflowFileRenderer::__endReached()
+{
+     cancelButtonClicked();
+}
+
 float   WorkflowFileRenderer::getFps() const
 {
     return m_outputFps;
