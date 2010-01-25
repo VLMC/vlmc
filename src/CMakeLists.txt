@@ -101,6 +101,7 @@ SET(VLMC_SRCS
     Workflow/ClipWorkflow.cpp
     Workflow/ImageClipWorkflow.cpp
     Workflow/MainWorkflow.cpp
+    Workflow/StackedBuffer.hpp
     Workflow/TrackHandler.cpp
     Workflow/TrackWorkflow.cpp
     Workflow/VideoClipWorkflow.cpp
@@ -181,7 +182,6 @@ SET (VLMC_HDRS
     Workflow/ClipWorkflow.h
     Workflow/ImageClipWorkflow.h
     Workflow/MainWorkflow.h
-    Workflow/StackedBuffer.hpp
     Workflow/TrackHandler.h
     Workflow/TrackWorkflow.h
     Workflow/VideoClipWorkflow.h
