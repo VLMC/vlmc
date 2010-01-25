@@ -32,6 +32,9 @@
 #include <QColor>
 #include <QPalette>
 #include <QSettings>
+#include <QtDebug>
+
+#include <wait.h>
 
 #ifndef VLMC_VERSION
 #define VLMC_VERSION Unknown
@@ -48,7 +51,7 @@
  *  \return Return value of vlmc
  */
 int
-main( int argc, char **argv )
+VLMCmain( int argc, char **argv )
 {
     QApplication app( argc, argv );
     app.setApplicationName( "vlmc" );
@@ -93,4 +96,32 @@ main( int argc, char **argv )
     s.setValue( "VlmcVersion", STRINGIFY( VLMC_VERSION ) );
     w.show();
     return app.exec();
+}
+
+int     main( int argc, char **argv )
+{
+    while ( true )
+    {
+        pid_t       pid = fork();
+        if ( pid < 0 )
+            qFatal("Can't fork to launch VLMC. Exiting.");
+        if ( pid == 0 )
+            return VLMCmain( argc, argv );
+        else
+        {
+            int     status;
+
+            wait( &status );
+            if ( WIFEXITED(status) )
+            {
+                int ret = WEXITSTATUS( status );
+                if ( ret == 2 )
+                    continue ;
+                else
+                    break ;
+            }
+            else
+                qCritical() << "Unhandled crash.";
+        }
+    }
 }

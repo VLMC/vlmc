@@ -39,6 +39,8 @@ class ImportController;
 class WorkflowFileRenderer;
 class WorkflowRenderer;
 
+#define DEBUG_CRASHHANDLER
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
