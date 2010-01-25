@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=0.1
+Name=VideoLAN Movie Creator
+Comment=Non-Linear Video Editor
+Exec=vlmc %U
+Icon=vlmc
+Terminal=false
+Type=Application
+Categories=AudioVideo;
