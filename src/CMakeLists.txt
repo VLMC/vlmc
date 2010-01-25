@@ -106,6 +106,12 @@ SET(VLMC_SRCS
     Workflow/VideoClipWorkflow.cpp
   )
 
+IF (WIN32)
+    LIST ( APPEND VLMC_SRCS winvlmc.cpp )
+ELSE (WIN32)
+    LIST( APPEND VLMC_SRCS vlmc.cpp )
+ENDIF(WIN32)
+
 SET (VLMC_HDRS
     Actions/StackedAction.h
     Commands/KeyboardShortcutHelper.h                       
