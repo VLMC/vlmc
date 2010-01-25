@@ -29,6 +29,7 @@
 #include <QButtonGroup>
 
 #include "vlmc.h"
+#include "config.h"
 #include "ui_MainWindow.h"
 
 class Timeline;
@@ -65,7 +66,7 @@ private:
     void        createGlobalPreferences();
     void        createProjectPreferences();
     void        initializeMenuKeyboardShortcut();
-#ifdef DEBUG_CRASHHANDLER
+#ifdef WITH_CRASHHANDLER
     void        setupCrashTester();
 #endif
     /**

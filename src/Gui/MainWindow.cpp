@@ -31,6 +31,7 @@
 #include <QSettings>
 
 #include "MainWindow.h"
+#include "config.h"
 #include "Library.h"
 #include "About.h"
 #include "ProjectManager.h"
@@ -90,7 +91,7 @@ MainWindow::MainWindow( QWidget *parent ) :
     createGlobalPreferences();
     createProjectPreferences();
     initializeMenuKeyboardShortcut();
-#ifdef DEBUG_CRASHHANDLER
+#ifdef WITH_CRASHHANDLER
     setupCrashTester();
 #endif
 
@@ -595,7 +596,7 @@ void    MainWindow::canRedoChanged( bool canRedo )
     m_ui.actionRedo->setEnabled( canRedo );
 }
 
-#ifdef DEBUG_CRASHHANDLER
+#ifdef WITH_CRASHHANDLER
 void    MainWindow::setupCrashTester()
 {
     QAction* actionCrash = new QAction( this );
