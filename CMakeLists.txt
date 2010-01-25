@@ -80,9 +80,10 @@ SET (VLMC_INCLUDE_SUBDIR ${DEFAULT_INCLUDE_SUBDIR} CACHE STRING "Subdirectory wh
 # full paths for the installation
 SET (VLMC_BIN_DIR     ${VLMC_BIN_SUBDIR})
 SET (VLMC_LIB_DIR     ${VLMC_LIB_SUBDIR})
-SET (VLMC_DATA_DIR    ${VLMC_DATA_SUBDIR})
-SET (VLMC_PLUGIN_DIR  ${VLMC_PLUGIN_SUBDIR})
 SET (VLMC_INCLUDE_DIR ${VLMC_INCLUDE_SUBDIR})
+SET (VLMC_DATA_DIR    ${VLMC_DATA_SUBDIR})
+SET (VLMC_EFFECTS_DIR ${VLMC_LIB_SUBDIR}/vlmc/effects/)
+SET (VLMC_DOC_DIR     ${VLMC_DATA_SUBDIR}/doc/vlmc/)
 
 # manual page - makes sense only on unix systems
 IF (UNIX)
@@ -98,7 +99,7 @@ SUBDIRS(src)
 
 #Copy stuff to doc subdirectory
 INSTALL (FILES AUTHORS COPYING INSTALL NEWS README TRANSLATORS
-         DESTINATION ${VLMC_DATA_DIR}/doc)
+         DESTINATION ${VLMC_DOC_DIR})
 
 #############################################################
 # Enable packaging
