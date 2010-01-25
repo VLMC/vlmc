@@ -84,6 +84,7 @@ SET (VLMC_INCLUDE_DIR ${VLMC_INCLUDE_SUBDIR})
 SET (VLMC_DATA_DIR    ${VLMC_DATA_SUBDIR}/vlmc/)
 SET (VLMC_DOC_DIR     ${VLMC_DATA_SUBDIR}/doc/vlmc/)
 SET (VLMC_EFFECTS_DIR ${VLMC_LIB_SUBDIR}/vlmc/effects/)
+SET (VLMC_DESKTOP_DIR ${VLMC_DATA_SUBDIR}/applications/)
 
 # manual page - makes sense only on unix systems
 IF (UNIX)
@@ -100,6 +101,9 @@ SUBDIRS(src)
 # Copy stuff to doc subdirectory
 INSTALL (FILES AUTHORS COPYING INSTALL NEWS README TRANSLATORS
          DESTINATION ${VLMC_DOC_DIR})
+
+# Copy .desktop file
+INSTALL (FILES share/vlmc.desktop DESTINATION ${VLMC_DESKTOP_DIR})
 
 # Copy the share directory
 INSTALL (DIRECTORY share/ DESTINATION ${VLMC_DATA_DIR})
