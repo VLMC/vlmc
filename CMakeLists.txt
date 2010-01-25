@@ -73,11 +73,12 @@ SET (DEFAULT_DATA_SUBDIR    share)
 SET (DEFAULT_SRC_SUBDIR     src)
 SET (DEFAULT_INCLUDE_SUBDIR include)
 
-SET (VLMC_BIN_SUBDIR     ${DEFAULT_BIN_SUBDIR}     CACHE STRING "Subdirectory where executables will be installed")
-SET (VLMC_LIB_SUBDIR     ${DEFAULT_LIB_SUBDIR}     CACHE STRING "Subdirectory where libraries will be installed")
-SET (VLMC_DATA_SUBDIR    ${DEFAULT_DATA_SUBDIR}    CACHE STRING "Subdirectory where VLMC data will be installed")
-SET (VLMC_SRC_SUBDIR     ${DEFAULT_SRC_SUBDIR}     CACHE STRING "Subdirectory where VLMC source is")
-SET (VLMC_INCLUDE_SUBDIR ${DEFAULT_INCLUDE_SUBDIR} CACHE STRING "Subdirectory where header files will be installed")
+SET (LIB_SUFFIX          ""                                 CACHE STRING "Define lib directory suffix (32/64)")
+SET (VLMC_BIN_SUBDIR     ${DEFAULT_BIN_SUBDIR}              CACHE STRING "Subdirectory where executables will be installed")
+SET (VLMC_LIB_SUBDIR     ${DEFAULT_LIB_SUBDIR}${LIB_SUFFIX} CACHE STRING "Subdirectory where libraries will be installed")
+SET (VLMC_DATA_SUBDIR    ${DEFAULT_DATA_SUBDIR}             CACHE STRING "Subdirectory where VLMC data will be installed")
+SET (VLMC_SRC_SUBDIR     ${DEFAULT_SRC_SUBDIR}              CACHE STRING "Subdirectory where VLMC source is")
+SET (VLMC_INCLUDE_SUBDIR ${DEFAULT_INCLUDE_SUBDIR}          CACHE STRING "Subdirectory where header files will be installed")
 
 # full paths for the installation
 SET (VLMC_BIN_DIR     ${CMAKE_INSTALL_PREFIX}/${VLMC_BIN_SUBDIR})
