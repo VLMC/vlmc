@@ -27,3 +27,5 @@ ADD_LIBRARY(BlitInRectangleEffectPlugin SHARED ${SOURCES_CPP} ${SOURCES_H_MOC})
 ADD_DEPENDENCIES(BlitInRectangleEffectPlugin vlmc)
 
 TARGET_LINK_LIBRARIES(BlitInRectangleEffectPlugin ${QT_LIBRARIES})
+
+INSTALL(TARGETS BlitInRectangleEffectPlugin LIBRARY DESTINATION ${VLMC_LIB_DIR})
