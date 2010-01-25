@@ -41,6 +41,8 @@ ENDIF(WIN32)
 # VLMC requires libVLC
 #SET (WITH_LIBVLC FALSE CACHE BOOL "Compile LibVLC in VLMC")
 
+SET(WITH_CRASHHANDLER FALSE CACHE BOOL "Enable the crash handler")
+
 FIND_PACKAGE(LIBVLC)
   IF (NOT LIBVLC_FOUND)
     MESSAGE (SEND_ERROR "LibVLC dependency was not found (please get libvlc)!")
