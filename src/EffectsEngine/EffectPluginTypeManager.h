@@ -24,8 +24,6 @@
 #ifndef EFFECTPLUGINTYPEMANAGER_H_
 #define EFFECTPLUGINTYPEMANAGER_H_
 
-#define PLUGINS_PATH "bin/effects/"
-
 #include <QMap>
 
 class   EffectPluginTypeLoader;
@@ -38,6 +36,8 @@ class   EffectPluginTypeManager
 
     EffectPluginTypeManager( void );
     ~EffectPluginTypeManager();
+
+    qint32              loadPlugins( const QString &path );
 
     IEffectPlugin*      createIEffectPluginInstance( quint32 typeId ) const;
     IEffectPlugin*      createIEffectPluginInstance( const QString & typeName ) const;

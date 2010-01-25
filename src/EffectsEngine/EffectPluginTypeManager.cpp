@@ -22,28 +22,46 @@
  *****************************************************************************/
 
 #include "EffectPluginTypeManager.h"
-
 #include "EffectPluginTypeLoader.h"
+#include "config.h"
 
 #include <QDebug>
 #include <QDir>
+#include <QStringList>
 
 EffectPluginTypeManager::EffectPluginTypeManager( void ) : m_higherFreeId( 2 )
+{
+    QStringList dirs;
+    qint32      plugins = 0;
+
+    dirs << "bin/effects/";
+#ifdef VLMC_EFFECTS_DIR
+    dirs << VLMC_EFFECTS_DIR;
+#endif
+
+    foreach ( QString path, dirs )
+        plugins += loadPlugins( path );
+
+    if ( plugins == 0 )
+        qWarning() << "No plugins found!";
+}
+
+qint32
+EffectPluginTypeManager::loadPlugins( const QString &path )
 {
     QDir                        dir;
     quint32                     i;
     quint32                     size;
+    qint32                      pluginsLoaded = 0;
     QFileInfoList               list;
     EffectPluginTypeLoader*     tmpEptl = NULL;
 
-    if ( dir.cd(PLUGINS_PATH) == false )
-        qDebug() << "Can't change dir to " << PLUGINS_PATH << "!";
-    else
+    if ( dir.cd( path ) )
     {
         list = dir.entryInfoList( QDir::Files );
         size = list.size();
         if ( list.empty() == true )
-            qDebug() << PLUGINS_PATH << " is empty of plugins!";
+            qDebug() << path << " is empty of plugins!";
         else
             for ( i = 0; i < size; ++i )
             {
@@ -61,11 +79,13 @@ EffectPluginTypeManager::EffectPluginTypeManager( void ) : m_higherFreeId( 2 )
                     qDebug() << list.at( i ).fileName() << " loaded.";
                     qDebug() << "---> Plugin name : " << tmpEptl->pluginName();
                     tmpEptl = NULL;
+                    pluginsLoaded++;
                 }
                 else
                     qDebug() << list.at( i ).fileName() << " can't be loaded!";
             }
     }
+    return pluginsLoaded;
 }
 
 EffectPluginTypeManager::~EffectPluginTypeManager()
