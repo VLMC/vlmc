@@ -91,7 +91,7 @@ MainWindow::MainWindow( QWidget *parent ) :
     createGlobalPreferences();
     createProjectPreferences();
     initializeMenuKeyboardShortcut();
-#ifdef WITH_CRASHHANDLER
+#ifdef WITH_CRASHBUTTON
     setupCrashTester();
 #endif
 
@@ -596,7 +596,7 @@ void    MainWindow::canRedoChanged( bool canRedo )
     m_ui.actionRedo->setEnabled( canRedo );
 }
 
-#ifdef WITH_CRASHHANDLER
+#ifdef WITH_CRASHBUTTON
 void    MainWindow::setupCrashTester()
 {
     QAction* actionCrash = new QAction( this );

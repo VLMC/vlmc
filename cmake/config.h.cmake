@@ -2,7 +2,7 @@
 #define CONFIG_H
 
 /* With crash handler */
-#cmakedefine WITH_CRASHHANDLER
+#cmakedefine WITH_CRASHBUTTON
 
 /* Absolute path to plugins */
 #cmakedefine VLMC_EFFECTS_DIR "@VLMC_EFFECTS_DIR@"
