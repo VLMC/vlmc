@@ -35,6 +35,7 @@ EffectPluginTypeManager::EffectPluginTypeManager( void ) : m_higherFreeId( 2 )
     qint32      plugins = 0;
 
     dirs << "bin/effects/";
+
 #ifdef VLMC_EFFECTS_DIR
     dirs << VLMC_EFFECTS_DIR;
 #endif
@@ -56,18 +57,17 @@ EffectPluginTypeManager::loadPlugins( const QString &path )
     QFileInfoList               list;
     EffectPluginTypeLoader*     tmpEptl = NULL;
 
+    qDebug() << "Searching for effects in" << path;
+
     if ( dir.cd( path ) )
     {
         list = dir.entryInfoList( QDir::Files );
         size = list.size();
-        if ( list.empty() == true )
-            qDebug() << path << " is empty of plugins!";
-        else
+        if ( !list.empty() )
             for ( i = 0; i < size; ++i )
             {
                 if ( !QLibrary::isLibrary( list.at( i ).absoluteFilePath() ) )
                     continue;
-                qDebug() << "Try to load : " << list.at( i ).fileName();
                 if ( tmpEptl == NULL )
                     tmpEptl = new EffectPluginTypeLoader();
                 if ( tmpEptl->load( list.at( i ).absoluteFilePath() ) == true )
@@ -76,13 +76,12 @@ EffectPluginTypeManager::loadPlugins( const QString &path )
                     m_eptlById[ m_higherFreeId ] = tmpEptl;
                     m_nameById[ m_higherFreeId ] = tmpEptl->pluginName();
                     ++m_higherFreeId;
-                    qDebug() << list.at( i ).fileName() << " loaded.";
-                    qDebug() << "---> Plugin name : " << tmpEptl->pluginName();
+                    qDebug() << list.at( i ).fileName() << "loaded.";
                     tmpEptl = NULL;
                     pluginsLoaded++;
                 }
                 else
-                    qDebug() << list.at( i ).fileName() << " can't be loaded!";
+                    qWarning() << list.at( i ).fileName() << "is not a valid plugin.";
             }
     }
     return pluginsLoaded;
