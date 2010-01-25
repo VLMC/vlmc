@@ -68,8 +68,10 @@ EffectPluginTypeManager::loadPlugins( const QString &path )
             {
                 if ( !QLibrary::isLibrary( list.at( i ).absoluteFilePath() ) )
                     continue;
-                if ( tmpEptl == NULL )
+
+                if ( !tmpEptl )
                     tmpEptl = new EffectPluginTypeLoader();
+
                 if ( tmpEptl->load( list.at( i ).absoluteFilePath() ) == true )
                 {
                     m_eptlByName[ tmpEptl->pluginName() ] = tmpEptl;
@@ -83,6 +85,9 @@ EffectPluginTypeManager::loadPlugins( const QString &path )
                 else
                     qWarning() << list.at( i ).fileName() << "is not a valid plugin.";
             }
+
+        if ( tmpEptl )
+            delete tmpEptl;
     }
     return pluginsLoaded;
 }
