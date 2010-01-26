@@ -45,7 +45,8 @@ ENDIF(WIN32)
 #SET (WITH_LIBVLC FALSE CACHE BOOL "Compile LibVLC in VLMC")
 
 SET(WITH_CRASHBUTTON FALSE CACHE BOOL "Enable the crash button")
-SET(WITH_CRASHHANDLER_GUI TRUE CACHE BOOL "Enable the crash handler GUI")
+SET(WITH_CRASHHANDLER_GUI TRUE CACHE BOOL "Enable the crash handler GUI (with backtrace and restart capabilities)")
+SET(WITH_CRASHHANDLER TRUE CACHE BOOL "Enable the crash handler")
 
 FIND_PACKAGE(LIBVLC)
   IF (NOT LIBVLC_FOUND)

@@ -21,9 +21,11 @@
  *****************************************************************************/
 
 #include "config.h"
+
 #ifdef WITH_CRASHHANDLER_GUI
-#include "CrashHandler.h"
+    #include "CrashHandler.h"
 #endif
+
 #include "Library.h"
 #include "MainWorkflow.h"
 #include "ProjectManager.h"
@@ -38,6 +40,7 @@
 #include <errno.h>
 #include <signal.h>
 
+#ifdef WITH_CRASHHANDLER
 void    ProjectManager::signalHandler( int sig )
 {
     signal( sig, SIG_DFL );
@@ -51,6 +54,7 @@ void    ProjectManager::signalHandler( int sig )
     ::exit( 1 );
 #endif
 }
+#endif
 
 const QString   ProjectManager::unNamedProject = tr( "<Unnamed project>" );
 const QString   ProjectManager::unSavedProject = tr( "<Unsaved project>" );
@@ -61,10 +65,12 @@ ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
     m_recentsProjects = s.value( "RecentsProjects" ).toStringList();
 
     m_projectName = ProjectManager::unSavedProject;
+#ifdef WITH_CRASHHANDLER
     signal( SIGSEGV, ProjectManager::signalHandler );
     signal( SIGFPE, ProjectManager::signalHandler );
     signal( SIGABRT, ProjectManager::signalHandler );
     signal( SIGILL, ProjectManager::signalHandler );
+#endif
 
     connect( this, SIGNAL( projectClosed() ), Library::getInstance(), SLOT( clear() ) );
     connect( this, SIGNAL( projectClosed() ), MainWorkflow::getInstance(), SLOT( clear() ) );

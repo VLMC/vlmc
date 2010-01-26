@@ -1,8 +1,11 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-/* With crash handler */
+/* With crash button (tools->crash) */
 #cmakedefine WITH_CRASHBUTTON
+
+/* With crash handler */
+#cmakedefine WITH_CRASHHANDLER
 
 /* With crash handler GUI */
 #cmakedefine WITH_CRASHHANDLER_GUI
