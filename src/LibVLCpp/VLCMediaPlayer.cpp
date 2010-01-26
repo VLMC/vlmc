@@ -65,17 +65,17 @@ void
 MediaPlayer::registerEvents()
 {
     // Register the callback
-    libvlc_event_attach( p_em, libvlc_MediaPlayerSnapshotTaken,   callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerTimeChanged,     callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerPlaying,         callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerPaused,          callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerStopped,         callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerEndReached,      callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerPositionChanged, callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerLengthChanged,   callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerEncounteredError,callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerPausableChanged, callbacks, this, m_ex );
-    libvlc_event_attach( p_em, libvlc_MediaPlayerSeekableChanged, callbacks, this, m_ex );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerSnapshotTaken,   callbacks, this );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerTimeChanged,     callbacks, this );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerPlaying,         callbacks, this );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerPaused,          callbacks, this );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerStopped,         callbacks, this );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerEndReached,      callbacks, this );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerPositionChanged, callbacks, this );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerLengthChanged,   callbacks, this );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerEncounteredError,callbacks, this );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerPausableChanged, callbacks, this );
+    libvlc_event_attach( p_em, libvlc_MediaPlayerSeekableChanged, callbacks, this );
     CheckVlcppException( m_ex );
 }
 
