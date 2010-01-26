@@ -23,10 +23,10 @@
 
 #ifndef WIN32
     #include <execinfo.h>
+    #include <cxxabi.h>
 #endif
 
 #include <signal.h>
-#include <QProcess>
 
 #include "CrashHandler.h"
 #include "ui_CrashHandler.h"
@@ -44,8 +44,31 @@ CrashHandler::CrashHandler( int sig, QWidget *parent ) :
 
     int     nbSymb = backtrace( buff, CrashHandler::backtraceSize );
     char**  backtraceStr = backtrace_symbols( buff, nbSymb );
+    char*   symbName;
+    char*   mangledName;
+    int     status;
+    int     pos;
     for ( int i = 0; i < nbSymb; ++i )
+    {
+        mangledName = strchr( backtraceStr[i], '(' );
+        char* endPos = strchr( mangledName, '+' );
+        if ( endPos != NULL && endPos != NULL )
+        {
+            pos = endPos - mangledName;
+            char *copy = strdup( mangledName + 1 );  //Skipping the parenthesis
+            copy[pos - 1] = 0;
+            symbName = abi::__cxa_demangle( copy, NULL, 0, &status);
+            if ( status == 0 )
+            {
+                ui->backtraceDisplay->insertPlainText( QString( symbName ) + "\n" );
+                free( symbName );
+                continue ;
+            }
+            free(symbName);
+            free(copy);
+        }
         ui->backtraceDisplay->insertPlainText( QString( backtraceStr[i]) + "\n" );
+    }
     free(backtraceStr);
 #else    
     ui->backtraceDisplay->insertPlainText( tr( "Unable to get backtrace." ) );
