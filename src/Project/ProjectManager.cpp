@@ -20,20 +20,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <QtDebug>
+#include "config.h"
+#ifdef WITH_CRASHHANDLER_GUI
+#include "CrashHandler.h"
+#endif
+#include "Library.h"
+#include "MainWorkflow.h"
+#include "ProjectManager.h"
+#include "SettingsManager.h"
+
 #include <QFileDialog>
-#include <QSettings>
 #include <QMessageBox>
+#include <QSettings>
+#include <QtDebug>
 #include <QTimer>
 
 #include <errno.h>
 #include <signal.h>
-
-#include "ProjectManager.h"
-#include "Library.h"
-#include "MainWorkflow.h"
-#include "SettingsManager.h"
-#include "CrashHandler.h"
 
 void    ProjectManager::signalHandler( int sig )
 {
@@ -41,8 +44,12 @@ void    ProjectManager::signalHandler( int sig )
 
     ProjectManager::getInstance()->emergencyBackup();
 
+#ifdef WITH_CRASHHANDLER_GUI
     CrashHandler* ch = new CrashHandler( sig );
     ::exit( ch->exec() );
+#else
+    ::exit( 1 );
+#endif
 }
 
 const QString   ProjectManager::unNamedProject = tr( "<Unnamed project>" );

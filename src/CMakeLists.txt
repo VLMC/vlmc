@@ -69,7 +69,6 @@ SET(VLMC_SRCS
     Gui/timeline/TracksRuler.cpp
     Gui/timeline/TracksScene.cpp
     Gui/timeline/TracksView.cpp
-    Gui/widgets/CrashHandler.cpp
     Gui/widgets/TrackControls.cpp
     Gui/wizard/CustomWizardPage.cpp
     Gui/wizard/GeneralPage.cpp
@@ -157,7 +156,6 @@ SET (VLMC_HDRS
     Gui/timeline/TracksScene.h
     Gui/timeline/TracksView.h
     Gui/UndoStack.h
-    Gui/widgets/CrashHandler.h
     Gui/widgets/TrackControls.h
     Gui/wizard/CustomWizardPage.h
     Gui/wizard/GeneralPage.h
@@ -207,7 +205,6 @@ SET(VLMC_UIS
     Gui/ui/Timeline.ui
     Gui/ui/transcode.ui
     Gui/ui/WorkflowFileRendererDialog.ui
-    Gui/widgets/CrashHandler.ui
     Gui/widgets/TrackControls.ui
     Gui/wizard/ui/GeneralPage.ui
     Gui/wizard/ui/OpenPage.ui
@@ -219,6 +216,12 @@ SET(VLMC_RCC
     ../ressources.qrc
     ../ts/ressources-ts.qrc
   )
+
+IF (WITH_CRASHHANDLER_GUI)
+    LIST( APPEND VLMC_SRC Gui/widgets/CrashHandler.cpp )
+    LIST( APPEND VLMC_HDRS Gui/widgets/CrashHandler.h )
+    LIST( APPEND VLMC_UIS Gui/widgets/CrashHandler.ui )
+ENDIF(WITH_CRASHHANDLER_GUI)
 
 #include paths for vlmc
 INCLUDE_DIRECTORIES(

@@ -4,6 +4,9 @@
 /* With crash handler */
 #cmakedefine WITH_CRASHBUTTON
 
+/* With crash handler GUI */
+#cmakedefine WITH_CRASHHANDLER_GUI
+
 /* Absolute path to plugins */
 #cmakedefine VLMC_EFFECTS_DIR "@VLMC_EFFECTS_DIR@"
 
