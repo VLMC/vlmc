@@ -40,8 +40,6 @@ class ImportController;
 class WorkflowFileRenderer;
 class WorkflowRenderer;
 
-#define WITH_CRASHBUTTON
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
