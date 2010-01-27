@@ -8,14 +8,17 @@ QMenu
 QMenu::item
 {
     background: rgba( 104, 103, 103, 255 );
-    padding: 2px 25px 2px 25px;
+    padding: 2px 30 2px 30px;
     border: 1px solid transparent;
 }
 
 QMenu::item:selected 
 {
-    border-color: darkblue;
-    background: rgba(175, 175, 175, 150);
+    background: rgba( 174, 174, 175, 175 );
+    border-background: black;
+    border: 1px;
+    border-radius: 5px;
+    margin: 1px;
 }
 
 QMenu::icon:checked
@@ -35,10 +38,14 @@ QMenu::separator
     background: transparent;
     margin-left: 10px;
     margin-right: 5px;
+    border: 2px;
 }
 
-QMenuBar { background: rgba( 104, 103, 103, 255 ) }
+QMenuBar { background: rgba( 104, 103, 103, 255 ); spacing: 5; }
 
 QMenuBar::item { background: rgba( 104, 103, 103, 255 ) }
 
-QAbstractButton { background: rgba( 104, 103, 103, 255 ) }
+QAbstractButton
+{
+    background: rgba( 104, 103, 103, 255 );
+}

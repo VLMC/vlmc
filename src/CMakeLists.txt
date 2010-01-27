@@ -215,6 +215,7 @@ SET(VLMC_UIS
 SET(VLMC_RCC
     ../ressources.qrc
     ../ts/ressources-ts.qrc
+    ../resources/styles.qrc
   )
 
 IF (WITH_CRASHHANDLER_GUI)

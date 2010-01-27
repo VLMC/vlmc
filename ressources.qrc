@@ -1,0 +1,45 @@
+<RCC>
+    <qresource prefix="/images">
+        <file alias="images/vlmc.png">resources/images/vlmc.png</file>
+        <file alias="play">resources/images/play.png</file>
+        <file alias="pause">resources/images/pause.png</file>
+        <file alias="back">resources/images/back.png</file>
+        <file alias="forward">resources/images/forward.png</file>
+        <file alias="up">resources/images/up.png</file>
+        <file alias="images/next_frame.png">resources/images/next_frame.png</file>
+        <file alias="images/previous_frame.png">resources/images/previous_frame.png</file>
+        <file alias="images/stop.png">resources/images/stop.png</file>
+        <file alias="images/clear.png">resources/images/clear.png</file>
+        <file alias="images/remove.png">resources/images/remove.png</file>
+        <file alias="images/add.png">resources/images/add.png</file>
+        <file alias="images/marker_left.png">resources/images/marker_left.png</file>
+        <file alias="images/marker_right.png">resources/images/marker_right.png</file>
+        <file alias="editcut">resources/images/editcut.png</file>
+        <file alias="mouse">resources/images/mouse.png</file>
+        <file alias="zoomin">resources/images/zoom_in.png</file>
+        <file alias="zoomout">resources/images/zoom_out.png</file>
+        <file alias="trackon">resources/images/trackon.png</file>
+        <file alias="trackoff">resources/images/trackoff.png</file>
+        <file alias="hpon">resources/images/hpon.png</file>
+        <file alias="hpoff">resources/images/hpoff.png</file>
+        <file alias="images/audio.png">resources/images/audio.png</file>
+        <file alias="images/video.png">resources/images/video.png</file>
+        <file alias="wizard_watermark">resources/images/wizard_watermark.png</file>
+        <file alias="keyboard">resources/images/keyboard.png</file>        
+        <file alias="marker_start">resources/images/marker_start.png</file>
+        <file alias="marker_stop">resources/images/marker_stop.png</file>  
+        <file alias="undo">resources/images/undo.png</file>                
+        <file alias="redo">resources/images/redo.png</file>                
+        <file alias="configure">resources/images/configure.png</file>      
+    </qresource>                
+    <qresource prefix="/text">  
+        <file>AUTHORS</file>    
+        <file>COPYING</file>    
+        <file>TRANSLATORS</file>
+    </qresource>                
+    <qresource prefix="/images/scalable">                                  
+        <file alias="audio-scalable">resources/images/scalable/audio.svg</file>    
+        <file alias="image-scalable">resources/images/scalable/image.svg</file>    
+        <file alias="video-scalable">resources/images/scalable/video.svg</file>    
+    </qresource>                                                                   
+</RCC>                                                       
