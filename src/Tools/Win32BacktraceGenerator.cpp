@@ -24,10 +24,10 @@
 
 #include <QStringList>
 
-QStringList     Tools::generateBacktrace()
+QStringList     Tools::generateBacktrace( int )
 {
     QStringList res;
 
-    res.append( tr( "Unable to get backtrace" ) );
+    res.append( QObject::tr( "Unable to get backtrace" ) );
     return res;
 }
