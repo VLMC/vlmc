@@ -34,6 +34,7 @@ EffectPluginTypeManager::EffectPluginTypeManager( void ) : m_higherFreeId( 2 )
     QStringList dirs;
     qint32      plugins = 0;
 
+    dirs << "effects/";
     dirs << "bin/effects/";
 
 #ifdef VLMC_EFFECTS_DIR
