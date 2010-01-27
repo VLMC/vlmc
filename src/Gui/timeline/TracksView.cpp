@@ -390,8 +390,6 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, 
                         break;
                     }
                     track -= 1;
-                    Q_ASSERT( m_layout->itemAt( track )->graphicsItem() != NULL );
-                    item->setParentItem( getTrack( item->mediaType(), track ) );
                 }
                 else if ( currentItem->trackNumber() < track )
                 {
@@ -402,9 +400,9 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, 
                         break;
                     }
                     track += 1;
-                    Q_ASSERT( m_layout->itemAt( track )->graphicsItem() != NULL );
-                    item->setParentItem( getTrack( item->mediaType(), track ) );
                 }
+                Q_ASSERT( getTrack( item->mediaType(), track ) != NULL );
+                item->setParentItem( getTrack( item->mediaType(), track ) );
             }
         }
         if ( !itemCollision )
