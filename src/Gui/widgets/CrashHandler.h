@@ -47,7 +47,6 @@ class CrashHandler : public QDialog
 
     private:
         Ui::CrashHandler*       ui;
-        static const int        backtraceSize = 256;
 };
 
 #endif // CRASHHANDLER_H

@@ -21,13 +21,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef WIN32
-    #include <execinfo.h>
-    #include <cxxabi.h>
-#endif
-
 #include <signal.h>
 
+#include "BacktraceGenerator.h"
 #include "CrashHandler.h"
 #include "ui_CrashHandler.h"
 
@@ -39,40 +35,12 @@ CrashHandler::CrashHandler( int sig, QWidget *parent ) :
     connect( ui->okButton, SIGNAL( clicked() ), this, SLOT( close() ) );
     connect( ui->restartButton, SIGNAL( clicked() ), this, SLOT( restart() ) );
 
-#ifndef WIN32
-    void    *buff[CrashHandler::backtraceSize];
-
-    int     nbSymb = backtrace( buff, CrashHandler::backtraceSize );
-    char**  backtraceStr = backtrace_symbols( buff, nbSymb );
-    char*   symbName;
-    char*   mangledName;
-    int     status;
-    int     pos;
-    for ( int i = 0; i < nbSymb; ++i )
+    QStringList     backtrace = Tools::generateBacktrace( 4 );
+    foreach ( QString symb, backtrace )
     {
-        mangledName = strchr( backtraceStr[i], '(' );
-        char* endPos = strchr( mangledName, '+' );
-        if ( endPos != NULL && endPos != NULL )
-        {
-            pos = endPos - mangledName;
-            char *copy = strdup( mangledName + 1 );  //Skipping the parenthesis
-            copy[pos - 1] = 0;
-            symbName = abi::__cxa_demangle( copy, NULL, 0, &status);
-            if ( status == 0 )
-            {
-                ui->backtraceDisplay->insertPlainText( QString( symbName ) + "\n" );
-                free( symbName );
-                continue ;
-            }
-            free(symbName);
-            free(copy);
-        }
-        ui->backtraceDisplay->insertPlainText( QString( backtraceStr[i]) + "\n" );
+        ui->backtraceDisplay->insertPlainText( symb );
+        ui->backtraceDisplay->insertPlainText( "\n" );
     }
-    free(backtraceStr);
-#else    
-    ui->backtraceDisplay->insertPlainText( tr( "Unable to get backtrace." ) );
-#endif
     QString sigName = tr( "Unknown signal" );
     if ( sig == SIGSEGV )
         sigName = "SIGSEGV (Segmentation Fault)";

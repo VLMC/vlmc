@@ -218,9 +218,13 @@ SET(VLMC_RCC
   )
 
 IF (WITH_CRASHHANDLER_GUI)
-    LIST( APPEND VLMC_SRCS Gui/widgets/CrashHandler.cpp )
-    LIST( APPEND VLMC_HDRS Gui/widgets/CrashHandler.h )
+    LIST( APPEND VLMC_SRCS Gui/widgets/CrashHandler.cpp)
+    IF (UNIX)
+        LIST( APPEND VLMC_SRCS Tools/UnixBacktraceGenerator.cpp)
+    ENDIF(UNIX)
+    LIST( APPEND VLMC_HDRS Gui/widgets/CrashHandler.h Tools/BacktraceGenerator.h )
     LIST( APPEND VLMC_UIS Gui/widgets/CrashHandler.ui )
+    
 ENDIF(WITH_CRASHHANDLER_GUI)
 
 #include paths for vlmc

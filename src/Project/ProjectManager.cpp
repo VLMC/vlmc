@@ -47,12 +47,12 @@ void    ProjectManager::signalHandler( int sig )
 
     ProjectManager::getInstance()->emergencyBackup();
 
-#ifdef WITH_CRASHHANDLER_GUI
-    CrashHandler* ch = new CrashHandler( sig );
-    ::exit( ch->exec() );
-#else
-    ::exit( 1 );
-#endif
+    #ifdef WITH_CRASHHANDLER_GUI
+        CrashHandler* ch = new CrashHandler( sig );
+        ::exit( ch->exec() );
+    #else
+        ::exit( 1 );
+    #endif
 }
 #endif
 
