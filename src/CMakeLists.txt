@@ -114,44 +114,44 @@ ENDIF(WIN32)
 
 SET (VLMC_HDRS
     Actions/StackedAction.h
-    Commands/KeyboardShortcutHelper.h                       
-    Configuration/SettingsManager.h                         
-    Configuration/SettingValue.h                            
-    Gui/About.h                                                                   
-    Gui/ClickableLabel.h                                                          
-    Gui/ClipProperty.h                                                            
-    Gui/DockWidgetManager.h                                                       
-    Gui/FileInfoListModel.h                                                       
-    Gui/import/ImportController.h                                                 
-    Gui/import/ImportMediaCellView.h                                              
-    Gui/import/ImportMediaListController.h                                        
-    Gui/LanguagePreferences.h                                                     
-    Gui/LCDTimecode.h                                                             
-    Gui/library/ClipListViewController.h                                          
-    Gui/library/ListViewController.h                                              
-    Gui/library/MediaCellView.h                                                   
-    Gui/library/MediaLibraryWidget.h                                              
-    Gui/library/MediaListViewController.h                                         
-    Gui/library/StackViewController.h                                             
-    Gui/library/StackViewNavController.h                                          
-    Gui/library/ViewController.h                                                  
-    Gui/MainWindow.h                                                              
-    Gui/PreviewRuler.h                                                            
-    Gui/PreviewWidget.h                                                           
-    Gui/settings/KeyboardShortcut.h                                               
-    Gui/settings/KeyboardShortcutInput.h                                          
-    Gui/settings/Panel.h                                                          
-    Gui/settings/PreferenceWidget.h                                               
-    Gui/settings/Settings.h                                                       
-    Gui/settings/VLMCPreferences.h                                                
-    Gui/TagWidget.h                                                               
-    Gui/timeline/AbstractGraphicsMediaItem.h                                      
-    Gui/timeline/GraphicsAudioItem.h                                              
-    Gui/timeline/GraphicsCursorItem.h                                             
-    Gui/timeline/GraphicsMovieItem.h                                              
+    Commands/KeyboardShortcutHelper.h
+    Configuration/SettingsManager.h
+    Configuration/SettingValue.h
+    Gui/About.h
+    Gui/ClickableLabel.h
+    Gui/ClipProperty.h
+    Gui/DockWidgetManager.h
+    Gui/FileInfoListModel.h
+    Gui/import/ImportController.h
+    Gui/import/ImportMediaCellView.h
+    Gui/import/ImportMediaListController.h
+    Gui/LanguagePreferences.h
+    Gui/LCDTimecode.h
+    Gui/library/ClipListViewController.h
+    Gui/library/ListViewController.h
+    Gui/library/MediaCellView.h
+    Gui/library/MediaLibraryWidget.h
+    Gui/library/MediaListViewController.h
+    Gui/library/StackViewController.h
+    Gui/library/StackViewNavController.h
+    Gui/library/ViewController.h
+    Gui/MainWindow.h
+    Gui/PreviewRuler.h
+    Gui/PreviewWidget.h
+    Gui/settings/KeyboardShortcut.h
+    Gui/settings/KeyboardShortcutInput.h
+    Gui/settings/Panel.h
+    Gui/settings/PreferenceWidget.h
+    Gui/settings/Settings.h
+    Gui/settings/VLMCPreferences.h
+    Gui/TagWidget.h
+    Gui/timeline/AbstractGraphicsMediaItem.h
+    Gui/timeline/GraphicsAudioItem.h 
+    Gui/timeline/GraphicsCursorItem.h
+    Gui/timeline/GraphicsMovieItem.h 
     Gui/timeline/GraphicsTrack.h
-    Gui/timeline/Timeline.h                                                       
-    Gui/timeline/TracksControls.h                                                 
+    Gui/timeline/Timeline.h
+    Gui/timeline/TracksControls.h
     Gui/timeline/TracksRuler.h
     Gui/timeline/TracksScene.h
     Gui/timeline/TracksView.h
@@ -215,8 +215,11 @@ SET(VLMC_UIS
 SET(VLMC_RCC
     ../ressources.qrc
     ../ts/ressources-ts.qrc
-    ../resources/styles.qrc
   )
+
+IF (WIN32)
+    LIST( APPEND VLMC_RCC ../resources/styles.qrc )
+ENDIF (WIN32)
 
 IF (WITH_CRASHHANDLER_GUI)
     LIST( APPEND VLMC_SRCS Gui/widgets/CrashHandler.cpp )

@@ -25,21 +25,21 @@
         <file alias="images/audio.png">resources/images/audio.png</file>
         <file alias="images/video.png">resources/images/video.png</file>
         <file alias="wizard_watermark">resources/images/wizard_watermark.png</file>
-        <file alias="keyboard">resources/images/keyboard.png</file>        
+        <file alias="keyboard">resources/images/keyboard.png</file>
         <file alias="marker_start">resources/images/marker_start.png</file>
         <file alias="marker_stop">resources/images/marker_stop.png</file>  
-        <file alias="undo">resources/images/undo.png</file>                
-        <file alias="redo">resources/images/redo.png</file>                
-        <file alias="configure">resources/images/configure.png</file>      
-    </qresource>                
-    <qresource prefix="/text">  
-        <file>AUTHORS</file>    
-        <file>COPYING</file>    
+        <file alias="undo">resources/images/undo.png</file>
+        <file alias="redo">resources/images/redo.png</file>
+        <file alias="configure">resources/images/configure.png</file>
+    </qresource>
+    <qresource prefix="/text">
+        <file>AUTHORS</file>
+        <file>COPYING</file>
         <file>TRANSLATORS</file>
-    </qresource>                
-    <qresource prefix="/images/scalable">                                  
-        <file alias="audio-scalable">resources/images/scalable/audio.svg</file>    
-        <file alias="image-scalable">resources/images/scalable/image.svg</file>    
-        <file alias="video-scalable">resources/images/scalable/video.svg</file>    
-    </qresource>                                                                   
-</RCC>                                                       
+    </qresource>
+    <qresource prefix="/images/scalable">
+        <file alias="audio-scalable">resources/images/scalable/audio.svg</file>
+        <file alias="image-scalable">resources/images/scalable/image.svg</file>
+        <file alias="video-scalable">resources/images/scalable/video.svg</file>
+    </qresource>
+</RCC>
