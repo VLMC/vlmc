@@ -1,5 +1,5 @@
 /*****************************************************************************
- * winvlmc.cpp: VLMC launcher for win32
+ * Win32BacktraceGenerator.cpp: Win32 implementation for backtrace generation
  *****************************************************************************
  * Copyright (C) 2008-2010 VideoLAN
  *
@@ -20,23 +20,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <windows.h>
+#include "BacktraceGenerator.h"
 
-int VLMCmain( int, char** );
+#include <QStringList>
 
-LONG WINAPI vlc_exception_filter(struct _EXCEPTION_POINTERS *lpExceptionInfo)
+QStringList     Tools::generateBacktrace()
 {
-    if(IsDebuggerPresent())
-    {
-        //If a debugger is present, pass the exception to the debugger with EXCEPTION_CONTINUE_SEARCH
-        return EXCEPTION_CONTINUE_SEARCH;
-    }
-    //TODO: get backtrace
-    //TODO: relaunch ?
-    return 0;
-}
+    QStringList res;
 
-int main( int argc, char **argv )
-{
-    return VLMCmain( argc, argv );
+    res.append( tr( "Unable to get backtrace" ) );
+    return res;
 }
