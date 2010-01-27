@@ -50,7 +50,10 @@ int     main( int argc, char **argv )
                     break ;
             }
             else
+            {
                 qCritical() << "Unhandled crash.";
+                break ;
+            }
         }
     }
 }
