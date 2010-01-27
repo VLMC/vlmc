@@ -193,6 +193,8 @@ void                        PreviewWidget::markerStopClicked()
 void        PreviewWidget::createNewClipFromMarkers()
 {
     Media*  selectedMedia = m_renderer->getMedia();
+    if ( selectedMedia == NULL )
+        return ;
     qint64  beg = m_ui->rulerWidget->getMarker( PreviewRuler::Start );
     qint64  end = m_ui->rulerWidget->getMarker( PreviewRuler::Stop );
 
