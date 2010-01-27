@@ -20,6 +20,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include "config.h"
+
 #include <QtDebug>
 
 #include <wait.h>
@@ -29,6 +31,7 @@ int VLMCmain( int , char** );
 
 int     main( int argc, char **argv )
 {
+#ifdef WITH_CRASHHANDLER
     while ( true )
     {
         pid_t       pid = fork();
@@ -56,4 +59,7 @@ int     main( int argc, char **argv )
             }
         }
     }
+#else
+    return VLMCmain( argc, argv );
+#endif
 }
