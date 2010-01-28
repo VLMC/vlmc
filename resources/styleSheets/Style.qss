@@ -52,6 +52,7 @@ QMessageBox{ background: rgba( 73, 72, 72, 255 ) }
 QComboBox{ background: rgba( 104, 103, 103, 255 ) }
 QLineEdit{ background: rgba( 104, 103, 103, 255 ) }
 QSpinBox{ background: rgba( 104, 103, 103, 255 ) }
+QDoubleSpinBox{ background: rgba( 104, 103, 103, 255 ) }
 
 QTabWidget::pane
 { /* The tab widget frame */
