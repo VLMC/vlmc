@@ -56,7 +56,7 @@ void
 ClipRenderer::setMedia( Media *media )
 {
     m_selectedMedia = media;
-    if ( media == NULL )
+    if ( media == NULL || media->getLengthMS() == 0 )
     {
         m_previewLabel->clear();
         return ;
@@ -77,7 +77,7 @@ ClipRenderer::setMedia( Media *media )
 void
 ClipRenderer::setClip( Clip *clip )
 {
-    if ( clip == NULL )
+    if ( clip == NULL || clip->getLength() == 0 )
     {
         m_selectedMedia = NULL;
         m_previewLabel->clear();
