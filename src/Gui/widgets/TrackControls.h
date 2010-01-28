@@ -45,6 +45,7 @@ private slots:
     void setTrackDisabled( bool disable );
 
 private:
+    void updateTextLabels();
     Ui::TrackControls *m_ui;
     GraphicsTrack* m_track;
 };

@@ -32,16 +32,20 @@ TrackControls::TrackControls( GraphicsTrack* track, QWidget *parent ) :
     setTrackDisabled( !m_track->isEnabled() );
     connect( m_ui->disableButton, SIGNAL( clicked(bool) ),
              this, SLOT( setTrackDisabled(bool) ) );
-
-    if ( m_track->mediaType() == MainWorkflow::VideoTrack )
-        m_ui->trackLabel->setText( tr( "Video #%1" ).arg( QString::number( m_track->trackNumber() + 1 ) ) );
-    else if ( m_track->mediaType() == MainWorkflow::AudioTrack )
-        m_ui->trackLabel->setText( tr( "Audio #%1" ).arg( QString::number( m_track->trackNumber() + 1 ) ) );
+    updateTextLabels();
 }
 
 TrackControls::~TrackControls()
 {
     delete m_ui;
+}
+
+void TrackControls::updateTextLabels()
+{
+    if ( m_track->mediaType() == MainWorkflow::VideoTrack )
+        m_ui->trackLabel->setText( tr( "Video #%1" ).arg( QString::number( m_track->trackNumber() + 1 ) ) );
+    else if ( m_track->mediaType() == MainWorkflow::AudioTrack )
+        m_ui->trackLabel->setText( tr( "Audio #%1" ).arg( QString::number( m_track->trackNumber() + 1 ) ) );
 }
 
 void TrackControls::changeEvent( QEvent *e )
@@ -50,6 +54,7 @@ void TrackControls::changeEvent( QEvent *e )
     switch ( e->type() ) {
     case QEvent::LanguageChange:
         m_ui->retranslateUi( this );
+        updateTextLabels();
         break;
     default:
         break;

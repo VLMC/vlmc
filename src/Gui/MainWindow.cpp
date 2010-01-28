@@ -309,15 +309,15 @@ void MainWindow::initializeDockWidgets( void )
 void        MainWindow::createGlobalPreferences()
 {
     m_globalPreferences = new Settings( false, "VLMC", this );
-    m_globalPreferences->addWidget("VLMC",
+    m_globalPreferences->addWidget( tr ( "VLMC" ),
                                    new VLMCPreferences( m_globalPreferences ),
                                    QIcon( ":/images/images/vlmc.png" ),
-                                   "VLMC settings");
-    m_globalPreferences->addWidget("Language preferences",
+                                   tr ( "VLMC settings" ) );
+    m_globalPreferences->addWidget( tr ("Language preferences" ),
                                    new LanguagePreferences( m_globalPreferences ),
                                    QIcon( ":/images/images/vlmc.png" ),
-                                   "Langage settings");
-    m_globalPreferences->addWidget( "Keyboard",
+                                   tr ( "Language settings" ) );
+    m_globalPreferences->addWidget( tr ("Keyboard" ),
                                      new KeyboardShortcut( m_globalPreferences ),
                                      QIcon( ":/images/keyboard" ),
                                      tr( "Keyboard Settings" ) );
@@ -326,18 +326,18 @@ void        MainWindow::createGlobalPreferences()
 void	    MainWindow::createProjectPreferences()
 {
     m_projectPreferences = new Settings( false, "project", this );
-    m_projectPreferences->addWidget("Project",
+    m_projectPreferences->addWidget( tr( "Project" ),
                                    new ProjectPreferences,
                                    QIcon( ":/images/images/vlmc.png" ),
-                                   "Project settings" );
-    m_projectPreferences->addWidget( "Video",
+                                   tr ( "Project settings" ) );
+    m_projectPreferences->addWidget( tr ( "Video" ),
                                    new VideoProjectPreferences,
                                    QIcon( ":/images/images/video.png" ),
-                                   "Video settings" );
-    m_projectPreferences->addWidget( "Audio",
+                                   tr ( "Video settings" ) );
+    m_projectPreferences->addWidget( tr ( "Audio" ),
                                    new AudioProjectPreferences,
                                    QIcon( ":/images/images/audio.png" ),
-                                   "Audio settings" );
+                                   tr ( "Audio settings" ) );
 }
 
 
@@ -369,11 +369,11 @@ void    MainWindow::on_actionRender_triggered()
 {
     if ( MainWorkflow::getInstance()->getLengthFrame() <= 0 )
     {
-        QMessageBox::warning( NULL, "VLMC Renderer", "There is nothing to render." );
+        QMessageBox::warning( NULL, tr ( "VLMC Renderer" ), tr( "There is nothing to render." ) );
         return ;
     }
     QString outputFileName =
-            QFileDialog::getSaveFileName( NULL, "Enter the output file name",
+            QFileDialog::getSaveFileName( NULL, tr ( "Enter the output file name" ),
                                           QDir::currentPath(), "Videos(*.avi *.mpg)" );
     if ( outputFileName.length() == 0 )
         return ;
