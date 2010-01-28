@@ -57,21 +57,13 @@ ClipRenderer::setMedia( Media *media )
 {
     m_selectedMedia = media;
     if ( media == NULL || media->getLengthMS() == 0 )
-    {
-        m_previewLabel->clear();
         return ;
-    }
     m_begin = 0;
     m_end = media->getNbFrames();
     if ( m_isRendering == true )
         m_mediaChanged = true;
     else
-    {
-        setSnapshotVisibility( true );
-        m_previewLabel->setPixmap( media->getSnapshot().scaled( m_previewLabel->size(),
-                                                                            Qt::KeepAspectRatio ) );
         m_clipLoaded = false;
-    }
 }
 
 void
@@ -80,7 +72,6 @@ ClipRenderer::setClip( Clip *clip )
     if ( clip == NULL || clip->getLength() == 0 )
     {
         m_selectedMedia = NULL;
-        m_previewLabel->clear();
         return ;
     }
     m_selectedMedia = clip->getParent();
@@ -89,13 +80,7 @@ ClipRenderer::setClip( Clip *clip )
     if ( m_isRendering == true )
         m_mediaChanged = true;
     else
-    {
-        setSnapshotVisibility( true );
-        m_previewLabel->setPixmap(
-                clip->getParent()->getSnapshot().scaled( m_previewLabel->size(),
-                                                            Qt::KeepAspectRatio ) );
         m_clipLoaded = false;
-    }
 }
 
 void
@@ -103,7 +88,6 @@ ClipRenderer::startPreview()
 {
     if ( m_selectedMedia == NULL )
         return ;
-    setSnapshotVisibility( false );
 
     //If an old media is found, we delete it, and disconnect
     if ( m_vlcMedia != NULL )
@@ -210,13 +194,6 @@ ClipRenderer::mediaUnloaded( const QUuid& uuid )
         m_isRendering = false;
         m_paused = false;
     }
-}
-
-void
-ClipRenderer::setSnapshotVisibility( bool val )
-{
-   m_previewLabel->setVisible( val );
-   m_renderWidget->setVisible( !val );
 }
 
 qint64

@@ -57,7 +57,6 @@ public:
 
 private:
     void                    startPreview();
-    void                    setSnapshotVisibility( bool val );
 
 private:
     bool                    m_clipLoaded;

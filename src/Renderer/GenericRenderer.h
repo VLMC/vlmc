@@ -65,18 +65,6 @@ public:
         m_renderWidget = renderWidget;
     }
     /**
-     *  \brief              Sets the label on which a preview will be rendered.
-     *
-     *  A preview is basically a snapshot of the video, to know what's about to beeing
-     *  rendered.
-     *  \param          previewLabel    The QLabel to use for print the preview.
-     *  \sa             setRenderWidget( QWidget* )
-     */
-    void                setPreviewLabel( QLabel* previewLabel )
-    {
-        m_previewLabel = previewLabel;
-    }
-    /**
      *  \brief          Play or pause the media.
      *
      *  This method is renderer dependant. It has to be implemented in the
@@ -196,12 +184,6 @@ protected:
      *  \sa         setRenderWidget( QWidget* );
      */
     QWidget*                        m_renderWidget;
-    /**
-     *  \brief      The QLabel used for displaying preview
-     *  \sa         setPreviewLabel();
-     */
-    QLabel*                         m_previewLabel;
-
 
 public slots:
     /**

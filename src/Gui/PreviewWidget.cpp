@@ -60,8 +60,6 @@ PreviewWidget::PreviewWidget( GenericRenderer* genericRenderer, QWidget *parent 
              m_ui->lcdNumber,   SLOT( setTime(int,int,int,int) ) );
 
     m_renderer->setRenderWidget( m_ui->renderWidget );
-    m_renderer->setPreviewLabel( m_ui->previewLabel );
-    m_ui->previewLabel->hide();
 
     connect( m_renderer,     SIGNAL( stopped() ),               this,       SLOT( videoStopped() ) );
     connect( m_renderer,     SIGNAL( paused() ),                this,       SLOT( videoPaused() ) );

@@ -32,7 +32,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <item row="3" column="0">
+   <item row="2" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="pushButtonPreviousFrame">
@@ -307,7 +307,7 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
+   <item row="0" column="0">
     <widget class="QWidget" name="renderWidget" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -317,20 +317,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="previewLabel">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string notr="true"/>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
+   <item row="1" column="0">
     <widget class="PreviewRuler" name="rulerWidget" native="true">
      <property name="minimumSize">
       <size>
