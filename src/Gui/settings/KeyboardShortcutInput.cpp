@@ -38,12 +38,16 @@ KeyboardShortcutInput::KeyboardShortcutInput( const QString& name,
     m_timer->setSingleShot( true );
     connect( m_timer, SIGNAL( timeout() ), this, SLOT( timeout() ) );
     setText( initialValue );
+    QKeySequence    ks( initialValue );
+    for ( int i = 0; i < 4; ++i )
+        m_shortcuts[i] = ks[i];
 }
 
 void    KeyboardShortcutInput::mousePressEvent( QMouseEvent* )
 {
     m_capturing = true;
     setDown( true );
+    memcpy( m_initialValue, m_shortcuts, 4 * sizeof(int) );
     memset( m_shortcuts, 0, sizeof( m_shortcuts ) );
     m_current = 0;
     setText( "" );
@@ -59,7 +63,14 @@ void    KeyboardShortcutInput::release()
 
     m_capturing = false;
     setDown( false );
+    setText( seq.toString() );
     emit changed( m_name, seq.toString() );
+}
+
+void    KeyboardShortcutInput::cancel()
+{
+    memcpy( m_shortcuts, m_initialValue, 4 * sizeof(int) );
+    release();
 }
 
 void    KeyboardShortcutInput::keyPressEvent( QKeyEvent* e )
@@ -71,7 +82,7 @@ void    KeyboardShortcutInput::keyPressEvent( QKeyEvent* e )
     }
     if ( e->modifiers() == Qt::NoModifier && e->key() == Qt::Key_Escape )
     {
-        release();
+        cancel();
     }
     else
     {

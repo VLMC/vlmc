@@ -38,6 +38,7 @@ class   KeyboardShortcutInput : public QPushButton
         virtual void    mousePressEvent( QMouseEvent* e );
         virtual void    mouseReleaseEvent( QMouseEvent* e );
         void            release();
+        void            cancel();
 
     protected slots:
         void            timeout();
@@ -48,6 +49,7 @@ class   KeyboardShortcutInput : public QPushButton
         QTimer*         m_timer;
         unsigned int    m_current;
         int             m_shortcuts[4];
+        int             m_initialValue[4];
     signals:
         void            changed( const QString&, const QString& );
 };
