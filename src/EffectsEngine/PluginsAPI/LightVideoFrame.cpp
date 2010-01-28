@@ -41,6 +41,9 @@ VideoFrame::VideoFrame( void )
   frame.octets = NULL;
   nboctets = 0;
   nbpixels = 0;
+  width = 0;
+  height = 0;
+  ptsDiff = 0;
 }
 
 VideoFrame::VideoFrame( const VideoFrame& tocopy ) : QSharedData( tocopy )
@@ -49,6 +52,8 @@ VideoFrame::VideoFrame( const VideoFrame& tocopy ) : QSharedData( tocopy )
     {
         nboctets = tocopy.nboctets;
         nbpixels = tocopy.nboctets / Pixel::NbComposantes;
+        width = tocopy.width;
+        height = tocopy.height;
         ptsDiff = tocopy.ptsDiff;
         frame.octets = new quint8[tocopy.nboctets];
 
@@ -85,21 +90,25 @@ LightVideoFrame::operator=( const LightVideoFrame& tocopy )
   return *this;
 }
 
-LightVideoFrame::LightVideoFrame( quint32 nboctets )
+LightVideoFrame::LightVideoFrame( quint32 width, quint32 height )
 {
   m_videoFrame = new VideoFrame;
-  m_videoFrame->nboctets = nboctets;
-  m_videoFrame->nbpixels = nboctets / Pixel::NbComposantes;
-  m_videoFrame->frame.octets = new quint8[nboctets];
+  m_videoFrame->width = width;
+  m_videoFrame->height = height;
+  m_videoFrame->nbpixels = m_videoFrame->width * m_videoFrame->height;
+  m_videoFrame->nboctets = m_videoFrame->nbpixels * Pixel::NbComposantes;
+  m_videoFrame->frame.octets = new quint8[m_videoFrame->nboctets];
   m_videoFrame->ptsDiff = 0;
 }
 
-LightVideoFrame::LightVideoFrame( const quint8 * tocopy, quint32 nboctets )
+LightVideoFrame::LightVideoFrame( const quint8 * tocopy, quint32 width, quint32 height )
 {
     m_videoFrame = new VideoFrame;
-    m_videoFrame->nboctets = nboctets;
-    m_videoFrame->nbpixels = nboctets / Pixel::NbComposantes;
-    m_videoFrame->frame.octets = new quint8[nboctets];
+    m_videoFrame->width = width;
+    m_videoFrame->height = height;
+    m_videoFrame->nbpixels = m_videoFrame->width * m_videoFrame->height;
+    m_videoFrame->nboctets = m_videoFrame->nbpixels * Pixel::NbComposantes;
+    m_videoFrame->frame.octets = new quint8[m_videoFrame->nboctets];
     m_videoFrame->ptsDiff = 0;
 
     memcpy( m_videoFrame->frame.octets, tocopy, m_videoFrame->nboctets );

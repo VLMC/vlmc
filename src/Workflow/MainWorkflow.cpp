@@ -71,7 +71,8 @@ MainWorkflow::MainWorkflow( int trackCount ) :
     }
     m_outputBuffers = new OutputBuffers;
 
-    blackOutput = new LightVideoFrame( m_width * m_height * Pixel::NbComposantes );
+    blackOutput = new LightVideoFrame( m_width, m_height);
+    // FIX ME vvvvvv , It doesn't update meta info (nbpixels, nboctets, etc.
     memset( (*blackOutput)->frame.octets, 0, (*blackOutput)->nboctets );
 }
 

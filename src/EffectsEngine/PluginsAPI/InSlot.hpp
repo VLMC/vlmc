@@ -104,7 +104,7 @@ private:
 };
 
 template<typename T>
-T			InSlot<T>::s_defaultValue = 0;
+T			InSlot<T>::s_defaultValue;
 
 /////////////////////////
 //// PUBLICS METHODS ////

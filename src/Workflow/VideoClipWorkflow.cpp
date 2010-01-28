@@ -33,9 +33,8 @@ VideoClipWorkflow::VideoClipWorkflow( Clip *clip ) :
 {
     for ( unsigned int i = 0; i < VideoClipWorkflow::nbBuffers; ++i )
     {
-        m_availableBuffers.enqueue( new LightVideoFrame( MainWorkflow::getInstance()->getWidth()
-                                    * MainWorkflow::getInstance()->getHeight()
-                                    * Pixel::NbComposantes ) );
+        m_availableBuffers.enqueue( new LightVideoFrame( MainWorkflow::getInstance()->getWidth(),
+                                                         MainWorkflow::getInstance()->getHeight() ) );
     }
     debugType = 2;
 }
@@ -122,9 +121,8 @@ VideoClipWorkflow::lock( VideoClipWorkflow *cw, void **pp_ret, int size )
     cw->m_computedBuffersMutex->lock();
     if ( cw->m_availableBuffers.isEmpty() == true )
     {
-        lvf = new LightVideoFrame( MainWorkflow::getInstance()->getWidth()
-                                   * MainWorkflow::getInstance()->getHeight()
-                                   * Pixel::NbComposantes );
+        lvf = new LightVideoFrame( MainWorkflow::getInstance()->getWidth(),
+                                   MainWorkflow::getInstance()->getHeight() );
     }
     else
         lvf = cw->m_availableBuffers.dequeue();

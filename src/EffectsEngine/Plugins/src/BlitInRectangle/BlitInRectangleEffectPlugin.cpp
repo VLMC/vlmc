@@ -51,8 +51,8 @@ void    BlitInRectangleEffectPlugin::render( void )
     (*m_ien->getStaticVideoInput("src")) >> lvf1;
     (*m_ien->getStaticVideoInput("dst")) >> lvf2;
 
-    QImage              src( lvf1->frame.octets, 640, 480, QImage::Format_RGB888 );
-    QImage              dst( lvf2->frame.octets, 640, 480, QImage::Format_RGB888 );
+    QImage              src( lvf1->frame.octets, lvf1->width, lvf1->height, QImage::Format_RGB888 );
+    QImage              dst( lvf2->frame.octets, lvf2->width, lvf2->height, QImage::Format_RGB888 );
     QPainter            p( &dst );
 
     p.drawImage( 100, 100, src);

@@ -51,6 +51,8 @@ struct	VideoFrame : public QSharedData
   VideoFrame( const VideoFrame& tocopy);
 
   RawVideoFrame	frame;
+  quint32       width;
+  quint32       height;
   quint32	nbpixels;
   quint32	nboctets;
   qint64        ptsDiff;
@@ -62,8 +64,8 @@ public:
 
   LightVideoFrame();
   LightVideoFrame( const LightVideoFrame& tocopy );
-  LightVideoFrame( quint32 nboctets );
-  LightVideoFrame( const quint8* tocopy, quint32 nboctets );
+  LightVideoFrame( quint32 width, quint32 height );
+  LightVideoFrame( const quint8* tocopy, quint32 width, quint32 height );
   ~LightVideoFrame();
 
   LightVideoFrame&      operator=( const LightVideoFrame& tocopy );

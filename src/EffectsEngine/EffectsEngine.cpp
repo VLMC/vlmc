@@ -116,10 +116,10 @@ EffectsEngine::makePatch( void )
 
             // TRANSITIONS
 
-            int i;
+            // int i;
 
-            for ( i = 100; i < 100000; i += 100 )
-                addTransition( 1, 2, i, i + 50);
+            // for ( i = 100; i < 100000; i += 100 )
+            //     addTransition( 1, 2, i, i + 50);
 
         }
         else
@@ -197,7 +197,7 @@ EffectsEngine::render( void )
     QWriteLocker  wl( &m_rwl );
     if ( m_processedInBypassPatch == false )
     {
-        configureTransitions();
+        //        configureTransitions();
         m_patch->render();
     }
     else

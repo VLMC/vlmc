@@ -91,7 +91,9 @@ ImageClipWorkflow::lock(ImageClipWorkflow *cw, void **pp_ret, int size )
     cw->m_renderLock->lock();
     if ( cw->m_buffer == NULL )
     {
-        cw->m_buffer = new LightVideoFrame( size );
+        //        cw->m_buffer = new LightVideoFrame( size );
+        cw->m_buffer = new LightVideoFrame( MainWorkflow::getInstance()->getWidth(),
+                                            MainWorkflow::getInstance()->getHeight() );
         cw->m_stackedBuffer = new StackedBuffer( cw->m_buffer );
     }
     *pp_ret = (*(cw->m_buffer))->frame.octets;
