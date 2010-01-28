@@ -39,6 +39,49 @@ class GraphicsMovieItem;
 class GraphicsAudioItem;
 class WorkflowRenderer;
 
+class ItemPosition
+{
+public:
+    ItemPosition() : m_track( -1 ), m_time( -1 )
+    {
+
+    }
+    ItemPosition( qint32 track, qint64 time )
+    {
+        m_track = track;
+        m_time = time;
+    }
+
+    qint32      track()
+    {
+        return m_track;
+    }
+    qint64      time()
+    {
+        return m_time;
+    }
+
+    void        setTrack( qint32 track )
+    {
+        m_track = track;
+    }
+    void        setTime( qint64 time )
+    {
+        m_time = time;
+    }
+
+    bool        isValid()
+    {
+        if ( m_track < 0 || m_time < 0 )
+            return false;
+        return true;
+    }
+
+private:
+    qint32      m_track;
+    qint64      m_time;
+};
+
 /**
  * \brief Class managing the timeline using QGraphicsItems.
  */
@@ -237,6 +280,9 @@ private:
      * \sa moveMediaItem( const QUuid& uuid, unsigned int track, qint64 time );
      */
     void                    moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, qint64 time );
+
+    ItemPosition            findPosition( AbstractGraphicsMediaItem* item, quint32 track, qint64 time );
+
     /**
      * \brief Return a pointer to the specified track.
      * \param type The track's type.

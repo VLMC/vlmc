@@ -25,6 +25,7 @@
 #include <QWheelEvent>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsWidget>
+#include <QGraphicsRectItem>
 #include <QtDebug>
 #include "TracksView.h"
 #include "Library.h"
@@ -365,19 +366,95 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, 
     else if ( item->mediaType() == MainWorkflow::AudioTrack )
         track = qMin( track, m_numAudioTrack - 1 );
 
-    qint64 oldPos = item->startPos();
+    ItemPosition p = findPosition( item, track, time );
+
+    if ( item->groupItem() )
+    {
+        bool validPosFound = false;
+
+        // Add missing tracks for the target
+        if ( item->groupItem()->mediaType() == MainWorkflow::AudioTrack )
+        {
+            while ( item->trackNumber() >= m_numAudioTrack )
+                addAudioTrack();
+        }
+        else if ( item->groupItem()->mediaType() == MainWorkflow::VideoTrack )
+        {
+            while ( item->trackNumber() >= m_numVideoTrack )
+                addVideoTrack();
+        }
+
+        // Search a position for the linked item
+        ItemPosition p2 = findPosition( item->groupItem(), track, time );
+
+        if ( p.time() == p2.time() &&  p.track() == p2.track() )
+            validPosFound = true;
+        else
+        {
+            // We did not find a valid position for the two items.
+            if ( p.time() == time && p.track() == track )
+            {
+                // The primary item has found a position that match the request.
+                // Ask it to try with the position of the linked item.
+                p = findPosition( item, p2.track(), p2.time() );
+
+                if ( p.time() == p2.time() && p.track() == p2.track() )
+                    validPosFound = true;
+            }
+            else if ( p2.time() == time && p2.track() == track )
+            {
+                // The linked item has found a position that match the request.
+                // Ask it to try with the position of the primary item.
+                p2 = findPosition( item->groupItem(), p.track(), p.time() );
+
+                if ( p.time() == p2.time() && p.track() == p2.track() )
+                    validPosFound = true;
+            }
+        }
+
+        if ( validPosFound )
+        {
+            // We've found a valid position that fit for the two items.
+            // Move the primary item to the target destination.
+            item->setStartPos( p.time() );
+            item->setParentItem( getTrack( item->mediaType(), p.track() ) );
+
+            // Move the linked item to the target destination.
+            item->groupItem()->setStartPos( p2.time() );
+            item->groupItem()->setParentItem( getTrack( item->groupItem()->mediaType(), p2.track() ) );
+        }
+    }
+    else
+    {
+        if ( p.isValid() )
+        {
+            item->setStartPos( p.time() );
+            item->setParentItem( getTrack( item->mediaType(), track ) );
+        }
+    }
+}
+
+ItemPosition TracksView::findPosition( AbstractGraphicsMediaItem* item, quint32 track, qint64 time )
+{
+
+    // Create a fake item for computing collisions
+    QGraphicsRectItem* chkItem = new QGraphicsRectItem( item->boundingRect() );
+    chkItem->setParentItem( getTrack( item->mediaType(), track ) );
+    chkItem->setPos( time, 0 );
+
     QGraphicsItem* oldParent = item->parentItem();
+    qreal oldPos = item->startPos();
+
     // Check for vertical collisions
-    item->setParentItem( getTrack( item->mediaType(), track ) );
     bool continueSearch = true;
     while ( continueSearch )
     {
-        QList<QGraphicsItem*> colliding = item->collidingItems( Qt::IntersectsItemShape );
+        QList<QGraphicsItem*> colliding = chkItem->collidingItems( Qt::IntersectsItemShape );
         bool itemCollision = false;
         for ( int i = 0; i < colliding.size(); ++i )
         {
             AbstractGraphicsMediaItem* currentItem = dynamic_cast<AbstractGraphicsMediaItem*>( colliding.at( i ) );
-            if ( currentItem )
+            if ( currentItem && currentItem != item )
             {
                 // Collision with an item of the same type
                 itemCollision = true;
@@ -385,7 +462,7 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, 
                 {
                     if ( track < 1 )
                     {
-                        item->setParentItem( oldParent );
+                        chkItem->setParentItem( oldParent );
                         continueSearch = false;
                         break;
                     }
@@ -395,80 +472,71 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, 
                 {
                     if ( track >= m_numVideoTrack - 1 )
                     {
-                        item->setParentItem( oldParent );
+                        chkItem->setParentItem( oldParent );
                         continueSearch = false;
                         break;
                     }
                     track += 1;
                 }
                 Q_ASSERT( getTrack( item->mediaType(), track ) != NULL );
-                item->setParentItem( getTrack( item->mediaType(), track ) );
+                chkItem->setParentItem( getTrack( item->mediaType(), track ) );
             }
         }
         if ( !itemCollision )
             continueSearch = false;
     }
+
+
     // Check for horizontal collisions
-    qint64 mappedXPos = qMax( time, (qint64)0 );
-    item->setStartPos( mappedXPos );
+    chkItem->setPos( qMax( time, (qint64)0 ), 0 );
 
     AbstractGraphicsMediaItem* hItem = NULL;
-    QList<QGraphicsItem*> collide = item->collidingItems();
+    QList<QGraphicsItem*> collide = chkItem->collidingItems( Qt::IntersectsItemShape );
     for ( int i = 0; i < collide.count(); ++i )
     {
         hItem = dynamic_cast<AbstractGraphicsMediaItem*>( collide.at( i ) );
-        if ( hItem ) break;
+        if ( hItem && hItem != item ) break;
     }
 
-    if ( hItem )
+    if ( hItem && hItem != item )
     {
         qreal newpos;
         // Evaluate a possible solution
-        if ( item->pos().x() > hItem->pos().x() )
+        if ( chkItem->pos().x() > hItem->pos().x() )
             newpos = hItem->pos().x() + hItem->boundingRect().width();
         else
-            newpos = hItem->pos().x() - item->boundingRect().width();
+            newpos = hItem->pos().x() - chkItem->boundingRect().width();
 
         if ( newpos < 0 || newpos == hItem->pos().x() )
-            item->setStartPos( oldPos ); // Fail
+            chkItem->setPos( oldPos, 0 ); // Fail
         else
         {
             // A solution may be found
-            item->setStartPos( qRound64( newpos ) );
-            QList<QGraphicsItem*> collideAgain = item->collidingItems();
+            chkItem->setPos( qRound64( newpos ), 0 );
+            QList<QGraphicsItem*> collideAgain = chkItem->collidingItems( Qt::IntersectsItemShape );
             for ( int i = 0; i < collideAgain.count(); ++i )
             {
                 AbstractGraphicsMediaItem* currentItem =
                         dynamic_cast<AbstractGraphicsMediaItem*>( collideAgain.at( i ) );
-                if ( currentItem )
+                if ( currentItem && currentItem != item )
                 {
-                    item->setStartPos( oldPos ); // Fail
+                    chkItem->setPos( oldPos, 0 ); // Fail
                     break;
                 }
             }
         }
     }
 
-    // Synchronise the position with the linked item
-    // if any.
-    AbstractGraphicsMediaItem* groupItem;
-    if ( ( groupItem = item->groupItem() ) )
-    {
-        // Add missing tracks for the target
-        if ( groupItem->mediaType() == MainWorkflow::AudioTrack )
-        {
-            while ( item->trackNumber() >= m_numAudioTrack )
-                addAudioTrack();
-        }
-        else if ( groupItem->mediaType() == MainWorkflow::VideoTrack )
-        {
-            while ( item->trackNumber() >= m_numVideoTrack )
-                addVideoTrack();
-        }
+    GraphicsTrack* t = static_cast<GraphicsTrack*>( chkItem->parentItem() );
 
-        groupItem->setParentItem( getTrack( groupItem->mediaType(), item->trackNumber() ) );
-        groupItem->setPos( item->pos() );
-    }
+    Q_ASSERT( t );
+
+    ItemPosition p;
+    p.setTrack( t->trackNumber() );
+    p.setTime( chkItem->pos().x() );
+
+    delete chkItem;
+    return p;
 }
 
 void TracksView::removeMediaItem( const QUuid& uuid, unsigned int track, MainWorkflow::TrackType trackType )
