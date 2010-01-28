@@ -43,7 +43,7 @@ TrackHandler::TrackHandler( unsigned int nbTracks, MainWorkflow::TrackType track
     for ( unsigned int i = 0; i < nbTracks; ++i )
     {
         m_tracks[i].setPtr( new TrackWorkflow( i, trackType ) );
-        connect( m_tracks[i], SIGNAL( trackEndReached( unsigned int ) ), this, SLOT( trackEndReached(unsigned int) ) );
+        connect( m_tracks[i], SIGNAL( trackEndReached( unsigned int ) ), this, SLOT( trackEndReached(unsigned int) ), Qt::DirectConnection );
     }
 }
 
@@ -66,13 +66,14 @@ TrackHandler::addClip( Clip* clip, unsigned int trackId, qint64 start )
                 "The specified trackId isn't valid, for it's higher than the number of tracks");
 
     m_tracks[trackId]->addClip( clip, start );
-    //if the track is deactivated, we need to reactivate it.
-    if ( m_tracks[trackId].deactivated() == true )
-        activateTrack( trackId );
 
     //Now check if this clip addition has changed something about the workflow's length
     if ( m_tracks[trackId]->getLength() > m_length )
         m_length = m_tracks[trackId]->getLength();
+
+    //if the track is deactivated, we need to reactivate it.
+    if ( m_tracks[trackId].deactivated() == true )
+        activateTrack( trackId );
 }
 
 void
