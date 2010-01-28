@@ -42,14 +42,14 @@ void DockWidgetManager::setMainWindow( MainWindow *mainWin )
     m_mainWin = mainWin;
 }
 
-void DockWidgetManager::addDockedWidget( QWidget *widget,
+QDockWidget* DockWidgetManager::addDockedWidget( QWidget *widget,
                                        const QString &qs_name,
                                        Qt::DockWidgetAreas areas,
                                        QDockWidget::DockWidgetFeature features,
                                        Qt::DockWidgetArea startArea)
 {
     if ( m_dockWidgets.contains( qs_name ) )
-        return ;
+        return  0;
 
     QDockWidget* dock = new QDockWidget( tr( qs_name.toStdString().c_str() ), m_mainWin );
 
@@ -61,6 +61,7 @@ void DockWidgetManager::addDockedWidget( QWidget *widget,
     m_mainWin->addDockWidget( startArea, dock );
     m_mainWin->registerWidgetInWindowMenu( dock );
     widget->show();
+    return dock;
 }
 
 

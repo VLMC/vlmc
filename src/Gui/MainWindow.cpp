@@ -172,7 +172,6 @@ void        MainWindow::setupLibrary()
                                                     tr( "Media Library" ),
                                                     Qt::AllDockWidgetAreas,
                                                     QDockWidget::AllDockWidgetFeatures,
-
                                                     Qt::LeftDockWidgetArea );
     connect( mediaLibraryWidget, SIGNAL( mediaSelected( Media* ) ),
              m_clipPreview->getGenericRenderer(), SLOT( setMedia( Media* ) ) );
@@ -298,11 +297,13 @@ void MainWindow::initializeDockWidgets( void )
     KeyboardShortcutHelper* renderShortcut = new KeyboardShortcutHelper( "Start render preview", this );
     connect( renderShortcut, SIGNAL( activated() ), m_projectPreview, SLOT( on_pushButtonPlay_clicked() ) );
 
-    dockManager->addDockedWidget( UndoStack::getInstance( this ),
+    QDockWidget* dock = dockManager->addDockedWidget( UndoStack::getInstance( this ),
                                   tr( "History" ),
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::LeftDockWidgetArea );
+    if ( dock != 0 )
+        dock->hide();
     setupLibrary();
 }
 
