@@ -108,7 +108,7 @@ Commands::MainWorkflow::ResizeClip::ResizeClip( WorkflowRenderer* renderer, cons
                                                 qint64 newBegin, qint64 newEnd,
                                                 qint64 oldBegin, qint64 oldEnd,
                                                 qint64 newPos, qint64 oldPos,
-                                                uint32_t trackId,
+                                                quint32 trackId,
                                                 ::MainWorkflow::TrackType trackType ) :
     m_renderer( renderer ),
     m_uuid( uuid ),
@@ -148,7 +148,7 @@ void Commands::MainWorkflow::ResizeClip::undo()
     }
 }
 
-Commands::MainWorkflow::SplitClip::SplitClip( WorkflowRenderer* renderer, Clip* toSplit, uint32_t trackId,
+Commands::MainWorkflow::SplitClip::SplitClip( WorkflowRenderer* renderer, Clip* toSplit, quint32 trackId,
                            qint64 newClipPos, qint64 newClipBegin, ::MainWorkflow::TrackType trackType ) :
     m_renderer( renderer ),
     m_toSplit( toSplit ),

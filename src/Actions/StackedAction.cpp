@@ -53,7 +53,7 @@ Workflow::Workflow( MainWorkflow *mainWorkflow, Type type )  :
 {
 }
 
-Track::Track( MainWorkflow *mainWorkflow, uint32_t trackId,
+Track::Track( MainWorkflow *mainWorkflow, quint32 trackId,
               MainWorkflow::TrackType trackType, Type type) :
         Workflow( mainWorkflow, type ),
         m_trackId( trackId ),
@@ -61,7 +61,7 @@ Track::Track( MainWorkflow *mainWorkflow, uint32_t trackId,
 {
 }
 
-AddClip::AddClip(MainWorkflow *mainWorkflow, uint32_t trackId,
+AddClip::AddClip(MainWorkflow *mainWorkflow, quint32 trackId,
                  MainWorkflow::TrackType trackType, Clip *clip, qint64 startingPos ) :
         Track( mainWorkflow, trackId, trackType, Add ),
         m_clip( clip ), m_startingPos( startingPos )
@@ -74,7 +74,7 @@ AddClip::execute()
     m_mainWorkflow->addClip( m_clip, m_trackId, m_startingPos, m_trackType );
 }
 
-RemoveClip::RemoveClip( MainWorkflow* mainWorkflow, uint32_t trackId,
+RemoveClip::RemoveClip( MainWorkflow* mainWorkflow, quint32 trackId,
                         MainWorkflow::TrackType trackType, const QUuid& uuid ) :
     Track( mainWorkflow, trackId, trackType, Remove ),
     m_uuid( uuid )
@@ -87,8 +87,8 @@ RemoveClip::execute()
     m_mainWorkflow->removeClip( m_uuid, m_trackId, m_trackType );
 }
 
-MoveClip::MoveClip( MainWorkflow* mainWorkflow, const QUuid& uuid, uint32_t oldTrack,
-                      uint32_t newTrack, qint64 newPos, MainWorkflow::TrackType trackType,
+MoveClip::MoveClip( MainWorkflow* mainWorkflow, const QUuid& uuid, quint32 oldTrack,
+                      quint32 newTrack, qint64 newPos, MainWorkflow::TrackType trackType,
                       bool undoRedoAction ) :
                     Track( mainWorkflow, oldTrack, trackType, Move ),
                     m_uuid( uuid ), m_newTrack( newTrack ),

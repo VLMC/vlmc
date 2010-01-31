@@ -304,7 +304,7 @@ void TracksView::dragMoveEvent( QDragMoveEvent* event )
     moveMediaItem( target, event->pos() );
 }
 
-bool TracksView::setItemOldTrack( const QUuid &uuid, uint32_t oldTrackNumber )
+bool TracksView::setItemOldTrack( const QUuid &uuid, quint32 oldTrackNumber )
 {
     QList<QGraphicsItem*> sceneItems = m_scene->items();
 

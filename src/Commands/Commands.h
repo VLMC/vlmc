@@ -108,7 +108,7 @@ namespace Commands
                 ResizeClip( WorkflowRenderer* renderer, const QUuid& uuid,
                             qint64 newBegin, qint64 newEnd, qint64 oldBegin,
                             qint64 oldEnd, qint64 newPos, qint64 oldPos,
-                            uint32_t trackId, ::MainWorkflow::TrackType trackType );
+                            quint32 trackId, ::MainWorkflow::TrackType trackType );
                 virtual void    redo();
                 virtual void    undo();
             private:
@@ -120,7 +120,7 @@ namespace Commands
                 qint64                      m_oldEnd;
                 qint64                      m_newPos;
                 qint64                      m_oldPos;
-                uint32_t                    m_trackId;
+                quint32                     m_trackId;
                 Clip*                       m_clip;
                 ::MainWorkflow::TrackType   m_trackType;
                 bool                        m_undoRedoAction;
@@ -129,7 +129,7 @@ namespace Commands
         NEW_COMMAND( SplitClip )
         {
             public:
-                SplitClip( WorkflowRenderer* renderer, Clip* toSplit, uint32_t trackId,
+                SplitClip( WorkflowRenderer* renderer, Clip* toSplit, quint32 trackId,
                            qint64 newClipPos, qint64 newClipBegin, ::MainWorkflow::TrackType trackType );
                 ~SplitClip();
                 virtual void    redo();
@@ -138,7 +138,7 @@ namespace Commands
                 WorkflowRenderer*           m_renderer;
                 Clip*                       m_toSplit;
                 Clip*                       m_newClip;
-                uint32_t                    m_trackId;
+                quint32                     m_trackId;
                 qint64                      m_newClipPos;
                 qint64                      m_newClipBegin;
                 ::MainWorkflow::TrackType   m_trackType;
