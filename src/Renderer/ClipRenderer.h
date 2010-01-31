@@ -27,12 +27,12 @@ class   Clip;
 class   Media;
 class   QUuid;
 
-#include "GenericRenderer.h"
-
 namespace LibVLCpp
 {
     class   Media;
 }
+
+#include "GenericRenderer.h"
 
 #include <QObject>
 

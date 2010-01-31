@@ -28,7 +28,10 @@
 #include <QTemporaryFile>
 #include <QLabel>
 #include "Media.h"
-#include "VLCMediaPlayer.h"
+namespace LibVLCpp
+{
+    class   MediaPlayer;
+}
 
 class MetaDataWorker : public QObject
 {

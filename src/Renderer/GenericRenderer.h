@@ -27,12 +27,15 @@
 #include <QWidget>
 class   QLabel;
 
-#include "VLCMediaPlayer.h"
 #include "MainWorkflow.h"
 
 class   Clip;
 class   Media;
 class   QUuid;
+namespace LibVLCpp
+{
+    class   MediaPlayer;
+}
 
 /**
  *  \class  Common base for every renderer.
@@ -43,27 +46,15 @@ class   GenericRenderer : public QObject
     Q_DISABLE_COPY( GenericRenderer );
 
 public:
-    explicit GenericRenderer() :
-                m_paused( false ),
-                m_isRendering( false )
-    {
-        m_mediaPlayer = new LibVLCpp::MediaPlayer();
-    }
-    virtual ~GenericRenderer()
-    {
-        delete m_mediaPlayer;
-    }
+    explicit GenericRenderer();
+    virtual ~GenericRenderer();
 
     /**
      *  \brief  Set the widget used for rendering the output.
      *  \param  renderWidget    The widget to use for render.
      *  \sa     setPreviewLabel( QLabel* )
      */
-    void                setRenderWidget( QWidget* renderWidget )
-    {
-        m_mediaPlayer->setDrawable( renderWidget->winId() );
-        m_renderWidget = renderWidget;
-    }
+    void                setRenderWidget( QWidget* renderWidget );
     /**
      *  \brief          Play or pause the media.
      *

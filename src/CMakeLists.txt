@@ -88,6 +88,7 @@ SET(VLMC_SRCS
     Metadata/MetaDataWorker.cpp
     Project/ProjectManager.cpp
     Renderer/ClipRenderer.cpp
+    Renderer/GenericRenderer.cpp
     Renderer/WorkflowFileRenderer.cpp
     Renderer/WorkflowRenderer.cpp
     Tools/Pool.hpp

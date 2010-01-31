@@ -35,6 +35,7 @@
 #include "AudioClipWorkflow.h"
 #include "VLCMedia.h"
 #include "Clip.h"
+#include "VLCMediaPlayer.h"
 
 quint8*         WorkflowRenderer::silencedAudioBuffer = NULL;
 

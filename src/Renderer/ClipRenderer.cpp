@@ -28,6 +28,7 @@
 #include "ClipRenderer.h"
 #include "Media.h"
 #include "MainWorkflow.h"
+#include "VLCMediaPlayer.h"
 
 ClipRenderer::ClipRenderer() :
     GenericRenderer(),

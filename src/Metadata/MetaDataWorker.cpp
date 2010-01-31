@@ -28,6 +28,7 @@
 #include "MetaDataWorker.h"
 #include "Library.h"
 #include "SettingsManager.h"
+#include "VLCMediaPlayer.h"
 
 #include <QThreadPool>
 #include <QRunnable>

@@ -1,5 +1,5 @@
 /*****************************************************************************
- * MetaDataWorker.h: MetaDataManager
+ * GenericRenderer.cpp: Describe a common behavior for every renderers
  *****************************************************************************
  * Copyright (C) 2008-2010 VideoLAN
  *
@@ -20,42 +20,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef METADATAMANAGER_H
-#define METADATAMANAGER_H
+#include "GenericRenderer.h"
+#include "VLCMediaPlayer.h"
 
-#include "Singleton.hpp"
-
-#include <QObject>
-#include <QQueue>
-class   QMutex;
-class   Media;
-namespace LibVLCpp
+GenericRenderer::GenericRenderer() :
+        m_paused( false ),
+        m_isRendering( false )
 {
-    class   MediaPlayer;
+    m_mediaPlayer = new LibVLCpp::MediaPlayer();
 }
 
-class MetaDataManager : public QObject, public Singleton<MetaDataManager>
+GenericRenderer::~GenericRenderer()
 {
-    Q_OBJECT
-    Q_DISABLE_COPY( MetaDataManager );
+    delete m_mediaPlayer;
+}
 
-    public:
-        void    computeMediaMetadata( Media* media );
-    private:
-        MetaDataManager();
-        ~MetaDataManager();
-
-        void                    launchComputing( Media *media );
-
-    private:
-        QMutex                  *m_computingMutex;
-        QQueue<Media*>          m_mediaToCompute;
-        bool                    m_computeInProgress;
-        LibVLCpp::MediaPlayer   *m_mediaPlayer;
-        friend class            Singleton<MetaDataManager>;
-
-    private slots:
-        void                    computingCompleted();
-};
-
-#endif //METADATAMANAGER_H
+void
+GenericRenderer::setRenderWidget(QWidget *renderWidget)
+{
+    m_mediaPlayer->setDrawable( renderWidget->winId() );
+    m_renderWidget = renderWidget;
+}

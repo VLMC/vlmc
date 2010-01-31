@@ -22,6 +22,7 @@
 
 #include "MetaDataManager.h"
 #include "MetaDataWorker.h"
+#include "VLCMediaPlayer.h"
 
 #include <QtDebug>
 #include <QQueue>
