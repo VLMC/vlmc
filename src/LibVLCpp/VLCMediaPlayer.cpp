@@ -30,7 +30,7 @@ using namespace LibVLCpp;
 
 MediaPlayer::MediaPlayer() : m_media( NULL )
 {
-    m_internalPtr = libvlc_media_player_new( LibVLCpp::Instance::getInstance()->getInternalPtr(), m_ex );
+    m_internalPtr = libvlc_media_player_new( LibVLCpp::Instance::getInstance()->getInternalPtr() );
     CheckVlcppException( m_ex );
 
     // Initialize the event manager
@@ -40,7 +40,7 @@ MediaPlayer::MediaPlayer() : m_media( NULL )
 
 MediaPlayer::MediaPlayer( Media* media ) : m_media( media )
 {
-    m_internalPtr = libvlc_media_player_new_from_media( media->getInternalPtr(), m_ex );
+    m_internalPtr = libvlc_media_player_new_from_media( media->getInternalPtr() );
     CheckVlcppException( m_ex );
 
     // Initialize the event manager
@@ -141,14 +141,12 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
 void                            MediaPlayer::play()
 {
     //qDebug() << "Asking for play media player";
-    libvlc_media_player_play( m_internalPtr, m_ex );
-    CheckVlcppException( m_ex );
+    libvlc_media_player_play( m_internalPtr );
 }
 
 void                            MediaPlayer::pause()
 {
-    libvlc_media_player_pause( m_internalPtr, m_ex );
-    CheckVlcppException( m_ex );
+    libvlc_media_player_pause( m_internalPtr );
 }
 
 void                            MediaPlayer::stop()
@@ -159,34 +157,30 @@ void                            MediaPlayer::stop()
 
 qint64                          MediaPlayer::getTime()
 {
-    qint64 t = libvlc_media_player_get_time( m_internalPtr, m_ex );
+    qint64 t = libvlc_media_player_get_time( m_internalPtr );
     CheckVlcppException( m_ex );
     return t;
 }
 
 void                            MediaPlayer::setTime( qint64 time )
 {
-    libvlc_media_player_set_time( m_internalPtr, time, m_ex );
-    CheckVlcppException( m_ex );
+    libvlc_media_player_set_time( m_internalPtr, time );
 }
 
 float                           MediaPlayer::getPosition()
 {
-    float p = libvlc_media_player_get_position( m_internalPtr, m_ex );
-    CheckVlcppException( m_ex );
+    float p = libvlc_media_player_get_position( m_internalPtr );
     return p;
 }
 
 void                            MediaPlayer::setPosition( float pos )
 {
-    libvlc_media_player_set_position( m_internalPtr, pos, m_ex );
-    CheckVlcppException( m_ex );
+    libvlc_media_player_set_position( m_internalPtr, pos );
 }
 
 qint64                          MediaPlayer::getLength()
 {
-    qint64 length = libvlc_media_player_get_length( m_internalPtr, m_ex );
-    CheckVlcppException( m_ex );
+    qint64 length = libvlc_media_player_get_length( m_internalPtr );
     return length;
 }
 
@@ -204,8 +198,7 @@ bool                            MediaPlayer::isPlaying()
 
 bool                                MediaPlayer::isSeekable()
 {
-    int res = libvlc_media_player_is_seekable( m_internalPtr, m_ex );
-    CheckVlcppException( m_ex );
+    int res = libvlc_media_player_is_seekable( m_internalPtr );
     return (res == 1);
 }
 
@@ -240,21 +233,18 @@ int                                 MediaPlayer::getHeight()
 
 float                               MediaPlayer::getFps()
 {
-    float   fps = libvlc_media_player_get_fps( m_internalPtr, m_ex );
-    CheckVlcppException( m_ex );
+    float   fps = libvlc_media_player_get_fps( m_internalPtr );
     return fps;
 }
 
 void                                MediaPlayer::nextFrame()
 {
-    libvlc_media_player_next_frame( m_internalPtr, m_ex );
-    CheckVlcppException( m_ex );
+    libvlc_media_player_next_frame( m_internalPtr );
 }
 
 bool                                MediaPlayer::hasVout()
 {
-    bool    res = libvlc_media_player_has_vout( m_internalPtr, m_ex );
-    CheckVlcppException( m_ex );
+    bool    res = libvlc_media_player_has_vout( m_internalPtr );
     return res;
 }
 
@@ -273,15 +263,13 @@ QString                             MediaPlayer::getLoadedMRL()
 int
 MediaPlayer::getNbAudioTrack()
 {
-    int res = libvlc_audio_get_track_count( m_internalPtr, m_ex );
-    CheckVlcppException( m_ex );
+    int res = libvlc_audio_get_track_count( m_internalPtr );
     return res;
 }
 
 int
 MediaPlayer::getNbVideoTrack()
 {
-    int res = libvlc_video_get_track_count( m_internalPtr, m_ex );
-    CheckVlcppException( m_ex );
+    int res = libvlc_video_get_track_count( m_internalPtr );
     return res;
 }
