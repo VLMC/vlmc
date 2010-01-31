@@ -462,13 +462,13 @@ MainWorkflow::heightChanged( const QVariant &height )
     m_height = height.toUInt();
 }
 
-uint32_t
+quint32
 MainWorkflow::getWidth() const
 {
     return m_width;
 }
 
-uint32_t
+quint32
 MainWorkflow::getHeight() const
 {
     return m_height;

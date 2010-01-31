@@ -30,6 +30,8 @@
 #include <QUrl>
 #include "Media.h"
 #include "MetaDataManager.h"
+#include "VLCMedia.h"
+#include "Clip.h"
 
 QPixmap*        Media::defaultSnapshot = NULL;
 const QString   Media::VideoExtensions = "*.mov *.avi *.mkv *.mpg *.mpeg *.wmv *.mp4 *.ogg *.ogv";

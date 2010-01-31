@@ -52,8 +52,8 @@ class MetaDataWorker : public QObject
 
     private:
         void                        metaDataAvailable();
-        static void                 lock( MetaDataWorker* metaDataWorker, uint8_t** pcm_buffer , unsigned int size );
-        static void                 unlock( MetaDataWorker* metaDataWorker, uint8_t* pcm_buffer,
+        static void                 lock( MetaDataWorker* metaDataWorker, quint8** pcm_buffer , unsigned int size );
+        static void                 unlock( MetaDataWorker* metaDataWorker, quint8* pcm_buffer,
                                         unsigned int channels, unsigned int rate,
                                         unsigned int nb_samples, unsigned int bits_per_sample,
                                         unsigned int size, int pts );

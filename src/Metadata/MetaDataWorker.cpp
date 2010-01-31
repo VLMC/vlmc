@@ -29,6 +29,8 @@
 #include "Library.h"
 #include "SettingsManager.h"
 #include "VLCMediaPlayer.h"
+#include "VLCMedia.h"
+#include "Clip.h"
 
 #include <QThreadPool>
 #include <QRunnable>

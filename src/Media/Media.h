@@ -37,9 +37,10 @@
 #include <QFileInfo>
 #include <QHash>
 
-#include "VLCMedia.h"
-#include "Clip.h"
-
+namespace LibVLCpp
+{
+    class   Media;
+}
 class Clip;
 
 /**

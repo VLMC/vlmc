@@ -25,6 +25,8 @@
 #include "StackedBuffer.hpp"
 #include "LightVideoFrame.h"
 #include "Clip.h"
+#include "VLCMedia.h"
+
 #include <QReadWriteLock>
 
 VideoClipWorkflow::VideoClipWorkflow( Clip *clip ) :

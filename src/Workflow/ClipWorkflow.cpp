@@ -27,7 +27,7 @@
 #include "Clip.h"
 #include "VLCMediaPlayer.h"
 #include "WaitCondition.hpp"
-
+#include "VLCMedia.h"
 
 #include <QReadWriteLock>
 #include <QWaitCondition>
