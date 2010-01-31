@@ -23,7 +23,6 @@
 #ifndef WORKFLOWFILERENDERER_H
 #define WORKFLOWFILERENDERER_H
 
-#include "VLCMediaPlayer.h"
 #include "Workflow/MainWorkflow.h"
 #include "WorkflowRenderer.h"
 #include "WorkflowFileRendererDialog.h"

@@ -25,6 +25,7 @@
 #include "SettingsManager.h"
 #include "VLCMedia.h"
 #include "LightVideoFrame.h"
+#include "VLCMediaPlayer.h"
 
 #include <QTime>
 
