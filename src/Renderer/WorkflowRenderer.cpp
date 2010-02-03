@@ -83,6 +83,7 @@ void    WorkflowRenderer::initializeRenderer()
     m_media->addOption( callbacks );
     sprintf( callbacks, ":imem-release=%lld", (qint64)getUnlockCallback() );
     m_media->addOption( callbacks );
+    m_media->addOption( ":text-renderer dummy" );
 
      //Workflow part
     connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ), Qt::DirectConnection );
