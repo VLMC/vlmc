@@ -27,11 +27,10 @@
 
 using namespace LibVLCpp;
 
-Media::Media( const QString& filename )
-    : m_pixelBuffer( NULL ), m_fileName( filename )
+Media::Media( const QString& filename ) :
+    m_fileName( filename )
 {
-    m_internalPtr = libvlc_media_new( *(LibVLCpp::Instance::getInstance()), filename.toLocal8Bit(), m_ex );
-    CheckVlcppException(m_ex);
+    m_internalPtr = libvlc_media_new( *(LibVLCpp::Instance::getInstance()), filename.toLocal8Bit() );
 }
 
 Media::~Media()
@@ -42,7 +41,6 @@ Media::~Media()
 void                    Media::addOption( const char* opt )
 {
     libvlc_media_add_option_flag( m_internalPtr, opt, libvlc_media_option_trusted );
-    CheckVlcppException(m_ex);
 }
 
 void                    Media::setVideoLockCallback( void* callback )
@@ -87,26 +85,6 @@ void                    Media::setAudioDataCtx( void* dataCtx )
 
     sprintf( param, ":sout-smem-audio-data=%lld", (qint64)(intptr_t)dataCtx );
     addOption( param );
-}
-
-void                    Media::outputInVmem()
-{
-    addOption( ":vout=vmem" );
-}
-
-void                    Media::outputInWindow()
-{
-//    this->addOption();
-}
-
-void                    Media::setPixelBuffer( uchar* buffer )
-{
-    m_pixelBuffer = buffer;
-}
-
-uchar*                  Media::getPixelBuffer()
-{
-    return m_pixelBuffer;
 }
 
 const QString&          Media::getFileName() const

@@ -29,7 +29,6 @@
 #include <QMutex>
 
 #include "VLCpp.hpp"
-#include "VLCException.h"
 
 namespace LibVLCpp
 {
@@ -46,18 +45,9 @@ namespace LibVLCpp
         void                setAudioUnlockCallback( void* );
         void                setVideoDataCtx( void* dataCtx );
         void                setAudioDataCtx( void* dataCtx );
-        void                outputInVmem();
-        void                outputInWindow();
-        void                setPixelBuffer( uchar* buffer );
-        uchar*              getPixelBuffer();
         const QString&      getFileName() const;
 
     private:
-
-    private:
-
-        Exception           m_ex;
-        uchar*              m_pixelBuffer;
         QString             m_fileName;
     };
 }

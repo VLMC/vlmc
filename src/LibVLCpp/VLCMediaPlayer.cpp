@@ -186,8 +186,7 @@ qint64                          MediaPlayer::getLength()
 
 void                            MediaPlayer::takeSnapshot( const char* outputFile, unsigned int width, unsigned int heigth )
 {
-    libvlc_video_take_snapshot( *this, outputFile, width, heigth, m_ex );
-    CheckVlcppException( m_ex );
+    libvlc_video_take_snapshot( *this, 0, outputFile, width, heigth );
 }
 
 bool                            MediaPlayer::isPlaying()
@@ -217,18 +216,10 @@ void                                MediaPlayer::setMedia( Media* media )
     libvlc_media_player_set_media( m_internalPtr, media->getInternalPtr() );
 }
 
-int                                 MediaPlayer::getWidth()
+void
+MediaPlayer::getSize( quint32 *outWidth, quint32 *outHeight )
 {
-    int width = libvlc_video_get_width( m_internalPtr, m_ex );
-    CheckVlcppException( m_ex );
-    return width;
-}
-
-int                                 MediaPlayer::getHeight()
-{
-    int height = libvlc_video_get_height( m_internalPtr, m_ex );
-    CheckVlcppException( m_ex );
-    return height;
+    libvlc_video_get_size( m_internalPtr, 0, outWidth, outHeight );
 }
 
 float                               MediaPlayer::getFps()

@@ -57,8 +57,7 @@ namespace   LibVLCpp
         void                                setDrawable( void* hwnd );
         void                                setDrawable( quint32 drawable );
         void                                setMedia(Media* media);
-        int                                 getWidth();
-        int                                 getHeight();
+        void                                getSize( quint32 *outWidth, quint32 *outHeight);
         float                               getFps();
         void                                nextFrame();
         bool                                hasVout();

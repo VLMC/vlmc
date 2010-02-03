@@ -117,8 +117,10 @@ MetaDataWorker::metaDataAvailable()
         }
         LibVLCpp::Exception::setErrorCallback( NULL );
 
-        m_media->setWidth( m_mediaPlayer->getWidth() );
-        m_media->setHeight( m_mediaPlayer->getHeight() );
+        quint32     width, height;
+        m_mediaPlayer->getSize( &width, &height );
+        m_media->setWidth( width );
+        m_media->setHeight( height );
         m_media->setFps( m_mediaPlayer->getFps() );
         if ( m_media->getFps() == .0f )
         {
