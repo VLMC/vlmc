@@ -50,8 +50,8 @@ void    ProjectSettingsDefault::loadVideoDefaults( const QString& part )
 {
     SettingsManager*  settingsMan = SettingsManager::getInstance();
     QVariant defaultProjectFPS = 30;
-    QVariant defaultProjectWidth = 800;
-    QVariant defaultProjectHeight = 600;
+    QVariant defaultProjectWidth = 480;
+    QVariant defaultProjectHeight = 300;
 
     settingsMan->setValue( part,
                            "VideoProjectFPS",
