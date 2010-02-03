@@ -304,8 +304,9 @@ void        WorkflowRenderer::stop()
 {
     //Since we want permanent render (to have a permanent render update, we shouldn't
     //stop, but pause
-    togglePlayPause( true );
-    m_mainWorkflow->setCurrentFrame( 0, MainWorkflow::Renderer );
+//    togglePlayPause( true );
+//    m_mainWorkflow->setCurrentFrame( 0, MainWorkflow::Renderer );
+    killRenderer();
 }
 
 void
@@ -474,19 +475,19 @@ void        WorkflowRenderer::__endReached()
 void
 WorkflowRenderer::mainWorkflowLenghtChanged( qint64 newLength )
 {
-    if ( newLength > 0 )
-    {
-        if ( m_oldLength == 0 )
-        {
-            if ( m_isRendering == false )
-                startPreview();
-            m_paused = false;
-            togglePlayPause( true );
-        }
-    }
-    else if ( newLength == 0 && m_isRendering == true )
-    {
-        stop();
-    }
-    m_oldLength = newLength;
+//    if ( newLength > 0 )
+//    {
+//        if ( m_oldLength == 0 )
+//        {
+//            if ( m_isRendering == false )
+//                startPreview();
+//            m_paused = false;
+//            togglePlayPause( true );
+//        }
+//    }
+//    else if ( newLength == 0 && m_isRendering == true )
+//    {
+//        stop();
+//    }
+//    m_oldLength = newLength;
 }
