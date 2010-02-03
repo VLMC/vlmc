@@ -180,8 +180,6 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, MainWorkflow::Tra
 {
     Q_ASSERT( clip );
 
-    qDebug() << "adding clip to track"<< track;
-    qDebug() << "nb track video:"<< m_numVideoTrack << "nb track audio" << m_numAudioTrack;
     // If there is not enough tracks to insert
     // the clip do it now.
     if ( trackType == MainWorkflow::VideoTrack )
@@ -190,10 +188,7 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, MainWorkflow::Tra
         {
             unsigned int nbTrackToAdd = track - m_numVideoTrack + 1;
             for ( unsigned int i = 0; i < nbTrackToAdd; ++i )
-            {
-                qDebug() << "adding video track";
                 addVideoTrack();
-            }
         }
         // Add the empty upper track
         if ( track + 1 == m_numVideoTrack )
@@ -205,10 +200,7 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, MainWorkflow::Tra
         {
             unsigned int nbTrackToAdd = track - m_numAudioTrack + 1;
             for ( unsigned int i = 0; i < nbTrackToAdd; ++i )
-            {
-                qDebug() << "adding audio track";
                 addAudioTrack();
-            }
         }
         // Add the empty upper track
         if ( track + 1 == m_numAudioTrack )
