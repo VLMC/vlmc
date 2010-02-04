@@ -93,6 +93,7 @@ void    WorkflowFileRenderer::stop()
 void    WorkflowFileRenderer::cancelButtonClicked()
 {
     stop();
+    disconnect();
     m_dialog->done( 0 );
 }
 
