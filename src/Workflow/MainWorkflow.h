@@ -390,7 +390,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         EffectsEngine*                  m_effectEngine;
         /// Width used for the render
         quint32                         m_width;
-        /// Height used the render
+        /// Height used for the render
         quint32                         m_height;
 
         friend class                    Singleton<MainWorkflow>;
