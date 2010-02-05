@@ -31,8 +31,6 @@ struct  libvlc_media_player_t;
 struct  libvlc_event_t;
 struct  libvlc_event_manager_t;
 
-#include "VLCException.h"
-
 namespace   LibVLCpp
 {
     class   Media;
@@ -70,7 +68,6 @@ namespace   LibVLCpp
         static void                         callbacks( const libvlc_event_t* event, void* self );
         void                                registerEvents();
 
-        Exception                           m_ex;
         libvlc_event_manager_t*             p_em;
         Media*                              m_media;
 

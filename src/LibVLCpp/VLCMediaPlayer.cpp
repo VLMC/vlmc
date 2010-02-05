@@ -31,8 +31,6 @@ using namespace LibVLCpp;
 MediaPlayer::MediaPlayer() : m_media( NULL )
 {
     m_internalPtr = libvlc_media_player_new( LibVLCpp::Instance::getInstance()->getInternalPtr() );
-    CheckVlcppException( m_ex );
-
     // Initialize the event manager
     p_em = libvlc_media_player_event_manager( m_internalPtr );
     registerEvents();
@@ -41,7 +39,6 @@ MediaPlayer::MediaPlayer() : m_media( NULL )
 MediaPlayer::MediaPlayer( Media* media ) : m_media( media )
 {
     m_internalPtr = libvlc_media_player_new_from_media( media->getInternalPtr() );
-    CheckVlcppException( m_ex );
 
     // Initialize the event manager
     p_em = libvlc_media_player_event_manager( m_internalPtr );
@@ -76,7 +73,6 @@ MediaPlayer::registerEvents()
     libvlc_event_attach( p_em, libvlc_MediaPlayerEncounteredError,callbacks, this );
     libvlc_event_attach( p_em, libvlc_MediaPlayerPausableChanged, callbacks, this );
     libvlc_event_attach( p_em, libvlc_MediaPlayerSeekableChanged, callbacks, this );
-    CheckVlcppException( m_ex );
 }
 
 /**
@@ -158,7 +154,6 @@ void                            MediaPlayer::stop()
 qint64                          MediaPlayer::getTime()
 {
     qint64 t = libvlc_media_player_get_time( m_internalPtr );
-    CheckVlcppException( m_ex );
     return t;
 }
 

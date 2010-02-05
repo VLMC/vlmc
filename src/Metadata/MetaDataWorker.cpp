@@ -110,12 +110,10 @@ MetaDataWorker::metaDataAvailable()
     //will trigger exception... so we shut it up.
     if ( m_media->getFileType() != Media::Audio )
     {
-        LibVLCpp::Exception::setErrorCallback( LibVLCpp::Exception::silentExceptionHandler );
         while ( m_mediaPlayer->hasVout() == false )
         {
             SleepMS( 1 ); //Ugly isn't it :)
         }
-        LibVLCpp::Exception::setErrorCallback( NULL );
 
         quint32     width, height;
         m_mediaPlayer->getSize( &width, &height );

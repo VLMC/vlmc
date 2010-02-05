@@ -42,7 +42,6 @@ Instance::Instance()
     int argc = sizeof( argv ) / sizeof( *argv );
 
     m_internalPtr = libvlc_new( argc, argv );
-    CheckVlcppException(m_ex);
 }
 
 Instance::~Instance()

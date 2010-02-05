@@ -231,7 +231,7 @@ void        WorkflowRenderer::nextFrame()
 void        WorkflowRenderer::previousFrame()
 {
     if ( m_paused == true )
-    m_mainWorkflow->previousFrame( MainWorkflow::VideoTrack );
+        m_mainWorkflow->previousFrame( MainWorkflow::VideoTrack );
 }
 
 void        WorkflowRenderer::togglePlayPause( bool forcePause )

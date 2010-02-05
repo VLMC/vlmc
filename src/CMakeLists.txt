@@ -75,7 +75,6 @@ SET(VLMC_SRCS
     Gui/wizard/VideoPage.cpp
     Gui/wizard/WelcomePage.cpp
     Library/Library.cpp
-    LibVLCpp/VLCException.cpp
     LibVLCpp/VLCInstance.cpp
     LibVLCpp/VLCMedia.cpp
     LibVLCpp/VLCMediaPlayer.cpp

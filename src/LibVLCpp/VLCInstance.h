@@ -24,7 +24,6 @@
 #define VLCINSTANCE_H
 
 #include "VLCpp.hpp"
-#include "VLCException.h"
 #include "Singleton.hpp"
 
 struct libvlc_instance_t;
@@ -41,7 +40,6 @@ namespace LibVLCpp
         ~Instance();
 
     private:
-        Exception           m_ex;
         friend class    Singleton<Instance>;
     };
 }
