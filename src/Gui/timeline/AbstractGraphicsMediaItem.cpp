@@ -234,20 +234,24 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
             qint64  newStart = startPos() + ( oldLength - size );
             if ( newStart < 0 )
                 return ;
-//            tracksView()->getRenderer()->resizeClip( clip(), qMax( clip()->getEnd() - size, (qint64)0 ), clip()->getEnd(),
-//                                                     newStart, trackNumber(), mediaType() );
-//            setStartPos( newStart );
+            MainWorkflow::getInstance()->resizeClip( clip(), qMax( clip()->getEnd() - size, (qint64)0 ), clip()->getEnd(),
+                                                     newStart, trackNumber(), mediaType() );
+            setStartPos( newStart );
             //FIXME
         }
         else
         {
             m_resizeExpected = true;
             qint64 oldLength = clip()->getLength();
-//            Commands::trigger( new Commands::MainWorkflow::ResizeClip( ))
-//            tracksView()->getRenderer()->resizeClip( clip(), 0, size, startPos() + ( oldLength - size ),
-//                                                     trackNumber(), mediaType() );
-//            setStartPos( startPos() + ( oldLength - size ) );
-            //FIXME
+//            Commands::trigger( new Commands::MainWorkflow::ResizeClip( clip()->getUuid(),
+//                                                                       0, size, startPos(),
+//                                                                       startPos() + oldLength,
+//                                                                       startPos() + ( oldLength - size ),
+//
+//                                                                       ))
+            MainWorkflow::getInstance()->resizeClip( clip(), 0, size, startPos() + ( oldLength - size ),
+                                                     trackNumber(), mediaType() );
+            setStartPos( startPos() + ( oldLength - size ) );
         }
     }
 
