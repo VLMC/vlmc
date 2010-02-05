@@ -134,7 +134,7 @@ MainWorkflow::startRender()
 }
 
 MainWorkflow::OutputBuffers*
-MainWorkflow::getOutput( TrackType trackType )
+MainWorkflow::getOutput( TrackType trackType, bool paused )
 {
     QMutexLocker        lock( m_renderStartedMutex );
 
@@ -143,7 +143,7 @@ MainWorkflow::getOutput( TrackType trackType )
         QReadLocker         lock2( m_currentFrameLock );
 
         m_tracks[trackType]->getOutput( m_currentFrame[VideoTrack],
-                                        m_currentFrame[trackType] );
+                                        m_currentFrame[trackType], paused );
         if ( trackType == MainWorkflow::VideoTrack )
         {
             m_effectEngine->setCurrentFrameNumber( m_currentFrame[VideoTrack] );
@@ -158,22 +158,6 @@ MainWorkflow::getOutput( TrackType trackType )
         }
     }
     return m_outputBuffers;
-}
-
-void
-MainWorkflow::pause()
-{
-    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
-        m_tracks[i]->pause();
-    emit mainWorkflowPaused();
-}
-
-void
-MainWorkflow::unpause()
-{
-    for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
-        m_tracks[i]->unpause();
-    emit mainWorkflowUnpaused();
 }
 
 void
@@ -221,7 +205,6 @@ MainWorkflow::stop()
         m_tracks[i]->stop();
         m_currentFrame[i] = 0;
     }
-    unpause();
     emit frameChanged( 0, Renderer );
 }
 

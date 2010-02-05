@@ -52,12 +52,12 @@ class   TrackHandler : public QObject
          *  \param      subFrame        The type-dependent frame. IE, for a video track,
          *                              it's the same as currentFrame, but for an audio
          *                              track, it will be different.
+         *  \param      paused          The renderer paused state
          *  \todo       This should probably be partialy handled by the trackHandler, as the work
          *              is exactly the same for both audio and video trackWorkflow in most of the case... or not.
          */
-        void                    getOutput( qint64 currentFrame, qint64 subFrame );
-        void                    pause();
-        void                    unpause();
+        void                    getOutput( qint64 currentFrame, qint64 subFrame,
+                                           bool paused );
         void                    activateAll();
         qint64                  getClipPosition( const QUuid& uuid, unsigned int trackId ) const;
         void                    stop();
@@ -72,7 +72,6 @@ class   TrackHandler : public QObject
         //FIXME: remove this. This should go by the effect engine.
         AudioClipWorkflow::AudioSample* getTmpAudioBuffer() { return m_tmpAudioBuffer; }
 
-        bool                    isPaused() const;
         bool                    endIsReached() const;
 
         void                    save( QDomDocument& doc, QDomElement& timelineNode ) const;
@@ -109,7 +108,6 @@ class   TrackHandler : public QObject
         MainWorkflow::TrackType         m_trackType;
         qint64                          m_length;
         unsigned int                    m_highestTrackNumber;
-        bool                            m_paused;
         bool                            m_endReached;
         EffectsEngine*                  m_effectEngine;
         AudioClipWorkflow::AudioSample* m_tmpAudioBuffer;

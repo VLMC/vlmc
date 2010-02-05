@@ -59,11 +59,9 @@ class   TrackWorkflow : public QObject
         ~TrackWorkflow();
 
         void*                                   getOutput( qint64 currentFrame,
-                                                           qint64 subFrame );
+                                                           qint64 subFrame, bool paused );
         qint64                                  getLength() const;
         void                                    stop();
-        void                                    pause();
-        void                                    unpause();
         void                                    moveClip( const QUuid& id, qint64 startingFrame );
         Clip*                                   removeClip( const QUuid& id );
         ClipWorkflow*                           removeClipWorkflow( const QUuid& id );
@@ -99,7 +97,7 @@ class   TrackWorkflow : public QObject
         void                                    computeLength();
         void*                                   renderClip( ClipWorkflow* cw, qint64 currentFrame,
                                                             qint64 start, bool needRepositioning,
-                                                            bool renderOneFrame );
+                                                            bool renderOneFrame, bool paused );
         void                                    preloadClip( ClipWorkflow* cw );
         void                                    stopClipWorkflow( ClipWorkflow* cw );
         bool                                    checkEnd( qint64 currentFrame ) const;
@@ -127,8 +125,6 @@ class   TrackWorkflow : public QObject
         QMutex                                  *m_renderOneFrameMutex;
 
         QReadWriteLock*                         m_clipsLock;
-
-        bool                                    m_paused;
 
         MainWorkflow::TrackType                 m_trackType;
         qint64                                  m_lastFrame;

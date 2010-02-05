@@ -82,8 +82,6 @@ void    WorkflowRenderer::initializeRenderer()
     m_media->addOption( ":text-renderer dummy" );
 
      //Workflow part
-    connect( m_mainWorkflow, SIGNAL( mainWorkflowPaused() ), this, SLOT( mainWorkflowPaused() ), Qt::DirectConnection );
-    connect( m_mainWorkflow, SIGNAL( mainWorkflowUnpaused() ), this, SLOT( mainWorkflowUnpaused() ), Qt::DirectConnection );
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
     connect( m_mainWorkflow, SIGNAL( frameChanged( qint64, MainWorkflow::FrameChangedReason ) ),
              this, SIGNAL( frameChanged( qint64, MainWorkflow::FrameChangedReason ) ) );
@@ -135,7 +133,7 @@ WorkflowRenderer::lockVideo( qint64 *pts, size_t *bufferSize, void **buffer )
     if ( m_stopping == false )
     {
         MainWorkflow::OutputBuffers* ret =
-                m_mainWorkflow->getOutput( MainWorkflow::VideoTrack );
+                m_mainWorkflow->getOutput( MainWorkflow::VideoTrack, m_paused );
         memcpy( m_renderVideoFrame,
                 (*(ret->video))->frame.octets,
                 (*(ret->video))->nboctets );
@@ -164,7 +162,8 @@ WorkflowRenderer::lockAudio( qint64 *pts, size_t *bufferSize, void **buffer )
 
     if ( m_stopping == false && m_paused == false )
     {
-        MainWorkflow::OutputBuffers* ret = m_mainWorkflow->getOutput( MainWorkflow::AudioTrack );
+        MainWorkflow::OutputBuffers* ret = m_mainWorkflow->getOutput( MainWorkflow::AudioTrack,
+                                                                      m_paused );
         renderAudioSample = ret->audio;
     }
     else
@@ -235,18 +234,6 @@ void        WorkflowRenderer::previousFrame()
     m_mainWorkflow->previousFrame( MainWorkflow::VideoTrack );
 }
 
-void        WorkflowRenderer::mainWorkflowPaused()
-{
-    m_paused = true;
-    emit paused();
-}
-
-void        WorkflowRenderer::mainWorkflowUnpaused()
-{
-    m_paused = false;
-    emit playing();
-}
-
 void        WorkflowRenderer::togglePlayPause( bool forcePause )
 {
     if ( m_isRendering == false && forcePause == false )
@@ -262,13 +249,15 @@ void        WorkflowRenderer::internalPlayPause( bool forcePause )
     {
         if ( m_paused == true && forcePause == false )
         {
-            m_mainWorkflow->unpause();
+            m_paused = false;
+            emit playing();
         }
         else
         {
             if ( m_paused == false )
             {
-                m_mainWorkflow->pause();
+                m_paused = true;
+                emit paused();
             }
         }
     }

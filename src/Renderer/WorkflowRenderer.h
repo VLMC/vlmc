@@ -272,14 +272,6 @@ class   WorkflowRenderer : public GenericRenderer
 
     private slots:
         /**
-         *  \brief          called when the workflow is paused
-         */
-        void                mainWorkflowPaused();
-        /**
-         *  \brief          called when the workflow is unpaused
-         */
-        void                mainWorkflowUnpaused();
-        /**
          *  \brief          Used to launch "permanent playback", as soon as the length
          *                  first changed to a non zero value.
          *

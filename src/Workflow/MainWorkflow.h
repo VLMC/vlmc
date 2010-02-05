@@ -117,8 +117,9 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          *          the output buffer is guarantied to be filled. The same applies for
          *          AudioTrack
          *  \param  trackType   The type of track you wish to get the render from.
+         *  \param  paused      The paused state of the renderer
          */
-        OutputBuffers*          getOutput( TrackType trackType );
+        OutputBuffers*          getOutput( TrackType trackType, bool paused );
         /**
          *  \brief  Returns the effect engine instance used by the workflow
          *
@@ -156,22 +157,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          *  the signal frameChanged(), with the reason: Renderer
          */
         void                    stop();
-
-        /**
-         *  \brief              Pause the workflow.
-         *
-         *  This will cause the mainworkflow to render the same frame over and over again
-         *  if calling getOutput().
-         *
-         *  \sa                 unpause()
-         */
-        void                    pause();
-        /**
-         *  \brief              Unpause the workflow.
-         *
-         *  \sa                 pause()
-         */
-        void                    unpause();
 
         /**
          *  \brief              Unconditionnaly switch to the next frame.
@@ -513,20 +498,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          *  \sa     clear();
          */
         void                    cleared();
-        /**
-         *  \brief  Emitted when the workflow is paused.
-         *
-         *  \sa     pause();
-         *  \sa     unpause();
-         */
-        void                    mainWorkflowPaused();
-        /**
-         *  \brief  Emitted when the workflow is unpaused.
-         *
-         *  \sa     pause();
-         *  \sa     unpause();
-         */
-        void                    mainWorkflowUnpaused();
 
         /**
          *  \brief  Emitted when the global length of the workflow changes.

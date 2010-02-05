@@ -37,7 +37,6 @@ TrackWorkflow::TrackWorkflow( unsigned int trackId, MainWorkflow::TrackType type
         m_trackId( trackId ),
         m_length( 0 ),
         m_forceRepositionning( false ),
-        m_paused( false ),
         m_trackType( type ),
         m_lastFrame( 0 ),
         m_videoStackedBuffer( NULL ),
@@ -131,11 +130,12 @@ Clip*               TrackWorkflow::getClip( const QUuid& uuid )
     return NULL;
 }
 
-void*       TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
+void*
+TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
                                         qint64 start , bool needRepositioning,
-                                        bool renderOneFrame )
+                                        bool renderOneFrame, bool paused )
 {
-    ClipWorkflow::GetMode       mode = ( m_paused == false || renderOneFrame == true ?
+    ClipWorkflow::GetMode       mode = ( paused == false || renderOneFrame == true ?
                                          ClipWorkflow::Pop : ClipWorkflow::Get );
 
     cw->getStateLock()->lockForRead();
@@ -215,7 +215,8 @@ bool                TrackWorkflow::checkEnd( qint64 currentFrame ) const
     return ( it.value()->getClip()->getLength() + it.key() < currentFrame );
 }
 
-void                    TrackWorkflow::stop()
+void
+TrackWorkflow::stop()
 {
     QMap<qint64, ClipWorkflow*>::iterator       it = m_clips.begin();
     QMap<qint64, ClipWorkflow*>::iterator       end = m_clips.end();
@@ -229,7 +230,8 @@ void                    TrackWorkflow::stop()
     m_lastFrame = 0;
 }
 
-void                TrackWorkflow::releasePreviousRender()
+void
+TrackWorkflow::releasePreviousRender()
 {
     if ( m_audioStackedBuffer != NULL )
     {
@@ -244,7 +246,7 @@ void                TrackWorkflow::releasePreviousRender()
 }
 
 void*
-TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFrame )
+TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFrame, bool paused )
 {
     releasePreviousRender();
     QReadLocker     lock( m_clipsLock );
@@ -283,7 +285,7 @@ TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFrame )
         // If this condition is true, the clipworkflow will flush all its buffer
         // as we need to resynchronize after a setTime, so this condition has to remain
         // false. Easy ain't it ?
-        else if ( m_paused == true && subFrame != m_lastFrame && renderOneFrame == false)
+        else if ( paused == true && subFrame != m_lastFrame && renderOneFrame == false)
             needRepositioning = true;
         else
             needRepositioning = ( abs( subFrame - m_lastFrame ) > 1 ) ? true : false;
@@ -298,7 +300,8 @@ TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFrame )
         {
             if ( ret != NULL )
                 qCritical() << "There's more than one clip to render here. Undefined behaviour !";
-            ret = renderClip( cw, currentFrame, start, needRepositioning, renderOneFrame );
+            ret = renderClip( cw, currentFrame, start, needRepositioning,
+                              renderOneFrame, paused );
             if ( m_trackType == MainWorkflow::VideoTrack )
                 m_videoStackedBuffer = reinterpret_cast<StackedBuffer<LightVideoFrame*>*>( ret );
             else
@@ -316,12 +319,6 @@ TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFrame )
     m_lastFrame = subFrame;
 
     return ret;
-}
-
-void                TrackWorkflow::pause()
-{
-    m_paused = true;
-    m_lastFrame = -1;
 }
 
 void            TrackWorkflow::moveClip( const QUuid& id, qint64 startingFrame )
@@ -397,11 +394,6 @@ ClipWorkflow*       TrackWorkflow::removeClipWorkflow( const QUuid& id )
         ++it;
     }
     return NULL;
-}
-
-void    TrackWorkflow::unpause()
-{
-    m_paused = false;
 }
 
 void    TrackWorkflow::save( QDomDocument& doc, QDomElement& trackNode ) const

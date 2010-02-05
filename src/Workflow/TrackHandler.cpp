@@ -79,7 +79,6 @@ TrackHandler::addClip( Clip* clip, unsigned int trackId, qint64 start )
 void
 TrackHandler::startRender()
 {
-    m_paused = false;
     m_endReached = false;
     computeLength();
     if ( m_length == 0 )
@@ -111,7 +110,7 @@ TrackHandler::getLength() const
 }
 
 void
-TrackHandler::getOutput( qint64 currentFrame, qint64 subFrame )
+TrackHandler::getOutput( qint64 currentFrame, qint64 subFrame, bool paused )
 {
     m_tmpAudioBuffer = NULL;
     for ( unsigned int i = 0; i < m_trackCount; ++i )
@@ -124,7 +123,7 @@ TrackHandler::getOutput( qint64 currentFrame, qint64 subFrame )
             }
             else
             {
-                void*   ret = m_tracks[i]->getOutput( currentFrame, subFrame );
+                void*   ret = m_tracks[i]->getOutput( currentFrame, subFrame, paused );
                 if ( ret == NULL )
                     m_effectEngine->setVideoInput( i + 1, *TrackHandler::nullOutput );
                 else
@@ -139,7 +138,8 @@ TrackHandler::getOutput( qint64 currentFrame, qint64 subFrame )
         {
             if ( m_tracks[i].activated() == true )
             {
-                void*   ret = m_tracks[i]->getOutput( currentFrame, subFrame );
+                //If paused is false at this point, there's probably something wrong...
+                void*   ret = m_tracks[i]->getOutput( currentFrame, subFrame, paused );
                 //m_tmpAudioBuffer is NULl by default, so it will remain NULL if we continue;
                 if ( ret == NULL )
                     continue ;
@@ -149,26 +149,6 @@ TrackHandler::getOutput( qint64 currentFrame, qint64 subFrame )
                     m_tmpAudioBuffer = stackedBuffer->get();
             }
         }
-    }
-}
-
-void
-TrackHandler::pause()
-{
-    for ( unsigned int i = 0; i < m_trackCount; ++i )
-    {
-        if ( m_tracks[i].activated() == true )
-            m_tracks[i]->pause();
-    }
-}
-
-void
-TrackHandler::unpause()
-{
-    for ( unsigned int i = 0; i < m_trackCount; ++i )
-    {
-        //Don't check for track activation, as it could have change from the time we paused.
-        m_tracks[i]->unpause();
     }
 }
 
@@ -273,12 +253,6 @@ TrackHandler::clear()
         m_tracks[i]->clear();
     }
     m_length = 0;
-}
-
-bool
-TrackHandler::isPaused() const
-{
-    return m_paused;
 }
 
 bool
