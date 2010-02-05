@@ -243,6 +243,7 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
         {
             m_resizeExpected = true;
             qint64 oldLength = clip()->getLength();
+//            Commands::trigger( new Commands::MainWorkflow::ResizeClip( ))
 //            tracksView()->getRenderer()->resizeClip( clip(), 0, size, startPos() + ( oldLength - size ),
 //                                                     trackNumber(), mediaType() );
 //            setStartPos( startPos() + ( oldLength - size ) );

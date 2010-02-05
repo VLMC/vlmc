@@ -87,8 +87,7 @@ void TracksScene::askRemoveSelectedItems()
         GraphicsMovieItem* item = qgraphicsitem_cast<GraphicsMovieItem*>( items.at(i) );
         if ( !item ) return;
 
-        Commands::trigger( new Commands::MainWorkflow::RemoveClip( tv->m_renderer,
-                                                                   item->clip(),
+        Commands::trigger( new Commands::MainWorkflow::RemoveClip( item->clip(),
                                                                    item->trackNumber(),
                                                                    item->startPos(),
                                                                    item->mediaType() ) );
