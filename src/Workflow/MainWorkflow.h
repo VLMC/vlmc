@@ -346,6 +346,18 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          */
         void                    setFullSpeedRender( bool val );
 
+        Clip*                   split( Clip* toSplit, Clip* newClip, quint32 trackId,
+                                       qint64 newClipPos, qint64 newClipBegin,
+                                       MainWorkflow::TrackType trackType );
+
+        void                    resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd,
+                                          qint64 newPos, quint32 trackId,
+                                          MainWorkflow::TrackType trackType,
+                                          bool undoRedoAction /*= false*/ );
+
+        void                    unsplit( Clip* origin, Clip* splitted, quint32 trackId,
+                                         MainWorkflow::TrackType trackType );
+
         /// Pre-filled buffer used when there's nothing to render
         static LightVideoFrame*         blackOutput;
 
@@ -379,7 +391,7 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         qint64                          m_lengthFrame;
         /// This boolean describe is a render has been started
         bool                            m_renderStarted;
-        QReadWriteLock*                 m_renderStartedLock;
+        QMutex*                         m_renderStartedMutex;
 
         /// Contains the trackhandler, indexed by MainWorkflow::TrackType
         TrackHandler**                  m_tracks;

@@ -42,7 +42,7 @@ MainWorkflow::MainWorkflow( int trackCount ) :
         m_renderStarted( false )
 {
     m_currentFrameLock = new QReadWriteLock;
-    m_renderStartedLock = new QReadWriteLock;
+    m_renderStartedMutex = new QMutex;
 
     const SettingValue  *width = SettingsManager::getInstance()->getValue( "project",
                                                                     "VideoProjectWidth" );
@@ -82,7 +82,7 @@ MainWorkflow::~MainWorkflow()
     stop();
 
     delete m_effectEngine;
-    delete m_renderStartedLock;
+    delete m_renderStartedMutex;
     delete m_currentFrameLock;
     delete m_currentFrame;
     for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
@@ -136,7 +136,7 @@ MainWorkflow::startRender()
 MainWorkflow::OutputBuffers*
 MainWorkflow::getOutput( TrackType trackType )
 {
-    QReadLocker         lock( m_renderStartedLock );
+    QMutexLocker        lock( m_renderStartedMutex );
 
     if ( m_renderStarted == true )
     {
@@ -212,7 +212,7 @@ MainWorkflow::getClipPosition( const QUuid& uuid, unsigned int trackId,
 void
 MainWorkflow::stop()
 {
-    QWriteLocker    lock( m_renderStartedLock );
+    QMutexLocker        lock( m_renderStartedMutex );
     QWriteLocker    lock2( m_currentFrameLock );
 
     m_renderStarted = false;
@@ -488,4 +488,41 @@ MainWorkflow::setFullSpeedRender( bool val )
 {
     for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         m_tracks[i]->setFullSpeedRender( val );
+}
+
+Clip*
+MainWorkflow::split( Clip* toSplit, Clip* newClip, quint32 trackId, qint64 newClipPos, qint64 newClipBegin, MainWorkflow::TrackType trackType )
+{
+    QMutexLocker    lock( m_renderStartedMutex );
+
+    if ( newClip == NULL )
+        newClip = new Clip( toSplit, newClipBegin, toSplit->getEnd() );
+
+    toSplit->setEnd( newClipBegin, true );
+    addClip( newClip, trackId, newClipPos, trackType );
+    return newClip;
+}
+
+void
+MainWorkflow::resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd, qint64 newPos,
+                          quint32 trackId, MainWorkflow::TrackType trackType,
+                                      bool undoRedoAction /*= false*/ )
+{
+    QMutexLocker    lock( m_renderStartedMutex );
+
+    if ( newBegin != clip->getBegin() )
+    {
+        moveClip( clip->getUuid(), trackId, trackId, newPos, trackType, undoRedoAction );
+    }
+    clip->setBoundaries( newBegin, newEnd );
+}
+
+void
+MainWorkflow::unsplit( Clip* origin, Clip* splitted, quint32 trackId,
+                       MainWorkflow::TrackType trackType )
+{
+    QMutexLocker    lock( m_renderStartedMutex );
+
+    removeClip( splitted->getUuid(), trackId, trackType );
+    origin->setEnd( splitted->getEnd(), true );
 }

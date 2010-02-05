@@ -169,7 +169,7 @@ void TracksView::deleteMedia( const QUuid& uuid  )
             removeMediaItem( itemUuid, itemTn, itemTt );
 
             // Removing the item from the backend.
-            m_renderer->removeClip( itemUuid,
+            MainWorkflow::getInstance()->removeClip( itemUuid,
                                     itemTn,
                                     itemTt );
         }

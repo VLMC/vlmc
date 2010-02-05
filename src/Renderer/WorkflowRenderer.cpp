@@ -30,8 +30,6 @@
 #include "LightVideoFrame.h"
 #include "MainWorkflow.h"
 #include "GenericRenderer.h"
-#include "StackedAction.h"
-#include "ActionStack.h"
 #include "AudioClipWorkflow.h"
 #include "VLCMedia.h"
 #include "Clip.h"
@@ -44,7 +42,6 @@ WorkflowRenderer::WorkflowRenderer() :
             m_stopping( false ),
             m_oldLength( 0 )
 {
-    m_actionsMutex = new QMutex;
 }
 
 void    WorkflowRenderer::initializeRenderer()
@@ -101,7 +98,6 @@ WorkflowRenderer::~WorkflowRenderer()
 
     delete m_videoEsHandler;
     delete m_audioEsHandler;
-    delete m_actionsMutex;
     delete m_media;
     delete m_waitCond;
 }
@@ -197,25 +193,8 @@ WorkflowRenderer::lockAudio( qint64 *pts, size_t *bufferSize, void **buffer )
     return 0;
 }
 
-void    WorkflowRenderer::unlock( void* datas, size_t, void* )
+void    WorkflowRenderer::unlock( void*, size_t, void* )
 {
-    EsHandler* handler = reinterpret_cast<EsHandler*>( datas );
-    handler->self->checkActions();
-}
-
-void        WorkflowRenderer::checkActions()
-{
-    QMutexLocker    lock( m_actionsMutex );
-
-    if ( m_actions.size() == 0 )
-        return ;
-    while ( m_actions.empty() == false )
-    {
-        Action::Generic*   act = m_actions.top();
-        m_actions.pop();
-        act->execute();
-        delete act;
-    }
 }
 
 void        WorkflowRenderer::startPreview()
@@ -285,17 +264,13 @@ void        WorkflowRenderer::internalPlayPause( bool forcePause )
     {
         if ( m_paused == true && forcePause == false )
         {
-            Action::Generic*    act = new Action::Unpause( m_mainWorkflow );
-            QMutexLocker        lock( m_actionsMutex );
-            m_actions.addAction( act );
+            m_mainWorkflow->unpause();
         }
         else
         {
             if ( m_paused == false )
             {
-                Action::Generic*    act = new Action::Pause( m_mainWorkflow );
-                QMutexLocker        lock( m_actionsMutex );
-                m_actions.addAction( act );
+                m_mainWorkflow->pause();
             }
         }
     }
@@ -340,30 +315,6 @@ float       WorkflowRenderer::getFps() const
     return m_outputFps;
 }
 
-void        WorkflowRenderer::removeClip( const QUuid& uuid, uint32_t trackId, MainWorkflow::TrackType trackType )
-{
-    if ( m_isRendering == true )
-    {
-        Action::Generic*    act = new Action::RemoveClip( m_mainWorkflow, trackId, trackType, uuid );
-        QMutexLocker        lock( m_actionsMutex );
-        m_actions.addAction( act );
-    }
-    else
-        m_mainWorkflow->removeClip( uuid, trackId, trackType );
-}
-
-void        WorkflowRenderer::addClip( Clip* clip, uint32_t trackId, qint64 startingPos, MainWorkflow::TrackType trackType )
-{
-    if ( m_isRendering == true )
-    {
-        Action::Generic*    act = new Action::AddClip( m_mainWorkflow, trackId, trackType, clip, startingPos );
-        QMutexLocker        lock( m_actionsMutex );
-        m_actions.addAction( act );
-    }
-    else
-        m_mainWorkflow->addClip( clip, trackId, startingPos, trackType );
-}
-
 void        WorkflowRenderer::timelineCursorChanged( qint64 newFrame )
 {
     m_mainWorkflow->setCurrentFrame( newFrame, MainWorkflow::TimelineCursor );
@@ -377,80 +328,6 @@ void        WorkflowRenderer::previewWidgetCursorChanged( qint64 newFrame )
 void        WorkflowRenderer::rulerCursorChanged( qint64 newFrame )
 {
     m_mainWorkflow->setCurrentFrame( newFrame, MainWorkflow::RulerCursor );
-}
-
-Clip*       WorkflowRenderer::split( Clip* toSplit, Clip* newClip, uint32_t trackId, qint64 newClipPos, qint64 newClipBegin, MainWorkflow::TrackType trackType )
-{
-    if ( newClip == NULL )
-        newClip = new Clip( toSplit, newClipBegin, toSplit->getEnd() );
-
-    if ( m_isRendering == true )
-    {
-        //adding clip
-        //We can NOT call addClip, as it would lock the action lock and then release it,
-        //thus potentially breaking the synchrone way of doing this
-        Action::Generic*    act = new Action::AddClip( m_mainWorkflow, trackId, trackType, newClip, newClipPos );
-        //resizing it
-        Action::Generic*    act2 = new Action::ResizeClip( toSplit, toSplit->getBegin(), newClipBegin, true );
-
-        //Push the actions onto the action stack
-        QMutexLocker    lock( m_actionsMutex );
-        m_actions.addAction( act );
-        m_actions.addAction( act2 );
-    }
-    else
-    {
-        toSplit->setEnd( newClipBegin, true );
-        m_mainWorkflow->addClip( newClip, trackId, newClipPos, trackType );
-    }
-    return newClip;
-}
-
-void    WorkflowRenderer::unsplit( Clip* origin, Clip* splitted, uint32_t trackId, MainWorkflow::TrackType trackType )
-{
-    if ( m_isRendering == true )
-    {
-        //removing clip
-        Action::Generic*    act = new Action::RemoveClip( m_mainWorkflow, trackId, trackType, splitted->getUuid() );
-        //resizing it
-        Action::Generic*    act2 = new Action::ResizeClip( origin, origin->getBegin(), splitted->getEnd(), true );
-        //Push the actions onto the action stack
-        QMutexLocker        lock( m_actionsMutex );
-        m_actions.addAction( act );
-        m_actions.addAction( act2 );
-    }
-    else
-    {
-        m_mainWorkflow->removeClip( splitted->getUuid(), trackId, trackType );
-        origin->setEnd( splitted->getEnd(), true );
-    }
-}
-
-void    WorkflowRenderer::resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd,
-                                      qint64 newPos, uint32_t trackId, MainWorkflow::TrackType trackType, bool undoRedoAction /*= false*/ )
-{
-//    if ( m_isRendering == true )
-//    {
-//        Action::Generic*    act = new Action::ResizeClip( clip, newBegin, newEnd );
-//        Action::Generic*    act2 = new Action::MoveClip( m_mainWorkflow, clip->getUuid(), trackId, trackId, newPos, trackType, undoRedoAction );
-//        QMutexLocker        lock( m_actionsMutex );
-//        if ( newBegin != clip->getBegin() )
-//        {
-//            qDebug() << "Resizing to pos:" << newPos;
-//            m_actions.addAction( act2 );
-//        }
-//        qDebug() << "setting boundaries: newEnd:" << newBegin << "newEnd:" << newEnd;
-//        m_actions.addAction( act );
-//    }
-//    else
-//    {
-        if ( newBegin != clip->getBegin() )
-        {
-            m_mainWorkflow->moveClip( clip->getUuid(), trackId, trackId, newPos, trackType, undoRedoAction );
-        }
-        clip->setBoundaries( newBegin, newEnd );
-
-//    }
 }
 
 void*   WorkflowRenderer::getLockCallback()

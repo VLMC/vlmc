@@ -51,12 +51,12 @@ Commands::MainWorkflow::AddClip::~AddClip()
 
 void Commands::MainWorkflow::AddClip::redo()
 {
-    m_renderer->addClip( m_clip, m_trackNumber, m_pos, m_trackType );
+    ::MainWorkflow::getInstance()->addClip( m_clip, m_trackNumber, m_pos, m_trackType );
 }
 
 void Commands::MainWorkflow::AddClip::undo()
 {
-    m_renderer->removeClip( m_clip->getUuid(), m_trackNumber, m_trackType );
+    ::MainWorkflow::getInstance()->removeClip( m_clip->getUuid(), m_trackNumber, m_trackType );
 }
 
 Commands::MainWorkflow::MoveClip::MoveClip( ::MainWorkflow* workflow, const QUuid& uuid,
@@ -97,11 +97,11 @@ Commands::MainWorkflow::RemoveClip::RemoveClip( WorkflowRenderer* renderer, Clip
 
 void Commands::MainWorkflow::RemoveClip::redo()
 {
-   m_renderer->removeClip( m_clip->getUuid(), m_trackNumber, m_trackType );
+    ::MainWorkflow::getInstance()->removeClip( m_clip->getUuid(), m_trackNumber, m_trackType );
 }
 void Commands::MainWorkflow::RemoveClip::undo()
 {
-    m_renderer->addClip( m_clip, m_trackNumber, m_pos, m_trackType );
+    ::MainWorkflow::getInstance()->addClip( m_clip, m_trackNumber, m_pos, m_trackType );
 }
 
 Commands::MainWorkflow::ResizeClip::ResizeClip( WorkflowRenderer* renderer, const QUuid& uuid,
@@ -128,7 +128,7 @@ Commands::MainWorkflow::ResizeClip::ResizeClip( WorkflowRenderer* renderer, cons
 
 void Commands::MainWorkflow::ResizeClip::redo()
 {
-    m_renderer->resizeClip( m_clip, m_newBegin, m_newEnd, m_newPos, m_trackId, m_trackType, m_undoRedoAction );
+    ::MainWorkflow::getInstance()->resizeClip( m_clip, m_newBegin, m_newEnd, m_newPos, m_trackId, m_trackType, m_undoRedoAction );
     m_undoRedoAction = true;
 }
 
@@ -139,7 +139,7 @@ void Commands::MainWorkflow::ResizeClip::undo()
     //In the other cases, we need to move, then resize.
     if ( m_oldBegin == m_newBegin )
     {
-        m_renderer->resizeClip( m_clip, m_oldBegin, m_oldEnd, m_oldPos, m_trackId, m_trackType, m_undoRedoAction );
+        ::MainWorkflow::getInstance()->resizeClip( m_clip, m_oldBegin, m_oldEnd, m_oldPos, m_trackId, m_trackType, m_undoRedoAction );
     }
     else
     {
@@ -169,10 +169,10 @@ Commands::MainWorkflow::SplitClip::~SplitClip()
 
 void    Commands::MainWorkflow::SplitClip::redo()
 {
-    m_newClip = m_renderer->split( m_toSplit, m_newClip, m_trackId, m_newClipPos, m_newClipBegin, m_trackType );
+    m_newClip = ::MainWorkflow::getInstance()->split( m_toSplit, m_newClip, m_trackId, m_newClipPos, m_newClipBegin, m_trackType );
 }
 
 void    Commands::MainWorkflow::SplitClip::undo()
 {
-    m_renderer->unsplit( m_toSplit, m_newClip, m_trackId, m_trackType );
+    ::MainWorkflow::getInstance()->unsplit( m_toSplit, m_newClip, m_trackId, m_trackType );
 }

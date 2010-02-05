@@ -5,8 +5,6 @@ SUBDIRS(EffectsEngine/Plugins/src)
 
 SET(VLMC_SRCS 
     main.cpp
-    Actions/ActionStack.cpp
-    Actions/StackedAction.cpp
     API/Module.cpp
     API/ModuleManager.cpp
     API/vlmc_module_variables.cpp
@@ -114,7 +112,6 @@ ELSE (WIN32)
 ENDIF(WIN32)
 
 SET (VLMC_HDRS
-    Actions/StackedAction.h
     Commands/KeyboardShortcutHelper.h
     Configuration/SettingsManager.h
     Configuration/SettingValue.h
@@ -239,7 +236,6 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/src
   .
-  Actions
   API
   Commands
   Configuration

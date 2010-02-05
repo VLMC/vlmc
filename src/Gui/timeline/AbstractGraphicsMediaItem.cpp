@@ -217,8 +217,9 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
         if ( clip()->getParent()->getFileType() != Media::Image )
             if ( clip()->getBegin() + size > clip()->getMaxEnd() )
                 return;
-        tracksView()->getRenderer()->resizeClip( clip(), clip()->getBegin(), clip()->getBegin() + size, 0, //This parameter is unused in this case
-                                                 trackNumber(), mediaType() );
+        //FIXME
+//        tracksView()->getRenderer()->resizeClip( clip(), clip()->getBegin(), clip()->getBegin() + size, 0, //This parameter is unused in this case
+//                                                 trackNumber(), mediaType() );
     }
     else
     {
@@ -233,17 +234,19 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
             qint64  newStart = startPos() + ( oldLength - size );
             if ( newStart < 0 )
                 return ;
-            tracksView()->getRenderer()->resizeClip( clip(), qMax( clip()->getEnd() - size, (qint64)0 ), clip()->getEnd(),
-                                                     newStart, trackNumber(), mediaType() );
-            setStartPos( newStart );
+//            tracksView()->getRenderer()->resizeClip( clip(), qMax( clip()->getEnd() - size, (qint64)0 ), clip()->getEnd(),
+//                                                     newStart, trackNumber(), mediaType() );
+//            setStartPos( newStart );
+            //FIXME
         }
         else
         {
             m_resizeExpected = true;
             qint64 oldLength = clip()->getLength();
-            tracksView()->getRenderer()->resizeClip( clip(), 0, size, startPos() + ( oldLength - size ),
-                                                     trackNumber(), mediaType() );
-            setStartPos( startPos() + ( oldLength - size ) );
+//            tracksView()->getRenderer()->resizeClip( clip(), 0, size, startPos() + ( oldLength - size ),
+//                                                     trackNumber(), mediaType() );
+//            setStartPos( startPos() + ( oldLength - size ) );
+            //FIXME
         }
     }
 

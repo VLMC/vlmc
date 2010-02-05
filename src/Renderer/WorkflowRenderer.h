@@ -23,10 +23,8 @@
 #ifndef WORKFLOWRENDERER_H
 #define WORKFLOWRENDERER_H
 
-#include "ActionStack.h"
 #include "AudioClipWorkflow.h"
 #include "GenericRenderer.h"
-#include "StackedAction.h"
 #include "MainWorkflow.h"
 
 #include <QObject>
@@ -125,108 +123,7 @@ class   WorkflowRenderer : public GenericRenderer
          *  \return     The current fps
          */
         virtual float       getFps() const;
-        /**
-         *  \brief          Add a clip to the workflow
-         *
-         *  This method is a part of the asynchrone workflow manipulation methodes, which
-         *  means it can interact with the workflow during a render, using StackedAction
-         *  \param  clip        The clip to add in the workflow
-         *  \param  trackId     The track id in which the clip has to be added
-         *  \param  startingPos The position where the clip should be added
-         *  \param  trackType   The type of the clip to add (Audio or Video)
-         *  \sa     removeClip( const QUuid&, quint32, MainWorkflow::TrackType );
-         */
-        void                addClip( Clip* clip, quint32 trackId, qint64 startingPos,
-                                     MainWorkflow::TrackType trackType );
-        /**
-         *  \brief          Remove a clip from the timeline
-         *
-         *  This method is a part of the asynchrone workflow manipulation methodes, which
-         *  means it can interact with the workflow during a render, using StackedAction
-         *  \param  uuid        the uuid of the clip to remove
-         *  \param  trackId     the id of the track containing the clip to remove.
-         *  \param  trackType   the type of the track
-         *  \sa     addClip( Clip*, quint32, qint64, MainWorkflow::TrackType );
-         */
-        void                removeClip( const QUuid& uuid, quint32 trackId,
-                                        MainWorkflow::TrackType trackType );
-        /**
-         *  \brief                  Will split a clip and return the created clip,
-         *                          resulting of the split operation.
-         *
-         *  This method is a part of the asynchrone workflow manipulation methodes, which
-         *  means it can interact with the workflow during a render, using StackedAction
-         *  This method will call
-         *  MainWorkflow::addClip( Clip*, unsigned int, qint64, MainWorkflow::TrackType )
-         *  thus emitting
-         *  MainWorkflow::clipAdded( Clip*, unsigned int, qint64, MainWorkflow::TrackType )
-         *  signal. It will also call Clip::setBoundaries( qint64, qint64, bool ), thus
-         *  emitting a Clip::lengthUpdated() signal
-         *  \param  toSplit         The clip to split
-         *  \param  newClip         If the "toSplit" clip already has been splitted, this
-         *                          is the clip resulting from the previous split
-         *                          operation. This prevent creating and deleting clip
-         *                          that could be used elsewhere.
-         *  \param  trackId         The track containing the clip
-         *  \param  newClipPos      The position of the "newClip" on the timeline.
-         *  \param  newClipBegin    The starting frame (from the beginning of the clip's
-         *                          parent media)
-         *  \param  trackType       The track type (audio or video)
-         *  \return                 The newly created clip if "newClip" was NULL;
-         *                          else, newClip is returned.
-         *  \sa                     MainWorkflow::addClip( Clip*, unsigned int, qint64,
-                                                            MainWorkflow::TrackType )
-         *  \sa                     MainWorkflow::clipAdded( Clip*, unsigned int, qint64,
-         *                                                  MainWorkflow::TrackType )
-         *  \sa                     Clip::setBoundaries( qint64, qint64, bool )
-         *  \sa                     Clip::lengthUpdated()
-         */
-        Clip*               split( Clip* toSplit, Clip* newClip, quint32 trackId,
-                                   qint64 newClipPos, qint64 newClipBegin,
-                                   MainWorkflow::TrackType trackType );
-        /**
-         *  \brief      Unplit a clip
-         *
-         *  This method is a part of the asynchrone workflow manipulation methodes, which
-         *  means it can interact with the workflow during a render, using StackedAction
-         *  This will cause the generated ClipWorkflow to be deleted, but the Clip itself
-         *  won't be deleted.
-         *  This method will call
-         *  removeClip(const QUuid&, quint32, MainWorkflow::TrackType ), thus emitting
-         *  a MainWorkflow::clipRemoved( Clip*, unsigned int, MainWorkflow::TrackType );
-         *  signal.
-         *  \param  origin      The clip that has been split
-         *  \param  splitted    The clip that resulted from the split
-         *  \param  trackId     The id of the track that was containing the split clip
-         *  \param  trackType   The type of the clip that was split.
-         *  \sa                 MainWorkflow::removeClip( const QUuid&, unsigned int,
-         *                      MainWorkflow::TrackType )
-         *  \sa                 MainWorkflow::clipRemoved( Clip*, unsigned int,
-         *                      MainWorkflow::TrackType );
-         */
-        void                unsplit( Clip* origin, Clip* splitted, quint32 trackId,
-                                     MainWorkflow::TrackType trackType );
-        /**
-         *  \brief      Resize a clip in the workflow
-         *
-         *  This method is a part of the asynchrone workflow manipulation methodes, which
-         *  means it can interact with the workflow during a render.
-         *  \param  clip            The clip to resize
-         *  \param  newBegin        The new clip beginning (if changing the beginning)
-         *  \param  newEnd          The new clip end (if changing the end)
-         *  \param  newPos          If changed from the beginning, the clip has to be
-         *                          moved. This is the position at which it will be
-         *                          positioned
-         *  \param  trackId         The track containing the clip to resize
-         *  \param  trackType       The type of the clip to resize
-         *  \param  undoRedoAction  If true, the potential move resulting from the resize
-         *                          will be emmited to the GUI. If this is not an undo
-         *                          redo action, the GUI is already aware of the move.
-         */
-        void                resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd,
-                                        qint64 newPos, quint32 trackId,
-                                        MainWorkflow::TrackType trackType,
-                                        bool undoRedoAction = false );
+
         /**
          *  \brief          Completely kill the renderer.
          *
@@ -251,10 +148,6 @@ class   WorkflowRenderer : public GenericRenderer
          *  \sa             togglePlayPause( bool );
          */
         virtual void        startPreview();
-        /**
-         *  \brief          check for workflow related actions that has been stacked.
-         */
-        void                checkActions();
 
     protected:
         /**
@@ -329,8 +222,6 @@ class   WorkflowRenderer : public GenericRenderer
          */
         static quint8*      silencedAudioBuffer;
         size_t              m_videoBuffSize;
-        Action::Stack       m_actions;
-        QMutex*             m_actionsMutex;
         QWaitCondition*     m_waitCond;
         EsHandler*          m_videoEsHandler;
         EsHandler*          m_audioEsHandler;
