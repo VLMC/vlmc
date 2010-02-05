@@ -51,7 +51,6 @@ void    WorkflowRenderer::initializeRenderer()
     char        audioParameters[256];
     char        callbacks[64];
 
-    m_waitCond = new QWaitCondition;
     m_renderVideoFrame = new unsigned char[m_mainWorkflow->getWidth()
                                            * m_mainWorkflow->getHeight() * Pixel::NbComposantes];
 
@@ -99,7 +98,6 @@ WorkflowRenderer::~WorkflowRenderer()
     delete m_videoEsHandler;
     delete m_audioEsHandler;
     delete m_media;
-    delete m_waitCond;
 }
 
 int

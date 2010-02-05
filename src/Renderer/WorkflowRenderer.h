@@ -222,7 +222,6 @@ class   WorkflowRenderer : public GenericRenderer
          */
         static quint8*      silencedAudioBuffer;
         size_t              m_videoBuffSize;
-        QWaitCondition*     m_waitCond;
         EsHandler*          m_videoEsHandler;
         EsHandler*          m_audioEsHandler;
         /**
