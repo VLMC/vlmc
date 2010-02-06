@@ -135,6 +135,7 @@ void TracksView::removeVideoTrack()
     m_layout->removeItem( item );
     m_layout->activate();
     m_scene->invalidate(); // Redraw the background
+    m_cursorLine->setHeight( m_layout->contentsRect().height() );
     m_numVideoTrack--;
     emit videoTrackRemoved();
     delete item;
@@ -148,6 +149,7 @@ void TracksView::removeAudioTrack()
     m_layout->removeItem( item );
     m_layout->activate();
     m_scene->invalidate(); // Redraw the background
+    m_cursorLine->setHeight( m_layout->contentsRect().height() );
     m_numAudioTrack--;
     emit audioTrackRemoved();
     delete item;
