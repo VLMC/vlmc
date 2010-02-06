@@ -20,6 +20,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <QList>
 #include "TracksView.h"
 #include "GraphicsTrack.h"
 
@@ -78,4 +79,21 @@ MainWorkflow::TrackType
 GraphicsTrack::mediaType()
 {
     return m_type;
+}
+
+QList<AbstractGraphicsMediaItem*>
+GraphicsTrack::childs()
+{
+    QList<AbstractGraphicsMediaItem*> list;
+    QList<QGraphicsItem*> items = childItems();
+    AbstractGraphicsMediaItem* item;
+
+    for ( int i = 0; i < items.count(); ++i )
+    {
+        item = dynamic_cast<AbstractGraphicsMediaItem*>( items.at( i ) );
+        if ( !item )
+            continue;
+        list.append( item );
+    }
+    return list;
 }
