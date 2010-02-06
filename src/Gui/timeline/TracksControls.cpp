@@ -75,6 +75,10 @@ void TracksControls::removeVideoTrack()
     if ( item->widget() )
         delete item->widget();
     delete item;
+
+    // Force the central widget to shrink
+    m_layout->activate();
+    m_centralWidget->setGeometry( 0, 0, 1, 1 );
 }
 
 void TracksControls::removeAudioTrack()
@@ -83,6 +87,10 @@ void TracksControls::removeAudioTrack()
     if ( item->widget() )
         delete item->widget();
     delete item;
+
+    // Force the central widget to shrink
+    m_layout->activate();
+    m_centralWidget->setGeometry( 0, 0, 1, 1 );
 }
 
 void TracksControls::clear()
@@ -96,4 +104,8 @@ void TracksControls::clear()
         delete child;
     }
     m_layout->addWidget( m_separator );
+
+    // Force the central widget to shrink
+    m_layout->activate();
+    m_centralWidget->setGeometry( 0, 0, 1, 1 );
 }
