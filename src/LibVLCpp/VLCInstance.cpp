@@ -25,7 +25,7 @@
 
 using namespace LibVLCpp;
 
-Instance::Instance()
+Instance::Instance( QObject* parent /*= NULL*/ ) : QObject( parent )
 {
     char const *argv[] =
     {

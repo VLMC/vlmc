@@ -117,6 +117,7 @@ ImportController::ImportController(QWidget *parent) :
 
 ImportController::~ImportController()
 {
+    delete m_preview;
     delete m_ui;
     delete m_stackNav;
     delete m_tag;

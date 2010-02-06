@@ -24,23 +24,27 @@
 #define VLCINSTANCE_H
 
 #include "VLCpp.hpp"
-#include "Singleton.hpp"
+#include "QSingleton.hpp"
+
+#include <QObject>
 
 struct libvlc_instance_t;
 
 namespace LibVLCpp
 {
-    class   Instance : public Internal< libvlc_instance_t >,
-                        public Singleton<Instance>
+    class   Instance :  public QObject,
+                        public Internal< libvlc_instance_t >,
+                        public QSingleton<Instance>
     {
+        Q_OBJECT
     private:
-        Instance();
+        Instance( QObject* parent = NULL );
         Instance( int argc, const char** argv );
 
         ~Instance();
 
     private:
-        friend class    Singleton<Instance>;
+        friend class    QSingleton<Instance>;
     };
 }
 

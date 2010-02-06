@@ -84,6 +84,9 @@ MainWindow::MainWindow( QWidget *parent ) :
     //We only install message handler here cause it uses configuration.
     VlmcDebug::getInstance()->setup();
 
+    //VLC Instance:
+    LibVLCpp::Instance::getInstance( this );
+
     // GUI
     DockWidgetManager::instance( this )->setMainWindow( this );
     initializeDockWidgets();
@@ -145,7 +148,7 @@ MainWindow::~MainWindow()
 
     if ( m_fileRenderer )
         delete m_fileRenderer;
-    LibVLCpp::Instance::destroyInstance();
+    delete m_importController;
 }
 
 void MainWindow::changeEvent( QEvent *e )
@@ -166,7 +169,7 @@ void        MainWindow::setupLibrary()
     //GUI part :
 
     MediaLibraryWidget* mediaLibraryWidget = new MediaLibraryWidget( this );
-    m_importController = new ImportController( this );
+    m_importController = new ImportController();
 
     DockWidgetManager::instance()->addDockedWidget( mediaLibraryWidget,
                                                     tr( "Media Library" ),

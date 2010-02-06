@@ -162,6 +162,7 @@ SET (VLMC_HDRS
     Gui/wizard/WelcomePage.h
     Gui/WorkflowFileRendererDialog.h
     Library/Library.h
+    LibVLCpp/VLCInstance.h
     LibVLCpp/VLCMediaPlayer.h
     Media/Clip.h
     Media/Media.h
