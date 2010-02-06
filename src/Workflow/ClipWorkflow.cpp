@@ -293,3 +293,20 @@ ClipWorkflow::unmute()
 {
     setState( Stopped );
 }
+
+void
+ClipWorkflow::requireResync()
+{
+    m_resyncRequired = 1;
+}
+
+bool
+ClipWorkflow::isResyncRequired()
+{
+    if ( m_resyncRequired == 1 )
+    {
+        m_resyncRequired = 0;
+        return true;
+    }
+    return false;
+}

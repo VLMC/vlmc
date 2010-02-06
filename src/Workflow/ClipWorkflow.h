@@ -174,6 +174,15 @@ class   ClipWorkflow : public QObject
         void                    mute();
         void                    unmute();
 
+        void                    requireResync();
+        /**
+         *  \return true if a resync is required.
+         *
+         *  If a resync is required, true will be returned, and the flag will be
+         *  set back to false
+         */
+        bool                    isResyncRequired();
+
     private:
         void                    setState( State state );
         void                    adjustBegin();
@@ -198,6 +207,13 @@ class   ClipWorkflow : public QObject
     private:
         WaitCondition*          m_initWaitCond;
         WaitCondition*          m_pausingStateWaitCond;
+        /**
+         *  \brief              Used by the trackworkflow to query a clipworkflow resync.
+         *
+         *  Basically, this will be used when a clip is moved, and therefore has to be
+         *  updated.
+         */
+        QAtomicInt              m_resyncRequired;
 
     protected:
         LibVLCpp::MediaPlayer*  m_mediaPlayer;

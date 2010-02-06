@@ -200,14 +200,8 @@ TrackHandler::moveClip(const QUuid &clipUuid, unsigned int oldTrack,
     }
     else
     {
-        bool    needRepo;
-
-        if ( m_tracks[oldTrack]->getClipPosition( clipUuid ) != startingFrame )
-            needRepo = true;
         ClipWorkflow* cw = m_tracks[oldTrack]->removeClipWorkflow( clipUuid );
         m_tracks[newTrack]->addClip( cw, startingFrame );
-        if ( needRepo == true )
-            m_tracks[newTrack]->forceRepositionning();
         activateTrack( oldTrack );
         activateTrack( newTrack );
     }

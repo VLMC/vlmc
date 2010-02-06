@@ -32,6 +32,9 @@ struct libvlc_instance_t;
 
 namespace LibVLCpp
 {
+    /**
+     *  \warning    This class should be released after every other LibVLCpp classes.
+     */
     class   Instance :  public QObject,
                         public Internal< libvlc_instance_t >,
                         public QSingleton<Instance>

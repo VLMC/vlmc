@@ -36,13 +36,11 @@
 TrackWorkflow::TrackWorkflow( unsigned int trackId, MainWorkflow::TrackType type  ) :
         m_trackId( trackId ),
         m_length( 0 ),
-        m_forceRepositionning( false ),
         m_trackType( type ),
         m_lastFrame( 0 ),
         m_videoStackedBuffer( NULL ),
         m_audioStackedBuffer( NULL )
 {
-    m_forceRepositionningMutex = new QMutex;
     m_renderOneFrameMutex = new QMutex;
     m_clipsLock = new QReadWriteLock;
 }
@@ -60,7 +58,6 @@ TrackWorkflow::~TrackWorkflow()
     }
     delete m_clipsLock;
     delete m_renderOneFrameMutex;
-    delete m_forceRepositionningMutex;
 }
 
 void    TrackWorkflow::addClip( Clip* clip, qint64 start )
@@ -146,10 +143,9 @@ TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
          cw->getState() == ClipWorkflow::UnpauseRequired )
     {
         cw->getStateLock()->unlock();
-        if ( needRepositioning == true )
-        {
+
+        if ( cw->isResyncRequired() == true || needRepositioning == true )
             adjustClipTime( currentFrame, start, cw );
-        }
         return cw->getOutput( mode );
     }
     else if ( cw->getState() == ClipWorkflow::Stopped )
@@ -273,19 +269,13 @@ TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFrame, bool paused )
         }
     }
     {
-        QMutexLocker    lock2( m_forceRepositionningMutex );
-        if ( m_forceRepositionning == true )
-        {
-            needRepositioning = true;
-            m_forceRepositionning = false;
-        }
         // This is a bit hackish : when we want to pop a frame in renderOneFrame mode,
         // we also set the position to avoid the stream to be missynchronized.
         // this frame setting will most likely toggle the next condition as true
         // If this condition is true, the clipworkflow will flush all its buffer
         // as we need to resynchronize after a setTime, so this condition has to remain
         // false. Easy ain't it ?
-        else if ( paused == true && subFrame != m_lastFrame && renderOneFrame == false)
+        if ( paused == true && subFrame != m_lastFrame && renderOneFrame == false)
             needRepositioning = true;
         else
             needRepositioning = ( abs( subFrame - m_lastFrame ) > 1 ) ? true : false;
@@ -335,8 +325,7 @@ void            TrackWorkflow::moveClip( const QUuid& id, qint64 startingFrame )
             ClipWorkflow* cw = it.value();
             m_clips.erase( it );
             m_clips[startingFrame] = cw;
-            QMutexLocker    lock( m_forceRepositionningMutex );
-            m_forceRepositionning = true;
+            cw->requireResync();
             computeLength();
             return ;
         }
@@ -468,12 +457,6 @@ void    TrackWorkflow::adjustClipTime( qint64 currentFrame, qint64 start, ClipWo
     qint64  beginInMs = cw->getClip()->getBegin() / cw->getClip()->getParent()->getFps() * 1000;
     qint64  startFrame = beginInMs + nbMs;
     cw->setTime( startFrame );
-}
-
-void    TrackWorkflow::forceRepositionning()
-{
-    QMutexLocker    lock( m_forceRepositionningMutex );
-    m_forceRepositionning = true;
 }
 
 void

@@ -76,7 +76,6 @@ class   TrackWorkflow : public QObject
         void                                    save( QDomDocument& doc, QDomElement& trackNode ) const;
         void                                    clear();
 
-        void                                    forceRepositionning();
         void                                    renderOneFrame();
 
         /**
@@ -115,12 +114,6 @@ class   TrackWorkflow : public QObject
         */
         qint64                                  m_length;
 
-        /**
-         *  \brief      If a clip was moved, we may have to force repositionning.
-         *              If this flag is set to true, we will force it anyway.
-         */
-        bool                                    m_forceRepositionning;
-        QMutex*                                 m_forceRepositionningMutex;
         bool                                    m_renderOneFrame;
         QMutex                                  *m_renderOneFrameMutex;
 
