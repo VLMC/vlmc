@@ -243,6 +243,11 @@ private slots:
      * that the global time calculation is up-to-date.
      */
     void                    updateDuration();
+
+    /**
+     * \brief PLEASE DOCUMENT ME
+     */
+    void                    cleanUnusedTracks();
     /**
      * \brief Split an item in two at the given position.
      * \details Internally, the item given as parameter will be shrinked and a new one will be
@@ -265,6 +270,19 @@ private:
      * \brief Insert an empty audio track.
      */
     void                    addAudioTrack();
+    /**
+     * \brief DOCUMENT ME
+     */
+    void                    removeVideoTrack();
+    /**
+     * \brief DOCUMENT ME
+     */
+    void                    removeAudioTrack();
+    /**
+     * \brief DOCUMENT ME
+     */
+    void                    cleanTracks( MainWorkflow::TrackType type );
+
     /**
      * \brief This is an overloaded method provided for convenience.
      * \param item Item to move.
@@ -339,6 +357,15 @@ signals:
      * \param track A pointer to the newly added track.
      */
     void                    audioTrackAdded( GraphicsTrack* track );
+
+    /**
+     * \brief DOCUMENT ME
+     */
+    void                    videoTrackRemoved();
+    /**
+     * \brief DOCUMENT ME
+     */
+    void                    audioTrackRemoved();
 
 friend class Timeline;
 friend class TracksScene;

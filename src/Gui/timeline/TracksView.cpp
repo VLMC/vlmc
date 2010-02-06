@@ -127,6 +127,32 @@ void TracksView::addAudioTrack()
     emit audioTrackAdded( track );
 }
 
+void TracksView::removeVideoTrack()
+{
+    Q_ASSERT( m_numVideoTrack > 0 );
+
+    QGraphicsLayoutItem* item = m_layout->itemAt( 0 );
+    m_layout->removeItem( item );
+    m_layout->activate();
+    m_scene->invalidate(); // Redraw the background
+    m_numVideoTrack--;
+    emit videoTrackRemoved();
+    delete item;
+}
+
+void TracksView::removeAudioTrack()
+{
+    Q_ASSERT( m_numAudioTrack > 0 );
+
+    QGraphicsLayoutItem* item = m_layout->itemAt( m_layout->count() - 1 );
+    m_layout->removeItem( item );
+    m_layout->activate();
+    m_scene->invalidate(); // Redraw the background
+    m_numAudioTrack--;
+    emit audioTrackRemoved();
+    delete item;
+}
+
 void TracksView::clear()
 {
     m_layout->removeItem( m_separator );
@@ -1031,6 +1057,51 @@ void TracksView::updateDuration()
     setSceneRect( m_layout->contentsRect() );
 
     emit durationChanged( m_projectDuration );
+
+    // Also check for unused tracks
+    cleanUnusedTracks();
+}
+
+void TracksView::cleanTracks( MainWorkflow::TrackType type )
+{
+    int tracksToCheck;
+    int tracksToRemove = 0;
+
+    if ( type == MainWorkflow::VideoTrack )
+        tracksToCheck = m_numVideoTrack;
+    else
+        tracksToCheck = m_numAudioTrack;
+
+    for ( int i = tracksToCheck; i > 0; --i )
+    {
+        GraphicsTrack* track = getTrack( type, i );
+        if ( !track )
+            continue;
+
+        QList<AbstractGraphicsMediaItem*> items = track->childs();
+
+        if ( items.count() == 0 )
+            tracksToRemove++;
+        else
+            break;
+    }
+
+    while ( tracksToRemove > 1 )
+    {
+        if ( type == MainWorkflow::VideoTrack )
+            removeVideoTrack();
+        else
+            removeAudioTrack();
+        tracksToRemove--;
+    }
+}
+
+void TracksView::cleanUnusedTracks()
+{
+    // Video
+    cleanTracks( MainWorkflow::VideoTrack );
+    // Audio
+    cleanTracks( MainWorkflow::AudioTrack );
 }
 
 GraphicsTrack* TracksView::getTrack( MainWorkflow::TrackType type, unsigned int number )
