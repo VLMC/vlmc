@@ -134,24 +134,6 @@ class	EffectsEngine
     */
     void                        setVideoInput( quint32 inId, const LightVideoFrame & frame );
 
-
-    void                        setCurrentFrameNumber( quint64 nb );
-
-    // TEMPORARY TRANSITION WRAPPER
-
-    quint32                     addTransition( quint32 srcTrackId,
-                                               quint32 dstTrackId,
-                                               quint64 startFrameId,
-                                               quint64 stopFrameId );
-    bool                        moveTransition( quint32 transitionId,
-                                                quint64 startFrameId,
-                                                quint64 stopFrameId );
-    bool                        removeTransition( quint32 transitionId );
-
-private:
-
-    void                        configureTransitions();
-
 private:
 
     /**
@@ -191,84 +173,6 @@ private:
      */
     bool                    m_processedInBypassPatch;
 
-    quint64                 m_currentFrameNumber;
-
-// Temporary
-
-    SemanticObjectManager<TStart>            m_TStartManager;
-    SemanticObjectManager<TStop>             m_TStopManager;
-    QMap<quint64, QMap<quint32, TStart*> >   m_TStartTimeline;
-    QMap<quint64, QMap<quint32, TStop*> >    m_TStopTimeline;
-    QMap<quint32, TEvent>                    m_TDoAtNextRender;
-};
-
-// Temporary
-
-struct TEvent
-{
-    enum EventType
-        {
-            DEL,
-            ADD,
-            UPDATE,
-            PATCH,
-            UNPATCH
-        };
-    EventType   m_type;
-    quint32     m_id;
-    quint64     m_currentStep;
-    quint64     m_nbSteps;
-};
-
-struct TStart
-{
-    void setId( quint32 id )
-    {
-        m_id = id;
-    };
-    void setName( const QString & name )
-    {
-        Q_UNUSED( name );
-    };
-    void setFather( EffectNode* father )
-    {
-        Q_UNUSED( father );
-    };
-    void setScope( bool isItInternal )
-    {
-        Q_UNUSED( isItInternal );
-    };
-
-    quint32     m_id;
-    quint64     m_startFrameId;
-    quint32     m_srcTrackId;
-    quint32     m_dstTrackId;
-    quint64     m_nbSteps;
-};
-
-struct  TStop
-{
-    void setId( quint32 id )
-    {
-        m_id = id;
-    };
-    void setName( const QString & name )
-    {
-        Q_UNUSED( name );
-    };
-    void setFather( EffectNode* father )
-    {
-        Q_UNUSED( father );
-    };
-    void setScope( bool isItInternal )
-    {
-        Q_UNUSED( isItInternal );
-    };
-
-    quint32     m_id;
-    quint64     m_stopFrameId;
-    quint32     m_srcTrackId;
-    quint32     m_dstTrackId;
 };
 
 #endif // EFFECTSENGINE_H_

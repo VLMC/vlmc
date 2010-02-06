@@ -139,7 +139,6 @@ MainWorkflow::getOutput( TrackType trackType, bool paused )
                                         m_currentFrame[trackType], paused );
         if ( trackType == MainWorkflow::VideoTrack )
         {
-            m_effectEngine->setCurrentFrameNumber( m_currentFrame[VideoTrack] );
             m_effectEngine->render();
             const LightVideoFrame &tmp = m_effectEngine->getVideoOutput( 1 );
             m_outputBuffers->video = &tmp;
