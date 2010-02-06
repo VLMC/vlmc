@@ -69,6 +69,22 @@ void TracksControls::addAudioTrack( GraphicsTrack* track )
     m_layout->insertWidget( -1, item );
 }
 
+void TracksControls::removeVideoTrack()
+{
+    QLayoutItem* item = m_layout->takeAt( 0 );
+    if ( item->widget() )
+        delete item->widget();
+    delete item;
+}
+
+void TracksControls::removeAudioTrack()
+{
+    QLayoutItem* item = m_layout->takeAt( m_layout->count() - 1 );
+    if ( item->widget() )
+        delete item->widget();
+    delete item;
+}
+
 void TracksControls::clear()
 {
     m_layout->removeWidget( m_separator );

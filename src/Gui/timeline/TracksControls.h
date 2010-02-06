@@ -50,6 +50,14 @@ public slots:
      */
     void addAudioTrack( GraphicsTrack* track );
     /**
+     * \brief DOCUMENT ME
+     */
+    void removeVideoTrack();
+    /**
+     * \brief DOCUMENT ME
+     */
+    void removeAudioTrack();
+    /**
      * \brief Remove all controllers from the widget.
      */
     void clear();

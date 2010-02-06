@@ -96,6 +96,10 @@ Timeline::Timeline( WorkflowRenderer* renderer, QWidget *parent ) :
              m_tracksControls, SLOT( addVideoTrack(GraphicsTrack*) ) );
     connect( m_tracksView, SIGNAL( audioTrackAdded(GraphicsTrack*) ),
              m_tracksControls, SLOT( addAudioTrack(GraphicsTrack*) ) );
+    connect( m_tracksView, SIGNAL( videoTrackRemoved() ),
+             m_tracksControls, SLOT( removeVideoTrack() ) );
+    connect( m_tracksView, SIGNAL( audioTrackRemoved() ),
+             m_tracksControls, SLOT( removeAudioTrack() ) );
 
     // Frames updates
     connect( m_renderer, SIGNAL( frameChanged(qint64, MainWorkflow::FrameChangedReason) ),
