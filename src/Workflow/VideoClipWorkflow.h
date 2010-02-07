@@ -60,16 +60,22 @@ class   VideoClipWorkflow : public ClipWorkflow
         virtual quint32         getMaxComputedBuffers() const;
         void                    releaseBuffer( LightVideoFrame* lvf );
         void                    flushComputedBuffers();
+        /**
+         *  \brief              Pre-allocate some image buffers.
+         */
+        void                    preallocate();
 
     private:
         QQueue<LightVideoFrame*>    m_computedBuffers;
         QQueue<LightVideoFrame*>    m_availableBuffers;
         LightVideoFrame             *m_lastRenderedFrame;
-        static void             lock( VideoClipWorkflow* clipWorkflow, void** pp_ret,
+        static void                 lock( VideoClipWorkflow* clipWorkflow, void** pp_ret,
                                       int size );
-        static void             unlock( VideoClipWorkflow* clipWorkflow, void* buffer,
+        static void                 unlock( VideoClipWorkflow* clipWorkflow, void* buffer,
                                         int width, int height, int bpp, int size,
                                         qint64 pts );
+        quint32                     m_width;
+        quint32                     m_height;
 };
 
 #endif // VIDEOCLIPWORKFLOW_H

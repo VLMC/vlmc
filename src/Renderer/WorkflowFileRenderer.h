@@ -53,7 +53,8 @@ private:
 protected:
     virtual void*               getLockCallback();
     virtual void*               getUnlockCallback();
-
+    virtual quint32             width() const;
+    virtual quint32             height() const;
 private slots:
     void                        stop();
     void                        cancelButtonClicked();

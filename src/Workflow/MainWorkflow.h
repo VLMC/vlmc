@@ -105,9 +105,11 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
         /**
          *  \brief      Initialize the workflow for the render.
          *
+         *  \param      width   The width to use with this render session.
+         *  \param      height  The height to use with this render session.
          *  This will basically activate all the tracks, so they can render.
          */
-        void                    startRender();
+        void                    startRender( quint32 width, quint32 height );
         /**
          *  \brief      Gets a frame from the workflow
          *
@@ -401,19 +403,6 @@ class   MainWorkflow : public QObject, public Singleton<MainWorkflow>
          *  \sa     mainWorkflowEndReached()
          */
         void                            tracksEndReached();
-        /**
-         *  \brief  Called when the width is changed in the preferences
-         *  \todo   The value is immediatly changed, which is wrong.
-         *          See issue : http://vlmc.org/issues/show/118
-         */
-        void                            widthChanged( const QVariant& );
-        /**
-         *  \brief  Called when the height is changed in the preferences
-         *  \todo   The value is immediatly changed, which is wrong.
-         *          See issue : http://vlmc.org/issues/show/118
-         */
-        void                            heightChanged( const QVariant& );
-
 
     public slots:
         /**

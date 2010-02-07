@@ -40,20 +40,14 @@ quint8*         WorkflowRenderer::silencedAudioBuffer = NULL;
 WorkflowRenderer::WorkflowRenderer() :
             m_mainWorkflow( MainWorkflow::getInstance() ),
             m_stopping( false ),
-            m_oldLength( 0 )
+            m_oldLength( 0 ),
+            m_renderVideoFrame( NULL ),
+            m_media( NULL )
 {
 }
 
 void    WorkflowRenderer::initializeRenderer()
 {
-    char        videoString[512];
-    char        inputSlave[256];
-    char        audioParameters[256];
-    char        callbacks[64];
-
-    m_renderVideoFrame = new unsigned char[m_mainWorkflow->getWidth()
-                                           * m_mainWorkflow->getHeight() * Pixel::NbComposantes];
-
     m_videoEsHandler = new EsHandler;
     m_videoEsHandler->self = this;
     m_videoEsHandler->type = Video;
@@ -63,23 +57,6 @@ void    WorkflowRenderer::initializeRenderer()
 
     m_nbChannels = 2;
     m_rate = 48000;
-
-    sprintf( videoString, "width=%i:height=%i:dar=%s:fps=%s:data=%lld:codec=%s:cat=2:caching=0",
-             m_mainWorkflow->getWidth(), m_mainWorkflow->getHeight(), "16/9", "30/1",
-             (qint64)m_videoEsHandler, "RV24" );
-    sprintf( audioParameters, "data=%lld:cat=1:codec=fl32:samplerate=%u:channels=%u:caching=0",
-             (qint64)m_audioEsHandler, m_rate, m_nbChannels );
-    strcpy( inputSlave, ":input-slave=imem://" );
-    strcat( inputSlave, audioParameters );
-
-    m_media = new LibVLCpp::Media( "imem://" + QString( videoString ) );
-    m_media->addOption( inputSlave );
-
-    sprintf( callbacks, "imem-get=%lld", (qint64)getLockCallback() );
-    m_media->addOption( callbacks );
-    sprintf( callbacks, ":imem-release=%lld", (qint64)getUnlockCallback() );
-    m_media->addOption( callbacks );
-    m_media->addOption( ":text-renderer dummy" );
 
      //Workflow part
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( __endReached() ) );
@@ -96,6 +73,40 @@ WorkflowRenderer::~WorkflowRenderer()
     delete m_videoEsHandler;
     delete m_audioEsHandler;
     delete m_media;
+}
+
+void
+WorkflowRenderer::setupRenderer()
+{
+    char        videoString[512];
+    char        inputSlave[256];
+    char        audioParameters[256];
+    char        callbacks[64];
+    quint32     width = this->width();
+    quint32     height = this->height();
+
+    if ( m_renderVideoFrame != NULL )
+        delete m_renderVideoFrame;
+    m_renderVideoFrame = new unsigned char[width * height * Pixel::NbComposantes];
+
+    sprintf( videoString, "width=%i:height=%i:dar=%s:fps=%s:data=%lld:codec=%s:cat=2:caching=0",
+             width, height, "16/9", "30/1",
+             (qint64)m_videoEsHandler, "RV24" );
+    sprintf( audioParameters, "data=%lld:cat=1:codec=fl32:samplerate=%u:channels=%u:caching=0",
+             (qint64)m_audioEsHandler, m_rate, m_nbChannels );
+    strcpy( inputSlave, ":input-slave=imem://" );
+    strcat( inputSlave, audioParameters );
+
+    if ( m_media != NULL )
+        delete m_media;
+    m_media = new LibVLCpp::Media( "imem://" + QString( videoString ) );
+    m_media->addOption( inputSlave );
+
+    sprintf( callbacks, "imem-get=%lld", (qint64)getLockCallback() );
+    m_media->addOption( callbacks );
+    sprintf( callbacks, ":imem-release=%lld", (qint64)getUnlockCallback() );
+    m_media->addOption( callbacks );
+    m_media->addOption( ":text-renderer dummy" );
 }
 
 int
@@ -198,6 +209,7 @@ void        WorkflowRenderer::startPreview()
 {
     if ( m_mainWorkflow->getLengthFrame() <= 0 )
         return ;
+    setupRenderer();
     m_mediaPlayer->setMedia( m_media );
 
     //Media player part: to update PreviewWidget
@@ -212,7 +224,7 @@ void        WorkflowRenderer::startPreview()
             (*MainWorkflow::blackOutput)->nboctets );
 
     m_mainWorkflow->setFullSpeedRender( false );
-    m_mainWorkflow->startRender();
+    m_mainWorkflow->startRender( width(), height() );
     m_isRendering = true;
     m_paused = false;
     m_stopping = false;
@@ -325,6 +337,22 @@ void*   WorkflowRenderer::getLockCallback()
 void*   WorkflowRenderer::getUnlockCallback()
 {
     return (void*)&WorkflowRenderer::unlock;
+}
+
+quint32
+WorkflowRenderer::width() const
+{
+    const SettingValue  *width = SettingsManager::getInstance()->getValue( "project",
+                                                                    "VideoProjectWidth" );
+    return width->get().toUInt();
+}
+
+quint32
+WorkflowRenderer::height() const
+{
+    const SettingValue  *height = SettingsManager::getInstance()->getValue( "project",
+                                                                    "VideoProjectHeight" );
+    return height->get().toUInt();
 }
 
 /////////////////////////////////////////////////////////////////////

@@ -39,21 +39,12 @@ LightVideoFrame     *MainWorkflow::blackOutput = NULL;
 
 MainWorkflow::MainWorkflow( int trackCount ) :
         m_lengthFrame( 0 ),
-        m_renderStarted( false )
+        m_renderStarted( false ),
+        m_width( 0 ),
+        m_height( 0 )
 {
     m_currentFrameLock = new QReadWriteLock;
     m_renderStartedMutex = new QMutex;
-
-    const SettingValue  *width = SettingsManager::getInstance()->getValue( "project",
-                                                                    "VideoProjectWidth" );
-    connect( width,     SIGNAL( changed( QVariant ) ),
-             this,      SLOT( widthChanged( QVariant ) ) );
-    m_width = width->get().toUInt();
-    const SettingValue  *height = SettingsManager::getInstance()->getValue( "project",
-                                                                "VideoProjectHeight" );
-    connect( height, SIGNAL( changed( QVariant ) ),
-             this, SLOT( widthChanged( QVariant ) ) );
-    m_height = height->get().toUInt();
 
     m_effectEngine = new EffectsEngine;
     m_effectEngine->disable();
@@ -125,9 +116,11 @@ MainWorkflow::computeLength()
 }
 
 void
-MainWorkflow::startRender()
+MainWorkflow::startRender( quint32 width, quint32 height )
 {
     m_renderStarted = true;
+    m_width = width;
+    m_height = height;
     for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         m_tracks[i]->startRender();
     computeLength();
@@ -433,27 +426,17 @@ MainWorkflow::getCurrentFrame() const
     return m_currentFrame[MainWorkflow::VideoTrack];
 }
 
-void
-MainWorkflow::widthChanged( const QVariant &width )
-{
-    m_width = width.toUInt();
-}
-
-void
-MainWorkflow::heightChanged( const QVariant &height )
-{
-    m_height = height.toUInt();
-}
-
 quint32
 MainWorkflow::getWidth() const
 {
+    Q_ASSERT( m_width != 0 );
     return m_width;
 }
 
 quint32
 MainWorkflow::getHeight() const
 {
+    Q_ASSERT( m_height != 0 );
     return m_height;
 }
 

@@ -83,6 +83,8 @@ class   WorkflowRenderer : public GenericRenderer
          *          forcePause is false.
          *  \param  forcePause  Will force the pause if true.
          *  \sa     stop()
+         *  \warning    Do NOT call this method from a constructor as it calls some
+         *              virtual methods.
          */
         virtual void        togglePlayPause( bool forcePause );
         /**
@@ -207,6 +209,28 @@ class   WorkflowRenderer : public GenericRenderer
          *  \param  buffer      The buffer to be released
          */
         static void         unlock( void *data, size_t buffSize, void *buffer );
+        /**
+         *  \brief  Return the renderer specific width
+         *
+         *  The render width can changed depending on the render target.
+         *  This getter will be used to initialized the MainWorkflow with the
+         *  appropriate width.
+         *  \return The video width for the underlying WorkflowRenderer
+         */
+        virtual quint32     width() const;
+        /**
+         *  \brief  Return the renderer specific height
+         *
+         *  The render width can changed depending on the render target.
+         *  This getter will be used to initialized the MainWorkflow with the
+         *  appropriate height.
+         *  \return The video height for the underlying WorkflowRenderer
+         */
+        virtual quint32     height() const;
+        /**
+         *  \brief          Configure the production chain.
+         */
+        void                setupRenderer();
 
     protected:
         MainWorkflow*       m_mainWorkflow;

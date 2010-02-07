@@ -84,7 +84,7 @@ void        WorkflowFileRenderer::run()
     m_audioPts = 0;
 
     m_mainWorkflow->setFullSpeedRender( true );
-    m_mainWorkflow->startRender();
+    m_mainWorkflow->startRender( width(), height() );
     m_mediaPlayer->play();
 }
 
@@ -146,4 +146,20 @@ void*       WorkflowFileRenderer::getLockCallback()
 void*       WorkflowFileRenderer::getUnlockCallback()
 {
     return (void*)&WorkflowFileRenderer::unlock;
+}
+
+quint32
+WorkflowFileRenderer::width() const
+{
+    const SettingValue  *width = SettingsManager::getInstance()->getValue( "project",
+                                                                    "VideoProjectWidth" );
+    return width->get().toUInt();
+}
+
+quint32
+WorkflowFileRenderer::height() const
+{
+    const SettingValue  *height = SettingsManager::getInstance()->getValue( "project",
+                                                                    "VideoProjectHeight" );
+    return height->get().toUInt();
 }

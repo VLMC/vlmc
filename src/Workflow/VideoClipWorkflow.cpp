@@ -33,11 +33,6 @@ VideoClipWorkflow::VideoClipWorkflow( Clip *clip ) :
         ClipWorkflow( clip ),
         m_lastRenderedFrame( NULL )
 {
-    for ( unsigned int i = 0; i < VideoClipWorkflow::nbBuffers; ++i )
-    {
-        m_availableBuffers.enqueue( new LightVideoFrame( MainWorkflow::getInstance()->getWidth(),
-                                                         MainWorkflow::getInstance()->getHeight() ) );
-    }
     debugType = 2;
 }
 
@@ -47,6 +42,16 @@ VideoClipWorkflow::~VideoClipWorkflow()
         delete m_availableBuffers.dequeue();
     while ( m_computedBuffers.isEmpty() == false )
         delete m_computedBuffers.dequeue();
+}
+
+void
+VideoClipWorkflow::preallocate()
+{
+    for ( unsigned int i = 0; i < VideoClipWorkflow::nbBuffers; ++i )
+    {
+        m_availableBuffers.enqueue( new LightVideoFrame( MainWorkflow::getInstance()->getWidth(),
+                                                         MainWorkflow::getInstance()->getHeight() ) );
+    }
 }
 
 void
@@ -74,6 +79,7 @@ VideoClipWorkflow::initVlcOutput()
     m_vlcMedia->addOption( buffer );
     sprintf( buffer, ":sout-transcode-fps=%f", (float)Clip::DefaultFPS );
     m_vlcMedia->addOption( buffer );
+    preallocate();
 }
 
 void*
