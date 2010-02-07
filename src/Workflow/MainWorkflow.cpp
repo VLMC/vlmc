@@ -189,7 +189,7 @@ MainWorkflow::getClipPosition( const QUuid& uuid, unsigned int trackId,
 void
 MainWorkflow::stop()
 {
-    QMutexLocker        lock( m_renderStartedMutex );
+    QMutexLocker    lock( m_renderStartedMutex );
     QWriteLocker    lock2( m_currentFrameLock );
 
     m_renderStarted = false;

@@ -42,7 +42,9 @@ WorkflowRenderer::WorkflowRenderer() :
             m_stopping( false ),
             m_oldLength( 0 ),
             m_renderVideoFrame( NULL ),
-            m_media( NULL )
+            m_media( NULL ),
+            m_width( 0 ),
+            m_height( 0 )
 {
 }
 
@@ -82,15 +84,13 @@ WorkflowRenderer::setupRenderer()
     char        inputSlave[256];
     char        audioParameters[256];
     char        callbacks[64];
-    quint32     width = this->width();
-    quint32     height = this->height();
 
     if ( m_renderVideoFrame != NULL )
         delete m_renderVideoFrame;
-    m_renderVideoFrame = new unsigned char[width * height * Pixel::NbComposantes];
+    m_renderVideoFrame = new unsigned char[m_width * m_height * Pixel::NbComposantes];
 
     sprintf( videoString, "width=%i:height=%i:dar=%s:fps=%s:data=%lld:codec=%s:cat=2:caching=0",
-             width, height, "16/9", "30/1",
+             m_width, m_height, "16/9", "30/1",
              (qint64)m_videoEsHandler, "RV24" );
     sprintf( audioParameters, "data=%lld:cat=1:codec=fl32:samplerate=%u:channels=%u:caching=0",
              (qint64)m_audioEsHandler, m_rate, m_nbChannels );
@@ -209,7 +209,8 @@ void        WorkflowRenderer::startPreview()
 {
     if ( m_mainWorkflow->getLengthFrame() <= 0 )
         return ;
-    setupRenderer();
+    if ( parametersChanged() == true )
+        setupRenderer();
     m_mediaPlayer->setMedia( m_media );
 
     //Media player part: to update PreviewWidget
@@ -224,13 +225,12 @@ void        WorkflowRenderer::startPreview()
             (*MainWorkflow::blackOutput)->nboctets );
 
     m_mainWorkflow->setFullSpeedRender( false );
-    m_mainWorkflow->startRender( width(), height() );
+    m_mainWorkflow->startRender( m_width, m_height );
     m_isRendering = true;
     m_paused = false;
     m_stopping = false;
     m_pts = 0;
     m_audioPts = 0;
-    m_outputFps = SettingsManager::getInstance()->getValue( "VLMC", "VLMCOutPutFPS" )->get().toDouble();
     m_mediaPlayer->play();
 }
 
@@ -353,6 +353,25 @@ WorkflowRenderer::height() const
     const SettingValue  *height = SettingsManager::getInstance()->getValue( "project",
                                                                     "VideoProjectHeight" );
     return height->get().toUInt();
+}
+
+bool
+WorkflowRenderer::parametersChanged()
+{
+    const SettingValue  *newOutputFpsSV = SettingsManager::getInstance()->getValue( "VLMC",
+                                                                                  "VLMCOutPutFPS" );
+    quint32             newWidth = width();
+    quint32             newHeight = height();
+    float               newOutputFps = newOutputFpsSV->get().toDouble();
+    if ( newWidth != m_width || newHeight != m_height ||
+         newOutputFps != m_outputFps )
+    {
+        m_width = newWidth;
+        m_height = newHeight;
+        m_outputFps = newOutputFps;
+        return true;
+    }
+    return false;
 }
 
 /////////////////////////////////////////////////////////////////////

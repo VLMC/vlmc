@@ -31,17 +31,9 @@
 
 WorkflowFileRenderer::WorkflowFileRenderer( const QString& outputFileName ) :
         WorkflowRenderer(),
-        m_outputFileName( outputFileName )
+        m_outputFileName( outputFileName ),
+        m_image( NULL )
 {
-    m_image = NULL;
-    m_dialog = new WorkflowFileRendererDialog();
-    m_dialog->setModal( true );
-    m_dialog->setOutputFileName( outputFileName );
-    connect( m_dialog->m_ui.cancelButton, SIGNAL( clicked() ), this, SLOT( cancelButtonClicked() ) );
-    connect( m_dialog, SIGNAL( finished(int) ), this, SLOT( stop() ) );
-    connect( this, SIGNAL( imageUpdated( const uchar* ) ),
-             m_dialog, SLOT( updatePreview( const uchar* ) ),
-             Qt::QueuedConnection );
 }
 
 WorkflowFileRenderer::~WorkflowFileRenderer()
@@ -54,9 +46,14 @@ void        WorkflowFileRenderer::run()
 //    char        buffer[256];
 
     m_mainWorkflow->setCurrentFrame( 0, MainWorkflow::Renderer );
-    m_outputFps = SettingsManager::getInstance()->getValue( "VLMC", "VLMCOutPutFPS" )->get().toDouble();
 
-    //Media as already been created an mainly initialized by the WorkflowRenderer
+    //Ugly hack to update render parameter.
+    //We don't really care if anything has changed as WorkflowFileRenderer is called
+    //only once, and is deleted then.
+    parametersChanged();
+    setupRenderer();
+
+    //Media as already been created and mainly initialized by the WorkflowRenderer
     QString     transcodeStr = ":sout=#transcode{vcodec=h264,vb=800,acodec=a52,ab=128,no-hurry-up}"
                                ":standard{access=file,mux=ps,dst=\""
                           + m_outputFileName + "\"}";
@@ -75,13 +72,14 @@ void        WorkflowFileRenderer::run()
     connect( m_mainWorkflow, SIGNAL( mainWorkflowEndReached() ), this, SLOT( stop() ) );
     connect( m_mainWorkflow, SIGNAL( frameChanged( qint64, MainWorkflow::FrameChangedReason) ),
              this, SLOT( __frameChanged( qint64,MainWorkflow::FrameChangedReason ) ) );
-    m_dialog->show();
 
     m_isRendering = true;
     m_stopping = false;
     m_paused = false;
     m_pts = 0;
     m_audioPts = 0;
+
+    setupDialog();
 
     m_mainWorkflow->setFullSpeedRender( true );
     m_mainWorkflow->startRender( width(), height() );
@@ -162,4 +160,18 @@ WorkflowFileRenderer::height() const
     const SettingValue  *height = SettingsManager::getInstance()->getValue( "project",
                                                                     "VideoProjectHeight" );
     return height->get().toUInt();
+}
+
+void
+WorkflowFileRenderer::setupDialog()
+{
+    m_dialog = new WorkflowFileRendererDialog( m_width, m_height );
+    m_dialog->setModal( true );
+    m_dialog->setOutputFileName( m_outputFileName );
+    connect( m_dialog->m_ui.cancelButton, SIGNAL( clicked() ), this, SLOT( cancelButtonClicked() ) );
+    connect( m_dialog, SIGNAL( finished(int) ), this, SLOT( stop() ) );
+    connect( this, SIGNAL( imageUpdated( const uchar* ) ),
+             m_dialog, SLOT( updatePreview( const uchar* ) ),
+             Qt::QueuedConnection );
+    m_dialog->show();
 }

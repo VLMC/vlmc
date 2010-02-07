@@ -24,7 +24,9 @@
 #include "vlmc.h"
 #include "WorkflowFileRendererDialog.h"
 
-WorkflowFileRendererDialog::WorkflowFileRendererDialog()
+WorkflowFileRendererDialog::WorkflowFileRendererDialog( quint32 width, quint32 height ) :
+        m_width( width ),
+        m_height( height )
 {
     m_ui.setupUi( this );
     m_workflow = MainWorkflow::getInstance();
@@ -35,7 +37,7 @@ WorkflowFileRendererDialog::WorkflowFileRendererDialog()
 void    WorkflowFileRendererDialog::setOutputFileName( const QString& outputFileName )
 {
     m_ui.nameLabel->setText( outputFileName );
-    m_ui.previewLabel->setMinimumSize( m_workflow->getWidth(), m_workflow->getHeight() );
+    m_ui.previewLabel->setMinimumSize( m_width, m_height );
     setWindowTitle( "Rendering to " + outputFileName );
 }
 
@@ -47,7 +49,7 @@ void    WorkflowFileRendererDialog::setProgressBarValue( int val )
 void    WorkflowFileRendererDialog::updatePreview( const uchar* buff )
 {
     m_ui.previewLabel->setPixmap(
-            QPixmap::fromImage( QImage( buff, m_workflow->getWidth(), m_workflow->getHeight(),
+            QPixmap::fromImage( QImage( buff, m_width, m_height,
                                         QImage::Format_RGB888 ).rgbSwapped() ) );
 }
 

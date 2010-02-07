@@ -33,13 +33,15 @@ class   WorkflowFileRendererDialog : public QDialog
     Q_OBJECT
     Q_DISABLE_COPY( WorkflowFileRendererDialog );
 public:
-    WorkflowFileRendererDialog();
+    WorkflowFileRendererDialog( quint32 width, quint32 height );
     void    setOutputFileName( const QString& filename );
     void    setProgressBarValue( int val );
 
 private:
     Ui::WorkflowFileRendererDialog      m_ui;
     MainWorkflow*                       m_workflow;
+    quint32                             m_width;
+    quint32                             m_height;
 
 public slots:
     void    updatePreview( const uchar* buff );

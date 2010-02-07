@@ -44,6 +44,9 @@ public:
 
     void                run();
     virtual float       getFps() const;
+
+private:
+    void                setupDialog();
 private:
     const QString               m_outputFileName;
     WorkflowFileRendererDialog* m_dialog;

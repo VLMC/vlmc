@@ -31,7 +31,9 @@
 
 VideoClipWorkflow::VideoClipWorkflow( Clip *clip ) :
         ClipWorkflow( clip ),
-        m_lastRenderedFrame( NULL )
+        m_lastRenderedFrame( NULL ),
+        m_width( 0 ),
+        m_height( 0 )
 {
     debugType = 2;
 }
@@ -47,10 +49,18 @@ VideoClipWorkflow::~VideoClipWorkflow()
 void
 VideoClipWorkflow::preallocate()
 {
-    for ( unsigned int i = 0; i < VideoClipWorkflow::nbBuffers; ++i )
+    quint32     newWidth = MainWorkflow::getInstance()->getWidth();
+    quint32     newHeight = MainWorkflow::getInstance()->getHeight();
+    if ( newWidth != m_width || newHeight != m_height )
     {
-        m_availableBuffers.enqueue( new LightVideoFrame( MainWorkflow::getInstance()->getWidth(),
-                                                         MainWorkflow::getInstance()->getHeight() ) );
+        m_width = newWidth;
+        m_height = newHeight;
+        while ( m_availableBuffers.isEmpty() == false )
+            delete m_availableBuffers.dequeue();
+        for ( unsigned int i = 0; i < VideoClipWorkflow::nbBuffers; ++i )
+        {
+            m_availableBuffers.enqueue( new LightVideoFrame( newWidth, newHeight ) );
+        }
     }
 }
 
@@ -59,6 +69,7 @@ VideoClipWorkflow::initVlcOutput()
 {
     char        buffer[32];
 
+    preallocate();
     m_vlcMedia->addOption( ":no-audio" );
     m_vlcMedia->addOption( ":no-sout-audio" );
     m_vlcMedia->addOption( ":sout=#transcode{}:smem" );
@@ -71,15 +82,12 @@ VideoClipWorkflow::initVlcOutput()
     else
         m_vlcMedia->addOption( ":no-sout-smem-time-sync" );
 
-    sprintf( buffer, ":sout-transcode-width=%i",
-             MainWorkflow::getInstance()->getWidth() );
+    sprintf( buffer, ":sout-transcode-width=%i", m_width );
     m_vlcMedia->addOption( buffer );
-    sprintf( buffer, ":sout-transcode-height=%i",
-             MainWorkflow::getInstance()->getHeight() );
+    sprintf( buffer, ":sout-transcode-height=%i", m_height );
     m_vlcMedia->addOption( buffer );
     sprintf( buffer, ":sout-transcode-fps=%f", (float)Clip::DefaultFPS );
     m_vlcMedia->addOption( buffer );
-    preallocate();
 }
 
 void*
@@ -129,8 +137,7 @@ VideoClipWorkflow::lock( VideoClipWorkflow *cw, void **pp_ret, int size )
     cw->m_computedBuffersMutex->lock();
     if ( cw->m_availableBuffers.isEmpty() == true )
     {
-        lvf = new LightVideoFrame( MainWorkflow::getInstance()->getWidth(),
-                                   MainWorkflow::getInstance()->getHeight() );
+        lvf = new LightVideoFrame( cw->m_width, cw->m_height );
     }
     else
         lvf = cw->m_availableBuffers.dequeue();
