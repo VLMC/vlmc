@@ -20,14 +20,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <QScrollBar>
-#include <QMouseEvent>
-#include <QWheelEvent>
-#include <QGraphicsLinearLayout>
-#include <QGraphicsWidget>
-#include <QGraphicsRectItem>
-#include <QtDebug>
 #include "TracksView.h"
+
 #include "Library.h"
 #include "GraphicsMovieItem.h"
 #include "GraphicsAudioItem.h"
@@ -36,9 +30,20 @@
 #include "GraphicsTrack.h"
 #include "WorkflowRenderer.h"
 
-TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, WorkflowRenderer* renderer, QWidget* parent )
-        : QGraphicsView( scene, parent ), m_scene( scene ), m_mainWorkflow( mainWorkflow ),
-        m_renderer( renderer )
+#include <QScrollBar>
+#include <QMouseEvent>
+#include <QWheelEvent>
+#include <QGraphicsLinearLayout>
+#include <QGraphicsWidget>
+#include <QGraphicsRectItem>
+#include <QtDebug>
+
+TracksView::TracksView( QGraphicsScene *scene, MainWorkflow *mainWorkflow,
+                        WorkflowRenderer *renderer, QWidget *parent )
+    : QGraphicsView( scene, parent ),
+    m_scene( scene ),
+    m_mainWorkflow( mainWorkflow ),
+    m_renderer( renderer )
 {
     //TODO should be defined by the settings
     m_tracksHeight = 25;
@@ -72,7 +77,8 @@ TracksView::TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, Workf
              this, SLOT( deleteMedia( QUuid ) ) );
 }
 
-void TracksView::createLayout()
+void
+TracksView::createLayout()
 {
     m_layout = new QGraphicsLinearLayout( Qt::Vertical );
     m_layout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
@@ -80,7 +86,7 @@ void TracksView::createLayout()
     m_layout->setSpacing( 0 );
     m_layout->setPreferredWidth( 0 );
 
-    QGraphicsWidget* container = new QGraphicsWidget();
+    QGraphicsWidget *container = new QGraphicsWidget();
     container->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     container->setContentsMargins( 0, 0, 0, 0 );
     container->setLayout( m_layout );
@@ -103,9 +109,10 @@ void TracksView::createLayout()
     setSceneRect( m_layout->contentsRect() );
 }
 
-void TracksView::addVideoTrack()
+void
+TracksView::addVideoTrack()
 {
-    GraphicsTrack* track = new GraphicsTrack( MainWorkflow::VideoTrack, m_numVideoTrack );
+    GraphicsTrack *track = new GraphicsTrack( MainWorkflow::VideoTrack, m_numVideoTrack );
     track->setHeight( m_tracksHeight );
     m_layout->insertItem( 0, track );
     m_layout->activate();
@@ -115,9 +122,10 @@ void TracksView::addVideoTrack()
     emit videoTrackAdded( track );
 }
 
-void TracksView::addAudioTrack()
+void
+TracksView::addAudioTrack()
 {
-    GraphicsTrack* track = new GraphicsTrack( MainWorkflow::AudioTrack, m_numAudioTrack );
+    GraphicsTrack *track = new GraphicsTrack( MainWorkflow::AudioTrack, m_numAudioTrack );
     track->setHeight( m_tracksHeight );
     m_layout->insertItem( 1000, track );
     m_layout->activate();
@@ -127,11 +135,12 @@ void TracksView::addAudioTrack()
     emit audioTrackAdded( track );
 }
 
-void TracksView::removeVideoTrack()
+void
+TracksView::removeVideoTrack()
 {
     Q_ASSERT( m_numVideoTrack > 0 );
 
-    QGraphicsLayoutItem* item = m_layout->itemAt( 0 );
+    QGraphicsLayoutItem *item = m_layout->itemAt( 0 );
     m_layout->removeItem( item );
     m_layout->activate();
     m_scene->invalidate(); // Redraw the background
@@ -141,11 +150,12 @@ void TracksView::removeVideoTrack()
     delete item;
 }
 
-void TracksView::removeAudioTrack()
+void
+TracksView::removeAudioTrack()
 {
     Q_ASSERT( m_numAudioTrack > 0 );
 
-    QGraphicsLayoutItem* item = m_layout->itemAt( m_layout->count() - 1 );
+    QGraphicsLayoutItem *item = m_layout->itemAt( m_layout->count() - 1 );
     m_layout->removeItem( item );
     m_layout->activate();
     m_scene->invalidate(); // Redraw the background
@@ -155,7 +165,8 @@ void TracksView::removeAudioTrack()
     delete item;
 }
 
-void TracksView::clear()
+void
+TracksView::clear()
 {
     m_layout->removeItem( m_separator );
 
@@ -173,9 +184,10 @@ void TracksView::clear()
     updateDuration();
 }
 
-void TracksView::deleteMedia( const QUuid& uuid  )
+void
+TracksView::deleteMedia( const QUuid &uuid  )
 {
-    AbstractGraphicsMediaItem* item;
+    AbstractGraphicsMediaItem *item;
 
     // Get the list of all items in the timeline
     QList<AbstractGraphicsMediaItem*> items = mediaItems();
@@ -204,7 +216,8 @@ void TracksView::deleteMedia( const QUuid& uuid  )
     }
 }
 
-void TracksView::addMediaItem( Clip* clip, unsigned int track, MainWorkflow::TrackType trackType, qint64 start )
+void
+TracksView::addMediaItem( Clip *clip, unsigned int track, MainWorkflow::TrackType trackType, qint64 start )
 {
     Q_ASSERT( clip );
 
@@ -238,14 +251,14 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, MainWorkflow::Tra
     QList<QGraphicsItem*> trackItems = getTrack( trackType, track )->childItems();;
     for ( int i = 0; i < trackItems.size(); ++i )
     {
-        AbstractGraphicsMediaItem* item =
+        AbstractGraphicsMediaItem *item =
                 dynamic_cast<AbstractGraphicsMediaItem*>( trackItems.at( i ) );
         if ( !item || item->uuid() != clip->getUuid() ) continue;
         // Item already exist: goodbye!
         return;
     }
 
-    AbstractGraphicsMediaItem* item = 0;
+    AbstractGraphicsMediaItem *item = 0;
     if ( trackType == MainWorkflow::VideoTrack )
     {
         item = new GraphicsMovieItem( clip );
@@ -269,20 +282,21 @@ void TracksView::addMediaItem( Clip* clip, unsigned int track, MainWorkflow::Tra
     updateDuration();
 }
 
-void TracksView::dragEnterEvent( QDragEnterEvent* event )
+void
+TracksView::dragEnterEvent( QDragEnterEvent *event )
 {
     if ( event->mimeData()->hasFormat( "vlmc/uuid" ) )
         event->acceptProposedAction();
 
     QUuid uuid = QUuid( QString( event->mimeData()->data( "vlmc/uuid" ) ) );
-    Clip* clip = Library::getInstance()->clip( uuid );
+    Clip *clip = Library::getInstance()->clip( uuid );
     if ( !clip ) return;
     if ( clip->getParent()->hasAudioTrack() == false &&
          clip->getParent()->hasVideoTrack() == false )
         return ;
 
-    Clip* audioClip = NULL;
-    Clip* videoClip = NULL;
+    Clip *audioClip = NULL;
+    Clip *videoClip = NULL;
     //FIXME: Creating a new clip leaks, but at least we have independant clips.
 
     if ( clip->getParent()->hasAudioTrack() == true )
@@ -319,7 +333,8 @@ void TracksView::dragEnterEvent( QDragEnterEvent* event )
         moveMediaItem( m_dragVideoItem, event->pos() );
 }
 
-void TracksView::dragMoveEvent( QDragMoveEvent* event )
+void
+TracksView::dragMoveEvent( QDragMoveEvent *event )
 {
     AbstractGraphicsMediaItem* target;
 
@@ -332,7 +347,8 @@ void TracksView::dragMoveEvent( QDragMoveEvent* event )
     moveMediaItem( target, event->pos() );
 }
 
-bool TracksView::setItemOldTrack( const QUuid &uuid, quint32 oldTrackNumber )
+bool
+TracksView::setItemOldTrack( const QUuid &uuid, quint32 oldTrackNumber )
 {
     QList<QGraphicsItem*> sceneItems = m_scene->items();
 
@@ -347,7 +363,8 @@ bool TracksView::setItemOldTrack( const QUuid &uuid, quint32 oldTrackNumber )
     return false;
 }
 
-void TracksView::moveMediaItem( const QUuid& uuid, unsigned int track, qint64 time )
+void
+TracksView::moveMediaItem( const QUuid &uuid, unsigned int track, qint64 time )
 {
     QList<QGraphicsItem*> sceneItems = m_scene->items();
 
@@ -360,10 +377,11 @@ void TracksView::moveMediaItem( const QUuid& uuid, unsigned int track, qint64 ti
     }
 }
 
-void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position )
+void
+TracksView::moveMediaItem( AbstractGraphicsMediaItem *item, QPoint position )
 {
-    static GraphicsTrack* lastKnownTrack = NULL;
-    GraphicsTrack* track = NULL;
+    static GraphicsTrack *lastKnownTrack = NULL;
+    GraphicsTrack *track = NULL;
 
     QList<QGraphicsItem*> list = items( 0, position.y() );
     for ( int i = 0; i < list.size(); ++i )
@@ -387,7 +405,8 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position
     moveMediaItem( item, track->trackNumber(), (qint64)time);
 }
 
-void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, qint64 time )
+void
+TracksView::moveMediaItem( AbstractGraphicsMediaItem *item, quint32 track, qint64 time )
 {
     if ( item->mediaType() == MainWorkflow::VideoTrack )
         track = qMin( track, m_numVideoTrack - 1 );
@@ -462,15 +481,16 @@ void TracksView::moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, 
     }
 }
 
-ItemPosition TracksView::findPosition( AbstractGraphicsMediaItem* item, quint32 track, qint64 time )
+ItemPosition
+TracksView::findPosition( AbstractGraphicsMediaItem *item, quint32 track, qint64 time )
 {
 
     // Create a fake item for computing collisions
-    QGraphicsRectItem* chkItem = new QGraphicsRectItem( item->boundingRect() );
+    QGraphicsRectItem *chkItem = new QGraphicsRectItem( item->boundingRect() );
     chkItem->setParentItem( getTrack( item->mediaType(), track ) );
     chkItem->setPos( time, 0 );
 
-    QGraphicsItem* oldParent = item->parentItem();
+    QGraphicsItem *oldParent = item->parentItem();
     qreal oldPos = item->startPos();
 
     // Check for vertical collisions
@@ -481,7 +501,7 @@ ItemPosition TracksView::findPosition( AbstractGraphicsMediaItem* item, quint32 
         bool itemCollision = false;
         for ( int i = 0; i < colliding.size(); ++i )
         {
-            AbstractGraphicsMediaItem* currentItem = dynamic_cast<AbstractGraphicsMediaItem*>( colliding.at( i ) );
+            AbstractGraphicsMediaItem *currentItem = dynamic_cast<AbstractGraphicsMediaItem*>( colliding.at( i ) );
             if ( currentItem && currentItem != item )
             {
                 // Collision with an item of the same type
@@ -518,7 +538,7 @@ ItemPosition TracksView::findPosition( AbstractGraphicsMediaItem* item, quint32 
     // Check for horizontal collisions
     chkItem->setPos( qMax( time, (qint64)0 ), 0 );
 
-    AbstractGraphicsMediaItem* hItem = NULL;
+    AbstractGraphicsMediaItem *hItem = NULL;
     QList<QGraphicsItem*> collide = chkItem->collidingItems( Qt::IntersectsItemShape );
     for ( int i = 0; i < collide.count(); ++i )
     {
@@ -544,7 +564,7 @@ ItemPosition TracksView::findPosition( AbstractGraphicsMediaItem* item, quint32 
             QList<QGraphicsItem*> collideAgain = chkItem->collidingItems( Qt::IntersectsItemShape );
             for ( int i = 0; i < collideAgain.count(); ++i )
             {
-                AbstractGraphicsMediaItem* currentItem =
+                AbstractGraphicsMediaItem *currentItem =
                         dynamic_cast<AbstractGraphicsMediaItem*>( collideAgain.at( i ) );
                 if ( currentItem && currentItem != item )
                 {
@@ -555,7 +575,7 @@ ItemPosition TracksView::findPosition( AbstractGraphicsMediaItem* item, quint32 
         }
     }
 
-    GraphicsTrack* t = static_cast<GraphicsTrack*>( chkItem->parentItem() );
+    GraphicsTrack *t = static_cast<GraphicsTrack*>( chkItem->parentItem() );
 
     Q_ASSERT( t );
 
@@ -567,32 +587,35 @@ ItemPosition TracksView::findPosition( AbstractGraphicsMediaItem* item, quint32 
     return p;
 }
 
-void TracksView::removeMediaItem( const QUuid& uuid, unsigned int track, MainWorkflow::TrackType trackType )
+void
+TracksView::removeMediaItem( const QUuid &uuid, unsigned int track, MainWorkflow::TrackType trackType )
 {
     QList<QGraphicsItem*> trackItems = getTrack( trackType, track )->childItems();;
 
     for ( int i = 0; i < trackItems.size(); ++i )
     {
-        AbstractGraphicsMediaItem* item =
+        AbstractGraphicsMediaItem *item =
                 dynamic_cast<AbstractGraphicsMediaItem*>( trackItems.at( i ) );
         if ( !item || item->uuid() != uuid ) continue;
         removeMediaItem( item );
     }
 }
 
-void TracksView::removeMediaItem( AbstractGraphicsMediaItem* item )
+void
+TracksView::removeMediaItem( AbstractGraphicsMediaItem *item )
 {
     QList<AbstractGraphicsMediaItem*> items;
     items.append( item );
     removeMediaItem( items );
 }
 
-void TracksView::removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items )
+void
+TracksView::removeMediaItem( const QList<AbstractGraphicsMediaItem*> &items )
 {
     bool needUpdate = false;
     for ( int i = 0; i < items.size(); ++i )
     {
-        GraphicsMovieItem* movieItem = qgraphicsitem_cast<GraphicsMovieItem*>( items.at( i ) );
+        GraphicsMovieItem *movieItem = qgraphicsitem_cast<GraphicsMovieItem*>( items.at( i ) );
         if ( !movieItem )
         {
             //TODO add support for audio tracks
@@ -607,7 +630,8 @@ void TracksView::removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items
     if ( needUpdate ) updateDuration();
 }
 
-void TracksView::dragLeaveEvent( QDragLeaveEvent* event )
+void
+TracksView::dragLeaveEvent( QDragLeaveEvent *event )
 {
     Q_UNUSED( event )
     bool updateDurationNeeded = false;
@@ -629,7 +653,8 @@ void TracksView::dragLeaveEvent( QDragLeaveEvent* event )
         updateDuration();
 }
 
-void TracksView::dropEvent( QDropEvent* event )
+void
+TracksView::dropEvent( QDropEvent *event )
 {
     qreal mappedXPos = ( mapToScene( event->pos() ).x() + 0.5 );;
 
@@ -673,7 +698,8 @@ void TracksView::dropEvent( QDropEvent* event )
     UndoStack::getInstance()->endMacro();
 }
 
-void TracksView::setDuration( int duration )
+void
+TracksView::setDuration( int duration )
 {
     int diff = ( int ) qAbs( ( qreal )duration - sceneRect().width() );
     if ( diff * matrix().m11() > -50 )
@@ -686,19 +712,22 @@ void TracksView::setDuration( int duration )
     m_projectDuration = duration;
 }
 
-void TracksView::setTool( ToolButtons button )
+void
+TracksView::setTool( ToolButtons button )
 {
     m_tool = button;
     if ( m_tool == TOOL_CUT )
         scene()->clearSelection();
 }
 
-void TracksView::resizeEvent( QResizeEvent* event )
+void
+TracksView::resizeEvent( QResizeEvent *event )
 {
     QGraphicsView::resizeEvent( event );
 }
 
-void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
+void
+TracksView::drawBackground( QPainter *painter, const QRectF &rect )
 {
     painter->setWorldMatrixEnabled( false );
 
@@ -740,7 +769,8 @@ void TracksView::drawBackground( QPainter* painter, const QRectF& rect )
                        (int) m_separator->boundingRect().height() );
 }
 
-void TracksView::mouseMoveEvent( QMouseEvent* event )
+void
+TracksView::mouseMoveEvent( QMouseEvent *event )
 {
     if ( event->modifiers() == Qt::NoModifier &&
          event->buttons() == Qt::LeftButton &&
@@ -762,7 +792,7 @@ void TracksView::mouseMoveEvent( QMouseEvent* event )
         QPointF itemNewSize = mapToScene( event->pos() ) - itemPos;
 
         //FIXME: BEGIN UGLY
-        GraphicsTrack* track = getTrack( m_actionItem->mediaType(), m_actionItem->trackNumber() );
+        GraphicsTrack *track = getTrack( m_actionItem->mediaType(), m_actionItem->trackNumber() );
         Q_ASSERT( track );
 
         QPointF collidePos = track->sceneBoundingRect().topRight();
@@ -800,7 +830,8 @@ void TracksView::mouseMoveEvent( QMouseEvent* event )
     QGraphicsView::mouseMoveEvent( event );
 }
 
-void TracksView::mousePressEvent( QMouseEvent* event )
+void
+TracksView::mousePressEvent( QMouseEvent *event )
 {
     QList<AbstractGraphicsMediaItem*> mediaCollisionList = mediaItems( event->pos() );
 
@@ -817,7 +848,7 @@ void TracksView::mousePressEvent( QMouseEvent* event )
          tool() == TOOL_DEFAULT &&
          mediaCollisionList.count() == 1 )
     {
-        AbstractGraphicsMediaItem* item = mediaCollisionList.at( 0 );
+        AbstractGraphicsMediaItem *item = mediaCollisionList.at( 0 );
 
         QPoint itemEndPos = mapFromScene( item->mapToScene( item->boundingRect().bottomRight() ) );
         QPoint itemPos = mapFromScene( item->mapToScene( 0, 0 ) );
@@ -851,7 +882,7 @@ void TracksView::mousePressEvent( QMouseEvent* event )
          tool() == TOOL_DEFAULT &&
          mediaCollisionList.count() == 1 )
     {
-        AbstractGraphicsMediaItem* item = mediaCollisionList.at( 0 );
+        AbstractGraphicsMediaItem *item = mediaCollisionList.at( 0 );
 
         if ( !scene()->selectedItems().contains( item ) )
         {
@@ -864,7 +895,7 @@ void TracksView::mousePressEvent( QMouseEvent* event )
               tool() == TOOL_DEFAULT &&
               mediaCollisionList.count() == 1 )
     {
-        AbstractGraphicsMediaItem* item = mediaCollisionList.at( 0 );
+        AbstractGraphicsMediaItem *item = mediaCollisionList.at( 0 );
         item->setSelected( !item->isSelected() );
         event->accept();
     }
@@ -879,7 +910,8 @@ void TracksView::mousePressEvent( QMouseEvent* event )
     QGraphicsView::mousePressEvent( event );
 }
 
-void TracksView::mouseReleaseEvent( QMouseEvent* event )
+void
+TracksView::mouseReleaseEvent( QMouseEvent *event )
 {
     if ( m_actionMove && m_actionMoveExecuted )
     {
@@ -925,7 +957,7 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
     }
     else if ( m_actionResize )
     {
-        Clip* clip = m_actionItem->clip();
+        Clip *clip = m_actionItem->clip();
         //This is a "pointless action". The resize already occured. However, by doing this
         //we can have an undo action.
         Commands::trigger( new Commands::MainWorkflow::ResizeClip( clip->getUuid(), clip->getBegin(),
@@ -942,7 +974,8 @@ void TracksView::mouseReleaseEvent( QMouseEvent* event )
     QGraphicsView::mouseReleaseEvent( event );
 }
 
-void TracksView::wheelEvent( QWheelEvent* event )
+void
+TracksView::wheelEvent( QWheelEvent *event )
 {
     if ( event->modifiers() == Qt::ControlModifier )
     {
@@ -961,7 +994,8 @@ void TracksView::wheelEvent( QWheelEvent* event )
     }
 }
 
-QList<AbstractGraphicsMediaItem*> TracksView::mediaItems( const QPoint& pos )
+QList<AbstractGraphicsMediaItem*>
+TracksView::mediaItems( const QPoint &pos )
 {
     //TODO optimization needed!
     QList<QGraphicsItem*> collisionList = items( pos );
@@ -976,11 +1010,12 @@ QList<AbstractGraphicsMediaItem*> TracksView::mediaItems( const QPoint& pos )
     return mediaCollisionList;
 }
 
-QList<AbstractGraphicsMediaItem*> TracksView::mediaItems()
+QList<AbstractGraphicsMediaItem*>
+TracksView::mediaItems()
 {
     //TODO optimization needed!
-    QGraphicsItem* item;
-    AbstractGraphicsMediaItem* ami;
+    QGraphicsItem *item;
+    AbstractGraphicsMediaItem *ami;
     QList<AbstractGraphicsMediaItem*> outlist;
     QList<QGraphicsItem*> list = items();
     foreach( item, list )
@@ -992,18 +1027,21 @@ QList<AbstractGraphicsMediaItem*> TracksView::mediaItems()
     return outlist;
 }
 
-void TracksView::setCursorPos( qint64 pos )
+void
+TracksView::setCursorPos( qint64 pos )
 {
     if ( pos < 0 ) pos = 0;
     m_cursorLine->frameChanged( pos, MainWorkflow::TimelineCursor );
 }
 
-qint64 TracksView::cursorPos()
+qint64
+TracksView::cursorPos()
 {
     return m_cursorLine->cursorPos();
 }
 
-void TracksView::setScale( double scaleFactor )
+void
+TracksView::setScale( double scaleFactor )
 {
     QMatrix matrix;
     matrix.scale( scaleFactor, 1 );
@@ -1021,7 +1059,8 @@ void TracksView::setScale( double scaleFactor )
     centerOn( m_cursorLine );
 }
 
-void TracksView::ensureCursorVisible()
+void
+TracksView::ensureCursorVisible()
 {
     if ( horizontalScrollBar()->isVisible() )
     {
@@ -1032,7 +1071,8 @@ void TracksView::ensureCursorVisible()
     }
 }
 
-void TracksView::updateDuration()
+void
+TracksView::updateDuration()
 {
     //TODO this should use a variant of mediaItems( const QPoint& )
     QList<QGraphicsItem*> sceneItems = m_scene->items();
@@ -1040,7 +1080,7 @@ void TracksView::updateDuration()
     int projectDuration = 0;
     for ( int i = 0; i < sceneItems.size(); ++i )
     {
-        AbstractGraphicsMediaItem* item =
+        AbstractGraphicsMediaItem *item =
                 dynamic_cast<AbstractGraphicsMediaItem*>( sceneItems.at( i ) );
         if ( !item ) continue;
         if ( ( item->startPos() + item->boundingRect().width() ) > projectDuration )
@@ -1064,7 +1104,8 @@ void TracksView::updateDuration()
     cleanUnusedTracks();
 }
 
-void TracksView::cleanTracks( MainWorkflow::TrackType type )
+void
+TracksView::cleanTracks( MainWorkflow::TrackType type )
 {
     int tracksToCheck;
     int tracksToRemove = 0;
@@ -1076,7 +1117,7 @@ void TracksView::cleanTracks( MainWorkflow::TrackType type )
 
     for ( int i = tracksToCheck; i > 0; --i )
     {
-        GraphicsTrack* track = getTrack( type, i );
+        GraphicsTrack *track = getTrack( type, i );
         if ( !track )
             continue;
 
@@ -1098,7 +1139,8 @@ void TracksView::cleanTracks( MainWorkflow::TrackType type )
     }
 }
 
-void TracksView::cleanUnusedTracks()
+void
+TracksView::cleanUnusedTracks()
 {
     // Video
     cleanTracks( MainWorkflow::VideoTrack );
@@ -1106,12 +1148,13 @@ void TracksView::cleanUnusedTracks()
     cleanTracks( MainWorkflow::AudioTrack );
 }
 
-GraphicsTrack* TracksView::getTrack( MainWorkflow::TrackType type, unsigned int number )
+GraphicsTrack*
+TracksView::getTrack( MainWorkflow::TrackType type, unsigned int number )
 {
     for (int i = 0; i < m_layout->count(); ++i )
     {
-        QGraphicsItem* gi = m_layout->itemAt( i )->graphicsItem();
-        GraphicsTrack* track = qgraphicsitem_cast<GraphicsTrack*>( gi );
+        QGraphicsItem *gi = m_layout->itemAt( i )->graphicsItem();
+        GraphicsTrack *track = qgraphicsitem_cast<GraphicsTrack*>( gi );
         if ( !track ) continue;
         if ( track->mediaType() != type ) continue;
         if ( track->trackNumber() == number )
@@ -1120,7 +1163,8 @@ GraphicsTrack* TracksView::getTrack( MainWorkflow::TrackType type, unsigned int 
     return NULL;
 }
 
-void TracksView::split( AbstractGraphicsMediaItem* item, qint64 frame )
+void
+TracksView::split( AbstractGraphicsMediaItem *item, qint64 frame )
 {
     //frame is the number of frame from the beginning of the clip
     //item->startPos() is the position of the splitted clip (in frame)

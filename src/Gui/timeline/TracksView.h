@@ -23,12 +23,13 @@
 #ifndef TRACKSVIEW_H
 #define TRACKSVIEW_H
 
-#include <QWidget>
-#include <QGraphicsView>
 #include "vlmc.h"
 #include "MainWorkflow.h"
 #include "AbstractGraphicsMediaItem.h"
 #include "GraphicsCursorItem.h"
+
+#include <QWidget>
+#include <QGraphicsView>
 
 class QWheelEvent;
 class QGraphicsWidget;
@@ -90,7 +91,7 @@ class TracksView : public QGraphicsView
     Q_OBJECT
 
 public:
-    TracksView( QGraphicsScene* scene, MainWorkflow* mainWorkflow, WorkflowRenderer* renderer, QWidget* parent = 0 );
+    TracksView( QGraphicsScene *scene, MainWorkflow *mainWorkflow, WorkflowRenderer *renderer, QWidget *parent = 0 );
     /**
      * \brief Set the duration of the project.
      * \param duration Duration in frames.
@@ -130,7 +131,7 @@ public:
      * \brief Return a pointer to the cursor.
      * \return A pointer to the GraphicsCursorItem.
      */
-    GraphicsCursorItem* tracksCursor() const { return m_cursorLine; }
+    GraphicsCursorItem *tracksCursor() const { return m_cursorLine; }
     /**
      * \brief Change the scale factor of the timeline.
      * \sa Timeline::changeZoom
@@ -144,7 +145,7 @@ public:
      * \warning Calling this method can be excessively slow!
      * \sa mediaItems()
      */
-    QList<AbstractGraphicsMediaItem*> mediaItems( const QPoint& pos );
+    QList<AbstractGraphicsMediaItem*> mediaItems( const QPoint &pos );
     /**
      * \brief This is an overloaded method provided for convenience.
      * \warning Calling this method can be excessively slow!
@@ -156,7 +157,7 @@ public:
      * \param items A QList of pointers to AbstractGraphicsMediaItem.
      * \sa removeMediaItem( AbstractGraphicsMediaItem* )
      */
-    void                    removeMediaItem( const QList<AbstractGraphicsMediaItem*>& items );
+    void                    removeMediaItem( const QList<AbstractGraphicsMediaItem*> &items );
     /**
      * \brief Change the currently selected tool.
      * \param button The selected tool button.
@@ -173,12 +174,12 @@ public:
      * \brief Get the WorkflowRenderer used by the timeline.
      * \return A pointer to the current WorkflowRenderer.
      */
-    WorkflowRenderer*       getRenderer() { return m_renderer; }
+    WorkflowRenderer        *getRenderer() { return m_renderer; }
     /**
      * \brief Ugly hack to change the old track number of an item.
      * \deprecated Do not use, will be removed soon.
      */
-    bool                    setItemOldTrack( const QUuid& uuid, quint32 oldTrackNumber );
+    bool                    setItemOldTrack( const QUuid &uuid, quint32 oldTrackNumber );
 
 public slots:
     /**
@@ -190,7 +191,7 @@ public slots:
      * \brief Remove a Media from the timeline (and from the backend).
      * \param uuid The unique identifier of the Media.
      */
-    void                    deleteMedia( const QUuid& uuid  );
+    void                    deleteMedia( const QUuid &uuid  );
     /**
      * \brief Insert an item into the timeline.
      * \param clip Clip to insert.
@@ -198,39 +199,39 @@ public slots:
      * \param trackType The type of the track (Audio or Video)
      * \param start The position in frames.
      */
-    void                    addMediaItem( Clip* clip, unsigned int track, MainWorkflow::TrackType trackType, qint64 start );
+    void                    addMediaItem( Clip *clip, unsigned int track, MainWorkflow::TrackType trackType, qint64 start );
     /**
      * \brief Move an item in the timeline.
      * \param uuid The Universally Unique Identifier of the item.
      * \param track The new track of the item.
      * \param time The new position (in frames) of the item.
      */
-    void                    moveMediaItem( const QUuid& uuid, unsigned int track, qint64 time );
+    void                    moveMediaItem( const QUuid &uuid, unsigned int track, qint64 time );
     /**
      * \brief Remove an item from the timeline.
      * \param uuid The Universally Unique Identifier of the item.
      * \param track The current track of the item.
      * \param trackType The type of the track (Audio or Video)
      */
-    void                    removeMediaItem( const QUuid& uuid, unsigned int track, MainWorkflow::TrackType trackType );
+    void                    removeMediaItem( const QUuid &uuid, unsigned int track, MainWorkflow::TrackType trackType );
     /**
      * \brief This is an overloaded method provided for convenience.
      * \param item A pointer to AbstractGraphicsMediaItem.
      * \sa removeMediaItem( const QList<AbstractGraphicsMediaItem*>& )
      */
-    void                    removeMediaItem( AbstractGraphicsMediaItem* item );
+    void                    removeMediaItem( AbstractGraphicsMediaItem *item );
 
 protected:
-    virtual void            resizeEvent( QResizeEvent* event );
-    virtual void            drawBackground( QPainter* painter, const QRectF& rect );
-    virtual void            mouseMoveEvent( QMouseEvent* event );
-    virtual void            mousePressEvent( QMouseEvent* event );
-    virtual void            mouseReleaseEvent( QMouseEvent* event );
-    virtual void            wheelEvent( QWheelEvent* event );
-    virtual void            dragEnterEvent( QDragEnterEvent* event );
-    virtual void            dragMoveEvent( QDragMoveEvent* event );
-    virtual void            dragLeaveEvent( QDragLeaveEvent* event );
-    virtual void            dropEvent( QDropEvent* event );
+    virtual void            resizeEvent( QResizeEvent *event );
+    virtual void            drawBackground( QPainter *painter, const QRectF &rect );
+    virtual void            mouseMoveEvent( QMouseEvent *event );
+    virtual void            mousePressEvent( QMouseEvent *event );
+    virtual void            mouseReleaseEvent( QMouseEvent *event );
+    virtual void            wheelEvent( QWheelEvent *event );
+    virtual void            dragEnterEvent( QDragEnterEvent *event );
+    virtual void            dragMoveEvent( QDragMoveEvent *event );
+    virtual void            dragLeaveEvent( QDragLeaveEvent *event );
+    virtual void            dropEvent( QDropEvent *event );
 
 private slots:
     /**
@@ -255,7 +256,7 @@ private slots:
      * \param item The item.
      * \param frame the frame number where the cut should takes place.
      */
-    void                    split( AbstractGraphicsMediaItem* item, qint64 frame );
+    void                    split( AbstractGraphicsMediaItem *item, qint64 frame );
 
 private:
     /**
@@ -289,7 +290,7 @@ private:
      * \param position New position of the item.
      * \sa moveMediaItem( const QUuid& uuid, unsigned int track, qint64 time );
      */
-    void                    moveMediaItem( AbstractGraphicsMediaItem* item, QPoint position );
+    void                    moveMediaItem( AbstractGraphicsMediaItem *item, QPoint position );
     /**
      * \brief This is an overloaded method provided for convenience.
      * \param item Item to move.
@@ -297,9 +298,9 @@ private:
      * \param time The new position (in frames) of the item.
      * \sa moveMediaItem( const QUuid& uuid, unsigned int track, qint64 time );
      */
-    void                    moveMediaItem( AbstractGraphicsMediaItem* item, quint32 track, qint64 time );
+    void                    moveMediaItem( AbstractGraphicsMediaItem *item, quint32 track, qint64 time );
 
-    ItemPosition            findPosition( AbstractGraphicsMediaItem* item, quint32 track, qint64 time );
+    ItemPosition            findPosition( AbstractGraphicsMediaItem *item, quint32 track, qint64 time );
 
     /**
      * \brief Return a pointer to the specified track.
@@ -307,21 +308,21 @@ private:
      * \param number The track number.
      * \return A pointer to the GraphicsTrack.
      */
-    GraphicsTrack*          getTrack( MainWorkflow::TrackType type, unsigned int number );
-    QGraphicsScene*         m_scene;
+    GraphicsTrack           *getTrack( MainWorkflow::TrackType type, unsigned int number );
+    QGraphicsScene          *m_scene;
     int                     m_tracksHeight;
     unsigned int            m_tracksCount;
     int                     m_projectDuration;
-    GraphicsCursorItem*     m_cursorLine;
-    QGraphicsLinearLayout*  m_layout;
+    GraphicsCursorItem      *m_cursorLine;
+    QGraphicsLinearLayout   *m_layout;
     quint32                 m_numVideoTrack;
     quint32                 m_numAudioTrack;
-    MainWorkflow*           m_mainWorkflow;
-    GraphicsMovieItem*      m_dragVideoItem;
-    GraphicsAudioItem*      m_dragAudioItem;
-    QGraphicsWidget*        m_separator;
+    MainWorkflow            *m_mainWorkflow;
+    GraphicsMovieItem       *m_dragVideoItem;
+    GraphicsAudioItem       *m_dragAudioItem;
+    QGraphicsWidget         *m_separator;
     ToolButtons             m_tool;
-    WorkflowRenderer*       m_renderer;
+    WorkflowRenderer        *m_renderer;
 
     // Mouse actions on Medias
     bool                    m_actionMove;
@@ -330,9 +331,9 @@ private:
     qint64                  m_actionResizeStart;
     qint64                  m_actionResizeBase;
     qint64                  m_actionResizeOldBegin;
-    AbstractGraphicsMediaItem::From m_actionResizeType;
     int                     m_actionRelativeX;
-    AbstractGraphicsMediaItem* m_actionItem;
+    AbstractGraphicsMediaItem::From m_actionResizeType;
+    AbstractGraphicsMediaItem       *m_actionItem;
 
 signals:
     /**
@@ -351,12 +352,12 @@ signals:
      * \brief Emitted when a video track has been added.
      * \param track A pointer to the newly added track.
      */
-    void                    videoTrackAdded( GraphicsTrack* track );
+    void                    videoTrackAdded( GraphicsTrack *track );
     /**
      * \brief Emitted when an audio track has been added.
      * \param track A pointer to the newly added track.
      */
-    void                    audioTrackAdded( GraphicsTrack* track );
+    void                    audioTrackAdded( GraphicsTrack *track );
 
     /**
      * \brief DOCUMENT ME
