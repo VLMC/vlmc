@@ -38,7 +38,7 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QSpinBox" name="HeightSpinBox">
+    <widget class="QSpinBox" name="WidthSpinBox">
      <property name="suffix">
       <string/>
      </property>
@@ -56,19 +56,19 @@
    <item row="1" column="0">
     <widget class="QLabel" name="FrameSizeLabel_4">
      <property name="text">
-      <string>Horizontal</string>
+      <string>Image width</string>
      </property>
     </widget>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="FrameSizeLabel_5">
      <property name="text">
-      <string>Vertical</string>
+      <string>Image height</string>
      </property>
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QSpinBox" name="WidthSpinBox">
+    <widget class="QSpinBox" name="HeightSpinBox">
      <property name="suffix">
       <string/>
      </property>
