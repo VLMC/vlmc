@@ -142,9 +142,8 @@ void            ClipWorkflow::stop()
 void
 ClipWorkflow::setTime( qint64 time )
 {
-    connect( m_mediaPlayer, SIGNAL( timeChanged(qint64) ),
-             this, SLOT( resyncClipWorkflow() ), Qt::DirectConnection );
     m_mediaPlayer->setTime( time );
+    resyncClipWorkflow();
     QWriteLocker    lock( m_stateLock );
     if ( m_state == ClipWorkflow::Paused )
     {
@@ -268,8 +267,6 @@ void    ClipWorkflow::mediaPlayerUnpaused()
 
 void    ClipWorkflow::resyncClipWorkflow()
 {
-    disconnect( m_mediaPlayer, SIGNAL( timeChanged(qint64) ),
-             this, SLOT( resyncClipWorkflow() ) );
     flushComputedBuffers();
     m_previousPts = -1;
     m_currentPts = -1;

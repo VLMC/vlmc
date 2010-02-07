@@ -214,6 +214,12 @@ class   WorkflowRenderer : public GenericRenderer
         bool                m_stopping;
         float               m_outputFps;
         unsigned char*	    m_renderVideoFrame;
+        /**
+         *  \brief          This isn't exactly the current PTS.
+         *                  It's the number of frame rendered since the render has started.
+         */
+        qint64              m_pts;
+        qint64              m_audioPts;
 
     private:
         /**
@@ -224,12 +230,6 @@ class   WorkflowRenderer : public GenericRenderer
         size_t              m_videoBuffSize;
         EsHandler*          m_videoEsHandler;
         EsHandler*          m_audioEsHandler;
-        /**
-         *  \brief          This isn't exactly the current PTS.
-         *                  It's the number of frame rendered since the render has started.
-         */
-        qint64              m_pts;
-        qint64              m_audioPts;
         quint32             m_nbChannels;
         quint32             m_rate;
         /**

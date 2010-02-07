@@ -79,6 +79,9 @@ void        WorkflowFileRenderer::run()
 
     m_isRendering = true;
     m_stopping = false;
+    m_paused = false;
+    m_pts = 0;
+    m_audioPts = 0;
 
     m_mainWorkflow->setFullSpeedRender( true );
     m_mainWorkflow->startRender();
