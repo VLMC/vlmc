@@ -257,22 +257,56 @@ EffectNode::wasItVisited( void ) const
 // ----------------  CONNECT STATIC TO STATIC -------------------
 
 bool
-EffectNode::connectStaticVideoOutputToStaticVideoInput( const QString & outName, const QString & nodeName, const QString & inName )
+EffectNode::primitiveConnectStaticVideoOutputToStaticVideoInput( quint32 outId,
+                                                                 quint32 nodeId,
+                                                                 quint32 inId,
+                                                                 const QString &outName,
+                                                                 const QString &nodeName,
+                                                                 const QString &inName )
 {
-    QWriteLocker                        wl( &m_rwl );
     OutSlot<LightVideoFrame>*  out;
     EffectNode*                brother;
-    InSlot<LightVideoFrame>*   in;
+    InSlot<LightVideoFrame>*  in;
 
-    if ( ( out = m_staticVideosOutputs.getObject( outName ) ) == NULL )
+    if ( outId == 0 && outName.isEmpty() == false )
+    {
+        if ( ( out = m_staticVideosOutputs.getObject( outName ) ) == NULL )
+            return false;
+    }
+    else if ( outId != 0 && outName.isEmpty() == true )
+    {
+        if ( ( out = m_staticVideosOutputs.getObject( outId ) ) == NULL )
+            return false;
+    }
+    else
         return false;
     if ( m_father == NULL )
         return false;
-    if ( ( brother = m_father->getChild( nodeName ) ) == NULL )
+    if ( nodeId == 0 && nodeName.isEmpty() == false )
+    {
+        if ( ( brother = m_father->getChild( nodeName ) ) == NULL )
+            return false;
+    }
+    else if ( nodeId != 0 && nodeName.isEmpty() == true )
+    {
+        if ( ( brother = m_father->getChild( nodeId ) ) == NULL )
+            return false;
+    }
+    else
         return false;
     if ( brother == this )
     {
-        if ( ( in = m_staticVideosInputs.getObject( inName ) ) == NULL )
+        if ( inId == 0 && inName.isEmpty() == false )
+        {
+            if ( ( in = m_staticVideosInputs.getObject( inName ) ) == NULL )
+                return false;
+        }
+        else if ( inId != 0 && inName.isEmpty() == true )
+        {
+            if ( ( in = m_staticVideosInputs.getObject( inId ) ) == NULL )
+                return false;
+        }
+        else
             return false;
         if ( out->connect( *in ) == false )
             return false;
@@ -283,7 +317,17 @@ EffectNode::connectStaticVideoOutputToStaticVideoInput( const QString & outName,
     }
     else
     {
-        if ( ( in = brother->getStaticVideoInput( inName ) ) == NULL )
+        if ( inId == 0 && inName.isEmpty() == false )
+        {
+            if ( ( in = brother->getStaticVideoInput( inName ) ) == NULL )
+                return false;
+        }
+        else if ( inId != 0 && inName.isEmpty() == true )
+        {
+            if ( ( in = brother->getStaticVideoInput( inId ) ) == NULL )
+                return false;
+        }
+        else
             return false;
         if ( out->connect( *in ) == false )
             return false;
@@ -296,276 +340,107 @@ EffectNode::connectStaticVideoOutputToStaticVideoInput( const QString & outName,
 }
 
 bool
-EffectNode::connectStaticVideoOutputToStaticVideoInput( const QString & outName, const QString & nodeName, quint32 inId )
+EffectNode::connectStaticVideoOutputToStaticVideoInput( const QString &outName, const QString &nodeName, const QString &inName )
 {
     QWriteLocker                        wl( &m_rwl );
-    OutSlot<LightVideoFrame>*  out;
-    EffectNode*                brother;
-    InSlot<LightVideoFrame>*  in;
 
-    if ( ( out = m_staticVideosOutputs.getObject( outName ) ) == NULL )
-        return false;
-    if ( m_father == NULL )
-        return false;
-    if ( ( brother = m_father->getChild( nodeName ) ) == NULL )
-        return false;
-    if ( brother == this )
-    {
-        if ( ( in = m_staticVideosInputs.getObject( inId ) ) == NULL )
-            return false;
-        if ( out->connect( *in ) == false )
-            return false;
-        if ( m_connectedStaticVideosOutputs.addObjectReference( out ) == false )
-            return false;
-        if ( m_connectedStaticVideosInputs.addObjectReference( in ) == false )
-            return false;
-    }
-    else
-    {
-        if ( ( in = brother->getStaticVideoInput( inId ) ) == NULL )
-            return false;
-        if ( out->connect( *in ) == false )
-            return false;
-        if ( m_connectedStaticVideosOutputs.addObjectReference( out ) == false )
-            return false;
-        if ( brother->referenceStaticVideoInputAsConnected( in ) == false )
-            return false;
-    }
-    return true;
+    return ( primitiveConnectStaticVideoOutputToStaticVideoInput( 0,
+                                                                  0,
+                                                                  0,
+                                                                  outName,
+                                                                  nodeName,
+                                                                  inName ) );
 }
 
 bool
-EffectNode::connectStaticVideoOutputToStaticVideoInput( const QString & outName, quint32 nodeId, const QString & inName )
+EffectNode::connectStaticVideoOutputToStaticVideoInput( const QString &outName, const QString &nodeName, quint32 inId )
 {
     QWriteLocker                        wl( &m_rwl );
-    OutSlot<LightVideoFrame>*  out;
-    EffectNode*                brother;
-    InSlot<LightVideoFrame>*  in;
 
-    if ( ( out = m_staticVideosOutputs.getObject( outName ) ) == NULL )
-        return false;
-    if ( m_father == NULL )
-        return false;
-    if ( ( brother = m_father->getChild( nodeId ) ) == NULL )
-        return false;
-    if ( brother == this )
-    {
-        if ( ( in = m_staticVideosInputs.getObject( inName ) ) == NULL )
-            return false;
-        if ( out->connect( *in ) == false )
-            return false;
-        if ( m_connectedStaticVideosOutputs.addObjectReference( out ) == false )
-            return false;
-        if ( m_connectedStaticVideosInputs.addObjectReference( in ) == false )
-            return false;
-    }
-    else
-    {
-        if ( ( in = brother->getStaticVideoInput( inName ) ) == NULL )
-            return false;
-        if ( out->connect( *in ) == false )
-            return false;
-        if ( m_connectedStaticVideosOutputs.addObjectReference( out ) == false )
-            return false;
-        if ( brother->referenceStaticVideoInputAsConnected( in ) == false )
-            return false;
-    }
-    return true;
+    return ( primitiveConnectStaticVideoOutputToStaticVideoInput( 0,
+                                                                  0,
+                                                                  inId,
+                                                                  outName,
+                                                                  nodeName,
+                                                                  "" ) );
 }
 
 bool
-EffectNode::connectStaticVideoOutputToStaticVideoInput( const QString & outName, quint32 nodeId, quint32 inId )
+EffectNode::connectStaticVideoOutputToStaticVideoInput( const QString &outName, quint32 nodeId, const QString &inName )
 {
     QWriteLocker                        wl( &m_rwl );
-    OutSlot<LightVideoFrame>*  out;
-    EffectNode*                brother;
-    InSlot<LightVideoFrame>*  in;
 
-    if ( ( out = m_staticVideosOutputs.getObject( outName ) ) == NULL )
-        return false;
-    if ( m_father == NULL )
-        return false;
-    if ( ( brother = m_father->getChild( nodeId ) ) == NULL )
-        return false;
-    if ( brother == this )
-    {
-        if ( ( in = m_staticVideosInputs.getObject( inId ) ) == NULL )
-            return false;
-        if ( out->connect( *in ) == false )
-            return false;
-        if ( m_connectedStaticVideosOutputs.addObjectReference( out ) == false )
-            return false;
-        if ( m_connectedStaticVideosInputs.addObjectReference( in ) == false )
-            return false;
-    }
-    else
-    {
-        if ( ( in = brother->getStaticVideoInput( inId ) ) == NULL )
-            return false;
-        if ( out->connect( *in ) == false )
-            return false;
-        if ( m_connectedStaticVideosOutputs.addObjectReference( out ) == false )
-            return false;
-        if ( brother->referenceStaticVideoInputAsConnected( in ) == false )
-            return false;
-    }
-    return true;
+    return ( primitiveConnectStaticVideoOutputToStaticVideoInput( 0,
+                                                                  nodeId,
+                                                                  0,
+                                                                  outName,
+                                                                  "",
+                                                                  inName ) );
 }
 
 bool
-EffectNode::connectStaticVideoOutputToStaticVideoInput( quint32 outId, const QString & nodeName, const QString & inName )
+EffectNode::connectStaticVideoOutputToStaticVideoInput( const QString &outName, quint32 nodeId, quint32 inId )
 {
     QWriteLocker                        wl( &m_rwl );
-    OutSlot<LightVideoFrame>*  out;
-    EffectNode*                brother;
-    InSlot<LightVideoFrame>*  in;
 
-    if ( ( out = m_staticVideosOutputs.getObject( outId ) ) == NULL )
-        return false;
-    if ( m_father == NULL )
-        return false;
-    if ( ( brother = m_father->getChild( nodeName ) ) == NULL )
-        return false;
-    if ( brother == this )
-    {
-        if ( ( in = m_staticVideosInputs.getObject( inName ) ) == NULL )
-            return false;
-        if ( out->connect( *in ) == false )
-            return false;
-        if ( m_connectedStaticVideosOutputs.addObjectReference( out ) == false )
-            return false;
-        if ( m_connectedStaticVideosInputs.addObjectReference( in ) == false )
-            return false;
-    }
-    else
-    {
-        if ( ( in = brother->getStaticVideoInput( inName ) ) == NULL )
-            return false;
-        if ( out->connect( *in ) == false )
-            return false;
-        if ( m_connectedStaticVideosOutputs.addObjectReference( out ) == false )
-            return false;
-        if ( brother->referenceStaticVideoInputAsConnected( in ) == false )
-            return false;
-    }
-    return true;
+    return ( primitiveConnectStaticVideoOutputToStaticVideoInput( 0,
+                                                                  nodeId,
+                                                                  inId,
+                                                                  outName,
+                                                                  "",
+                                                                  "" ) );
 }
 
 bool
-EffectNode::connectStaticVideoOutputToStaticVideoInput( quint32 outId, const QString & nodeName, quint32 inId )
+EffectNode::connectStaticVideoOutputToStaticVideoInput( quint32 outId, const QString &nodeName, const QString &inName )
 {
     QWriteLocker                        wl( &m_rwl );
-    OutSlot<LightVideoFrame>*  out;
-    EffectNode*                brother;
-    InSlot<LightVideoFrame>*  in;
 
-    if ( ( out = m_staticVideosOutputs.getObject( outId ) ) == NULL )
-        return false;
-    if ( m_father == NULL )
-        return false;
-    if ( ( brother = m_father->getChild( nodeName ) ) == NULL )
-        return false;
-    if ( brother == this )
-    {
-        if ( ( in = m_staticVideosInputs.getObject( inId ) ) == NULL )
-            return false;
-        if ( out->connect( *in ) == false )
-            return false;
-        if ( m_connectedStaticVideosOutputs.addObjectReference( out ) == false )
-            return false;
-        if ( m_connectedStaticVideosInputs.addObjectReference( in ) == false )
-            return false;
-    }
-    else
-    {
-        if ( ( in = brother->getStaticVideoInput( inId ) ) == NULL )
-            return false;
-        if ( out->connect( *in ) == false )
-            return false;
-        if ( m_connectedStaticVideosOutputs.addObjectReference( out ) == false )
-            return false;
-        if ( brother->referenceStaticVideoInputAsConnected( in ) == false )
-            return false;
-    }
-    return true;
+    return ( primitiveConnectStaticVideoOutputToStaticVideoInput( outId,
+                                                                  0,
+                                                                  0,
+                                                                  "",
+                                                                  nodeName,
+                                                                  inName ) );
 }
 
 bool
-EffectNode::connectStaticVideoOutputToStaticVideoInput( quint32 outId, quint32 nodeId, const QString & inName )
+EffectNode::connectStaticVideoOutputToStaticVideoInput( quint32 outId, const QString &nodeName, quint32 inId )
 {
     QWriteLocker                        wl( &m_rwl );
-    OutSlot<LightVideoFrame>*  out;
-    EffectNode*                brother;
-    InSlot<LightVideoFrame>*  in;
 
-    if ( ( out = m_staticVideosOutputs.getObject( outId ) ) == NULL )
-        return false;
-    if ( m_father == NULL )
-        return false;
-    if ( ( brother = m_father->getChild( nodeId ) ) == NULL )
-        return false;
-    if ( brother == this )
-    {
-        if ( ( in = m_staticVideosInputs.getObject( inName ) ) == NULL )
-            return false;
-        if ( out->connect( *in ) == false )
-            return false;
-        if ( m_connectedStaticVideosOutputs.addObjectReference( out ) == false )
-            return false;
-        if ( m_connectedStaticVideosInputs.addObjectReference( in ) == false )
-            return false;
-    }
-    else
-    {
-        if ( ( in = brother->getStaticVideoInput( inName ) ) == NULL )
-            return false;
-        if ( out->connect( *in ) == false )
-            return false;
-        if ( m_connectedStaticVideosOutputs.addObjectReference( out ) == false )
-            return false;
-        if ( brother->referenceStaticVideoInputAsConnected( in ) == false )
-            return false;
-    }
-    return true;
+    return ( primitiveConnectStaticVideoOutputToStaticVideoInput( outId,
+                                                                  0,
+                                                                  inId,
+                                                                  "",
+                                                                  nodeName,
+                                                                  "" ) );
+}
+
+bool
+EffectNode::connectStaticVideoOutputToStaticVideoInput( quint32 outId, quint32 nodeId, const QString &inName )
+{
+    QWriteLocker                        wl( &m_rwl );
+
+    return ( primitiveConnectStaticVideoOutputToStaticVideoInput( outId,
+                                                                  nodeId,
+                                                                  0,
+                                                                  "",
+                                                                  "",
+                                                                  inName ) );
 }
 
 bool
 EffectNode::connectStaticVideoOutputToStaticVideoInput( quint32 outId, quint32 nodeId, quint32 inId )
 {
     QWriteLocker                        wl( &m_rwl );
-    OutSlot<LightVideoFrame>*  out;
-    EffectNode*                brother;
-    InSlot<LightVideoFrame>*  in;
 
-    if ( ( out = m_staticVideosOutputs.getObject( outId ) ) == NULL )
-        return false;
-    if ( m_father == NULL )
-        return false;
-    if ( ( brother = m_father->getChild( nodeId ) ) == NULL )
-        return false;
-    if ( brother == this )
-    {
-        if ( ( in = m_staticVideosInputs.getObject( inId ) ) == NULL )
-            return false;
-        if ( out->connect( *in ) == false )
-            return false;
-        if ( m_connectedStaticVideosOutputs.addObjectReference( out ) == false )
-            return false;
-        if ( m_connectedStaticVideosInputs.addObjectReference( in ) == false )
-            return false;
-    }
-    else
-    {
-        if ( ( in = brother->getStaticVideoInput( inId ) ) == NULL )
-            return false;
-        if ( out->connect( *in ) == false )
-            return false;
-        if ( m_connectedStaticVideosOutputs.addObjectReference( out ) == false )
-            return false;
-        if ( brother->referenceStaticVideoInputAsConnected( in ) == false )
-            return false;
-    }
-    return true;
+    return ( primitiveConnectStaticVideoOutputToStaticVideoInput( outId,
+                                                                  nodeId,
+                                                                  inId,
+                                                                  "",
+                                                                  "",
+                                                                  "" ) );
 }
 
 // ----------------  CONNECT STATIC TO DYNAMIC -------------------

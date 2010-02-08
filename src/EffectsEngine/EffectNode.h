@@ -328,6 +328,17 @@ class	EffectNode : public IEffectNode
 
     // ----------------  CONNECT STATIC TO STATIC -------------------
 
+ private:
+
+    // Primitive
+
+    bool        primitiveConnectStaticVideoOutputToStaticVideoInput( quint32 outId, quint32 nodeId, quint32 inId,
+                                                                      const QString & outName, const QString & nodeName, const QString & inName );
+
+ public:
+
+    // Overloaded methods
+
     bool        connectStaticVideoOutputToStaticVideoInput( const QString & outName, const QString & nodeName, const QString & inName );
     bool        connectStaticVideoOutputToStaticVideoInput( const QString & outName, const QString & nodeName, quint32 inId );
     bool        connectStaticVideoOutputToStaticVideoInput( const QString & outName, quint32 nodeId, const QString & inName );

@@ -66,7 +66,6 @@ EffectsEngine::makePatch( void )
 
         qDebug() << "RootNode successfully created!";
         m_patch = EffectNode::getRootNode( "RootNode" );
-        // CREATION DU ROOTNODE ET DE SES SLOTS
         for ( i = 0 ; i < 64; ++i)
             m_patch->createStaticVideoInput();
         m_patch->createStaticVideoOutput();
@@ -81,34 +80,23 @@ EffectsEngine::makePatch( void )
                              << i << " of the mixer with the internal "
                              << i << " output of the RootNode failed!";
 
-            // // RECUP LE MIXER ET CONNECTE SA SORTIE 1 A L'INTERNAL INPUT DU ROOT NODE
-            // tmp = m_patch->getChild( 1 );
-            // if ( tmp->connectChildStaticVideoOutputToParentStaticVideoInput( 1, 1 ) == false )
-            //     qDebug() << "The connection of the mixer output with the BypassRootNode internal input failed!";
-            // else
-            //     qDebug() << "The connection of the mixer output with the BypassRootNode internal input successed!";
-
-
             m_patch->createChild( "BlitInRectangle" );
             m_patch->createChild( "InvertRNB" );
-            // RECUP LE MIXER ET CONNECTE SA SORTIE 1 A L'ENTREE 2 DU BLIT
+
             tmp = m_patch->getChild( 1 );
             if ( tmp->connectStaticVideoOutputToStaticVideoInput( 1, 2, "dst" ) == false )
                 qDebug() << "The connection of the mixer output"
                          << "with the second input of the blit failed!";
 
-            // RECUP LE BLIT ET CONNECT SA SORTIE 2 A L'INTERNAL INPUT DU ROOT NODE
             tmp = m_patch->getChild( 2 );
             if ( tmp->connectChildStaticVideoOutputToParentStaticVideoInput( "res", 1 ) == false )
                 qDebug() << "The connection of the second output of the blit"
                          << "with the BypassRootNode internal input failed!";
 
-            // CONNECT SA SORTIE 1 A SA L'ENTREE  1 DE L'INVERSEUR DE BLEU ET DE ROUGE
             if ( tmp->connectStaticVideoOutputToStaticVideoInput( "aux", 3, 1 ) == false )
                 qDebug() << "The connection of the first output of the blit"
                          << "with the InvertRNB input failed!";
 
-            // CONNECT LA SORTIE DE L'INVERSEUR A L'ENTREE SRC DU BLIT
             tmp = m_patch->getChild( 3 );
             if ( tmp->connectStaticVideoOutputToStaticVideoInput( 1, 2, 1 ) == false )
                 qDebug() << "The connection of the RNBInvert output"
@@ -133,7 +121,6 @@ EffectsEngine::makeBypassPatch( void )
 
         qDebug() << "BypassRootNode successfully created!";
 
-        // CREATION DU BYPASSROOTNODE ET DE SES SLOTS
         m_bypassPatch = EffectNode::getRootNode( "BypassRootNode" );
         for ( i = 0 ; i < 64; ++i)
             m_bypassPatch->createStaticVideoInput();
@@ -148,7 +135,6 @@ EffectsEngine::makeBypassPatch( void )
                              << i << " of the mixer with the internal "
                              << i << " output of the BypassRootNode failed!";
 
-            // RECUP LE MIXER ET CONNECTE SA SORTIE 1 A L'INTERNAL INPUT DU ROOT NODE
             tmp = m_bypassPatch->getChild( 1 );
             if ( tmp->connectChildStaticVideoOutputToParentStaticVideoInput( 1, 1 ) == false )
                 qDebug() << "The connection of the mixer output"
