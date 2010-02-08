@@ -631,20 +631,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>ProjectManager</name>
     <message>
-        <source>&lt;Unsaved project&gt;</source>
-        <translation>&lt;Neuložený projekt&gt;</translation>
-    </message>
-    <message>
         <source>The project has been modified.</source>
         <translation>Projekt bol upravený.</translation>
     </message>
     <message>
         <source>Do you want to save it ?</source>
         <translation>Chcete ho uložiť?</translation>
-    </message>
-    <message>
-        <source>&lt;Unnamed project&gt;</source>
-        <translation>&lt;Nepomenovaný projekt&gt;</translation>
     </message>
 </context>
 <context>
@@ -1008,16 +1000,16 @@ p, li { white-space: pre-wrap; }
         <translation>Snímky/sekundu</translation>
     </message>
     <message>
-        <source>Horizontal</source>
-        <translation>Horizontálne</translation>
-    </message>
-    <message>
-        <source>Vertical</source>
-        <translation>Vertikálne</translation>
-    </message>
-    <message>
         <source> Frames/Seconds</source>
         <translation> snímkov</translation>
+    </message>
+    <message>
+        <source>Image width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image height</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

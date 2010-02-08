@@ -1,4 +1,6 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0">
 <defaultcodec>UTF-8</defaultcodec>
 <context>
     <name>AboutVLMC</name>
@@ -121,10 +123,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>CrashHandler</name>
-    <message>
-        <source>Unable to get backtrace.</source>
-        <translation>Nie można pobrać śladu wstecznego.</translation>
-    </message>
     <message>
         <source>Unknown signal</source>
         <translation>Nieznany sygnał</translation>
@@ -633,14 +631,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>ProjectManager</name>
     <message>
-        <source>&lt;Unnamed project&gt;</source>
-        <translation>&lt;Bez nazwy&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;Unsaved project&gt;</source>
-        <translation>&lt;Niezapisany&gt;</translation>
-    </message>
-    <message>
         <source>The project has been modified.</source>
         <translation>Projekt został zmodyfikowany.</translation>
     </message>
@@ -1010,16 +1000,16 @@ p, li { white-space: pre-wrap; }
         <translation>Klatek na sekundę</translation>
     </message>
     <message>
-        <source>Horizontal</source>
-        <translation>Szerokość</translation>
-    </message>
-    <message>
-        <source>Vertical</source>
-        <translation>Wysokość</translation>
-    </message>
-    <message>
         <source> Frames/Seconds</source>
         <translation>Klatek/Sekundę</translation>
+    </message>
+    <message>
+        <source>Image width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image height</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

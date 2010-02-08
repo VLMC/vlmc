@@ -148,17 +148,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>CrashHandler</name>
     <message>
-        <location filename="../src/Gui/widgets/CrashHandler.cpp" line="51"/>
-        <source>Unable to get backtrace.</source>
-        <translation>Impossible de récupérer la &quot;backtrace&quot;.</translation>
-    </message>
-    <message>
-        <location filename="../src/Gui/widgets/CrashHandler.cpp" line="53"/>
+        <location filename="../src/Gui/widgets/CrashHandler.cpp" line="44"/>
         <source>Unknown signal</source>
         <translation>Signal inconnu</translation>
     </message>
     <message>
-        <location filename="../src/Gui/widgets/CrashHandler.cpp" line="64"/>
+        <location filename="../src/Gui/widgets/CrashHandler.cpp" line="55"/>
         <source>A crash occured. Signal received: </source>
         <translation>Un crash a eu lieu. Un signal a été recu: </translation>
     </message>
@@ -305,58 +300,68 @@ p, li { white-space: pre-wrap; }
         <translation>Annuler</translation>
     </message>
     <message>
-        <location filename="../src/Gui/import/ImportController.cpp" line="218"/>
-        <location filename="../src/Gui/import/ImportController.cpp" line="244"/>
+        <location filename="../src/Gui/import/ImportController.cpp" line="219"/>
+        <location filename="../src/Gui/import/ImportController.cpp" line="245"/>
         <source>properties</source>
         <translation>propriétés</translation>
     </message>
     <message>
         <location filename="../src/Gui/import/ui/ImportController.ui" line="14"/>
+        <location filename="../src/ui_Import.h" line="168"/>
         <source>Import</source>
         <translation>Import</translation>
     </message>
     <message>
         <location filename="../src/Gui/import/ui/ImportController.ui" line="80"/>
+        <location filename="../src/ui_Import.h" line="169"/>
         <source>Media Properties</source>
         <translation>Propriétés du média</translation>
     </message>
     <message>
         <location filename="../src/Gui/import/ui/ImportController.ui" line="86"/>
+        <location filename="../src/ui_Import.h" line="170"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
         <location filename="../src/Gui/import/ui/ImportController.ui" line="93"/>
+        <location filename="../src/ui_Import.h" line="171"/>
         <source>unnamed</source>
         <translation>sans nom</translation>
     </message>
     <message>
         <location filename="../src/Gui/import/ui/ImportController.ui" line="100"/>
+        <location filename="../src/ui_Import.h" line="172"/>
         <source>Duration</source>
         <translation>Durée</translation>
     </message>
     <message>
         <location filename="../src/Gui/import/ui/ImportController.ui" line="107"/>
+        <location filename="../src/ui_Import.h" line="173"/>
         <source>0s</source>
         <translation>0s</translation>
     </message>
     <message>
         <location filename="../src/Gui/import/ui/ImportController.ui" line="120"/>
+        <location filename="../src/ui_Import.h" line="174"/>
         <source>Resolution</source>
         <translation>Résolution</translation>
     </message>
     <message>
         <location filename="../src/Gui/import/ui/ImportController.ui" line="133"/>
+        <location filename="../src/ui_Import.h" line="175"/>
         <source>0px. x 0px.</source>
         <translation>0px. x 0px.</translation>
     </message>
     <message>
         <location filename="../src/Gui/import/ui/ImportController.ui" line="146"/>
+        <location filename="../src/ui_Import.h" line="176"/>
         <source>FPS</source>
         <translation>Images par secondes</translation>
     </message>
     <message>
         <location filename="../src/Gui/import/ui/ImportController.ui" line="153"/>
+        <location filename="../src/ui_Import.h" line="177"/>
         <source>0</source>
         <translation>0</translation>
     </message>
@@ -433,58 +438,128 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/Gui/MainWindow.cpp" line="171"/>
         <location filename="../src/Gui/ui/MainWindow.ui" line="131"/>
+        <location filename="../src/Gui/MainWindow.cpp" line="175"/>
         <source>Media Library</source>
         <translation>Bibliothèque de médias</translation>
     </message>
     <message>
-        <location filename="../src/Gui/MainWindow.cpp" line="284"/>
+        <location filename="../src/Gui/MainWindow.cpp" line="287"/>
         <source>Clip Preview</source>
         <translation>Prévisualisation de clip</translation>
     </message>
     <message>
-        <location filename="../src/Gui/MainWindow.cpp" line="293"/>
+        <location filename="../src/Gui/MainWindow.cpp" line="296"/>
         <source>Project Preview</source>
         <translation>Prévisualisation du projet</translation>
     </message>
     <message>
-        <location filename="../src/Gui/MainWindow.cpp" line="301"/>
+        <location filename="../src/Gui/MainWindow.cpp" line="304"/>
         <source>History</source>
         <translation>Historique</translation>
     </message>
     <message>
-        <location filename="../src/Gui/MainWindow.cpp" line="322"/>
+        <location filename="../src/Gui/MainWindow.cpp" line="316"/>
+        <source>VLMC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Gui/MainWindow.cpp" line="319"/>
+        <source>VLMC settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Gui/MainWindow.cpp" line="320"/>
+        <source>Language preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Gui/MainWindow.cpp" line="323"/>
+        <source>Language settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Gui/MainWindow.cpp" line="324"/>
+        <source>Keyboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Gui/MainWindow.cpp" line="327"/>
         <source>Keyboard Settings</source>
         <translation>Raccourcis clavier</translation>
     </message>
     <message>
-        <location filename="../src/Gui/MainWindow.cpp" line="362"/>
+        <location filename="../src/Gui/MainWindow.cpp" line="333"/>
+        <source>Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Gui/MainWindow.cpp" line="336"/>
+        <source>Project settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Gui/MainWindow.cpp" line="337"/>
+        <source>Video</source>
+        <translation type="unfinished">Vidéo</translation>
+    </message>
+    <message>
+        <location filename="../src/Gui/MainWindow.cpp" line="340"/>
+        <source>Video settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Gui/MainWindow.cpp" line="341"/>
+        <source>Audio</source>
+        <translation type="unfinished">Sons</translation>
+    </message>
+    <message>
+        <location filename="../src/Gui/MainWindow.cpp" line="344"/>
+        <source>Audio settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Gui/MainWindow.cpp" line="367"/>
         <source>Sorry</source>
         <translation>Désolé</translation>
     </message>
     <message>
-        <location filename="../src/Gui/MainWindow.cpp" line="363"/>
+        <location filename="../src/Gui/MainWindow.cpp" line="368"/>
         <source>This feature is currently disabled.</source>
         <translation>Cette fonctionnalité est actuellement désactivé.</translation>
     </message>
     <message>
-        <location filename="../src/Gui/MainWindow.cpp" line="567"/>
+        <location filename="../src/Gui/MainWindow.cpp" line="376"/>
+        <source>VLMC Renderer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Gui/MainWindow.cpp" line="376"/>
+        <source>There is nothing to render.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Gui/MainWindow.cpp" line="380"/>
+        <source>Enter the output file name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Gui/MainWindow.cpp" line="572"/>
         <source>Crash recovery</source>
         <translation>Récupération de crash</translation>
     </message>
     <message>
-        <location filename="../src/Gui/MainWindow.cpp" line="567"/>
+        <location filename="../src/Gui/MainWindow.cpp" line="572"/>
         <source>VLMC didn&apos;t closed nicely. Do you wan&apos;t to recover your project ?</source>
         <translation>VLMC n&apos;a pas quitter normalement. Voulez vous récupérer votre projet ?</translation>
     </message>
     <message>
-        <location filename="../src/Gui/MainWindow.cpp" line="574"/>
+        <location filename="../src/Gui/MainWindow.cpp" line="579"/>
         <source>Can&apos;t restore project</source>
         <translation>Impossible de restorer le projet</translation>
     </message>
     <message>
-        <location filename="../src/Gui/MainWindow.cpp" line="574"/>
+        <location filename="../src/Gui/MainWindow.cpp" line="579"/>
         <source>VLMC didn&apos;t manage to restore your project. We appology for the inconvenience</source>
         <translation>VLMC n&apos;a pas réussi a restorer votre projet. Désolé pour la gêne occasioné</translation>
     </message>
@@ -494,8 +569,8 @@ p, li { white-space: pre-wrap; }
         <translation>Prévisualisation</translation>
     </message>
     <message>
-        <location filename="../src/Gui/MainWindow.cpp" line="459"/>
         <location filename="../src/Gui/ui/MainWindow.ui" line="14"/>
+        <location filename="../src/Gui/MainWindow.cpp" line="464"/>
         <source>VideoLAN Movie Creator</source>
         <translation>VideoLAN Movie Creator</translation>
     </message>
@@ -551,8 +626,8 @@ p, li { white-space: pre-wrap; }
         <translation>Fermer le projet</translation>
     </message>
     <message>
-        <location filename="../src/Gui/MainWindow.cpp" line="604"/>
         <location filename="../src/Gui/ui/MainWindow.ui" line="224"/>
+        <location filename="../src/Gui/MainWindow.cpp" line="609"/>
         <source>Crash</source>
         <translation>Crash</translation>
     </message>
@@ -712,22 +787,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>ProjectManager</name>
     <message>
-        <location filename="../src/Project/ProjectManager.cpp" line="48"/>
-        <source>&lt;Unnamed project&gt;</source>
-        <translation>&lt;Projet sans nom&gt;</translation>
-    </message>
-    <message>
-        <location filename="../src/Project/ProjectManager.cpp" line="49"/>
-        <source>&lt;Unsaved project&gt;</source>
-        <translation>&lt;Projet non sauvegardé&gt;</translation>
-    </message>
-    <message>
-        <location filename="../src/Project/ProjectManager.cpp" line="247"/>
+        <location filename="../src/Project/ProjectManager.cpp" line="260"/>
         <source>The project has been modified.</source>
         <translation>Le projet a été modifié.</translation>
     </message>
     <message>
-        <location filename="../src/Project/ProjectManager.cpp" line="248"/>
+        <location filename="../src/Project/ProjectManager.cpp" line="261"/>
         <source>Do you want to save it ?</source>
         <translation>Voulez vous le sauvegarder?</translation>
     </message>
@@ -771,17 +836,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/Commands/Commands.cpp" line="44"/>
+        <location filename="../src/Commands/Commands.cpp" line="43"/>
         <source>Adding clip to track %1</source>
         <translation>Ajout d&apos;un clip a la piste %1</translation>
     </message>
     <message>
-        <location filename="../src/Commands/Commands.cpp" line="69"/>
+        <location filename="../src/Commands/Commands.cpp" line="68"/>
         <source>Moving clip from track %1 to %2</source>
         <translation>Déplacement d&apos;un clip de la piste %1 vers la piste %2</translation>
     </message>
     <message>
-        <location filename="../src/Commands/Commands.cpp" line="72"/>
+        <location filename="../src/Commands/Commands.cpp" line="71"/>
         <source>Moving clip</source>
         <translation>Déplacement d&apos;un clip</translation>
     </message>
@@ -791,14 +856,19 @@ p, li { white-space: pre-wrap; }
         <translation>Suppresion d&apos;un clip</translation>
     </message>
     <message>
-        <location filename="../src/Commands/Commands.cpp" line="126"/>
+        <location filename="../src/Commands/Commands.cpp" line="125"/>
         <source>Resizing clip</source>
         <translation>Redimensionnement d&apos;un clip</translation>
     </message>
     <message>
-        <location filename="../src/Commands/Commands.cpp" line="161"/>
+        <location filename="../src/Commands/Commands.cpp" line="159"/>
         <source>Splitting clip</source>
         <translation>Découpe d&apos;un clip</translation>
+    </message>
+    <message>
+        <location filename="../src/Tools/Win32BacktraceGenerator.cpp" line="31"/>
+        <source>Unable to get backtrace</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -812,20 +882,20 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>StackViewNavController</name>
     <message>
-        <location filename="../src/Gui/library/ui/StackViewNavController.ui" line="14"/>
         <location filename="../src/Gui/library/StackViewNavController.ui" line="14"/>
+        <location filename="../src/Gui/library/ui/StackViewNavController.ui" line="14"/>
         <source>Form</source>
         <translation>Formulaire</translation>
     </message>
     <message>
-        <location filename="../src/Gui/library/ui/StackViewNavController.ui" line="20"/>
         <location filename="../src/Gui/library/StackViewNavController.ui" line="20"/>
+        <location filename="../src/Gui/library/ui/StackViewNavController.ui" line="20"/>
         <source>Previous</source>
         <translation>Précedent</translation>
     </message>
     <message>
-        <location filename="../src/Gui/library/ui/StackViewNavController.ui" line="33"/>
         <location filename="../src/Gui/library/StackViewNavController.ui" line="33"/>
+        <location filename="../src/Gui/library/ui/StackViewNavController.ui" line="33"/>
         <source>TextLabel</source>
         <translation></translation>
     </message>
@@ -864,12 +934,12 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/Gui/widgets/TrackControls.cpp" line="37"/>
+        <location filename="../src/Gui/widgets/TrackControls.cpp" line="46"/>
         <source>Video #%1</source>
         <translation>Vidéo #%1</translation>
     </message>
     <message>
-        <location filename="../src/Gui/widgets/TrackControls.cpp" line="39"/>
+        <location filename="../src/Gui/widgets/TrackControls.cpp" line="48"/>
         <source>Audio #%1</source>
         <translation>Audio #%1</translation>
     </message>
@@ -890,7 +960,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>TracksView</name>
     <message>
-        <location filename="../src/Gui/timeline/TracksView.cpp" line="505"/>
+        <location filename="../src/Gui/timeline/TracksView.cpp" line="622"/>
         <source>Action not supported.</source>
         <translation>Action non supporté.</translation>
     </message>
@@ -1173,13 +1243,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/Gui/settings/ui/VideoProjectPreferences.ui" line="59"/>
-        <source>Horizontal</source>
-        <translation>Horizontal</translation>
+        <source>Image width</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/Gui/settings/ui/VideoProjectPreferences.ui" line="66"/>
-        <source>Vertical</source>
-        <translation>Vertical</translation>
+        <source>Image height</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/Gui/settings/ui/VideoProjectPreferences.ui" line="27"/>
@@ -1298,7 +1368,7 @@ p, li { white-space: pre-wrap; }
         <translation>Rendu en cours...</translation>
     </message>
     <message>
-        <location filename="../src/Gui/WorkflowFileRendererDialog.cpp" line="57"/>
+        <location filename="../src/Gui/WorkflowFileRendererDialog.cpp" line="59"/>
         <source>Rendering frame %1 / %2</source>
         <translation>Rendu de l&apos;image %1 / %2</translation>
     </message>
