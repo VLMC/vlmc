@@ -228,6 +228,18 @@ class   WorkflowRenderer : public GenericRenderer
          */
         virtual quint32     height() const;
         /**
+         *  \return         The output fps for this specific render.
+         *
+         *  The output fps may change according to the rendering target.
+         *  IE the output may be different when previewing and when rendering to a file.
+         *  This method has to be reimplemented in the underlying WorkflowRenderer, to
+         *  adjust itself to the specific renderer fps.
+         *  \warning        This may be confused with getFps(), and therefore, one of the
+         *                  two should be modified.
+         */
+        virtual float       outputFps() const;
+
+        /**
          *  \brief          Configure the production chain.
          */
         void                setupRenderer();

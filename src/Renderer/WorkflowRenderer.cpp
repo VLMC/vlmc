@@ -40,6 +40,7 @@ quint8*         WorkflowRenderer::silencedAudioBuffer = NULL;
 WorkflowRenderer::WorkflowRenderer() :
             m_mainWorkflow( MainWorkflow::getInstance() ),
             m_stopping( false ),
+            m_outputFps( 0.0f ),
             m_oldLength( 0 ),
             m_renderVideoFrame( NULL ),
             m_media( NULL ),
@@ -355,14 +356,21 @@ WorkflowRenderer::height() const
     return height->get().toUInt();
 }
 
+float
+WorkflowRenderer::outputFps() const
+{
+    const SettingValue  *outputFps = SettingsManager::getInstance()->getValue( "VLMC",
+                                                                               "VLMCOutPutFPS" );
+    return outputFps->get().toDouble();
+}
+
 bool
 WorkflowRenderer::parametersChanged()
 {
-    const SettingValue  *newOutputFpsSV = SettingsManager::getInstance()->getValue( "VLMC",
-                                                                                  "VLMCOutPutFPS" );
     quint32             newWidth = width();
     quint32             newHeight = height();
-    float               newOutputFps = newOutputFpsSV->get().toDouble();
+    float               newOutputFps = outputFps();
+
     if ( newWidth != m_width || newHeight != m_height ||
          newOutputFps != m_outputFps )
     {
