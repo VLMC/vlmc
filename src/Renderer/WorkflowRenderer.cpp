@@ -93,7 +93,7 @@ WorkflowRenderer::setupRenderer()
     sprintf( videoString, "width=%i:height=%i:dar=%s:fps=%s:data=%lld:codec=%s:cat=2:caching=0",
              m_width, m_height, "16/9", "30/1",
              (qint64)m_videoEsHandler, "RV24" );
-    sprintf( audioParameters, "data=%lld:cat=1:codec=fl32:samplerate=%u:channels=%u:caching=0",
+    sprintf( audioParameters, "data=%lld:cat=1:codec=f32l:samplerate=%u:channels=%u:caching=0",
              (qint64)m_audioEsHandler, m_rate, m_nbChannels );
     strcpy( inputSlave, ":input-slave=imem://" );
     strcat( inputSlave, audioParameters );

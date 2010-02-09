@@ -84,7 +84,7 @@ void        AudioClipWorkflow::initVlcOutput()
     m_vlcMedia->setAudioDataCtx( this );
     m_vlcMedia->setAudioLockCallback( reinterpret_cast<void*>( getLockCallback() ) );
     m_vlcMedia->setAudioUnlockCallback( reinterpret_cast<void*>( getUnlockCallback() ) );
-    m_vlcMedia->addOption( ":sout-transcode-acodec=fl32" );
+    m_vlcMedia->addOption( ":sout-transcode-acodec=f32l" );
     m_vlcMedia->addOption( ":sout-transcode-samplerate=48000" );
     m_vlcMedia->addOption( ":sout-transcode-channels=2" );
     if ( m_fullSpeedRender == false )
