@@ -109,11 +109,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Number of video tracks</source>
-        <translation type="unfinished"></translation>
+        <translation>Numarul pistelor video</translation>
     </message>
     <message>
         <source>Number of audio tracks</source>
-        <translation type="unfinished"></translation>
+        <translation>Numarul pistelor audio</translation>
     </message>
 </context>
 <context>
@@ -151,7 +151,7 @@ p, li { white-space: pre-wrap; }
     <name>FileBrowser</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -279,11 +279,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Importing files...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa fisierele...</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Ignora</translation>
+        <translation>Ignora</translation>
     </message>
 </context>
 <context>
@@ -313,35 +313,35 @@ p, li { white-space: pre-wrap; }
     <name>LibraryWidget</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Audio</source>
-        <translation type="unfinished">Audio</translation>
+        <translation>Audio</translation>
     </message>
     <message>
         <source>Videos</source>
-        <translation type="unfinished"></translation>
+        <translation>Video</translation>
     </message>
     <message>
         <source>Images</source>
-        <translation type="unfinished"></translation>
+        <translation>Imagini</translation>
     </message>
     <message>
         <source>Add Media</source>
-        <translation type="unfinished"></translation>
+        <translation>Adauga fisiere media</translation>
     </message>
     <message>
         <source>Remove Media</source>
-        <translation type="unfinished"></translation>
+        <translation>Sterge fisiere media</translation>
     </message>
     <message>
         <source>Filter:</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtru:</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -497,67 +497,67 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Anulare operatiune</translation>
     </message>
     <message>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Reia operatiunea</translation>
     </message>
     <message>
         <source>VLMC</source>
-        <translation type="unfinished"></translation>
+        <translation>VLMC</translation>
     </message>
     <message>
         <source>VLMC settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Setari VLMC</translation>
     </message>
     <message>
         <source>Language preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Preferinte limba</translation>
     </message>
     <message>
         <source>Language settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Setari limba</translation>
     </message>
     <message>
         <source>Keyboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Tastatura</translation>
     </message>
     <message>
         <source>Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Proiect</translation>
     </message>
     <message>
         <source>Project settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Setarile proiectului</translation>
     </message>
     <message>
         <source>Video</source>
-        <translation type="unfinished"></translation>
+        <translation>Video</translation>
     </message>
     <message>
         <source>Video settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Setari video</translation>
     </message>
     <message>
         <source>Audio</source>
-        <translation type="unfinished">Audio</translation>
+        <translation>Audio</translation>
     </message>
     <message>
         <source>Audio settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Setari audio</translation>
     </message>
     <message>
         <source>VLMC Renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>Randare VLMC</translation>
     </message>
     <message>
         <source>There is nothing to render.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu este nimic de randat.</translation>
     </message>
     <message>
         <source>Enter the output file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Alegeti calea fisierului rezultat</translation>
     </message>
 </context>
 <context>
@@ -694,7 +694,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unable to get backtrace</source>
-        <translation type="unfinished"></translation>
+        <translation>Incapabil de luat backtrace</translation>
     </message>
 </context>
 <context>
@@ -749,11 +749,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Video #%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Video #%1</translation>
     </message>
     <message>
         <source>Audio #%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio #%1</translation>
     </message>
 </context>
 <context>
@@ -794,51 +794,51 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>H264 + AAC</source>
-        <translation type="unfinished"></translation>
+        <translation>H264 + AAC</translation>
     </message>
     <message>
         <source>Dirac + AAC</source>
-        <translation type="unfinished"></translation>
+        <translation>Dirac + AAC</translation>
     </message>
     <message>
         <source>Theora + Vorbis</source>
-        <translation type="unfinished"></translation>
+        <translation>Theora + Vorbis</translation>
     </message>
     <message>
         <source>Theora + Flac</source>
-        <translation type="unfinished"></translation>
+        <translation>Theora + Flac</translation>
     </message>
     <message>
         <source>Mpeg4 + AAC</source>
-        <translation type="unfinished"></translation>
+        <translation>Mpeg4 + AAC</translation>
     </message>
     <message>
         <source>WMV + WMA</source>
-        <translation type="unfinished"></translation>
+        <translation>WMV + WMA</translation>
     </message>
     <message>
         <source>Choose File to open</source>
-        <translation type="unfinished"></translation>
+        <translation>Alege un fisier sa-l deschizi</translation>
     </message>
     <message>
         <source>Video files (*.avi *.mkv *.ogg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fisiere video (*.avi *.mkv *.ogg)</translation>
     </message>
     <message>
         <source>Transcode in progress</source>
-        <translation type="unfinished"></translation>
+        <translation>Codare in progres</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Atentie</translation>
     </message>
     <message>
         <source>Choose a video to transcode</source>
-        <translation type="unfinished"></translation>
+        <translation>Alege un fisier pentru codare</translation>
     </message>
     <message>
         <source>Choose File to save</source>
-        <translation type="unfinished"></translation>
+        <translation>Alege fisierul de salvat</translation>
     </message>
 </context>
 <context>
@@ -1002,11 +1002,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Image width</source>
-        <translation type="unfinished"></translation>
+        <translation>Dimensiune orizontala pentru  imagine</translation>
     </message>
     <message>
         <source>Image height</source>
-        <translation type="unfinished"></translation>
+        <translation>Dimensiune verticala pentru  imagine</translation>
     </message>
 </context>
 <context>
@@ -1078,7 +1078,7 @@ Apoi faceţi clic pe Next pentru a continua ......</translation>
     </message>
     <message>
         <source>Do not show at startup.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu arata la startup</translation>
     </message>
 </context>
 <context>
