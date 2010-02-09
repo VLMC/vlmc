@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0">
+<!DOCTYPE TS><TS>
 <defaultcodec>UTF-8</defaultcodec>
 <context>
     <name>AboutVLMC</name>
@@ -58,7 +56,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>New tags edition</source>
-        <translation>Edytor nowych tagów</translation>
+        <translation>Edycja nowych tagów</translation>
     </message>
     <message>
         <source>Enter tags (you can enter multiple tags, separated by a comma)</source>
@@ -321,7 +319,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Audio</source>
-        <translation>Sons</translation>
+        <translation>Audio</translation>
     </message>
     <message>
         <source>Videos</source>
@@ -638,6 +636,14 @@ p, li { white-space: pre-wrap; }
         <source>Do you want to save it ?</source>
         <translation>Czy chcesz go zapisać ?</translation>
     </message>
+    <message>
+        <source>&lt;Unnamed project&gt;</source>
+        <translation>&lt;Bez nazwy&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;Unsaved project&gt;</source>
+        <translation>&lt;Niezapisany&gt;</translation>
+    </message>
 </context>
 <context>
     <name>ProjectPreferences</name>
@@ -662,7 +668,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This help is likely not to be of any help.</source>
-        <translation>Ta pomoc nie stawi żadnej pomocy.</translation>
+        <translation>Ta pomoc nie stanowi żadnej pomocy.</translation>
     </message>
     <message>
         <source>Project wizard help</source>
@@ -697,7 +703,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unable to get backtrace</source>
-        <translation>Nie można uzyskać śledzenia wstecznego</translation>
+        <translation>Nie można uzyskać śladu wstecznego</translation>
     </message>
 </context>
 <context>
@@ -1005,11 +1011,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Image width</source>
-        <translation type="unfinished"></translation>
+        <translation>Szerokość obrazu</translation>
     </message>
     <message>
         <source>Image height</source>
-        <translation type="unfinished"></translation>
+        <translation>Wysokość obrazu</translation>
     </message>
 </context>
 <context>
