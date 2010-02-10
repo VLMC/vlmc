@@ -3,7 +3,7 @@
 
 SUBDIRS(EffectsEngine/Plugins/src)
 
-SET(VLMC_SRCS 
+SET(VLMC_SRCS
     main.cpp
     API/Module.cpp
     API/ModuleManager.cpp
