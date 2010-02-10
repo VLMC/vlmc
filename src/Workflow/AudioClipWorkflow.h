@@ -37,8 +37,8 @@ class   AudioClipWorkflow : public ClipWorkflow
         {
             unsigned char*  buff;
             size_t          size;
-            unsigned int    nbSample;
-            unsigned int    nbChannels;
+            quint32         nbSample;
+            quint32         nbChannels;
             qint64          ptsDiff;
             quint32         debugId;
         };
@@ -72,12 +72,12 @@ class   AudioClipWorkflow : public ClipWorkflow
         void                        initVlcOutput();
         AudioSample*                createBuffer( size_t size );
         static void                 lock( AudioClipWorkflow* clipWorkflow,
-                                          quint8** pcm_buffer , unsigned int size );
+                                          quint8** pcm_buffer , quin32 size );
         static void                 unlock( AudioClipWorkflow* clipWorkflow,
-                                            quint8* pcm_buffer, unsigned int channels,
-                                            unsigned int rate, unsigned int nb_samples,
-                                            unsigned int bits_per_sample,
-                                            unsigned int size, qint64 pts );
+                                            quint8* pcm_buffer, quint32 channels,
+                                            quint32 rate, quint32 nb_samples,
+                                            quint32 bits_per_sample,
+                                            quint32 size, qint64 pts );
 
         //FIXME: this is totally random powered ! Please adjust with a value that does make sense...
         static const quint32   nbBuffers = 256;

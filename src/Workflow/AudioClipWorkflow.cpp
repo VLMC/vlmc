@@ -25,12 +25,12 @@
 #include "AudioClipWorkflow.h"
 #include "VLCMedia.h"
 
-AudioClipWorkflow::AudioClipWorkflow( Clip* clip ) :
+AudioClipWorkflow::AudioClipWorkflow( Clip *clip ) :
         ClipWorkflow( clip )
 {
-    for ( unsigned int i = 0; i < AudioClipWorkflow::nbBuffers; ++i )
+    for ( quint32 i = 0; i < AudioClipWorkflow::nbBuffers; ++i )
     {
-        AudioSample* as = new AudioSample;
+        AudioSample *as = new AudioSample;
         as->buff = NULL;
         m_availableBuffers.push_back( as );
         as->debugId = i;
@@ -49,13 +49,13 @@ AudioClipWorkflow::~AudioClipWorkflow()
 void*
 AudioClipWorkflow::getLockCallback() const
 {
-    return reinterpret_cast<void*>(&AudioClipWorkflow::lock);
+    return reinterpret_cast<void*>( &AudioClipWorkflow::lock );
 }
 
 void*
 AudioClipWorkflow::getUnlockCallback() const
 {
-    return reinterpret_cast<void*>(&AudioClipWorkflow::unlock);
+    return reinterpret_cast<void*>( &AudioClipWorkflow::unlock );
 }
 
 void*
@@ -70,13 +70,14 @@ AudioClipWorkflow::getOutput( ClipWorkflow::GetMode mode )
         return NULL;
     if ( mode == ClipWorkflow::Get )
         qCritical() << "A sound buffer should never be asked with 'Get' mode";
-    ::StackedBuffer<AudioSample*>* buff = new StackedBuffer(
+    ::StackedBuffer<AudioSample*> *buff = new StackedBuffer(
             m_computedBuffers.dequeue(), this, true );
     postGetOutput();
     return buff;
 }
 
-void        AudioClipWorkflow::initVlcOutput()
+void
+AudioClipWorkflow::initVlcOutput()
 {
     m_vlcMedia->addOption( ":no-sout-video" );
     m_vlcMedia->addOption( ":no-video" );
@@ -93,22 +94,24 @@ void        AudioClipWorkflow::initVlcOutput()
         m_vlcMedia->addOption( ":no-sout-smem-time-sync" );
 }
 
-AudioClipWorkflow::AudioSample*    AudioClipWorkflow::createBuffer( size_t size )
+AudioClipWorkflow::AudioSample*
+AudioClipWorkflow::createBuffer( size_t size )
 {
-    AudioSample* as = new AudioSample;
+    AudioSample *as = new AudioSample;
     as->buff = new uchar[size];
     as->size = size;
     as->debugId = -1;
     return as;
 }
 
-void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, quint8** pcm_buffer , unsigned int size )
+void
+AudioClipWorkflow::lock( AudioClipWorkflow *cw, quint8 **pcm_buffer , quint32 size )
 {
     QMutexLocker    lock( cw->m_availableBuffersMutex );
     cw->m_renderLock->lock();
     cw->m_computedBuffersMutex->lock();
 
-    AudioSample* as = NULL;
+    AudioSample     *as = NULL;
     if ( cw->m_availableBuffers.isEmpty() == true )
         as = cw->createBuffer( size );
     else
@@ -124,10 +127,11 @@ void        AudioClipWorkflow::lock( AudioClipWorkflow* cw, quint8** pcm_buffer 
     *pcm_buffer = as->buff;
 }
 
-void        AudioClipWorkflow::unlock( AudioClipWorkflow* cw, quint8* pcm_buffer,
-                                      unsigned int channels, unsigned int rate,
-                                      unsigned int nb_samples, unsigned int bits_per_sample,
-                                      unsigned int size, qint64 pts )
+void
+AudioClipWorkflow::unlock( AudioClipWorkflow *cw, quint8 *pcm_buffer,
+                                      quint32 channels, quint32 rate,
+                                      quint32 nb_samples, quint32 bits_per_sample,
+                                      quint32 size, qint64 pts )
 {
     Q_UNUSED( pcm_buffer );
     Q_UNUSED( rate );
@@ -159,13 +163,15 @@ AudioClipWorkflow::getMaxComputedBuffers() const
     return AudioClipWorkflow::nbBuffers;
 }
 
-void        AudioClipWorkflow::releaseBuffer( AudioSample *sample )
+void
+AudioClipWorkflow::releaseBuffer( AudioSample *sample )
 {
     QMutexLocker    lock( m_availableBuffersMutex );
     m_availableBuffers.enqueue( sample );
 }
 
-void        AudioClipWorkflow::flushComputedBuffers()
+void
+AudioClipWorkflow::flushComputedBuffers()
 {
     QMutexLocker    lock( m_availableBuffersMutex );
     QMutexLocker    lock2( m_computedBuffersMutex );
@@ -177,14 +183,15 @@ void        AudioClipWorkflow::flushComputedBuffers()
 }
 
 AudioClipWorkflow::StackedBuffer::StackedBuffer( AudioClipWorkflow::AudioSample *as,
-                                                        AudioClipWorkflow *poolHandler,
-                                                        bool mustBeReleased) :
+                                                AudioClipWorkflow *poolHandler,
+                                                bool mustBeReleased) :
     ::StackedBuffer<AudioClipWorkflow::AudioSample*>( as, mustBeReleased ),
     m_poolHandler( poolHandler )
 {
 }
 
-void    AudioClipWorkflow::StackedBuffer::release()
+void
+AudioClipWorkflow::StackedBuffer::release()
 {
     if ( m_mustRelease == true && m_poolHandler.isNull() == false )
         m_poolHandler->releaseBuffer( m_buff );
