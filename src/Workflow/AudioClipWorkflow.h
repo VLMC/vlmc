@@ -72,7 +72,7 @@ class   AudioClipWorkflow : public ClipWorkflow
         void                        initVlcOutput();
         AudioSample*                createBuffer( size_t size );
         static void                 lock( AudioClipWorkflow* clipWorkflow,
-                                          quint8** pcm_buffer , quin32 size );
+                                          quint8** pcm_buffer , quint32 size );
         static void                 unlock( AudioClipWorkflow* clipWorkflow,
                                             quint8* pcm_buffer, quint32 channels,
                                             quint32 rate, quint32 nb_samples,
