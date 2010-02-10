@@ -269,7 +269,7 @@ class   WorkflowRenderer : public GenericRenderer
          *  \brief          When there's no sound to play, this is the buffer that'll
          *                  be injected
          */
-        static quint8*      silencedAudioBuffer;
+        quint8              *m_silencedAudioBuffer;
         size_t              m_videoBuffSize;
         EsHandler*          m_videoEsHandler;
         EsHandler*          m_audioEsHandler;

@@ -35,8 +35,6 @@
 #include "Clip.h"
 #include "VLCMediaPlayer.h"
 
-quint8*         WorkflowRenderer::silencedAudioBuffer = NULL;
-
 WorkflowRenderer::WorkflowRenderer() :
             m_mainWorkflow( MainWorkflow::getInstance() ),
             m_stopping( false ),
@@ -45,7 +43,8 @@ WorkflowRenderer::WorkflowRenderer() :
             m_renderVideoFrame( NULL ),
             m_media( NULL ),
             m_width( 0 ),
-            m_height( 0 )
+            m_height( 0 ),
+            m_silencedAudioBuffer( NULL )
 {
 }
 
@@ -193,10 +192,10 @@ WorkflowRenderer::lockAudio( qint64 *pts, size_t *bufferSize, void **buffer )
     {
         nbSample = m_rate / m_outputFps;
         unsigned int    buffSize = m_nbChannels * 2 * nbSample;
-        if ( WorkflowRenderer::silencedAudioBuffer == NULL )
-            WorkflowRenderer::silencedAudioBuffer = new uint8_t[ buffSize ];
-        memset( WorkflowRenderer::silencedAudioBuffer, 0, buffSize );
-        *buffer = WorkflowRenderer::silencedAudioBuffer;
+        if ( m_silencedAudioBuffer == NULL )
+            m_silencedAudioBuffer = new uint8_t[ buffSize ];
+        memset( m_silencedAudioBuffer, 0, buffSize );
+        *buffer = m_silencedAudioBuffer;
         *bufferSize = buffSize;
         ptsDiff = m_pts - m_audioPts;
     }
@@ -295,6 +294,8 @@ WorkflowRenderer::killRenderer()
     m_stopping = true;
     m_mediaPlayer->stop();
     m_mainWorkflow->stop();
+    delete[] m_silencedAudioBuffer;
+    m_silencedAudioBuffer = NULL;
 }
 
 qint64      WorkflowRenderer::getCurrentFrame() const
