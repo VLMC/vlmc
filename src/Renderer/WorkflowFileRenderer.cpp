@@ -49,6 +49,7 @@ void        WorkflowFileRenderer::run()
 
     m_width = width();
     m_height = height();
+    m_outputFps = 30.0;
     setupRenderer( m_width, m_height, m_outputFps );
 
     //Media as already been created and mainly initialized by the WorkflowRenderer

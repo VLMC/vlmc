@@ -61,6 +61,7 @@ class   WorkflowRenderer : public GenericRenderer
         {
             WorkflowRenderer*   self; ///< The 'this' pointer will be passed in this field
             EsType              type; ///< The elementary stream type
+            double              fps; ///< The fps to use for this rendering session.
         };
 
         WorkflowRenderer();
@@ -192,7 +193,8 @@ class   WorkflowRenderer : public GenericRenderer
          *  \param  bufferSize  The size of the buffer that will be provided
          *  \param  buffer      The buffer itself.
          */
-        int                 lockVideo( qint64 *pts, size_t *bufferSize, void **buffer );
+        int                 lockVideo( EsHandler *handler, qint64 *pts,
+                                       size_t *bufferSize, void **buffer );
         /**
          *  \brief  "Subcallback", for audio sample injection
          *
@@ -200,7 +202,8 @@ class   WorkflowRenderer : public GenericRenderer
          *  \param  bufferSize  The size of the buffer that will be provided
          *  \param  buffer      The buffer itself.
          */
-        int                 lockAudio( qint64 *pts, size_t *bufferSize, void **buffer );
+        int                 lockAudio( EsHandler *handler, qint64 *pts,
+                                       size_t *bufferSize, void **buffer );
         /**
          *  \brief  unlock callback for the imem module
          *

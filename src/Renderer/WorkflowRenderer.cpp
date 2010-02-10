@@ -88,6 +88,8 @@ WorkflowRenderer::setupRenderer( quint32 width, quint32 height, double fps )
     if ( m_renderVideoFrame != NULL )
         delete m_renderVideoFrame;
     m_renderVideoFrame = new unsigned char[width * height * Pixel::NbComposantes];
+    m_audioEsHandler->fps = fps;
+    m_videoEsHandler->fps = fps;
     //Clean any previous render.
     memset( m_renderVideoFrame, 0, m_width * m_height * Pixel::NbComposantes );
 
@@ -123,13 +125,13 @@ WorkflowRenderer::lock( void *datas, qint64 *dts, qint64 *pts, quint32 *flags,
     *flags = 0;
     if ( handler->type == Video )
     {
-        ret = handler->self->lockVideo( pts, bufferSize, buffer );
+        ret = handler->self->lockVideo( handler, pts, bufferSize, buffer );
         if ( paused == false )
             handler->self->m_mainWorkflow->nextFrame( MainWorkflow::VideoTrack );
     }
     else if ( handler->type == Audio )
     {
-        ret = handler->self->lockAudio( pts, bufferSize, buffer );
+        ret = handler->self->lockAudio( handler, pts, bufferSize, buffer );
         if ( paused == false )
             handler->self->m_mainWorkflow->nextFrame( MainWorkflow::AudioTrack );
     }
@@ -139,7 +141,7 @@ WorkflowRenderer::lock( void *datas, qint64 *dts, qint64 *pts, quint32 *flags,
 }
 
 int
-WorkflowRenderer::lockVideo( qint64 *pts, size_t *bufferSize, void **buffer )
+WorkflowRenderer::lockVideo( EsHandler *handler, qint64 *pts, size_t *bufferSize, void **buffer )
 {
     qint64 ptsDiff = 0;
 
@@ -158,7 +160,7 @@ WorkflowRenderer::lockVideo( qint64 *pts, size_t *bufferSize, void **buffer )
         //If no ptsDiff has been computed, we have to fake it, so we compute
         //the theorical pts for one frame.
         //this is a bit hackish though... (especially regarding the "no frame computed" detection)
-        ptsDiff = 1000000 / m_outputFps;
+        ptsDiff = 1000000 / handler->fps;
     }
     m_pts = *pts = ptsDiff + m_pts;
     *buffer = m_renderVideoFrame;
@@ -167,7 +169,7 @@ WorkflowRenderer::lockVideo( qint64 *pts, size_t *bufferSize, void **buffer )
 }
 
 int
-WorkflowRenderer::lockAudio( qint64 *pts, size_t *bufferSize, void **buffer )
+WorkflowRenderer::lockAudio( EsHandler *handler, qint64 *pts, size_t *bufferSize, void **buffer )
 {
     qint64                              ptsDiff;
     uint32_t                            nbSample;
@@ -190,7 +192,7 @@ WorkflowRenderer::lockAudio( qint64 *pts, size_t *bufferSize, void **buffer )
     }
     else
     {
-        nbSample = m_rate / m_outputFps;
+        nbSample = m_rate / handler->fps;
         unsigned int    buffSize = m_nbChannels * 2 * nbSample;
         if ( m_silencedAudioBuffer == NULL )
             m_silencedAudioBuffer = new uint8_t[ buffSize ];
