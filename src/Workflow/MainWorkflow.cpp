@@ -61,10 +61,6 @@ MainWorkflow::MainWorkflow( int trackCount ) :
         m_currentFrame[i] = 0;
     }
     m_outputBuffers = new OutputBuffers;
-
-    blackOutput = new LightVideoFrame( m_width, m_height);
-    // FIX ME vvvvvv , It doesn't update meta info (nbpixels, nboctets, etc.
-    memset( (*blackOutput)->frame.octets, 0, (*blackOutput)->nboctets );
 }
 
 MainWorkflow::~MainWorkflow()
@@ -121,6 +117,11 @@ MainWorkflow::startRender( quint32 width, quint32 height )
     m_renderStarted = true;
     m_width = width;
     m_height = height;
+    if ( blackOutput != NULL )
+        delete blackOutput;
+    blackOutput = new LightVideoFrame( m_width, m_height );
+    // FIX ME vvvvvv , It doesn't update meta info (nbpixels, nboctets, etc.
+    memset( (*blackOutput)->frame.octets, 0, (*blackOutput)->nboctets );
     for ( unsigned int i = 0; i < MainWorkflow::NbTrackType; ++i )
         m_tracks[i]->startRender();
     computeLength();

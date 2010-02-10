@@ -47,11 +47,9 @@ void        WorkflowFileRenderer::run()
 
     m_mainWorkflow->setCurrentFrame( 0, MainWorkflow::Renderer );
 
-    //Ugly hack to update render parameter.
-    //We don't really care if anything has changed as WorkflowFileRenderer is called
-    //only once, and is deleted then.
-    parametersChanged();
-    setupRenderer();
+    m_width = width();
+    m_height = height();
+    setupRenderer( m_width, m_height, m_outputFps );
 
     //Media as already been created and mainly initialized by the WorkflowRenderer
     QString     transcodeStr = ":sout=#transcode{vcodec=h264,vb=800,acodec=a52,ab=128,no-hurry-up}"
@@ -61,11 +59,6 @@ void        WorkflowFileRenderer::run()
 
 //    sprintf( buffer, ":sout-transcode-fps=%f", m_outputFps );
 //    m_media->addOption( buffer );
-
-    //Clean any previous render.
-    memcpy( m_renderVideoFrame,
-            (*MainWorkflow::blackOutput)->frame.octets,
-            (*MainWorkflow::blackOutput)->nboctets );
 
     m_mediaPlayer->setMedia( m_media );
 
@@ -82,7 +75,7 @@ void        WorkflowFileRenderer::run()
     setupDialog();
 
     m_mainWorkflow->setFullSpeedRender( true );
-    m_mainWorkflow->startRender( width(), height() );
+    m_mainWorkflow->startRender( m_width, m_height );
     m_mediaPlayer->play();
 }
 

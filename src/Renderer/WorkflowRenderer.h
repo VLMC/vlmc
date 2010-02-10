@@ -242,14 +242,13 @@ class   WorkflowRenderer : public GenericRenderer
         /**
          *  \brief          Configure the production chain.
          */
-        void                setupRenderer();
+        void                setupRenderer( quint32 width, quint32 height, double fps );
         /**
-         *  \brief          Check for parameters modification, and update them if
-         *                  necessary.
+         *  \brief          Check for parameters modification.
          *  \return         true if some render parameters has changed.
-         *                  Parameters include : width, height, fps.
          */
-        bool                parametersChanged();
+        bool                paramsHasChanged( quint32 width, quint32 height,
+                                                  double fps );
     protected:
         MainWorkflow*       m_mainWorkflow;
         LibVLCpp::Media*    m_media;

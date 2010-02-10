@@ -79,7 +79,7 @@ WorkflowRenderer::~WorkflowRenderer()
 }
 
 void
-WorkflowRenderer::setupRenderer()
+WorkflowRenderer::setupRenderer( quint32 width, quint32 height, double fps )
 {
     char        videoString[512];
     char        inputSlave[256];
@@ -88,10 +88,12 @@ WorkflowRenderer::setupRenderer()
 
     if ( m_renderVideoFrame != NULL )
         delete m_renderVideoFrame;
-    m_renderVideoFrame = new unsigned char[m_width * m_height * Pixel::NbComposantes];
+    m_renderVideoFrame = new unsigned char[width * height * Pixel::NbComposantes];
+    //Clean any previous render.
+    memset( m_renderVideoFrame, 0, m_width * m_height * Pixel::NbComposantes );
 
     sprintf( videoString, "width=%i:height=%i:dar=%s:fps=%s:data=%lld:codec=%s:cat=2:caching=0",
-             m_width, m_height, "16/9", "30/1",
+             width, height, "16/9", "30/1",
              (qint64)m_videoEsHandler, "RV24" );
     sprintf( audioParameters, "data=%lld:cat=1:codec=f32l:samplerate=%u:channels=%u:caching=0",
              (qint64)m_audioEsHandler, m_rate, m_nbChannels );
@@ -210,8 +212,13 @@ void        WorkflowRenderer::startPreview()
 {
     if ( m_mainWorkflow->getLengthFrame() <= 0 )
         return ;
-    if ( parametersChanged() == true )
-        setupRenderer();
+    if ( paramsHasChanged( m_width, m_height, m_outputFps ) == true )
+    {
+        m_width = width();
+        m_height = height();
+        m_outputFps = outputFps();
+        setupRenderer( m_width, m_height, m_outputFps );
+    }
     m_mediaPlayer->setMedia( m_media );
 
     //Media player part: to update PreviewWidget
@@ -219,11 +226,6 @@ void        WorkflowRenderer::startPreview()
     connect( m_mediaPlayer, SIGNAL( paused() ),     this,   SIGNAL( paused() ), Qt::DirectConnection );
     //FIXME:: check if this doesn't require Qt::QueuedConnection
     connect( m_mediaPlayer, SIGNAL( stopped() ),    this,   SIGNAL( endReached() ) );
-
-    //Clean any previous render.
-    memcpy( m_renderVideoFrame,
-            (*MainWorkflow::blackOutput)->frame.octets,
-            (*MainWorkflow::blackOutput)->nboctets );
 
     m_mainWorkflow->setFullSpeedRender( false );
     m_mainWorkflow->startRender( m_width, m_height );
@@ -365,21 +367,14 @@ WorkflowRenderer::outputFps() const
 }
 
 bool
-WorkflowRenderer::parametersChanged()
+WorkflowRenderer::paramsHasChanged( quint32 width, quint32 height, double fps )
 {
-    quint32             newWidth = width();
-    quint32             newHeight = height();
+    quint32             newWidth = this->width();
+    quint32             newHeight = this->height();
     float               newOutputFps = outputFps();
 
-    if ( newWidth != m_width || newHeight != m_height ||
-         newOutputFps != m_outputFps )
-    {
-        m_width = newWidth;
-        m_height = newHeight;
-        m_outputFps = newOutputFps;
-        return true;
-    }
-    return false;
+    return ( newWidth != width || newHeight != height ||
+         newOutputFps != fps );
 }
 
 /////////////////////////////////////////////////////////////////////
