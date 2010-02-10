@@ -142,7 +142,10 @@ MainWorkflow::getOutput( TrackType trackType, bool paused )
         {
             m_effectEngine->render();
             const LightVideoFrame &tmp = m_effectEngine->getVideoOutput( 1 );
-            m_outputBuffers->video = &tmp;
+            if ( tmp->nboctets == 0 )
+                m_outputBuffers->video = blackOutput;
+            else
+                m_outputBuffers->video = &tmp;
         }
         else
         {

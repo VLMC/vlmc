@@ -45,8 +45,9 @@ void    MixerEffectPlugin::init( IEffectNode* ien )
 
 void	MixerEffectPlugin::render( void )
 {
-  quint32	i;
-  quint32       nbIns;
+  quint32                   i;
+  quint32                   nbIns;
+  static LightVideoFrame    nullFrame;
 
   nbIns = m_ien->getNBStaticsVideosInputs();
   for ( i = nbIns; i > 0; --i )
@@ -58,5 +59,6 @@ void	MixerEffectPlugin::render( void )
           return ;
       }
   }
+  (*m_ien->getStaticVideoOutput( 1 )) << nullFrame;
   return ;
 }
