@@ -35,7 +35,7 @@ class   WorkflowFileRenderer : public WorkflowRenderer
     Q_DISABLE_COPY( WorkflowFileRenderer )
 
 public:
-    WorkflowFileRenderer( const QString& outputFileName );
+    WorkflowFileRenderer();
     virtual ~WorkflowFileRenderer();
 
     static int          lock( void* datas, qint64 *dts, qint64 *pts, quint32 *flags,
@@ -46,9 +46,10 @@ public:
     virtual float       getFps() const;
 
 private:
-    void                setupDialog();
+    void                setupDialog( quint32 width, quint32 height );
+
 private:
-    const QString               m_outputFileName;
+    QString                     m_outputFileName;
     WorkflowFileRendererDialog* m_dialog;
     QImage*                     m_image;
     QTime                       m_time;

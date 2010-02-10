@@ -161,7 +161,7 @@ WorkflowRenderer::lockVideo( EsHandler *handler, qint64 *pts, size_t *bufferSize
         //the theorical pts for one frame.
         //this is a bit hackish though... (especially regarding the "no frame computed" detection)
         ptsDiff = 1000000 / handler->fps;
-    }
+    } 
     m_pts = *pts = ptsDiff + m_pts;
     *buffer = m_renderVideoFrame;
     *bufferSize = m_videoBuffSize;

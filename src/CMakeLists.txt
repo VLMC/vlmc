@@ -38,6 +38,7 @@ SET(VLMC_SRCS
     Gui/TagWidget.cpp
     Gui/UndoStack.cpp
     Gui/WorkflowFileRendererDialog.cpp
+    Gui/export/RendererSettings.cpp
     Gui/import/ImportController.cpp
     Gui/import/ImportMediaCellView.cpp
     Gui/import/ImportMediaListController.cpp
@@ -118,6 +119,7 @@ SET (VLMC_HDRS
     Gui/ClickableLabel.h
     Gui/ClipProperty.h
     Gui/DockWidgetManager.h
+    Gui/export/RendererSettings.h
     Gui/FileInfoListModel.h
     Gui/import/ImportController.h
     Gui/import/ImportMediaCellView.h
@@ -184,6 +186,7 @@ SET (VLMC_HDRS
   )
 
 SET(VLMC_UIS
+    Gui/export/RendererSettings.ui
     Gui/import/ui/ImportController.ui
     Gui/library/StackViewNavController.ui
     Gui/library/ui/MediaCellView.ui

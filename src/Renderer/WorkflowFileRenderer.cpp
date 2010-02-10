@@ -26,12 +26,12 @@
 #include "VLCMedia.h"
 #include "LightVideoFrame.h"
 #include "VLCMediaPlayer.h"
+#include "export/RendererSettings.h"
 
 #include <QTime>
 
-WorkflowFileRenderer::WorkflowFileRenderer( const QString& outputFileName ) :
+WorkflowFileRenderer::WorkflowFileRenderer() :
         WorkflowRenderer(),
-        m_outputFileName( outputFileName ),
         m_image( NULL )
 {
 }
@@ -47,10 +47,23 @@ void        WorkflowFileRenderer::run()
 
     m_mainWorkflow->setCurrentFrame( 0, MainWorkflow::Renderer );
 
-    m_width = width();
-    m_height = height();
-    m_outputFps = 30.0;
-    setupRenderer( m_width, m_height, m_outputFps );
+    //Setup dialog box for querying render parameters.
+    RendererSettings    *settings = new RendererSettings;
+    if ( settings->exec() == QDialog::Rejected )
+    {
+        delete settings;
+        return ;
+    }
+    m_outputFileName = settings->outputFileName();
+    quint32     width = settings->width();
+    quint32     height = settings->height();
+    double      fps = settings->fps();
+    quint32     vbitrate = settings->videoBitrate();
+    quint32     abitrate = settings->audioBitrate();
+    delete settings;
+
+    setupRenderer( width, height, fps );
+    setupDialog( width, height );
 
     //Media as already been created and mainly initialized by the WorkflowRenderer
     QString     transcodeStr = ":sout=#transcode{vcodec=h264,vb=800,acodec=a52,ab=128,no-hurry-up}"
@@ -73,10 +86,8 @@ void        WorkflowFileRenderer::run()
     m_pts = 0;
     m_audioPts = 0;
 
-    setupDialog();
-
     m_mainWorkflow->setFullSpeedRender( true );
-    m_mainWorkflow->startRender( m_width, m_height );
+    m_mainWorkflow->startRender( width, height );
     m_mediaPlayer->play();
 }
 
@@ -120,22 +131,26 @@ WorkflowFileRenderer::lock( void *datas, qint64 *dts, qint64 *pts, quint32 *flag
     return ret;
 }
 
-void        WorkflowFileRenderer::unlock( void *datas, size_t size, void* buff )
+void        
+WorkflowFileRenderer::unlock( void *datas, size_t size, void* buff )
 {
     WorkflowRenderer::unlock( datas, size, buff );
 }
 
-void        WorkflowFileRenderer::__frameChanged( qint64 frame, MainWorkflow::FrameChangedReason )
+void        
+WorkflowFileRenderer::__frameChanged( qint64 frame, MainWorkflow::FrameChangedReason )
 {
     m_dialog->setProgressBarValue( frame * 100 / m_mainWorkflow->getLengthFrame() );
 }
 
-void*       WorkflowFileRenderer::getLockCallback()
+void*       
+WorkflowFileRenderer::getLockCallback()
 {
     return (void*)&WorkflowFileRenderer::lock;
 }
 
-void*       WorkflowFileRenderer::getUnlockCallback()
+void*       
+WorkflowFileRenderer::getUnlockCallback()
 {
     return (void*)&WorkflowFileRenderer::unlock;
 }
@@ -157,9 +172,9 @@ WorkflowFileRenderer::height() const
 }
 
 void
-WorkflowFileRenderer::setupDialog()
+WorkflowFileRenderer::setupDialog( quint32 width, quint32 height )
 {
-    m_dialog = new WorkflowFileRendererDialog( m_width, m_height );
+    m_dialog = new WorkflowFileRendererDialog( width, height );
     m_dialog->setModal( true );
     m_dialog->setOutputFileName( m_outputFileName );
     connect( m_dialog->m_ui.cancelButton, SIGNAL( clicked() ), this, SLOT( cancelButtonClicked() ) );

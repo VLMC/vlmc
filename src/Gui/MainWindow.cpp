@@ -376,17 +376,12 @@ void    MainWindow::on_actionRender_triggered()
         QMessageBox::warning( NULL, tr ( "VLMC Renderer" ), tr( "There is nothing to render." ) );
         return ;
     }
-    QString outputFileName =
-            QFileDialog::getSaveFileName( NULL, tr ( "Enter the output file name" ),
-                                          QDir::currentPath(), "Videos(*.avi *.mpg)" );
-    if ( outputFileName.length() == 0 )
-        return ;
     else
     {
         m_renderer->killRenderer();
         if ( m_fileRenderer )
             delete m_fileRenderer;
-        m_fileRenderer = new WorkflowFileRenderer( outputFileName );
+        m_fileRenderer = new WorkflowFileRenderer();
         m_fileRenderer->initializeRenderer();
         m_fileRenderer->run();
     }
