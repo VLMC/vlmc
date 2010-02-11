@@ -75,16 +75,21 @@ ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
     connect( this, SIGNAL( projectClosed() ), Library::getInstance(), SLOT( clear() ) );
     connect( this, SIGNAL( projectClosed() ), MainWorkflow::getInstance(), SLOT( clear() ) );
 
-    const SettingValue* val = SettingsManager::getInstance()->getValue( "project", "ProjectName");
-    connect( val, SIGNAL( changed( QVariant) ), this, SLOT(nameChanged(QVariant) ) );
+    const SettingValue* val =
+            SettingsManager::getInstance()->getValue( "project", "ProjectName");
+    connect( val, SIGNAL( changed( QVariant) ), this, SLOT(projectNameChanged(QVariant) ) );
 
     //Automatic save part :
     m_timer = new QTimer( this );
     connect( m_timer, SIGNAL( timeout() ), this, SLOT( autoSaveRequired() ) );
-    const SettingValue* autoSaveEnabled = SettingsManager::getInstance()->getValue( "VLMC", "AutomaticBackup" );
-    connect( autoSaveEnabled, SIGNAL( changed( QVariant ) ), this, SLOT( automaticSaveEnabledChanged( QVariant ) ), Qt::QueuedConnection );
-    const SettingValue* autoSaveInterval = SettingsManager::getInstance()->getValue( "VLMC", "AutomaticBackupInterval" );
-    connect( autoSaveInterval, SIGNAL( changed( QVariant ) ), this, SLOT( automaticSaveIntervalChanged(QVariant) ), Qt::QueuedConnection );
+    const SettingValue* autoSaveEnabled =
+            SettingsManager::getInstance()->getValue( "VLMC", "AutomaticBackup" );
+    connect( autoSaveEnabled, SIGNAL( changed( QVariant ) ),
+             this, SLOT( automaticSaveEnabledChanged( QVariant ) ), Qt::QueuedConnection );
+    const SettingValue* autoSaveInterval =
+            SettingsManager::getInstance()->getValue( "VLMC", "AutomaticBackupInterval" );
+    connect( autoSaveInterval, SIGNAL( changed( QVariant ) ),
+             this, SLOT( automaticSaveIntervalChanged(QVariant) ), Qt::QueuedConnection );
     automaticSaveEnabledChanged( autoSaveEnabled->get() );
 }
 
@@ -111,11 +116,7 @@ QStringList ProjectManager::recentsProjects() const
 void    ProjectManager::cleanChanged( bool val )
 {
     m_needSave = !val;
-    if ( m_projectFile != NULL )
-    {
-        QFileInfo   fInfo( *m_projectFile );
-    }
-    emit projectUpdated( m_projectName, val );
+    emit projectUpdated( projectName(), val );
 }
 
 void    ProjectManager::loadTimeline()
@@ -123,7 +124,7 @@ void    ProjectManager::loadTimeline()
     QDomElement     root = m_domDocument->documentElement();
 
     MainWorkflow::getInstance()->loadProject( root.firstChildElement( "timeline" ) );
-    emit projectUpdated( m_projectName, true );
+    emit projectUpdated( projectName(), true );
 }
 
 void    ProjectManager::parseProjectNode( const QDomElement &node )
@@ -189,10 +190,7 @@ bool    ProjectManager::createNewProjectFile( bool saveAs )
             outputFileName += ".vlmc";
         m_projectFile = new QFile( outputFileName );
         appendToRecentProject( outputFileName );
-        QFileInfo   fInfo( *m_projectFile );
-        if ( m_projectName == ProjectManager::unSavedProject )
-            m_projectName = fInfo.fileName();
-        emit projectUpdated( m_projectName, true );
+        emit projectUpdated( projectName(), true );
     }
     return true;
 }
@@ -236,7 +234,7 @@ void    ProjectManager::newProject( const QString &projectName )
     if ( closeProject() == false )
         return ;
     m_projectName = projectName;
-    emit projectUpdated( m_projectName, false );
+    emit projectUpdated( this->projectName(), false );
 }
 
 bool    ProjectManager::closeProject()
@@ -278,9 +276,10 @@ bool    ProjectManager::askForSaveIfModified()
     return true;
 }
 
-void    ProjectManager::nameChanged( const QVariant& name )
+void    ProjectManager::projectNameChanged( const QVariant& name )
 {
     m_projectName = name.toString();
+    emit projectUpdated( m_projectName, !m_needSave );
 }
 
 void    ProjectManager::emergencyBackup()
@@ -361,4 +360,18 @@ void    ProjectManager::autoSaveRequired()
     if ( m_projectFile == NULL )
         return ;
     saveProject( false );
+}
+
+QString ProjectManager::projectName() const
+{
+    if ( m_projectName.isEmpty() == true )
+    {
+        if ( m_projectFile != NULL )
+        {
+            QFileInfo       fInfo( *m_projectFile );
+            return fInfo.baseName();
+        }
+        return ProjectManager::unSavedProject;
+    }
+    return m_projectName;
 }

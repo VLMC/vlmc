@@ -74,6 +74,15 @@ private:
     void            emergencyBackup();
     static bool     isBackupFile( const QString& projectFile );
     void            appendToRecentProject( const QString& projectName );
+    /**
+     *  \brief      Get the project name
+     *
+     *  The project name will be either the project name given in the project wizard,
+     *  or the filename without the extension. If the project is still unsaved,
+     *  ProjectManager::unSavedProject is returned.
+     *  \return     The project name.
+     */
+    QString         projectName() const;
 
     ProjectManager();
     ~ProjectManager();
@@ -94,10 +103,10 @@ private:
 private slots:
     void            loadTimeline();
     void            cleanChanged( bool val );
-    void            nameChanged( const QVariant& name );
     void            automaticSaveEnabledChanged( const QVariant& enabled );
     void            automaticSaveIntervalChanged( const QVariant& interval );
     void            autoSaveRequired();
+    void            projectNameChanged( const QVariant& projectName );
 
 signals:
     /**
