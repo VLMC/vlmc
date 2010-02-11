@@ -134,7 +134,7 @@ void    ProjectManager::parseProjectNode( const QDomElement &node )
 
 void    ProjectManager::loadProject( const QString& fileName )
 {
-    if ( fileName.length() == 0 )
+    if ( fileName.isEmpty() == true )
         return;
 
     if ( closeProject() == false )
@@ -166,7 +166,7 @@ void    ProjectManager::loadProject( const QString& fileName )
     SettingsManager::getInstance()->loadSettings( "project", root.firstChildElement( "project" ) );
 }
 
-QString  ProjectManager::loadProjectFile()
+QString  ProjectManager::acquireProjectFileName()
 {
     QString fileName =
             QFileDialog::getOpenFileName( NULL, "Enter the output file name",

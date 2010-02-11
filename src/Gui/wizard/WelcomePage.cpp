@@ -128,7 +128,7 @@ void WelcomePage::loadRecentsProjects()
 void WelcomePage::loadProject()
 {
     ProjectManager* pm = ProjectManager::getInstance();
-    QString projectPath = pm->loadProjectFile();
+    QString projectPath = pm->acquireProjectFileName();
 
     if ( projectPath.isEmpty() ) return;
 

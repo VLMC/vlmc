@@ -203,7 +203,7 @@ void    MainWindow::on_actionSave_As_triggered()
 void    MainWindow::on_actionLoad_Project_triggered()
 {
     ProjectManager* pm = ProjectManager::getInstance();
-    pm->loadProject( pm->loadProjectFile() );
+    pm->loadProject( pm->acquireProjectFileName() );
 }
 
 void MainWindow::createStatusBar()

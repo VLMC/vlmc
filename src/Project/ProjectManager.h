@@ -42,10 +42,22 @@ public:
 
     void            loadProject( const QString& fileName );
     void            newProject( const QString& projectName );
-    QString         loadProjectFile();
+    /**
+     *  \brief      Ask the user for the project file she wants to load.
+     *
+     *  \return     The project to load.
+     */
+    QString         acquireProjectFileName();
     void            saveProject( bool saveAs = false );
     bool            needSave() const;
     QStringList     recentsProjects() const;
+    /**
+     *  \brief      Ask the project manager to close current project.
+     *
+     *  This can fail, as the user will be asked if he wants to save the current project.
+     *  If she selects discard, the project closing procedure is aborted.
+     *  \return     true if the project has been closed. false otherwise.
+     */
     bool            closeProject();
     bool            askForSaveIfModified();
     bool            loadEmergencyBackup();
