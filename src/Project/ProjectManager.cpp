@@ -246,6 +246,9 @@ bool    ProjectManager::closeProject()
         delete m_projectFile;
         m_projectFile = NULL;
     }
+    //This one is for the mainwindow, to update the title bar
+    emit projectUpdated( ProjectManager::unSavedProject, true );
+    //This one is for every part that need to clean something when the project is closed.
     emit projectClosed();
     return true;
 }
