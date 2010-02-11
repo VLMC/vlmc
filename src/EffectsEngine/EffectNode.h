@@ -379,6 +379,12 @@ class	EffectNode : public IEffectNode
 
     // ----------------  CONNECT STATIC TO STATIC -------------------
 
+private:
+
+    bool        primitiveConnectChildAndParentTogether( quint32 outId, quint32 inId, const QString &outName, const QString &inName, bool PTC );
+
+public:
+
     bool        connectChildStaticVideoOutputToParentStaticVideoInput( const QString & childOutName, const QString & fatherInName );
     bool        connectChildStaticVideoOutputToParentStaticVideoInput( const QString & childOutName, quint32 fatherInId );
     bool        connectChildStaticVideoOutputToParentStaticVideoInput( quint32 childOutId,  const QString & fatherInName );

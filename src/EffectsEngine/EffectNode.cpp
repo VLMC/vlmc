@@ -1279,179 +1279,168 @@ EffectNode::getInternalsStaticsVideosOutputsList( void ) const
 // ----------------  CONNECT STATIC TO STATIC -------------------
 
 bool
-EffectNode::connectChildStaticVideoOutputToParentStaticVideoInput( const QString & childOutName,  const QString & fatherInName )
+EffectNode::primitiveConnectChildAndParentTogether( quint32 outId,
+                                                    quint32 inId,
+                                                    const QString &outName,
+                                                    const QString &inName,
+                                                    bool PTC )
 {
-    QWriteLocker                        wl( &m_rwl );
     OutSlot<LightVideoFrame>*  out;
     InSlot<LightVideoFrame>*  in;
 
-    if ( ( out = m_staticVideosOutputs.getObject( childOutName ) ) == NULL )
-        return false;
-    if ( m_father == NULL )
-        return false;
-    if ( ( in = m_father->getInternalStaticVideoInput( fatherInName ) ) == NULL )
-        return false;
+
+    if ( PTC == true )
+    {
+        if ( inId == 0 && inName.isEmpty() == false )
+        {
+            if ( ( in = m_staticVideosInputs.getObject( inName ) ) == NULL )
+                return false;
+        }
+        else if ( inId != 0 && inName.isEmpty() == true )
+        {
+            if ( ( in = m_staticVideosInputs.getObject( inId ) ) == NULL )
+                return false;
+        }
+        else
+            return false;
+        if ( m_father == NULL )
+            return false;
+
+        if ( outId == 0 && outName.isEmpty() == false )
+        {
+            if ( ( out = m_father->getInternalStaticVideoOutput( outName ) ) == NULL )
+                return false;
+        }
+        else if ( outId != 0 && outName.isEmpty() == true )
+        {
+            if ( ( out = m_father->getInternalStaticVideoOutput( outId ) ) == NULL )
+                return false;
+        }
+        else
+            return false;
+    }
+    else
+    {
+        if ( outId == 0 && outName.isEmpty() == false )
+        {
+            if ( ( out = m_staticVideosOutputs.getObject( outName ) ) == NULL )
+                return false;
+        }
+        else if ( outId != 0 && outName.isEmpty() == true )
+        {
+            if ( ( out = m_staticVideosOutputs.getObject( outId ) ) == NULL )
+                return false;
+        }
+        else
+            return false;
+
+        if ( m_father == NULL )
+            return false;
+
+        if ( inId == 0 && inName.isEmpty() == false )
+        {
+            if ( ( in = m_father->getInternalStaticVideoInput( inName ) ) == NULL )
+                return false;
+        }
+        else if ( inId != 0 && inName.isEmpty() == true )
+        {
+            if ( ( in = m_father->getInternalStaticVideoInput( inId ) ) == NULL )
+                return false;
+        }
+        else
+            return false;
+    }
+
     if ( out->connect( *in ) == false )
         return false;
-    if ( m_connectedStaticVideosOutputs.addObjectReference( out ) == false )
-        return false;
-    if ( m_father->referenceInternalStaticVideoInputAsConnected( in ) == false )
-        return false;
+
+    if ( PTC == true )
+    {
+        if ( m_connectedStaticVideosInputs.addObjectReference( in ) == false )
+            return false;
+        if ( m_father->referenceInternalStaticVideoOutputAsConnected( out ) == false )
+            return false;
+    }
+    else
+    {
+        if ( m_connectedStaticVideosOutputs.addObjectReference( out ) == false )
+            return false;
+        if ( m_father->referenceInternalStaticVideoInputAsConnected( in ) == false )
+            return false;
+    }
+
     return true;
+}
+
+bool
+EffectNode::connectChildStaticVideoOutputToParentStaticVideoInput( const QString & childOutName,  const QString & fatherInName )
+{
+    QWriteLocker                        wl( &m_rwl );
+
+    return primitiveConnectChildAndParentTogether( 0, 0, childOutName, fatherInName, false );
 }
 
 bool
 EffectNode::connectChildStaticVideoOutputToParentStaticVideoInput( const QString & childOutName, quint32 fatherInId )
 {
     QWriteLocker                        wl( &m_rwl );
-    OutSlot<LightVideoFrame>*  out;
-    InSlot<LightVideoFrame>*  in;
 
-    if ( ( out = m_staticVideosOutputs.getObject( childOutName ) ) == NULL )
-        return false;
-    if ( m_father == NULL )
-        return false;
-    if ( ( in = m_father->getInternalStaticVideoInput( fatherInId ) ) == NULL )
-        return false;
-    if ( out->connect( *in ) == false )
-        return false;
-    if ( m_connectedStaticVideosOutputs.addObjectReference( out ) == false )
-        return false;
-    if ( m_father->referenceInternalStaticVideoInputAsConnected( in ) == false )
-        return false;
-    return true;
+
+    return primitiveConnectChildAndParentTogether( 0, fatherInId, childOutName, "", false );
 }
 
 bool
 EffectNode::connectChildStaticVideoOutputToParentStaticVideoInput( quint32 childOutId, const QString & fatherInName )
 {
     QWriteLocker                        wl( &m_rwl );
-    OutSlot<LightVideoFrame>*  out;
-    InSlot<LightVideoFrame>*  in;
 
-    if ( ( out = m_staticVideosOutputs.getObject( childOutId ) ) == NULL )
-        return false;
-    if ( m_father == NULL )
-        return false;
-    if ( ( in = m_father->getInternalStaticVideoInput( fatherInName ) ) == NULL )
-        return false;
-    if ( out->connect( *in ) == false )
-        return false;
-    if ( m_connectedStaticVideosOutputs.addObjectReference( out ) == false )
-        return false;
-    if ( m_father->referenceInternalStaticVideoInputAsConnected( in ) == false )
-        return false;
-    return true;
+
+    return primitiveConnectChildAndParentTogether( childOutId, 0, "", fatherInName, false );
 }
 
 bool
 EffectNode::connectChildStaticVideoOutputToParentStaticVideoInput( quint32 childOutId, quint32 fatherInId )
 {
     QWriteLocker                        wl( &m_rwl );
-    OutSlot<LightVideoFrame>*  out;
-    InSlot<LightVideoFrame>*  in;
 
-    if ( ( out = m_staticVideosOutputs.getObject( childOutId ) ) == NULL )
-        return false;
-    if ( m_father == NULL )
-        return false;
-    if ( ( in = m_father->getInternalStaticVideoInput( fatherInId ) ) == NULL )
-        return false;
-    if ( out->connect( *in ) == false )
-        return false;
-    if ( m_connectedStaticVideosOutputs.addObjectReference( out ) == false )
-        return false;
-    if ( m_father->referenceInternalStaticVideoInputAsConnected( in ) == false )
-        return false;
-    return true;
+
+    return primitiveConnectChildAndParentTogether( childOutId, fatherInId, "", "", false );
 }
 
 bool
 EffectNode::connectChildStaticVideoInputToParentStaticVideoOutput( const QString & childInName,  const QString & fatherOutName )
 {
     QWriteLocker                        wl( &m_rwl );
-    OutSlot<LightVideoFrame>*  out;
-    InSlot<LightVideoFrame>*  in;
 
-    if ( ( in = m_staticVideosInputs.getObject( childInName ) ) == NULL )
-        return false;
-    if ( m_father == NULL )
-        return false;
-    if ( ( out = m_father->getInternalStaticVideoOutput( fatherOutName ) ) == NULL )
-        return false;
-    if ( out->connect( *in ) == false )
-        return false;
-    if ( m_connectedStaticVideosInputs.addObjectReference( in ) == false )
-        return false;
-    if ( m_father->referenceInternalStaticVideoOutputAsConnected( out ) == false )
-        return false;
-    return true;
+
+    return primitiveConnectChildAndParentTogether( 0, 0, fatherOutName, childInName, true );
 }
 
 bool
 EffectNode::connectChildStaticVideoInputToParentStaticVideoOutput( const QString & childInName, quint32 fatherOutId )
 {
     QWriteLocker                        wl( &m_rwl );
-    OutSlot<LightVideoFrame>*  out;
-    InSlot<LightVideoFrame>*  in;
 
-    if ( ( in = m_staticVideosInputs.getObject( childInName ) ) == NULL )
-        return false;
-    if ( m_father == NULL )
-        return false;
-    if ( ( out = m_father->getInternalStaticVideoOutput( fatherOutId ) ) == NULL )
-        return false;
-    if ( out->connect( *in ) == false )
-        return false;
-    if ( m_connectedStaticVideosInputs.addObjectReference( in ) == false )
-        return false;
-    if ( m_father->referenceInternalStaticVideoOutputAsConnected( out ) == false )
-        return false;
-    return true;
+
+    return primitiveConnectChildAndParentTogether( fatherOutId, 0, "", childInName, true );
 }
 
 bool
 EffectNode::connectChildStaticVideoInputToParentStaticVideoOutput( quint32 childInId, const QString & fatherOutName )
 {
     QWriteLocker                        wl( &m_rwl );
-    OutSlot<LightVideoFrame>*  out;
-    InSlot<LightVideoFrame>*  in;
 
-    if ( ( in = m_staticVideosInputs.getObject( childInId ) ) == NULL )
-        return false;
-    if ( m_father == NULL )
-        return false;
-    if ( ( out = m_father->getInternalStaticVideoOutput( fatherOutName ) ) == NULL )
-        return false;
-    if ( out->connect( *in ) == false )
-        return false;
-    if ( m_connectedStaticVideosInputs.addObjectReference( in ) == false )
-        return false;
-    if ( m_father->referenceInternalStaticVideoOutputAsConnected( out ) == false )
-        return false;
-    return true;
+
+    return primitiveConnectChildAndParentTogether( 0, childInId, fatherOutName, "", true );
 }
 
 bool
 EffectNode::connectChildStaticVideoInputToParentStaticVideoOutput( quint32 childInId, quint32 fatherOutId )
 {
     QWriteLocker                        wl( &m_rwl );
-    OutSlot<LightVideoFrame>*  out;
-    InSlot<LightVideoFrame>*  in;
 
-    if ( ( in = m_staticVideosInputs.getObject( childInId ) ) == NULL )
-        return false;
-    if ( m_father == NULL )
-        return false;
-    if ( ( out = m_father->getInternalStaticVideoOutput( fatherOutId ) ) == NULL )
-        return false;
-    if ( out->connect( *in ) == false )
-        return false;
-    if ( m_connectedStaticVideosInputs.addObjectReference( in ) == false )
-        return false;
-    if ( m_father->referenceInternalStaticVideoOutputAsConnected( out ) == false )
-        return false;
-    return true;
+
+    return primitiveConnectChildAndParentTogether( fatherOutId, childInId, "", "", true );
 }
 
 // ---------------- INTERNALS SLOTS DISCONNECTS --------------------
