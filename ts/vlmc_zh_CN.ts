@@ -126,12 +126,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/Gui/ui/ClipProperty.ui" line="162"/>
         <source>Number of video tracks</source>
-        <translation type="unfinished"></translation>
+        <translation>视频轨数</translation>
     </message>
     <message>
         <location filename="../src/Gui/ui/ClipProperty.ui" line="169"/>
         <source>Number of audio tracks</source>
-        <translation type="unfinished"></translation>
+        <translation>音频轨数</translation>
     </message>
     <message>
         <location filename="../src/Gui/ui/ClipProperty.ui" line="193"/>
@@ -297,12 +297,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/Gui/import/ImportController.cpp" line="76"/>
         <source>Importing files...</source>
-        <translation type="unfinished"></translation>
+        <translation>正在导入文件...</translation>
     </message>
     <message>
         <location filename="../src/Gui/import/ImportController.cpp" line="77"/>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <location filename="../src/Gui/import/ImportController.cpp" line="219"/>
@@ -437,7 +437,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/Gui/ui/LibraryWidget.ui" line="196"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -466,27 +466,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/Gui/MainWindow.cpp" line="316"/>
         <source>VLMC</source>
-        <translation type="unfinished"></translation>
+        <translation>VLMC</translation>
     </message>
     <message>
         <location filename="../src/Gui/MainWindow.cpp" line="319"/>
         <source>VLMC settings</source>
-        <translation type="unfinished"></translation>
+        <translation>VLMC 设置</translation>
     </message>
     <message>
         <location filename="../src/Gui/MainWindow.cpp" line="320"/>
         <source>Language preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>语言首选项</translation>
     </message>
     <message>
         <location filename="../src/Gui/MainWindow.cpp" line="323"/>
         <source>Language settings</source>
-        <translation type="unfinished"></translation>
+        <translation>语言设置</translation>
     </message>
     <message>
         <location filename="../src/Gui/MainWindow.cpp" line="324"/>
         <source>Keyboard</source>
-        <translation type="unfinished"></translation>
+        <translation>键盘</translation>
     </message>
     <message>
         <location filename="../src/Gui/MainWindow.cpp" line="327"/>
@@ -496,32 +496,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/Gui/MainWindow.cpp" line="333"/>
         <source>Project</source>
-        <translation type="unfinished"></translation>
+        <translation>项目</translation>
     </message>
     <message>
         <location filename="../src/Gui/MainWindow.cpp" line="336"/>
         <source>Project settings</source>
-        <translation type="unfinished"></translation>
+        <translation>项目设置</translation>
     </message>
     <message>
         <location filename="../src/Gui/MainWindow.cpp" line="337"/>
         <source>Video</source>
-        <translation type="unfinished">视频</translation>
+        <translation>视频</translation>
     </message>
     <message>
         <location filename="../src/Gui/MainWindow.cpp" line="340"/>
         <source>Video settings</source>
-        <translation type="unfinished"></translation>
+        <translation>视频设置</translation>
     </message>
     <message>
         <location filename="../src/Gui/MainWindow.cpp" line="341"/>
         <source>Audio</source>
-        <translation type="unfinished">音频</translation>
+        <translation>音频</translation>
     </message>
     <message>
         <location filename="../src/Gui/MainWindow.cpp" line="344"/>
         <source>Audio settings</source>
-        <translation type="unfinished"></translation>
+        <translation>音频设置</translation>
     </message>
     <message>
         <location filename="../src/Gui/MainWindow.cpp" line="367"/>
@@ -536,17 +536,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/Gui/MainWindow.cpp" line="376"/>
         <source>VLMC Renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>VLMC 渲染器</translation>
     </message>
     <message>
         <location filename="../src/Gui/MainWindow.cpp" line="376"/>
         <source>There is nothing to render.</source>
-        <translation type="unfinished"></translation>
+        <translation>没有可渲染的数据。</translation>
     </message>
     <message>
         <location filename="../src/Gui/MainWindow.cpp" line="380"/>
         <source>Enter the output file name</source>
-        <translation type="unfinished"></translation>
+        <translation>输入输出文件名</translation>
     </message>
     <message>
         <location filename="../src/Gui/MainWindow.cpp" line="572"/>
@@ -640,12 +640,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/Gui/ui/MainWindow.ui" line="233"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>撤销</translation>
     </message>
     <message>
         <location filename="../src/Gui/ui/MainWindow.ui" line="242"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>重做</translation>
     </message>
     <message>
         <location filename="../src/Gui/ui/MainWindow.ui" line="109"/>
@@ -874,7 +874,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/Tools/Win32BacktraceGenerator.cpp" line="31"/>
         <source>Unable to get backtrace</source>
-        <translation type="unfinished"></translation>
+        <translation>无法获取回溯信息</translation>
     </message>
 </context>
 <context>
@@ -882,7 +882,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/Gui/settings/Settings.cpp" line="195"/>
         <source>Preferences: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>首选: %</translation>
     </message>
 </context>
 <context>
@@ -942,12 +942,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/Gui/widgets/TrackControls.cpp" line="46"/>
         <source>Video #%1</source>
-        <translation type="unfinished"></translation>
+        <translation>视频 #%1</translation>
     </message>
     <message>
         <location filename="../src/Gui/widgets/TrackControls.cpp" line="48"/>
         <source>Audio #%1</source>
-        <translation type="unfinished"></translation>
+        <translation>音频 #%1</translation>
     </message>
 </context>
 <context>
@@ -996,63 +996,63 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/Gui/Transcode.cpp" line="70"/>
         <source>H264 + AAC</source>
-        <translation type="unfinished"></translation>
+        <translation>H264 + AAC</translation>
     </message>
     <message>
         <location filename="../src/Gui/Transcode.cpp" line="71"/>
         <source>Dirac + AAC</source>
-        <translation type="unfinished"></translation>
+        <translation>Dirac + AAC</translation>
     </message>
     <message>
         <location filename="../src/Gui/Transcode.cpp" line="72"/>
         <source>Theora + Vorbis</source>
-        <translation type="unfinished"></translation>
+        <translation>Theora + Vorbis</translation>
     </message>
     <message>
         <location filename="../src/Gui/Transcode.cpp" line="73"/>
         <source>Theora + Flac</source>
-        <translation type="unfinished"></translation>
+        <translation>Theora + Flac</translation>
     </message>
     <message>
         <location filename="../src/Gui/Transcode.cpp" line="74"/>
         <source>Mpeg4 + AAC</source>
-        <translation type="unfinished"></translation>
+        <translation>Mpeg4 + AAC</translation>
     </message>
     <message>
         <location filename="../src/Gui/Transcode.cpp" line="75"/>
         <source>WMV + WMA</source>
-        <translation type="unfinished"></translation>
+        <translation>WMV + WMA</translation>
     </message>
     <message>
         <location filename="../src/Gui/Transcode.cpp" line="85"/>
         <source>Choose File to open</source>
-        <translation type="unfinished"></translation>
+        <translation>选择要打开的文件</translation>
     </message>
     <message>
         <location filename="../src/Gui/Transcode.cpp" line="87"/>
         <location filename="../src/Gui/Transcode.cpp" line="188"/>
         <source>Video files (*.avi *.mkv *.ogg)</source>
-        <translation type="unfinished"></translation>
+        <translation>视频文件 (*.avi *.mkv *.ogg)</translation>
     </message>
     <message>
         <location filename="../src/Gui/Transcode.cpp" line="147"/>
         <source>Transcode in progress</source>
-        <translation type="unfinished"></translation>
+        <translation>正在进行转码</translation>
     </message>
     <message>
         <location filename="../src/Gui/Transcode.cpp" line="181"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>警告</translation>
     </message>
     <message>
         <location filename="../src/Gui/Transcode.cpp" line="182"/>
         <source>Choose a video to transcode</source>
-        <translation type="unfinished"></translation>
+        <translation>选择要转码的视频</translation>
     </message>
     <message>
         <location filename="../src/Gui/Transcode.cpp" line="186"/>
         <source>Choose File to save</source>
-        <translation type="unfinished"></translation>
+        <translation>选择要保存的文件</translation>
     </message>
 </context>
 <context>
@@ -1250,12 +1250,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/Gui/settings/ui/VideoProjectPreferences.ui" line="59"/>
         <source>Image width</source>
-        <translation type="unfinished"></translation>
+        <translation>画面宽度</translation>
     </message>
     <message>
         <location filename="../src/Gui/settings/ui/VideoProjectPreferences.ui" line="66"/>
         <source>Image height</source>
-        <translation type="unfinished"></translation>
+        <translation>画面高度</translation>
     </message>
     <message>
         <location filename="../src/Gui/settings/ui/VideoProjectPreferences.ui" line="27"/>
@@ -1343,7 +1343,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/Gui/wizard/ui/WelcomePage.ui" line="148"/>
         <source>Do not show at startup.</source>
-        <translation type="unfinished"></translation>
+        <translation>启动时不要显示。</translation>
     </message>
 </context>
 <context>
