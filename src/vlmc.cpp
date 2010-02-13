@@ -24,7 +24,7 @@
 
 #include <QtDebug>
 
-#include <wait.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 int VLMCmain( int , char** );
