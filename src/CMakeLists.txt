@@ -5,9 +5,6 @@ SUBDIRS(EffectsEngine/Plugins/src)
 
 SET(VLMC_SRCS
     main.cpp
-    API/Module.cpp
-    API/ModuleManager.cpp
-    API/vlmc_module_variables.cpp
     Commands/Commands.cpp
     Commands/KeyboardShortcutHelper.cpp
     Configuration/ProjectSettingsDefault.cpp
@@ -239,7 +236,6 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/src
   .
-  API
   Commands
   Configuration
   EffectsEngine
