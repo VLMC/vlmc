@@ -21,6 +21,7 @@
  *****************************************************************************/
 
 #include <QCoreApplication>
+#include <QStringList>
 
 #include "SettingsManager.h"
 #include "VlmcDebug.h"
