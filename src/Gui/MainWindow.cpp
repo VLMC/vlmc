@@ -58,7 +58,6 @@
 #include "ProjectWizard.h"
 #include "ProjectPreferences.h"
 #include "VLMCPreferences.h"
-#include "VLMCSettingsDefault.h"
 #include "AudioProjectPreferences.h"
 #include "VideoProjectPreferences.h"
 #include "LanguagePreferences.h"
