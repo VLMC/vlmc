@@ -1,7 +1,7 @@
 /*****************************************************************************
- * SettingsManager.cpp * : Backend settings manager
+ * SettingsManager.cpp: Backend settings manager
  *****************************************************************************
- * Copyright (C) 2008-2010 VideoLAN
+ * Copyright (C) 2008-2009 the VLMC team
  *
  * Authors: Clement CHAVANCE <kinder@vlmc.org>
  *
@@ -22,209 +22,222 @@
 
 #include "SettingsManager.h"
 
-#include "VLMCSettingsDefault.h"
-#include "ProjectSettingsDefault.h"
+#include "SettingValue.h"
 
-#include <QHash>
-#include <QDomElement>
-#include <QDomNamedNodeMap>
-#include <QDomNodeList>
-#include <QtDebug>
+#include <QSettings>
+#include <QDomDocument>
 #include <QWriteLocker>
 #include <QReadLocker>
-#include <QTextStream>
+#include <QXmlStreamWriter>
 
+#include <QtDebug>
 
-
-bool    SettingsManager::m_defaultLoaded = false;
-
-SettingsManager::SettingsManager( QObject* parent )
-    : QObject( parent )
+void
+SettingsManager::setValue( const QString &key,
+                           const QVariant &value,
+                           SettingsManager::Type type )
 {
-}
-
-SettingsManager::~SettingsManager()
-{
-}
-
-void  SettingsManager::setValue( const QString& part , const QString& key, const QVariant& value )
-{
-    m_globalLock.lockForRead();
-    if ( !m_tempData.contains( part ) )
-    {
-        m_globalLock.unlock();
-        addNewSettingsPart( part );
-    }
-    else
-        m_globalLock.unlock();
-    QWriteLocker    lock( &m_globalLock );
-    SettingsPart*   tmp = m_tempData[part];
-    SettingsPart::ConfigPair::iterator it = tmp->m_data.find( key );
-    if ( it == tmp->m_data.end() )
-        tmp->m_data[key] = new SettingValue( value );
-    else
-        it.value()->set( value );
+    if ( type == XML )
+        m_tmpXmlSettings.insert( key, new SettingValue( value ) );
+    else if ( type == QSett )
+        m_tmpClassicSettings.insert( key, new SettingValue( value ) );
     return ;
 }
 
-const SettingValue*     SettingsManager::getValue( const QString& part, const QString& key ) const
+void
+SettingsManager::setImmediateValue( const QString &key,
+                                    const QVariant &value,
+                                    SettingsManager::Type type )
 {
-    if ( !m_data.contains( part ) )
-        return getValue( "default", key );
-    QReadLocker readLock( &m_globalLock );
-    QReadLocker rdLock( &m_data[part]->m_lock );
-    if ( m_data[part]->m_data.contains( key ) == true )
-        return m_data[part]->m_data[key];
-    return NULL;
+    QWriteLocker    wlock( &m_rwLock );
+    SettingHash  *settMap;
+    if ( type == XML )
+        settMap = &m_xmlSettings;
+    else if ( type == QSett )
+    {
+        QSettings    sett;
+        sett.setValue( key, value );
+        sett.sync();
+        settMap = &m_classicSettings;
+    }
+    if ( settMap->contains( key ) )
+        settMap->value( key )->set( value );
+    else
+        settMap->insert( key, new SettingValue( value ) );
+
+    return ;
 }
 
-void  SettingsManager::saveSettings( const QString& part, QDomDocument& xmlfile, QDomElement& root )
+QVariant
+SettingsManager::value( const QString &key,
+                        const QVariant &defaultValue,
+                        SettingsManager::Type type )
 {
-    m_globalLock.lockForRead();
-    if ( !m_data.contains( part ) )
-    {
-        m_globalLock.unlock();
-        return ;
-    }
-    SettingsPart*   sett = m_data[part];
-    m_globalLock.unlock();
-    //SAVE SETTINGS TO DomDocument
-    QReadLocker     lock( &sett->m_lock );
-    SettingsPart::ConfigPair::const_iterator  it = sett->m_data.begin();
-    SettingsPart::ConfigPair::const_iterator  end = sett->m_data.end();
-    QDomElement settingsNode = xmlfile.createElement( part );
-    for ( ; it != end; ++it )
-    {
-        QDomElement elem = xmlfile.createElement( it.key() );
-        elem.setAttribute( "value", it.value()->get().toString() );
-        settingsNode.appendChild( elem );
-    }
+    qDebug() << "value :" << key << "default" << defaultValue;
+    QReadLocker rl( &m_rwLock );
 
-    root.appendChild( settingsNode );
-}
-
-void  SettingsManager::loadSettings( const QString& part, const QDomElement& settings )
-{
-    if ( settings.isNull() == true || settings.tagName() != "project" )
+    if ( ( type == XML || type == All ) && m_xmlSettings.contains( key ) )
+        return m_xmlSettings.value( key )->get();
+    else if ( ( type == QSett || type == All ) )
     {
-        qWarning() << "Invalid settings node";
-        return ;
-    }
-    m_globalLock.lockForRead();
-    if ( !m_data.contains( part ) )
-    {
-        qWarning() << "These settings Does not exists";
-        return ;
-    }
-    SettingsPart*   sett = m_data[part];
-    m_globalLock.unlock();
-    //Loading all the settings
-    m_globalLock.lockForWrite();
-    sett->m_lock.lockForWrite();
-    QDomNodeList  list = settings.childNodes();
-    int           nbChild = list.size();
-
-    for ( int idx = 0; idx < nbChild; ++idx )
-    {
-        QDomNamedNodeMap  attrMap = list.at( idx ).attributes();
-        if ( attrMap.count() > 1 )
+        if ( m_classicSettings.contains( key ) )
+            return m_classicSettings.value( key )->get();
+        else
         {
-            qWarning() << "Invalid number of attributes for" << list.at( idx ).nodeName();
-            return ;
+            QSettings    sett;
+            QVariant val = sett.value( key, defaultValue );
+            if ( val != defaultValue )
+                m_classicSettings.insert( key, new SettingValue( val ) );
+
+            return val;
         }
-        sett->m_data.insert( list.at( idx ).toElement().tagName(),
-                new SettingValue( QVariant( attrMap.item( 0 ).nodeValue() ) ) );
     }
-    sett->m_lock.unlock();
-    m_globalLock.unlock();
-    emit settingsLoaded();
+
+    return defaultValue;
 }
 
-void  SettingsManager::addNewSettingsPart( const QString& name )
+QHash<QString, QVariant>
+SettingsManager::group( const QString& groupName, SettingsManager::Type type )
 {
-    QReadLocker rLock( &m_globalLock );
-    if ( !m_data.contains( name ) )
-    {
-        rLock.unlock();
-        QWriteLocker    lock( &m_globalLock );
-        m_data.insert( name, new SettingsPart );
-        m_tempData.insert( name, new SettingsPart );
-    }
 }
 
-void    SettingsManager::commit()
+bool
+SettingsManager::watchValue( const QString &key,
+                             QObject* receiver,
+                             const char *method,
+                             SettingsManager::Type type )
 {
+    QReadLocker rl( &m_rwLock );
+
+    if ( ( type == XML || type == All ) && m_xmlSettings.contains( key ) )
     {
-        QWriteLocker     lock( &m_globalLock );
-
-        QHash<QString, SettingsPart*>::iterator it = m_tempData.begin();
-        QHash<QString, SettingsPart*>::iterator ed = m_tempData.end();
-
-        for ( ; it != ed; ++it )
+        connect( m_xmlSettings[key], SIGNAL( changed( const QVariant& ) ),
+                 receiver, method );
+        return true;
+    }
+    else if ( ( type == QSett || type == All ) )
+    {
+        if ( m_classicSettings.contains( key ) )
         {
-            SettingsPart*   sett = it.value();
-            QString         part = it.key();
+            connect( m_classicSettings[key], SIGNAL( changed( const QVariant& ) ),
+                    receiver, method );
+            return true;
+        }
+    }
 
-            QReadLocker rLock( &sett->m_lock );
-            SettingsPart::ConfigPair::iterator iter = sett->m_data.begin();
-            SettingsPart::ConfigPair::iterator end = sett->m_data.end();
-            QWriteLocker    wLock( &m_data[part]->m_lock );
-            for ( ; iter != end; ++iter )
+    return false;
+}
+
+void
+SettingsManager::save() const
+{
+    QReadLocker rl( &m_rwLock );
+    QSettings    sett;
+    SettingHash::const_iterator it = m_classicSettings.begin();
+    SettingHash::const_iterator ed = m_classicSettings.end();
+
+    for ( ; it != ed; ++it )
+        sett.setValue( it.key(), it.value()->get() );
+    sett.sync();
+}
+
+void
+SettingsManager::save( QXmlStreamWriter &stream ) const
+{
+    typedef QPair<QString, SettingValue*> settingPair;
+    QMultiHash<QString, settingPair>  parts;
+
+    QReadLocker rl( &m_rwLock );
+    SettingHash::const_iterator it;
+    SettingHash::const_iterator ed = m_xmlSettings.end();
+
+    for ( it = m_xmlSettings.begin(); it != ed; ++it )
+    {
+        QString key = it.key();
+        if ( key.count( "/" ) == 1 )
+        {
+            int idx = key.indexOf( "/" );
+            QString part = key.left( idx );
+            QString name = key.right( idx );
+
+            parts.insert( part, settingPair( name, it.value() ) );
+        }
+    }
+    QMultiHash<QString, settingPair>::const_iterator iter;
+    QMultiHash<QString, settingPair>::const_iterator end = parts.end();
+    stream.writeStartElement( "Settings" );
+    for ( iter = parts.begin(); iter != end; ++iter )
+    {
+        stream.writeStartElement( iter.key() );
+        QList<settingPair>  pairs = parts.values( iter.key() );
+        foreach( settingPair pair, pairs )
+        {
+            stream.writeStartElement( pair.first );
+            stream.writeAttribute( "value", pair.second->get().toString() );
+            stream.writeEndElement();
+        }
+        stream.writeEndElement();
+    }
+    stream.writeEndElement();
+}
+
+bool
+SettingsManager::load( QDomElement &element )
+{
+}
+
+bool
+SettingsManager::commit( SettingsManager::Type type )
+{
+    {
+        QWriteLocker    wlock( &m_rwLock );
+        if ( type == XML || type == All )
+        {
+            SettingHash::iterator it;
+            SettingHash::iterator ed = m_tmpXmlSettings.end();
+            for ( it = m_tmpXmlSettings.begin() ; it != ed; ++it )
             {
-                QString                                 settingName = iter.key();
-                SettingsPart::ConfigPair::iterator      insert_it = m_data[part]->m_data.find( settingName );
-
-                if ( insert_it == m_data[part]->m_data.end() )
-                    m_data[part]->m_data.insert( settingName, new SettingValue( iter.value()->get() ) );
+                if ( m_xmlSettings.contains( it.key() ) )
+                    m_xmlSettings[it.key()]->set( it.value()->get() );
                 else
-                    m_data[part]->m_data[ settingName ]->set( iter.value()->get() );
+                    m_xmlSettings.insert( it.key(), it.value() );
+            }
+        }
+        if ( type == QSett || type == All )
+        {
+            QSettings sett;
+            SettingHash::iterator it;
+            SettingHash::iterator ed = m_classicSettings.end();
+            for ( it = m_classicSettings.begin(); it != ed; ++it )
+            {
+                sett.setValue( it.key(), it.value()->get() );
+                if ( m_classicSettings.contains( it.key() ) )
+                    m_classicSettings[it.key()]->set( it.value()->get() );
+                else
+                    m_classicSettings.insert( it.key(), it.value() );
             }
         }
     }
     flush();
 }
 
-void    SettingsManager::flush()
+void
+SettingsManager::flush()
 {
-    QWriteLocker     lock( &m_globalLock );
-
-    QHash<QString, SettingsPart*>::iterator it = m_tempData.begin();
-    QHash<QString, SettingsPart*>::iterator ed = m_tempData.end();
-
-    for ( ; it != ed; ++it )
-    {
-        QWriteLocker    wLock( &it.value()->m_lock );
-        it.value()->m_data.clear();
-    }
+    QWriteLocker    wl( &m_rwLock );
+    m_tmpXmlSettings.clear();
+    m_tmpClassicSettings.clear();
 }
 
-void  SettingsManager::loadDefaultsSettings()
+SettingsManager::SettingsManager()
+    : m_classicSettings(),
+    m_xmlSettings(),
+    m_tmpClassicSettings(),
+    m_tmpXmlSettings(),
+    m_rwLock()
 {
-    if ( !SettingsManager::m_defaultLoaded )
-    {
-        SettingsManager::m_defaultLoaded = true;
-        VLMCSettingsDefault::load( "default" );
-        VLMCSettingsDefault::load( "VLMC" );
-        ProjectSettingsDefault::load( "default" );
-        ProjectSettingsDefault::load( "project" );
-    }
 }
 
-SettingsManager*    SettingsManager::getInstance()
+SettingsManager::~SettingsManager()
 {
-    SettingsManager*    ret = QSingleton<SettingsManager>::getInstance();
-    if ( !SettingsManager::m_defaultLoaded )
-    {
-        SettingsManager::loadDefaultsSettings();
-    }
-    return ret;
-}
-
-const SettingsPart*     SettingsManager::getConfigPart( const QString& part ) const
-{
-    QHash<QString, SettingsPart*>::const_iterator      it = m_data.find( part );
-
-    if ( it == m_data.end() )
-        return NULL;
-    return it.value();
 }
