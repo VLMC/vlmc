@@ -34,6 +34,7 @@
 class SettingValue;
 class QXmlStreamWriter;
 class QDomElement;
+class QDomDocument;
 class SettingValue;
 
 class   SettingsManager : public QObject, public Singleton<SettingsManager>
@@ -64,10 +65,11 @@ class   SettingsManager : public QObject, public Singleton<SettingsManager>
         bool                        watchValue( const QString &key,
                                                 QObject* receiver,
                                                 const char *method,
-                                                SettingsManager::Type type );
+                                                SettingsManager::Type type,
+                                                Qt::ConnectionType cType = Qt::AutoConnection );
         void          save() const;
-        void          save( QXmlStreamWriter &stream ) const;
-        bool          load( QDomElement &element );
+        void          save( QDomDocument &xmlfile, QDomElement& root ) const;
+        bool          load( const QDomElement &element );
 
         bool          commit( SettingsManager::Type type );
         void          flush();

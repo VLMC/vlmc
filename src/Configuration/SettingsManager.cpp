@@ -29,6 +29,8 @@
 #include <QWriteLocker>
 #include <QReadLocker>
 #include <QXmlStreamWriter>
+#include <QRegExp>
+#include <QStringList>
 
 #include <QtDebug>
 
@@ -61,7 +63,9 @@ SettingsManager::setImmediateValue( const QString &key,
         settMap = &m_classicSettings;
     }
     if ( settMap->contains( key ) )
+    {
         settMap->value( key )->set( value );
+    }
     else
         settMap->insert( key, new SettingValue( value ) );
 
@@ -73,7 +77,6 @@ SettingsManager::value( const QString &key,
                         const QVariant &defaultValue,
                         SettingsManager::Type type )
 {
-    qDebug() << "value :" << key << "default" << defaultValue;
     QReadLocker rl( &m_rwLock );
 
     if ( ( type == XML || type == All ) && m_xmlSettings.contains( key ) )
@@ -97,15 +100,62 @@ SettingsManager::value( const QString &key,
 }
 
 QHash<QString, QVariant>
-SettingsManager::group( const QString& groupName, SettingsManager::Type type )
+SettingsManager::group( const QString &groupName, SettingsManager::Type type )
 {
+    QHash<QString, QVariant>    ret;
+    QReadLocker rl( &m_rwLock );
+    if ( ( type == XML || type == All ) )
+    {
+         SettingHash::const_iterator it = m_xmlSettings.begin();
+         SettingHash::const_iterator ed = m_xmlSettings.end();
+
+         for ( ; it != ed; ++it )
+         {
+             if ( it.key().contains( QRegExp( "^" + groupName + "/" ) ) )
+                 ret.insert( it.key().right( it.key().size()
+                             - it.key().indexOf( "/" ) - 1 ), it.value()->get() );
+         }
+    }
+    if ( type == QSett || type == All )
+    {
+         SettingHash::const_iterator it = m_classicSettings.begin();
+         SettingHash::const_iterator ed = m_classicSettings.end();
+
+         for ( ; it != ed; ++it )
+         {
+             if ( it.key().contains( QRegExp( QString("^").append( groupName ).append( "/" ) ) ) )
+             {
+                 ret.insert( it.key().right( it.key().size()
+                             - it.key().indexOf( "/" ) - 1 ), it.value()->get() );
+             }
+         }
+
+         QSettings sett;
+         QStringList keys = sett.allKeys();
+
+         foreach ( QString key, keys )
+         {
+             QString match("^");
+             match.append( groupName ).append( "/" );
+             QRegExp    exp( match );
+             if ( key.contains( exp ) )
+             {
+                 ret.insert( key.right( key.size()
+                             - key.indexOf( "/" ) - 1 ), sett.value( key ) );
+                 if ( !m_classicSettings.contains( key ) )
+                     m_classicSettings.insert( key, new SettingValue( sett.value( key ) ) );
+             }
+         }
+    }
+    return ret;
 }
 
 bool
 SettingsManager::watchValue( const QString &key,
                              QObject* receiver,
                              const char *method,
-                             SettingsManager::Type type )
+                             SettingsManager::Type type,
+                             Qt::ConnectionType cType )
 {
     QReadLocker rl( &m_rwLock );
 
@@ -120,7 +170,7 @@ SettingsManager::watchValue( const QString &key,
         if ( m_classicSettings.contains( key ) )
         {
             connect( m_classicSettings[key], SIGNAL( changed( const QVariant& ) ),
-                    receiver, method );
+                    receiver, method, cType );
             return true;
         }
     }
@@ -142,7 +192,7 @@ SettingsManager::save() const
 }
 
 void
-SettingsManager::save( QXmlStreamWriter &stream ) const
+SettingsManager::save( QDomDocument &xmlfile, QDomElement &root ) const
 {
     typedef QPair<QString, SettingValue*> settingPair;
     QMultiHash<QString, settingPair>  parts;
@@ -158,32 +208,55 @@ SettingsManager::save( QXmlStreamWriter &stream ) const
         {
             int idx = key.indexOf( "/" );
             QString part = key.left( idx );
-            QString name = key.right( idx );
+            QString name = key.right( key.size() - idx - 1 );
 
             parts.insert( part, settingPair( name, it.value() ) );
         }
     }
-    QMultiHash<QString, settingPair>::const_iterator iter;
-    QMultiHash<QString, settingPair>::const_iterator end = parts.end();
-    stream.writeStartElement( "Settings" );
-    for ( iter = parts.begin(); iter != end; ++iter )
+    QList<QString>  keys = parts.uniqueKeys();
+    foreach( QString xmlKey, keys )
     {
-        stream.writeStartElement( iter.key() );
-        QList<settingPair>  pairs = parts.values( iter.key() );
+        QDomElement node = xmlfile.createElement( xmlKey );
+        QList<settingPair>  pairs = parts.values( xmlKey );
         foreach( settingPair pair, pairs )
         {
-            stream.writeStartElement( pair.first );
-            stream.writeAttribute( "value", pair.second->get().toString() );
-            stream.writeEndElement();
+            QDomElement item = xmlfile.createElement( pair.first );
+            item.setAttribute( "value", pair.second->get().toString() );
+            node.appendChild( item );
         }
-        stream.writeEndElement();
+        root.appendChild( node );
     }
-    stream.writeEndElement();
 }
 
 bool
-SettingsManager::load( QDomElement &element )
+SettingsManager::load( const QDomElement &element )
 {
+    //For now it only handle a project node.
+    if ( element.isNull() == true || element.tagName() != "project" )
+    {
+        qWarning() << "Invalid settings node";
+        return false ;
+    }
+    QWriteLocker    wLock( &m_rwLock );
+    QDomNodeList list = element.childNodes();
+    int nbChild = list.size();
+
+     for ( int idx = 0; idx < nbChild; ++idx )
+    {
+        QDomNamedNodeMap attrMap = list.at( idx ).attributes();
+        if ( attrMap.count() > 1 )
+        {
+            qWarning() << "Invalid number of attributes for" << list.at( idx ).nodeName();
+            continue ;
+        }
+        QString key = "project/" + list.at( idx ).toElement().tagName();
+        if ( m_xmlSettings.contains( key ) )
+            m_xmlSettings[key]->set( QVariant( attrMap.item( 0 ).nodeValue() ) );
+        else
+            m_xmlSettings.insert( key,
+                                  new SettingValue( QVariant( attrMap.item( 0 ).nodeValue() ) ) );
+    }
+     return true;
 }
 
 bool
