@@ -21,6 +21,7 @@
  *****************************************************************************/
 
 #include "SettingValue.h"
+#include <QtDebug>
 
 SettingValue::SettingValue( const QVariant& val ) : m_val ( val )
 {

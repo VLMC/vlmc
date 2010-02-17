@@ -67,7 +67,9 @@ SettingsManager::setImmediateValue( const QString &key,
         settMap->value( key )->set( value );
     }
     else
+    {
         settMap->insert( key, new SettingValue( value ) );
+    }
 
     return ;
 }

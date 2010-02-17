@@ -24,6 +24,8 @@
 #include "KeyboardShortcutInput.h"
 #include "SettingsManager.h"
 
+#include <QtDebug>
+
 KeyboardShortcut::KeyboardShortcut( QWidget* parent )
     : PreferenceWidget( parent ),
     m_type( SettingsManager::QSett )
@@ -60,5 +62,5 @@ void        KeyboardShortcut::save()
 
 void        KeyboardShortcut::shortcutUpdated( const QString& name, const QString& value )
 {
-    SettingsManager::getInstance()->setImmediateValue( name, value, m_type );
+    SettingsManager::getInstance()->setImmediateValue( "keyboard/" + name, value, m_type );
 }
