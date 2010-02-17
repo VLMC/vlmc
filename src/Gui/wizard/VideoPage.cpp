@@ -61,11 +61,10 @@ void VideoPage::initializePage()
 {
     SettingsManager* sManager = SettingsManager::getInstance();
 
-#warning __LINE__ __FILE__ DEFAULT VALUES !!!!!!
-    int projectFps = sManager->value( "default/VideoProjectFPS" ).toDouble();
-    int projectHeight = sManager->value( "default/VideoProjectHeight" ).toInt();
-    int projectWidth = sManager->value( "default/VideoProjectWidth" ).toInt();
-    int sampleRate = sManager->value( "default/AudioSampleRate" ).toInt();
+    int projectFps = 30;
+    int projectHeight = 300;
+    int projectWidth = 480;
+    int sampleRate = 44000;
 
     ui.comboBoxVideoPresets->setCurrentIndex( 0 );
     ui.comboBoxAudioPresets->setCurrentIndex( 0 );
