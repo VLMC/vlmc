@@ -7,10 +7,8 @@ SET(VLMC_SRCS
     main.cpp
     Commands/Commands.cpp
     Commands/KeyboardShortcutHelper.cpp
-    Configuration/ProjectSettingsDefault.cpp
     Configuration/SettingsManager.cpp
     Configuration/SettingValue.cpp
-    Configuration/VLMCSettingsDefault.cpp
     EffectsEngine/EffectNode.cpp
     EffectsEngine/EffectNodeFactory.cpp
     EffectsEngine/EffectPluginTypeLoader.cpp
@@ -66,7 +64,6 @@ SET(VLMC_SRCS
     Gui/timeline/TracksScene.cpp
     Gui/timeline/TracksView.cpp
     Gui/widgets/TrackControls.cpp
-    Gui/wizard/CustomWizardPage.cpp
     Gui/wizard/GeneralPage.cpp
     Gui/wizard/OpenPage.cpp
     Gui/wizard/ProjectWizard.cpp
@@ -153,7 +150,6 @@ SET (VLMC_HDRS
     Gui/timeline/TracksView.h
     Gui/UndoStack.h
     Gui/widgets/TrackControls.h
-    Gui/wizard/CustomWizardPage.h
     Gui/wizard/GeneralPage.h
     Gui/wizard/OpenPage.h
     Gui/wizard/ProjectWizard.h
