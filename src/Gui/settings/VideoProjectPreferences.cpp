@@ -38,9 +38,9 @@ void    VideoProjectPreferences::load()
 {
     SettingsManager* setMan = SettingsManager::getInstance();
 
-    int projectFps = setMan->value(  "VideoProjectFPS", 30, m_type ).toInt();
-    int projectHeight = setMan->value( "VideoProjectHeight", 300, m_type ).toInt();
-    int projectWidth = setMan->value( "VideoProjectWidth", 480, m_type ).toInt();
+    int projectFps = setMan->value(  "project/VideoProjectFPS", 30, m_type ).toInt();
+    int projectHeight = setMan->value( "project/VideoProjectHeight", 300, m_type ).toInt();
+    int projectWidth = setMan->value( "project/VideoProjectWidth", 480, m_type ).toInt();
 
     m_ui.FPSSpinBox->setValue( projectFps );
     m_ui.HeightSpinBox->setValue( projectHeight );
@@ -54,9 +54,9 @@ void    VideoProjectPreferences::save()
     QVariant    projectHeight( m_ui.HeightSpinBox->value() );
     QVariant    projectWidth( m_ui.WidthSpinBox->value() );
 
-    settMan->setImmediateValue( "VideoProjectFPS", projectFps, m_type );
-    settMan->setImmediateValue( "VideoProjectHeight", projectHeight, m_type );
-    settMan->setImmediateValue( "VideoProjectWidth", projectWidth, m_type );
+    settMan->setImmediateValue( "project/VideoProjectFPS", projectFps, m_type );
+    settMan->setImmediateValue( "project/VideoProjectHeight", projectHeight, m_type );
+    settMan->setImmediateValue( "project/VideoProjectWidth", projectWidth, m_type );
     return ;
 }
 
