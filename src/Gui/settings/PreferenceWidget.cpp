@@ -26,26 +26,14 @@
 #include "PreferenceWidget.h"
 
 PreferenceWidget::PreferenceWidget( QWidget* parent )
-    : QWidget( parent ),
-    m_defaults( false ),
-    m_settName( "" )
+    : QWidget( parent )
 {
 }
 
-void    PreferenceWidget::setDefaults( bool defaults )
-{
-    m_defaults = defaults;
-}
 
-void    PreferenceWidget::setName( const QString& name )
-{
-    m_settName = name;
-}
-
-void    PreferenceWidget::loadThemAll( const QString& part,
+void
+PreferenceWidget::loadThemAll( const QString& part,
                                     bool defaults)
 {
-    m_defaults = defaults;
-    m_settName = part;
     load();
 }

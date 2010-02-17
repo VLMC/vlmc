@@ -24,6 +24,7 @@
 #define VLMCPREFERENCES_H
 
 #include "PreferenceWidget.h"
+#include "SettingsManager.h"
 #include "ui_VLMCPreferences.h"
 
 #include <QSettings>
@@ -47,7 +48,8 @@ class VLMCPreferences : public PreferenceWidget
         void    setAutomaticSaveLabelVisiblity( int visible );
 
     private:
-        Ui::VLMCPreferences m_ui;
+        Ui::VLMCPreferences         m_ui;
+        const SettingsManager::Type m_type;
 };
 
 #endif // VLMCPREFERENCES_H

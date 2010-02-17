@@ -24,6 +24,8 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include "SettingsManager.h"
+
 #include <QDialog>
 #include <QString>
 #include <QList>
@@ -43,9 +45,7 @@ class   Settings : public QDialog
     Q_DISABLE_COPY( Settings )
 
     public:
-        Settings( bool loadDefaults = false,
-                  const QString& name = "default",
-                  QWidget* parent = 0,
+        Settings( QWidget* parent = 0,
                   Qt::WindowFlags f = 0 );
         virtual ~Settings();
 
@@ -53,7 +53,7 @@ class   Settings : public QDialog
                                                PreferenceWidget* pWidget,
                                                const QIcon& icon,
                                                const QString& label );
-        void                        show( const QString& part = "default" );
+        void                        show();
 
     private:
         inline QHBoxLayout*         buildLayout();
@@ -65,20 +65,16 @@ class   Settings : public QDialog
         PreferenceWidget*           m_currentWidget;
         Panel*                      m_panel;
         QLabel*                     m_title;
-        bool                        m_defaults;
-        QString                     m_name;
         QScrollArea*                m_configPanel;
-
 
     public slots:
         void    switchWidget( int index );
-        void    load();
 
     private slots:
         void    buttonClicked( QAbstractButton* button );
 
     signals:
-        void    loadSettings( const QString& part, bool defaults );
+        void    loadSettings();
 };
 
 #endif // SETTINGS_H

@@ -23,8 +23,9 @@
 #ifndef PROJECTPREFERENCES_H
 #define PROJECTPREFERENCES_H
 
-#include "ui_ProjectPreferences.h"
 #include "PreferenceWidget.h"
+#include "SettingsManager.h"
+#include "ui_ProjectPreferences.h"
 
 class QWidget;
 
@@ -39,7 +40,8 @@ class   ProjectPreferences : public PreferenceWidget
     protected:
         virtual void changeEvent( QEvent *e );
     private:
-        Ui::ProjectPreferences  m_ui;
+        Ui::ProjectPreferences      m_ui;
+        const SettingsManager::Type m_type;
 };
 
 #endif

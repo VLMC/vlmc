@@ -34,16 +34,14 @@
 #include <QScrollArea>
 #include <QHBoxLayout>
 
+#include <QtDebug>
 
 
-Settings::Settings( bool loadDefaults,
-                    const QString& name,
-                    QWidget* parent,
+
+Settings::Settings( QWidget* parent,
                     Qt::WindowFlags f )
-: QDialog( parent, f ),
-    m_currentWidget( NULL ),
-    m_defaults( loadDefaults ),
-    m_name( name )
+    : QDialog( parent, f ),
+    m_currentWidget( NULL )
 {
     setMinimumHeight( 400 );
     setMinimumWidth( 600 );
@@ -60,12 +58,8 @@ Settings::Settings( bool loadDefaults,
     // Create the layout
     setLayout( buildLayout() );
 
-    SettingsManager::getInstance()->addNewSettingsPart( m_name );
-
     connect( m_panel, SIGNAL( changePanel( int ) ),
              this, SLOT( switchWidget( int ) ) );
-    connect( SettingsManager::getInstance(), SIGNAL( settingsLoaded() ),
-             this, SLOT( load() ) );
 }
 
 Settings::~Settings()
@@ -73,13 +67,11 @@ Settings::~Settings()
 }
 
 void        Settings::addWidget( const QString& name,
-        PreferenceWidget* pWidget,
-        const QIcon& icon,
-        const QString& label )
+                                 PreferenceWidget* pWidget,
+                                 const QIcon& icon,
+                                 const QString& label )
 {
-    connect( this, SIGNAL( loadSettings( const QString&, bool ) ) ,
-             pWidget, SLOT( loadThemAll( const QString&, bool ) ) );
-
+    connect( this, SIGNAL( loadSettings() ), pWidget, SLOT( loadThemAll() ) );
     // We don't want the widget to be visible
     pWidget->hide();
 
@@ -97,16 +89,10 @@ void        Settings::addWidget( const QString& name,
         switchWidget( 0 );
 }
 
-void        Settings::show( const QString& part )
+void        Settings::show()
 {
-    if ( part == "default" )
-        m_defaults = true;
-    else
-    {
-        m_name = part;
-        m_defaults = false;
-    }
-    load();
+    qDebug() << "Settings::show";
+    emit loadSettings();
     switchWidget( 0 );
     QWidget::show();
 }
@@ -173,8 +159,6 @@ void    Settings::buttonClicked( QAbstractButton* button )
         for ( int i = 0; i < m_pWidgets.count(); ++i )
             m_pWidgets.at( i )->save();
 
-        // then commit
-        SettingsManager::getInstance()->commit();
     }
     if ( hide == true ) setVisible( false );
 }
@@ -202,7 +186,3 @@ void    Settings::switchWidget( int index )
     m_configPanel->setWidget( pWidget );
 }
 
-void    Settings::load()
-{
-    emit loadSettings( m_name, m_defaults );
-}

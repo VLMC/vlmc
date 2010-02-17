@@ -23,10 +23,10 @@
 #include <QDebug>
 
 #include "AudioProjectPreferences.h"
-#include "SettingsManager.h"
 
 AudioProjectPreferences::AudioProjectPreferences( QWidget *parent )
-    : PreferenceWidget( parent )
+    : PreferenceWidget( parent ),
+    m_type( SettingsManager::XML )
 {
     m_ui.setupUi( this );
 }
@@ -36,8 +36,7 @@ AudioProjectPreferences::~AudioProjectPreferences() { }
 void    AudioProjectPreferences::load()
 {
     SettingsManager* setMan = SettingsManager::getInstance();
-    const QString& part = m_defaults ? "default" : m_settName;
-    int sampleRate = setMan->getValue( part, "AudioSampleRate" )->get().toInt();
+    int sampleRate = setMan->value( "project/AudioSampleRate", 0, m_type ).toInt();
     m_ui.SampleRate->setValue( sampleRate );
 
     return ;
@@ -47,7 +46,7 @@ void    AudioProjectPreferences::save()
 {
     SettingsManager* setMan = SettingsManager::getInstance();
     QVariant    sampleRate( m_ui.SampleRate->value() );
-    setMan->setValue( m_settName, "AudioSampleRate", sampleRate );
+    setMan->setImmediateValue( "project/AudioSampleRate", sampleRate, m_type );
     return ;
 }
 

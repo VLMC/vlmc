@@ -26,25 +26,26 @@
 #include "KeyboardShortcutInput.h"
 #include "SettingsManager.h"
 
-KeyboardShortcut::KeyboardShortcut( QWidget* parent ) :
-        PreferenceWidget( parent )
+KeyboardShortcut::KeyboardShortcut( QWidget* parent )
+    : PreferenceWidget( parent ),
+    m_type( SettingsManager::QSett )
 {
-    m_layout = new QFormLayout( this );
-    const SettingsPart*   parts = SettingsManager::getInstance()->getConfigPart( "keyboard_shortcut" );
-    Q_ASSERT( parts != NULL );
+   // m_layout = new QFormLayout( this );
+   // const SettingsPart*   parts = SettingsManager::getInstance()->getConfigPart( "keyboard_shortcut" );
+   // Q_ASSERT( parts != NULL );
 
-    SettingsPart::ConfigPair::const_iterator    it = parts->m_data.begin();
-    SettingsPart::ConfigPair::const_iterator    ite = parts->m_data.end();
-    while ( it != ite )
-    {
-        m_keySeq[it.key()] = new QKeySequence( it.value()->get().toString() );
-        KeyboardShortcutInput*  ksi = new KeyboardShortcutInput( it.key(), m_keySeq[it.key()]->toString(), this );
-        m_layout->addRow( it.key(), ksi );
-        connect( ksi, SIGNAL( changed( const QString&, const QString& ) ),
-                 this, SLOT( shortcutUpdated( const QString&, const QString& ) ) );
-        ++it;
-    }
-    setLayout( m_layout );
+   // SettingsPart::ConfigPair::const_iterator    it = parts->m_data.begin();
+   // SettingsPart::ConfigPair::const_iterator    ite = parts->m_data.end();
+   // while ( it != ite )
+   // {
+   //     m_keySeq[it.key()] = new QKeySequence( it.value()->get().toString() );
+   //     KeyboardShortcutInput*  ksi = new KeyboardShortcutInput( it.key(), m_keySeq[it.key()]->toString(), this );
+   //     m_layout->addRow( it.key(), ksi );
+   //     connect( ksi, SIGNAL( changed( const QString&, const QString& ) ),
+   //              this, SLOT( shortcutUpdated( const QString&, const QString& ) ) );
+   //     ++it;
+   // }
+   // setLayout( m_layout );
 }
 
 KeyboardShortcut::~KeyboardShortcut()
@@ -61,5 +62,5 @@ void        KeyboardShortcut::save()
 
 void        KeyboardShortcut::shortcutUpdated( const QString& name, const QString& value )
 {
-    SettingsManager::getInstance()->setValue( "keyboard_shortcut", name, value );
+    SettingsManager::getInstance()->setImmediateValue( name, value, m_type );
 }

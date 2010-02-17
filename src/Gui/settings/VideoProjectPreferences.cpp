@@ -26,9 +26,10 @@
 #include "SettingsManager.h"
 
 VideoProjectPreferences::VideoProjectPreferences( QWidget *parent )
-    : PreferenceWidget( parent )
+    : PreferenceWidget( parent ),
+      m_type( SettingsManager::XML )
 {
-	m_ui.setupUi( this );
+    m_ui.setupUi( this );
 }
 
 VideoProjectPreferences::~VideoProjectPreferences() { }
@@ -36,10 +37,10 @@ VideoProjectPreferences::~VideoProjectPreferences() { }
 void    VideoProjectPreferences::load()
 {
     SettingsManager* setMan = SettingsManager::getInstance();
-    const QString& part = m_defaults ? "default" : m_settName;
-    int projectFps = setMan->getValue( part, "VideoProjectFPS" )->get().toInt();
-    int projectHeight = setMan->getValue( part, "VideoProjectHeight" )->get().toInt();
-    int projectWidth = setMan->getValue( part, "VideoProjectWidth" )->get().toInt();
+
+    int projectFps = setMan->value(  "VideoProjectFPS", 30, m_type ).toInt();
+    int projectHeight = setMan->value( "VideoProjectHeight", 300, m_type ).toInt();
+    int projectWidth = setMan->value( "VideoProjectWidth", 480, m_type ).toInt();
 
     m_ui.FPSSpinBox->setValue( projectFps );
     m_ui.HeightSpinBox->setValue( projectHeight );
@@ -53,9 +54,9 @@ void    VideoProjectPreferences::save()
     QVariant    projectHeight( m_ui.HeightSpinBox->value() );
     QVariant    projectWidth( m_ui.WidthSpinBox->value() );
 
-    settMan->setValue( m_settName,"VideoProjectFPS", projectFps );
-    settMan->setValue( m_settName,"VideoProjectHeight", projectHeight );
-    settMan->setValue( m_settName,"VideoProjectWidth", projectWidth);
+    settMan->setImmediateValue( "VideoProjectFPS", projectFps, m_type );
+    settMan->setImmediateValue( "VideoProjectHeight", projectHeight, m_type );
+    settMan->setImmediateValue( "VideoProjectWidth", projectWidth, m_type );
     return ;
 }
 

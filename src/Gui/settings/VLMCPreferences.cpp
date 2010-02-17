@@ -27,7 +27,8 @@
 #include <QtDebug>
 
 VLMCPreferences::VLMCPreferences( QWidget *parent )
-        : PreferenceWidget( parent )
+    : PreferenceWidget( parent ),
+    m_type( SettingsManager::QSett )
 {
     m_ui.setupUi(this);
     setAutomaticSaveLabelVisiblity( m_ui.automaticSave->isChecked() );
@@ -53,12 +54,11 @@ void    VLMCPreferences::setAutomaticSaveLabelVisiblity( bool visible )
 void    VLMCPreferences::load()
 {
     SettingsManager* settMan = SettingsManager::getInstance();
-    const QString& part = m_defaults ? "default" : m_settName;
 
-    QString     outputFPS = settMan->getValue( part, "VLMCOutPutFPS" )->get().toString();
-    QString     tracksNb = settMan->getValue( part, "VLMCTracksNb" )->get().toString();
-    bool        autoSave = settMan->getValue( part, "AutomaticBackup" )->get().toBool();
-    QString     autoSaveInterval = settMan->getValue( part, "AutomaticBackupInterval" )->get().toString();
+    QString     outputFPS = settMan->value( "global/VLMCOutPutFPS", "30", m_type ).toString();
+    QString     tracksNb = settMan->value( "global/VLMCTracksNb", "64", m_type ).toString();
+    bool        autoSave = settMan->value( "global/AutomaticBackup", false, m_type ).toBool();
+    QString     autoSaveInterval = settMan->value( "global/AutomaticBackupInterval", "5", m_type ).toString();
 
     m_ui.outputFPS->setText( outputFPS );
     m_ui.tracksNb->setText( tracksNb );
@@ -75,11 +75,10 @@ void    VLMCPreferences::save()
     QVariant autoSave( m_ui.automaticSave->isChecked() );
     QVariant autoSaveInterval( m_ui.automaticSaveInterval->text() );
 
-    settMan->setValue( m_settName, "VLMCOutPutFPS", outputFPS );
-    settMan->setValue( m_settName, "VLMCTracksNb", tracksNb );
-    settMan->setValue( m_settName, "AutomaticBackup", autoSave );
-    settMan->setValue( m_settName, "AutomaticBackupInterval", autoSaveInterval );
-    settMan->commit();
+    settMan->setImmediateValue( "global/VLMCOutPutFPS", outputFPS, m_type );
+    settMan->setImmediateValue( "global/VLMCTracksNb", tracksNb, m_type );
+    settMan->setImmediateValue( "global/AutomaticBackup", autoSave, m_type );
+    settMan->setImmediateValue( "global/AutomaticBackupInterval", autoSaveInterval, m_type );
 }
 
 void VLMCPreferences::changeEvent( QEvent *e )

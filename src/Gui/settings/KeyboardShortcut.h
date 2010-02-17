@@ -24,6 +24,7 @@
 #define KEYBOARDSHORTCUT_H
 
 #include "PreferenceWidget.h"
+#include "SettingsManager.h"
 
 #include <QFormLayout>
 #include <QHash>
@@ -47,6 +48,7 @@ class   KeyboardShortcut : public PreferenceWidget
     private:
         QFormLayout*                    m_layout;
         QHash<QString, QKeySequence*>   m_keySeq;
+        const SettingsManager::Type     m_type;
 };
 
 #endif // KEYBOARDSHORTCUT_H

@@ -24,6 +24,7 @@
 
 #include "PreferenceWidget.h"
 #include "SettingsManager.h"
+#include "ProjectManager.h"
 
 #include <QWidget>
 //DEBUG
@@ -31,10 +32,11 @@
 //!DEBUG
 
 
-  ProjectPreferences::ProjectPreferences( QWidget* parent )
-: PreferenceWidget( parent )
+ProjectPreferences::ProjectPreferences( QWidget* parent )
+    : PreferenceWidget( parent ),
+    m_type( SettingsManager::XML )
 {
-	m_ui.setupUi( this );
+    m_ui.setupUi( this );
 }
 
 ProjectPreferences::~ProjectPreferences() { }
@@ -42,8 +44,9 @@ ProjectPreferences::~ProjectPreferences() { }
 void    ProjectPreferences::load()
 {
     SettingsManager* settMan = SettingsManager::getInstance();
-    const QString& part = m_defaults ? "default" : m_settName;
-    QString  Name = settMan->getValue( part, "ProjectName" )->get().toString();
+    QString  Name = settMan->value( "project/ProjectName",
+                                        ProjectManager::unNamedProject,
+                                        m_type ).toString();
 
     m_ui.ProjectNameLineEdit->setText( Name );
 }
@@ -53,7 +56,7 @@ void    ProjectPreferences::save()
     SettingsManager* settMan = SettingsManager::getInstance();
     QVariant name( m_ui.ProjectNameLineEdit->text() );
 
-    settMan->setValue( m_settName, "ProjectName", name );
+    settMan->setImmediateValue( "project/ProjectName", name, m_type );
 }
 
 void ProjectPreferences::changeEvent( QEvent *e )

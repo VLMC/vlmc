@@ -24,6 +24,7 @@
 #define VIDEOPROJECTPREFERENCES_H
 
 #include "PreferenceWidget.h"
+#include "SettingsManager.h"
 #include "ui_VideoProjectPreferences.h"
 
 class QWidget;
@@ -40,6 +41,7 @@ class VideoProjectPreferences : public PreferenceWidget
         virtual void changeEvent( QEvent *e );
     private:
         Ui::VideoProjectPreferences m_ui;
+        const SettingsManager::Type m_type;
 };
 
 #endif // VIDEOPROJECTPREFERENCES_H

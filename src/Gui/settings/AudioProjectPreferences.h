@@ -24,7 +24,9 @@
 #define AUDIOPROJECTPREFERENCES_H
 
 #include "PreferenceWidget.h"
+#include "SettingsManager.h"
 #include "ui_AudioProjectPreferences.h"
+
 
 class QWidget;
 
@@ -40,6 +42,7 @@ class AudioProjectPreferences : public PreferenceWidget
         virtual void changeEvent( QEvent *e );
     private:
         Ui::AudioProjectPreferences m_ui;
+        const SettingsManager::Type m_type;
 };
 
 #endif // AUDIOPROJECTPREFERENCES_H
