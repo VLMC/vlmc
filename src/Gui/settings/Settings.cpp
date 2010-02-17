@@ -91,7 +91,6 @@ void        Settings::addWidget( const QString& name,
 
 void        Settings::show()
 {
-    qDebug() << "Settings::show";
     emit loadSettings();
     switchWidget( 0 );
     QWidget::show();
