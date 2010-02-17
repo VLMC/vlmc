@@ -20,8 +20,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <QtDebug>
-
 #include "KeyboardShortcut.h"
 #include "KeyboardShortcutInput.h"
 #include "SettingsManager.h"
@@ -30,22 +28,22 @@ KeyboardShortcut::KeyboardShortcut( QWidget* parent )
     : PreferenceWidget( parent ),
     m_type( SettingsManager::QSett )
 {
-   // m_layout = new QFormLayout( this );
-   // const SettingsPart*   parts = SettingsManager::getInstance()->getConfigPart( "keyboard_shortcut" );
-   // Q_ASSERT( parts != NULL );
+    m_layout = new QFormLayout( this );
+    const QHash<QString, QVariant>    shortcutGroup = SettingsManager::getInstance()->group( "keyboard", SettingsManager::QSett );
+    Q_ASSERT( !shortcutGroup.size() == 0 );
 
-   // SettingsPart::ConfigPair::const_iterator    it = parts->m_data.begin();
-   // SettingsPart::ConfigPair::const_iterator    ite = parts->m_data.end();
-   // while ( it != ite )
-   // {
-   //     m_keySeq[it.key()] = new QKeySequence( it.value()->get().toString() );
-   //     KeyboardShortcutInput*  ksi = new KeyboardShortcutInput( it.key(), m_keySeq[it.key()]->toString(), this );
-   //     m_layout->addRow( it.key(), ksi );
-   //     connect( ksi, SIGNAL( changed( const QString&, const QString& ) ),
-   //              this, SLOT( shortcutUpdated( const QString&, const QString& ) ) );
-   //     ++it;
-   // }
-   // setLayout( m_layout );
+    QHash<QString, QVariant>::const_iterator    it = shortcutGroup.begin();
+    QHash<QString, QVariant>::const_iterator    ite = shortcutGroup.end();
+    while ( it != ite )
+    {
+        m_keySeq[it.key()] = new QKeySequence( it.value().toString() );
+        KeyboardShortcutInput*  ksi = new KeyboardShortcutInput( it.key(), m_keySeq[it.key()]->toString(), this );
+        m_layout->addRow( it.key(), ksi );
+        connect( ksi, SIGNAL( changed( const QString&, const QString& ) ),
+                 this, SLOT( shortcutUpdated( const QString&, const QString& ) ) );
+        ++it;
+    }
+    setLayout( m_layout );
 }
 
 KeyboardShortcut::~KeyboardShortcut()

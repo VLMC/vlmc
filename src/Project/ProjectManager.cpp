@@ -77,22 +77,25 @@ ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
 
     QVariant val =
             SettingsManager::getInstance()->value( "project/ProjectName", unNamedProject, SettingsManager::XML );
-#warning __LINE__ __FILE__ FIXME !!!!
-    //connect( val, SIGNAL( changed( QVariant) ), this, SLOT(projectNameChanged(QVariant) ) );
+    SettingsManager::getInstance()->watchValue( "project/ProjectName", this,
+                                                SLOT(projectNameChanged(QVariant) ),
+                                                SettingsManager::XML );
 
     //Automatic save part :
     m_timer = new QTimer( this );
     connect( m_timer, SIGNAL( timeout() ), this, SLOT( autoSaveRequired() ) );
     QVariant autoSaveEnabled =
             SettingsManager::getInstance()->value( "global/AutomaticBackup", false, SettingsManager::QSett );
-#warning __LINE__ __FILE__ FIXME !!!!
-    //connect( autoSaveEnabled, SIGNAL( changed( QVariant ) ),
-    //         this, SLOT( automaticSaveEnabledChanged( QVariant ) ), Qt::QueuedConnection );
+    SettingsManager::getInstance()->watchValue( "global/AutomaticBackup", this,
+                                                SLOT( automaticSaveEnabledChanged(QVariant) ),
+                                                SettingsManager::QSett,
+                                                Qt::QueuedConnection );
     QVariant autoSaveInterval =
             SettingsManager::getInstance()->value( "global/AutomaticBackupInterval", 5, SettingsManager::QSett );
-#warning __LINE__ __FILE__ FIXME !!!!
-    //connect( autoSaveInterval, SIGNAL( changed( QVariant ) ),
-    //         this, SLOT( automaticSaveIntervalChanged(QVariant) ), Qt::QueuedConnection );
+    SettingsManager::getInstance()->watchValue( "global/AutomaticBackupInterval", this,
+                                                SLOT( automaticSaveIntervalChanged(QVariant) ),
+                                                SettingsManager::QSett,
+                                                Qt::QueuedConnection );
     automaticSaveEnabledChanged( autoSaveEnabled );
 }
 
@@ -167,8 +170,7 @@ void    ProjectManager::loadProject( const QString& fileName )
     parseProjectNode( root.firstChildElement( "project" ) );
     connect( Library::getInstance(), SIGNAL( projectLoaded() ), this, SLOT( loadTimeline() ) );
     Library::getInstance()->loadProject( root.firstChildElement( "medias" ) );
-#warning FIXME
-    //SettingsManager::getInstance()->load( root.firstChildElement( "project" ) );
+    SettingsManager::getInstance()->load( root.firstChildElement( "project" ) );
 }
 
 QString  ProjectManager::acquireProjectFileName()
@@ -222,10 +224,7 @@ void    ProjectManager::__saveProject( const QString &fileName )
 
     Library::getInstance()->saveProject( doc, rootNode );
     MainWorkflow::getInstance()->saveProject( doc, rootNode );
-#warning FIXME
-    //SettingsManager::getInstance()->saveSettings( "project", doc, rootNode );
-#warning FIXME
-    //SettingsManager::getInstance()->saveSettings( "keyboard_shortcut", doc, rootNode );
+    SettingsManager::getInstance()->save( doc, rootNode );
 
     doc.appendChild( rootNode );
 

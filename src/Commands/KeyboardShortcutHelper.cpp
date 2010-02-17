@@ -12,7 +12,9 @@ KeyboardShortcutHelper::KeyboardShortcutHelper( const QString& name, QWidget* pa
     QVariant   set = SettingsManager::getInstance()->value( name );
     if ( m_menu == false )
         setKey( QKeySequence( set.toString() ) );
-    //connect( set, SIGNAL( changed( const QVariant& ) ), this, SLOT( shortcutUpdated( const QVariant& ) ) );
+    SettingsManager::getInstance()->watchValue( name, this,
+                                                SLOT( shortcutUpdated( const QVariant& ) ),
+                                                SettingsManager::QSett );
 }
 
 void    KeyboardShortcutHelper::shortcutUpdated( const QVariant& value )

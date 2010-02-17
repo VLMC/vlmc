@@ -476,9 +476,9 @@ void    MainWindow::on_actionRedo_triggered()
 }
 
 #define INIT_SHORTCUT( instName, shortcutName, actionInstance  )      \
-            QVariant instName = SettingsManager::getInstance()->value( shortcutName, "Ctrl+x" );\
+            QVariant instName = SettingsManager::getInstance()->value( "keyboard/" shortcutName );\
             KeyboardShortcutHelper* helper##instName = new KeyboardShortcutHelper( shortcutName, this, true ); \
-            connect( helper##instName, SIGNAL( changed( const QString&, const QString&) ), this, SLOT( keyboardShortcutChanged(QString,QString)) ); \
+            connect( helper##instName, SIGNAL( changed( const QString&, const QString&) ), this, SLOT( keyboardShortcutChanged(const QString&, const QString&)) ); \
             m_ui.actionInstance->setShortcut( instName.toString() );
 
 void    MainWindow::initializeMenuKeyboardShortcut()
@@ -502,7 +502,6 @@ void    MainWindow::initializeMenuKeyboardShortcut()
 
 void    MainWindow::keyboardShortcutChanged( const QString& name, const QString& val )
 {
-    qDebug() << "shortcut" << name << "changed to" << val;
     if ( name == "Help" )
         m_ui.actionHelp->setShortcut( val );
     else if ( name == "Quit" )

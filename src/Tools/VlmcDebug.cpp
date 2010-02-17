@@ -50,8 +50,9 @@ VlmcDebug::VlmcDebug() : m_logFile( NULL )
 
 
     QVariant setVal = SettingsManager::getInstance()->value( "private/LogFile", "log.vlmc", SettingsManager::QSett );
-#warning FIXME
-    //connect( setVal, SIGNAL( changed( QVariant ) ),  this, SLOT( logFileChanged( const QVariant& ) ) );
+    SettingsManager::getInstance()->watchValue( "private/LogFile", this,
+                                              SLOT( logFileChanged( const QVariant& ) ),
+                                              SettingsManager::QSett );
     QObject::connect( qApp,
                       SIGNAL( aboutToQuit() ),
                       this,
