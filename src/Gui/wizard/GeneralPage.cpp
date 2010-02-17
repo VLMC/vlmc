@@ -5,6 +5,7 @@
 #include "GeneralPage.h"
 #include "ProjectWizard.h"
 #include "SettingsManager.h"
+#include "ProjectManager.h"
 
 GeneralPage::GeneralPage( QWidget *parent ) :
     QWizardPage( parent )
@@ -50,10 +51,14 @@ void GeneralPage::initializePage()
 {
     SettingsManager* sManager = SettingsManager::getInstance();
 
-    QString projectName = sManager->getValue( "default", "ProjectName" )->get().toString();
+    //Since this is a new project, it will be unnamed
+    QString projectName = ProjectManager::unNamedProject;
     ui.lineEditName->setText( projectName );
 
-    QString workspacePath = sManager->getValue( "default", "VLMCWorkspace" )->get().toString();
+    //fetching the global workspace path
+    QString workspacePath = sManager->value( "global/VLMCWorkspace",
+                                             QDir::homePath(),
+                                             SettingsManager::QSett ).toString();
     ui.lineEditWorkspace->setText( workspacePath );
 
     updateProjectLocation();
@@ -68,7 +73,7 @@ bool GeneralPage::validatePage()
 {
     SettingsManager* sManager = SettingsManager::getInstance();
 
-    QString defaultProjectName = sManager->getValue( "default", "ProjectName" )->get().toString();
+    QString defaultProjectName = ProjectManager::unNamedProject;
     if ( ui.lineEditName->text().isEmpty() || ui.lineEditName->text() == defaultProjectName )
     {
         QMessageBox::information( this, tr( "Form is incomplete" ),
@@ -85,7 +90,7 @@ bool GeneralPage::validatePage()
     }
 
     QVariant projectName( ui.lineEditName->text() );
-    sManager->setValue( "project", "ProjectName", projectName );
+    sManager->setValue( "project/ProjectName", projectName, SettingsManager::XML );
 
     return true;
 }

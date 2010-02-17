@@ -30,18 +30,16 @@
 
 RendererSettings::RendererSettings()
 {
+    SettingsManager::Type xml = SettingsManager::XML;
     m_ui.setupUi( this );
     connect( m_ui.outputFileNameButton, SIGNAL(clicked() ),
              this, SLOT(selectOutputFileName() ) );
-    const SettingValue  *width = SettingsManager::getInstance()->getValue( "project",
-                                                                    "VideoProjectWidth" );
-    const SettingValue  *height = SettingsManager::getInstance()->getValue( "project",
-                                                                    "VideoProjectHeight" );
-    const SettingValue  *outputFps = SettingsManager::getInstance()->getValue( "VLMC",
-                                                                               "VLMCOutPutFPS" );
-    m_ui.width->setValue( width->get().toInt() );
-    m_ui.height->setValue( height->get().toInt() );
-    m_ui.fps->setValue( outputFps->get().toDouble() );
+    QVariant  width = SettingsManager::getInstance()->value( "project/VideoProjectWidth",  480 ,xml );
+    QVariant  height = SettingsManager::getInstance()->value( "project/VideoProjectHeight", 300, xml );
+    QVariant  outputFps = SettingsManager::getInstance()->value( "global/VLMCOutPutFPS", 30, SettingsManager::QSett );
+    m_ui.width->setValue( width.toInt() );
+    m_ui.height->setValue( height.toInt() );
+    m_ui.fps->setValue( outputFps.toDouble() );
 }
 
 void

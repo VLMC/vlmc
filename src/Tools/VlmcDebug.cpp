@@ -31,11 +31,11 @@ VlmcDebug::VlmcDebug() : m_logFile( NULL )
     //setup log level :
     QStringList args = qApp->arguments();
     if ( args.indexOf( QRegExp( "-vvv*" ) ) >= 0 )
-        SettingsManager::getInstance()->setValue( "private", "LogLevel", QtDebugMsg );
+        SettingsManager::getInstance()->setImmediateValue( "private/LogLevel", QtDebugMsg, SettingsManager::QSett );
     else if ( args.contains( "-v" ) == true )
-        SettingsManager::getInstance()->setValue( "private", "LogLevel", QtWarningMsg );
+        SettingsManager::getInstance()->setImmediateValue( "private/LogLevel", QtWarningMsg, SettingsManager::QSett );
     else
-        SettingsManager::getInstance()->setValue( "private", "LogLevel", QtCriticalMsg );
+        SettingsManager::getInstance()->setImmediateValue( "private/LogLevel", QtCriticalMsg, SettingsManager::QSett );
 
     int pos = args.indexOf( QRegExp( "--logfile=.*" ) );
     if ( pos > 0 )
@@ -45,19 +45,18 @@ VlmcDebug::VlmcDebug() : m_logFile( NULL )
         if ( logFile.length() <= 0 )
             qWarning() << tr("Invalid value supplied for argument --logfile" );
         else
-            SettingsManager::getInstance()->setValue( "private", "LogFile", logFile );
+            SettingsManager::getInstance()->setImmediateValue( "private/LogFile", logFile, SettingsManager::QSett );
     }
 
-    //Yeah I just changed preferences, but I have to commit. Though I don't feel like a widget...
-    SettingsManager::getInstance()->commit();
 
-    const SettingValue* setVal = SettingsManager::getInstance()->getValue( "private", "LogFile" );
-    connect( setVal, SIGNAL( changed( QVariant ) ),  this, SLOT( logFileChanged( const QVariant& ) ) );
+    QVariant setVal = SettingsManager::getInstance()->value( "private/LogFile", "log.vlmc", SettingsManager::QSett );
+#warning FIXME
+    //connect( setVal, SIGNAL( changed( QVariant ) ),  this, SLOT( logFileChanged( const QVariant& ) ) );
     QObject::connect( qApp,
                       SIGNAL( aboutToQuit() ),
                       this,
                       SLOT( deleteLater() ) );
-    QString logFile = setVal->get().toString();
+    QString logFile = setVal.toString();
     if ( logFile.isEmpty() == false )
     {
         m_logFile = new QFile( logFile );
@@ -101,7 +100,7 @@ void    VlmcDebug::vlmcMessageHandler( QtMsgType type, const char* msg )
         VlmcDebug::getInstance()->m_logFile->write( "\n" );
     }
     if ( type != QtFatalMsg
-         && type < SettingsManager::getInstance()->getValue( "private", "LogLevel" )->get().toInt() )
+         && type < SettingsManager::getInstance()->value( "private/LogLevel", QtDebugMsg, SettingsManager::QSett ).toInt() )
         return ;
     switch ( type )
     {

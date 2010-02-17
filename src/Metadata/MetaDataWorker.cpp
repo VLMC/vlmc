@@ -128,9 +128,9 @@ MetaDataWorker::metaDataAvailable()
     }
     else
     {
-        const SettingValue *val = SettingsManager::getInstance()->getValue( "project", "VideoProjectFPS" );
-        Q_ASSERT_X( val != NULL, "MetaDataWorker", "Can't operate without a project FPS value ");
-        m_media->setFps( val->get().toDouble() );
+        QVariant val = SettingsManager::getInstance()->value( "project/VideoProjectFPS", 30, SettingsManager::XML );
+        Q_ASSERT_X( val.isNull() , "MetaDataWorker", "Can't operate without a project FPS value ");
+        m_media->setFps( val.toDouble() );
     }
     m_media->setLength( m_mediaPlayer->getLength() );
 

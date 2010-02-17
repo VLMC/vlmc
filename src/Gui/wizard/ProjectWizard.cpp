@@ -96,7 +96,7 @@ void    ProjectWizard::accept()
     if ( currentId() == Page_Video )
     {
         ProjectManager::getInstance()->newProject( field( "projectName" ).toString() );
-        SettingsManager::getInstance()->commit();
+        SettingsManager::getInstance()->commit( SettingsManager::All );
     }
     QDialog::accept();
 }

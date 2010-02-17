@@ -9,10 +9,10 @@ KeyboardShortcutHelper::KeyboardShortcutHelper( const QString& name, QWidget* pa
         m_name( name ),
         m_menu( menu )
 {
-    const SettingValue*   set = SettingsManager::getInstance()->getValue( "keyboard_shortcut", name );
+    QVariant   set = SettingsManager::getInstance()->value( name );
     if ( m_menu == false )
-        setKey( QKeySequence( set->get().toString() ) );
-    connect( set, SIGNAL( changed( const QVariant& ) ), this, SLOT( shortcutUpdated( const QVariant& ) ) );
+        setKey( QKeySequence( set.toString() ) );
+    //connect( set, SIGNAL( changed( const QVariant& ) ), this, SLOT( shortcutUpdated( const QVariant& ) ) );
 }
 
 void    KeyboardShortcutHelper::shortcutUpdated( const QVariant& value )

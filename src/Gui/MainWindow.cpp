@@ -77,10 +77,6 @@ MainWindow::MainWindow( QWidget *parent ) :
     qRegisterMetaType<MainWorkflow::FrameChangedReason>( "MainWorkflow::FrameChangedReason" );
     qRegisterMetaType<QVariant>( "QVariant" );
 
-    // Settings
-    VLMCSettingsDefault::load( "default" );
-    VLMCSettingsDefault::load( "VLMC" );
-    VLMCSettingsDefault::loadKeyboardShortcutDefaults();
     //We only install message handler here cause it uses configuration.
     VlmcDebug::getInstance()->setup();
 
@@ -312,7 +308,7 @@ void MainWindow::initializeDockWidgets( void )
 
 void        MainWindow::createGlobalPreferences()
 {
-    m_globalPreferences = new Settings( false, "VLMC", this );
+    m_globalPreferences = new Settings( this );
     m_globalPreferences->addWidget( tr ( "VLMC" ),
                                    new VLMCPreferences( m_globalPreferences ),
                                    QIcon( ":/images/images/vlmc.png" ),
@@ -327,9 +323,9 @@ void        MainWindow::createGlobalPreferences()
                                      tr( "Keyboard Settings" ) );
 }
 
-void	    MainWindow::createProjectPreferences()
+void    MainWindow::createProjectPreferences()
 {
-    m_projectPreferences = new Settings( false, "project", this );
+    m_projectPreferences = new Settings( this );
     m_projectPreferences->addWidget( tr( "Project" ),
                                    new ProjectPreferences,
                                    QIcon( ":/images/images/vlmc.png" ),
@@ -443,7 +439,7 @@ void MainWindow::on_actionBypass_effects_engine_toggled(bool toggled)
 
 void MainWindow::on_actionProject_Preferences_triggered()
 {
-  m_projectPreferences->show( "project" );
+  m_projectPreferences->show();
 }
 
 void    MainWindow::closeEvent( QCloseEvent* e )
@@ -479,11 +475,11 @@ void    MainWindow::on_actionRedo_triggered()
     UndoStack::getInstance( this )->redo();
 }
 
-#define INIT_SHORTCUT( instName, shortcutName, actionInstance )      \
-            const SettingValue* instName = SettingsManager::getInstance()->getValue( "keyboard_shortcut", shortcutName );\
+#define INIT_SHORTCUT( instName, shortcutName, actionInstance  )      \
+            QVariant instName = SettingsManager::getInstance()->value( shortcutName, "Ctrl+x" );\
             KeyboardShortcutHelper* helper##instName = new KeyboardShortcutHelper( shortcutName, this, true ); \
             connect( helper##instName, SIGNAL( changed( const QString&, const QString&) ), this, SLOT( keyboardShortcutChanged(QString,QString)) ); \
-            m_ui.actionInstance->setShortcut( instName->get().toString() );
+            m_ui.actionInstance->setShortcut( instName.toString() );
 
 void    MainWindow::initializeMenuKeyboardShortcut()
 {

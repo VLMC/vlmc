@@ -22,19 +22,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#include <QVariant>
 
 #include "SettingsManager.h"
 #include "LanguagePreferences.h"
 #include "ui_LanguagePreferences.h"
 
+#include <QVariant>
 #include <QDir>
 #include <QLocale>
 
 QTranslator* LanguagePreferences::m_currentLang = NULL;
 
 LanguagePreferences::LanguagePreferences( QWidget *parent )
-    : PreferenceWidget( parent )
+    : PreferenceWidget( parent ),
+    m_type( SettingsManager::QSett )
 {
     m_ui.setupUi( this );
 
@@ -77,10 +78,10 @@ LanguagePreferences::~LanguagePreferences() {}
 
 void LanguagePreferences::load()
 {
-    const QString& part = m_defaults ? "default" : m_settName;
     SettingsManager         *setMan = SettingsManager::getInstance();
-    const SettingValue      *lang = setMan->getValue( part, "VLMCLang" );
-    int idx = m_ui.comboBoxLanguage->findData( lang->get() );
+
+    QVariant      lang = setMan->value( "global/VLMCLang", "en_US", m_type );
+    int idx = m_ui.comboBoxLanguage->findData( lang );
 
     if ( idx != -1 )
         m_ui.comboBoxLanguage->setCurrentIndex( idx );
@@ -92,7 +93,7 @@ void LanguagePreferences::save()
     SettingsManager*    setMan = SettingsManager::getInstance();
     QVariant lang = m_ui.comboBoxLanguage->itemData( m_ui.comboBoxLanguage->currentIndex() );
 
-    setMan->setValue( m_settName, "VLMCLang", lang );
+    setMan->setImmediateValue( "VLMCLang", lang, m_type );
     changeLang( lang.toString() );
 }
 

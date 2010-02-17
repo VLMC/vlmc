@@ -61,14 +61,11 @@ void VideoPage::initializePage()
 {
     SettingsManager* sManager = SettingsManager::getInstance();
 
-    int projectFps = sManager->getValue(    "default",
-                                            "VideoProjectFPS" )->get().toDouble();
-    int projectHeight = sManager->getValue( "default",
-                                            "VideoProjectHeight" )->get().toInt();
-    int projectWidth = sManager->getValue(  "default",
-                                            "VideoProjectWidth" )->get().toInt();
-    int sampleRate = sManager->getValue(      "default",
-                                            "AudioSampleRate" )->get().toInt();
+#warning __LINE__ __FILE__ DEFAULT VALUES !!!!!!
+    int projectFps = sManager->value( "default/VideoProjectFPS" ).toDouble();
+    int projectHeight = sManager->value( "default/VideoProjectHeight" ).toInt();
+    int projectWidth = sManager->value( "default/VideoProjectWidth" ).toInt();
+    int sampleRate = sManager->value( "default/AudioSampleRate" ).toInt();
 
     ui.comboBoxVideoPresets->setCurrentIndex( 0 );
     ui.comboBoxAudioPresets->setCurrentIndex( 0 );
@@ -102,10 +99,10 @@ bool VideoPage::validatePage()
     QVariant    projectHeight( ui.spinBoxVideoHeight->value() );
     QVariant    projectWidth( ui.spinBoxVideoWidth->value() );
 
-    sManager->setValue( "project", "VideoProjectFPS", projectFps );
-    sManager->setValue( "project", "VideoProjectHeight", projectHeight );
-    sManager->setValue( "project", "VideoProjectWidth", projectWidth);
-    sManager->commit();
+    sManager->setValue( "project/VideoProjectFPS", projectFps, SettingsManager::XML );
+    sManager->setValue( "project/VideoProjectHeight", projectHeight, SettingsManager::XML );
+    sManager->setValue( "project/VideoProjectWidth", projectWidth, SettingsManager::XML );
+    sManager->commit( SettingsManager::XML );
 
     return true;
 }

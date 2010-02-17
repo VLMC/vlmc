@@ -26,10 +26,12 @@
 #ifndef PREFERENCES_H
 #define PREFERENCES_H
 
+#include "PreferenceWidget.h"
+#include "SettingsManager.h"
+
+#include "ui_LanguagePreferences.h"
 #include <QTranslator>
 #include <QtDebug>
-#include "PreferenceWidget.h"
-#include "ui_LanguagePreferences.h"
 
 #define TS_PREFIX "vlmc_"
 
@@ -48,7 +50,8 @@ class LanguagePreferences : public PreferenceWidget
 
     private:
         Ui::LanguagePreferences m_ui;
-        static QTranslator* m_currentLang;
+        static QTranslator*     m_currentLang;
+        SettingsManager::Type   m_type;
 };
 
 #endif // PREFERENCES_H

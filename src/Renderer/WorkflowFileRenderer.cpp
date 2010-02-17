@@ -160,17 +160,15 @@ WorkflowFileRenderer::getUnlockCallback()
 quint32
 WorkflowFileRenderer::width() const
 {
-    const SettingValue  *width = SettingsManager::getInstance()->getValue( "project",
-                                                                    "VideoProjectWidth" );
-    return width->get().toUInt();
+    QVariant width = SettingsManager::getInstance()->value( "project/VideoProjectWidth", 480, SettingsManager::XML );
+    return width.toUInt();
 }
 
 quint32
 WorkflowFileRenderer::height() const
 {
-    const SettingValue  *height = SettingsManager::getInstance()->getValue( "project",
-                                                                    "VideoProjectHeight" );
-    return height->get().toUInt();
+    QVariant height = SettingsManager::getInstance()->value( "project/VideoProjectHeight", 300, SettingsManager::XML );
+    return height.toUInt();
 }
 
 void
