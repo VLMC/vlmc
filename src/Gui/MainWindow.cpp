@@ -84,10 +84,10 @@ MainWindow::MainWindow( QWidget *parent ) :
 
     // GUI
     DockWidgetManager::instance( this )->setMainWindow( this );
-    initializeDockWidgets();
-    createStatusBar();
     createGlobalPreferences();
     createProjectPreferences();
+    initializeDockWidgets();
+    createStatusBar();
     initializeMenuKeyboardShortcut();
 #ifdef WITH_CRASHBUTTON
     setupCrashTester();
