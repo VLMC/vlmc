@@ -1,7 +1,7 @@
 /*****************************************************************************
  * SettingsManager.h: Backend settings manager
  *****************************************************************************
- * Copyright (C) 2008-2009 the VLMC team
+ * Copyright (C) 2008-2009 VideoLAN
  *
  * Authors: Clement CHAVANCE <chavance.c@gmail.com>
  *
