@@ -64,7 +64,6 @@ ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
     QSettings s;
     m_recentsProjects = s.value( "RecentsProjects" ).toStringList();
 
-    m_projectName = ProjectManager::unSavedProject;
 #ifdef WITH_CRASHHANDLER
     signal( SIGSEGV, ProjectManager::signalHandler );
     signal( SIGFPE, ProjectManager::signalHandler );
@@ -209,6 +208,7 @@ void    ProjectManager::saveProject( bool saveAs /*= true*/ )
         return ;
     __saveProject( m_projectFile->fileName() );
     emit projectSaved();
+    emit projectUpdated( projectName(), true );
 }
 
 void    ProjectManager::__saveProject( const QString &fileName )

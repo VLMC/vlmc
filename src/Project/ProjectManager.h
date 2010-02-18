@@ -116,6 +116,11 @@ signals:
      *      - The revision (if activated) has changed
      */
     void            projectUpdated( const QString& projectName, bool savedState );
+    /**
+     *  \brief      Used to signal that the project has been saved.
+     *
+     *  Right now, it is only used by the undo stack to flag the current state as clean.
+     */
     void            projectSaved();
     void            projectClosed();
 };
