@@ -112,7 +112,7 @@ Library::deleteMedia( const QUuid& uuid )
     }
     else if ( m_temporaryMedias.contains( uuid ) )
     {
-        disconnect( m_medias.value( uuid ),
+        disconnect( m_temporaryMedias.value( uuid ),
                     SIGNAL( audioSpectrumComputed( const QUuid& ) ),
                     this,
                     SLOT( deleteMedia( const QUuid& ) ) );
