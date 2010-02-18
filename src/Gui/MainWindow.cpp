@@ -123,12 +123,16 @@ MainWindow::MainWindow( QWidget *parent ) :
     m_pWizard = new ProjectWizard( this );
     m_pWizard->setModal( true );
 
+#ifdef WITH_CRASHHANDLER
     QSettings s;
     if ( s.value( "ShowWizardStartup", true ).toBool() &&
          restoreSession() == false )
     {
         m_pWizard->show();
     }
+#else
+    m_pWizard->show();
+#endif
 }
 
 MainWindow::~MainWindow()
