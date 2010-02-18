@@ -30,7 +30,7 @@ using namespace LibVLCpp;
 Media::Media( const QString& filename ) :
     m_fileName( filename )
 {
-    m_internalPtr = libvlc_media_new( *(LibVLCpp::Instance::getInstance()), filename.toLocal8Bit() );
+    m_internalPtr = libvlc_media_new_location( *(LibVLCpp::Instance::getInstance()), filename.toLocal8Bit() );
 }
 
 Media::~Media()
