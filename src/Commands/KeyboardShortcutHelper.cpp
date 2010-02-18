@@ -14,7 +14,7 @@ KeyboardShortcutHelper::KeyboardShortcutHelper( const QString& name, QWidget* pa
         setKey( QKeySequence( set.toString() ) );
     SettingsManager::getInstance()->watchValue( "keyboard/" + name, this,
                                                 SLOT( shortcutUpdated( const QVariant& ) ),
-                                                SettingsManager::QSett );
+                                                SettingsManager::Vlmc );
 }
 
 void    KeyboardShortcutHelper::shortcutUpdated( const QVariant& value )

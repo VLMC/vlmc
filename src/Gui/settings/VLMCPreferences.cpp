@@ -28,7 +28,7 @@
 
 VLMCPreferences::VLMCPreferences( QWidget *parent )
     : PreferenceWidget( parent ),
-    m_type( SettingsManager::QSett )
+    m_type( SettingsManager::Vlmc )
 {
     m_ui.setupUi(this);
     setAutomaticSaveLabelVisiblity( m_ui.automaticSave->isChecked() );

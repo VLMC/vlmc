@@ -98,10 +98,10 @@ bool VideoPage::validatePage()
     QVariant    projectHeight( ui.spinBoxVideoHeight->value() );
     QVariant    projectWidth( ui.spinBoxVideoWidth->value() );
 
-    sManager->setValue( "project/VideoProjectFPS", projectFps, SettingsManager::XML );
-    sManager->setValue( "project/VideoProjectHeight", projectHeight, SettingsManager::XML );
-    sManager->setValue( "project/VideoProjectWidth", projectWidth, SettingsManager::XML );
-    sManager->commit( SettingsManager::XML );
+    sManager->setValue( "project/VideoProjectFPS", projectFps, SettingsManager::Project );
+    sManager->setValue( "project/VideoProjectHeight", projectHeight, SettingsManager::Project );
+    sManager->setValue( "project/VideoProjectWidth", projectWidth, SettingsManager::Project );
+    sManager->commit( SettingsManager::Project );
 
     return true;
 }

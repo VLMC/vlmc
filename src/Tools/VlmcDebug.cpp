@@ -31,11 +31,11 @@ VlmcDebug::VlmcDebug() : m_logFile( NULL )
     //setup log level :
     QStringList args = qApp->arguments();
     if ( args.indexOf( QRegExp( "-vvv*" ) ) >= 0 )
-        SettingsManager::getInstance()->setImmediateValue( "private/LogLevel", QtDebugMsg, SettingsManager::QSett );
+        SettingsManager::getInstance()->setImmediateValue( "private/LogLevel", QtDebugMsg, SettingsManager::Vlmc );
     else if ( args.contains( "-v" ) == true )
-        SettingsManager::getInstance()->setImmediateValue( "private/LogLevel", QtWarningMsg, SettingsManager::QSett );
+        SettingsManager::getInstance()->setImmediateValue( "private/LogLevel", QtWarningMsg, SettingsManager::Vlmc );
     else
-        SettingsManager::getInstance()->setImmediateValue( "private/LogLevel", QtCriticalMsg, SettingsManager::QSett );
+        SettingsManager::getInstance()->setImmediateValue( "private/LogLevel", QtCriticalMsg, SettingsManager::Vlmc );
 
     int pos = args.indexOf( QRegExp( "--logfile=.*" ) );
     if ( pos > 0 )
@@ -45,14 +45,14 @@ VlmcDebug::VlmcDebug() : m_logFile( NULL )
         if ( logFile.length() <= 0 )
             qWarning() << tr("Invalid value supplied for argument --logfile" );
         else
-            SettingsManager::getInstance()->setImmediateValue( "private/LogFile", logFile, SettingsManager::QSett );
+            SettingsManager::getInstance()->setImmediateValue( "private/LogFile", logFile, SettingsManager::Vlmc );
     }
 
 
-    QVariant setVal = SettingsManager::getInstance()->value( "private/LogFile", "log.vlmc", SettingsManager::QSett );
+    QVariant setVal = SettingsManager::getInstance()->value( "private/LogFile", "log.vlmc", SettingsManager::Vlmc );
     SettingsManager::getInstance()->watchValue( "private/LogFile", this,
                                               SLOT( logFileChanged( const QVariant& ) ),
-                                              SettingsManager::QSett );
+                                              SettingsManager::Vlmc );
     QObject::connect( qApp,
                       SIGNAL( aboutToQuit() ),
                       this,
@@ -101,7 +101,7 @@ void    VlmcDebug::vlmcMessageHandler( QtMsgType type, const char* msg )
         VlmcDebug::getInstance()->m_logFile->write( "\n" );
     }
     if ( type != QtFatalMsg
-         && type < SettingsManager::getInstance()->value( "private/LogLevel", QtDebugMsg, SettingsManager::QSett ).toInt() )
+         && type < SettingsManager::getInstance()->value( "private/LogLevel", QtDebugMsg, SettingsManager::Vlmc ).toInt() )
         return ;
     switch ( type )
     {

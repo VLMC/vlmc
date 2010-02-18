@@ -35,7 +35,7 @@ QTranslator* LanguagePreferences::m_currentLang = NULL;
 
 LanguagePreferences::LanguagePreferences( QWidget *parent )
     : PreferenceWidget( parent ),
-    m_type( SettingsManager::QSett )
+    m_type( SettingsManager::Vlmc )
 {
     m_ui.setupUi( this );
 

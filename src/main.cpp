@@ -44,8 +44,10 @@
 #define EXPAND( x ) #x
 #define STRINGIFY( x ) EXPAND( x )
 
-#define ADD_SHORTCUT(NAME, KEYS)   key = QString("keyboard/").append( QObject::tr( NAME ) ); \
-                                   settMan->setImmediateValue( key, QVariant( QObject::tr( KEYS ) ), SettingsManager::QSett )
+#define ADD_SHORTCUT(NAME, KEYS)    \
+    key = QString("keyboard/").append( QObject::tr( NAME ) ); \
+    settMan->setImmediateValue( key, QVariant( QObject::tr( KEYS ) ), \
+                                SettingsManager::Vlmc )
 static void initShorcuts()
 {
     QString key;

@@ -27,7 +27,7 @@
 
 VideoProjectPreferences::VideoProjectPreferences( QWidget *parent )
     : PreferenceWidget( parent ),
-      m_type( SettingsManager::XML )
+      m_type( SettingsManager::Project )
 {
     m_ui.setupUi( this );
 }

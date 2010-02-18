@@ -28,10 +28,10 @@
 
 KeyboardShortcut::KeyboardShortcut( QWidget* parent )
     : PreferenceWidget( parent ),
-    m_type( SettingsManager::QSett )
+    m_type( SettingsManager::Vlmc )
 {
     m_layout = new QFormLayout( this );
-    const QHash<QString, QVariant>    shortcutGroup = SettingsManager::getInstance()->group( "keyboard", SettingsManager::QSett );
+    const QHash<QString, QVariant>    shortcutGroup = SettingsManager::getInstance()->group( "keyboard", SettingsManager::Vlmc );
     Q_ASSERT( !shortcutGroup.size() == 0 );
 
     QHash<QString, QVariant>::const_iterator    it = shortcutGroup.begin();

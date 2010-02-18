@@ -75,25 +75,25 @@ ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
     connect( this, SIGNAL( projectClosed() ), MainWorkflow::getInstance(), SLOT( clear() ) );
 
     QVariant val =
-            SettingsManager::getInstance()->value( "project/ProjectName", unNamedProject, SettingsManager::XML );
+            SettingsManager::getInstance()->value( "project/ProjectName", unNamedProject, SettingsManager::Project );
     SettingsManager::getInstance()->watchValue( "project/ProjectName", this,
                                                 SLOT(projectNameChanged(QVariant) ),
-                                                SettingsManager::XML );
+                                                SettingsManager::Project );
 
     //Automatic save part :
     m_timer = new QTimer( this );
     connect( m_timer, SIGNAL( timeout() ), this, SLOT( autoSaveRequired() ) );
     QVariant autoSaveEnabled =
-            SettingsManager::getInstance()->value( "global/AutomaticBackup", false, SettingsManager::QSett );
+            SettingsManager::getInstance()->value( "global/AutomaticBackup", false, SettingsManager::Vlmc );
     SettingsManager::getInstance()->watchValue( "global/AutomaticBackup", this,
                                                 SLOT( automaticSaveEnabledChanged(QVariant) ),
-                                                SettingsManager::QSett,
+                                                SettingsManager::Vlmc,
                                                 Qt::QueuedConnection );
     QVariant autoSaveInterval =
-            SettingsManager::getInstance()->value( "global/AutomaticBackupInterval", 5, SettingsManager::QSett );
+            SettingsManager::getInstance()->value( "global/AutomaticBackupInterval", 5, SettingsManager::Vlmc );
     SettingsManager::getInstance()->watchValue( "global/AutomaticBackupInterval", this,
                                                 SLOT( automaticSaveIntervalChanged(QVariant) ),
-                                                SettingsManager::QSett,
+                                                SettingsManager::Vlmc,
                                                 Qt::QueuedConnection );
     automaticSaveEnabledChanged( autoSaveEnabled );
 }
@@ -347,7 +347,7 @@ void    ProjectManager::automaticSaveEnabledChanged( const QVariant& val )
 
     if ( enabled == true )
     {
-        QVariant interval = SettingsManager::getInstance()->value( "global/AutomaticBackupInterval", 5, SettingsManager::QSett );
+        QVariant interval = SettingsManager::getInstance()->value( "global/AutomaticBackupInterval", 5, SettingsManager::Vlmc );
         m_timer->start( interval.toInt() * 1000 * 60 );
     }
     else
@@ -356,7 +356,7 @@ void    ProjectManager::automaticSaveEnabledChanged( const QVariant& val )
 
 void    ProjectManager::automaticSaveIntervalChanged( const QVariant& val )
 {
-    QVariant enabled = SettingsManager::getInstance()->value( "global/AutomaticBackup", false, SettingsManager::QSett );
+    QVariant enabled = SettingsManager::getInstance()->value( "global/AutomaticBackup", false, SettingsManager::Vlmc );
 
     if ( enabled.toBool() == false )
         return ;

@@ -58,7 +58,7 @@ void GeneralPage::initializePage()
     //fetching the global workspace path
     QString workspacePath = sManager->value( "global/VLMCWorkspace",
                                              QDir::homePath(),
-                                             SettingsManager::QSett ).toString();
+                                             SettingsManager::Vlmc ).toString();
     ui.lineEditWorkspace->setText( workspacePath );
 
     updateProjectLocation();
@@ -90,7 +90,7 @@ bool GeneralPage::validatePage()
     }
 
     QVariant projectName( ui.lineEditName->text() );
-    sManager->setValue( "project/ProjectName", projectName, SettingsManager::XML );
+    sManager->setValue( "project/ProjectName", projectName, SettingsManager::Project );
 
     return true;
 }

@@ -45,34 +45,34 @@ class   SettingsManager : public QObject, public Singleton<SettingsManager>
         typedef QHash<QString, SettingValue*>    SettingHash;
         enum Type
         {
-            XML,
-            QSett,
+            Project,
+            Vlmc,
             All
         };
 
         void                        setValue( const QString &key,
                                                     const QVariant &value,
-                                                    SettingsManager::Type type = QSett);
+                                                    SettingsManager::Type type = Vlmc);
         void                        setImmediateValue( const QString &key,
                                          const QVariant &value,
-                                         SettingsManager::Type = QSett);
+                                         SettingsManager::Type = Vlmc);
         QVariant                    value( const QString &key,
                                            const QVariant &defaultValue = QVariant(),
-                                           SettingsManager::Type type = QSett );
+                                           SettingsManager::Type type = Vlmc );
         QHash<QString, QVariant>    group( const QString &groupName,
-                                           SettingsManager::Type type = QSett );
+                                           SettingsManager::Type type = Vlmc );
 
         bool                        watchValue( const QString &key,
                                                 QObject* receiver,
                                                 const char *method,
                                                 SettingsManager::Type type,
                                                 Qt::ConnectionType cType = Qt::AutoConnection );
-        void          save() const;
-        void          save( QDomDocument &xmlfile, QDomElement& root ) const;
-        bool          load( const QDomElement &element );
+        void                        save() const;
+        void                        save( QDomDocument &xmlfile, QDomElement& root ) const;
+        bool                        load( const QDomElement &element );
 
-        bool          commit( SettingsManager::Type type );
-        void          flush();
+        bool                        commit( SettingsManager::Type type );
+        void                        flush();
 
     private:
         friend class Singleton<SettingsManager>;

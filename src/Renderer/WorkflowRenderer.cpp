@@ -348,21 +348,21 @@ void*   WorkflowRenderer::getUnlockCallback()
 quint32
 WorkflowRenderer::width() const
 {
-    QVariant width = SettingsManager::getInstance()->value( "project/VideoProjectWidth", 480, SettingsManager::XML );
+    QVariant width = SettingsManager::getInstance()->value( "project/VideoProjectWidth", 480, SettingsManager::Project );
     return width.toUInt();
 }
 
 quint32
 WorkflowRenderer::height() const
 {
-    QVariant height = SettingsManager::getInstance()->value( "project/VideoProjectHeight", 300, SettingsManager::XML );
+    QVariant height = SettingsManager::getInstance()->value( "project/VideoProjectHeight", 300, SettingsManager::Project );
     return height.toUInt();
 }
 
 float
 WorkflowRenderer::outputFps() const
 {
-    QVariant outputFps = SettingsManager::getInstance()->value( "global/VLMCOutPutFPS", 30, SettingsManager::QSett );
+    QVariant outputFps = SettingsManager::getInstance()->value( "global/VLMCOutPutFPS", 30, SettingsManager::Vlmc );
     return outputFps.toDouble();
 }
 
