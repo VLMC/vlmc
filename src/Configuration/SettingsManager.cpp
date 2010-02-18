@@ -81,9 +81,17 @@ SettingsManager::value( const QString &key,
 {
     QReadLocker rl( &m_rwLock );
 
-    if ( ( type == XML || type == All ) && m_xmlSettings.contains( key ) )
-        return m_xmlSettings.value( key )->get();
-    else if ( ( type == QSett || type == All ) )
+    if ( ( type == XML || type == All ) )
+    {
+        if ( m_xmlSettings.contains( key ) )
+            return m_xmlSettings.value( key )->get();
+        else
+        {
+            m_xmlSettings.insert( key, new SettingValue( defaultValue ) );
+            return defaultValue;
+        }
+    }
+    else if ( type == QSett )
     {
         if ( m_classicSettings.contains( key ) )
             return m_classicSettings.value( key )->get();
@@ -97,8 +105,6 @@ SettingsManager::value( const QString &key,
             return val;
         }
     }
-
-    return defaultValue;
 }
 
 QHash<QString, QVariant>
