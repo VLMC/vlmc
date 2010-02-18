@@ -71,9 +71,12 @@ void
 MetaDataWorker::computeDynamicFileMetaData()
 {
     //Disabling audio for this specific use of the media
-    m_media->addVolatileParam( ":no-audio", ":audio" );
-    connect( m_mediaPlayer, SIGNAL( lengthChanged() ),
-             this, SLOT( entrypointLengthChanged() ), Qt::QueuedConnection );
+    if ( m_media->getFileType() == Media::Audio )
+        m_media->addVolatileParam( ":volume 0", ":volume 512" );
+    else
+        m_media->addVolatileParam( ":no-audio", ":audio" );
+    connect( m_mediaPlayer, SIGNAL( lengthChanged( qint64 ) ),
+             this, SLOT( entrypointLengthChanged( qint64 ) ), Qt::QueuedConnection );
 }
 
 void
@@ -200,9 +203,12 @@ MetaDataWorker::finalize()
 }
 
 void
-MetaDataWorker::entrypointLengthChanged()
+MetaDataWorker::entrypointLengthChanged( qint64 newLength )
 {
-    disconnect( m_mediaPlayer, SIGNAL( lengthChanged() ), this, SLOT( entrypointLengthChanged() ) );
+    if ( newLength <= 0 )
+        return ;
+    disconnect( m_mediaPlayer, SIGNAL( lengthChanged( qint64 ) ),
+                this, SLOT( entrypointLengthChanged( qint64 ) ) );
     m_lengthHasChanged = true;
     if ( m_mediaIsPlaying == true )
         metaDataAvailable();

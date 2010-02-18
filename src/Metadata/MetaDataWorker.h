@@ -71,7 +71,7 @@ class MetaDataWorker : public QObject
         void    renderSnapshot();
         void    setSnapshot( const char* );
         void    entrypointPlaying();
-        void    entrypointLengthChanged();
+        void    entrypointLengthChanged( qint64 );
         void    generateAudioSpectrum();
 
     signals:
