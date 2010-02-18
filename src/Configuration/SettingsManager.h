@@ -46,8 +46,7 @@ class   SettingsManager : public QObject, public Singleton<SettingsManager>
         enum Type
         {
             Project,
-            Vlmc,
-            All
+            Vlmc
         };
 
         void                        setValue( const QString &key,

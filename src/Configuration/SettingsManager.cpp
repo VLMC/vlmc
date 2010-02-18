@@ -81,7 +81,7 @@ SettingsManager::value( const QString &key,
 {
     QReadLocker rl( &m_rwLock );
 
-    if ( ( type == Project || type == All ) )
+    if ( type == Project )
     {
         if ( m_xmlSettings.contains( key ) )
             return m_xmlSettings.value( key )->get();
@@ -91,7 +91,7 @@ SettingsManager::value( const QString &key,
             return defaultValue;
         }
     }
-    else if ( type == Vlmc )
+    else
     {
         if ( m_classicSettings.contains( key ) )
             return m_classicSettings.value( key )->get();
@@ -112,7 +112,7 @@ SettingsManager::group( const QString &groupName, SettingsManager::Type type )
 {
     QHash<QString, QVariant>    ret;
     QReadLocker rl( &m_rwLock );
-    if ( ( type == Project || type == All ) )
+    if ( type == Project )
     {
          SettingHash::const_iterator it = m_xmlSettings.begin();
          SettingHash::const_iterator ed = m_xmlSettings.end();
@@ -124,7 +124,7 @@ SettingsManager::group( const QString &groupName, SettingsManager::Type type )
                              - it.key().indexOf( "/" ) - 1 ), it.value()->get() );
          }
     }
-    if ( type == Vlmc || type == All )
+    else if ( type == Vlmc )
     {
          SettingHash::const_iterator it = m_classicSettings.begin();
          SettingHash::const_iterator ed = m_classicSettings.end();
@@ -167,13 +167,13 @@ SettingsManager::watchValue( const QString &key,
 {
     QReadLocker rl( &m_rwLock );
 
-    if ( ( type == Project || type == All ) && m_xmlSettings.contains( key ) )
+    if ( type == Project && m_xmlSettings.contains( key ) )
     {
         connect( m_xmlSettings[key], SIGNAL( changed( const QVariant& ) ),
                  receiver, method );
         return true;
     }
-    else if ( ( type == Vlmc || type == All ) )
+    else if ( type == Vlmc )
     {
         if ( m_classicSettings.contains( key ) )
         {
@@ -272,7 +272,7 @@ SettingsManager::commit( SettingsManager::Type type )
 {
     {
         QWriteLocker    wlock( &m_rwLock );
-        if ( type == Project || type == All )
+        if ( type == Project )
         {
             SettingHash::iterator it;
             SettingHash::iterator ed = m_tmpXmlSettings.end();
@@ -284,7 +284,7 @@ SettingsManager::commit( SettingsManager::Type type )
                     m_xmlSettings.insert( it.key(), it.value() );
             }
         }
-        if ( type == Vlmc || type == All )
+        else if ( type == Vlmc )
         {
             QSettings sett;
             SettingHash::iterator it;
