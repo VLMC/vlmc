@@ -79,7 +79,7 @@ namespace   LibVLCpp
         void                                stopped();
         void                                endReached();
         void                                positionChanged( float );
-        void                                lengthChanged();
+        void                                lengthChanged( qint64 );
     };
 }
 

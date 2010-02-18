@@ -111,7 +111,7 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
         self->emit positionChanged( event->u.media_player_position_changed.new_position );
         break;
     case libvlc_MediaPlayerLengthChanged:
-        self->emit lengthChanged();
+        self->emit lengthChanged( event->u.media_player_length_changed.new_length );
         break;
     case libvlc_MediaPlayerSnapshotTaken:
         self->emit snapshotTaken( event->u.media_player_snapshot_taken.psz_filename );
