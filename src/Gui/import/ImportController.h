@@ -87,7 +87,7 @@ class ImportController : public QDialog
         quint32                     m_nbMediaLoaded;
 
     public slots:
-        void        updateMediaRequested( Media* media );
+        void        updateMediaRequested( const Media* media );
         void        accept();
         void        reject();
         void        mediaSelection( const QUuid& uuid );

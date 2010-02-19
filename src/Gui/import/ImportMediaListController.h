@@ -56,7 +56,7 @@ class ImportMediaListController : public ListViewController
         int                                 m_clipDeleted;
 
     public slots:
-        void    metaDataComputed( Media* media );
+        void    metaDataComputed( const Media* media );
         void    clipDeletion( const QUuid& uuid );
         void    clipAdded( Clip* clip );
 

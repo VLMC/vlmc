@@ -173,7 +173,7 @@ ImportController::clipSelection( const QUuid& uuid )
 }
 
 void
-ImportController::updateMediaRequested( Media *media )
+ImportController::updateMediaRequested( const Media *media )
 {
     if ( m_temporaryMedias.contains( media->uuid() ) == false )
         return ;
@@ -240,11 +240,11 @@ ImportController::importMedia( const QString &filePath )
         return ;
 
     Media*          media = new Media( filePath );
-    connect( media, SIGNAL( metaDataComputed( Media* ) ),
-             this, SLOT( updateMediaRequested( Media* ) ) );
-    connect( media, SIGNAL( snapshotComputed( Media* ) ),
-             this, SLOT( updateMediaRequested( Media* ) ) );
-    connect( media, SIGNAL( snapshotComputed( Media* ) ),
+    connect( media, SIGNAL( metaDataComputed( const Media* ) ),
+             this, SLOT( updateMediaRequested( const Media* ) ) );
+    connect( media, SIGNAL( snapshotComputed( const Media* ) ),
+             this, SLOT( updateMediaRequested( const Media* ) ) );
+    connect( media, SIGNAL( snapshotComputed( const Media* ) ),
              this, SLOT( mediaLoaded() ) );
     m_temporaryMedias[media->uuid()] = media;
     MetaDataManager::getInstance()->computeMediaMetadata( media );

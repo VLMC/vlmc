@@ -53,11 +53,12 @@ ImportMediaListController::addMedia( Media* media )
 
     m_mediaCellList->insert( media->uuid(), cell );
     if ( media->baseClip() == NULL )
-        connect( media, SIGNAL( metaDataComputed( Media* ) ), cell, SLOT( enableCell() ) );
+        connect( media, SIGNAL( metaDataComputed( const Media* ) ),
+                 cell, SLOT( enableCell() ) );
 }
 
 void
-ImportMediaListController::metaDataComputed( Media* media )
+ImportMediaListController::metaDataComputed( const Media* media )
 {
     m_mediaCellList->value( media->uuid() )->setThumbnail( media->snapshot() );
 }

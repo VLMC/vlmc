@@ -48,8 +48,8 @@ void        MediaListViewController::newMediaLoaded( Media* media )
              this, SIGNAL( mediaDeleted( QUuid ) ) );
     connect( cell, SIGNAL( arrowClicked( const QUuid& ) ),
              this, SLOT( showClipList( const QUuid& ) ) );
-    connect( media, SIGNAL( snapshotComputed( Media* ) ),
-             this, SLOT( updateCell( Media* ) ) );
+    connect( media, SIGNAL( snapshotComputed( const Media* ) ),
+             this, SLOT( updateCell( const Media* ) ) );
     cell->setNbClips( media->clips()->size() );
     cell->setThumbnail( media->snapshot() );
     cell->setTitle( media->fileName() );
@@ -88,7 +88,7 @@ void    MediaListViewController::mediaRemoved( const QUuid& uuid )
     m_currentUuid = QUuid();
 }
 
-void    MediaListViewController::updateCell( Media* media )
+void    MediaListViewController::updateCell( const Media* media )
 {
     MediaCellView* cell = qobject_cast<MediaCellView*>( m_cells->value( media->uuid(), NULL ) );
     if ( cell != NULL )

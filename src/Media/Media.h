@@ -176,8 +176,8 @@ protected:
     int                         m_nbVideoTracks;
 
 signals:
-    void                        metaDataComputed( Media* );
-    void                        snapshotComputed( Media* );
+    void                        metaDataComputed( const Media* );
+    void                        snapshotComputed( const Media* );
     void                        audioSpectrumComputed( const QUuid& );
 };
 
