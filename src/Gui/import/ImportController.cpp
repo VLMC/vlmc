@@ -6,6 +6,7 @@
  * Authors: Geoffroy Lacarriere <geoffroylaca@gmail.com>
  *          Thomas Boquet <thomas.boquet@gmail.com>
  *          Clement Chavance <chavance.c@gmail.com>
+ *          Hugo Beauzée-Luyssen <hugo@vlmc.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -27,6 +28,7 @@
 #include "ClipRenderer.h"
 #include "ImportController.h"
 #include "Library.h"
+#include "MetaDataManager.h"
 
 #include <QPalette>
 #include <QSettings>
@@ -86,11 +88,6 @@ ImportController::ImportController(QWidget *parent) :
              this, SLOT( treeViewDoubleClicked( QModelIndex ) ) );
     connect( m_ui->forwardButton, SIGNAL( clicked() ),
              this, SLOT( forwardButtonClicked() ) );
-
-    connect( Library::getInstance(), SIGNAL( newMediaLoaded( const QUuid& ) ),
-             this, SLOT( newMediaLoaded( const QUuid& ) ) );
-    connect( Library::getInstance(), SIGNAL( updateMediaRequested( const QUuid& ) ),
-             this, SLOT( updateMediaRequested( const QUuid& ) ) );
 
     connect( this, SIGNAL( mediaSelected( Media* ) ),
              m_preview->getGenericRenderer(), SLOT( setMedia( Media* ) ) );
@@ -182,20 +179,10 @@ ImportController::clipSelection( const QUuid& uuid )
 }
 
 void
-ImportController::newMediaLoaded( const QUuid& uuid )
+ImportController::updateMediaRequested( Media *media )
 {
-    if ( m_temporaryMedias.contains( uuid ) == false )
+    if ( m_temporaryMedias.contains( media->getUuid() ) == false )
         return ;
-    Media* media = m_temporaryMedias[uuid];
-    m_mediaListController->addMedia( media );
-}
-
-void
-ImportController::updateMediaRequested( const QUuid& uuid )
-{
-    if ( m_temporaryMedias.contains( uuid ) == false )
-        return ;
-    Media* media = m_temporaryMedias[uuid];
     ImportMediaCellView*    cell = m_mediaListController->cell( media->getUuid() );
     if ( cell == NULL )
         return;
@@ -250,9 +237,16 @@ ImportController::setUIMetaData( Clip* clip )
 void
 ImportController::forwardButtonClicked()
 {
-    QModelIndex index = m_ui->treeView->selectionModel()->currentIndex();
-    QString filePath =  m_filesModel->fileInfo( index ).filePath();
-    Library::getInstance()->loadFile( filePath );
+    QModelIndex     index = m_ui->treeView->selectionModel()->currentIndex();
+    QString         filePath =  m_filesModel->fileInfo( index ).filePath();
+    Media*          media = new Media( filePath );
+    connect( media, SIGNAL( metaDataComputed( Media* ) ),
+             this, SLOT( updateMediaRequested( Media* ) ) );
+    connect( media, SIGNAL( snapshotComputed( Media* ) ),
+             this, SLOT( updateMediaRequested( Media* ) ) );
+    m_temporaryMedias[media->getUuid()] = media;
+    MetaDataManager::getInstance()->computeMediaMetadata( media );
+    m_mediaListController->addMedia( media );
 }
 
 void

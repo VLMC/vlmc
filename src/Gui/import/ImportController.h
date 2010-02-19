@@ -85,8 +85,7 @@ class ImportController : public QDialog
         QHash< QUuid, Media*>       m_temporaryMedias;
 
     public slots:
-        void        newMediaLoaded( const QUuid& uuid );
-        void        updateMediaRequested( const QUuid& uuid );
+        void        updateMediaRequested( Media* media );
         void        accept();
         void        reject();
         void        mediaSelection( const QUuid& uuid );

@@ -227,10 +227,6 @@ signals:
     /**
      *  \brief
      */
-    void    newMediaLoaded( const QUuid& uuid );
-    /**
-     *  \brief
-     */
     void    updateMediaRequested( const QUuid& uuid );
     /**
      *  \brief
