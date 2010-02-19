@@ -84,6 +84,8 @@ class ImportController : public QDialog
         bool                        m_controllerSwitched;
         QProgressDialog*            m_progressDialog;
         QHash< QUuid, Media*>       m_temporaryMedias;
+        quint32                     m_nbMediaToLoad;
+        quint32                     m_nbMediaLoaded;
 
     public slots:
         void        updateMediaRequested( Media* media );
@@ -95,13 +97,12 @@ class ImportController : public QDialog
         void        clipDeletion( const QUuid& uuid );
         void        showClipList( const QUuid& uuid );
         void        restoreContext();
-        void        progressDialogMax( int max );
-        void        progressDialogValue( int value );
 
     private slots:
         void        forwardButtonClicked();
         void        treeViewClicked( const QModelIndex& index );
         void        treeViewDoubleClicked( const QModelIndex& index );
+        void        mediaLoaded();
 
     signals:
         void        mediaSelected( Media* );

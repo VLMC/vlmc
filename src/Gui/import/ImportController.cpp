@@ -38,7 +38,9 @@ ImportController::ImportController(QWidget *parent) :
     QDialog(parent),
     m_ui(new Ui::ImportController),
     m_clipListController( 0 ),
-    m_controllerSwitched( false )
+    m_controllerSwitched( false ),
+    m_nbMediaToLoad( 0 ),
+    m_nbMediaLoaded( 0 )
 {
     m_ui->setupUi(this);
     m_preview = new PreviewWidget( new ClipRenderer, m_ui->previewContainer );
@@ -226,6 +228,8 @@ ImportController::setUIMetaData( Clip* clip )
 void
 ImportController::importMedia( const QString &filePath )
 {
+    ++m_nbMediaToLoad;
+    m_progressDialog->setMaximum( m_nbMediaToLoad );
     foreach ( Media* media, m_temporaryMedias.values() )
         if ( media->getFileInfo()->filePath() == filePath )
             return ;
@@ -237,6 +241,8 @@ ImportController::importMedia( const QString &filePath )
              this, SLOT( updateMediaRequested( Media* ) ) );
     connect( media, SIGNAL( snapshotComputed( Media* ) ),
              this, SLOT( updateMediaRequested( Media* ) ) );
+    connect( media, SIGNAL( snapshotComputed( Media* ) ),
+             this, SLOT( mediaLoaded() ) );
     m_temporaryMedias[media->getUuid()] = media;
     MetaDataManager::getInstance()->computeMediaMetadata( media );
     m_mediaListController->addMedia( media );
@@ -423,13 +429,16 @@ ImportController::restoreCurrentPath()
 }
 
 void
-ImportController::progressDialogMax( int max )
+ImportController::mediaLoaded()
 {
-    m_progressDialog->setMaximum( max );
-}
+    ++m_nbMediaLoaded;
+    if ( m_nbMediaLoaded == m_nbMediaToLoad )
+    {
+        m_nbMediaLoaded = 0;
+        m_nbMediaToLoad = 0;
+        m_progressDialog->hide();
+    }
+    else
+        m_progressDialog->setValue( m_nbMediaLoaded );
 
-void
-ImportController::progressDialogValue( int value )
-{
-    m_progressDialog->setValue( value );
 }
