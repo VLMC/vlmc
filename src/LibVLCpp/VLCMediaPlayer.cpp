@@ -119,6 +119,7 @@ void                            MediaPlayer::callbacks( const libvlc_event_t* ev
     case libvlc_MediaPlayerEncounteredError:
         qDebug() << "libvlc_MediaPlayerEncounteredError received."
                 << "This is not looking good...";
+        self->emit errorEncountered();
         break ;
     case libvlc_MediaPlayerSeekableChanged:
     case libvlc_MediaPlayerPausableChanged:

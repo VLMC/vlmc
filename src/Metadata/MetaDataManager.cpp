@@ -49,6 +49,9 @@ void    MetaDataManager::launchComputing( Media *media )
     connect( worker, SIGNAL( computed() ),
              this, SLOT( computingCompleted() ),
              Qt::DirectConnection );
+    connect( worker, SIGNAL( failed( Media* ) ),
+             this, SLOT( computingFailed( Media* ) ),
+             Qt::DirectConnection );
     worker->compute();
 }
 
@@ -64,7 +67,15 @@ void    MetaDataManager::computingCompleted()
         launchComputing( m_mediaToCompute.dequeue() );
 }
 
-void    MetaDataManager::computeMediaMetadata( Media *media )
+void
+MetaDataManager::computingFailed( Media* media )
+{
+    emit failedToCompute( media );
+    computingCompleted();
+}
+
+void
+MetaDataManager::computeMediaMetadata( Media *media )
 {
     QMutexLocker lock( m_computingMutex );
 

@@ -56,6 +56,10 @@ class MetaDataManager : public QObject, public Singleton<MetaDataManager>
 
     private slots:
         void                    computingCompleted();
+        void                    computingFailed( Media* media );
+
+    signals:
+        void                    failedToCompute( Media* );
 };
 
 #endif //METADATAMANAGER_H

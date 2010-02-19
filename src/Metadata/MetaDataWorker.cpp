@@ -63,6 +63,7 @@ MetaDataWorker::compute()
     m_mediaPlayer->setMedia( m_media->getVLCMedia() );
     connect( m_mediaPlayer, SIGNAL( playing() ),
              this, SLOT( entrypointPlaying() ), Qt::QueuedConnection );
+    connect( m_mediaPlayer, SIGNAL( errorEncountered() ), this, SLOT( failure() ) );
     m_mediaPlayer->play();
     m_media->flushVolatileParameters();
 }
@@ -284,4 +285,11 @@ void
 MetaDataWorker::addAudioValue( int value )
 {
     m_media->getAudioValues()->append( value );
+}
+
+void
+MetaDataWorker::failure()
+{
+    emit failed( m_media );
+    deleteLater();
 }

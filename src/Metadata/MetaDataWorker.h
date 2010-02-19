@@ -73,9 +73,11 @@ class MetaDataWorker : public QObject
         void    entrypointPlaying();
         void    entrypointLengthChanged( qint64 );
         void    generateAudioSpectrum();
+        void    failure();
 
     signals:
         void    computed();
+        void    failed( Media* media );
 };
 
 #endif // METADATAWORKER_H

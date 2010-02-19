@@ -98,6 +98,9 @@ ImportController::ImportController(QWidget *parent) :
              m_mediaListController, SLOT( clipAdded( Clip* ) ) ); //StackViewController
     connect( m_stackNav, SIGNAL( previousButtonPushed() ),
              this, SLOT( restoreContext() ) );
+
+    connect( MetaDataManager::getInstance(), SIGNAL( failedToCompute( Media* ) ),
+             this, SLOT( failedToLoad( Media* ) ) );
 }
 
 ImportController::~ImportController()
@@ -442,4 +445,10 @@ ImportController::mediaLoaded()
         m_ui->progressBar->setValue( m_nbMediaLoaded );
     }
 
+}
+
+void
+ImportController::failedToLoad( Media *media )
+{
+    mediaDeletion( media->getUuid() );
 }
