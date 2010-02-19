@@ -85,7 +85,7 @@ public:
      */
      QHash<QUuid, Media*>*   medias() { return &m_medias; }
     /**
-     *  \brief  Add the media with already computed metadatas to the library
+     *  \brief  Add a file to the media library
      *  \param  fileInfo the file info of the media
      *  \sa     addClip( Clip* clip )
      *  \sa     media( const QUuid& uuid)
@@ -102,15 +102,16 @@ public:
      */
     void    addClip( Clip* clip );
     /**
-     *  \brief Load a media or all the medias of a directory
-     *  \param fileInfo the path of the media(s)
-     */
-    void    loadFile( const QFileInfo& fileInfo, int loadingMedias = 1 );
-    /**
      *  \brief
      *  \param
      */
     void    setFilter( const QStringList& filter ) { m_filters = filter; }
+    /**
+     *  \brief  Add an already preparsed media.
+     *
+     *  \param  media   The media to add to the library
+     */
+    void    addMedia( Media *media );
 
 private:
     /**
@@ -206,15 +207,10 @@ private slots:
 
 signals:
     /**
-     *  \brief This signal should be emitted to begin metadata computing
-     *  \param media    The media you want to compute the metadata
+     *  \brief          This signal should be emitted to tell a new media have been imported
+     *  \param media    The newly imported media
      */
-    void    metadataRequired( Media* media );
-    /**
-     *  \brief This signal should be emiteted to tell a new media have been imported
-     *  \param uuid  The newly imported media
-     */
-    void    newMediaImported( const QUuid& );
+    void    newMediaLoaded( Media* );
     /**
      *  \brief This signal should be emiteted when a media has been removed
      *  \param uuid The removed media uuid
@@ -228,17 +224,6 @@ signals:
      *  \brief
      */
     void    updateMediaRequested( const QUuid& uuid );
-    /**
-     *  \brief
-     */
-    void    progressDialogMax( int max );
-    /**
-     *  \brief
-     */
-    void    progressDialogValue( int value );
-    /**
-     *  \brief
-     */
     friend class    Singleton<Library>;
 };
 

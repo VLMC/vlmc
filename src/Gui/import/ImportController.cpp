@@ -285,6 +285,8 @@ ImportController::accept()
     m_mediaListController->cleanAll();
     m_preview->stop();
     collapseAllButCurrentPath();
+    foreach ( Media* media, m_temporaryMedias.values() )
+        Library::getInstance()->addMedia( media );
     done( Accepted );
 }
 

@@ -27,8 +27,8 @@
 MediaListViewController::MediaListViewController( StackViewController* nav ) :
         ListViewController( nav ), m_nav( nav ), m_clipsListView( 0 )
 {
-    connect( Library::getInstance(), SIGNAL( newMediaImported( QUuid ) ),
-             this, SLOT( newMediaLoaded( QUuid ) ) );
+    connect( Library::getInstance(), SIGNAL( newMediaLoaded( Media* ) ),
+             this, SLOT( newMediaLoaded( Media* ) ) );
     m_cells = new QHash<QUuid, QWidget*>();
     connect( m_nav, SIGNAL( previousButtonPushed() ), this, SLOT( restoreContext() ) );
 }
@@ -38,12 +38,8 @@ MediaListViewController::~MediaListViewController()
     delete m_cells;
 }
 
-void        MediaListViewController::newMediaLoaded( const QUuid& uuid )
+void        MediaListViewController::newMediaLoaded( Media* media )
 {
-    Media* media = Library::getInstance()->media( uuid );
-    if ( media == NULL )
-        return;
-
     MediaCellView* cell = new MediaCellView( media->getUuid() );
 
     connect( cell, SIGNAL ( cellSelected( QUuid ) ),

@@ -217,42 +217,6 @@ Library::mediaAlreadyLoaded( const QFileInfo& fileInfo )
 }
 
 void
-Library::loadFile( const QFileInfo& fileInfo, int loadingMedias )
-{
-    if ( !fileInfo.isDir() )
-    {
-        if ( loadingMedias == 1 )
-        {
-            emit progressDialogMax( 1 );
-            emit progressDialogValue( 0 );
-            m_loadingMedias = 1;
-            m_nbLoadedMedias = 0;
-        }
-
-        if ( !mediaAlreadyLoaded( fileInfo ) )
-            addMedia( fileInfo );
-        else
-        {
-            emit progressDialogMax( m_loadingMedias-- );
-            emit progressDialogValue( ++m_nbLoadedMedias );
-        }
-    }
-    else
-    {
-        QDir dir = QDir( fileInfo.filePath() );
-        QFileInfoList list = dir.entryInfoList( m_filters );
-        QFileInfo file;
-
-        m_loadingMedias = list.count();
-        m_nbLoadedMedias = 0;
-        emit progressDialogMax( m_loadingMedias );
-        emit progressDialogValue( 0 );
-        foreach( file, list )
-            loadFile( file, m_loadingMedias );
-    }
-}
-
-void
 Library::loadProject( const QDomElement& medias )
 {
     if ( medias.isNull() == true || medias.tagName() != "medias" )
@@ -411,4 +375,11 @@ Library::removeClip( const QUuid& mediaId, const QUuid& clipId )
 
     if ( med->clips()->contains( clipId ) )
         med->removeClip( clipId );
+}
+
+void
+Library::addMedia( Media *media )
+{
+    m_medias[media->getUuid()] = media;
+    emit newMediaLoaded( media );
 }
