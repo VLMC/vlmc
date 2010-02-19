@@ -131,16 +131,11 @@ private:
      *  \param  path The path of the media file
      *  \param  uuid The uuid you want for the new media
      */
-    void    loadMedia( const QString& path, const QUuid& uuid );
 
     /**
      *  \brief The List of medias loaded into the library
      */
     QHash<QUuid, Media*>    m_medias;
-    /**
-     *  \brief The list of media being queued for deletion
-     */
-    QHash<QUuid, Media*>    m_mediaToDelete;
     /**
      *  \brief  This method allows to get whereas Media or clip by uuid
      *  \param container The type of container used for storage, where T is Clip or Media
@@ -195,20 +190,11 @@ public slots:
      *  \brief Remove a clip from a media
      */
     void    removeClip( const QUuid& mediaId, const QUuid& clipId );
-private slots:
-    /**
-     *  \brief  Will update the media cell with its metadata
-     */
-    void    metaDataComputed( Media* media );
-    /**
-     *  \brief  Will update the media cell with its snapshot
-     */
-    void    snapshotComputed( Media* media );
 
 signals:
     /**
-     *  \brief          This signal should be emitted to tell a new media have been imported
-     *  \param media    The newly imported media
+     *  \brief          This signal should be emitted to tell a new media have been added
+     *  \param media    The newly added media
      */
     void    newMediaLoaded( Media* );
     /**

@@ -97,26 +97,7 @@ void
 Library::deleteMedia( const QUuid& uuid )
 {
     if ( m_medias.contains( uuid ) )
-    {
-        disconnect( m_medias.value( uuid ),
-                    SIGNAL( audioSpectrumComputed( const QUuid& ) ),
-                    this,
-                    SLOT( deleteMedia( const QUuid& ) ) );
         delete m_medias.take( uuid );
-    }
-    else if ( m_mediaToDelete.contains( uuid ) )
-    {
-        delete m_mediaToDelete.value( uuid );
-    }
-    else if ( m_medias.contains( uuid ) )
-    {
-        Media* media = m_medias.take( uuid );
-        m_mediaToDelete.insert( uuid, media );
-        connect( media,
-                 SIGNAL( audioSpectrumComputed( const QUuid& ) ),
-                 this,
-                 SLOT( deleteMedia( const QUuid& ) ) );
-    }
 }
 
 void
@@ -134,18 +115,7 @@ Library::addMedia( const QFileInfo& fileInfo, const QString& uuid )
             return;
         }
     }
-
-    connect( media,
-             SIGNAL( metaDataComputed( Media* ) ),
-             this,
-             SLOT( metaDataComputed( Media* ) ), Qt::QueuedConnection );
-    connect( media,
-             SIGNAL( snapshotComputed( Media* ) ),
-             this,
-             SLOT( snapshotComputed( Media* ) ), Qt::QueuedConnection );
-
     MetaDataManager::getInstance()->computeMediaMetadata( media );
-
     m_medias[media->getUuid()] = media;
 }
 
@@ -154,55 +124,6 @@ Library::addClip( Clip* clip )
 {
     Media* media = m_medias[clip->getParent()->getUuid()];
     media->addClip( clip );
-}
-
-void
-Library::loadMedia( const QString& path, const QUuid& uuid )
-{
-    Media*  it;
-    foreach ( it, m_medias )
-    {
-        if ( it->getFileInfo()->absoluteFilePath() == path )
-        {
-            m_medias.remove( it->getUuid() );
-            m_medias[uuid] = it;
-            it->setUuid( uuid );
-            return ;
-        }
-    }
-    if ( QFile::exists( path ) == false )
-    {
-        QMessageBox::warning( NULL, tr( "Import error" ),
-                              tr( "Can't open file :" ) + path );
-        return ;
-    }
-    Media*  media = new Media( path, uuid );
-    connect( media,
-             SIGNAL( metaDataComputed( Media* ) ),
-             this,
-             SLOT( metaDataComputed( Media* ) ) );
-    MetaDataManager::getInstance()->computeMediaMetadata( media );
-    m_medias[uuid] = media;
-}
-
-void
-Library::metaDataComputed( Media* media )
-{
-    disconnect( media,
-                SIGNAL( metaDataComputed( Media* ) ),
-                this,
-                SLOT( metaDataComputed( Media* ) ) );
-    emit updateMediaRequested( media->getUuid() );
-}
-
-void
-Library::snapshotComputed( Media *media )
-{
-    disconnect( media,
-                SIGNAL( snapshotComputed( Media* ) ),
-                this,
-                SLOT( snapshotComputed( Media* ) ) );
-    emit updateMediaRequested( media->getUuid() );
 }
 
 bool
