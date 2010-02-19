@@ -73,10 +73,7 @@ ImportController::ImportController(QWidget *parent) :
     m_ui->treeView->setColumnHidden( 3, true );
     m_ui->forwardButton->setEnabled( true );
 
-    m_progressDialog = new QProgressDialog( tr("Importing files..."),
-                                            tr("Cancel"), 0, 0, NULL);
-    m_progressDialog->setWindowModality( Qt::WindowModal );
-    m_progressDialog->setMinimumDuration( 1000 );
+    m_ui->progressBar->setHidden( true );
 
     connect( m_ui->treeView, SIGNAL( clicked( QModelIndex ) ),
              this, SLOT( treeViewClicked( QModelIndex ) ) );
@@ -229,7 +226,7 @@ void
 ImportController::importMedia( const QString &filePath )
 {
     ++m_nbMediaToLoad;
-    m_progressDialog->setMaximum( m_nbMediaToLoad );
+    m_ui->progressBar->setMaximum( m_nbMediaToLoad );
     foreach ( Media* media, m_temporaryMedias.values() )
         if ( media->getFileInfo()->filePath() == filePath )
             return ;
@@ -436,9 +433,13 @@ ImportController::mediaLoaded()
     {
         m_nbMediaLoaded = 0;
         m_nbMediaToLoad = 0;
-        m_progressDialog->hide();
+        m_ui->progressBar->hide();
     }
     else
-        m_progressDialog->setValue( m_nbMediaLoaded );
+    {
+        if ( m_nbMediaToLoad > 3 )
+            m_ui->progressBar->show();
+        m_ui->progressBar->setValue( m_nbMediaLoaded );
+    }
 
 }

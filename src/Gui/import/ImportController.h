@@ -82,7 +82,6 @@ class ImportController : public QDialog
         QUuid                       m_currentUuid;
         QUuid                       m_savedUuid;
         bool                        m_controllerSwitched;
-        QProgressDialog*            m_progressDialog;
         QHash< QUuid, Media*>       m_temporaryMedias;
         quint32                     m_nbMediaToLoad;
         quint32                     m_nbMediaLoaded;
