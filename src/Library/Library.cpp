@@ -115,7 +115,15 @@ Library::addMedia( const QFileInfo& fileInfo, const QString& uuid )
         }
     }
     MetaDataManager::getInstance()->computeMediaMetadata( media );
+    addMedia( media );
+}
+
+
+void
+Library::addMedia( Media *media )
+{
     m_medias[media->getUuid()] = media;
+    emit newMediaLoaded( media );
 }
 
 void
@@ -295,11 +303,4 @@ Library::removeClip( const QUuid& mediaId, const QUuid& clipId )
 
     if ( med->clips()->contains( clipId ) )
         med->removeClip( clipId );
-}
-
-void
-Library::addMedia( Media *media )
-{
-    m_medias[media->getUuid()] = media;
-    emit newMediaLoaded( media );
 }
