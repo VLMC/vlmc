@@ -108,8 +108,7 @@ Library::addMedia( const QFileInfo& fileInfo, const QString& uuid )
 
     foreach( Media* it, m_medias.values() )
     {
-        if ( it->getFileInfo()->filePath() ==
-             media->getFileInfo()->filePath() )
+        if ( it->getFileInfo()->filePath() == media->getFileInfo()->filePath() )
         {
             delete media;
             return;

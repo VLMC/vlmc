@@ -113,17 +113,18 @@ public:
      */
     void    addMedia( Media *media );
 
+    /**
+     *  \brief  Check if a file has already been loaded into library.
+     *  \param  fileInfo    The file infos
+     *  \return true if the file is already loaded, false otherwhise
+     */
+    bool    mediaAlreadyLoaded( const QFileInfo& fileInfo );
+
 private:
     /**
      *  \brief Library Object Constructor
      */
     Library();
-    /**
-     *  \brief  Tells the media has already been loaded into library or not
-     *  \param  fileInfo    The files info of the media file
-     *  \return true if the media is already loaded, false otherwhise
-     */
-    bool    mediaAlreadyLoaded( const QFileInfo& fileInfo );
     /**
      *  \brief  This method is used to load a media directly from it's
      *          path, with a specified UUID.

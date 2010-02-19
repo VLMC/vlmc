@@ -105,11 +105,6 @@ ImportController::ImportController(QWidget *parent) :
              m_mediaListController, SLOT( clipAdded( Clip* ) ) ); //StackViewController
     connect( m_stackNav, SIGNAL( previousButtonPushed() ),
              this, SLOT( restoreContext() ) );
-
-    connect( Library::getInstance(), SIGNAL( progressDialogMax( int ) ),
-             this, SLOT( progressDialogMax( int ) ) );
-    connect( Library::getInstance(), SIGNAL( progressDialogValue( int ) ),
-             this, SLOT( progressDialogValue( int ) ) );
 }
 
 ImportController::~ImportController()
@@ -239,6 +234,13 @@ ImportController::forwardButtonClicked()
 {
     QModelIndex     index = m_ui->treeView->selectionModel()->currentIndex();
     QString         filePath =  m_filesModel->fileInfo( index ).filePath();
+
+    foreach ( Media* media, m_temporaryMedias.values() )
+        if ( media->getFileInfo()->filePath() == filePath )
+            return ;
+    if ( Library::getInstance()->mediaAlreadyLoaded( filePath ) == true )
+        return ;
+
     Media*          media = new Media( filePath );
     connect( media, SIGNAL( metaDataComputed( Media* ) ),
              this, SLOT( updateMediaRequested( Media* ) ) );
@@ -287,6 +289,7 @@ ImportController::accept()
     collapseAllButCurrentPath();
     foreach ( Media* media, m_temporaryMedias.values() )
         Library::getInstance()->addMedia( media );
+    m_temporaryMedias.clear();
     done( Accepted );
 }
 
@@ -316,8 +319,9 @@ ImportController::collapseAllButCurrentPath()
 void
 ImportController::mediaDeletion( const QUuid& uuid )
 {
-    Library::getInstance()->deleteMedia( uuid );
     m_mediaListController->removeMedia( uuid );
+    if ( m_temporaryMedias.contains( uuid ) == true )
+        delete m_temporaryMedias.take( uuid );
 
     if ( uuid == m_currentUuid )
     {
