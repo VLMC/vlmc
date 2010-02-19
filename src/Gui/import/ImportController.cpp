@@ -148,11 +148,11 @@ ImportController::mediaSelection( const QUuid& uuid )
         p.setColor( QPalette::Window, QColor( Qt::darkBlue ) );
         m_mediaListController->cell( uuid )->setPalette( p );
 
-        setUIMetaData( Library::getInstance()->temporaryMedia( uuid ) );
+        setUIMetaData( m_temporaryMedias[uuid] );
         if ( uuid != NULL && uuid != m_currentUuid )
             m_preview->stop();
         m_currentUuid = uuid;
-        emit mediaSelected( Library::getInstance()->temporaryMedia( uuid ) );
+        emit mediaSelected( m_temporaryMedias[uuid] );
     }
 }
 
@@ -167,9 +167,8 @@ ImportController::clipSelection( const QUuid& uuid )
     p.setColor( QPalette::Window, QColor( Qt::darkBlue ) );
     m_clipListController->cell( uuid )->setPalette( p );
     Clip*   clip;
-    foreach(QUuid id, Library::getInstance()->temporaryMedias()->keys() )
+    foreach( Media* media, m_temporaryMedias.values() )
     {
-        Media* media = Library::getInstance()->temporaryMedias()->value( id );
         if ( ( clip = media->clip( uuid ) ) != 0 )
             break;
     }
@@ -185,18 +184,18 @@ ImportController::clipSelection( const QUuid& uuid )
 void
 ImportController::newMediaLoaded( const QUuid& uuid )
 {
-    Media* media = Library::getInstance()->temporaryMedia( uuid );
-    if ( media == NULL )
-        return;
+    if ( m_temporaryMedias.contains( uuid ) == false )
+        return ;
+    Media* media = m_temporaryMedias[uuid];
     m_mediaListController->addMedia( media );
 }
 
 void
 ImportController::updateMediaRequested( const QUuid& uuid )
 {
-    Media* media = Library::getInstance()->temporaryMedia( uuid );
-    if ( media == NULL )
-        return;
+    if ( m_temporaryMedias.contains( uuid ) == false )
+        return ;
+    Media* media = m_temporaryMedias[uuid];
     ImportMediaCellView*    cell = m_mediaListController->cell( media->getUuid() );
     if ( cell == NULL )
         return;
@@ -281,7 +280,7 @@ ImportController::reject()
 {
     m_preview->stop();
     m_mediaListController->cleanAll();
-    Library::getInstance()->deleteTemporaryMedias();
+    deleteTemporaryMedias();
     collapseAllButCurrentPath();
     done( Rejected );
 }
@@ -290,10 +289,17 @@ void
 ImportController::accept()
 {
     m_mediaListController->cleanAll();
-    Library::getInstance()->importDone();
     m_preview->stop();
     collapseAllButCurrentPath();
     done( Accepted );
+}
+
+void
+ImportController::deleteTemporaryMedias()
+{
+    foreach ( Media* media, m_temporaryMedias.values() )
+        delete media;
+    m_temporaryMedias.clear();
 }
 
 void
@@ -329,10 +335,8 @@ void
 ImportController::clipDeletion( const QUuid& uuid )
 {
     m_clipListController->removeClip( uuid );
-    QUuid id;
-    foreach( id, Library::getInstance()->temporaryMedias()->keys() )
+    foreach( Media* media, m_temporaryMedias.values() )
     {
-        Media* media = Library::getInstance()->temporaryMedias()->value( id );
         if ( media != NULL && media->clip( uuid ) )
             media->removeClip( uuid );
     }
@@ -341,8 +345,10 @@ ImportController::clipDeletion( const QUuid& uuid )
 void
 ImportController::showClipList( const QUuid& uuid )
 {
-    Media* media = Library::getInstance()->temporaryMedia( uuid );
-    if ( media == NULL || media->clips()->size() == 0 )
+    if ( m_temporaryMedias.contains( uuid ) == false )
+        return ;
+    Media* media = m_temporaryMedias[uuid];
+    if ( media->clips()->size() == 0 )
         return ;
 
     m_clipListController = new ImportMediaListController( m_stackNav );

@@ -51,12 +51,6 @@ Library::media( const QUuid& uuid )
     return getElementByUuid( m_medias, uuid );
 }
 
-Media*
-Library::temporaryMedia( const QUuid& uuid )
-{
-    return getElementByUuid( m_temporaryMedias, uuid );
-}
-
 Clip*
 Library::clip( const QUuid& uuid )
 {
@@ -110,14 +104,6 @@ Library::deleteMedia( const QUuid& uuid )
                     SLOT( deleteMedia( const QUuid& ) ) );
         delete m_medias.take( uuid );
     }
-    else if ( m_temporaryMedias.contains( uuid ) )
-    {
-        disconnect( m_temporaryMedias.value( uuid ),
-                    SIGNAL( audioSpectrumComputed( const QUuid& ) ),
-                    this,
-                    SLOT( deleteMedia( const QUuid& ) ) );
-        delete m_temporaryMedias.take( uuid );
-    }
     else if ( m_mediaToDelete.contains( uuid ) )
     {
         delete m_mediaToDelete.value( uuid );
@@ -131,31 +117,23 @@ Library::deleteMedia( const QUuid& uuid )
                  this,
                  SLOT( deleteMedia( const QUuid& ) ) );
     }
-    else if ( m_temporaryMedias.contains( uuid ) )
-    {
-        Media* media = m_temporaryMedias.take( uuid );
-        m_mediaToDelete.insert( uuid, media );
-        connect( media,
-                 SIGNAL( audioSpectrumComputed( const QUuid& ) ),
-                 this,
-                 SLOT( deleteMedia( const QUuid& ) ) );
-    }
 }
 
 void
-Library::addMedia( const QFileInfo& fileInfo, const QString& uuidStr, bool emitSignal )
+Library::addMedia( const QFileInfo& fileInfo, const QString& uuid )
 {
-    Media* media = new Media( fileInfo.filePath(), uuidStr );
+    Media* media = new Media( fileInfo.filePath(), uuid );
     m_nbLoadedMedias++;
 
-    QUuid id;
-    foreach( id, m_medias.keys() )
-        if ( m_medias.value( id )->getFileInfo()->filePath() ==
+    foreach( Media* it, m_medias.values() )
+    {
+        if ( it->getFileInfo()->filePath() ==
              media->getFileInfo()->filePath() )
         {
             delete media;
             return;
         }
+    }
 
     connect( media,
              SIGNAL( metaDataComputed( Media* ) ),
@@ -168,13 +146,7 @@ Library::addMedia( const QFileInfo& fileInfo, const QString& uuidStr, bool emitS
 
     MetaDataManager::getInstance()->computeMediaMetadata( media );
 
-    m_temporaryMedias[media->getUuid()] = media;
-
-    if ( emitSignal )
-    {
-        emit progressDialogValue( m_nbLoadedMedias );
-        emit newMediaLoaded( media->getUuid() );
-    }
+    m_medias[media->getUuid()] = media;
 }
 
 void
@@ -234,37 +206,10 @@ Library::snapshotComputed( Media *media )
 }
 
 bool
-Library::mediaAlreadyLoaded( const QString& filePath )
-{
-    QUuid id;
-    foreach( id, m_temporaryMedias.keys() )
-    {
-        Media* media = m_temporaryMedias.value( id );
-        if ( media->getFileInfo()->filePath() == filePath )
-            return true;
-    }
-    foreach( id, m_medias.keys() )
-    {
-        Media* media = m_medias.value( id );
-        if ( media->getFileInfo()->filePath() == filePath )
-            return true;
-    }
-    return false;
-}
-
-bool
 Library::mediaAlreadyLoaded( const QFileInfo& fileInfo )
 {
-    QUuid id;
-    foreach( id, m_temporaryMedias.keys() )
+    foreach( Media* media, m_medias.values() )
     {
-        Media* media = m_temporaryMedias.value( id );
-        if ( media->getFileInfo()->filePath() == fileInfo.filePath() )
-            return true;
-    }
-    foreach( id, m_medias.keys() )
-    {
-        Media* media = m_medias.value( id );
         if ( media->getFileInfo()->filePath() == fileInfo.filePath() )
             return true;
     }
@@ -365,9 +310,7 @@ Library::loadProject( const QDomElement& medias )
         }
         else
         {
-            addMedia( path, uuid, false );
-            //FIXME : this is ugly
-            importDone();
+            addMedia( path, uuid );
         }
         if ( clipList.size() != 0 )
         {
@@ -455,27 +398,6 @@ Library::clear()
         ++it;
     }
     m_medias.clear();
-}
-
-void
-Library::deleteTemporaryMedias()
-{
-    QUuid uuid;
-    foreach( uuid, m_temporaryMedias.keys() )
-        deleteMedia( uuid );
-}
-
-void
-Library::importDone()
-{
-    QUuid id;
-    foreach( id, m_temporaryMedias.keys() )
-    {
-        Media* media = m_temporaryMedias.value( id );
-        m_medias.insert( media->getUuid(), media );
-        emit newMediaImported( media->getUuid() );
-    }
-    m_temporaryMedias.clear();
 }
 
 void

@@ -64,13 +64,6 @@ public:
      */
     Media*  media( const QUuid& uuid );
     /**
-     *  \brief  returns the temporary media that match the unique identifier
-     *  \param  uuid    the unique identifier of the temporary media
-     *  \return a pointer to the required temporary media, or NULL if no medias matches
-     *  \sa     temporaryMedia( const QUuid& uuid )
-      */
-    Media*  temporaryMedia( const QUuid& uuid );
-    /**
      *  \brief  returns the clip that match the unique identifier
      *  \param  uuid    the unique identifier of the media
      *  \return a pointer to the required clip, or NULL if no clips matches
@@ -92,19 +85,13 @@ public:
      */
      QHash<QUuid, Media*>*   medias() { return &m_medias; }
     /**
-     * \brief returns the temporary medias qHash
-     *  \return a pointer to the temporary medias qHash, or NULL if no there is no medias
-     *  \sa     medias( const QUuid& uuid )
-     */
-    QHash<QUuid, Media*>*   temporaryMedias() { return &m_temporaryMedias; }
-    /**
      *  \brief  Add the media with already computed metadatas to the library
      *  \param  fileInfo the file info of the media
      *  \sa     addClip( Clip* clip )
      *  \sa     media( const QUuid& uuid)
      *  \sa     clip( const QUuid& uuid )
      */
-      void    addMedia( const QFileInfo& fileInfo, const QString& uuidStr = QString(), bool emitSignal = true );
+    void    addMedia( const QFileInfo& fileInfo, const QString& uuid = QString() );
 
     /**
      *  \brief  Add the clip to the library
@@ -123,16 +110,6 @@ public:
      *  \brief
      *  \param
      */
-    void    deleteTemporaryMedias();
-    /**
-     *  \brief
-     *  \param
-     */
-    void    importDone();
-    /**
-     *  \brief
-     *  \param
-     */
     void    setFilter( const QStringList& filter ) { m_filters = filter; }
 
 private:
@@ -140,12 +117,6 @@ private:
      *  \brief Library Object Constructor
      */
     Library();
-    /**
-     *  \brief  Tells the media has already been loaded into library or not
-     *  \param  filePath    The path of the media file
-     *  \return true if the media is already loaded, false otherwhise
-     */
-    bool    mediaAlreadyLoaded( const QString& filePath );
     /**
      *  \brief  Tells the media has already been loaded into library or not
      *  \param  fileInfo    The files info of the media file
@@ -165,10 +136,6 @@ private:
      *  \brief The List of medias loaded into the library
      */
     QHash<QUuid, Media*>    m_medias;
-    /**
-     *  \brief The List of temporary medias loaded into the library
-     */
-    QHash<QUuid, Media*>    m_temporaryMedias;
     /**
      *  \brief The list of media being queued for deletion
      */

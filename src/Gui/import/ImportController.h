@@ -68,6 +68,7 @@ class ImportController : public QDialog
         void                        saveCurrentPath();
         void                        restoreCurrentPath();
         void                        collapseAllButCurrentPath();
+        void                        deleteTemporaryMedias();
         Ui::ImportController*       m_ui;
         PreviewWidget*              m_preview;
         StackViewController*        m_stackNav;
@@ -81,6 +82,7 @@ class ImportController : public QDialog
         QUuid                       m_savedUuid;
         bool                        m_controllerSwitched;
         QProgressDialog*            m_progressDialog;
+        QHash< QUuid, Media*>       m_temporaryMedias;
 
     public slots:
         void        newMediaLoaded( const QUuid& uuid );
