@@ -33,6 +33,7 @@
 #include <QPalette>
 #include <QSettings>
 #include <QTime>
+#include <QTimer>
 
 ImportController::ImportController(QWidget *parent) :
     QDialog(parent),
@@ -74,6 +75,8 @@ ImportController::ImportController(QWidget *parent) :
     m_ui->forwardButton->setEnabled( true );
 
     m_ui->progressBar->setHidden( true );
+    m_ui->errorLabelImg->hide();
+    m_ui->errorLabel->hide();
 
     connect( m_ui->treeView, SIGNAL( clicked( QModelIndex ) ),
              this, SLOT( treeViewClicked( QModelIndex ) ) );
@@ -450,5 +453,17 @@ ImportController::mediaLoaded()
 void
 ImportController::failedToLoad( Media *media )
 {
+    m_ui->errorLabel->setText( tr( "Failed to load %1").arg(
+            media->getFileInfo()->fileName() ) );
+    m_ui->errorLabelImg->show();
+    m_ui->errorLabel->show();
+    QTimer::singleShot( 3000, this, SLOT( hideErrors() ) );
     mediaDeletion( media->getUuid() );
+}
+
+void
+ImportController::hideErrors()
+{
+    m_ui->errorLabelImg->hide();
+    m_ui->errorLabel->hide();
 }

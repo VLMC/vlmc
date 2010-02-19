@@ -103,6 +103,7 @@ class ImportController : public QDialog
         void        treeViewDoubleClicked( const QModelIndex& index );
         void        mediaLoaded();
         void        failedToLoad( Media* media );
+        void        hideErrors();
 
     signals:
         void        mediaSelected( Media* );

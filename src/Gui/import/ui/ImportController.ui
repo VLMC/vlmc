@@ -14,7 +14,7 @@
    <string>Import</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../../../ressources.qrc">
+   <iconset>
     <normaloff>:/images/images/vlmc.png</normaloff>:/images/images/vlmc.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -31,13 +31,49 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../../../../ressources.qrc">
+          <iconset>
            <normaloff>:/images/forward</normaloff>:/images/forward</iconset>
          </property>
         </widget>
        </item>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_9">
+         <item>
+          <layout class="QHBoxLayout" name="errorLayout">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetMinimumSize</enum>
+           </property>
+           <item>
+            <widget class="QLabel" name="errorLabelImg">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="pixmap">
+              <pixmap>:/images/error</pixmap>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="errorLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>TextLabel</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
          <item>
           <widget class="QProgressBar" name="progressBar">
            <property name="value">
@@ -197,9 +233,7 @@
   <zorder>buttonBox</zorder>
   <zorder>stackViewContainer</zorder>
  </widget>
- <resources>
-  <include location="../../../../ressources.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

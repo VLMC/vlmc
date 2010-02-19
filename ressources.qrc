@@ -27,10 +27,11 @@
         <file alias="wizard_watermark">resources/images/wizard_watermark.png</file>
         <file alias="keyboard">resources/images/keyboard.png</file>
         <file alias="marker_start">resources/images/marker_start.png</file>
-        <file alias="marker_stop">resources/images/marker_stop.png</file>  
+        <file alias="marker_stop">resources/images/marker_stop.png</file>
         <file alias="undo">resources/images/undo.png</file>
         <file alias="redo">resources/images/redo.png</file>
         <file alias="configure">resources/images/configure.png</file>
+        <file alias="error">resources/images/error.png</file>
     </qresource>
     <qresource prefix="/text">
         <file>AUTHORS</file>
