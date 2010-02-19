@@ -49,7 +49,7 @@ void        MediaListViewController::newMediaLoaded( const QUuid& uuid )
     connect( cell, SIGNAL ( cellSelected( QUuid ) ),
              this, SLOT ( cellSelection( QUuid ) ) );
     connect( cell, SIGNAL ( cellDeleted( QUuid ) ),
-             this, SLOT( mediaDeletion( QUuid ) ) );
+             this, SIGNAL( mediaDeleted( QUuid ) ) );
     connect( cell, SIGNAL( arrowClicked( const QUuid& ) ),
              this, SLOT( showClipList( const QUuid& ) ) );
     connect( media, SIGNAL( snapshotComputed( Media* ) ),
@@ -82,11 +82,6 @@ void    MediaListViewController::cellSelection( const QUuid& uuid )
         m_currentUuid = uuid;
         emit mediaSelected( Library::getInstance()->media( uuid ) );
     }
-}
-
-void    MediaListViewController::mediaDeletion( const QUuid& uuid )
-{
-    emit mediaDeleted( uuid );
 }
 
 void    MediaListViewController::mediaRemoved( const QUuid& uuid )

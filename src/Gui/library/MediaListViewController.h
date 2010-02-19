@@ -28,7 +28,6 @@ public slots:
     //void        newMediaLoaded( Media* );
     void        newMediaLoaded( const QUuid& uuid );
     void        cellSelection( const QUuid& uuid );
-    void        mediaDeletion( const QUuid& uuid );
     void        mediaRemoved( const QUuid& uuid );
     void        updateCell( Media* media );
     void        showClipList( const QUuid& uuid );
