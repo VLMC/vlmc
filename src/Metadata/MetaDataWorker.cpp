@@ -53,14 +53,14 @@ MetaDataWorker::~MetaDataWorker()
 void
 MetaDataWorker::compute()
 {
-    if ( m_media->getFileType() == Media::Video ||
-         m_media->getFileType() == Media::Audio )
+    if ( m_media->fileType() == Media::Video ||
+         m_media->fileType() == Media::Audio )
         computeDynamicFileMetaData();
-    else if ( m_media->getFileType() == Media::Image )
+    else if ( m_media->fileType() == Media::Image )
         computeImageMetaData();
 
     m_media->addConstantParam( ":vout=dummy" );
-    m_mediaPlayer->setMedia( m_media->getVLCMedia() );
+    m_mediaPlayer->setMedia( m_media->vlcMedia() );
     connect( m_mediaPlayer, SIGNAL( playing() ),
              this, SLOT( entrypointPlaying() ), Qt::QueuedConnection );
     connect( m_mediaPlayer, SIGNAL( errorEncountered() ), this, SLOT( failure() ) );
@@ -72,7 +72,7 @@ void
 MetaDataWorker::computeDynamicFileMetaData()
 {
     //Disabling audio for this specific use of the media
-    if ( m_media->getFileType() == Media::Audio )
+    if ( m_media->fileType() == Media::Audio )
         m_media->addVolatileParam( ":volume 0", ":volume 512" );
     else
         m_media->addVolatileParam( ":no-audio", ":audio" );
@@ -92,14 +92,14 @@ MetaDataWorker::computeImageMetaData()
 void
 MetaDataWorker::prepareAudioSpectrumComputing()
 {
-    m_media->getVLCMedia()->addOption( ":no-sout-video" );
-    m_media->getVLCMedia()->addOption( ":sout=#transcode{}:smem" );
-    m_media->getVLCMedia()->setAudioDataCtx( this );
-    m_media->getVLCMedia()->setAudioLockCallback( reinterpret_cast<void*>( lock ) );
-    m_media->getVLCMedia()->setAudioUnlockCallback( reinterpret_cast<void*>( unlock ) );
-    m_media->getVLCMedia()->addOption( ":sout-transcode-acodec=fl32" );
-    m_media->getVLCMedia()->addOption( ":no-sout-smem-time-sync" );
-    m_media->getVLCMedia()->addOption( ":no-sout-keep" );
+    m_media->vlcMedia()->addOption( ":no-sout-video" );
+    m_media->vlcMedia()->addOption( ":sout=#transcode{}:smem" );
+    m_media->vlcMedia()->setAudioDataCtx( this );
+    m_media->vlcMedia()->setAudioLockCallback( reinterpret_cast<void*>( lock ) );
+    m_media->vlcMedia()->setAudioUnlockCallback( reinterpret_cast<void*>( unlock ) );
+    m_media->vlcMedia()->addOption( ":sout-transcode-acodec=fl32" );
+    m_media->vlcMedia()->addOption( ":no-sout-smem-time-sync" );
+    m_media->vlcMedia()->addOption( ":no-sout-keep" );
     connect( m_mediaPlayer, SIGNAL( endReached() ), this, SLOT( generateAudioSpectrum() ), Qt::QueuedConnection );
 }
 
@@ -112,7 +112,7 @@ MetaDataWorker::metaDataAvailable()
     //In order to wait for the VOUT to be ready:
     //Until we have a way of knowing when it is, both getWidth and getHeight method
     //will trigger exception... so we shut it up.
-    if ( m_media->getFileType() != Media::Audio )
+    if ( m_media->fileType() != Media::Audio )
     {
         m_timer.restart();
         while ( m_mediaPlayer->hasVout() == false &&
@@ -131,9 +131,9 @@ MetaDataWorker::metaDataAvailable()
         m_media->setWidth( width );
         m_media->setHeight( height );
         m_media->setFps( m_mediaPlayer->getFps() );
-        if ( m_media->getFps() == .0f )
+        if ( m_media->fps() == .0f )
         {
-            qWarning() << "Invalid FPS for media:" << m_media->getFileInfo()->absoluteFilePath();
+            qWarning() << "Invalid FPS for media:" << m_media->fileInfo()->absoluteFilePath();
             m_media->setFps( Clip::DefaultFPS );
         }
     }
@@ -147,12 +147,12 @@ MetaDataWorker::metaDataAvailable()
 
     m_media->setNbAudioTrack( m_mediaPlayer->getNbAudioTrack() );
     m_media->setNbVideoTrack( m_mediaPlayer->getNbVideoTrack() );
-    m_media->setNbFrames( (m_media->getLengthMS() / 1000) * m_media->getFps() );
+    m_media->setNbFrames( (m_media->lengthMS() / 1000) * m_media->fps() );
 
     m_media->emitMetaDataComputed();
     //Setting time for snapshot :
-    if ( m_media->getFileType() == Media::Video ||
-         m_media->getFileType() == Media::Image )
+    if ( m_media->fileType() == Media::Video ||
+         m_media->fileType() == Media::Image )
     {
         connect( m_mediaPlayer, SIGNAL( positionChanged( float ) ), this, SLOT( renderSnapshot() ) );
         m_mediaPlayer->setTime( m_mediaPlayer->getLength() / 3 );
@@ -164,8 +164,8 @@ MetaDataWorker::metaDataAvailable()
 void
 MetaDataWorker::renderSnapshot()
 {
-    if ( m_media->getFileType() == Media::Video ||
-         m_media->getFileType() == Media::Audio )
+    if ( m_media->fileType() == Media::Video ||
+         m_media->fileType() == Media::Audio )
         disconnect( m_mediaPlayer, SIGNAL( positionChanged( float ) ), this, SLOT( renderSnapshot() ) );
     QTemporaryFile tmp;
     tmp.setAutoRemove( false );
@@ -291,7 +291,7 @@ MetaDataWorker::generateAudioSpectrum()
 void
 MetaDataWorker::addAudioValue( int value )
 {
-    m_media->getAudioValues()->append( value );
+    m_media->audioValues()->append( value );
 }
 
 void

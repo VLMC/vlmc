@@ -139,7 +139,8 @@ void    MediaCellView::mouseMoveEvent( QMouseEvent* event )
     Media*  parent = Library::getInstance()->clip( m_uuid )->getParent();
     if ( 0 == parent )
         return ;
-    drag->setPixmap( Library::getInstance()->clip( m_uuid )->getParent()->getSnapshot().scaled( 100, 100, Qt::KeepAspectRatio ) );
+    drag->setPixmap( Library::getInstance()->clip( m_uuid )->getParent()->
+                     snapshot().scaled( 100, 100, Qt::KeepAspectRatio ) );
     drag->exec( Qt::CopyAction | Qt::MoveAction, Qt::CopyAction );
 }
 

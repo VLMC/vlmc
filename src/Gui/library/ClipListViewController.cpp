@@ -66,10 +66,10 @@ void    ClipListViewController::addClip( Clip* clip )
     connect( cell, SIGNAL( cellSelected( QUuid ) ), this, SLOT( cellSelection( const QUuid& ) ) );
     connect( cell, SIGNAL( cellDeleted( const QUuid& ) ), this, SLOT( clipDeletion( const QUuid& ) ) );
 
-    cell->setThumbnail( clip->getParent()->getSnapshot() );
+    cell->setThumbnail( clip->getParent()->snapshot() );
     QString number;
     number.setNum( m_cells.size() + 1 );
-    cell->setTitle( clip->getParent()->getFileName() + number );
+    cell->setTitle( clip->getParent()->fileName() + number );
     cell->setLength( clip->getLengthSecond(), false );
     addCell( cell );
     m_cells.insert( clip->getUuid(), cell );

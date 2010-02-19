@@ -62,7 +62,7 @@ ImageClipWorkflow::initVlcOutput()
     m_vlcMedia->addOption( buffer );
     sprintf( buffer, ":fake-duration=%d", 1000 );
     m_vlcMedia->addOption( buffer );
-    sprintf( buffer, ":fake-fps=%f", m_clip->getParent()->getFps() );
+    sprintf( buffer, ":fake-fps=%f", m_clip->getParent()->fps() );
     m_vlcMedia->addOption( buffer );
 }
 

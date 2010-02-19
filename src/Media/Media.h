@@ -70,7 +70,8 @@ public:
     virtual ~Media();
 
     /**
-     *  \brief  This method adds a parameter that will stay constant though the whole life of this media (unless it is explicitely overided), even if it is cloned.
+     *  \brief  This method adds a parameter that will stay constant though the whole life
+     *          of this media (unless it is explicitely overided), even if it is cloned.
      */
     void                        addConstantParam( const QString& param );
     /**
@@ -78,20 +79,20 @@ public:
      */
     void                        addVolatileParam( const QString& param, const QString& defaultValue );
     void                        flushVolatileParameters();
-    LibVLCpp::Media*            getVLCMedia() { return m_vlcMedia; }
+    LibVLCpp::Media             *vlcMedia() { return m_vlcMedia; }
 
     void                        setSnapshot( QPixmap* snapshot );
-    const QPixmap&              getSnapshot() const;
+    const QPixmap               &snapshot() const;
 
-    const QFileInfo*            getFileInfo() const;
-    const QString&              getMrl() const;
-    const QString&              getFileName() const;
+    const QFileInfo             *fileInfo() const;
+    const QString               &mrl() const;
+    const QString               &fileName() const;
 
     /**
         \return                 Returns the length of this media (ie the
                                 video duration) in milliseconds.
     */
-    qint64                      getLengthMS() const;
+    qint64                      lengthMS() const;
     /**
         \brief                  This methods is most of an entry point for the
                                 MetadataManager than enything else.
@@ -101,35 +102,35 @@ public:
     void                        setLength( qint64 length );
     void                        setNbFrames( qint64 nbFrames );
 
-    int                         getWidth() const;
+    int                         width() const;
     void                        setWidth( int width );
 
-    int                         getHeight() const;
+    int                         height() const;
     void                        setHeight( int height );
 
-    float                       getFps() const;
+    float                       fps() const;
     void                        setFps( float fps );
 
-    qint64                      getNbFrames() const;
+    qint64                      nbFrames() const;
 
-    const QUuid&                getUuid() const;
+    const QUuid                 &uuid() const;
     void                        setUuid( const QUuid& uuid );
 
     bool                        hasAudioTrack() const;
     bool                        hasVideoTrack() const;
     void                        setNbAudioTrack( int nbTrack );
     void                        setNbVideoTrack( int nbTrack );
-    int                         getNbAudioTracks() const;
-    int                         getNbVideoTracks() const;
+    int                         nbAudioTracks() const;
+    int                         nbVideoTracks() const;
 
-    FileType                    getFileType() const;
+    FileType                    fileType() const;
     static const QString        VideoExtensions;
     static const QString        AudioExtensions;
     static const QString        ImageExtensions;
-    InputType                   getInputType() const;
+    InputType                   inputType() const;
     static const QString        streamPrefix;
 
-    const QStringList&          getMetaTags() const;
+    const QStringList&          metaTags() const;
     void                        setMetaTags( const QStringList& tags );
     bool                        matchMetaTag( const QString& tag ) const;
 
@@ -144,7 +145,7 @@ public:
     Clip*                       clip( const QUuid& uuid ) const { return m_clips[uuid]; }
     const QHash<QUuid, Clip*>*  clips() const { return &m_clips; }
 
-    QList<int>*                 getAudioValues() { return m_audioValueList; }
+    QList<int>*                 audioValues() { return m_audioValueList; }
 
     const Clip*                 baseClip() const { return m_baseClip; }
 

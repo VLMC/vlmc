@@ -39,7 +39,7 @@ ImportMediaListController::~ImportMediaListController()
 void
 ImportMediaListController::addMedia( Media* media )
 {
-    ImportMediaCellView* cell = new ImportMediaCellView( media->getUuid() );
+    ImportMediaCellView* cell = new ImportMediaCellView( media->uuid() );
     connect( cell, SIGNAL( cellSelected( const QUuid& ) ),
              this, SIGNAL( mediaSelected( const QUuid& ) ) );
     connect( cell, SIGNAL( cellDeleted( const QUuid& ) ),
@@ -47,11 +47,11 @@ ImportMediaListController::addMedia( Media* media )
     connect( cell, SIGNAL( arrowClicked( const QUuid& ) ),
              this, SIGNAL( showClipListAsked( const QUuid& ) ) );
 
-    cell->setTitle( media->getFileName() );
-    cell->setThumbnail( media->getSnapshot() );
+    cell->setTitle( media->fileName() );
+    cell->setThumbnail( media->snapshot() );
     addCell( cell );
 
-    m_mediaCellList->insert( media->getUuid(), cell );
+    m_mediaCellList->insert( media->uuid(), cell );
     if ( media->baseClip() == NULL )
         connect( media, SIGNAL( metaDataComputed( Media* ) ), cell, SLOT( enableCell() ) );
 }
@@ -59,7 +59,7 @@ ImportMediaListController::addMedia( Media* media )
 void
 ImportMediaListController::metaDataComputed( Media* media )
 {
-    m_mediaCellList->value( media->getUuid() )->setThumbnail( media->getSnapshot() );
+    m_mediaCellList->value( media->uuid() )->setThumbnail( media->snapshot() );
 }
 
 ImportMediaCellView*
@@ -98,8 +98,8 @@ ImportMediaListController::addClip( Clip* clip )
 
     size.setNum( m_mediaCellList->size() + 1 );
 
-    cell->setTitle( clip->getParent()->getFileName() + "_" + size );
-    cell->setThumbnail( clip->getParent()->getSnapshot() );
+    cell->setTitle( clip->getParent()->fileName() + "_" + size );
+    cell->setThumbnail( clip->getParent()->snapshot() );
     cell->setLength( clip->getLengthSecond(), false  );
     cell->setEnabled( true );
     addCell( cell );
@@ -147,7 +147,7 @@ ImportMediaListController::clipAdded( Clip* clip )
 {
     if ( clip->getParent() == 0 )
         return ;
-    const QUuid& uuid = clip->getParent()->getUuid();
+    const QUuid& uuid = clip->getParent()->uuid();
     if ( m_mediaCellList->contains( uuid ) )
         m_mediaCellList->value( uuid )->incrementClipCount();
 }

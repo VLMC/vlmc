@@ -134,7 +134,7 @@ void        Media::setSnapshot( QPixmap* snapshot )
     m_snapshot = snapshot;
 }
 
-const QPixmap&    Media::getSnapshot() const
+const QPixmap&    Media::snapshot() const
 {
     if ( m_snapshot != NULL )
         return *m_snapshot;
@@ -143,12 +143,12 @@ const QPixmap&    Media::getSnapshot() const
     return *Media::defaultSnapshot;
 }
 
-const QUuid&        Media::getUuid() const
+const QUuid&        Media::uuid() const
 {
     return m_uuid;
 }
 
-const QFileInfo*    Media::getFileInfo() const
+const QFileInfo*    Media::fileInfo() const
 {
     return m_fileInfo;
 }
@@ -158,12 +158,12 @@ void                Media::setLength( qint64 length )
     m_lengthMS = length;
 }
 
-qint64              Media::getLengthMS() const
+qint64              Media::lengthMS() const
 {
     return m_lengthMS;
 }
 
-int                 Media::getWidth() const
+int                 Media::width() const
 {
     return m_width;
 }
@@ -173,7 +173,7 @@ void                Media::setWidth( int width )
     m_width = width;
 }
 
-int                 Media::getHeight() const
+int                 Media::height() const
 {
     return m_height;
 }
@@ -183,7 +183,7 @@ void                Media::setHeight( int height )
     m_height = height;
 }
 
-float               Media::getFps() const
+float               Media::fps() const
 {
     return m_fps;
 }
@@ -193,7 +193,7 @@ void                Media::setFps( float fps )
     m_fps = fps;
 }
 
-Media::FileType     Media::getFileType() const
+Media::FileType     Media::fileType() const
 {
     return m_fileType;
 }
@@ -212,10 +212,10 @@ void            Media::emitSnapshotComputed()
 
 void            Media::emitAudioSpectrumComuted()
 {
-    emit audioSpectrumComputed( this->getUuid() );
+    emit audioSpectrumComputed( this->uuid() );
 }
 
-Media::InputType    Media::getInputType() const
+Media::InputType    Media::inputType() const
 {
     return m_inputType;
 }
@@ -230,22 +230,22 @@ void                Media::setNbFrames( qint64 nbFrames )
     m_nbFrames = nbFrames;
 }
 
-qint64              Media::getNbFrames() const
+qint64              Media::nbFrames() const
 {
     return m_nbFrames;
 }
 
-const QString&      Media::getMrl() const
+const QString&      Media::mrl() const
 {
     return m_mrl;
 }
 
-const QString&      Media::getFileName() const
+const QString&      Media::fileName() const
 {
     return m_fileName;
 }
 
-const QStringList&  Media::getMetaTags() const
+const QStringList&  Media::metaTags() const
 {
     return m_metaTags;
 }
@@ -303,13 +303,13 @@ Media::setNbVideoTrack( int nbTracks )
 }
 
 int
-Media::getNbAudioTracks() const
+Media::nbAudioTracks() const
 {
     return m_nbAudioTracks;
 }
 
 int
-Media::getNbVideoTracks() const
+Media::nbVideoTracks() const
 {
     return m_nbVideoTracks;
 }

@@ -175,13 +175,13 @@ ImportController::clipSelection( const QUuid& uuid )
 void
 ImportController::updateMediaRequested( Media *media )
 {
-    if ( m_temporaryMedias.contains( media->getUuid() ) == false )
+    if ( m_temporaryMedias.contains( media->uuid() ) == false )
         return ;
-    ImportMediaCellView*    cell = m_mediaListController->cell( media->getUuid() );
+    ImportMediaCellView*    cell = m_mediaListController->cell( media->uuid() );
     if ( cell == NULL )
         return;
-    cell->setThumbnail( media->getSnapshot() );
-    cell->setLength( media->getLengthMS() );
+    cell->setThumbnail( media->snapshot() );
+    cell->setLength( media->lengthMS() );
 }
 
 void
@@ -191,17 +191,17 @@ ImportController::setUIMetaData( Media* media )
     {
         //Duration
         QTime   duration;
-        duration = duration.addMSecs( media->getLengthMS() );
+        duration = duration.addMSecs( media->lengthMS() );
         m_ui->durationValueLabel->setText( duration.toString( "hh:mm:ss" ) );
         //Filename || title
-        m_ui->nameValueLabel->setText( media->getFileInfo()->fileName() );
+        m_ui->nameValueLabel->setText( media->fileInfo()->fileName() );
         m_ui->nameValueLabel->setWordWrap( true );
-        setWindowTitle( media->getFileInfo()->fileName() + " " + tr( "properties" ) );
+        setWindowTitle( media->fileInfo()->fileName() + " " + tr( "properties" ) );
         //Resolution
-        m_ui->resolutionValueLabel->setText( QString::number( media->getWidth() )
-                                        + " x " + QString::number( media->getHeight() ) );
+        m_ui->resolutionValueLabel->setText( QString::number( media->width() )
+                                        + " x " + QString::number( media->height() ) );
         //FPS
-        m_ui->fpsValueLabel->setText( QString::number( media->getFps() ) );
+        m_ui->fpsValueLabel->setText( QString::number( media->fps() ) );
     }
     else
     {
@@ -219,13 +219,13 @@ ImportController::setUIMetaData( Clip* clip )
     qint64  length = clip->getLengthSecond();
     time = time.addSecs( length );
     m_ui->durationValueLabel->setText( time.toString( "hh:mm:ss" ) );
-    m_ui->nameValueLabel->setText( clip->getParent()->getFileInfo()->fileName() );
+    m_ui->nameValueLabel->setText( clip->getParent()->fileInfo()->fileName() );
     m_ui->nameValueLabel->setWordWrap( true );
-    setWindowTitle( clip->getParent()->getFileInfo()->fileName() + " " +
+    setWindowTitle( clip->getParent()->fileInfo()->fileName() + " " +
                     tr( "properties" ) );
-    m_ui->resolutionValueLabel->setText( QString::number( clip->getParent()->getWidth() )
-            + " x " + QString::number( clip->getParent()->getHeight() ) );
-    m_ui->fpsValueLabel->setText( QString::number( clip->getParent()->getFps() ) );
+    m_ui->resolutionValueLabel->setText( QString::number( clip->getParent()->width() )
+            + " x " + QString::number( clip->getParent()->height() ) );
+    m_ui->fpsValueLabel->setText( QString::number( clip->getParent()->fps() ) );
 }
 
 void
@@ -234,7 +234,7 @@ ImportController::importMedia( const QString &filePath )
     ++m_nbMediaToLoad;
     m_ui->progressBar->setMaximum( m_nbMediaToLoad );
     foreach ( Media* media, m_temporaryMedias.values() )
-        if ( media->getFileInfo()->filePath() == filePath )
+        if ( media->fileInfo()->filePath() == filePath )
             return ;
     if ( Library::getInstance()->mediaAlreadyLoaded( filePath ) == true )
         return ;
@@ -246,7 +246,7 @@ ImportController::importMedia( const QString &filePath )
              this, SLOT( updateMediaRequested( Media* ) ) );
     connect( media, SIGNAL( snapshotComputed( Media* ) ),
              this, SLOT( mediaLoaded() ) );
-    m_temporaryMedias[media->getUuid()] = media;
+    m_temporaryMedias[media->uuid()] = media;
     MetaDataManager::getInstance()->computeMediaMetadata( media );
     m_mediaListController->addMedia( media );
 }
@@ -454,11 +454,11 @@ void
 ImportController::failedToLoad( Media *media )
 {
     m_ui->errorLabel->setText( tr( "Failed to load %1").arg(
-            media->getFileInfo()->fileName() ) );
+            media->fileInfo()->fileName() ) );
     m_ui->errorLabelImg->show();
     m_ui->errorLabel->show();
     QTimer::singleShot( 3000, this, SLOT( hideErrors() ) );
-    mediaDeletion( media->getUuid() );
+    mediaDeletion( media->uuid() );
 }
 
 void

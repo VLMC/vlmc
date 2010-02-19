@@ -34,9 +34,9 @@ const int   Clip::DefaultFPS = 30;
 Clip::Clip( Media* parent ) :
         m_parent( parent ),
         m_begin( 0 ),
-        m_end( parent->getNbFrames() ),
+        m_end( parent->nbFrames() ),
         m_maxBegin( 0 ),
-        m_maxEnd( parent->getNbFrames() )
+        m_maxEnd( parent->nbFrames() )
 {
     m_Uuid = QUuid::createUuid();
     computeLength();
@@ -61,11 +61,11 @@ Clip::Clip( Media* parent, qint64 begin, qint64 end /*= -1*/ ) :
         m_maxEnd( end )
 {
     //FIXME: WTF ?
-    Q_ASSERT( parent->getInputType() == Media::File || ( begin == 0 && end == m_parent->getNbFrames() ) );
+    Q_ASSERT( parent->inputType() == Media::File || ( begin == 0 && end == m_parent->nbFrames() ) );
 
-    if ( parent->getInputType() == Media::File && end < 0 )
+    if ( parent->inputType() == Media::File && end < 0 )
     {
-        m_end = parent->getNbFrames();
+        m_end = parent->nbFrames();
         m_maxEnd = m_end;
     }
     m_Uuid = QUuid::createUuid();
@@ -141,9 +141,9 @@ qint64      Clip::getLengthSecond() const
 
 void        Clip::computeLength()
 {
-    if ( m_parent->getInputType() == Media::File )
+    if ( m_parent->inputType() == Media::File )
     {
-        float   fps = m_parent->getFps();
+        float   fps = m_parent->fps();
         if ( fps < 0.1f )
             fps = Clip::DefaultFPS;
         m_length = m_end - m_begin;

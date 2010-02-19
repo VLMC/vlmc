@@ -106,7 +106,7 @@ Library::addMedia( const QFileInfo& fileInfo, const QString& uuid )
 
     foreach( Media* it, m_medias.values() )
     {
-        if ( it->getFileInfo()->filePath() == media->getFileInfo()->filePath() )
+        if ( it->fileInfo()->filePath() == media->fileInfo()->filePath() )
         {
             delete media;
             return;
@@ -120,14 +120,14 @@ Library::addMedia( const QFileInfo& fileInfo, const QString& uuid )
 void
 Library::addMedia( Media *media )
 {
-    m_medias[media->getUuid()] = media;
+    m_medias[media->uuid()] = media;
     emit newMediaLoaded( media );
 }
 
 void
 Library::addClip( Clip* clip )
 {
-    Media* media = m_medias[clip->getParent()->getUuid()];
+    Media* media = m_medias[clip->getParent()->uuid()];
     media->addClip( clip );
 }
 
@@ -136,7 +136,7 @@ Library::mediaAlreadyLoaded( const QFileInfo& fileInfo )
 {
     foreach( Media* media, m_medias.values() )
     {
-        if ( media->getFileInfo()->filePath() == fileInfo.filePath() )
+        if ( media->fileInfo()->filePath() == fileInfo.filePath() )
             return true;
     }
     return false;
@@ -188,12 +188,12 @@ Library::loadProject( const QDomElement& medias )
 
             for ( ; it != end; ++it )
             {
-                if ( it.value()->getFileInfo()->absoluteFilePath() == path )
+                if ( it.value()->fileInfo()->absoluteFilePath() == path )
                 {
                     media = it.value();
                     media->setUuid( QUuid( uuid ) );
                     m_medias.erase( it );
-                    m_medias[media->getUuid()] = media;
+                    m_medias[media->uuid()] = media;
                     break ;
                 }
             }
@@ -246,10 +246,10 @@ Library::saveProject( QDomDocument& doc, QDomElement& rootNode )
         QDomElement mrl = doc.createElement( "path" );
 
         QDomCharacterData text;
-        text = doc.createTextNode( it.value()->getFileInfo()->absoluteFilePath() );
+        text = doc.createTextNode( it.value()->fileInfo()->absoluteFilePath() );
 
         QDomElement uuid = doc.createElement( "uuid" );
-        QDomCharacterData text2 = doc.createTextNode( it.value()->getUuid().toString() );
+        QDomCharacterData text2 = doc.createTextNode( it.value()->uuid().toString() );
 
         mrl.appendChild( text );
         uuid.appendChild( text2 );
@@ -266,7 +266,7 @@ Library::saveProject( QDomDocument& doc, QDomElement& rootNode )
                 clip.setAttribute( "begin", c->getBegin() );
                 clip.setAttribute( "end", c->getEnd() );
                 clip.setAttribute( "uuid", c->getUuid() );
-                clip.setAttribute( "parentUuid", c->getParent()->getUuid() );
+                clip.setAttribute( "parentUuid", c->getParent()->uuid() );
                 clips.appendChild( clip );
             }
             media.appendChild( clips );

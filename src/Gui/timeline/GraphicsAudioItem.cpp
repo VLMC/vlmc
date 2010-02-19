@@ -33,10 +33,10 @@ GraphicsAudioItem::GraphicsAudioItem( Clip* clip ) : m_clip( clip )
 {
     setFlags( QGraphicsItem::ItemIsSelectable );
 
-    QTime length = QTime().addMSecs( clip->getParent()->getLengthMS() );
+    QTime length = QTime().addMSecs( clip->getParent()->lengthMS() );
     QString tooltip( tr( "<p style='white-space:pre'><b>Name:</b> %1"
                      "<br><b>Length:</b> %2" )
-                     .arg( clip->getParent()->getFileName() )
+                     .arg( clip->getParent()->fileName() )
                      .arg( length.toString("hh:mm:ss.zzz") ) );
     setToolTip( tooltip );
     setAcceptHoverEvents( true );
@@ -157,7 +157,7 @@ void GraphicsAudioItem::paintTitle( QPainter* painter, const QStyleOptionGraphic
 
     // Initiate the font metrics calculation
     QFontMetrics fm( painter->font() );
-    QString text = m_clip->getParent()->getFileName();
+    QString text = m_clip->getParent()->fileName();
 
     // Get the transformations required to map the text on the viewport
     QTransform viewPortTransform = Timeline::getInstance()->tracksView()->viewportTransform();

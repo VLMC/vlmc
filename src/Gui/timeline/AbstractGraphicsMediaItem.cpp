@@ -208,13 +208,13 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
     if ( size < 1 )
         return;
 
-    if ( clip()->getParent()->getFileType() != Media::Image )
+    if ( clip()->getParent()->fileType() != Media::Image )
         if ( size > clip()->getMaxEnd() )
             return;
 
     if ( from == BEGINNING )
     {
-        if ( clip()->getParent()->getFileType() != Media::Image )
+        if ( clip()->getParent()->fileType() != Media::Image )
             if ( clip()->getBegin() + size > clip()->getMaxEnd() )
                 return;
         //FIXME
@@ -223,7 +223,7 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
     }
     else
     {
-        if ( clip()->getParent()->getFileType() != Media::Image )
+        if ( clip()->getParent()->fileType() != Media::Image )
         {
             qint64 newBegin = qMax( clip()->getEnd() - size, (qint64)0 );
             if ( clip()->getMaxBegin() > newBegin )

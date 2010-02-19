@@ -196,7 +196,7 @@ TracksView::deleteMedia( const QUuid &uuid  )
     // is the one we would like to remove.
     foreach( item, items )
     {
-        if ( item->clip()->getParent()->getUuid() ==
+        if ( item->clip()->getParent()->uuid() ==
              uuid )
         {
             // This item needs to be removed.

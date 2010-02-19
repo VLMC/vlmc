@@ -40,7 +40,7 @@ MediaListViewController::~MediaListViewController()
 
 void        MediaListViewController::newMediaLoaded( Media* media )
 {
-    MediaCellView* cell = new MediaCellView( media->getUuid() );
+    MediaCellView* cell = new MediaCellView( media->uuid() );
 
     connect( cell, SIGNAL ( cellSelected( QUuid ) ),
              this, SLOT ( cellSelection( QUuid ) ) );
@@ -51,13 +51,13 @@ void        MediaListViewController::newMediaLoaded( Media* media )
     connect( media, SIGNAL( snapshotComputed( Media* ) ),
              this, SLOT( updateCell( Media* ) ) );
     cell->setNbClips( media->clips()->size() );
-    cell->setThumbnail( media->getSnapshot() );
-    cell->setTitle( media->getFileName() );
-    cell->setLength( media->getLengthMS() );
+    cell->setThumbnail( media->snapshot() );
+    cell->setTitle( media->fileName() );
+    cell->setLength( media->lengthMS() );
     if ( media->baseClip() != NULL )
         cell->setEnabled(true);
     addCell(cell);
-    m_cells->insert( media->getUuid(), cell );
+    m_cells->insert( media->uuid(), cell );
 }
 
 void    MediaListViewController::cellSelection( const QUuid& uuid )
@@ -90,12 +90,12 @@ void    MediaListViewController::mediaRemoved( const QUuid& uuid )
 
 void    MediaListViewController::updateCell( Media* media )
 {
-    MediaCellView* cell = qobject_cast<MediaCellView*>( m_cells->value( media->getUuid(), NULL ) );
+    MediaCellView* cell = qobject_cast<MediaCellView*>( m_cells->value( media->uuid(), NULL ) );
     if ( cell != NULL )
     {
         cell->setNbClips( media->clips()->size() );
-        cell->setLength( media->getLengthMS() );
-        cell->setThumbnail( media->getSnapshot() );
+        cell->setLength( media->lengthMS() );
+        cell->setThumbnail( media->snapshot() );
         cell->setEnabled(true);
     }
 }
@@ -119,7 +119,7 @@ void    MediaListViewController::newClipAdded( Clip* clip )
 {
     if ( clip->getParent() == 0 )
         return ;
-    const QUuid& uuid = clip->getParent()->getUuid();
+    const QUuid& uuid = clip->getParent()->uuid();
 
     if ( m_cells->contains( uuid ) )
     {

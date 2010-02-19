@@ -62,7 +62,7 @@ void    ClipWorkflow::initialize()
     setState( ClipWorkflow::Initializing );
 
 //    qDebug() << "State is Initializing.";
-    m_vlcMedia = new LibVLCpp::Media( m_clip->getParent()->getMrl() );
+    m_vlcMedia = new LibVLCpp::Media( m_clip->getParent()->mrl() );
     m_currentPts = -1;
     m_previousPts = -1;
     m_pauseDuration = -1;
@@ -88,11 +88,11 @@ void    ClipWorkflow::loadingComplete()
 
 void    ClipWorkflow::adjustBegin()
 {
-    if ( m_clip->getParent()->getFileType() == Media::Video ||
-         m_clip->getParent()->getFileType() == Media::Audio )
+    if ( m_clip->getParent()->fileType() == Media::Video ||
+         m_clip->getParent()->fileType() == Media::Audio )
     {
         m_mediaPlayer->setTime( m_clip->getBegin() /
-                                m_clip->getParent()->getFps() * 1000 );
+                                m_clip->getParent()->fps() * 1000 );
     }
 }
 

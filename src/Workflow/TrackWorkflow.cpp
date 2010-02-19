@@ -65,7 +65,7 @@ void    TrackWorkflow::addClip( Clip* clip, qint64 start )
     ClipWorkflow* cw;
     if ( m_trackType == MainWorkflow::VideoTrack )
     {
-        if ( clip->getParent()->getFileType() == Media::Video )
+        if ( clip->getParent()->fileType() == Media::Video )
             cw = new VideoClipWorkflow( clip );
         else
             cw = new ImageClipWorkflow( clip );
@@ -399,7 +399,7 @@ void    TrackWorkflow::save( QDomDocument& doc, QDomElement& trackNode ) const
         {
             QDomElement     parent = doc.createElement( "parent" );
 
-            QDomCharacterData   text = doc.createTextNode( it.value()->getClip()->getParent()->getUuid().toString() );
+            QDomCharacterData   text = doc.createTextNode( it.value()->getClip()->getParent()->uuid().toString() );
             parent.appendChild( text );
             clipNode.appendChild( parent );
         }
@@ -453,8 +453,8 @@ void    TrackWorkflow::clear()
 
 void    TrackWorkflow::adjustClipTime( qint64 currentFrame, qint64 start, ClipWorkflow* cw )
 {
-    qint64  nbMs = ( currentFrame - start ) / cw->getClip()->getParent()->getFps() * 1000;
-    qint64  beginInMs = cw->getClip()->getBegin() / cw->getClip()->getParent()->getFps() * 1000;
+    qint64  nbMs = ( currentFrame - start ) / cw->getClip()->getParent()->fps() * 1000;
+    qint64  beginInMs = cw->getClip()->getBegin() / cw->getClip()->getParent()->fps() * 1000;
     qint64  startFrame = beginInMs + nbMs;
     cw->setTime( startFrame );
 }

@@ -59,10 +59,10 @@ void
 ClipRenderer::setMedia( Media *media )
 {
     m_selectedMedia = media;
-    if ( media == NULL || media->getLengthMS() == 0 )
+    if ( media == NULL || media->lengthMS() == 0 )
         return ;
     m_begin = 0;
-    m_end = media->getNbFrames();
+    m_end = media->nbFrames();
     if ( m_isRendering == true )
         m_mediaChanged = true;
     else
@@ -95,12 +95,12 @@ ClipRenderer::startPreview()
     //If an old media is found, we delete it, and disconnect
     if ( m_vlcMedia != NULL )
         delete m_vlcMedia;
-    m_vlcMedia = new LibVLCpp::Media( m_selectedMedia->getFileInfo()->absoluteFilePath() );
+    m_vlcMedia = new LibVLCpp::Media( m_selectedMedia->fileInfo()->absoluteFilePath() );
 
     m_mediaPlayer->setMedia( m_vlcMedia );
 
     m_mediaPlayer->play();
-    m_mediaPlayer->setPosition( (double)m_begin / (double)m_selectedMedia->getNbFrames() );
+    m_mediaPlayer->setPosition( (double)m_begin / (double)m_selectedMedia->nbFrames() );
     m_clipLoaded = true;
     m_isRendering = true;
     m_paused = false;
@@ -181,7 +181,7 @@ qint64
 ClipRenderer::getLengthMs() const
 {
     if ( m_selectedMedia )
-        return ( qRound64( (qreal)( m_end - m_begin ) / m_selectedMedia->getFps() * 1000.0 ) );
+        return ( qRound64( (qreal)( m_end - m_begin ) / m_selectedMedia->fps() * 1000.0 ) );
     return 0;
 }
 
@@ -189,7 +189,7 @@ ClipRenderer::getLengthMs() const
 void
 ClipRenderer::mediaUnloaded( const QUuid& uuid )
 {
-    if ( m_selectedMedia != NULL && m_selectedMedia->getUuid() == uuid )
+    if ( m_selectedMedia != NULL && m_selectedMedia->uuid() == uuid )
     {
         m_mediaPlayer->stop();
         m_clipLoaded = false;
@@ -205,14 +205,14 @@ ClipRenderer::getCurrentFrame() const
     if ( m_clipLoaded == false || m_isRendering == false || m_selectedMedia == NULL )
         return 0;
     return qRound64( (qreal)m_mediaPlayer->getTime() / 1000 *
-                     (qreal)m_selectedMedia->getFps() );
+                     (qreal)m_selectedMedia->fps() );
 }
 
 float
 ClipRenderer::getFps() const
 {
     if ( m_selectedMedia != NULL )
-        return m_selectedMedia->getFps();
+        return m_selectedMedia->fps();
     return 0.0f;
 }
 
@@ -228,7 +228,7 @@ ClipRenderer::previewWidgetCursorChanged( qint64 newFrame )
     if ( m_isRendering == true )
     {
         newFrame += m_begin;
-        qint64 nbSeconds = qRound64( (qreal)newFrame / m_selectedMedia->getFps() );
+        qint64 nbSeconds = qRound64( (qreal)newFrame / m_selectedMedia->fps() );
         m_mediaPlayer->setTime( nbSeconds * 1000 );
     }
 }
@@ -249,7 +249,7 @@ ClipRenderer::__timeChanged( qint64 time )
 {
     float   fps = (qreal)m_mediaPlayer->getFps();
     if ( fps < 0.1f )
-        fps = m_selectedMedia->getFps();
+        fps = m_selectedMedia->fps();
     qint64 f = qRound64( (qreal)time / 1000.0 * fps );
     if ( f >= m_end )
     {
