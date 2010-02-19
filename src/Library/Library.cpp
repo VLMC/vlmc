@@ -68,7 +68,7 @@ Library::clip( const QUuid& uuid )
     {
         Media* media = m_medias.value( mediaUuid );
         if ( media != NULL && media->clips()->contains( uuid ) )
-            return dynamic_cast<Clip*>( getElementByUuid( *media->clips(), uuid ) );
+            return getElementByUuid( *media->clips(), uuid );
     }
     return NULL;
 }
