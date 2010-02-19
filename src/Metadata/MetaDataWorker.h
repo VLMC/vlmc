@@ -24,10 +24,13 @@
 #ifndef METADATAWORKER_H
 #define METADATAWORKER_H
 
-#include <QList>
-#include <QTemporaryFile>
-#include <QLabel>
 #include "Media.h"
+
+#include <QList>
+#include <QLabel>
+#include <QTemporaryFile>
+#include <QTime>
+
 namespace LibVLCpp
 {
     class   MediaPlayer;
@@ -66,6 +69,7 @@ class MetaDataWorker : public QObject
         bool                        m_lengthHasChanged;
 
         unsigned char*              m_audioBuffer;
+        QTime                       m_timer;
 
     private slots:
         void    renderSnapshot();

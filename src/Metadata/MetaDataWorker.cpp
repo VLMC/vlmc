@@ -114,9 +114,16 @@ MetaDataWorker::metaDataAvailable()
     //will trigger exception... so we shut it up.
     if ( m_media->getFileType() != Media::Audio )
     {
-        while ( m_mediaPlayer->hasVout() == false )
+        m_timer.restart();
+        while ( m_mediaPlayer->hasVout() == false &&
+                m_timer.elapsed() < 3000 )
         {
-            SleepMS( 1 ); //Ugly isn't it :)
+            SleepMS( 10 ); //Ugly isn't it :)
+        }
+        if ( m_mediaPlayer->hasVout() == false )
+        {
+            emit failed( m_media );
+            return ;
         }
 
         quint32     width, height;
