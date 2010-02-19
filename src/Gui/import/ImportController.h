@@ -38,7 +38,7 @@
 #include "TagWidget.h"
 
 #include <QDialog>
-#include <QDirModel>
+#include <QFileSystemModel>
 #include <QFileSystemWatcher>
 #include <QProgressDialog>
 
@@ -77,8 +77,7 @@ class ImportController : public QDialog
         TagWidget*                  m_tag;
         ImportMediaListController*  m_mediaListController;
         ImportMediaListController*  m_clipListController;
-        QDirModel*                  m_filesModel;
-        QFileSystemWatcher*         m_fsWatcher;
+        QFileSystemModel            *m_filesModel;
         QString                     m_currentlyWatchedDir;
         QUuid                       m_currentUuid;
         QUuid                       m_savedUuid;

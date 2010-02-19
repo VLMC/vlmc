@@ -42,7 +42,6 @@
 
 Library::Library()
 {
-    m_nbLoadedMedias = 0;
 }
 
 Media*
@@ -104,7 +103,6 @@ void
 Library::addMedia( const QFileInfo& fileInfo, const QString& uuid )
 {
     Media* media = new Media( fileInfo.filePath(), uuid );
-    m_nbLoadedMedias++;
 
     foreach( Media* it, m_medias.values() )
     {

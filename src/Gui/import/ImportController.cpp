@@ -45,21 +45,18 @@ ImportController::ImportController(QWidget *parent) :
     m_stackNav = new StackViewController( m_ui->stackViewContainer, false );
     m_mediaListController = new ImportMediaListController( m_stackNav );
     m_tag = new TagWidget( m_ui->tagContainer, 6 );
-    m_filesModel = new QDirModel();
+    m_filesModel = new QFileSystemModel( this );
     m_stackNav->pushViewController( m_mediaListController );
 
     QStringList filters;
-    filters << "*.mov" << "*.avi" << "*.mkv" << "*.mpg" << "*.mpeg" << "*.wmv" << "*.mp4"
-            << "*.ogg" << "*.ogv";
-    filters << "*.mp3" << "*.oga" << "*.flac" << "*.aac" << "*.wav";
-    filters << "*.gif" << "*.png" << "*.jpg";
-    m_filesModel->setFilter( QDir::AllDirs | QDir::Files | QDir::Readable | QDir::Drives |
-                             QDir::NoDotAndDotDot );
+    filters << Media::AudioExtensions.split(' ', QString::SkipEmptyParts)
+            << Media::VideoExtensions.split(' ', QString::SkipEmptyParts)
+            << Media::ImageExtensions.split(' ', QString::SkipEmptyParts);
+    m_filesModel->setFilter( QDir::AllDirs | QDir::AllEntries | QDir::NoDotAndDotDot );
     m_filesModel->sort( 2, Qt::AscendingOrder );
     m_filesModel->sort( 0, Qt::AscendingOrder );
     m_filesModel->setNameFilters( filters );
-
-    Library::getInstance()->setFilter( filters );
+    m_filesModel->setRootPath( "/" );
 
     restoreCurrentPath();
 
@@ -74,16 +71,11 @@ ImportController::ImportController(QWidget *parent) :
     m_ui->treeView->setColumnHidden( 3, true );
     m_ui->forwardButton->setEnabled( true );
 
-    m_fsWatcher = new QFileSystemWatcher();
-    m_fsWatcher->addPath( m_currentlyWatchedDir );
-
     m_progressDialog = new QProgressDialog( tr("Importing files..."),
                                             tr("Cancel"), 0, 0, NULL);
     m_progressDialog->setWindowModality( Qt::WindowModal );
     m_progressDialog->setMinimumDuration( 1000 );
 
-    connect( m_fsWatcher, SIGNAL( directoryChanged( QString ) ),
-             m_filesModel, SLOT( refresh() ) );
     connect( m_ui->treeView, SIGNAL( clicked( QModelIndex ) ),
              this, SLOT( treeViewClicked( QModelIndex ) ) );
     connect( m_ui->treeView, SIGNAL( doubleClicked( QModelIndex ) ),
@@ -292,9 +284,7 @@ ImportController::treeViewClicked( const QModelIndex& index )
 {
     if ( m_filesModel->isDir( index ) )
     {
-        m_fsWatcher->removePath( m_currentlyWatchedDir );
         m_currentlyWatchedDir = m_filesModel->filePath( index );
-        m_fsWatcher->addPath( m_filesModel->filePath( index ) );
         saveCurrentPath();
     }
     m_ui->forwardButton->setEnabled( true );
@@ -303,7 +293,8 @@ ImportController::treeViewClicked( const QModelIndex& index )
 void
 ImportController::treeViewDoubleClicked( const QModelIndex& index )
 {
-    forwardButtonClicked();
+    if ( m_filesModel->isDir( index ) == false )
+        forwardButtonClicked();
 }
 
 void

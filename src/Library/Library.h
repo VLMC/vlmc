@@ -102,11 +102,6 @@ public:
      */
     void    addClip( Clip* clip );
     /**
-     *  \brief
-     *  \param
-     */
-    void    setFilter( const QStringList& filter ) { m_filters = filter; }
-    /**
      *  \brief  Add an already preparsed media.
      *
      *  \param  media   The media to add to the library
@@ -141,18 +136,6 @@ private:
      *  \brief  This method allows to get whereas Media or clip by uuid
      *  \param container The type of container used for storage, where T is Clip or Media
      *  \param uuid The uuid of the element you are looking for
-     */
-    int                     m_loadingMedias;
-    /**
-     *  \brief
-     */
-    int                     m_nbLoadedMedias;
-    /**
-     *  \brief
-     */
-    QStringList             m_filters;
-    /**
-     *  \brief
      */
     template <typename T>
     T                       getElementByUuid( const QHash<QUuid, T>& container ,
