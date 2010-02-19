@@ -206,10 +206,10 @@ ImportController::setUIMetaData( Media* media )
     }
     else
     {
-            m_ui->durationValueLabel->setText( "--:--:--" );
-            m_ui->nameValueLabel->setText( "none" );
-            m_ui->resolutionValueLabel->setText( "-- x --" );
-            m_ui->fpsValueLabel->setText( "--" );
+        m_ui->durationValueLabel->setText( "--:--:--" );
+        m_ui->nameValueLabel->setText( "none" );
+        m_ui->resolutionValueLabel->setText( "-- x --" );
+        m_ui->fpsValueLabel->setText( "--" );
     }
 }
 
@@ -230,11 +230,8 @@ ImportController::setUIMetaData( Clip* clip )
 }
 
 void
-ImportController::forwardButtonClicked()
+ImportController::importMedia( const QString &filePath )
 {
-    QModelIndex     index = m_ui->treeView->selectionModel()->currentIndex();
-    QString         filePath =  m_filesModel->fileInfo( index ).filePath();
-
     foreach ( Media* media, m_temporaryMedias.values() )
         if ( media->getFileInfo()->filePath() == filePath )
             return ;
@@ -249,6 +246,43 @@ ImportController::forwardButtonClicked()
     m_temporaryMedias[media->getUuid()] = media;
     MetaDataManager::getInstance()->computeMediaMetadata( media );
     m_mediaListController->addMedia( media );
+}
+
+void
+ImportController::importDir( const QString &path )
+{
+    QDir            dir( path );
+    QFileInfoList   files = dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Readable
+                                               | QDir::AllEntries );
+
+    foreach ( QFileInfo fInfo, files )
+    {
+        if ( fInfo.isDir() == true )
+            importDir( fInfo.absolutePath() );
+        else
+        {
+            QString ext = fInfo.suffix();
+
+            if ( Media::AudioExtensions.contains( ext ) ||
+                 Media::VideoExtensions.contains( ext ) ||
+                 Media::ImageExtensions.contains( ext ) )
+            {
+                importMedia( fInfo.absoluteFilePath() );
+            }
+        }
+    }
+}
+
+void
+ImportController::forwardButtonClicked()
+{
+    QModelIndex     index = m_ui->treeView->selectionModel()->currentIndex();
+    QString         filePath = m_filesModel->fileInfo( index ).filePath();
+
+    if ( !m_filesModel->isDir( index ) )
+        importMedia( filePath );
+    else
+        importDir( filePath );
 }
 
 void
@@ -267,8 +301,7 @@ ImportController::treeViewClicked( const QModelIndex& index )
 void
 ImportController::treeViewDoubleClicked( const QModelIndex& index )
 {
-    if ( !m_filesModel->isDir( index ) )
-        forwardButtonClicked();
+    forwardButtonClicked();
 }
 
 void

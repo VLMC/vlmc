@@ -69,13 +69,15 @@ class ImportController : public QDialog
         void                        restoreCurrentPath();
         void                        collapseAllButCurrentPath();
         void                        deleteTemporaryMedias();
+        void                        importMedia( const QString &filePath );
+        void                        importDir( const QString &path );
         Ui::ImportController*       m_ui;
         PreviewWidget*              m_preview;
         StackViewController*        m_stackNav;
         TagWidget*                  m_tag;
         ImportMediaListController*  m_mediaListController;
         ImportMediaListController*  m_clipListController;
-        QDirModel*	            m_filesModel;
+        QDirModel*                  m_filesModel;
         QFileSystemWatcher*         m_fsWatcher;
         QString                     m_currentlyWatchedDir;
         QUuid                       m_currentUuid;
