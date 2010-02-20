@@ -62,5 +62,5 @@ void        KeyboardShortcut::save()
 
 void        KeyboardShortcut::shortcutUpdated( const QString& name, const QString& value )
 {
-    SettingsManager::getInstance()->setImmediateValue( "keyboard/" + name, value, m_type );
+    SettingsManager::getInstance()->setImmediateValue( name, value, m_type );
 }

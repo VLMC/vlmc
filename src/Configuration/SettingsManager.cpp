@@ -43,7 +43,11 @@ SettingsManager::setValue( const QString &key,
         m_xmlSettings[key]->set( value );
     else if ( type == Vlmc && m_classicSettings.contains( key) == true )
         m_classicSettings[key]->set( value );
-    qWarning() << "Setting" << key << "does not exist.";
+    else
+    {
+        Q_ASSERT_X( false, __FILE__, "set value without a created variable" );
+        qWarning() << "Setting" << key << "does not exist.";
+    }
     return ;
 }
 
@@ -67,13 +71,16 @@ SettingsManager::setImmediateValue( const QString &key,
     {
         settMap->value( key )->set( value );
     }
-    qWarning() << "Setting" << key << "does not exist.";
+    else
+    {
+        Q_ASSERT_X( false, __FILE__, "set immediate value without a created variable" );
+        qWarning() << "Setting" << key << "does not exist.";
+    }
     return ;
 }
 
 SettingValue*
 SettingsManager::value( const QString &key,
-                        const QVariant &defaultValue,
                         SettingsManager::Type type )
 {
     QReadLocker rl( &m_rwLock );
@@ -88,6 +95,7 @@ SettingsManager::value( const QString &key,
         if ( m_classicSettings.contains( key ) )
             return m_classicSettings.value( key );
     }
+    Q_ASSERT_X( false, __FILE__, "get value without a created variable" );
     qWarning() << "Setting" << key << "does not exist.";
     return NULL;
 }
@@ -97,6 +105,8 @@ SettingsManager::group( const QString &groupName, SettingsManager::Type type )
 {
     QHash<QString, QVariant>    ret;
     QReadLocker                 rl( &m_rwLock );
+
+    QString grp = groupName + '/';
     if ( type == Project )
     {
          SettingHash::const_iterator it = m_xmlSettings.begin();
@@ -104,9 +114,8 @@ SettingsManager::group( const QString &groupName, SettingsManager::Type type )
 
          for ( ; it != ed; ++it )
          {
-             if ( it.key().contains( QRegExp( "^" + groupName + "/" ) ) )
-                 ret.insert( it.key().right( it.key().size()
-                             - it.key().indexOf( "/" ) - 1 ), it.value()->get() );
+             if ( it.key().startsWith( grp ) )
+                 ret.insert( it.key(), it.value()->get() );
          }
     }
     else if ( type == Vlmc )
@@ -116,28 +125,9 @@ SettingsManager::group( const QString &groupName, SettingsManager::Type type )
 
          for ( ; it != ed; ++it )
          {
-             if ( it.key().contains( QRegExp( QString("^").append( groupName ).append( "/" ) ) ) )
+             if ( it.key().startsWith( grp ) )
              {
-                 ret.insert( it.key().right( it.key().size()
-                             - it.key().indexOf( "/" ) - 1 ), it.value()->get() );
-             }
-         }
-
-         QSettings sett;
-         QStringList keys = sett.allKeys();
-
-         foreach ( QString key, keys )
-         {
-             QString match("^");
-             match.append( groupName ).append( "/" );
-             QRegExp    exp( match );
-             if ( key.contains( exp ) )
-             {
-                 ret.insert( key.right( key.size()
-                             - key.indexOf( "/" ) - 1 ), sett.value( key ) );
-                 //FIXME !
-//                 if ( !m_classicSettings.contains( key ) )
-//                     m_classicSettings.insert( key, new SettingValue( sett.value( key ) ) );
+                 ret.insert( it.key(), it.value()->get() );
              }
          }
     }
@@ -168,7 +158,7 @@ SettingsManager::watchValue( const QString &key,
             return true;
         }
     }
-
+    Q_ASSERT_X( false, __FILE__, "watching value without a created variable" );
     return false;
 }
 
@@ -294,7 +284,9 @@ SettingsManager::createVar( const QString &key, const QVariant &defaultValue,
     if ( type == Vlmc && m_classicSettings.contains( key ) == false )
         m_classicSettings.insert( key, new SettingValue( defaultValue, desc ) );
     else if ( type == Project && m_xmlSettings.contains( key ) == false )
-        m_classicSettings.insert( key, new SettingValue( defaultValue, desc ) );
+        m_xmlSettings.insert( key, new SettingValue( defaultValue, desc ) );
+    else
+        Q_ASSERT_X( false, __FILE__, "creating an already created variable" );
 }
 
 void

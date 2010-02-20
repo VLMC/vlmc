@@ -45,6 +45,13 @@ class QDomDocument;
 #define VLMC_GET_DOUBLE( key )  SettingsManager::getInstance()->value( key )->get().toDouble()
 #define VLMC_GET_BOOL( key )    SettingsManager::getInstance()->value( key )->get().toBool()
 
+#define VLMC_PROJECT_GET_STRING( key )  SettingsManager::getInstance()->value( key, SettingsManager::Project )->get().toString()
+#define VLMC_PROJECT_GET_INT( key )     SettingsManager::getInstance()->value( key, SettingsManager::Project )->get().toInt()
+#define VLMC_PROJECT_GET_UINT( key )    SettingsManager::getInstance()->value( key, SettingsManager::Project )->get().toUInt()
+#define VLMC_PROJECT_GET_DOUBLE( key )  SettingsManager::getInstance()->value( key, SettingsManager::Project )->get().toDouble()
+#define VLMC_PROJECT_GET_BOOL( key )    SettingsManager::getInstance()->value( key, SettingsManager::Project )->get().toBool()
+
+
 #define VLMC_CREATE_PROJECT_VAR( key, defaultValue, desc )  \
 SettingsManager::getInstance()->createVar( key, defaultValue, QObject::tr(desc), \
                                            SettingsManager::Project );
@@ -71,7 +78,6 @@ class   SettingsManager : public QObject, public Singleton<SettingsManager>
                                                         const QVariant &value,
                                                         SettingsManager::Type = Vlmc);
         SettingValue                *value( const QString &key,
-                                            const QVariant &defaultValue = QVariant(),
                                             SettingsManager::Type type = Vlmc );
         QHash<QString, QVariant>    group( const QString &groupName,
                                            SettingsManager::Type type = Vlmc );

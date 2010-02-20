@@ -44,38 +44,6 @@
 #define EXPAND( x ) #x
 #define STRINGIFY( x ) EXPAND( x )
 
-#define ADD_SHORTCUT(NAME, KEYS)    \
-    key = QString("keyboard/").append( QObject::tr( NAME ) ); \
-    settMan->setImmediateValue( key, QVariant( QObject::tr( KEYS ) ), \
-                                SettingsManager::Vlmc )
-static void initShorcuts()
-{
-    QString key;
-    SettingsManager*    settMan = SettingsManager::getInstance();
-
-    ADD_SHORTCUT( "Default mode", "n" );
-    ADD_SHORTCUT( "Cut mode", "x" );
-    ADD_SHORTCUT( "Launch media preview", "Ctrl+Return" );
-    ADD_SHORTCUT( "Start render preview", "Space" );
-    //A bit nasty, but we better use what Qt's providing as default shortcut
-    ADD_SHORTCUT( "Undo", QKeySequence( QKeySequence::Undo ).toString().toLocal8Bit() );
-    ADD_SHORTCUT( "Redo", QKeySequence( QKeySequence::Redo ).toString().toLocal8Bit() );
-    ADD_SHORTCUT( "Help", QKeySequence( QKeySequence::HelpContents ).toString().toLocal8Bit() );
-    ADD_SHORTCUT( "Quit", "Ctrl+Q" );
-    ADD_SHORTCUT( "Preferences", "Alt+P" );
-    ADD_SHORTCUT( "Fullscreen", "F" );
-    ADD_SHORTCUT( "New project", QKeySequence( QKeySequence::New ).toString().toLocal8Bit() );
-    ADD_SHORTCUT( "Open project", QKeySequence( QKeySequence::Open ).toString().toLocal8Bit() );
-    ADD_SHORTCUT( "Save", QKeySequence( QKeySequence::Save ).toString().toLocal8Bit() );
-    ADD_SHORTCUT( "Save as", "Ctrl+Shift+S" );
-    ADD_SHORTCUT( "Close project", QKeySequence( QKeySequence::Close ).toString().toLocal8Bit() );
-    ADD_SHORTCUT( "Import media", "Ctrl+I" );
-    ADD_SHORTCUT( "Render project", "Ctrl+R" );
-    return ;
-}
-
-#undef ADD_SHORTCUT
-
 /**
  *  VLMC Entry point
  *  \brief this is the VLMC entry point
@@ -129,8 +97,6 @@ VLMCmain( int argc, char **argv )
     p.setColor( QPalette::Link,             QColor( 177, 202, 0,   255 ) );
     p.setColor( QPalette::LinkVisited,      QColor( 177, 202, 0,   255 ) );
     app.setPalette( p );
-
-    initShorcuts();
 
     MainWindow w;
     QSettings   s;

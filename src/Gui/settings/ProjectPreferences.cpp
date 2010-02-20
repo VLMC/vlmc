@@ -33,16 +33,13 @@ ProjectPreferences::ProjectPreferences( QWidget* parent )
     m_type( SettingsManager::Project )
 {
     m_ui.setupUi( this );
-    VLMC_CREATE_PROJECT_VAR( "project/ProjectName", ProjectManager::unSavedProject,
-                             "The project name" );
 }
 
 ProjectPreferences::~ProjectPreferences() { }
 
 void    ProjectPreferences::load()
 {
-    SettingsManager* settMan = SettingsManager::getInstance();
-    QString  Name = VLMC_GET_STRING( "project/ProjectName" );
+    QString  Name = VLMC_PROJECT_GET_STRING( "project/ProjectName" );
 
     m_ui.ProjectNameLineEdit->setText( Name );
 }

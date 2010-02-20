@@ -53,15 +53,9 @@ void    VLMCPreferences::setAutomaticSaveLabelVisiblity( bool visible )
 
 void    VLMCPreferences::load()
 {
-    SettingsManager* settMan = SettingsManager::getInstance();
-
-    QString     outputFPS = VLMC_GET_STRING( "global/VLMCOutputFPS" );
-    QString     tracksNb = VLMC_GET_STRING( "global/VLMCTracksNb" );
     bool        autoSave = VLMC_GET_BOOL( "global/AutomaticBackup" );
     QString     autoSaveInterval = VLMC_GET_STRING( "global/AutomaticBackupInterval" );
 
-    m_ui.outputFPS->setText( outputFPS );
-    m_ui.tracksNb->setText( tracksNb );
     m_ui.automaticSave->setChecked( autoSave );
     m_ui.automaticSaveInterval->setText( autoSaveInterval );
     setAutomaticSaveLabelVisiblity( autoSave );
@@ -70,13 +64,9 @@ void    VLMCPreferences::load()
 void    VLMCPreferences::save()
 {
     SettingsManager* settMan = SettingsManager::getInstance();
-    QVariant outputFPS( m_ui.outputFPS->text() );
-    QVariant tracksNb( m_ui.tracksNb->text() );
     QVariant autoSave( m_ui.automaticSave->isChecked() );
     QVariant autoSaveInterval( m_ui.automaticSaveInterval->text() );
 
-    settMan->setImmediateValue( "global/VLMCOutPutFPS", outputFPS, m_type );
-    settMan->setImmediateValue( "global/VLMCTracksNb", tracksNb, m_type );
     settMan->setImmediateValue( "global/AutomaticBackup", autoSave, m_type );
     settMan->setImmediateValue( "global/AutomaticBackupInterval", autoSaveInterval, m_type );
 }

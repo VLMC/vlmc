@@ -29,14 +29,13 @@ AudioProjectPreferences::AudioProjectPreferences( QWidget *parent )
     m_type( SettingsManager::Project )
 {
     m_ui.setupUi( this );
-    VLMC_CREATE_PROJECT_VAR( "project/AudioSampleRate", 0, "The project audio samplerate" );
 }
 
 AudioProjectPreferences::~AudioProjectPreferences() { }
 
 void    AudioProjectPreferences::load()
 {
-    int sampleRate = VLMC_GET_INT( "project/AudioSampleRate" );
+    int sampleRate = VLMC_PROJECT_GET_INT( "project/AudioSampleRate" );
     m_ui.SampleRate->setValue( sampleRate );
     return ;
 }

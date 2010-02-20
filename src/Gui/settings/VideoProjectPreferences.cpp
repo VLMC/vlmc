@@ -30,21 +30,16 @@ VideoProjectPreferences::VideoProjectPreferences( QWidget *parent )
       m_type( SettingsManager::Project )
 {
     m_ui.setupUi( this );
-    VLMC_CREATE_PROJECT_VAR( "project/VideoProjectWidth", 480, "The project video width" );
-    VLMC_CREATE_PROJECT_VAR( "project/VideoProjectHeight", 300, "The project video height" );
-    VLMC_CREATE_PROJECT_VAR( "global/VLMCOutputFPS", 30, "The project output FPS" );
 }
 
 VideoProjectPreferences::~VideoProjectPreferences() { }
 
 void    VideoProjectPreferences::load()
 {
-    SettingsManager* setMan = SettingsManager::getInstance();
-
-    int projectWidth = VLMC_GET_INT( "project/VideoProjectWidth" );
-    int projectHeight = VLMC_GET_INT( "project/VideoProjectHeight" );
+    int projectWidth = VLMC_PROJECT_GET_INT( "project/VideoProjectWidth" );
+    int projectHeight = VLMC_PROJECT_GET_INT( "project/VideoProjectHeight" );
     //FIXME: fps is a double value
-    int projectFps = VLMC_GET_INT( "global/VLMCOutputFPS" );
+    int projectFps = VLMC_PROJECT_GET_INT( "global/VLMCOutputFPS" );
 
     m_ui.FPSSpinBox->setValue( projectFps );
     m_ui.HeightSpinBox->setValue( projectHeight );
@@ -58,7 +53,7 @@ void    VideoProjectPreferences::save()
     QVariant    projectHeight( m_ui.HeightSpinBox->value() );
     QVariant    projectWidth( m_ui.WidthSpinBox->value() );
 
-    settMan->setImmediateValue( "project/VideoProjectFPS", projectFps, m_type );
+    settMan->setImmediateValue( "global/VLMCOutputFPS", projectFps, m_type );
     settMan->setImmediateValue( "project/VideoProjectHeight", projectHeight, m_type );
     settMan->setImmediateValue( "project/VideoProjectWidth", projectWidth, m_type );
     return ;

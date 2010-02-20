@@ -77,10 +77,16 @@ MainWindow::MainWindow( QWidget *parent ) :
     qRegisterMetaType<QVariant>( "QVariant" );
 
     //We only install message handler here cause it uses configuration.
-    VlmcDebug::getInstance()->setup();
+//    VlmcDebug::getInstance()->setup();
 
     //VLC Instance:
     LibVLCpp::Instance::getInstance( this );
+
+    //Preferences
+    initVlmcPreferences();
+
+    //Creating the project manager first (so it can create all the project variables)
+    ProjectManager::getInstance();
 
     // GUI
     DockWidgetManager::instance( this )->setMainWindow( this );
@@ -163,6 +169,31 @@ void MainWindow::changeEvent( QEvent *e )
     }
 }
 
+void
+MainWindow::initVlmcPreferences()
+{
+    VLMC_CREATE_PREFERENCE( "keyboard/defaultmode", "n", "Select mode" );
+    VLMC_CREATE_PREFERENCE( "keyboard/cutmode", "x", "Cut mode" );
+    VLMC_CREATE_PREFERENCE( "keyboard/mediapreview", "Ctrl+Return", "Media preview" );
+    VLMC_CREATE_PREFERENCE( "keyboard/renderpreview", "Space", "Render preview" );
+    //A bit nasty, but we better use what Qt's providing as default shortcut
+    VLMC_CREATE_PREFERENCE( "keyboard/undo", QKeySequence( QKeySequence::Undo ).toString().toLocal8Bit(), "Undo" );
+    VLMC_CREATE_PREFERENCE( "keyboard/redo", QKeySequence( QKeySequence::Redo ).toString().toLocal8Bit(), "Redo" );
+    VLMC_CREATE_PREFERENCE( "keyboard/help", QKeySequence( QKeySequence::HelpContents ).toString().toLocal8Bit(), "Help" );
+    VLMC_CREATE_PREFERENCE( "keyboard/quit", "Ctrl+Q", "Quit" );
+    VLMC_CREATE_PREFERENCE( "keyboard/preferences", "Alt+P", "Preferences" );
+    VLMC_CREATE_PREFERENCE( "keyboard/fullscreen", "F", "Fullscreen" );
+    VLMC_CREATE_PREFERENCE( "keyboard/newproject", QKeySequence( QKeySequence::New ).toString().toLocal8Bit(), "New project" );
+    VLMC_CREATE_PREFERENCE( "keyboard/openproject", QKeySequence( QKeySequence::Open ).toString().toLocal8Bit(), "Open a project" );
+    VLMC_CREATE_PREFERENCE( "keyboard/save", QKeySequence( QKeySequence::Save ).toString().toLocal8Bit(), "Save" );
+    VLMC_CREATE_PREFERENCE( "keyboard/saveas", "Ctrl+Shift+S", "Save as" );
+    VLMC_CREATE_PREFERENCE( "keyboard/closeproject", QKeySequence( QKeySequence::Close ).toString().toLocal8Bit(), "Close the project" );
+    VLMC_CREATE_PREFERENCE( "keyboard/importmedia", "Ctrl+I", "Import media" );
+    VLMC_CREATE_PREFERENCE( "keyboard/renderproject", "Ctrl+R", "Render the project" );
+
+    VLMC_CREATE_PREFERENCE( "global/VLMCLang", "en_US", "The VLMC's UI language" );
+}
+
 void        MainWindow::setupLibrary()
 {
     //GUI part :
@@ -229,8 +260,8 @@ void MainWindow::createStatusBar()
     mouseTool->setChecked( true );
 
     //Shortcut part:
-    KeyboardShortcutHelper* defaultModeShortcut = new KeyboardShortcutHelper( "Default mode", this );
-    KeyboardShortcutHelper* cutModeShortcut = new KeyboardShortcutHelper( "Cut mode", this );
+    KeyboardShortcutHelper* defaultModeShortcut = new KeyboardShortcutHelper( "keyboard/defaultmode", this );
+    KeyboardShortcutHelper* cutModeShortcut = new KeyboardShortcutHelper( "keyboard/cutmode", this );
     connect( defaultModeShortcut, SIGNAL( activated() ), mouseTool, SLOT( click() ) );
     connect( cutModeShortcut, SIGNAL( activated() ), splitTool, SLOT( click() ) );
 
@@ -287,7 +318,7 @@ void MainWindow::initializeDockWidgets( void )
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
-    KeyboardShortcutHelper* clipShortcut = new KeyboardShortcutHelper( "Launch media preview", this );
+    KeyboardShortcutHelper* clipShortcut = new KeyboardShortcutHelper( "keyboard/mediapreview", this );
     connect( clipShortcut, SIGNAL( activated() ), m_clipPreview, SLOT( on_pushButtonPlay_clicked() ) );
 
     m_projectPreview = new PreviewWidget( m_renderer, this );
@@ -296,7 +327,7 @@ void MainWindow::initializeDockWidgets( void )
                                   Qt::AllDockWidgetAreas,
                                   QDockWidget::AllDockWidgetFeatures,
                                   Qt::TopDockWidgetArea );
-    KeyboardShortcutHelper* renderShortcut = new KeyboardShortcutHelper( "Start render preview", this );
+    KeyboardShortcutHelper* renderShortcut = new KeyboardShortcutHelper( "keyboard/renderpreview", this );
     connect( renderShortcut, SIGNAL( activated() ), m_projectPreview, SLOT( on_pushButtonPlay_clicked() ) );
 
     QDockWidget* dock = dockManager->addDockedWidget( UndoStack::getInstance( this ),
@@ -479,26 +510,26 @@ void    MainWindow::on_actionRedo_triggered()
 }
 
 #define INIT_SHORTCUT( instName, shortcutName, actionInstance  )      \
-            QString instName = VLMC_GET_STRING( "keyboard/"shortcutName ); \
+            QString instName = VLMC_GET_STRING( shortcutName ); \
             KeyboardShortcutHelper* helper##instName = new KeyboardShortcutHelper( shortcutName, this, true ); \
             connect( helper##instName, SIGNAL( changed( const QString&, const QString&) ), this, SLOT( keyboardShortcutChanged(const QString&, const QString&)) ); \
             m_ui.actionInstance->setShortcut( instName );
 
 void    MainWindow::initializeMenuKeyboardShortcut()
 {
-    INIT_SHORTCUT( help, "Help", actionHelp );
-    INIT_SHORTCUT( quit, "Quit", actionQuit );
-    INIT_SHORTCUT( preferences, "Preferences", actionPreferences );
-    INIT_SHORTCUT( fullscreen, "Fullscreen", actionFullscreen );
-    INIT_SHORTCUT( newProject, "New project", actionNew_Project );
-    INIT_SHORTCUT( openProject, "Open project", actionLoad_Project );
-    INIT_SHORTCUT( save, "Save", actionSave );
-    INIT_SHORTCUT( saveAs, "Save as", actionSave_As );
-    INIT_SHORTCUT( closeProject, "Close project", actionClose_Project );
-    INIT_SHORTCUT( importProject, "Import media", actionImport );
-    INIT_SHORTCUT( renderProject, "Render project", actionRender );
-    INIT_SHORTCUT( undo, "Undo", actionUndo );
-    INIT_SHORTCUT( redo, "Redo", actionRedo );
+    INIT_SHORTCUT( help, "keyboard/help", actionHelp );
+    INIT_SHORTCUT( quit, "keyboard/quit", actionQuit );
+    INIT_SHORTCUT( preferences, "keyboard/preferences", actionPreferences );
+    INIT_SHORTCUT( fullscreen, "keyboard/fullscreen", actionFullscreen );
+    INIT_SHORTCUT( newProject, "keyboard/newproject", actionNew_Project );
+    INIT_SHORTCUT( openProject, "keyboard/openproject", actionLoad_Project );
+    INIT_SHORTCUT( save, "keyboard/save", actionSave );
+    INIT_SHORTCUT( saveAs, "keyboard/saveas", actionSave_As );
+    INIT_SHORTCUT( closeProject, "keyboard/closeproject", actionClose_Project );
+    INIT_SHORTCUT( importProject, "keyboard/importmedia", actionImport );
+    INIT_SHORTCUT( renderProject, "keyboard/renderproject", actionRender );
+    INIT_SHORTCUT( undo, "keyboard/undo", actionUndo );
+    INIT_SHORTCUT( redo, "keyboard/redo", actionRedo );
 }
 
 #undef INIT_SHORTCUT

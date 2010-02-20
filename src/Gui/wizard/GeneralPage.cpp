@@ -54,7 +54,7 @@ void GeneralPage::initializePage()
     ui.lineEditName->setText( projectName );
 
     //fetching the global workspace path
-    QString workspacePath = VLMC_GET_STRING( "global/VLMCWorkspace" );
+    QString workspacePath = VLMC_PROJECT_GET_STRING( "global/VLMCWorkspace" );
     ui.lineEditWorkspace->setText( workspacePath );
 
     updateProjectLocation();

@@ -66,6 +66,7 @@ private:
     void        createGlobalPreferences();
     void        createProjectPreferences();
     void        initializeMenuKeyboardShortcut();
+    void        initVlmcPreferences();
 #ifdef WITH_CRASHBUTTON
     void        setupCrashTester();
 #endif

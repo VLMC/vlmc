@@ -14,7 +14,7 @@ KeyboardShortcutHelper::KeyboardShortcutHelper( const QString& name, QWidget* pa
         QString set = VLMC_GET_STRING( name );
         setKey( QKeySequence( set ) );
     }
-    SettingsManager::getInstance()->watchValue( "keyboard/" + name, this,
+    SettingsManager::getInstance()->watchValue( name, this,
                                                 SLOT( shortcutUpdated( const QVariant& ) ),
                                                 SettingsManager::Vlmc );
 }

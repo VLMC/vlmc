@@ -74,6 +74,12 @@ ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
     connect( this, SIGNAL( projectClosed() ), Library::getInstance(), SLOT( clear() ) );
     connect( this, SIGNAL( projectClosed() ), MainWorkflow::getInstance(), SLOT( clear() ) );
 
+    VLMC_CREATE_PROJECT_VAR( "global/VLMCOutputFPS", 29.97, "Output video FPS" );
+    VLMC_CREATE_PROJECT_VAR( "project/VideoProjectWidth", 480, "The project video width" );
+    VLMC_CREATE_PROJECT_VAR( "project/VideoProjectHeight", 300, "The project video height" );
+    VLMC_CREATE_PROJECT_VAR( "project/AudioSampleRate", 0, "The project audio samplerate" );
+    VLMC_CREATE_PROJECT_VAR( "global/VLMCWorkspace", "", "The place where all project's videos will be stored" );
+
     VLMC_CREATE_PROJECT_VAR( "project/ProjectName", unNamedProject, "The project name" );
     SettingsManager::getInstance()->watchValue( "project/ProjectName", this,
                                                 SLOT(projectNameChanged(QVariant) ),
