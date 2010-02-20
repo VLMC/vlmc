@@ -32,13 +32,18 @@
  * \brief represent a setting value
  *
  */
-
 class   SettingValue : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY( SettingValue );
     public:
-        SettingValue( const QVariant& val );
+        /**
+         *  \brief      Constructs a setting value with its default value and description
+         *
+         *  \param      defaultValue    The setting default value.
+         *  \param      desc            The setting description
+         */
+        SettingValue( const QVariant& defaultValue, const QString& desc );
 
         /**
          * \brief setter for the m_val member
@@ -50,13 +55,22 @@ class   SettingValue : public QObject
         /**
          * \brief getter for the m_val member
          */
-
         const QVariant& get() const;
+        /**
+         *  \return The setting's description
+         */
+        const QString   &description() const;
+        /**
+         *   \brief     Set the setting to its default value.
+         */
+        void            restoreDefault();
     private:
         /**
          * \brief the QVariant containingthe value of the settings
          */
         QVariant        m_val;
+        QVariant        m_defaultVal;
+        QString         m_desc;
     signals:
         /**
          * \brief This signal is emmited while the m_val

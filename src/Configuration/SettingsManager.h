@@ -23,7 +23,8 @@
 #ifndef SETTINGSMANAGER_H
 #define SETTINGSMANAGER_H
 
-#include <Singleton.hpp>
+#include "SettingValue.h"
+#include "Singleton.hpp"
 
 #include <QString>
 #include <QHash>
@@ -35,7 +36,21 @@ class SettingValue;
 class QXmlStreamWriter;
 class QDomElement;
 class QDomDocument;
-class SettingValue;
+
+
+//Var helpers :
+#define VLMC_GET_STRING( key )  SettingsManager::getInstance()->value( key )->get().toString()
+#define VLMC_GET_INT( key )     SettingsManager::getInstance()->value( key )->get().toInt()
+#define VLMC_GET_UINT( key )    SettingsManager::getInstance()->value( key )->get().toUInt()
+#define VLMC_GET_DOUBLE( key )  SettingsManager::getInstance()->value( key )->get().toDouble()
+#define VLMC_GET_BOOL( key )    SettingsManager::getInstance()->value( key )->get().toBool()
+
+#define VLMC_CREATE_PROJECT_VAR( key, defaultValue, desc )  \
+SettingsManager::getInstance()->createVar( key, defaultValue, QObject::tr(desc), \
+                                           SettingsManager::Project );
+#define VLMC_CREATE_PREFERENCE( key, defaultValue, desc )  \
+SettingsManager::getInstance()->createVar( key, defaultValue, QObject::tr(desc), \
+                                           SettingsManager::Vlmc );
 
 class   SettingsManager : public QObject, public Singleton<SettingsManager>
 {
@@ -50,17 +65,20 @@ class   SettingsManager : public QObject, public Singleton<SettingsManager>
         };
 
         void                        setValue( const QString &key,
-                                                    const QVariant &value,
-                                                    SettingsManager::Type type = Vlmc);
+                                                const QVariant &value,
+                                                SettingsManager::Type type = Vlmc);
         void                        setImmediateValue( const QString &key,
-                                         const QVariant &value,
-                                         SettingsManager::Type = Vlmc);
-        QVariant                    value( const QString &key,
-                                           const QVariant &defaultValue = QVariant(),
-                                           SettingsManager::Type type = Vlmc );
+                                                        const QVariant &value,
+                                                        SettingsManager::Type = Vlmc);
+        SettingValue                *value( const QString &key,
+                                            const QVariant &defaultValue = QVariant(),
+                                            SettingsManager::Type type = Vlmc );
         QHash<QString, QVariant>    group( const QString &groupName,
                                            SettingsManager::Type type = Vlmc );
 
+        void                        createVar( const QString &key,
+                                               const QVariant &defaultValue,
+                                               const QString &desc, Type type = Vlmc );
         bool                        watchValue( const QString &key,
                                                 QObject* receiver,
                                                 const char *method,

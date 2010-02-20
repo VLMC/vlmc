@@ -39,10 +39,11 @@ SettingsManager::setValue( const QString &key,
                            const QVariant &value,
                            SettingsManager::Type type )
 {
-    if ( type == Project )
-        m_tmpXmlSettings.insert( key, new SettingValue( value ) );
-    else if ( type == Vlmc )
-        m_tmpClassicSettings.insert( key, new SettingValue( value ) );
+    if ( type == Project && m_xmlSettings.contains( key ) == true )
+        m_xmlSettings[key]->set( value );
+    else if ( type == Vlmc && m_classicSettings.contains( key) == true )
+        m_classicSettings[key]->set( value );
+    qWarning() << "Setting" << key << "does not exist.";
     return ;
 }
 
@@ -66,15 +67,11 @@ SettingsManager::setImmediateValue( const QString &key,
     {
         settMap->value( key )->set( value );
     }
-    else
-    {
-        settMap->insert( key, new SettingValue( value ) );
-    }
-
+    qWarning() << "Setting" << key << "does not exist.";
     return ;
 }
 
-QVariant
+SettingValue*
 SettingsManager::value( const QString &key,
                         const QVariant &defaultValue,
                         SettingsManager::Type type )
@@ -84,34 +81,22 @@ SettingsManager::value( const QString &key,
     if ( type == Project )
     {
         if ( m_xmlSettings.contains( key ) )
-            return m_xmlSettings.value( key )->get();
-        else
-        {
-            m_xmlSettings.insert( key, new SettingValue( defaultValue ) );
-            return defaultValue;
-        }
+            return m_xmlSettings.value( key );
     }
     else
     {
         if ( m_classicSettings.contains( key ) )
-            return m_classicSettings.value( key )->get();
-        else
-        {
-            QSettings    sett;
-            QVariant val = sett.value( key, defaultValue );
-            if ( val != defaultValue )
-                m_classicSettings.insert( key, new SettingValue( val ) );
-
-            return val;
-        }
+            return m_classicSettings.value( key );
     }
+    qWarning() << "Setting" << key << "does not exist.";
+    return NULL;
 }
 
 QHash<QString, QVariant>
 SettingsManager::group( const QString &groupName, SettingsManager::Type type )
 {
     QHash<QString, QVariant>    ret;
-    QReadLocker rl( &m_rwLock );
+    QReadLocker                 rl( &m_rwLock );
     if ( type == Project )
     {
          SettingHash::const_iterator it = m_xmlSettings.begin();
@@ -150,8 +135,9 @@ SettingsManager::group( const QString &groupName, SettingsManager::Type type )
              {
                  ret.insert( key.right( key.size()
                              - key.indexOf( "/" ) - 1 ), sett.value( key ) );
-                 if ( !m_classicSettings.contains( key ) )
-                     m_classicSettings.insert( key, new SettingValue( sett.value( key ) ) );
+                 //FIXME !
+//                 if ( !m_classicSettings.contains( key ) )
+//                     m_classicSettings.insert( key, new SettingValue( sett.value( key ) ) );
              }
          }
     }
@@ -260,9 +246,6 @@ SettingsManager::load( const QDomElement &element )
         QString key = "project/" + list.at( idx ).toElement().tagName();
         if ( m_xmlSettings.contains( key ) )
             m_xmlSettings[key]->set( QVariant( attrMap.item( 0 ).nodeValue() ) );
-        else
-            m_xmlSettings.insert( key,
-                                  new SettingValue( QVariant( attrMap.item( 0 ).nodeValue() ) ) );
     }
      return true;
 }
@@ -300,6 +283,18 @@ SettingsManager::commit( SettingsManager::Type type )
         }
     }
     flush();
+}
+
+void
+SettingsManager::createVar( const QString &key, const QVariant &defaultValue,
+                            const QString &desc, SettingsManager::Type type /*= Vlmc*/ )
+{
+    QWriteLocker    wlock( &m_rwLock );
+
+    if ( type == Vlmc && m_classicSettings.contains( key ) == false )
+        m_classicSettings.insert( key, new SettingValue( defaultValue, desc ) );
+    else if ( type == Project && m_xmlSettings.contains( key ) == false )
+        m_classicSettings.insert( key, new SettingValue( defaultValue, desc ) );
 }
 
 void

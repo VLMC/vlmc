@@ -55,10 +55,10 @@ void    VLMCPreferences::load()
 {
     SettingsManager* settMan = SettingsManager::getInstance();
 
-    QString     outputFPS = settMan->value( "global/VLMCOutPutFPS", "30", m_type ).toString();
-    QString     tracksNb = settMan->value( "global/VLMCTracksNb", "64", m_type ).toString();
-    bool        autoSave = settMan->value( "global/AutomaticBackup", false, m_type ).toBool();
-    QString     autoSaveInterval = settMan->value( "global/AutomaticBackupInterval", "5", m_type ).toString();
+    QString     outputFPS = VLMC_GET_STRING( "global/VLMCOutputFPS" );
+    QString     tracksNb = VLMC_GET_STRING( "global/VLMCTracksNb" );
+    bool        autoSave = VLMC_GET_BOOL( "global/AutomaticBackup" );
+    QString     autoSaveInterval = VLMC_GET_STRING( "global/AutomaticBackupInterval" );
 
     m_ui.outputFPS->setText( outputFPS );
     m_ui.tracksNb->setText( tracksNb );

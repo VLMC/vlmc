@@ -9,9 +9,11 @@ KeyboardShortcutHelper::KeyboardShortcutHelper( const QString& name, QWidget* pa
         m_name( name ),
         m_menu( menu )
 {
-    QVariant   set = SettingsManager::getInstance()->value( name );
     if ( m_menu == false )
-        setKey( QKeySequence( set.toString() ) );
+    {
+        QString set = VLMC_GET_STRING( name );
+        setKey( QKeySequence( set ) );
+    }
     SettingsManager::getInstance()->watchValue( "keyboard/" + name, this,
                                                 SLOT( shortcutUpdated( const QVariant& ) ),
                                                 SettingsManager::Vlmc );

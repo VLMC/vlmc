@@ -479,10 +479,10 @@ void    MainWindow::on_actionRedo_triggered()
 }
 
 #define INIT_SHORTCUT( instName, shortcutName, actionInstance  )      \
-            QVariant instName = SettingsManager::getInstance()->value( "keyboard/" shortcutName );\
+            QString instName = VLMC_GET_STRING( "keyboard/"shortcutName ); \
             KeyboardShortcutHelper* helper##instName = new KeyboardShortcutHelper( shortcutName, this, true ); \
             connect( helper##instName, SIGNAL( changed( const QString&, const QString&) ), this, SLOT( keyboardShortcutChanged(const QString&, const QString&)) ); \
-            m_ui.actionInstance->setShortcut( instName.toString() );
+            m_ui.actionInstance->setShortcut( instName );
 
 void    MainWindow::initializeMenuKeyboardShortcut()
 {

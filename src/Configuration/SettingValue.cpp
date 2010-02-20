@@ -23,11 +23,15 @@
 #include "SettingValue.h"
 #include <QtDebug>
 
-SettingValue::SettingValue( const QVariant& val ) : m_val ( val )
+SettingValue::SettingValue( const QVariant& defaultValue, const QString& desc ) :
+        m_val( defaultValue ),
+        m_defaultVal( defaultValue ),
+        m_desc( desc )
 {
 }
 
-void        SettingValue::set( const QVariant& val )
+void
+SettingValue::set( const QVariant& val )
 {
     if ( val != m_val )
     {
@@ -36,7 +40,20 @@ void        SettingValue::set( const QVariant& val )
     }
 }
 
-const QVariant&     SettingValue::get() const
+const QVariant&
+SettingValue::get() const
 {
     return m_val;
+}
+
+const QString&
+SettingValue::description() const
+{
+    return m_desc;
+}
+
+void
+SettingValue::restoreDefault()
+{
+    set( m_defaultVal );
 }

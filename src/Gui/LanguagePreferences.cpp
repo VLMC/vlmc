@@ -26,6 +26,7 @@
 #include "SettingsManager.h"
 #include "LanguagePreferences.h"
 #include "ui_LanguagePreferences.h"
+#include "SettingValue.h"
 
 #include <QVariant>
 #include <QDir>
@@ -72,6 +73,7 @@ LanguagePreferences::LanguagePreferences( QWidget *parent )
 
     // Sort the combobox
     m_ui.comboBoxLanguage->model()->sort( 0 );
+    VLMC_CREATE_PREFERENCE( "global/VLMCLang", "en_US", "The VLMC's UI language" );
 }
 
 LanguagePreferences::~LanguagePreferences() {}
@@ -80,7 +82,7 @@ void LanguagePreferences::load()
 {
     SettingsManager         *setMan = SettingsManager::getInstance();
 
-    QVariant      lang = setMan->value( "global/VLMCLang", "en_US", m_type );
+    QVariant      lang = setMan->value( "global/VLMCLang", "en_US", m_type )->get();
     int idx = m_ui.comboBoxLanguage->findData( lang );
 
     if ( idx != -1 )

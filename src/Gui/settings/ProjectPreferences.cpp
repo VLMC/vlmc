@@ -27,16 +27,14 @@
 #include "ProjectManager.h"
 
 #include <QWidget>
-//DEBUG
-#include <QtDebug>
-//!DEBUG
-
 
 ProjectPreferences::ProjectPreferences( QWidget* parent )
     : PreferenceWidget( parent ),
     m_type( SettingsManager::Project )
 {
     m_ui.setupUi( this );
+    VLMC_CREATE_PROJECT_VAR( "project/ProjectName", ProjectManager::unSavedProject,
+                             "The project name" );
 }
 
 ProjectPreferences::~ProjectPreferences() { }
@@ -44,9 +42,7 @@ ProjectPreferences::~ProjectPreferences() { }
 void    ProjectPreferences::load()
 {
     SettingsManager* settMan = SettingsManager::getInstance();
-    QString  Name = settMan->value( "project/ProjectName",
-                                        ProjectManager::unNamedProject,
-                                        m_type ).toString();
+    QString  Name = VLMC_GET_STRING( "project/ProjectName" );
 
     m_ui.ProjectNameLineEdit->setText( Name );
 }

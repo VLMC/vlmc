@@ -49,16 +49,12 @@ int GeneralPage::nextId() const
 
 void GeneralPage::initializePage()
 {
-    SettingsManager* sManager = SettingsManager::getInstance();
-
     //Since this is a new project, it will be unnamed
     QString projectName = ProjectManager::unNamedProject;
     ui.lineEditName->setText( projectName );
 
     //fetching the global workspace path
-    QString workspacePath = sManager->value( "global/VLMCWorkspace",
-                                             QDir::homePath(),
-                                             SettingsManager::Vlmc ).toString();
+    QString workspacePath = VLMC_GET_STRING( "global/VLMCWorkspace" );
     ui.lineEditWorkspace->setText( workspacePath );
 
     updateProjectLocation();

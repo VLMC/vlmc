@@ -49,20 +49,20 @@ VlmcDebug::VlmcDebug() : m_logFile( NULL )
     }
 
 
-    QVariant setVal = SettingsManager::getInstance()->value( "private/LogFile", "log.vlmc", SettingsManager::Vlmc );
-    SettingsManager::getInstance()->watchValue( "private/LogFile", this,
-                                              SLOT( logFileChanged( const QVariant& ) ),
-                                              SettingsManager::Vlmc );
-    QObject::connect( qApp,
-                      SIGNAL( aboutToQuit() ),
-                      this,
-                      SLOT( deleteLater() ) );
-    QString logFile = setVal.toString();
-    if ( logFile.isEmpty() == false )
-    {
-        m_logFile = new QFile( logFile );
-        m_logFile->open( QFile::WriteOnly | QFile::Truncate );
-    }
+//    QVariant setVal = SettingsManager::getInstance()->value( "private/LogFile", "log.vlmc", SettingsManager::Vlmc );
+//    SettingsManager::getInstance()->watchValue( "private/LogFile", this,
+//                                              SLOT( logFileChanged( const QVariant& ) ),
+//                                              SettingsManager::Vlmc );
+//    QObject::connect( qApp,
+//                      SIGNAL( aboutToQuit() ),
+//                      this,
+//                      SLOT( deleteLater() ) );
+//    QString logFile = setVal.toString();
+//    if ( logFile.isEmpty() == false )
+//    {
+//        m_logFile = new QFile( logFile );
+//        m_logFile->open( QFile::WriteOnly | QFile::Truncate );
+//    }
 }
 
 VlmcDebug::~VlmcDebug()
@@ -100,9 +100,9 @@ void    VlmcDebug::vlmcMessageHandler( QtMsgType type, const char* msg )
         VlmcDebug::getInstance()->m_logFile->write( msg );
         VlmcDebug::getInstance()->m_logFile->write( "\n" );
     }
-    if ( type != QtFatalMsg
-         && type < SettingsManager::getInstance()->value( "private/LogLevel", QtDebugMsg, SettingsManager::Vlmc ).toInt() )
-        return ;
+//    if ( type != QtFatalMsg
+//         && type < SettingsManager::getInstance()->value( "private/LogLevel", QtDebugMsg, SettingsManager::Vlmc ).toInt() )
+//        return ;
     switch ( type )
     {
     case QtDebugMsg:

@@ -34,12 +34,9 @@ RendererSettings::RendererSettings()
     m_ui.setupUi( this );
     connect( m_ui.outputFileNameButton, SIGNAL(clicked() ),
              this, SLOT(selectOutputFileName() ) );
-    QVariant  width = SettingsManager::getInstance()->value( "project/VideoProjectWidth",  480 ,xml );
-    QVariant  height = SettingsManager::getInstance()->value( "project/VideoProjectHeight", 300, xml );
-    QVariant  outputFps = SettingsManager::getInstance()->value( "global/VLMCOutPutFPS", 30, SettingsManager::Vlmc );
-    m_ui.width->setValue( width.toInt() );
-    m_ui.height->setValue( height.toInt() );
-    m_ui.fps->setValue( outputFps.toDouble() );
+    m_ui.width->setValue( VLMC_GET_INT( "project/VideoProjectWidth" ) );
+    m_ui.height->setValue( VLMC_GET_INT( "project/VideoProjectHeight" ) );
+    m_ui.fps->setValue( VLMC_GET_DOUBLE( "global/VLMCOutputFPS" ) );
 }
 
 void
