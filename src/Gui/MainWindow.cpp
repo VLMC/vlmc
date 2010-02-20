@@ -536,31 +536,31 @@ void    MainWindow::initializeMenuKeyboardShortcut()
 
 void    MainWindow::keyboardShortcutChanged( const QString& name, const QString& val )
 {
-    if ( name == "Help" )
+    if ( name == "keyboard/help" )
         m_ui.actionHelp->setShortcut( val );
-    else if ( name == "Quit" )
+    else if ( name == "keyboard/quit" )
         m_ui.actionQuit->setShortcut( val );
-    else if ( name == "Preferences" )
+    else if ( name == "keyboard/preferences" )
         m_ui.actionPreferences->setShortcut( val );
-    else if ( name == "Fullscreen" )
+    else if ( name == "keyboard/fullscreen" )
         m_ui.actionFullscreen->setShortcut( val );
-    else if ( name == "New project" )
+    else if ( name == "keyboard/newproject" )
         m_ui.actionNew_Project->setShortcut( val );
-    else if ( name == "Open project" )
+    else if ( name == "keyboard/openproject" )
         m_ui.actionLoad_Project->setShortcut( val );
-    else if ( name == "Save" )
+    else if ( name == "keyboard/save" )
         m_ui.actionSave->setShortcut( val );
-    else if ( name == "Save as" )
+    else if ( name == "keyboard/saveas" )
         m_ui.actionSave_As->setShortcut( val );
-    else if ( name == "Close project" )
+    else if ( name == "keyboard/closeproject" )
         m_ui.actionClose_Project->setShortcut( val );
-    else if ( name == "Import media" )
+    else if ( name == "keyboard/importmedia" )
         m_ui.actionImport->setShortcut( val );
-    else if ( name == "Render project" )
+    else if ( name == "keyboard/renderproject" )
         m_ui.actionRender->setShortcut( val );
-    else if ( name == "Undo" )
+    else if ( name == "keyboard/undo" )
         m_ui.actionUndo->setShortcut( val );
-    else if ( name == "Redo" )
+    else if ( name == "keyboard/redo" )
         m_ui.actionRedo->setShortcut( val );
     else
         qWarning() << "Unknown shortcut:" << name;
