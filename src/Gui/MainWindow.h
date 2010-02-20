@@ -112,7 +112,6 @@ private slots:
     void                    on_actionImport_triggered();
     void                    toolButtonClicked( int id );
     void                    projectUpdated( const QString& projectName, bool savedStatus );
-    void                    keyboardShortcutChanged( const QString&, const QString& );
     void                    canUndoChanged( bool canUndo );
     void                    canRedoChanged( bool canRedo );
 

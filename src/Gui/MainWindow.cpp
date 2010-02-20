@@ -511,8 +511,7 @@ void    MainWindow::on_actionRedo_triggered()
 
 #define INIT_SHORTCUT( instName, shortcutName, actionInstance  )      \
             QString instName = VLMC_GET_STRING( shortcutName ); \
-            KeyboardShortcutHelper* helper##instName = new KeyboardShortcutHelper( shortcutName, this, true ); \
-            connect( helper##instName, SIGNAL( changed( const QString&, const QString&) ), this, SLOT( keyboardShortcutChanged(const QString&, const QString&)) ); \
+            KeyboardShortcutHelper* helper##instName = new KeyboardShortcutHelper( shortcutName, m_ui.actionInstance, this ); \
             m_ui.actionInstance->setShortcut( instName );
 
 void    MainWindow::initializeMenuKeyboardShortcut()
@@ -533,38 +532,6 @@ void    MainWindow::initializeMenuKeyboardShortcut()
 }
 
 #undef INIT_SHORTCUT
-
-void    MainWindow::keyboardShortcutChanged( const QString& name, const QString& val )
-{
-    if ( name == "keyboard/help" )
-        m_ui.actionHelp->setShortcut( val );
-    else if ( name == "keyboard/quit" )
-        m_ui.actionQuit->setShortcut( val );
-    else if ( name == "keyboard/preferences" )
-        m_ui.actionPreferences->setShortcut( val );
-    else if ( name == "keyboard/fullscreen" )
-        m_ui.actionFullscreen->setShortcut( val );
-    else if ( name == "keyboard/newproject" )
-        m_ui.actionNew_Project->setShortcut( val );
-    else if ( name == "keyboard/openproject" )
-        m_ui.actionLoad_Project->setShortcut( val );
-    else if ( name == "keyboard/save" )
-        m_ui.actionSave->setShortcut( val );
-    else if ( name == "keyboard/saveas" )
-        m_ui.actionSave_As->setShortcut( val );
-    else if ( name == "keyboard/closeproject" )
-        m_ui.actionClose_Project->setShortcut( val );
-    else if ( name == "keyboard/importmedia" )
-        m_ui.actionImport->setShortcut( val );
-    else if ( name == "keyboard/renderproject" )
-        m_ui.actionRender->setShortcut( val );
-    else if ( name == "keyboard/undo" )
-        m_ui.actionUndo->setShortcut( val );
-    else if ( name == "keyboard/redo" )
-        m_ui.actionRedo->setShortcut( val );
-    else
-        qWarning() << "Unknown shortcut:" << name;
-}
 
 void    MainWindow::on_actionCrash_triggered()
 {

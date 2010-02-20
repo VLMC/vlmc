@@ -26,23 +26,25 @@
 #include <QShortcut>
 #include <QString>
 
+class   QAction;
+
 class   KeyboardShortcutHelper : public QShortcut
 {
     Q_OBJECT
 
     public:
-        KeyboardShortcutHelper( const QString& name, QWidget* parent = NULL, bool menu = false );
+        KeyboardShortcutHelper( const QString &name, QWidget* parent = NULL );
+        KeyboardShortcutHelper( const QString &name, QAction *action,
+                                QWidget *parent = NULL );
         virtual ~KeyboardShortcutHelper()
         {
         }
 
     private:
         QString     m_name;
-        bool        m_menu;
+        QAction     *m_action;
     private slots:
         void        shortcutUpdated( const QVariant& value );
-    signals:
-        void        changed( const QString&, const QString& );
 };
 
 #endif // KEYBOARDSHORTCUTHELPER_H
