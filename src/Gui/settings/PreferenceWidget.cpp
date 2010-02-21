@@ -53,6 +53,7 @@ PreferenceWidget::PreferenceWidget( const QString &categorie, SettingsManager::T
         label->setToolTip( s->description() );
         widget->widget()->setToolTip( s->description() );
         layout->addRow( label, widget->widget() );
+        m_settings.push_back( widget );
     }
 
     setLayout( layout );

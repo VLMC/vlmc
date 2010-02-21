@@ -45,7 +45,11 @@ KeyboardShortcutHelper::KeyboardShortcutHelper( const QString& name, QAction *ac
     m_name( name ),
     m_action( action )
 {
-
+    QString set = VLMC_GET_STRING( name );
+    action->setShortcut( set );
+    SettingsManager::getInstance()->watchValue( name, this,
+                                                SLOT( shortcutUpdated( const QVariant& ) ),
+                                                SettingsManager::Vlmc );
 }
 
 void    KeyboardShortcutHelper::shortcutUpdated( const QVariant& value )
