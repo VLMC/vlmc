@@ -66,6 +66,7 @@ private:
     void        createGlobalPreferences();
     void        createProjectPreferences();
     void        initVlmcPreferences();
+    void        loadVlmcPreferences( const QString& subPart );
 #ifdef WITH_CRASHBUTTON
     void        setupCrashTester();
 #endif

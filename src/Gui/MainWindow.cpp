@@ -76,11 +76,11 @@ MainWindow::MainWindow( QWidget *parent ) :
     //VLC Instance:
     LibVLCpp::Instance::getInstance( this );
 
-    //Preferences
-    initVlmcPreferences();
-
     //Creating the project manager first (so it can create all the project variables)
     ProjectManager::getInstance();
+
+    //Preferences
+    initVlmcPreferences();
 
     // GUI
     DockWidgetManager::instance( this )->setMainWindow( this );
@@ -191,6 +191,22 @@ MainWindow::initVlmcPreferences()
     CREATE_MENU_SHORTCUT( "keyboard/renderproject", "Ctrl+R", "Render the project", "Render the project to a file", actionRender );
 
     VLMC_CREATE_PREFERENCE_LANGUAGE( "general/VLMCLang", "en_US", "Langage", "The VLMC's UI language" );
+
+    //Load saved preferences :
+    loadVlmcPreferences( "keyboard" );
+    loadVlmcPreferences( "general" );
+}
+
+void
+MainWindow::loadVlmcPreferences( const QString &subPart )
+{
+    QSettings       s;
+    s.beginGroup( subPart );
+    foreach ( QString key, s.allKeys() )
+    {
+        SettingsManager::getInstance()->setValue( subPart + "/" + key, s.value( key ),
+                                                  SettingsManager::Vlmc );
+    }
 }
 
 #undef CREATE_MENU_SHORTCUT
@@ -343,7 +359,7 @@ void MainWindow::initializeDockWidgets( void )
 
 void        MainWindow::createGlobalPreferences()
 {
-    m_globalPreferences = new Settings( this );
+    m_globalPreferences = new Settings( SettingsManager::Vlmc, this );
     m_globalPreferences->addCategorie( "general", SettingsManager::Vlmc,
                                    QIcon( ":/images/images/vlmc.png" ),
                                    tr ( "VLMC settings" ) );
@@ -354,7 +370,7 @@ void        MainWindow::createGlobalPreferences()
 
 void    MainWindow::createProjectPreferences()
 {
-    m_projectPreferences = new Settings( this );
+    m_projectPreferences = new Settings( SettingsManager::Project, this );
     m_projectPreferences->addCategorie( "general", SettingsManager::Project,
                                    QIcon( ":/images/images/vlmc.png" ),
                                    tr ( "Project settings" ) );

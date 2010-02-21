@@ -38,10 +38,10 @@
 
 
 
-Settings::Settings( QWidget* parent,
-                    Qt::WindowFlags f )
-    : QDialog( parent, f ),
-    m_currentWidget( NULL )
+Settings::Settings( SettingsManager::Type type, QWidget* parent, Qt::WindowFlags f ) :
+    QDialog( parent, f ),
+    m_currentWidget( NULL ),
+    m_type( type )
 {
     setMinimumHeight( 400 );
     setMinimumWidth( 600 );
@@ -150,7 +150,9 @@ void    Settings::buttonClicked( QAbstractButton* button )
         // Ask each widget to save their state
         for ( int i = 0; i < m_pWidgets.count(); ++i )
             m_pWidgets.at( i )->save();
-
+        //If we're handling vlmc preferences, save the value in the QSettings
+        if ( m_type == SettingsManager::Vlmc )
+            SettingsManager::getInstance()->save();
     }
     if ( hide == true )
         setVisible( false );

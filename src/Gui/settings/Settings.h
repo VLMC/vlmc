@@ -45,8 +45,7 @@ class   Settings : public QDialog
     Q_DISABLE_COPY( Settings )
 
     public:
-        Settings( QWidget* parent = 0,
-                  Qt::WindowFlags f = 0 );
+        Settings( SettingsManager::Type type, QWidget* parent = 0, Qt::WindowFlags f = 0 );
         virtual ~Settings();
 
         void                        addCategorie( const QString& name,
@@ -65,6 +64,7 @@ class   Settings : public QDialog
         Panel*                      m_panel;
         QLabel*                     m_title;
         QScrollArea*                m_configPanel;
+        SettingsManager::Type       m_type;
 
     public slots:
         void    switchWidget( int index );
