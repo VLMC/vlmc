@@ -1,5 +1,5 @@
 /*****************************************************************************
- * StringWidget.h: Handle text settings.
+ * IntWidget.cpp Handle integer settings.
  *****************************************************************************
  * Copyright (C) 2008-2010 VideoLAN
  *
@@ -20,26 +20,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "StringWidget.h"
+#include "IntWidget.h"
 #include "SettingValue.h"
 
-#include <QLineEdit>
+#include <QSpinBox>
 
-StringWidget::StringWidget( SettingValue *s, QWidget *parent /*= NULL*/ ) :
+IntWidget::IntWidget( SettingValue *s, QWidget *parent /*= NULL*/ ) :
         m_setting( s )
 {
-    m_lineEdit = new QLineEdit( parent );
-    m_lineEdit->setText( s->get().toString() );
+    m_lineEdit = new QSpinBox( parent );
+    m_lineEdit->setValue( s->get().toInt() );
 }
 
 QWidget*
-StringWidget::widget()
+IntWidget::widget()
 {
     return m_lineEdit;
 }
 
 void
-StringWidget::save()
+IntWidget::save()
 {
-    m_setting->set( m_lineEdit->text() );
+    m_setting->set( m_lineEdit->value() );
 }
