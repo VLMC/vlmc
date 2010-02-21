@@ -1,5 +1,5 @@
 /*****************************************************************************
- * LanguageWidget.h: Handle languge settings
+ * Languagehelper.cpp: Watch for language changes
  *****************************************************************************
  * Copyright (C) 2008-2010 VideoLAN
  *
@@ -20,26 +20,39 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef LANGUAGEWIDGET_H
-#define LANGUAGEWIDGET_H
+#include "LanguageHelper.h"
 
-#include "ISettingsCategorieWidget.h"
-#include <stddef.h>
+#include <QApplication>
+#include <QTranslator>
+#include <QVariant>
 
-class   SettingValue;
+#define TS_PREFIX "vlmc_"
 
-class   QComboBox;
-
-class   LanguageWidget : public ISettingsCategorieWidget
+LanguageHelper::LanguageHelper() : m_translator( NULL )
 {
-    public:
-        LanguageWidget( SettingValue *s, QWidget *parent = NULL );
-        QWidget*                widget();
-        void                    save();
+    connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( deleteLater() ) );
+}
 
-    private:
-        SettingValue            *m_setting;
-        QComboBox               *m_list;
-};
+LanguageHelper::~LanguageHelper()
+{
+    if ( m_translator )
+        delete m_translator;
+}
 
-#endif // LANGUAGEWIDGET_H
+void
+LanguageHelper::languageChanged( const QVariant &vLang )
+{
+    QString     lang = vLang.toString();
+    if ( !lang.isEmpty() )
+    {
+        if ( m_translator != NULL )
+        {
+            qApp->removeTranslator( m_translator );
+            delete m_translator;
+            m_translator = NULL;
+        }
+        m_translator = new QTranslator();
+        m_translator->load( TS_PREFIX + lang, ":/ts/" );
+        qApp->installTranslator( m_translator );
+    }
+}

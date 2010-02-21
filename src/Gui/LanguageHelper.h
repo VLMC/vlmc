@@ -1,5 +1,5 @@
 /*****************************************************************************
- * LanguageWidget.h: Handle languge settings
+ * Languagehelper.h: Watch for language changes
  *****************************************************************************
  * Copyright (C) 2008-2010 VideoLAN
  *
@@ -20,26 +20,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef LANGUAGEWIDGET_H
-#define LANGUAGEWIDGET_H
+#ifndef LANGUAGEHELPER_H
+#define LANGUAGEHELPER_H
 
-#include "ISettingsCategorieWidget.h"
-#include <stddef.h>
+#include "Singleton.hpp"
 
-class   SettingValue;
+#include <QObject>
 
-class   QComboBox;
+class   QTranslator;
 
-class   LanguageWidget : public ISettingsCategorieWidget
+class   LanguageHelper : public QObject, public Singleton<LanguageHelper>
 {
-    public:
-        LanguageWidget( SettingValue *s, QWidget *parent = NULL );
-        QWidget*                widget();
-        void                    save();
+    Q_OBJECT
+    Q_DISABLE_COPY( LanguageHelper );
 
+    public slots:
+        void        languageChanged( const QVariant& lang );
     private:
-        SettingValue            *m_setting;
-        QComboBox               *m_list;
+        LanguageHelper();
+        ~LanguageHelper();
+        QTranslator             *m_translator;
+
+        friend class    Singleton<LanguageHelper>;
+
 };
 
-#endif // LANGUAGEWIDGET_H
+#endif // LANGUAGEHELPER_H

@@ -57,6 +57,7 @@
 #include "ProjectWizard.h"
 #include "Settings.h"
 #include "SettingsManager.h"
+#include "LanguageHelper.h"
 
 /* VLCpp */
 #include "VLCInstance.h"
@@ -191,10 +192,16 @@ MainWindow::initVlmcPreferences()
     CREATE_MENU_SHORTCUT( "keyboard/renderproject", "Ctrl+R", "Render the project", "Render the project to a file", actionRender );
 
     VLMC_CREATE_PREFERENCE_LANGUAGE( "general/VLMCLang", "en_US", "Langage", "The VLMC's UI language" );
+    SettingsManager::getInstance()->watchValue( "general/VLMCLang",
+                                                LanguageHelper::getInstance(),
+                                                SLOT( languageChanged( const QVariant& ) ),
+                                                SettingsManager::Vlmc );
 
     //Load saved preferences :
     loadVlmcPreferences( "keyboard" );
     loadVlmcPreferences( "general" );
+
+
 }
 
 void
@@ -585,3 +592,4 @@ void    MainWindow::setupCrashTester()
     connect( actionCrash, SIGNAL( triggered( bool ) ), this, SLOT( on_actionCrash_triggered() ) );
 }
 #endif
+

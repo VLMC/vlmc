@@ -87,17 +87,4 @@ LanguageWidget::save()
 {
     QString     lang = m_list->itemData( m_list->currentIndex() ).toString();
     m_setting->set( lang );
-
-    if ( !lang.isEmpty() )
-    {
-        if ( m_translator != NULL )
-        {
-            qApp->removeTranslator( m_translator );
-            delete m_translator;
-            m_translator = NULL;
-        }
-        m_translator = new QTranslator();
-        m_translator->load( TS_PREFIX + lang, ":/ts/" );
-        qApp->installTranslator( m_translator );
-    }
 }
