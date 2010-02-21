@@ -1,5 +1,5 @@
 /*****************************************************************************
- * IntWidget.h Handle integer settings.
+ * DoubleWidget.cpp Handle double and float settings.
  *****************************************************************************
  * Copyright (C) 2008-2010 VideoLAN
  *
@@ -20,26 +20,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef INTWIDGET_H
-#define INTWIDGET_H
+#include "DoubleWidget.h"
+#include "SettingValue.h"
 
-#include "ISettingsCategorieWidget.h"
-#include <stddef.h>
+#include <QDoubleSpinBox>
 
-class   SettingValue;
-
-class   QSpinBox;
-
-class   IntWidget : public ISettingsCategorieWidget
+DoubleWidget::DoubleWidget( SettingValue *s, QWidget *parent /*= NULL*/ ) :
+        m_setting( s )
 {
-    public:
-        IntWidget( SettingValue *s, QWidget *parent = NULL );
-        QWidget*                widget();
-        void                    save();
+    m_spinbox = new QDoubleSpinBox( parent );
+    m_spinbox->setValue( s->get().toInt() );
+}
 
-    private:
-        SettingValue            *m_setting;
-        QSpinBox                *m_spinbox;
-};
+QWidget*
+DoubleWidget::widget()
+{
+    return m_spinbox;
+}
 
-#endif // INTWIDGET_H
+void
+DoubleWidget::save()
+{
+    m_setting->set( m_spinbox->value() );
+}

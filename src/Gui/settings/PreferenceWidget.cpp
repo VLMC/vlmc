@@ -30,6 +30,7 @@
 #include "LanguageWidget.h"
 #include "StringWidget.h"
 #include "IntWidget.h"
+#include "DoubleWidget.h"
 
 #include <QFormLayout>
 #include <QtDebug>
@@ -72,6 +73,8 @@ PreferenceWidget::widgetFactory( SettingValue *s )
         return new StringWidget( s, this );
     case SettingValue::Int:
         return new IntWidget( s, this );
+    case SettingValue::Double:
+        return new DoubleWidget( s, this );
     default:
         return NULL;
     }

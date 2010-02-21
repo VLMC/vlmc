@@ -28,18 +28,18 @@
 IntWidget::IntWidget( SettingValue *s, QWidget *parent /*= NULL*/ ) :
         m_setting( s )
 {
-    m_lineEdit = new QSpinBox( parent );
-    m_lineEdit->setValue( s->get().toInt() );
+    m_spinbox = new QSpinBox( parent );
+    m_spinbox->setValue( s->get().toInt() );
 }
 
 QWidget*
 IntWidget::widget()
 {
-    return m_lineEdit;
+    return m_spinbox;
 }
 
 void
 IntWidget::save()
 {
-    m_setting->set( m_lineEdit->value() );
+    m_setting->set( m_spinbox->value() );
 }
