@@ -35,7 +35,6 @@
 #include "Library.h"
 #include "About.h"
 #include "ProjectManager.h"
-#include "KeyboardShortcut.h"
 #include "VlmcDebug.h"
 
 #include "MainWorkflow.h"
@@ -56,11 +55,6 @@
 /* Settings / Preferences */
 #include "ProjectManager.h"
 #include "ProjectWizard.h"
-#include "ProjectPreferences.h"
-#include "VLMCPreferences.h"
-#include "AudioProjectPreferences.h"
-#include "VideoProjectPreferences.h"
-#include "LanguagePreferences.h"
 #include "Settings.h"
 #include "SettingsManager.h"
 
@@ -343,35 +337,35 @@ void MainWindow::initializeDockWidgets( void )
 void        MainWindow::createGlobalPreferences()
 {
     m_globalPreferences = new Settings( this );
-    m_globalPreferences->addWidget( tr ( "VLMC" ),
-                                   new VLMCPreferences( m_globalPreferences ),
-                                   QIcon( ":/images/images/vlmc.png" ),
-                                   tr ( "VLMC settings" ) );
-    m_globalPreferences->addWidget( tr ("Language preferences" ),
-                                   new LanguagePreferences( m_globalPreferences ),
-                                   QIcon( ":/images/images/vlmc.png" ),
-                                   tr ( "Language settings" ) );
-    m_globalPreferences->addWidget( tr ("Keyboard" ),
-                                     new KeyboardShortcut( m_globalPreferences ),
-                                     QIcon( ":/images/keyboard" ),
-                                     tr( "Keyboard Settings" ) );
+//    m_globalPreferences->addWidget( tr ( "VLMC" ),
+//                                   new VLMCPreferences( m_globalPreferences ),
+//                                   QIcon( ":/images/images/vlmc.png" ),
+//                                   tr ( "VLMC settings" ) );
+//    m_globalPreferences->addWidget( tr ("Language preferences" ),
+//                                   new LanguagePreferences( m_globalPreferences ),
+//                                   QIcon( ":/images/images/vlmc.png" ),
+//                                   tr ( "Language settings" ) );
+//    m_globalPreferences->addWidget( tr ("Keyboard" ),
+//                                     new KeyboardShortcut( m_globalPreferences ),
+//                                     QIcon( ":/images/keyboard" ),
+//                                     tr( "Keyboard Settings" ) );
 }
 
 void    MainWindow::createProjectPreferences()
 {
     m_projectPreferences = new Settings( this );
-    m_projectPreferences->addWidget( tr( "Project" ),
-                                   new ProjectPreferences,
-                                   QIcon( ":/images/images/vlmc.png" ),
-                                   tr ( "Project settings" ) );
-    m_projectPreferences->addWidget( tr ( "Video" ),
-                                   new VideoProjectPreferences,
-                                   QIcon( ":/images/images/video.png" ),
-                                   tr ( "Video settings" ) );
-    m_projectPreferences->addWidget( tr ( "Audio" ),
-                                   new AudioProjectPreferences,
-                                   QIcon( ":/images/images/audio.png" ),
-                                   tr ( "Audio settings" ) );
+//    m_projectPreferences->addWidget( tr( "Project" ),
+//                                   new ProjectPreferences,
+//                                   QIcon( ":/images/images/vlmc.png" ),
+//                                   tr ( "Project settings" ) );
+//    m_projectPreferences->addWidget( tr ( "Video" ),
+//                                   new VideoProjectPreferences,
+//                                   QIcon( ":/images/images/video.png" ),
+//                                   tr ( "Video settings" ) );
+//    m_projectPreferences->addWidget( tr ( "Audio" ),
+//                                   new AudioProjectPreferences,
+//                                   QIcon( ":/images/images/audio.png" ),
+//                                   tr ( "Audio settings" ) );
 }
 
 

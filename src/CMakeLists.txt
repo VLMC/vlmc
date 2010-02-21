@@ -25,7 +25,6 @@ SET(VLMC_SRCS
     Gui/ClipProperty.cpp
     Gui/DockWidgetManager.cpp
     Gui/FileInfoListModel.cpp
-    Gui/LanguagePreferences.cpp
     Gui/LCDTimecode.cpp
     Gui/MainWindow.cpp
     Gui/PreviewRuler.cpp
@@ -44,15 +43,10 @@ SET(VLMC_SRCS
     Gui/library/MediaListViewController.cpp
     Gui/library/StackViewController.cpp
     Gui/library/StackViewNavController.cpp
-    Gui/settings/AudioProjectPreferences.cpp
-    Gui/settings/KeyboardShortcut.cpp
     Gui/settings/KeyboardShortcutInput.cpp
     Gui/settings/Panel.cpp
     Gui/settings/PreferenceWidget.cpp
-    Gui/settings/ProjectPreferences.cpp
     Gui/settings/Settings.cpp
-    Gui/settings/VideoProjectPreferences.cpp
-    Gui/settings/VLMCPreferences.cpp
     Gui/timeline/AbstractGraphicsMediaItem.cpp
     Gui/timeline/GraphicsAudioItem.cpp
     Gui/timeline/GraphicsCursorItem.cpp
@@ -118,7 +112,6 @@ SET (VLMC_HDRS
     Gui/import/ImportController.h
     Gui/import/ImportMediaCellView.h
     Gui/import/ImportMediaListController.h
-    Gui/LanguagePreferences.h
     Gui/LCDTimecode.h
     Gui/library/ClipListViewController.h
     Gui/library/ListViewController.h
@@ -131,12 +124,10 @@ SET (VLMC_HDRS
     Gui/MainWindow.h
     Gui/PreviewRuler.h
     Gui/PreviewWidget.h
-    Gui/settings/KeyboardShortcut.h
     Gui/settings/KeyboardShortcutInput.h
     Gui/settings/Panel.h
     Gui/settings/PreferenceWidget.h
     Gui/settings/Settings.h
-    Gui/settings/VLMCPreferences.h
     Gui/TagWidget.h
     Gui/timeline/AbstractGraphicsMediaItem.h
     Gui/timeline/GraphicsAudioItem.h 
@@ -184,11 +175,6 @@ SET(VLMC_UIS
     Gui/library/StackViewNavController.ui
     Gui/library/ui/MediaCellView.ui
     Gui/library/ui/StackViewNavController.ui
-    Gui/settings/ui/AudioProjectPreferences.ui
-    Gui/settings/ui/LanguagePreferences.ui
-    Gui/settings/ui/ProjectPreferences.ui
-    Gui/settings/ui/VideoProjectPreferences.ui
-    Gui/settings/ui/VLMCPreferences.ui
     Gui/ui/About.ui
     Gui/ui/ClipProperty.ui
     Gui/ui/FileBrowser.ui
