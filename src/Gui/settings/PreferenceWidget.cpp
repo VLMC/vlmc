@@ -25,8 +25,10 @@
 #include "ISettingsCategorieWidget.h"
 #include "PreferenceWidget.h"
 #include "SettingsManager.h"
+
 #include "KeyboardShortcut.h"
 #include "LanguageWidget.h"
+#include "StringWidget.h"
 
 #include <QFormLayout>
 #include <QtDebug>
@@ -65,6 +67,8 @@ PreferenceWidget::widgetFactory( SettingValue *s )
         return new KeyboardShortcut( s, this );
     case SettingValue::Language:
         return new LanguageWidget( s, this );
+    case SettingValue::String:
+        return new StringWidget( s, this );
     default:
         return NULL;
     }

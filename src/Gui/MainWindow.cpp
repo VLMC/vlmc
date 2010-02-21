@@ -348,18 +348,15 @@ void        MainWindow::createGlobalPreferences()
 void    MainWindow::createProjectPreferences()
 {
     m_projectPreferences = new Settings( this );
-//    m_projectPreferences->addWidget( tr( "Project" ),
-//                                   new ProjectPreferences,
-//                                   QIcon( ":/images/images/vlmc.png" ),
-//                                   tr ( "Project settings" ) );
-//    m_projectPreferences->addWidget( tr ( "Video" ),
-//                                   new VideoProjectPreferences,
-//                                   QIcon( ":/images/images/video.png" ),
-//                                   tr ( "Video settings" ) );
-//    m_projectPreferences->addWidget( tr ( "Audio" ),
-//                                   new AudioProjectPreferences,
-//                                   QIcon( ":/images/images/audio.png" ),
-//                                   tr ( "Audio settings" ) );
+    m_projectPreferences->addCategorie( "general", SettingsManager::Project,
+                                   QIcon( ":/images/images/vlmc.png" ),
+                                   tr ( "Project settings" ) );
+    m_projectPreferences->addCategorie( "video", SettingsManager::Project,
+                                   QIcon( ":/images/images/video.png" ),
+                                   tr ( "Video settings" ) );
+    m_projectPreferences->addCategorie( "audio", SettingsManager::Project,
+                                   QIcon( ":/images/images/audio.png" ),
+                                   tr ( "Audio settings" ) );
 }
 
 

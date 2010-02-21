@@ -49,6 +49,7 @@ SET(VLMC_SRCS
     Gui/settings/Panel.cpp
     Gui/settings/PreferenceWidget.cpp
     Gui/settings/Settings.cpp
+    Gui/settings/StringWidget.cpp
     Gui/timeline/AbstractGraphicsMediaItem.cpp
     Gui/timeline/GraphicsAudioItem.cpp
     Gui/timeline/GraphicsCursorItem.cpp
@@ -133,6 +134,7 @@ SET (VLMC_HDRS
     Gui/settings/Panel.h
     Gui/settings/PreferenceWidget.h
     Gui/settings/Settings.h
+    Gui/settings/StringWidget.h
     Gui/TagWidget.h
     Gui/timeline/AbstractGraphicsMediaItem.h
     Gui/timeline/GraphicsAudioItem.h 

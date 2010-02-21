@@ -1,5 +1,5 @@
 /*****************************************************************************
- * LanguageWidget.h: Handle languge settings
+ * StringWidget: Handle text settings.
  *****************************************************************************
  * Copyright (C) 2008-2010 VideoLAN
  *
@@ -20,28 +20,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef LANGUAGEWIDGET_H
-#define LANGUAGEWIDGET_H
+#include "StringWidget.h"
+#include "SettingValue.h"
 
-#include "ISettingsCategorieWidget.h"
-#include <stddef.h>
+#include <QLineEdit>
 
-class   SettingValue;
-
-class   QComboBox;
-class   QTranslator;
-
-class   LanguageWidget : public ISettingsCategorieWidget
+StringWidget::StringWidget( SettingValue *s, QWidget *parent /*= NULL*/ ) :
+        m_setting( s )
 {
-    public:
-        LanguageWidget( SettingValue *s, QWidget *parent = NULL );
-        QWidget*                widget();
-        void                    save();
+    m_lineEdit = new QLineEdit( parent );
+    m_lineEdit->setText( s->get().toString() );
+}
 
-    private:
-        SettingValue            *m_setting;
-        QComboBox               *m_list;
-        QTranslator             *m_translator;
-};
+QWidget*
+StringWidget::widget()
+{
+    return m_lineEdit;
+}
 
-#endif // LANGUAGEWIDGET_H
+void
+StringWidget::save()
+{
+    m_setting->set( m_lineEdit->text() );
+}
