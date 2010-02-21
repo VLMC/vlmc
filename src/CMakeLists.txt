@@ -43,6 +43,7 @@ SET(VLMC_SRCS
     Gui/library/MediaListViewController.cpp
     Gui/library/StackViewController.cpp
     Gui/library/StackViewNavController.cpp
+    Gui/settings/KeyboardShortcut.cpp
     Gui/settings/KeyboardShortcutInput.cpp
     Gui/settings/Panel.cpp
     Gui/settings/PreferenceWidget.cpp
@@ -124,6 +125,8 @@ SET (VLMC_HDRS
     Gui/MainWindow.h
     Gui/PreviewRuler.h
     Gui/PreviewWidget.h
+    Gui/settings/ISettingsCategorieWidget.h
+    Gui/settings/KeyboardShortcut.h
     Gui/settings/KeyboardShortcutInput.h
     Gui/settings/Panel.h
     Gui/settings/PreferenceWidget.h

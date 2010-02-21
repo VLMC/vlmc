@@ -21,19 +21,59 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include "ISettingsCategorieWidget.h"
+#include "PreferenceWidget.h"
+#include "SettingsManager.h"
+#include "KeyboardShortcut.h"
+
+#include <QFormLayout>
 #include <QtDebug>
 #include <QWidget>
-#include "PreferenceWidget.h"
+#include <QLabel>
 
-PreferenceWidget::PreferenceWidget( QWidget* parent )
-    : QWidget( parent )
+PreferenceWidget::PreferenceWidget( const QString &categorie, SettingsManager::Type type,
+                                    QWidget *parent ) :
+    QWidget( parent ),
+    m_categorie( categorie )
+{
+    SettingsManager::SettingHash    settings =
+            SettingsManager::getInstance()->group( categorie, type );
+    QFormLayout *layout = new QFormLayout( this );
+    foreach ( SettingValue* s, settings.values() )
+    {
+        ISettingsCategorieWidget    *widget = widgetFactory( s );
+        if ( widget == NULL )
+            layout->addRow( s->name(), new QLabel( s->description() ) );
+        else
+        {
+            layout->addRow( s->name(), widget->widget() );
+            m_settings.push_back( widget );
+        }
+    }
+
+    setLayout( layout );
+}
+
+ISettingsCategorieWidget*
+PreferenceWidget::widgetFactory( SettingValue *s )
+{
+    switch ( s->type() )
+    {
+    case SettingValue::KeyboardShortcut:
+        return new KeyboardShortcut( s, this );
+    default:
+        return NULL;
+    }
+}
+
+void
+PreferenceWidget::load()
 {
 }
 
-
 void
-PreferenceWidget::loadThemAll( const QString& part,
-                                    bool defaults)
+PreferenceWidget::save()
 {
-    load();
+    foreach ( ISettingsCategorieWidget* w, m_settings )
+        w->save();
 }

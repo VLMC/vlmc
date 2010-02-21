@@ -1,5 +1,5 @@
 /*****************************************************************************
- * KeyboardShortcutInput.h: Input widget for keybard shortcut
+ * ISettingsCategorieWidget.h: Common interface for settings widgets.
  *****************************************************************************
  * Copyright (C) 2008-2010 VideoLAN
  *
@@ -20,38 +20,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef KEYBOARDSHORTCUTINPUT_H
-#define KEYBOARDSHORTCUTINPUT_H
 
-#include <QPushButton>
+#ifndef ISETTINGSCATEGORIEWIDGET_H
+#define ISETTINGSCATEGORIEWIDGET_H
 
-class QTimer;
+class   QVariant;
+class   QWidget;
 
-class   KeyboardShortcutInput : public QPushButton
+class   ISettingsCategorieWidget
 {
-    Q_OBJECT
-
     public:
-        KeyboardShortcutInput( const QString& name, const QString& initialValue = QString(), QWidget* parent = NULL );
-        QString         shortcut() const;
-
-protected:
-        virtual void    keyPressEvent( QKeyEvent* e );
-        virtual void    mousePressEvent( QMouseEvent* e );
-        virtual void    mouseReleaseEvent( QMouseEvent* e );
-        void            release();
-        void            cancel();
-
-    protected slots:
-        void            timeout();
-
-    private:
-        QString         m_name;
-        bool            m_capturing;
-        QTimer*         m_timer;
-        unsigned int    m_current;
-        int             m_shortcuts[4];
-        int             m_initialValue[4];
+        virtual QWidget*        widget() = 0;
+        virtual void            save() = 0;
 };
 
-#endif // KEYBOARDSHORTCUTINPUT_H
+#endif // ISETTINGSCATEGORIEWIDGET_H

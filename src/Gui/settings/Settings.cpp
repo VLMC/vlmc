@@ -66,17 +66,14 @@ Settings::~Settings()
 {
 }
 
-void        Settings::addWidget( const QString& name,
-                                 PreferenceWidget* pWidget,
+void        Settings::addCategorie( const QString& name,
+                                    SettingsManager::Type type,
                                  const QIcon& icon,
                                  const QString& label )
 {
-    connect( this, SIGNAL( loadSettings() ), pWidget, SLOT( loadThemAll() ) );
+    PreferenceWidget    *pWidget = new PreferenceWidget( name, type, this );
     // We don't want the widget to be visible
     pWidget->hide();
-
-    // Save the widget name into a property
-    pWidget->setProperty( "name", name );
 
     // Add the widget to the list
     m_pWidgets.append( pWidget );
@@ -128,10 +125,6 @@ QHBoxLayout*    Settings::buildLayout()
     return hLayout;
 }
 
-void    Settings::save( void )
-{
-}
-
 void    Settings::buttonClicked( QAbstractButton* button )
 {
     bool  save = false;
@@ -159,7 +152,8 @@ void    Settings::buttonClicked( QAbstractButton* button )
             m_pWidgets.at( i )->save();
 
     }
-    if ( hide == true ) setVisible( false );
+    if ( hide == true )
+        setVisible( false );
 }
 
 void    Settings::switchWidget( int index )
@@ -167,15 +161,8 @@ void    Settings::switchWidget( int index )
     PreferenceWidget* pWidget = m_pWidgets.at( index );
 
     // This should never happen
-    if ( !pWidget ) return;
-
-    QString name( pWidget->property( "name" ).toString() );
-
-    // Set the panel name
-    m_title->setText( name );
-
-    // Also set the window title accordingly
-    setWindowTitle( tr( "Preferences: %1" ).arg( name ) );
+    if ( !pWidget )
+        return;
 
     // If there is already a widget into the QScrollArea take it
     // to avoid its deletion.

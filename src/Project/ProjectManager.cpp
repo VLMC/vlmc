@@ -74,30 +74,30 @@ ProjectManager::ProjectManager() : m_projectFile( NULL ), m_needSave( false )
     connect( this, SIGNAL( projectClosed() ), Library::getInstance(), SLOT( clear() ) );
     connect( this, SIGNAL( projectClosed() ), MainWorkflow::getInstance(), SLOT( clear() ) );
 
-    VLMC_CREATE_PROJECT_VAR( "video/VLMCOutputFPS", 29.97, "Output video FPS", "Frame Per Second used when previewing and rendering the project" );
-    VLMC_CREATE_PROJECT_VAR( "video/VideoProjectWidth", 480, "Video width", "Width resolution of the output video" );
-    VLMC_CREATE_PROJECT_VAR( "video/VideoProjectHeight", 300, "Video height", "Height resolution of the output video" );
-    VLMC_CREATE_PROJECT_VAR( "audio/AudioSampleRate", 0, "Audio samplerate", "Output project audio samplerate" );
-    VLMC_CREATE_PROJECT_VAR( "general/VLMCWorkspace", QDir::homePath(), "Workspace location", "The place where all project's videos will be stored" );
+    VLMC_CREATE_PROJECT_DOUBLE( "video/VLMCOutputFPS", 29.97, "Output video FPS", "Frame Per Second used when previewing and rendering the project" );
+    VLMC_CREATE_PROJECT_INT( "video/VideoProjectWidth", 480, "Video width", "Width resolution of the output video" );
+    VLMC_CREATE_PROJECT_INT( "video/VideoProjectHeight", 300, "Video height", "Height resolution of the output video" );
+    VLMC_CREATE_PROJECT_INT( "audio/AudioSampleRate", 0, "Audio samplerate", "Output project audio samplerate" );
+    VLMC_CREATE_PROJECT_STRING( "general/VLMCWorkspace", QDir::homePath(), "Workspace location", "The place where all project's videos will be stored" );
 
-    VLMC_CREATE_PROJECT_VAR( "general/ProjectName", unNamedProject, "Project name", "The project name" );
-    SettingsManager::getInstance()->watchValue( "project/ProjectName", this,
+    VLMC_CREATE_PROJECT_STRING( "general/ProjectName", unNamedProject, "Project name", "The project name" );
+    SettingsManager::getInstance()->watchValue( "general/ProjectName", this,
                                                 SLOT(projectNameChanged(QVariant) ),
                                                 SettingsManager::Project );
 
     //Automatic save part :
     m_timer = new QTimer( this );
     connect( m_timer, SIGNAL( timeout() ), this, SLOT( autoSaveRequired() ) );
-    VLMC_CREATE_PREFERENCE( "general/AutomaticBackup", false, "Automatic save",
+    VLMC_CREATE_PREFERENCE_BOOL( "general/AutomaticBackup", false, "Automatic save",
                             "When this option is activated,"
                             "VLMC will automatically save your project at a specified interval" );
-    SettingsManager::getInstance()->watchValue( "global/AutomaticBackup", this,
+    SettingsManager::getInstance()->watchValue( "general/AutomaticBackup", this,
                                                 SLOT( automaticSaveEnabledChanged(QVariant) ),
                                                 SettingsManager::Vlmc,
                                                 Qt::QueuedConnection );
-    VLMC_CREATE_PREFERENCE( "general/AutomaticBackupInterval", 5, "Automatic save interval",
+    VLMC_CREATE_PREFERENCE_INT( "general/AutomaticBackupInterval", 5, "Automatic save interval",
                             "This is the interval that VLMC will wait between two automatic save" );
-    SettingsManager::getInstance()->watchValue( "global/AutomaticBackupInterval", this,
+    SettingsManager::getInstance()->watchValue( "general/AutomaticBackupInterval", this,
                                                 SLOT( automaticSaveIntervalChanged(QVariant) ),
                                                 SettingsManager::Vlmc,
                                                 Qt::QueuedConnection );

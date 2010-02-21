@@ -26,20 +26,28 @@
 
 #include <QWidget>
 #include <QString>
+#include "SettingsManager.h"
+
+class   ISettingsCategorieWidget;
+class   SettingValue;
 
 class   PreferenceWidget : public QWidget
 {
     Q_OBJECT
     public:
-        PreferenceWidget( QWidget* parent = 0 );
+        typedef QList<ISettingsCategorieWidget*>    SettingsList;
+        PreferenceWidget( const QString& categorie, SettingsManager::Type type,
+                          QWidget* parent = 0 );
         virtual ~PreferenceWidget() {}
 
-        virtual void    load() = 0;
-        virtual void    save() = 0;
+        virtual void    load();
+        virtual void    save();
+    private:
+        ISettingsCategorieWidget        *widgetFactory( SettingValue* s );
 
-    protected slots:
-        void            loadThemAll( const QString& part = "default",
-                                   bool defaults = false );
+    private:
+        QString         m_categorie;
+        SettingsList    m_settings;
 };
 
 #endif

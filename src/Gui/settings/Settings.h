@@ -36,8 +36,8 @@ class QHBoxLayout;
 class QAbstractButton;
 class QScrollArea;
 
-class Panel;
-class PreferenceWidget;
+class   Panel;
+class   PreferenceWidget;
 
 class   Settings : public QDialog
 {
@@ -49,15 +49,14 @@ class   Settings : public QDialog
                   Qt::WindowFlags f = 0 );
         virtual ~Settings();
 
-        void                        addWidget( const QString& name,
-                                               PreferenceWidget* pWidget,
-                                               const QIcon& icon,
-                                               const QString& label );
+        void                        addCategorie( const QString& name,
+                                                    SettingsManager::Type type,
+                                                    const QIcon& icon,
+                                                    const QString& label );
         void                        show();
 
     private:
         inline QHBoxLayout*         buildLayout();
-        void                        save();
 
     private:
         QDialogButtonBox*           m_buttons;

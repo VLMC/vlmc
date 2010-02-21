@@ -52,12 +52,35 @@ class QDomDocument;
 #define VLMC_PROJECT_GET_BOOL( key )    SettingsManager::getInstance()->value( key, SettingsManager::Project )->get().toBool()
 
 
-#define VLMC_CREATE_PROJECT_VAR( key, defaultValue, name, desc )  \
-SettingsManager::getInstance()->createVar( key, defaultValue, QObject::tr( name ), \
+#define VLMC_CREATE_PROJECT_VAR( type, key, defaultValue, name, desc )  \
+SettingsManager::getInstance()->createVar( type, key, defaultValue, QObject::tr( name ), \
                                            QObject::tr(desc), SettingsManager::Project );
-#define VLMC_CREATE_PREFERENCE( key, defaultValue, name, desc )  \
-SettingsManager::getInstance()->createVar( key, defaultValue, QObject::tr( name ),  \
+
+#define VLMC_CREATE_PROJECT_INT( key, defaultValue, name, desc )  \
+        VLMC_CREATE_PROJECT_VAR( SettingValue::Int, key, defaultValue, name, desc )
+#define VLMC_CREATE_PROJECT_STRING( key, defaultValue, name, desc )  \
+        VLMC_CREATE_PROJECT_VAR( SettingValue::String, key, defaultValue, name, desc )
+#define VLMC_CREATE_PROJECT_DOUBLE( key, defaultValue, name, desc )  \
+        VLMC_CREATE_PROJECT_VAR( SettingValue::Double, key, defaultValue, name, desc )
+#define VLMC_CREATE_PROJECT_BOOL( key, defaultValue, name, desc )  \
+        VLMC_CREATE_PROJECT_VAR( SettingValue::Bool, key, defaultValue, name, desc )
+
+#define VLMC_CREATE_PREFERENCE( type, key, defaultValue, name, desc )  \
+SettingsManager::getInstance()->createVar( type, key, defaultValue, QObject::tr( name ),  \
                                            QObject::tr(desc), SettingsManager::Vlmc );
+
+#define VLMC_CREATE_PREFERENCE_INT( key, defaultValue, name, desc )  \
+        VLMC_CREATE_PREFERENCE( SettingValue::Int, key, defaultValue, name, desc )
+#define VLMC_CREATE_PREFERENCE_STRING( key, defaultValue, name, desc )  \
+        VLMC_CREATE_PREFERENCE( SettingValue::String, key, defaultValue, name, desc )
+#define VLMC_CREATE_PREFERENCE_DOUBLE( key, defaultValue, name, desc )  \
+        VLMC_CREATE_PREFERENCE( SettingValue::Double, key, defaultValue, name, desc )
+#define VLMC_CREATE_PREFERENCE_LANGUAGE( key, defaultValue, name, desc )  \
+        VLMC_CREATE_PREFERENCE( SettingValue::Language, key, defaultValue, name, desc )
+#define VLMC_CREATE_PREFERENCE_KEYBOARD( key, defaultValue, name, desc )  \
+        VLMC_CREATE_PREFERENCE( SettingValue::KeyboardShortcut, key, defaultValue, name, desc )
+#define VLMC_CREATE_PREFERENCE_BOOL( key, defaultValue, name, desc )  \
+        VLMC_CREATE_PREFERENCE( SettingValue::Bool, key, defaultValue, name, desc )
 
 class   SettingsManager : public QObject, public Singleton<SettingsManager>
 {
@@ -79,13 +102,13 @@ class   SettingsManager : public QObject, public Singleton<SettingsManager>
                                                         SettingsManager::Type = Vlmc);
         SettingValue                *value( const QString &key,
                                             SettingsManager::Type type = Vlmc );
-        QHash<QString, QVariant>    group( const QString &groupName,
-                                           SettingsManager::Type type = Vlmc );
+        SettingHash                 group( const QString &groupName,
+                                            SettingsManager::Type type = Vlmc );
 
-        void                        createVar( const QString &key,
+        void                        createVar( SettingValue::Type type, const QString &key,
                                                const QVariant &defaultValue,
                                                const QString &name, const QString &desc,
-                                               Type type = Vlmc );
+                                               Type varType = Vlmc );
         bool                        watchValue( const QString &key,
                                                 QObject* receiver,
                                                 const char *method,

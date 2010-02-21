@@ -37,13 +37,22 @@ class   SettingValue : public QObject
     Q_OBJECT
     Q_DISABLE_COPY( SettingValue );
     public:
+        enum    Type
+        {
+            Int,
+            Double,
+            String,
+            Bool,
+            Language,
+            KeyboardShortcut
+        };
         /**
          *  \brief      Constructs a setting value with its default value and description
          *
          *  \param      defaultValue    The setting default value.
          *  \param      desc            The setting description
          */
-        SettingValue( const QVariant& defaultValue, const QString& name,
+        SettingValue( Type type, const QVariant& defaultValue, const QString& name,
                       const QString& desc );
 
         /**
@@ -67,6 +76,8 @@ class   SettingValue : public QObject
         void            restoreDefault();
 
         const QString   &name() const;
+        Type            type() const;
+
     private:
         /**
          * \brief the QVariant containingthe value of the settings
@@ -75,6 +86,7 @@ class   SettingValue : public QObject
         QVariant        m_defaultVal;
         QString         m_name;
         QString         m_desc;
+        Type            m_type;
     signals:
         /**
          * \brief This signal is emmited while the m_val

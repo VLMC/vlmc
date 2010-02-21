@@ -100,11 +100,11 @@ SettingsManager::value( const QString &key,
     return NULL;
 }
 
-QHash<QString, QVariant>
+SettingsManager::SettingHash
 SettingsManager::group( const QString &groupName, SettingsManager::Type type )
 {
-    QHash<QString, QVariant>    ret;
-    QReadLocker                 rl( &m_rwLock );
+    SettingsManager::SettingHash        ret;
+    QReadLocker                         rl( &m_rwLock );
 
     QString grp = groupName + '/';
     if ( type == Project )
@@ -115,7 +115,7 @@ SettingsManager::group( const QString &groupName, SettingsManager::Type type )
          for ( ; it != ed; ++it )
          {
              if ( it.key().startsWith( grp ) )
-                 ret.insert( it.key(), it.value()->get() );
+                 ret.insert( it.key(), it.value() );
          }
     }
     else if ( type == Vlmc )
@@ -127,7 +127,7 @@ SettingsManager::group( const QString &groupName, SettingsManager::Type type )
          {
              if ( it.key().startsWith( grp ) )
              {
-                 ret.insert( it.key(), it.value()->get() );
+                 ret.insert( it.key(), it.value() );
              }
          }
     }
@@ -276,16 +276,16 @@ SettingsManager::commit( SettingsManager::Type type )
 }
 
 void
-SettingsManager::createVar( const QString &key, const QVariant &defaultValue,
-                            const QString &name, const QString &desc,
-                            SettingsManager::Type type /*= Vlmc*/ )
+SettingsManager::createVar( SettingValue::Type type, const QString &key,
+                            const QVariant &defaultValue, const QString &name,
+                            const QString &desc, SettingsManager::Type varType /*= Vlmc*/ )
 {
     QWriteLocker    wlock( &m_rwLock );
 
-    if ( type == Vlmc && m_classicSettings.contains( key ) == false )
-        m_classicSettings.insert( key, new SettingValue( defaultValue, name, desc ) );
-    else if ( type == Project && m_xmlSettings.contains( key ) == false )
-        m_xmlSettings.insert( key, new SettingValue( defaultValue, name, desc ) );
+    if ( varType == Vlmc && m_classicSettings.contains( key ) == false )
+        m_classicSettings.insert( key, new SettingValue( type, defaultValue, name, desc ) );
+    else if ( varType == Project && m_xmlSettings.contains( key ) == false )
+        m_xmlSettings.insert( key, new SettingValue( type, defaultValue, name, desc ) );
     else
         Q_ASSERT_X( false, __FILE__, "creating an already created variable" );
 }

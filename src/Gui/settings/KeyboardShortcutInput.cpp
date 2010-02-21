@@ -25,6 +25,7 @@
 #include <QTimer>
 #include <QtDebug>
 
+#include "SettingsManager.h"
 #include "KeyboardShortcutInput.h"
 
 KeyboardShortcutInput::KeyboardShortcutInput( const QString& name,
@@ -57,6 +58,13 @@ void    KeyboardShortcutInput::mouseReleaseEvent( QMouseEvent* )
 {
 }
 
+QString
+KeyboardShortcutInput::shortcut() const
+{
+    QKeySequence    seq( m_shortcuts[0], m_shortcuts[1], m_shortcuts[2], m_shortcuts[3] );
+    return seq.toString();
+}
+
 void    KeyboardShortcutInput::release()
 {
     QKeySequence    seq( m_shortcuts[0], m_shortcuts[1], m_shortcuts[2], m_shortcuts[3] );
@@ -64,7 +72,6 @@ void    KeyboardShortcutInput::release()
     m_capturing = false;
     setDown( false );
     setText( seq.toString() );
-    emit changed( m_name, seq.toString() );
 }
 
 void    KeyboardShortcutInput::cancel()

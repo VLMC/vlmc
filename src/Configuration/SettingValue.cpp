@@ -23,12 +23,13 @@
 #include "SettingValue.h"
 #include <QtDebug>
 
-SettingValue::SettingValue( const QVariant& defaultValue, const QString &name,
-                            const QString& desc ) :
+SettingValue::SettingValue( SettingValue::Type type, const QVariant& defaultValue,
+                            const QString &name, const QString& desc ) :
         m_val( defaultValue ),
         m_defaultVal( defaultValue ),
         m_name( name ),
-        m_desc( desc )
+        m_desc( desc ),
+        m_type( type )
 {
 }
 
@@ -64,4 +65,10 @@ const QString&
 SettingValue::name() const
 {
     return m_name;
+}
+
+SettingValue::Type
+SettingValue::type() const
+{
+    return m_type;
 }
