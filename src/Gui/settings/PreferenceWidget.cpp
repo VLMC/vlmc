@@ -49,7 +49,7 @@ PreferenceWidget::PreferenceWidget( const QString &categorie, SettingsManager::T
     foreach ( SettingValue* s, settings.values() )
     {
         ISettingsCategorieWidget    *widget = widgetFactory( s );
-        layout->addRow( s->name(), new QLabel( s->description() ) );
+        layout->addRow( s->name(), widget->widget() );
     }
 
     setLayout( layout );
