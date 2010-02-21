@@ -35,7 +35,7 @@ AudioProjectPreferences::~AudioProjectPreferences() { }
 
 void    AudioProjectPreferences::load()
 {
-    int sampleRate = VLMC_PROJECT_GET_INT( "project/AudioSampleRate" );
+    int sampleRate = VLMC_PROJECT_GET_INT( "audio/AudioSampleRate" );
     m_ui.SampleRate->setValue( sampleRate );
     return ;
 }
@@ -44,7 +44,7 @@ void    AudioProjectPreferences::save()
 {
     SettingsManager* setMan = SettingsManager::getInstance();
     QVariant    sampleRate( m_ui.SampleRate->value() );
-    setMan->setImmediateValue( "project/AudioSampleRate", sampleRate, m_type );
+    setMan->setImmediateValue( "audio/AudioSampleRate", sampleRate, m_type );
     return ;
 }
 

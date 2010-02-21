@@ -53,8 +53,8 @@ void    VLMCPreferences::setAutomaticSaveLabelVisiblity( bool visible )
 
 void    VLMCPreferences::load()
 {
-    bool        autoSave = VLMC_GET_BOOL( "global/AutomaticBackup" );
-    QString     autoSaveInterval = VLMC_GET_STRING( "global/AutomaticBackupInterval" );
+    bool        autoSave = VLMC_GET_BOOL( "general/AutomaticBackup" );
+    QString     autoSaveInterval = VLMC_GET_STRING( "general/AutomaticBackupInterval" );
 
     m_ui.automaticSave->setChecked( autoSave );
     m_ui.automaticSaveInterval->setText( autoSaveInterval );
@@ -67,8 +67,8 @@ void    VLMCPreferences::save()
     QVariant autoSave( m_ui.automaticSave->isChecked() );
     QVariant autoSaveInterval( m_ui.automaticSaveInterval->text() );
 
-    settMan->setImmediateValue( "global/AutomaticBackup", autoSave, m_type );
-    settMan->setImmediateValue( "global/AutomaticBackupInterval", autoSaveInterval, m_type );
+    settMan->setImmediateValue( "general/AutomaticBackup", autoSave, m_type );
+    settMan->setImmediateValue( "general/AutomaticBackupInterval", autoSaveInterval, m_type );
 }
 
 void VLMCPreferences::changeEvent( QEvent *e )

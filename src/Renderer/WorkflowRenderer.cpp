@@ -348,19 +348,19 @@ void*   WorkflowRenderer::getUnlockCallback()
 quint32
 WorkflowRenderer::width() const
 {
-    return VLMC_GET_UINT( "project/VideoProjectWidth" );
+    return VLMC_GET_UINT( "video/VideoProjectWidth" );
 }
 
 quint32
 WorkflowRenderer::height() const
 {
-    return VLMC_GET_UINT( "project/VideoProjectHeight" );
+    return VLMC_GET_UINT( "video/VideoProjectHeight" );
 }
 
 float
 WorkflowRenderer::outputFps() const
 {
-    return VLMC_GET_DOUBLE( "global/VLMCOutPutFPS" );
+    return VLMC_GET_DOUBLE( "video/VLMCOutPutFPS" );
 }
 
 bool

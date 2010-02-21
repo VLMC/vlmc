@@ -37,7 +37,7 @@ TracksRuler::TracksRuler( TracksView* tracksView, QWidget* parent )
 
     //TODO We should really get that from the
     // workflow and not directly from the settings.
-    m_fps = qRound( VLMC_PROJECT_GET_DOUBLE( "global/VLMCOutputFPS" ) );
+    m_fps = qRound( VLMC_PROJECT_GET_DOUBLE( "video/VLMCOutputFPS" ) );
 
     m_factor = 1;
     m_scale = 3;

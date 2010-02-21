@@ -277,14 +277,15 @@ SettingsManager::commit( SettingsManager::Type type )
 
 void
 SettingsManager::createVar( const QString &key, const QVariant &defaultValue,
-                            const QString &desc, SettingsManager::Type type /*= Vlmc*/ )
+                            const QString &name, const QString &desc,
+                            SettingsManager::Type type /*= Vlmc*/ )
 {
     QWriteLocker    wlock( &m_rwLock );
 
     if ( type == Vlmc && m_classicSettings.contains( key ) == false )
-        m_classicSettings.insert( key, new SettingValue( defaultValue, desc ) );
+        m_classicSettings.insert( key, new SettingValue( defaultValue, name, desc ) );
     else if ( type == Project && m_xmlSettings.contains( key ) == false )
-        m_xmlSettings.insert( key, new SettingValue( defaultValue, desc ) );
+        m_xmlSettings.insert( key, new SettingValue( defaultValue, name, desc ) );
     else
         Q_ASSERT_X( false, __FILE__, "creating an already created variable" );
 }

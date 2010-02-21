@@ -52,12 +52,12 @@ class QDomDocument;
 #define VLMC_PROJECT_GET_BOOL( key )    SettingsManager::getInstance()->value( key, SettingsManager::Project )->get().toBool()
 
 
-#define VLMC_CREATE_PROJECT_VAR( key, defaultValue, desc )  \
-SettingsManager::getInstance()->createVar( key, defaultValue, QObject::tr(desc), \
-                                           SettingsManager::Project );
-#define VLMC_CREATE_PREFERENCE( key, defaultValue, desc )  \
-SettingsManager::getInstance()->createVar( key, defaultValue, QObject::tr(desc), \
-                                           SettingsManager::Vlmc );
+#define VLMC_CREATE_PROJECT_VAR( key, defaultValue, name, desc )  \
+SettingsManager::getInstance()->createVar( key, defaultValue, QObject::tr( name ), \
+                                           QObject::tr(desc), SettingsManager::Project );
+#define VLMC_CREATE_PREFERENCE( key, defaultValue, name, desc )  \
+SettingsManager::getInstance()->createVar( key, defaultValue, QObject::tr( name ),  \
+                                           QObject::tr(desc), SettingsManager::Vlmc );
 
 class   SettingsManager : public QObject, public Singleton<SettingsManager>
 {
@@ -84,7 +84,8 @@ class   SettingsManager : public QObject, public Singleton<SettingsManager>
 
         void                        createVar( const QString &key,
                                                const QVariant &defaultValue,
-                                               const QString &desc, Type type = Vlmc );
+                                               const QString &name, const QString &desc,
+                                               Type type = Vlmc );
         bool                        watchValue( const QString &key,
                                                 QObject* receiver,
                                                 const char *method,

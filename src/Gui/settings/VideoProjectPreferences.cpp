@@ -36,10 +36,10 @@ VideoProjectPreferences::~VideoProjectPreferences() { }
 
 void    VideoProjectPreferences::load()
 {
-    int projectWidth = VLMC_PROJECT_GET_INT( "project/VideoProjectWidth" );
-    int projectHeight = VLMC_PROJECT_GET_INT( "project/VideoProjectHeight" );
+    int projectWidth = VLMC_PROJECT_GET_INT( "video/VideoProjectWidth" );
+    int projectHeight = VLMC_PROJECT_GET_INT( "video/VideoProjectHeight" );
     //FIXME: fps is a double value
-    int projectFps = VLMC_PROJECT_GET_INT( "global/VLMCOutputFPS" );
+    int projectFps = VLMC_PROJECT_GET_INT( "video/VLMCOutputFPS" );
 
     m_ui.FPSSpinBox->setValue( projectFps );
     m_ui.HeightSpinBox->setValue( projectHeight );
@@ -53,9 +53,9 @@ void    VideoProjectPreferences::save()
     QVariant    projectHeight( m_ui.HeightSpinBox->value() );
     QVariant    projectWidth( m_ui.WidthSpinBox->value() );
 
-    settMan->setImmediateValue( "global/VLMCOutputFPS", projectFps, m_type );
-    settMan->setImmediateValue( "project/VideoProjectHeight", projectHeight, m_type );
-    settMan->setImmediateValue( "project/VideoProjectWidth", projectWidth, m_type );
+    settMan->setImmediateValue( "video/VLMCOutputFPS", projectFps, m_type );
+    settMan->setImmediateValue( "video/VideoProjectHeight", projectHeight, m_type );
+    settMan->setImmediateValue( "video/VideoProjectWidth", projectWidth, m_type );
     return ;
 }
 

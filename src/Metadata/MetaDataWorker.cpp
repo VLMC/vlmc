@@ -139,7 +139,7 @@ MetaDataWorker::metaDataAvailable()
     }
     else
     {
-        double fps = VLMC_GET_DOUBLE( "project/VideoProjectFPS" );
+        double fps = VLMC_GET_DOUBLE( "video/VideoProjectFPS" );
         m_media->setFps( fps );
     }
     m_media->setLength( m_mediaPlayer->getLength() );

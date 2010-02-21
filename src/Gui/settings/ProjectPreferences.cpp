@@ -39,7 +39,7 @@ ProjectPreferences::~ProjectPreferences() { }
 
 void    ProjectPreferences::load()
 {
-    QString  Name = VLMC_PROJECT_GET_STRING( "project/ProjectName" );
+    QString  Name = VLMC_PROJECT_GET_STRING( "general/ProjectName" );
 
     m_ui.ProjectNameLineEdit->setText( Name );
 }
@@ -49,7 +49,7 @@ void    ProjectPreferences::save()
     SettingsManager* settMan = SettingsManager::getInstance();
     QVariant name( m_ui.ProjectNameLineEdit->text() );
 
-    settMan->setImmediateValue( "project/ProjectName", name, m_type );
+    settMan->setImmediateValue( "general/ProjectName", name, m_type );
 }
 
 void ProjectPreferences::changeEvent( QEvent *e )

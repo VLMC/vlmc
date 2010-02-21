@@ -160,13 +160,13 @@ WorkflowFileRenderer::getUnlockCallback()
 quint32
 WorkflowFileRenderer::width() const
 {
-    return VLMC_GET_UINT( "project/VideoProjectWidth" );
+    return VLMC_GET_UINT( "video/VideoProjectWidth" );
 }
 
 quint32
 WorkflowFileRenderer::height() const
 {
-    return VLMC_GET_UINT( "project/VideoProjectHeight" );
+    return VLMC_GET_UINT( "video/VideoProjectHeight" );
 }
 
 void

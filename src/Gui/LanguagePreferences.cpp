@@ -79,7 +79,7 @@ LanguagePreferences::~LanguagePreferences() {}
 
 void LanguagePreferences::load()
 {
-    QString     lang = VLMC_GET_STRING( "global/VLMCLang" );
+    QString     lang = VLMC_GET_STRING( "general/VLMCLang" );
     int idx = m_ui.comboBoxLanguage->findData( lang );
 
     if ( idx != -1 )

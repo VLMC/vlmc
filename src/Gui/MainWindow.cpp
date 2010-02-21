@@ -172,26 +172,26 @@ void MainWindow::changeEvent( QEvent *e )
 void
 MainWindow::initVlmcPreferences()
 {
-    VLMC_CREATE_PREFERENCE( "keyboard/defaultmode", "n", "Select mode" );
-    VLMC_CREATE_PREFERENCE( "keyboard/cutmode", "x", "Cut mode" );
-    VLMC_CREATE_PREFERENCE( "keyboard/mediapreview", "Ctrl+Return", "Media preview" );
-    VLMC_CREATE_PREFERENCE( "keyboard/renderpreview", "Space", "Render preview" );
+    VLMC_CREATE_PREFERENCE( "keyboard/defaultmode", "n", "Select mode", "Select the selection tool in the timeline" );
+    VLMC_CREATE_PREFERENCE( "keyboard/cutmode", "x", "Cut mode", "Select the cut/razor tool in the timeline" );
+    VLMC_CREATE_PREFERENCE( "keyboard/mediapreview", "Ctrl+Return", "Media preview", "Preview the selected media, or pause the current preview" );
+    VLMC_CREATE_PREFERENCE( "keyboard/renderpreview", "Space", "Render preview", "Preview the project, or pause the current preview" );
     //A bit nasty, but we better use what Qt's providing as default shortcut
-    VLMC_CREATE_PREFERENCE( "keyboard/undo", QKeySequence( QKeySequence::Undo ).toString().toLocal8Bit(), "Undo" );
-    VLMC_CREATE_PREFERENCE( "keyboard/redo", QKeySequence( QKeySequence::Redo ).toString().toLocal8Bit(), "Redo" );
-    VLMC_CREATE_PREFERENCE( "keyboard/help", QKeySequence( QKeySequence::HelpContents ).toString().toLocal8Bit(), "Help" );
-    VLMC_CREATE_PREFERENCE( "keyboard/quit", "Ctrl+Q", "Quit" );
-    VLMC_CREATE_PREFERENCE( "keyboard/preferences", "Alt+P", "Preferences" );
-    VLMC_CREATE_PREFERENCE( "keyboard/fullscreen", "F", "Fullscreen" );
-    VLMC_CREATE_PREFERENCE( "keyboard/newproject", QKeySequence( QKeySequence::New ).toString().toLocal8Bit(), "New project" );
-    VLMC_CREATE_PREFERENCE( "keyboard/openproject", QKeySequence( QKeySequence::Open ).toString().toLocal8Bit(), "Open a project" );
-    VLMC_CREATE_PREFERENCE( "keyboard/save", QKeySequence( QKeySequence::Save ).toString().toLocal8Bit(), "Save" );
-    VLMC_CREATE_PREFERENCE( "keyboard/saveas", "Ctrl+Shift+S", "Save as" );
-    VLMC_CREATE_PREFERENCE( "keyboard/closeproject", QKeySequence( QKeySequence::Close ).toString().toLocal8Bit(), "Close the project" );
-    VLMC_CREATE_PREFERENCE( "keyboard/importmedia", "Ctrl+I", "Import media" );
-    VLMC_CREATE_PREFERENCE( "keyboard/renderproject", "Ctrl+R", "Render the project" );
+    VLMC_CREATE_PREFERENCE( "keyboard/undo", QKeySequence( QKeySequence::Undo ).toString().toLocal8Bit(), "Undo", "Undo the last action" );
+    VLMC_CREATE_PREFERENCE( "keyboard/redo", QKeySequence( QKeySequence::Redo ).toString().toLocal8Bit(), "Redo", "Redo the last action" );
+    VLMC_CREATE_PREFERENCE( "keyboard/help", QKeySequence( QKeySequence::HelpContents ).toString().toLocal8Bit(), "Help", "Toggle the help page" );
+    VLMC_CREATE_PREFERENCE( "keyboard/quit", "Ctrl+Q", "Quit", "Quit VLMC" );
+    VLMC_CREATE_PREFERENCE( "keyboard/preferences", "Alt+P", "Preferences", "Open VLMC preferences" );
+    VLMC_CREATE_PREFERENCE( "keyboard/fullscreen", "F", "Fullscreen", "Switch to fullscreen mode" );
+    VLMC_CREATE_PREFERENCE( "keyboard/newproject", QKeySequence( QKeySequence::New ).toString().toLocal8Bit(), "New project", "Open the new project wizzard" );
+    VLMC_CREATE_PREFERENCE( "keyboard/openproject", QKeySequence( QKeySequence::Open ).toString().toLocal8Bit(), "Open a project", "Open an existing project" );
+    VLMC_CREATE_PREFERENCE( "keyboard/save", QKeySequence( QKeySequence::Save ).toString().toLocal8Bit(), "Save", "Save the current project" );
+    VLMC_CREATE_PREFERENCE( "keyboard/saveas", "Ctrl+Shift+S", "Save as", "Save the current project to a new file" );
+    VLMC_CREATE_PREFERENCE( "keyboard/closeproject", QKeySequence( QKeySequence::Close ).toString().toLocal8Bit(), "Close the project", "Close the current project" );
+    VLMC_CREATE_PREFERENCE( "keyboard/importmedia", "Ctrl+I", "Import media", "Open the import window" );
+    VLMC_CREATE_PREFERENCE( "keyboard/renderproject", "Ctrl+R", "Render the project", "Render the project to a file" );
 
-    VLMC_CREATE_PREFERENCE( "global/VLMCLang", "en_US", "The VLMC's UI language" );
+    VLMC_CREATE_PREFERENCE( "global/VLMCLang", "en_US", "Langage", "The VLMC's UI language" );
 }
 
 void        MainWindow::setupLibrary()
