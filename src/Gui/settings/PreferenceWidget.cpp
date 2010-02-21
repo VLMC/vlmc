@@ -5,6 +5,7 @@
  * Copyright (C) 2008-2010 VideoLAN
  *
  * Authors: Clement CHAVANCE <kinder@vlmc.org>
+ *          Hugo Beauzée-Luyssen <hugo@vlmc.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,6 +26,7 @@
 #include "PreferenceWidget.h"
 #include "SettingsManager.h"
 #include "KeyboardShortcut.h"
+#include "LanguageWidget.h"
 
 #include <QFormLayout>
 #include <QtDebug>
@@ -61,6 +63,8 @@ PreferenceWidget::widgetFactory( SettingValue *s )
     {
     case SettingValue::KeyboardShortcut:
         return new KeyboardShortcut( s, this );
+    case SettingValue::Language:
+        return new LanguageWidget( s, this );
     default:
         return NULL;
     }

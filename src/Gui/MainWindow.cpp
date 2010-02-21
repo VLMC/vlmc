@@ -185,7 +185,7 @@ MainWindow::initVlmcPreferences()
     VLMC_CREATE_PREFERENCE_KEYBOARD( "keyboard/importmedia", "Ctrl+I", "Import media", "Open the import window" );
     VLMC_CREATE_PREFERENCE_KEYBOARD( "keyboard/renderproject", "Ctrl+R", "Render the project", "Render the project to a file" );
 
-    VLMC_CREATE_PREFERENCE_LANGUAGE( "global/VLMCLang", "en_US", "Langage", "The VLMC's UI language" );
+    VLMC_CREATE_PREFERENCE_LANGUAGE( "general/VLMCLang", "en_US", "Langage", "The VLMC's UI language" );
 }
 
 void        MainWindow::setupLibrary()
