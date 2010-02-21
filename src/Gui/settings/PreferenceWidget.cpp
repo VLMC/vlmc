@@ -26,11 +26,12 @@
 #include "PreferenceWidget.h"
 #include "SettingsManager.h"
 
+#include "BoolWidget.h"
+#include "DoubleWidget.h"
+#include "IntWidget.h"
 #include "KeyboardShortcut.h"
 #include "LanguageWidget.h"
 #include "StringWidget.h"
-#include "IntWidget.h"
-#include "DoubleWidget.h"
 
 #include <QFormLayout>
 #include <QtDebug>
@@ -48,13 +49,7 @@ PreferenceWidget::PreferenceWidget( const QString &categorie, SettingsManager::T
     foreach ( SettingValue* s, settings.values() )
     {
         ISettingsCategorieWidget    *widget = widgetFactory( s );
-        if ( widget == NULL )
-            layout->addRow( s->name(), new QLabel( s->description() ) );
-        else
-        {
-            layout->addRow( s->name(), widget->widget() );
-            m_settings.push_back( widget );
-        }
+        layout->addRow( s->name(), new QLabel( s->description() ) );
     }
 
     setLayout( layout );
@@ -75,8 +70,8 @@ PreferenceWidget::widgetFactory( SettingValue *s )
         return new IntWidget( s, this );
     case SettingValue::Double:
         return new DoubleWidget( s, this );
-    default:
-        return NULL;
+    case SettingValue::Bool:
+        return new BoolWidget( s, this );
     }
 }
 

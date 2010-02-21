@@ -1,5 +1,5 @@
 /*****************************************************************************
- * DoubleWidget.cpp Handle double and float settings.
+ * BoolWidget.h Handle boolean settings.
  *****************************************************************************
  * Copyright (C) 2008-2010 VideoLAN
  *
@@ -20,26 +20,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "DoubleWidget.h"
-#include "SettingValue.h"
+#ifndef BOOLWIDGET_H
+#define BOOLWIDGET_H
 
-#include <QDoubleSpinBox>
+#include "ISettingsCategorieWidget.h"
+#include <stddef.h>
 
-DoubleWidget::DoubleWidget( SettingValue *s, QWidget *parent /*= NULL*/ ) :
-        m_setting( s )
+class   SettingValue;
+
+class   QCheckBox;
+
+class   BoolWidget : public ISettingsCategorieWidget
 {
-    m_spinbox = new QDoubleSpinBox( parent );
-    m_spinbox->setValue( s->get().toDouble() );
-}
+    public:
+        BoolWidget( SettingValue *s, QWidget *parent = NULL );
+        QWidget*                widget();
+        void                    save();
 
-QWidget*
-DoubleWidget::widget()
-{
-    return m_spinbox;
-}
+    private:
+        SettingValue            *m_setting;
+        QCheckBox               *m_checkbox;
+};
 
-void
-DoubleWidget::save()
-{
-    m_setting->set( m_spinbox->value() );
-}
+
+#endif // BOOLWIDGET_H
