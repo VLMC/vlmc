@@ -29,7 +29,6 @@
 #include <QWriteLocker>
 #include <QReadLocker>
 #include <QXmlStreamWriter>
-#include <QRegExp>
 #include <QStringList>
 
 #include <QtDebug>
