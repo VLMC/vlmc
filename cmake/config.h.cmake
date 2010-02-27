@@ -16,4 +16,7 @@
 /* Host computer name */
 #cmakedefine HOSTNAME "@HOSTNAME@"
 
+/* VLMC's version */
+#cmakedefine PROJECT_VERSION "@PROJECT_VERSION@"
+
 #endif //CONFIG_H
