@@ -168,10 +168,17 @@ void AbstractGraphicsMediaItem::contextMenuEvent( QGraphicsSceneContextMenuEvent
         Q_ASSERT( item1 );
         Q_ASSERT( item2 );
 
-        if ( item1->mediaType() != item2->mediaType() )
+        if ( item1 == this )
+            item1 = item2;
+        //From here, the item we click on is "this" and the item to group is "item1"
+
+        if ( item1->mediaType() != mediaType() )
         {
-            item1->group( item2 );
-            tracksView()->moveMediaItem( item1, item1->trackNumber(), item1->startPos() );
+            item1->group( this );
+            tracksView()->moveMediaItem( item1, item1->trackNumber(), startPos() );
+            MainWorkflow::getInstance()->moveClip( item1->clip()->getUuid(), item1->trackNumber(),
+                                                   trackNumber(), startPos(),
+                                                   item1->mediaType() );
         }
     }
     else if ( selectedAction == unlinkAction )
