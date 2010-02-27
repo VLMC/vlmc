@@ -198,10 +198,15 @@ MainWindow::initVlmcPreferences()
                                                 SettingsManager::Vlmc );
 
     //Load saved preferences :
-    loadVlmcPreferences( "keyboard" );
-    loadVlmcPreferences( "general" );
-
-
+    QSettings       s;
+    if ( s.value( "VlmcVersion" ).toString() != PROJECT_VERSION )
+        s.clear();
+    else
+    {
+        loadVlmcPreferences( "keyboard" );
+        loadVlmcPreferences( "general" );
+    }
+    s.setValue( "VlmcVersion", PROJECT_VERSION );
 }
 
 void
