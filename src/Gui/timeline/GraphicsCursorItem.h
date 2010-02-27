@@ -30,22 +30,23 @@
 #include <QPainter>
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
-#include "GenericRenderer.h"
+#include "MainWorkflow.h"
 
 class GraphicsCursorItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
 public:
     GraphicsCursorItem( const QPen& pen );
-    int cursorPos() const { return ( int )pos().x(); }
-    virtual QRectF boundingRect() const;
-    void setHeight( int height );
+    int                 cursorPos() const { return ( int )pos().x(); }
+    virtual QRectF      boundingRect() const;
+    void                setHeight( int height );
 
 protected:
-    virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
-    virtual QVariant itemChange( GraphicsItemChange change, const QVariant& value );
-    virtual void mousePressEvent( QGraphicsSceneMouseEvent* event );
-    virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
+    virtual void        paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
+    virtual QVariant    itemChange( GraphicsItemChange change, const QVariant& value );
+    virtual void        mousePressEvent( QGraphicsSceneMouseEvent* event );
+    virtual void        mouseReleaseEvent( QGraphicsSceneMouseEvent* event );
+    virtual void        mouseMoveEvent( QGraphicsSceneMouseEvent *event );
 
 private:
     QPen        m_pen;

@@ -70,6 +70,13 @@ void GraphicsCursorItem::mousePressEvent( QGraphicsSceneMouseEvent* event )
     QGraphicsItem::mousePressEvent( event );
 }
 
+void
+GraphicsCursorItem::mouseMoveEvent( QGraphicsSceneMouseEvent *event )
+{
+    QGraphicsItem::mouseMoveEvent( event );
+    setPos( pos().x(), 0.0 );
+}
+
 void GraphicsCursorItem::mouseReleaseEvent( QGraphicsSceneMouseEvent* event )
 {
     m_mouseDown = false;
