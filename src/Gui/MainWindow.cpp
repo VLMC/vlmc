@@ -133,6 +133,7 @@ MainWindow::MainWindow( QWidget *parent ) :
 #endif
         m_pWizard->show();
     }
+    s.setValue( "VlmcVersion", PROJECT_VERSION );
 }
 
 MainWindow::~MainWindow()
