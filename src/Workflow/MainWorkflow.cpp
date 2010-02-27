@@ -465,7 +465,7 @@ MainWorkflow::split( Clip* toSplit, Clip* newClip, quint32 trackId, qint64 newCl
     QMutexLocker    lock( m_renderStartedMutex );
 
     if ( newClip == NULL )
-        newClip = new Clip( toSplit, newClipBegin, toSplit->getEnd() );
+        newClip = new Clip( toSplit, newClipBegin, toSplit->end() );
 
     toSplit->setEnd( newClipBegin, true );
     addClip( newClip, trackId, newClipPos, trackType );
@@ -479,9 +479,9 @@ MainWorkflow::resizeClip( Clip* clip, qint64 newBegin, qint64 newEnd, qint64 new
 {
     QMutexLocker    lock( m_renderStartedMutex );
 
-    if ( newBegin != clip->getBegin() )
+    if ( newBegin != clip->begin() )
     {
-        moveClip( clip->getUuid(), trackId, trackId, newPos, trackType, undoRedoAction );
+        moveClip( clip->uuid(), trackId, trackId, newPos, trackType, undoRedoAction );
     }
     clip->setBoundaries( newBegin, newEnd );
 }
@@ -492,6 +492,6 @@ MainWorkflow::unsplit( Clip* origin, Clip* splitted, quint32 trackId,
 {
     QMutexLocker    lock( m_renderStartedMutex );
 
-    removeClip( splitted->getUuid(), trackId, trackType );
-    origin->setEnd( splitted->getEnd(), true );
+    removeClip( splitted->uuid(), trackId, trackType );
+    origin->setEnd( splitted->end(), true );
 }

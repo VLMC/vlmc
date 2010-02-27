@@ -91,7 +91,7 @@ void    ClipWorkflow::adjustBegin()
     if ( m_clip->getParent()->fileType() == Media::Video ||
          m_clip->getParent()->fileType() == Media::Audio )
     {
-        m_mediaPlayer->setTime( m_clip->getBegin() /
+        m_mediaPlayer->setTime( m_clip->begin() /
                                 m_clip->getParent()->fps() * 1000 );
     }
 }

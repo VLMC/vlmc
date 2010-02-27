@@ -91,7 +91,7 @@ void                TrackWorkflow::computeLength()
         return ;
     }
     QMap<qint64, ClipWorkflow*>::const_iterator it = m_clips.end() - 1;
-    m_length = (it.key() + it.value()->getClip()->getLength() );
+    m_length = (it.key() + it.value()->getClip()->length() );
 }
 
 qint64              TrackWorkflow::getLength() const
@@ -106,7 +106,7 @@ qint64              TrackWorkflow::getClipPosition( const QUuid& uuid ) const
 
     while ( it != end )
     {
-        if ( it.value()->getClip()->getUuid() == uuid )
+        if ( it.value()->getClip()->uuid() == uuid )
             return it.key();
         ++it;
     }
@@ -120,7 +120,7 @@ Clip*               TrackWorkflow::getClip( const QUuid& uuid )
 
     while ( it != end )
     {
-        if ( it.value()->getClip()->getUuid() == uuid )
+        if ( it.value()->getClip()->uuid() == uuid )
             return it.value()->getClip();
         ++it;
     }
@@ -153,7 +153,7 @@ TrackWorkflow::renderClip( ClipWorkflow* cw, qint64 currentFrame,
         cw->getStateLock()->unlock();
         cw->initialize();
         cw->waitForCompleteInit();
-        if ( start != currentFrame || cw->getClip()->getBegin() != 0 ) //Clip was not started as its real begining
+        if ( start != currentFrame || cw->getClip()->begin() != 0 ) //Clip was not started as its real begining
         {
             adjustClipTime( currentFrame, start, cw );
         }
@@ -208,7 +208,7 @@ bool                TrackWorkflow::checkEnd( qint64 currentFrame ) const
     //This is the last video by chronological order :
     QMap<qint64, ClipWorkflow*>::const_iterator   it = m_clips.end() - 1;
     //If it ends before the current frame, we reached end.
-    return ( it.value()->getClip()->getLength() + it.key() < currentFrame );
+    return ( it.value()->getClip()->length() + it.key() < currentFrame );
 }
 
 void
@@ -286,7 +286,7 @@ TrackWorkflow::getOutput( qint64 currentFrame, qint64 subFrame, bool paused )
         ClipWorkflow*   cw = it.value();
         //Is the clip supposed to render now ?
 //        qDebug() << "Start:" << start << "Current Frame:" << currentFrame;
-        if ( start <= currentFrame && currentFrame <= start + cw->getClip()->getLength() )
+        if ( start <= currentFrame && currentFrame <= start + cw->getClip()->length() )
         {
             if ( ret != NULL )
                 qCritical() << "There's more than one clip to render here. Undefined behaviour !";
@@ -320,7 +320,7 @@ void            TrackWorkflow::moveClip( const QUuid& id, qint64 startingFrame )
 
     while ( it != end )
     {
-        if ( it.value()->getClip()->getUuid() == id )
+        if ( it.value()->getClip()->uuid() == id )
         {
             ClipWorkflow* cw = it.value();
             m_clips.erase( it );
@@ -344,7 +344,7 @@ Clip*       TrackWorkflow::removeClip( const QUuid& id )
 
     while ( it != end )
     {
-        if ( it.value()->getClip()->getUuid() == id )
+        if ( it.value()->getClip()->uuid() == id )
         {
             ClipWorkflow*   cw = it.value();
             Clip*           clip = cw->getClip();
@@ -371,7 +371,7 @@ ClipWorkflow*       TrackWorkflow::removeClipWorkflow( const QUuid& id )
 
     while ( it != end )
     {
-        if ( it.value()->getClip()->getUuid() == id )
+        if ( it.value()->getClip()->uuid() == id )
         {
             ClipWorkflow*   cw = it.value();
             cw->disconnect();
@@ -413,14 +413,14 @@ void    TrackWorkflow::save( QDomDocument& doc, QDomElement& trackNode ) const
         {
             QDomElement     begin = doc.createElement( "begin" );
 
-            QDomCharacterData   text = doc.createTextNode( QString::number( it.value()->getClip()->getBegin() ) );
+            QDomCharacterData   text = doc.createTextNode( QString::number( it.value()->getClip()->begin() ) );
             begin.appendChild( text );
             clipNode.appendChild( begin );
         }
         {
             QDomElement     end = doc.createElement( "end" );
 
-            QDomCharacterData   text = doc.createTextNode( QString::number( it.value()->getClip()->getEnd() ) );
+            QDomCharacterData   text = doc.createTextNode( QString::number( it.value()->getClip()->end() ) );
             end.appendChild( text );
             clipNode.appendChild( end );
         }
@@ -454,7 +454,7 @@ void    TrackWorkflow::clear()
 void    TrackWorkflow::adjustClipTime( qint64 currentFrame, qint64 start, ClipWorkflow* cw )
 {
     qint64  nbMs = ( currentFrame - start ) / cw->getClip()->getParent()->fps() * 1000;
-    qint64  beginInMs = cw->getClip()->getBegin() / cw->getClip()->getParent()->fps() * 1000;
+    qint64  beginInMs = cw->getClip()->begin() / cw->getClip()->getParent()->fps() * 1000;
     qint64  startFrame = beginInMs + nbMs;
     cw->setTime( startFrame );
 }
@@ -485,7 +485,7 @@ TrackWorkflow::muteClip( const QUuid &uuid )
 
     while ( it != end )
     {
-        if ( it.value()->getClip()->getUuid() == uuid )
+        if ( it.value()->getClip()->uuid() == uuid )
         {
             it.value()->mute();
             return ;
@@ -506,7 +506,7 @@ TrackWorkflow::unmuteClip( const QUuid &uuid )
 
     while ( it != end )
     {
-        if ( it.value()->getClip()->getUuid() == uuid )
+        if ( it.value()->getClip()->uuid() == uuid )
         {
             it.value()->unmute();
             return ;

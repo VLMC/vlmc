@@ -72,14 +72,14 @@ ClipRenderer::setMedia( Media *media )
 void
 ClipRenderer::setClip( Clip *clip )
 {
-    if ( clip == NULL || clip->getLength() == 0 )
+    if ( clip == NULL || clip->length() == 0 )
     {
         m_selectedMedia = NULL;
         return ;
     }
     m_selectedMedia = clip->getParent();
-    m_begin = clip->getBegin();
-    m_end = clip->getEnd();
+    m_begin = clip->begin();
+    m_end = clip->end();
     if ( m_isRendering == true )
         m_mediaChanged = true;
     else

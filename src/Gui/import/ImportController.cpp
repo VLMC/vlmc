@@ -216,7 +216,7 @@ void
 ImportController::setUIMetaData( Clip* clip )
 {
     QTime   time;
-    qint64  length = clip->getLengthSecond();
+    qint64  length = clip->lengthSecond();
     time = time.addSecs( length );
     m_ui->durationValueLabel->setText( time.toString( "hh:mm:ss" ) );
     m_ui->nameValueLabel->setText( clip->getParent()->fileInfo()->fileName() );

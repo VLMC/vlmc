@@ -144,13 +144,13 @@ void AbstractGraphicsMediaItem::contextMenuEvent( QGraphicsSceneContextMenuEvent
 
         if ( ( m_muted = muteAction->isChecked() ) )
         {
-            tracksView()->m_mainWorkflow->muteClip( clip()->getUuid(),
+            tracksView()->m_mainWorkflow->muteClip( clip()->uuid(),
                                                     trackNumber(),
                                                     mediaType() );
         }
         else
         {
-            tracksView()->m_mainWorkflow->unmuteClip( clip()->getUuid(),
+            tracksView()->m_mainWorkflow->unmuteClip( clip()->uuid(),
                                                     trackNumber(),
                                                     mediaType() );
         }
@@ -176,7 +176,7 @@ void AbstractGraphicsMediaItem::contextMenuEvent( QGraphicsSceneContextMenuEvent
         {
             item1->group( this );
             tracksView()->moveMediaItem( item1, item1->trackNumber(), startPos() );
-            MainWorkflow::getInstance()->moveClip( item1->clip()->getUuid(), item1->trackNumber(),
+            MainWorkflow::getInstance()->moveClip( item1->clip()->uuid(), item1->trackNumber(),
                                                    trackNumber(), startPos(),
                                                    item1->mediaType() );
         }
@@ -216,13 +216,13 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
         return;
 
     if ( clip()->getParent()->fileType() != Media::Image )
-        if ( size > clip()->getMaxEnd() )
+        if ( size > clip()->maxEnd() )
             return;
 
     if ( from == BEGINNING )
     {
         if ( clip()->getParent()->fileType() != Media::Image )
-            if ( clip()->getBegin() + size > clip()->getMaxEnd() )
+            if ( clip()->begin() + size > clip()->maxEnd() )
                 return;
         //FIXME
 //        tracksView()->getRenderer()->resizeClip( clip(), clip()->getBegin(), clip()->getBegin() + size, 0, //This parameter is unused in this case
@@ -232,16 +232,16 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
     {
         if ( clip()->getParent()->fileType() != Media::Image )
         {
-            qint64 newBegin = qMax( clip()->getEnd() - size, (qint64)0 );
-            if ( clip()->getMaxBegin() > newBegin )
+            qint64 newBegin = qMax( clip()->end() - size, (qint64)0 );
+            if ( clip()->maxBegin() > newBegin )
                 return;
 
             m_resizeExpected = true;
-            qint64 oldLength = clip()->getLength();
+            qint64 oldLength = clip()->length();
             qint64  newStart = startPos() + ( oldLength - size );
             if ( newStart < 0 )
                 return ;
-            MainWorkflow::getInstance()->resizeClip( clip(), qMax( clip()->getEnd() - size, (qint64)0 ), clip()->getEnd(),
+            MainWorkflow::getInstance()->resizeClip( clip(), qMax( clip()->end() - size, (qint64)0 ), clip()->end(),
                                                      newStart, trackNumber(), mediaType() );
             setStartPos( newStart );
             //FIXME
@@ -249,7 +249,7 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
         else
         {
             m_resizeExpected = true;
-            qint64 oldLength = clip()->getLength();
+            qint64 oldLength = clip()->length();
 //            Commands::trigger( new Commands::MainWorkflow::ResizeClip( clip()->getUuid(),
 //                                                                       0, size, startPos(),
 //                                                                       startPos() + oldLength,
@@ -262,7 +262,7 @@ void AbstractGraphicsMediaItem::resize( qint64 size, From from )
         }
     }
 
-    setWidth( clip()->getLength() );
+    setWidth( clip()->length() );
 }
 
 void AbstractGraphicsMediaItem::adjustLength()
@@ -273,7 +273,7 @@ void AbstractGraphicsMediaItem::adjustLength()
         return ;
     }
     Q_ASSERT( clip() );
-    resize( clip()->getLength() );
+    resize( clip()->length() );
 }
 
 bool AbstractGraphicsMediaItem::resizeZone( const QPointF& position )

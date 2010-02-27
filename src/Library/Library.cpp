@@ -263,9 +263,9 @@ Library::saveProject( QDomDocument& doc, QDomElement& rootNode )
             foreach( Clip* c, it.value()->clips()->values() )
             {
                 QDomElement clip = doc.createElement( "clip" );
-                clip.setAttribute( "begin", c->getBegin() );
-                clip.setAttribute( "end", c->getEnd() );
-                clip.setAttribute( "uuid", c->getUuid() );
+                clip.setAttribute( "begin", c->begin() );
+                clip.setAttribute( "end", c->end() );
+                clip.setAttribute( "uuid", c->uuid() );
                 clip.setAttribute( "parentUuid", c->getParent()->uuid() );
                 clips.appendChild( clip );
             }

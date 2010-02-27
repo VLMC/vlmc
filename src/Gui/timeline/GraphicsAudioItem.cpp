@@ -42,7 +42,7 @@ GraphicsAudioItem::GraphicsAudioItem( Clip* clip ) : m_clip( clip )
     setAcceptHoverEvents( true );
 
     // Adjust the width
-    setWidth( clip->getLength() );
+    setWidth( clip->length() );
     // Automatically adjust future changes
     connect( clip, SIGNAL( lengthUpdated() ), this, SLOT( adjustLength() ) );
 }

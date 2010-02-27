@@ -31,7 +31,7 @@
 
 const int   Clip::DefaultFPS = 30;
 
-Clip::Clip( Media* parent ) :
+Clip::Clip( Media *parent ) :
         m_parent( parent ),
         m_begin( 0 ),
         m_end( parent->nbFrames() ),
@@ -42,7 +42,7 @@ Clip::Clip( Media* parent ) :
     computeLength();
 }
 
-Clip::Clip( Clip* creator, qint64 begin, qint64 end ) :
+Clip::Clip( Clip *creator, qint64 begin, qint64 end ) :
         m_parent( creator->getParent() ),
         m_begin( begin ),
         m_end( end ),
@@ -53,7 +53,7 @@ Clip::Clip( Clip* creator, qint64 begin, qint64 end ) :
     computeLength();
 }
 
-Clip::Clip( Media* parent, qint64 begin, qint64 end /*= -1*/ ) :
+Clip::Clip( Media *parent, qint64 begin, qint64 end /*= -1*/ ) :
         m_parent( parent ),
         m_begin( begin ),
         m_end( end ),
@@ -72,7 +72,7 @@ Clip::Clip( Media* parent, qint64 begin, qint64 end /*= -1*/ ) :
     computeLength();
 }
 
-Clip::Clip( const Clip* clip ) :
+Clip::Clip( const Clip *clip ) :
         m_parent( clip->m_parent ),
         m_begin( clip->m_begin ),
         m_end( clip->m_end ),
@@ -86,7 +86,7 @@ Clip::Clip( const Clip* clip ) :
     m_Uuid = QUuid::createUuid();
 }
 
-Clip::Clip( const QUuid& uuid, qint64 begin, qint64 end ) :
+Clip::Clip( const QUuid &uuid, qint64 begin, qint64 end ) :
         m_begin( begin),
         m_end( end ),
         m_maxBegin( begin ),
@@ -100,7 +100,7 @@ Clip::Clip( const QUuid& uuid, qint64 begin, qint64 end ) :
     computeLength();
 }
 
-Clip::Clip( Media* parent, qint64 begin, qint64 end, const QUuid& uuid )
+Clip::Clip( Media *parent, qint64 begin, qint64 end, const QUuid &uuid )
     : m_parent( parent ),
     m_begin( begin ),
     m_end( end ),
@@ -114,32 +114,38 @@ Clip::~Clip()
 {
 }
 
-qint64      Clip::getBegin() const
+qint64
+Clip::begin() const
 {
     return m_begin;
 }
 
-qint64      Clip::getEnd() const
+qint64
+Clip::end() const
 {
     return m_end;
 }
 
-Media*      Clip::getParent()
+Media*
+Clip::getParent()
 {
     return m_parent;
 }
 
-qint64      Clip::getLength() const
+qint64
+Clip::length() const
 {
     return m_length;
 }
 
-qint64      Clip::getLengthSecond() const
+qint64
+Clip::lengthSecond() const
 {
     return m_lengthSeconds;
 }
 
-void        Clip::computeLength()
+void
+Clip::computeLength()
 {
     if ( m_parent->inputType() == Media::File )
     {
@@ -157,17 +163,20 @@ void        Clip::computeLength()
     }
 }
 
-const QStringList&      Clip::getMetaTags() const
+const QStringList&
+Clip::metaTags() const
 {
     return m_metaTags;
 }
 
-void            Clip::setMetaTags( const QStringList& tags )
+void
+Clip::setMetaTags( const QStringList &tags )
 {
     m_metaTags = tags;
 }
 
-bool            Clip::matchMetaTag( const QString& tag ) const
+bool
+Clip::matchMetaTag( const QString &tag ) const
 {
     if ( tag.length() == 0 )
         return true;
@@ -182,23 +191,27 @@ bool            Clip::matchMetaTag( const QString& tag ) const
     return false;
 }
 
-const   QString&    Clip::getNotes() const
+const QString&
+Clip::notes() const
 {
     return m_notes;
 }
 
-void                Clip::setNotes( const QString& notes )
+void
+Clip::setNotes( const QString &notes )
 {
     m_notes = notes;
 }
 
-const QUuid&        Clip::getUuid() const
+const QUuid&
+Clip::uuid() const
 {
     Q_ASSERT( m_Uuid.isNull() == false );
     return m_Uuid;
 }
 
-void                Clip::setBegin( qint64 begin, bool updateMax /*= false*/ )
+void
+Clip::setBegin( qint64 begin, bool updateMax /*= false*/ )
 {
     Q_ASSERT( begin >= .0f );
     if ( begin == m_begin ) return;
@@ -208,7 +221,8 @@ void                Clip::setBegin( qint64 begin, bool updateMax /*= false*/ )
     computeLength();
 }
 
-void                Clip::setEnd( qint64 end, bool updateMax /*= false*/ )
+void
+Clip::setEnd( qint64 end, bool updateMax /*= false*/ )
 {
     if ( end == m_end ) return;
     m_end = end;
@@ -217,7 +231,8 @@ void                Clip::setEnd( qint64 end, bool updateMax /*= false*/ )
     computeLength();
 }
 
-void                Clip::setBoundaries( qint64 newBegin, qint64 newEnd, bool updateMax /*= false*/ )
+void
+Clip::setBoundaries( qint64 newBegin, qint64 newEnd, bool updateMax /*= false*/ )
 {
     Q_ASSERT( newBegin < newEnd );
     if ( newBegin == m_begin && m_end == newEnd )
@@ -232,12 +247,14 @@ void                Clip::setBoundaries( qint64 newBegin, qint64 newEnd, bool up
     computeLength();
 }
 
-qint64              Clip::getMaxBegin() const
+qint64
+Clip::maxBegin() const
 {
     return m_maxBegin;
 }
 
-qint64              Clip::getMaxEnd() const
+qint64
+Clip::maxEnd() const
 {
     return m_maxEnd;
 }

@@ -173,5 +173,5 @@ void Timeline::actionMoveClip( const QUuid& uuid, unsigned int track, qint64 tim
 
 void Timeline::actionRemoveClip( Clip* clip, unsigned int track, MainWorkflow::TrackType trackType )
 {
-    tracksView()->removeMediaItem( clip->getUuid(), track, trackType );
+    tracksView()->removeMediaItem( clip->uuid(), track, trackType );
 }
