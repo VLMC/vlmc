@@ -1030,7 +1030,8 @@ TracksView::mediaItems()
 void
 TracksView::setCursorPos( qint64 pos )
 {
-    if ( pos < 0 ) pos = 0;
+    if ( pos < 0 )
+        pos = 0;
     m_cursorLine->frameChanged( pos, MainWorkflow::TimelineCursor );
 }
 
