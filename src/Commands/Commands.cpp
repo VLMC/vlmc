@@ -55,7 +55,7 @@ void Commands::MainWorkflow::AddClip::redo()
 
 void Commands::MainWorkflow::AddClip::undo()
 {
-    ::MainWorkflow::getInstance()->removeClip( m_clip->getUuid(), m_trackNumber, m_trackType );
+    ::MainWorkflow::getInstance()->removeClip( m_clip->uuid(), m_trackNumber, m_trackType );
 }
 
 Commands::MainWorkflow::MoveClip::MoveClip( ::MainWorkflow* workflow, const QUuid& uuid,
@@ -97,7 +97,7 @@ Commands::MainWorkflow::RemoveClip::RemoveClip( Clip* clip, quint32 trackNumber,
 
 void Commands::MainWorkflow::RemoveClip::redo()
 {
-    ::MainWorkflow::getInstance()->removeClip( m_clip->getUuid(), m_trackNumber, m_trackType );
+    ::MainWorkflow::getInstance()->removeClip( m_clip->uuid(), m_trackNumber, m_trackType );
 }
 void Commands::MainWorkflow::RemoveClip::undo()
 {
@@ -143,7 +143,7 @@ void Commands::MainWorkflow::ResizeClip::undo()
     else
     {
         m_clip->setBoundaries( m_oldBegin, m_oldEnd );
-        ::MainWorkflow::getInstance()->moveClip( m_clip->getUuid(), m_trackId, m_trackId, m_oldPos, m_trackType, m_undoRedoAction );
+        ::MainWorkflow::getInstance()->moveClip( m_clip->uuid(), m_trackId, m_trackId, m_oldPos, m_trackType, m_undoRedoAction );
     }
 }
 

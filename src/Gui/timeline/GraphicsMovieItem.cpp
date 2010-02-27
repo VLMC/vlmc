@@ -42,7 +42,7 @@ GraphicsMovieItem::GraphicsMovieItem( Clip* clip ) : m_clip( clip )
     setAcceptHoverEvents( true );
 
     // Adjust the width
-    setWidth( clip->getLength() );
+    setWidth( clip->length() );
     // Automatically adjust for future changes
     connect( clip, SIGNAL( lengthUpdated() ), this, SLOT( adjustLength() ) );
 }

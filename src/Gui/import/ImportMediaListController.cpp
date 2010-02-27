@@ -88,7 +88,7 @@ ImportMediaListController::removeMedia( const QUuid& uuid )
 void
 ImportMediaListController::addClip( Clip* clip )
 {
-    ImportMediaCellView* cell = new ImportMediaCellView( clip->getUuid() );
+    ImportMediaCellView* cell = new ImportMediaCellView( clip->uuid() );
     cell->containsClip();
     connect( cell, SIGNAL( cellSelected( const QUuid& ) ),
              this, SIGNAL( clipSelected( const QUuid& ) ) );
@@ -101,11 +101,11 @@ ImportMediaListController::addClip( Clip* clip )
 
     cell->setTitle( clip->getParent()->fileName() + "_" + size );
     cell->setThumbnail( clip->getParent()->snapshot() );
-    cell->setLength( clip->getLengthSecond(), false  );
+    cell->setLength( clip->lengthSecond(), false  );
     cell->setEnabled( true );
     addCell( cell );
 
-    m_mediaCellList->insert( clip->getUuid(), cell );
+    m_mediaCellList->insert( clip->uuid(), cell );
 }
 
 void

@@ -34,7 +34,7 @@ ClipProperty::ClipProperty( Clip* clip, QWidget *parent ) :
     m_clip( clip )
 {
     QTime   duration;
-    duration = duration.addSecs( m_clip->getLengthSecond() );
+    duration = duration.addSecs( m_clip->lengthSecond() );
 
     ui->setupUi(this);
     connect( this, SIGNAL( accepted() ), this, SLOT( deleteLater() ) );
@@ -61,11 +61,11 @@ ClipProperty::ClipProperty( Clip* clip, QWidget *parent ) :
     Q_ASSERT( button != NULL);
     connect( button, SIGNAL( clicked() ), this, SLOT( apply() ) );
 
-    m_model = new QStringListModel( m_clip->getMetaTags(), this );
+    m_model = new QStringListModel( m_clip->metaTags(), this );
     ui->metaTagsView->setModel( m_model );
 
     //Notes:
-    ui->annotationInput->setPlainText( m_clip->getNotes() );
+    ui->annotationInput->setPlainText( m_clip->notes() );
 
     connect( ui->addTagsButton, SIGNAL( clicked() ), this, SLOT( addTagsRequired() ) );
     connect( ui->deleteTagsButton, SIGNAL( clicked() ), this, SLOT( removeTagsRequired() ) );

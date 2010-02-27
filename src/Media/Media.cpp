@@ -270,7 +270,7 @@ bool                Media::matchMetaTag( const QString& tag ) const
 
 void            Media::addClip( Clip* clip )
 {
-    m_clips.insert( clip->getUuid(), clip );
+    m_clips.insert( clip->uuid(), clip );
 }
 
 void            Media::removeClip( const QUuid& uuid )

@@ -253,7 +253,7 @@ TracksView::addMediaItem( Clip *clip, unsigned int track, MainWorkflow::TrackTyp
     {
         AbstractGraphicsMediaItem *item =
                 dynamic_cast<AbstractGraphicsMediaItem*>( trackItems.at( i ) );
-        if ( !item || item->uuid() != clip->getUuid() ) continue;
+        if ( !item || item->uuid() != clip->uuid() ) continue;
         // Item already exist: goodbye!
         return;
     }
@@ -863,8 +863,8 @@ TracksView::mousePressEvent( QMouseEvent *event )
                 m_actionResizeType = AbstractGraphicsMediaItem::BEGINNING;
             m_actionResize = true;
             m_actionResizeStart = mapToScene( event->pos() ).x();
-            m_actionResizeBase = item->clip()->getLength();
-            m_actionResizeOldBegin = item->clip()->getBegin();
+            m_actionResizeBase = item->clip()->length();
+            m_actionResizeOldBegin = item->clip()->begin();
             m_actionItem = item;
         }
         else if ( item->moveable() )
@@ -928,7 +928,7 @@ TracksView::mouseReleaseEvent( QMouseEvent *event )
         UndoStack::getInstance()->beginMacro( "Move clip" );
 
         Commands::trigger( new Commands::MainWorkflow::MoveClip( m_mainWorkflow,
-                                                                 m_actionItem->clip()->getUuid(),
+                                                                 m_actionItem->clip()->uuid(),
                                                                  m_actionItem->oldTrackNumber,
                                                                  m_actionItem->trackNumber(),
                                                                  m_actionItem->startPos(),
@@ -938,7 +938,7 @@ TracksView::mouseReleaseEvent( QMouseEvent *event )
         if ( m_actionItem->groupItem() )
         {
             Commands::trigger( new Commands::MainWorkflow::MoveClip( m_mainWorkflow,
-                                                                     m_actionItem->groupItem()->clip()->getUuid(),
+                                                                     m_actionItem->groupItem()->clip()->uuid(),
                                                                      m_actionItem->groupItem()->oldTrackNumber,
                                                                      m_actionItem->groupItem()->trackNumber(),
                                                                      m_actionItem->groupItem()->startPos(),
@@ -960,8 +960,8 @@ TracksView::mouseReleaseEvent( QMouseEvent *event )
         Clip *clip = m_actionItem->clip();
         //This is a "pointless action". The resize already occured. However, by doing this
         //we can have an undo action.
-        Commands::trigger( new Commands::MainWorkflow::ResizeClip( clip->getUuid(), clip->getBegin(),
-                                                                   clip->getEnd(), m_actionResizeOldBegin, m_actionResizeOldBegin + m_actionResizeBase,
+        Commands::trigger( new Commands::MainWorkflow::ResizeClip( clip->uuid(), clip->begin(),
+                                                                   clip->end(), m_actionResizeOldBegin, m_actionResizeOldBegin + m_actionResizeBase,
                                                                    m_actionItem->pos().x(), m_actionResizeStart, m_actionItem->trackNumber(), m_actionItem->mediaType() ) );
         updateDuration();
     }
@@ -1171,6 +1171,6 @@ TracksView::split( AbstractGraphicsMediaItem *item, qint64 frame )
     //therefore, the position of the newly created clip is
     //the splitted clip pos + the splitting point (ie startPos() + frame)
     Commands::trigger( new Commands::MainWorkflow::SplitClip( item->clip(), item->trackNumber(),
-                                                              item->startPos() + frame, frame + item->clip()->getBegin(),
+                                                              item->startPos() + frame, frame + item->clip()->begin(),
                                                               item->mediaType() ) );
 }
