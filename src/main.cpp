@@ -26,6 +26,7 @@
  *  and start it.
  */
 
+#include "config.h"
 #include "MainWindow.h"
 #include "SettingsManager.h"
 
@@ -36,10 +37,6 @@
 #include <QPalette>
 #include <QSettings>
 #include <QKeySequence>
-
-#ifndef VLMC_VERSION
-#define VLMC_VERSION Unknown
-#endif
 
 #define EXPAND( x ) #x
 #define STRINGIFY( x ) EXPAND( x )
@@ -58,7 +55,7 @@ VLMCmain( int argc, char **argv )
     app.setApplicationName( "vlmc" );
     app.setOrganizationName( "vlmc" );
     app.setOrganizationDomain( "vlmc.org" );
-    app.setApplicationVersion( STRINGIFY(VLMC_VERSION) );
+    app.setApplicationVersion( PROJECT_VERSION );
     //QSettings::setDefaultFormat( QSettings::IniFormat );
     //Preferences::changeLang( QSettings().value( "Lang" ).toString() );
 
@@ -99,8 +96,6 @@ VLMCmain( int argc, char **argv )
     app.setPalette( p );
 
     MainWindow w;
-    QSettings   s;
-    s.setValue( "VlmcVersion", STRINGIFY( VLMC_VERSION ) );
     w.show();
     return app.exec();
 }
