@@ -40,17 +40,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>AudioProjectPreferences</name>
-    <message>
-        <source>Form</source>
-        <translation>Formulár</translation>
-    </message>
-    <message>
-        <source>SampleRate</source>
-        <translation>Vz. frekvencia</translation>
-    </message>
-</context>
-<context>
     <name>ClipProperty</name>
     <message>
         <source>Media Properties</source>
@@ -283,34 +272,12 @@ p, li { white-space: pre-wrap; }
         <translation>vlastnosti</translation>
     </message>
     <message>
-        <source>Importing files...</source>
-        <translation>Importovanie súborov...</translation>
+        <source>Failed to load %1</source>
+        <translation>Nepodarilo sa načítať %1</translation>
     </message>
     <message>
-        <source>Cancel</source>
-        <translation>Storno</translation>
-    </message>
-</context>
-<context>
-    <name>LanguagePreferences</name>
-    <message>
-        <source>Form</source>
-        <translation>Formulár</translation>
-    </message>
-    <message>
-        <source>Language</source>
-        <translation>Jazyk</translation>
-    </message>
-</context>
-<context>
-    <name>Library</name>
-    <message>
-        <source>Import error</source>
-        <translation>Chyba pri importe</translation>
-    </message>
-    <message>
-        <source>Can&apos;t open file :</source>
-        <translation>Nemožno otvoriť súbor:</translation>
+        <source>TextLabel</source>
+        <translation>TextovaMenovka</translation>
     </message>
 </context>
 <context>
@@ -507,44 +474,16 @@ p, li { white-space: pre-wrap; }
         <translation>Dopredu</translation>
     </message>
     <message>
-        <source>VLMC</source>
-        <translation>VLMC</translation>
-    </message>
-    <message>
         <source>VLMC settings</source>
         <translation>Nastavenia programu VLMC</translation>
-    </message>
-    <message>
-        <source>Language preferences</source>
-        <translation>Predvoľby pre jazyk</translation>
-    </message>
-    <message>
-        <source>Language settings</source>
-        <translation>Nastavenia jazyka</translation>
-    </message>
-    <message>
-        <source>Keyboard</source>
-        <translation>Klávesnica</translation>
-    </message>
-    <message>
-        <source>Project</source>
-        <translation>Projekt</translation>
     </message>
     <message>
         <source>Project settings</source>
         <translation>Nastavenia projektu</translation>
     </message>
     <message>
-        <source>Video</source>
-        <translation>Video</translation>
-    </message>
-    <message>
         <source>Video settings</source>
         <translation>Nastavenia videa</translation>
-    </message>
-    <message>
-        <source>Audio</source>
-        <translation>Zvuk</translation>
     </message>
     <message>
         <source>Audio settings</source>
@@ -557,10 +496,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>There is nothing to render.</source>
         <translation>Nie je čo vykresľovať.</translation>
-    </message>
-    <message>
-        <source>Enter the output file name</source>
-        <translation>Zadajte názov výstupného súboru</translation>
     </message>
 </context>
 <context>
@@ -638,16 +573,13 @@ p, li { white-space: pre-wrap; }
         <source>Do you want to save it ?</source>
         <translation>Chcete ho uložiť?</translation>
     </message>
-</context>
-<context>
-    <name>ProjectPreferences</name>
     <message>
-        <source>Form</source>
-        <translation>Formulár</translation>
+        <source>&lt;Unnamed project&gt;</source>
+        <translation>&lt;Nepomenovaný projekt&gt;</translation>
     </message>
     <message>
-        <source>Project name</source>
-        <translation>Názov projektu</translation>
+        <source>&lt;Unsaved project&gt;</source>
+        <translation>&lt;Neuložený projekt&gt;</translation>
     </message>
 </context>
 <context>
@@ -701,10 +633,58 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>Settings</name>
+    <name>RendererSettings</name>
     <message>
-        <source>Preferences: %1</source>
-        <translation>Nastavenia: %1</translation>
+        <source>Enter the output file name</source>
+        <translation>Zadajte názov výstupného súboru</translation>
+    </message>
+    <message>
+        <source>Dialog</source>
+        <translation>Dialóg</translation>
+    </message>
+    <message>
+        <source>Output file</source>
+        <translation>Výstupný súbor</translation>
+    </message>
+    <message>
+        <source>Select...</source>
+        <translation>Vybrať...</translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation>Šírka</translation>
+    </message>
+    <message>
+        <source>Height</source>
+        <translation>Výška</translation>
+    </message>
+    <message>
+        <source>FPS</source>
+        <translation>snímkov za sekundu</translation>
+    </message>
+    <message>
+        <source>Video quality</source>
+        <translation>Kvalita videa</translation>
+    </message>
+    <message>
+        <source>Audio quality</source>
+        <translation>Kvalita zvuku</translation>
+    </message>
+    <message>
+        <source>Video codec</source>
+        <translation>Kodek videa</translation>
+    </message>
+    <message>
+        <source>H264</source>
+        <translation>H264</translation>
+    </message>
+    <message>
+        <source>Audio codec</source>
+        <translation>Kodek zvuku</translation>
+    </message>
+    <message>
+        <source>AAC</source>
+        <translation>AAC</translation>
     </message>
 </context>
 <context>
@@ -852,41 +832,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>VLMCPreferences</name>
-    <message>
-        <source>Form</source>
-        <translation>Formulár</translation>
-    </message>
-    <message>
-        <source>Output FPS</source>
-        <translation>Snímky / sek. na výstupe</translation>
-    </message>
-    <message>
-        <source>25</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Number of tracks</source>
-        <translation>Počet stôp</translation>
-    </message>
-    <message>
-        <source>64</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Automatic save</source>
-        <translation>Automaticky uložiť</translation>
-    </message>
-    <message>
-        <source>Automatic save interval</source>
-        <translation>Interval automatického ukladania</translation>
-    </message>
-    <message>
-        <source>minutes</source>
-        <translation>minút</translation>
-    </message>
-</context>
-<context>
     <name>VideoPage</name>
     <message>
         <source>WizardPage</source>
@@ -987,29 +932,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Configure Video settings</source>
         <translation>Konfigurácia nastavení videa</translation>
-    </message>
-</context>
-<context>
-    <name>VideoProjectPreferences</name>
-    <message>
-        <source>Form</source>
-        <translation>Formulár</translation>
-    </message>
-    <message>
-        <source>FPS</source>
-        <translation>Snímky/sekundu</translation>
-    </message>
-    <message>
-        <source> Frames/Seconds</source>
-        <translation> snímkov</translation>
-    </message>
-    <message>
-        <source>Image width</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Image height</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
