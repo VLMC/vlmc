@@ -1,10 +1,6 @@
-See the INSTALL file for installation instructions.
+**** IMPORTANT ****
 
-Support
-=======
+Our git repository has moved, please update!
 
-Mailing-list
-	<vlmc-devel@vlmc.org>
-
-IRC
-	Channel #vlmc on Freenode.
+$ git remote set-url origin git://git.videolan.org/vlmc.git
+$ git pull origin master
