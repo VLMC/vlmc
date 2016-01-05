@@ -2,5 +2,5 @@
 
 Our git repository has moved, please update!
 
-$ git remote set-url origin git://git.videolan.org/vlmc.git
+$ git remote set-url origin https://code.videolan.org/videolan/vlmc.git
 $ git pull origin master
